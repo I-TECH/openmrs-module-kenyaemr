@@ -6,15 +6,32 @@
 	def params = [:]
 	config.definition.parameters.each{ param -> params[param.name] = param }
 
-	def usePeriodField = params.containsKey("startDate") && params.containsKey("endDate")
+	def useMonthBasedPeriodField = params.containsKey("startDate") && params.containsKey("endDate")
+	
+	def useYearBasedPeriodField = params.containsKey("startDate") && params.containsKey("endDate") && params.containsKey("yearBasedReporting")
 
-	if (usePeriodField) {
+	def useDateBasedPeriodField = params.containsKey("startDate") && params.containsKey("endDate") && params.containsKey("dateBasedReporting")
+
+	if (useMonthBasedPeriodField || useYearBasedPeriodField) {
 		params.remove("startDate")
 		params.remove("endDate")
+	}
+	
+	if (useYearBasedPeriodField || useDateBasedPeriodField) {
+		useMonthBasedPeriodField = false;
 	}
 %>
 <script type="text/javascript">
 	jQuery(function() {
+		//Hide all elements whose name is "dateBasedReorting or yearBasedReporting" and set a default value of -1
+		//This ensures that additional parameters sent to this form for the purpose of determining how this UI displays are not shown
+		var form = jQuery('#${ config.id }');
+		form.find('[name^="param["][name\$="BasedReporting]"]').each(function() {
+			var field = jQuery(this);
+			field.val('-1');
+			field.parent().hide();
+		});
+
 		jQuery('#${ config.id }_btn').click(function() {
 			var form = jQuery('#${ config.id }');
 			var errors = form.find('.error').filter(':visible');
@@ -62,13 +79,29 @@
 	<form id="${ config.id }">
 		<div class="ke-field-label">Report</div>
 		<div class="ke-field-content">${ config.definition.name }</div>
-		<% if (usePeriodField) { %>
+		<% if (useMonthBasedPeriodField) { %>
 		<div class="ke-field-label">Month</div>
 		<div class="ke-field-content">
 
-			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 180 ]) }
+			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 180, pastYears: 0 ]) }
 		</div>
 		<% } %>
+		
+		<% if (useYearBasedPeriodField) { %>
+		<div class="ke-field-label">Year</div>
+		<div class="ke-field-content">
+
+			${ ui.includeFragment("kenyaemr", "field/reportPeriod", [ pastMonths: 0, pastYears: 6 ]) }
+		</div>
+		<% } %>
+		<% if (useDateBasedPeriodField) { %>
+		<div class="ke-field-label">Date Range</div>
+		<div class="ke-field-content">
+
+			${ ui.includeFragment("kenyaemr", "field/reportDates") }
+		</div>
+		<% } %>
+
 		<% params.each { name, param -> %>
 		<div class="ke-field-label">${ param.label }</div>
 		<div class="ke-field-content">

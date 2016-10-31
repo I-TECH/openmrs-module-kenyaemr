@@ -21,6 +21,9 @@
 	<% months.each { month -> %>
 	<option value="${ month.range }">${ month.label }</option>
 	<% } %>
+	<% years.each { year -> %>
+	<option value="${ year.range }">${ year.label }</option>
+	<% } %>
 </select>
 <input id="${ config.id }_start" type="hidden" name="${ startFieldName }" />
 <input id="${ config.id }_end" type="hidden" name="${ endFieldName }" />
