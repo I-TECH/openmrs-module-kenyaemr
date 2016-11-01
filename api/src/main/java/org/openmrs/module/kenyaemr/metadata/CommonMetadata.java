@@ -14,6 +14,15 @@
 
 package org.openmrs.module.kenyaemr.metadata;
 
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.encounterType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.globalProperty;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.patientIdentifierType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.personAttributeType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.relationshipType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitAttributeType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitType;
+
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
@@ -23,8 +32,6 @@ import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
-
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 
 /**
  * Common metadata bundle
@@ -106,6 +113,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
 		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
+		install(form("Gene Xpert Form" ,null, _EncounterType.LAB_RESULTS, "1", Metadata.Form.GENE_XPERT));
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
