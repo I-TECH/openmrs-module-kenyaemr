@@ -43,7 +43,7 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> onIpt = Filters.inProgram(iptProgram, alive, context);
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
-		Set<Integer> inHivProgram = Filters.inProgram(tbProgram, alive, context);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
 		CalculationResultMap lastIptMap = Calculations.lastEncounter(iptOutcome, alive, context);
 		CalculationResultMap ret = new CalculationResultMap();
