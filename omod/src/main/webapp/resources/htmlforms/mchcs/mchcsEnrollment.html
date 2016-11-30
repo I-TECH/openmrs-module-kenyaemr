@@ -190,16 +190,16 @@
 			}
 
 			function heiInfants() {
-
-				if (getValue('hiv-exposed-child.value') == '') {
+				var $hivExposedChildResponseField = jq('#hiv-exposed-child').find('input:checked');
+				if ($hivExposedChildResponseField.length == 0) {
 					jq('.hei-section').find('input, select').attr('disabled', true);
 				}
 
-				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
+				if ($hivExposedChildResponseField.val() == EXPOSURE_TO_HIV_ID) {
 					jq('.hei-section').find('input, select').attr('disabled', false);
 				}
 
-				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
+				if ($hivExposedChildResponseField.val() == NO_CONCEPT_ID || $hivExposedChildResponseField.val() == UNKOWN) {
 					jq('.hei-section').find('input, select').attr('disabled', true);
 				}
 			}
@@ -280,8 +280,8 @@
 				var $hiddenHeiIdPlaceholder = jq('#hidden-hei-id-placeholder');
 				$hiddenHeiIdPlaceholder.css({'display':'none'});
 				$heiPlaceholder.val(heiId);
-				//$heiPlaceholder.on('change blur keyup keypress', function() {
-				$heiPlaceholder.change(function() {
+				$heiPlaceholder.on('change blur keyup keypress', function() {
+				//$heiPlaceholder.change(function() {
 					var $that = jq(this);
 					$hiddenHeiIdPlaceholder.find('input:first').val($that.val());
 				});	
