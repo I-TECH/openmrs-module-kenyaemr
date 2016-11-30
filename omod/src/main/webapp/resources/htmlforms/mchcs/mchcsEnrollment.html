@@ -390,16 +390,16 @@
 					valid = false;
 				}
 
-				if (getField('pmtct-drugs-received.value').val() == YES_CONCEPT_ID ) {
-					if (getField('pmtct-regimen.value').val() == '') {
-						getField('pmtct-regimen.error').html('Enter mother\'s PMCT regimen').show();
+				if (jq('#pmtct-drugs-received').find('input:checked').val() == YES_CONCEPT_ID ) {
+					if (jq('#pmtct-regimen').find('input:checked').length == 0) {
+						getField('pmtct-regimen.error').html('Select mother\'s PMCT regimen').show();
 						valid = false;
 					}
 				}
 
-				if (getField('mother-on-art-at-infant-enrolment.value').val() == YES_CONCEPT_ID ) {
+				if (jq('#mother-on-art-at-infant-enrolment').find('input:checked').val() == YES_CONCEPT_ID ) {
 					if (getField('mother-art-regimen-at-infant-enrolment.value').val() == '') {
-						getField('mother-art-regimen-at-infant-enrolment.error').html('Enter mother\'s ART regimen').show();
+						getField('mother-art-regimen-at-infant-enrolment.error').html('Select mother\'s ART regimen').show();
 						valid = false;
 					}
 				}
