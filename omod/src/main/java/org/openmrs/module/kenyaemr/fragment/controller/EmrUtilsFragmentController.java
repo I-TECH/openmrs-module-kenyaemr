@@ -17,7 +17,9 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -27,6 +29,8 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
@@ -40,8 +44,10 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Fragment actions generally useful for KenyaEMR
@@ -156,5 +162,19 @@ public class EmrUtilsFragmentController {
 		cal.setTime(now != null ? now : new Date());
 		cal.add(Calendar.YEAR, -age);
 		return SimpleObject.create("birthdate", kenyaui.formatDateParam(cal.getTime()));
-	}
+	}	
+	
+	/**s
+	 * Gets a persons telephone contact
+	 * @param personId the person
+	 * @param ui the UI utils
+	 * @return the telephone contact
+	 */
+	public SimpleObject getPersonTelephoneContact(@RequestParam("personId") String personId,UiUtils ui) {
+		Person person = Context.getPersonService().getPerson(Integer.parseInt(personId));
+		PersonWrapper pw = new PersonWrapper(person);
+		String contact = pw.getTelephoneContact();
+		
+		return SimpleObject.create("telephoneContact", contact != null ? contact: "Not Set".toString());
+	}	
 }

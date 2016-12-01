@@ -14,13 +14,21 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.Visit;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -42,15 +50,6 @@ import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * AJAX utility methods for patients
@@ -218,7 +217,7 @@ public class PatientUtilsFragmentController {
 				if (relationship.getPersonB().getGender().equals("M")) {
 					people.add(relationship.getPersonB());
 				}
-			}
+			} 
 			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
 				if (relationship.getPersonA().getGender().equals("M")) {
 					people.add(relationship.getPersonA());
@@ -229,6 +228,25 @@ public class PatientUtilsFragmentController {
 	}
 
 	/**
+	 * Look for the fathers name for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of fathers
+	 */
+	public SimpleObject[] getGuardians(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Guardian")) {
+				people.add(relationship.getPersonB());
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Guardian")) {
+				people.add(relationship.getPersonA());
+			}
+		}
+		return ui.simplifyCollection(people);
+	}
+	
+	/**s
 	 * Gets a patient by their id
 	 * @param patientId the patient
 	 * @param ui the UI utils
@@ -238,8 +256,9 @@ public class PatientUtilsFragmentController {
 		String givenName = "";
 		List<Patient> patients = Context.getPatientService().getPatients(patientId);
 		if(patients.size() > 0){
-			givenName = patients.get(0).getGivenName();
+			givenName = patients.get(0).getGivenName(); 
 		}
 		return givenName;
 	}
+	
 }
