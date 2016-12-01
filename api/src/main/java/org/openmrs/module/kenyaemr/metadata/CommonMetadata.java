@@ -67,6 +67,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PATIENT_CLINIC_NUMBER = Metadata.IdentifierType.PATIENT_CLINIC_NUMBER;
 		public static final String NATIONAL_UNIQUE_PATIENT_IDENTIFIER = Metadata.IdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER;
 		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
+		public static final String PERMANENT_REGISTER_NUMBER = Metadata.IdentifierType.PERMANENT_REGISTER_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -126,17 +127,19 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationBehavior.REQUIRED, true, _PatientIdentifierType.OPENMRS_ID));
 		install(patientIdentifierType("Patient Clinic Number", "Assigned to the patient at a clinic service (not globally unique)",
 				".{1,15}", "At most 15 characters long", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 		install(patientIdentifierType("National ID", "Kenyan national identity card number",
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
 		install(patientIdentifierType("National Unique patient identifier", "National Unique patient identifier",
 				".{1,14}", "At most 14 characters long", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
-				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.CWC_NUMBER));
-		
+				".{1,15}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
+		install(patientIdentifierType("Permanent Register Number", "Assigned to a patient upon first entry to the permanent register",
+				".{1,14}", "Accepts alphanumeric values only", null,
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.PERMANENT_REGISTER_NUMBER));		
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
