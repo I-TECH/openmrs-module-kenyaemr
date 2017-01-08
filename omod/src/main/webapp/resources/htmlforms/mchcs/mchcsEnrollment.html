@@ -230,6 +230,25 @@
 				let regexString = /^CWC-[0-9]{3,5}-[0-9]{3,7}$/gi;
 				return regexString.test(str);	
 			}
+
+			var validGestationPeriod = function() {
+				var gestationAtBirth = getValue('gestation-at-birth.value');
+				if (gestationAtBirth &lt; 20 || gestationAtBirth &gt; 52  ) {
+					getField('gestation-at-birth.error').html('The gestation-at-birth value is invalid. Value must be between 20 and 52').show();
+					return false;
+				}
+				return true;
+			}
+
+			var valid2DecimalPlaceInteger = function(str) {
+				if (str == '') {
+					return true;
+				}
+
+				let regexString = /^[0-9]+(\.[0-9]{1,2})?$/g;
+				return regexString.test(str);
+			}
+
 			var showHideSpecifyField = function($selectField) {
 				if ($selectField.parents(':first').is('span')) {					
 					var $specifyField = $selectField.parents(':first').siblings('.specify').find('input');
@@ -278,7 +297,7 @@
 			var handleHeiId = function () {
 				var $heiPlaceholder = jq('#hei-id-placeholder');
 				var $hiddenHeiIdPlaceholder = jq('#hidden-hei-id-placeholder');
-				$hiddenHeiIdPlaceholder.css({'display':'none'});
+				$hiddenHeiIdPlaceholder.css({'display':'block'});
 				$heiPlaceholder.val(heiId);
 				$heiPlaceholder.on('change blur keyup keypress', function() {
 				//$heiPlaceholder.change(function() {
@@ -286,6 +305,14 @@
 					$hiddenHeiIdPlaceholder.find('input:first').val($that.val());
 				});	
 			};
+
+			var prefillCWCNo = function() {
+				var $cwcNo = jq('#cwc-number').find('input[type=text]');
+				if ($cwcNo.val() = '') {
+					var cwcPlaceHolder = 'CWC-MFL-'; // Generate it like the upn identifier
+					$cwcNo.val(cwcPlaceHolder);
+				}
+			}
 
 
 		jq(function() {
@@ -337,10 +364,24 @@
 			});
 
 			//Activate the handling of HEI ID identifier. Check comments on this function for more details
-			handleHeiId();
+			//handleHeiId();
 
 			beforeSubmit.push(function() {
 				var valid = true;
+
+				if (!validGestationPeriod()) {
+					valid = false;
+				}
+
+				if (!valid2DecimalPlaceInteger(getValue('birth-weight.value'))) {
+					getField('birth-weight.error').html('Invalid Birth Weight. Values with more than 2 decimal places not allowed').show();
+					valid = false;
+				}
+
+				if (!valid2DecimalPlaceInteger(getValue('birth-length.value'))) {
+					getField('birth-length.error').html('Invalid Birth Length. Values with more than 2 decimal places not allowed').show();
+					valid = false;
+				}
 
 				if (!validAlphanumericEntry(getValue('birth-notification-number.value'))) {
 					getField('birth-notification-number.error').html('Birth Notification number only accepts alphanumeric values').show();
@@ -362,13 +403,13 @@
 					valid = false;
 				}				
 
-				if (!validAlphanumericEntry(jq('permanent-register-number.value').find('input').val())) {
+				if (!validAlphanumericEntry(jq('permanent-register-number').find('input').val())) {
 					jq('permanent-register-number').find('.error').html('Permanent Register Number only accepts alphanumeric values').show();
 					valid = false;
 				}
 
 				if (!validNumericEntry(getValue('community-health-worker-contact.value'))) {
-					getField('community-health-worker-contact.error').find('.error').html('Community health worker\'s telephone number accepts numeric values only').show();
+					getField('community-health-worker-contact.error').html('Community health worker\'s telephone number accepts numeric values only').show();
 					valid = false;
 				}				
 
@@ -376,6 +417,16 @@
 					getField('mother-ccc-no.error').html('Mother ccc number only accepts alphanumeric values').show();
 					valid = false;
 				}
+
+				if (!validAlphanumericEntry(jq('#hei-id').find('input').val())) {
+					jq('#hei-id').find('.error').html('Invalid HEI ID Number').show();
+					valid = false;
+				}				
+
+				if (!validAlphanumericEntry(getValue('spd.value'))) {
+					getField('spd.error').html('SPD number only accepts alphanumeric values').show();
+					valid = false;
+				}				
 
 				if (getValue('hiv-exposed-child.value') == "") {
 					//jq('#child-status-required').show();
@@ -497,22 +548,23 @@
         </tr>
 
         <tr>
+
           <td valign="top">Registration Details </td>
           <td colspan="2">
             <table border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td>Birth Notification Number <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="birth-notification-number"/></td>
+                <td>Birth Notification Number <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="birth-notification-number" size="31"/></td>
                 <td>Date Issued  <obs conceptId="164129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-issued"/> </td>
                 <td></td>
               </tr>
               <tr>
-                <td>Birth certificate Number <obs conceptId="162052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="birth-certificate-number"/></td>
+                <td>Birth certificate Number <obs conceptId="162052AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="birth-certificate-number" size="32"/></td>
                 <td>Date of registration <obs conceptId="164130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-of-registration"/></td>
                 <td>Place of registration <obs conceptId="164140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />                </td>
               </tr>
               <tr>
-                <td>Health facility name:  <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="health-facility-name"/></td>
-                <td>Patient Clinic No. <patient field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="true" id="patient-clinic-no"/></td>
+                <td>Health facility name: <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="health-facility-name" placeholder="Start typing to get suggestions" size="35"/></td>
+                <td>Patient Clinic No. <patient field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d"  id="patient-clinic-no" required="false"/></td>
                 <td></td>
               </tr>
               <tr>
@@ -526,16 +578,13 @@
 						</td>
 						<td>
 							<span id="cwc-number">
-								<patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" required="true"/>
+								<patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" />
 							</span>
 						</td>
 						<td>Permanent Register Number</td>
 						<td>
 							<span id="permanent-register-number">
-								<patient field="identifier" identifierTypeId="a8a046d6-c53e-490f-bc76-196c4010ba7d" required="true"/>
-							</span>
-							<span id="hidden-hei-id-placeholder">
-								HEI ID: <patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" required="true"/>
+								<patient field="identifier" identifierTypeId="a8a046d6-c53e-490f-bc76-196c4010ba7d" required="false"/>
 							</span>
 						</td>
 					  </tr>
@@ -545,7 +594,7 @@
               <tr>
                 <td colspan="2">
                 	<span id="nupi">
-                  		National Unique Patient Identifier <patient field="identifier" identifierTypeId="f85081e2-b4be-4e48-b3a4-7994b69bb101" required="true"/>   
+                  		National Unique Patient Identifier <patient field="identifier" identifierTypeId="f85081e2-b4be-4e48-b3a4-7994b69bb101" required="false"/>   
                  	</span>
                 </td>
                 <td></td>
@@ -660,18 +709,7 @@
                   <td>HEI ID Number</td>
                   <td>
                     <span id="hei-id">
-						<ifMode mode="EDIT">
-							<input type="text" id="hei-id-placeholder" />
-						</ifMode>
-
-						<ifMode mode="ENTER">
-							<input type="text" id="hei-id-placeholder" />
-						</ifMode>
-
-						<ifMode mode="VIEW">
-							<span class="value"><lookup expression="patient.getPatientIdentifier(7)"/></span>
-						</ifMode>
-						<span class="error field-error" style="display: none" id="hei-place-holder-error"></span>
+						<patient field="identifier" identifierTypeId="0691f522-dd67-4eeb-92c8-af5083baf338" required="false"/>
                     </span>
                   </td>
                   <td>SPD No</td>
