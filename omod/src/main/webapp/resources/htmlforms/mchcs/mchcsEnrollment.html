@@ -58,6 +58,29 @@
 			const UNKOWN = 1067;
 			const OTHER_CONCEPT_ID = 5622;
 
+			var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
+			function onCWCNumberGenerateClick() {
+				kenyaui.openConfirmDialog({
+					heading: 'Generate CWC Number',
+					message: 'This should only be used for new patients. If the patient already has a CWC NUmber, please enter that instead.',
+					okLabel: 'Continue',
+					okCallback: function() {
+						jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextCWCNumber.action', function(data) {
+							if (data.value == 'Identifier source not found') {
+								kenyaui.openAlertDialog({
+									heading: 'Functionality not available',
+									message: 'First time setup required for this Functionality to work. Please contact the system administrator.'
+								});
+							} else {
+								jq('#cwc-number input[type=text]').val(data.value);								
+								jq('#generate-cwc-number').hide();
+							}
+						});
+					}
+				});
+			}
+
 			function onTransferStatusChange() {
 				if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
 					jq('#transfer-details :input').attr('disabled', true);
@@ -131,6 +154,14 @@
 				}
 			}
 
+			function requireMotherCCCNo() {
+				if (getValue('mother-on-art-at-infant-enrolment.value') == YES_CONCEPT_ID || getValue('pmtct-drugs-received.value') == 'YES_CONCEPT_ID') {
+					getField('mother-ccc-no.value').attr('disabled', false);					
+				} else {
+					getField('mother-ccc-no.value').attr('disabled', true);					
+				}
+			}
+
 			var OPENMRS_CONTEXT_PATH = OPENMRS_CONTEXT_PATH || "kenyaemr";
 			function includeMothersNames() {
 				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothers.action',{ patientId: patientId },function(data) {
@@ -152,7 +183,7 @@
 			}
 
 			function includeFathersNames() {
-				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: 12458 },function(data) {
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: personId },function(data) {
 					var fatherName;
 					var personId = "";
 					for ( var p in data){
@@ -249,6 +280,17 @@
 				return regexString.test(str);
 			}
 
+			var validDate = function(str, allowFutureDates) {
+				if (allowFutureDates) {
+					return !isNaN(Date.parse(str));
+				} else {
+					var encounterDate = getValue('encounter-date.value');
+					var today = new Date(encounterDate);
+					var selectedDate = new Date(str);
+					return	!selectedDate &gt; today;
+				}
+			}
+
 			var showHideSpecifyField = function($selectField) {
 				if ($selectField.parents(':first').is('span')) {					
 					var $specifyField = $selectField.parents(':first').siblings('.specify').find('input');
@@ -287,33 +329,14 @@
 				});
 			};
 
-			/*
-			**This is a hack. I realized that if &lt;patient&gt; tags aren't positioned sequentially then an exception is thrown 
-			**'(org.openmrs.module.htmlformentry.element.PatientDetailSubmissionElement.getIdentifierType(PatientDetailSubmissionElement.java:448))'
-			**The trick is to place a hidden identifier field in question((HEI Id)) next to the other identifier fields. 
-			**Then put a placeholder text field where the actual identifier field is supposed to be. ("#hidden-hei-id-placeholder")
-			**Then update the hidden field programmatically with the value updated on the placeholder text field
-			**/
-			var handleHeiId = function () {
-				var $heiPlaceholder = jq('#hei-id-placeholder');
-				var $hiddenHeiIdPlaceholder = jq('#hidden-hei-id-placeholder');
-				$hiddenHeiIdPlaceholder.css({'display':'block'});
-				$heiPlaceholder.val(heiId);
-				$heiPlaceholder.on('change blur keyup keypress', function() {
-				//$heiPlaceholder.change(function() {
-					var $that = jq(this);
-					$hiddenHeiIdPlaceholder.find('input:first').val($that.val());
-				});	
-			};
-
-			var prefillCWCNo = function() {
-				var $cwcNo = jq('#cwc-number').find('input[type=text]');
-				if ($cwcNo.val() = '') {
-					var cwcPlaceHolder = 'CWC-MFL-'; // Generate it like the upn identifier
-					$cwcNo.val(cwcPlaceHolder);
+			var showHideGenerateCwcNumberButton = function() {
+				var cwcNo = jq('#cwc-number').find('input:text').val();
+				if (cwcNo == '') {
+					jq('#generate-cwc-number').show();
+				} else {
+					jq('#generate-cwc-number').hide();					
 				}
 			}
-
 
 		jq(function() {
 			//get cohort
@@ -325,11 +348,23 @@
 			tbContactInHouseHold();
 			jq('#tbcontact input').click(tbContactInHouseHold);
 			pmtctDrugsForMother();
-			jq('#pmtct-drugs-received input').click(pmtctDrugsForMother);
+			requireMotherCCCNo();
+			jq('#pmtct-drugs-received input').click(function() {
+				pmtctDrugsForMother();
+				requireMotherCCCNo();
+			});
 			onARTatEnrollment();
-			jq('#mother-on-art-at-infant-enrolment input').click(onARTatEnrollment);
+			jq('#mother-on-art-at-infant-enrolment input').click(function() {				
+				onARTatEnrollment();
+				requireMotherCCCNo();
+			});
 			needSpecialCare();
 			jq('#special-care input').click(needSpecialCare);
+
+			jq('#generate-cwc-number').click(onCWCNumberGenerateClick);
+
+			showHideGenerateCwcNumberButton();
+			jq('#cwc-number').find('input:text').change(showHideGenerateCwcNumberButton);
 
 			//including the mother details
 			includeMothersNames();
@@ -363,11 +398,13 @@
 				showHideSpecifyField(jq(this));
 			});
 
-			//Activate the handling of HEI ID identifier. Check comments on this function for more details
-			//handleHeiId();
-
 			beforeSubmit.push(function() {
 				var valid = true;
+
+				if (!validDate(getValue('date-first-seen.value'), false)) {
+					getField('date-first-seen.error').html().show('The date first seen cannot be in the future');
+					valid = false;
+				} 
 
 				if (!validGestationPeriod()) {
 					valid = false;
@@ -500,7 +537,7 @@
               <tr>
                 <td>Date first seen</td>
                 <td>
-                  <obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/>
+                  <obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="false" id="date-first-seen"/>
                 </td>
                 <td></td>
                 <td></td>
@@ -522,18 +559,17 @@
                 </td>
               </tr>
               <tr>
-                <td>Birth Order in Family (1,2,3) </td>
-                <td>
+                <td valign="top">Birth Order in Family (1,2,3) </td>
+                <td valign="top">
                   <obs conceptId="163460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="birth-order"/>
                 </td>
-                <td>Birth type: </td>
-                <td>
+                <td valign="top">Birth type: </td>
+                <td valign="top">
                   <obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="dropdown" id="birth-type"/>
                 </td>
-                <td>Place of delivery</td>
+                <td valign="top">Place of delivery</td>
                 <td>
-                  <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="dropdown" id="place-of-delivery"/> If Other, specify
-				  <obs conceptId="163531" class="specify" id="specify-place-of-delivery"/>
+                  <obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="dropdown" id="place-of-delivery"/> <obs conceptId="163531" class="specify" id="specify-place-of-delivery" placeholder="If Other, specify"/>
                 </td>
               </tr>
               <tr>
@@ -569,7 +605,7 @@
               </tr>
               <tr>
                 <td colspan="3">
-					<table border="0" cellspacing="3" cellpadding="0">
+					<table border="0" cellspacing="3" cellpadding="0" width="100%">
 					  <tr>
 						<td>
 							CWC No <br />
@@ -578,7 +614,8 @@
 						</td>
 						<td>
 							<span id="cwc-number">
-								<patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" />
+								<patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" /><input type="button" id="generate-cwc-number" value="Generate"/>
+
 							</span>
 						</td>
 						<td>Permanent Register Number</td>
