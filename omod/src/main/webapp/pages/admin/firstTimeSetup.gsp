@@ -37,6 +37,20 @@
 				class: java.lang.String
 		]
 	}
+
+	if (cwcIdentifierSource) {
+		fields << [
+				label: "CWC Number Generator",
+				value: "Already configured"
+		]
+	} else {
+		fields << [
+				label: "(CWC Number Generator) First ID Number",
+				formFieldName: "cwcIdentifierSourceStart",
+				initialValue: "10001",
+				class: java.lang.String
+		]
+	}
 %>
 <div class="ke-page-content">
 
