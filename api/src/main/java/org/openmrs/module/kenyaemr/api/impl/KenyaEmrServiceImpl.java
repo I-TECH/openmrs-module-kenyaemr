@@ -40,6 +40,7 @@ import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
 import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 	protected static final String OPENMRS_MEDICAL_RECORD_NUMBER_NAME = "Kenya EMR - OpenMRS Medical Record Number";
 	protected static final String HIV_UNIQUE_PATIENT_NUMBER_NAME = "Kenya EMR - OpenMRS HIV Unique Patient Number";
+	protected static final String CWC_NUMBER_NAME = "Child welfare Clinic Patient Number";
 
 	@Autowired
 	private IdentifierManager identifierManager;
@@ -173,6 +175,28 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	}
 
 	/**
+	 * @see org.openmrs.module.kenyaemr.api.KenyaEmrService#getNextCWCNumber(String)
+	 */
+	@Override
+	public String getNextCWCNumber(String comment) {
+		if (comment == null) {
+			comment = "KenyaEMR Service";
+		}
+
+		PatientIdentifierType identifierType = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER);
+		IdentifierSource source = identifierManager.getIdentifierSource(identifierType);
+
+		String prefix = "CWC-" + Context.getService(KenyaEmrService.class).getDefaultLocationMflCode() + "-";
+		
+		if (source == null) {
+			return "Identifier source not found";
+		}
+		String sequentialNumber = Context.getService(IdentifierSourceService.class).generateIdentifier(source, comment);
+		return prefix + sequentialNumber;
+	}
+
+	
+	/**
 	 * @see KenyaEmrService#getVisitsByPatientAndDay(org.openmrs.Patient, java.util.Date)
 	 */
 	@Override
@@ -204,6 +228,15 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 		setupIdentifierSource(idType, startFrom, HIV_UNIQUE_PATIENT_NUMBER_NAME, "0123456789", null);
 	}
 
+	/**
+	 * @see KenyaEmrService#setupCWCNumberIdentifierSource(String)
+	 */
+	@Override
+	public void setupCWCNumberIdentifierSource(String startFrom) {
+		PatientIdentifierType idType = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER);
+		setupIdentifierSource(idType, startFrom, CWC_NUMBER_NAME, "0123456789", null);
+	}
+	
 	/**
 	 * Setup an identifier source
 	 * @param idType the patient identifier type

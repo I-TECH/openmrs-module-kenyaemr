@@ -97,6 +97,20 @@ public class EmrUtilsFragmentController {
 	}
 
 	/**
+	 * Gets the next CWC number from the generator
+	 * @param comment the optional comment
+	 * @return simple object { value: identifier value }
+	 */
+	public SimpleObject nextCWCNumber(@RequestParam(required = false, value = "comment") String comment) {
+		if (comment == null) {
+			comment = "KenyaEMR UI";
+		}
+
+		String id = Context.getService(KenyaEmrService.class).getNextCWCNumber(comment);
+		return SimpleObject.create("value", id);
+	}	
+	
+	/**
 	 * Voids the given relationship
 	 * @param relationship the relationship
 	 * @param reason the reason for voiding
