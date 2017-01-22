@@ -183,7 +183,7 @@
 			}
 
 			function includeFathersNames() {
-				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: personId },function(data) {
+				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getFathers.action',{ patientId: patientId },function(data) {
 					var fatherName;
 					var personId = "";
 					for ( var p in data){
