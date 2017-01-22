@@ -155,7 +155,7 @@
 			}
 
 			function requireMotherCCCNo() {
-				if (getValue('mother-on-art-at-infant-enrolment.value') == YES_CONCEPT_ID || getValue('pmtct-drugs-received.value') == 'YES_CONCEPT_ID') {
+				if (getValue('mother-on-art-at-infant-enrolment.value') == YES_CONCEPT_ID || getValue('pmtct-drugs-received.value') == YES_CONCEPT_ID) {
 					getField('mother-ccc-no.value').attr('disabled', false);					
 				} else {
 					getField('mother-ccc-no.value').attr('disabled', true);					
@@ -281,13 +281,21 @@
 			}
 
 			var validDate = function(str, allowFutureDates) {
-				if (allowFutureDates) {
-					return !isNaN(Date.parse(str));
+				if (str == '') {
+					return true
 				} else {
-					var encounterDate = getValue('encounter-date.value');
-					var today = new Date(encounterDate);
-					var selectedDate = new Date(str);
-					return	!selectedDate &gt; today;
+					if (isNaN(Date.parse(str))) {
+						return false;
+					} else {
+						if (allowFutureDates) {
+							return true;
+						} else {
+							var encounterDate = getValue('encounter-date.value');
+							var today = new Date(encounterDate);
+							var selectedDate = new Date(str);
+							return	!(selectedDate &gt; today);						
+						}
+					}
 				}
 			}
 
@@ -390,6 +398,7 @@
 					 //onARTatEnrollment();
 					 heiInfants();				 	
 				 }
+				 requireMotherCCCNo();
 			 });
 
 			//Show/hide the 'specify' field when 'other' is selected
@@ -401,8 +410,10 @@
 			beforeSubmit.push(function() {
 				var valid = true;
 
+				jq('.error').html('').hide();
+
 				if (!validDate(getValue('date-first-seen.value'), false)) {
-					getField('date-first-seen.error').html().show('The date first seen cannot be in the future');
+					getField('date-first-seen.error').html('The date first seen cannot be after the encounter date "' + getValue('encounter-date.value') + '"').show();
 					valid = false;
 				} 
 
@@ -537,7 +548,7 @@
               <tr>
                 <td>Date first seen</td>
                 <td>
-                  <obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="false" id="date-first-seen"/>
+                  <obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" id="date-first-seen" allowFutureDates="false"/>
                 </td>
                 <td></td>
                 <td></td>
