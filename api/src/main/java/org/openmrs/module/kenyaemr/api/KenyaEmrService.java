@@ -100,4 +100,17 @@ public interface KenyaEmrService extends OpenmrsService {
 
 	public List<Object> executeSqlQuery(String query, Map<String, Object> substitutions);
 	public List<Object> executeHqlQuery(String query, Map<String, Object> substitutions);
+
+	/**
+	 * Setup the Child Welfare Clinic number identifier source
+	 * @param startFrom the base identifier to start from
+	 */
+	void setupCWCNumberIdentifierSource(String startFrom);
+	
+	/**
+	 * Generates the next CWC number identifier value
+	 * @param comment the reference comment
+	 * @return the identifier value
+	 */
+	String getNextCWCNumber(String comment);
 }
