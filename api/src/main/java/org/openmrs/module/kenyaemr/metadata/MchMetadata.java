@@ -79,7 +79,7 @@ public class MchMetadata extends AbstractMetadataBundle {
 		install(encounterType("MCH Child Immunization", "Record of child immunizations", _EncounterType.MCHCS_IMMUNIZATION));
 		install(encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", _EncounterType.MCHCS_DISCONTINUATION));
 
-		install(form("Mch Child Enrolment Form", "MCH-CS Enrollment form", _EncounterType.MCHCS_ENROLLMENT, "2.0", _Form.MCHCS_ENROLLMENT));
+		install(form("MCH Child Enrolment Form", "MCH-CS Enrollment form", _EncounterType.MCHCS_ENROLLMENT, "2.0", _Form.MCHCS_ENROLLMENT));
 		install(form("Child Welfare Services Discontinuation", "MCH-CS discontinuation form", _EncounterType.MCHCS_DISCONTINUATION, "2.0", _Form.MCHCS_DISCONTINUATION));
 		install(form("CWC Follow Up", "CWC-CS follow up form", _EncounterType.MCHCS_CONSULTATION, "2.0", _Form.MCHCS_FOLLOW_UP));
 		install(form("Immunization", "CWC-CS immunization form", _EncounterType.MCHCS_IMMUNIZATION, "2.0", _Form.MCHCS_IMMUNIZATION));

@@ -26,6 +26,7 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.UiUtils;
@@ -46,7 +47,8 @@ public class FirstTimeSetupPageController {
 							 @SpringBean IdentifierManager identifierManager,
 	                         @RequestParam(required = false, value = "defaultLocation") Location defaultLocation,
 	                         @RequestParam(required = false, value = "mrnIdentifierSourceStart") String mrnIdentifierSourceStart,
-	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart) {
+	                         @RequestParam(required = false, value = "hivIdentifierSourceStart") String hivIdentifierSourceStart,
+	                         @RequestParam(required = false, value = "cwcIdentifierSourceStart") String cwcIdentifierSourceStart) {
 		
 		KenyaEmrService service = Context.getService(KenyaEmrService.class);
 		
@@ -61,6 +63,9 @@ public class FirstTimeSetupPageController {
 			if (StringUtils.isNotEmpty(hivIdentifierSourceStart)) {
 				service.setupHivUniqueIdentifierSource(hivIdentifierSourceStart);
 			}
+			if (StringUtils.isNotEmpty(cwcIdentifierSourceStart)) {
+				service.setupCWCNumberIdentifierSource(cwcIdentifierSourceStart);
+			}
 			kenyaUi.notifySuccess(session, "First-Time Setup Completed");
 
 			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "home");
@@ -69,6 +74,7 @@ public class FirstTimeSetupPageController {
 		defaultLocation = service.getDefaultLocation();
 		IdentifierSource mrnIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID));
 		IdentifierSource hivIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		IdentifierSource cwcIdentifierSource = identifierManager.getIdentifierSource(MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER));
 
 		User authenticatedUser = Context.getAuthenticatedUser();
 		
@@ -76,6 +82,7 @@ public class FirstTimeSetupPageController {
 		model.addAttribute("defaultLocation", defaultLocation);
 		model.addAttribute("mrnIdentifierSource", mrnIdentifierSource);
 		model.addAttribute("hivIdentifierSource", hivIdentifierSource);
+		model.addAttribute("cwcIdentifierSource", cwcIdentifierSource);
 		return null;
 	}
 }
