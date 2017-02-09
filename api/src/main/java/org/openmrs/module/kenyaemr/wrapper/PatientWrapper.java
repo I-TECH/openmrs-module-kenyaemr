@@ -106,6 +106,23 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
+	 * Gets the NUPI number
+	 * @return the identifier value
+	 */
+	public String getNupiNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
+	}
+
+	/**
+	 * Sets the NUPI number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setNupiNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER, value, location);
+	}	
+	
+	/**
 	 * Gets the address of next of kin
 	 * @return the address
 	 */

@@ -57,7 +57,6 @@
             ]
     ]
 %>
-
 <form id="edit-patient-form" method="post" action="${ui.actionLink("kenyaemr", "patient/editPatient", "savePatient")}">
     <% if (command.original) { %>
     <input type="hidden" name="personId" value="${command.original.id}"/>
@@ -73,7 +72,6 @@
 
         <fieldset>
             <legend>ID Numbers</legend>
-
             <table>
                 <% if (command.inHivProgram) { %>
                 <tr>
@@ -94,7 +92,12 @@
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(if available)<% } %></td>
-                </tr>
+                </tr>                
+                <tr>
+                    <td class="ke-field-label">National Unique Patient Identifier (NUPI)</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nupiNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.nupiNumber) { %>(if assigned)<% } %></td>
+                </tr>                
             </table>
 
         </fieldset>

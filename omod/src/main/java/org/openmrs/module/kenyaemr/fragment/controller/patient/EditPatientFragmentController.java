@@ -14,6 +14,11 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -47,11 +52,6 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -165,6 +165,7 @@ public class EditPatientFragmentController {
 		private String nationalIdNumber;
 		private String patientClinicNumber;
 		private String uniquePatientNumber;
+		private String nupiNumber;
 
 		private String telephoneContact;
 		private String nameOfNextOfKin;
@@ -224,6 +225,7 @@ public class EditPatientFragmentController {
 			patientClinicNumber = wrapper.getPatientClinicNumber();
 			uniquePatientNumber = wrapper.getUniquePatientNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
+			nupiNumber = wrapper.getNupiNumber();
 
 			nameOfNextOfKin = wrapper.getNextOfKinName();
 			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
@@ -296,6 +298,7 @@ public class EditPatientFragmentController {
 			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 			validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			validateIdentifierField(errors, "nupiNumber", CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -383,6 +386,7 @@ public class EditPatientFragmentController {
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
 			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
+			wrapper.setNupiNumber(nupiNumber, location);
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
@@ -543,6 +547,21 @@ public class EditPatientFragmentController {
 			this.nationalIdNumber = nationalIdNumber;
 		}
 
+		/**
+		 * @return the nupiNumber
+		 */
+		public String getNupiNumber() {
+			return nupiNumber;
+		}
+
+		/**
+		 * @param nupiNumber to set
+		 */
+		public void setNupiNumber(String nupiNumber) {
+
+			this.nupiNumber = nupiNumber;
+		}		
+		
 		/**
 		 * @return the birthdate
 		 */
