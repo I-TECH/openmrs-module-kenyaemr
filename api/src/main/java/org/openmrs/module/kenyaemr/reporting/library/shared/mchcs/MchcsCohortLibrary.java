@@ -15,22 +15,28 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.NeverTakenCtxOrDapsoneCalculation;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * Library of MCH-CS related cohort definitions
@@ -460,6 +466,32 @@ public class MchcsCohortLibrary {
 		cd.addSearch("hivExposedInfantsEligibleForCTX",ReportUtils.map(hivCohortLibrary.onCtxProphylaxis(),"onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.setCompositionString("hivExposedInfantsWithin2Months AND hivExposedInfantsEligibleForCTX");
 		return cd;
+	}
+	
+	/**
+	 * Total number of scheduled visits in the CWC between ${onOrAfter} and ${onOrBefore}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition scheduledVisitsInCWC() {		
+		Concept tca = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE); 
+		
+		DateObsCohortDefinition scheduledVisits = new DateObsCohortDefinition();		
+
+		ArrayList<EncounterType> cwcEncounterTypes = new ArrayList<EncounterType>();
+		
+		cwcEncounterTypes.add(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_ENROLLMENT));
+		cwcEncounterTypes.add(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION));
+		cwcEncounterTypes.add(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_IMMUNIZATION));
+
+		scheduledVisits.setName("scheduled visits in CWC");
+		scheduledVisits.addParameter(new Parameter("onOrAfter", "After date", Date.class));
+		scheduledVisits.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+		scheduledVisits.setTimeModifier(TimeModifier.ANY);
+		scheduledVisits.setEncounterTypeList(cwcEncounterTypes);
+		scheduledVisits.setQuestion(tca);		
+		
+		return scheduledVisits;
+
 	}
 }
 

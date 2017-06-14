@@ -58,6 +58,7 @@ public class MchMetadata extends AbstractMetadataBundle {
 
 	public static final class _PatientIdentifierType {
 		public static final String HEI_ID_NUMBER = Metadata.IdentifierType.HEI_UNIQUE_NUMBER;
+		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
 	}
 
 	public static final class _Program {
@@ -72,21 +73,25 @@ public class MchMetadata extends AbstractMetadataBundle {
 	public void install() {
 		///////////////////////////// MCH child services ////////////////////////////////
 
-		install(encounterType("MCH Child Enrollment", "Enrollment of child onto MCH program", _EncounterType.MCHCS_ENROLLMENT));
-		install(encounterType("MCH Child Consultation", "Collection of child data during MCH visit", _EncounterType.MCHCS_CONSULTATION));
+		install(encounterType("CWC Enrollment", "Enrollment of child onto MCH program", _EncounterType.MCHCS_ENROLLMENT));
+		install(encounterType("CWC Consultation", "Collection of child data during MCH visit", _EncounterType.MCHCS_CONSULTATION));
 		install(encounterType("MCH Child HEI Exit", "Reasons that child is exited from HEI", _EncounterType.MCHCS_HEI_COMPLETION));
 		install(encounterType("MCH Child Immunization", "Record of child immunizations", _EncounterType.MCHCS_IMMUNIZATION));
 		install(encounterType("MCH Child Discontinuation", "Discontinuation of child from MCH program", _EncounterType.MCHCS_DISCONTINUATION));
 
-		install(form("Child Service Enrollment", "MCH-CS Enrollment form", _EncounterType.MCHCS_ENROLLMENT, "1.0", _Form.MCHCS_ENROLLMENT));
-		install(form("Child Services Discontinuation", "MCH-CS discontinuation form", _EncounterType.MCHCS_DISCONTINUATION, "1.0", _Form.MCHCS_DISCONTINUATION));
-		install(form("MCH Child Follow Up", "MCH-CS follow up form", _EncounterType.MCHCS_CONSULTATION, "1.0", _Form.MCHCS_FOLLOW_UP));
-		install(form("Immunization", "MCH-CS immunization form", _EncounterType.MCHCS_IMMUNIZATION, "1.0", _Form.MCHCS_IMMUNIZATION));
+		install(form("Mch Child Enrolment Form", "MCH-CS Enrollment form", _EncounterType.MCHCS_ENROLLMENT, "2.0", _Form.MCHCS_ENROLLMENT));
+		install(form("Child Welfare Services Discontinuation", "MCH-CS discontinuation form", _EncounterType.MCHCS_DISCONTINUATION, "2.0", _Form.MCHCS_DISCONTINUATION));
+		install(form("CWC Follow Up", "CWC-CS follow up form", _EncounterType.MCHCS_CONSULTATION, "2.0", _Form.MCHCS_FOLLOW_UP));
+		install(form("Immunization", "CWC-CS immunization form", _EncounterType.MCHCS_IMMUNIZATION, "2.0", _Form.MCHCS_IMMUNIZATION));
 		install(form("Child HEI outcomes", "MCH-CS HEI exit form", _EncounterType.MCHCS_HEI_COMPLETION, "1.0", _Form.MCHCS_HEI_COMPLETION));
 
 		install(patientIdentifierType("HEI ID Number", "Assigned to a child patient when enrolling into HEI",
 				null, null, null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.HEI_ID_NUMBER));
+		
+		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
+				null, null, null,
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
 
 		install(program("MCH - Child Services", "Treatment for children", Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM, _Program.MCHCS));
 

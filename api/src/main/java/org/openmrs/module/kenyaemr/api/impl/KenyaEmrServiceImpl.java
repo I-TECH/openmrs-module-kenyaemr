@@ -169,7 +169,7 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 
 		String prefix = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
 		String sequentialNumber = Context.getService(IdentifierSourceService.class).generateIdentifier(source, comment);
-		return prefix + sequentialNumber;
+		return prefix+sequentialNumber;
 	}
 
 	/**

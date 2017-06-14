@@ -56,7 +56,10 @@ public class DrugReference {
 	 */
 	public static DrugReference fromDrugUuid(String drugUuid) {
 		Drug drug = Context.getConceptService().getDrugByUuid(drugUuid);
-		return new DrugReference(drug.getConcept().getUuid(), drug.getUuid());
+		if (drug != null) {
+			return new DrugReference(drug.getConcept().getUuid(), drug.getUuid());
+		}
+		return null;
 	}
 
 	/**

@@ -32,6 +32,7 @@ import java.util.List;
 public class ReportPeriodFragmentController {
 
 	public void controller(@FragmentParam("pastMonths") int pastMonths,
+							@FragmentParam("pastYears") int pastYears,
 						   FragmentModel model,
 						   @SpringBean KenyaUiUtils kenyaui) {
 
@@ -48,7 +49,23 @@ public class ReportPeriodFragmentController {
 					"range", kenyaui.formatDateParam(start) + "|" + kenyaui.formatDateParam(end)
 			));
 		}
-
 		model.addAttribute("months", months);
+		
+		List<SimpleObject> years = new ArrayList<SimpleObject>();
+		labelFormat = new SimpleDateFormat("yyyy");
+
+		start = DateUtil.getStartOfPeriod(new Date(), 4);
+		for (int i = 0; i < pastYears; ++i) {
+			Date end = DateUtil.getEndOfPeriod(start, 4);
+
+			years.add(SimpleObject.create(
+					"label", labelFormat.format(start),
+					"range", kenyaui.formatDateParam(start) + "|" + kenyaui.formatDateParam(end)
+			));
+			start = DateUtil.getStartOfMonth(start, -1);
+			start = DateUtil.getStartOfPeriod(start, 4);
+
+		}
+		model.addAttribute("years", years);
 	}
 }

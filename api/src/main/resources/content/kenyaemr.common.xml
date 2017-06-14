@@ -158,7 +158,7 @@
 		<property name="order" value="200030" />
 	</bean>
 
-	<!-- Other Medications -->
+	<!-- Medications -->
 	<bean id="kenyaemr.common.form.otherMedications" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="d4ff8ad1-19f8-484f-9395-04c755de9a47" />
 		<property name="apps">
@@ -200,6 +200,20 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
 		<property name="order" value="201020" />
+	</bean>
+
+	<!-- GENE XPERT FORM -->
+	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="${metadata.form.GENE_XPERT}" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
+		<property name="order" value="201021" />
 	</bean>
 
 	<!-- Medical and Surgical History -->

@@ -214,8 +214,9 @@ public class RegimenManager implements ContentManager {
 				String drugDrugUuid = drugElement.hasAttribute("drugUuid") ? drugElement.getAttribute("drugUuid") : null;
 
 				DrugReference drug = (drugDrugUuid != null) ? DrugReference.fromDrugUuid(drugDrugUuid) : DrugReference.fromConceptUuid(drugConceptUuid);
-
-				categoryDrugs.put(drugCode, drug);
+				if (drug != null) {
+					categoryDrugs.put(drugCode, drug);
+				}
 			}
 
 			// Parse all groups for this category

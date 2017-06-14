@@ -8,7 +8,7 @@
 	def isManager = isManager
 
 	def changeDateField = { label ->
-		[ label: label, formFieldName: "changeDate", class: java.util.Date, showTime: true, initialValue: initialDate ]
+		[ label: label, formFieldName: "changeDate", class: java.util.Date, showTime: true, initialValue: null ]
 	}
 
 	def regimenField = {

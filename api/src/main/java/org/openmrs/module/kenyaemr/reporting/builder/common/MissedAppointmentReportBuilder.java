@@ -6,6 +6,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.NumberOfDaysLateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.PatientProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -36,6 +37,7 @@ public class MissedAppointmentReportBuilder extends CalculationReportBuilder {
         dsd.addColumn("Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramCalculation()), "", new CalculationResultConverter());
 
     }
 }

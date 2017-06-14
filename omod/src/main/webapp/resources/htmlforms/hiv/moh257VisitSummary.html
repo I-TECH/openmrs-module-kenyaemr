@@ -33,6 +33,8 @@ isPediatric = null; // Set later by AJAX lookup
 /**
  * TODO use a lookup tag to get these concept ids. Will require HTML-463
  */
+var SELF = 978;
+var YES_CONCEPT_ID = 1065;
 var YES_CONCEPT_ID = 1065;
 var NO_CONCEPT_ID = 1066;
 var ABORTION_CONCEPT_ID = 159896;
@@ -51,6 +53,14 @@ var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
 var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
 var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
 var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+
+function onPersonPresentChange() {
+    if (getValue('person-present.value') == SELF) {
+        jq('.patient-details :input').prop('disabled', false);
+    } else {
+        jq('.patient-details :input').prop('disabled', true);
+    }
+}
 
 function onWeightOrHeightChange() {
     var display = '';
@@ -200,11 +210,15 @@ function viralLoadValidation(){
 }
 
 jq(function() {
+
+    jq('#person-present input').click(onPersonPresentChange);
+
     getField('weight.value').change(onWeightOrHeightChange);
     getField('height.value').change(onWeightOrHeightChange);
     getField('encounter-date.value').change(onEncounterDateChange);
     getField('ldl.value').change(viralLoadValidation);
 
+    onPersonPresentChange();
     onWeightOrHeightChange();
     onEncounterDateChange();
     viralLoadValidation();
@@ -343,20 +357,20 @@ jq(function() {
     <td>(d)</td>
     <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="3">Weight / Blood Pressure</th>
     <td>(e)</td>
     <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
     <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
 </tr>
-<tr>
+<tr class="patient-details">
     <!-- pw Greencard additions --added MUAC  -->
     <th colspan="3">Height / MUAC* </th>
     <td>(f)</td>
     <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
     <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="3">BMI</th>
     <td>(g)</td>
     <td colspan="2"><span id="calculated-bmi" class="value"></span></td>
@@ -419,7 +433,7 @@ jq(function() {
 
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2"><span id="pregdate-label"></span></th>
     <td>(i)</td>
     <td colspan="2">
@@ -481,7 +495,7 @@ jq(function() {
                 />
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th rowspan="2">Tuberculosis Status</th>
     <th colspan="2">Status</th>
     <td>(l)</td>
@@ -498,7 +512,7 @@ jq(function() {
         Treatment No. <obs conceptId="161654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2">TBRx #</th>
     <td>(m)</td>
     <td colspan="2">
@@ -586,7 +600,7 @@ jq(function() {
 
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="3">WHO Stage</th>
     <td>(p)</td>
     <td colspan="2">
@@ -816,28 +830,28 @@ jq(function() {
         </obsgroup>
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th rowspan="6">Laboratory<br />Investigations<br />Done</th>
     <th colspan="2">CD4 (# or %)</th>
     <td>(x)</td>
     <td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2">Hgb</th>
     <td>(y)</td>
     <td colspan="2"><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2">RPR</th>
     <td>(z)</td>
     <td colspan="2"><obs conceptId="1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2">TB Sputum</th>
     <td>(aa)</td>
     <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th colspan="2">HIV Viral Load*</th>
     <td>(ab)</td>
     <!-- pw Greencard addittions viral load tracker  -->
@@ -864,7 +878,7 @@ jq(function() {
     <!-- pw Greencard addittions viral load tracker  -->
 </tr>
 
-<tr>
+<tr class="patient-details">
     <th colspan="2">Other</th>
     <td>(ac)</td>
     <td colspan="2">
@@ -909,7 +923,7 @@ jq(function() {
         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" style="checkbox" />
     </td>
 </tr>
-<tr>
+<tr class="patient-details">
     <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
     <th>Disclosure</th>
     <th>Partner Tested</th>
@@ -930,7 +944,7 @@ jq(function() {
     <th>Screened STI</th>
     <td>(ag)</td>
     <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-    <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+    <td class="patient-details"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 </tr>
 <tr><!-- pw Greencard addittions differentiated care and app reason -->
     <th colspan="3">Date of Next Appointment / Differenciated Care*</th>

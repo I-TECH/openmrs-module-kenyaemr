@@ -14,6 +14,7 @@
 			<set>
 				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
 				<ref bean="kenyaemr.common.form.tbScreening" />
+				<ref bean="kenyaemr.common.form.geneXpert" />
 			</set>
 		</property>
 		<property name="reports">
