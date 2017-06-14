@@ -62,8 +62,10 @@
                 <th>Age</th>
                 <th>Relation</th>
                 <th>HIV Result</th>
+                <th>Reason</th>
+                <th>Test Date</th>
                 <th>In Care?</th>
-                <th>CCC Number</th>
+                <th>CCC Number</th><th>Refer</th>
             </tr>
             </thead>
             <tbody>
@@ -91,13 +93,31 @@
                                      style="dropdown" answerLabels="P,N,E,DK"/>
                             </td>
                             <td>
+                                <obs
+                                        conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Baseline,Routine"
+                                        style="radio"
+                                />
+                            </td>
+                            <td>
+                                <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                            </td>
+                            <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
                             </td>
                             <td>
                                 <obs class="ccc-no" conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
-                            </td>
+                            </td><td>
+                            <obs
+                                    conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Yes,No"
+                                    style="radio"
+                            />
+                        </td>
                         </tr>
                     </obsgroup>
                 </template>

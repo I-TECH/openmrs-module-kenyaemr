@@ -140,9 +140,35 @@
 
 	<div class="ke-form-content">
 		<!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
-
 		<fieldset>
-			<legend>Reason</legend>
+			<legend>Visit Type</legend>
+			<!--pw greencard additions visit type and appointment type -->
+			<table cellspacing="5">
+				<tr>
+				<th>Scheduled/Unscheduled</th>
+					<th>Visit by</th>
+				</tr>
+				<tr>
+
+					<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
+					<td>
+						<obs
+								id="person-present"
+								conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
+								style="radio"
+								answerSeparator="&lt;br /&gt;"
+						/>
+						<obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+					<!--.pw greencard additions visit type and appointment type -->
+				</tr>
+			</table>
+
+		</fieldset>
+		<fieldset>
+			<legend>Visit Reason</legend>
 
 			<table cellspacing="5">
 				<tr>
@@ -156,6 +182,8 @@
 					<td>
 						<span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
 					</td>
+
+
 				</tr>
 			</table>
 		</fieldset>

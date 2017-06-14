@@ -344,49 +344,79 @@ jq(function() {
     <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
 </tr>
 <tr>
-    <th colspan="3">Weight (kg) / Blood Pressure</th>
+    <th colspan="3">Weight / Blood Pressure</th>
     <td>(e)</td>
-    <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
+    <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
     <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
 </tr>
 <tr>
-    <th colspan="3">Height (cm)</th>
+    <!-- pw Greencard additions --added MUAC  -->
+    <th colspan="3">Height / MUAC* </th>
     <td>(f)</td>
-    <td colspan="2"><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" /></td>
+    <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
+    <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
 </tr>
 <tr>
     <th colspan="3">BMI</th>
     <td>(g)</td>
     <td colspan="2"><span id="calculated-bmi" class="value"></span></td>
 </tr>
+<!-- pw Greencard addittions nutritional status and food by prescription  -->
 <tr>
-    <th rowspan="2">Pregnancy</th>
-    <th colspan="2">Status</th>
+    <th>Nutritional/Food by Prescription*</th>
+     <th colspan="2">Status</th>
     <td>(h)</td>
     <td>
+
+                <input id="normal" type="radio" name="pregoption" value="yes" /> Normal<br />
+                <input id="smalnutrition=" type="radio" name="pregoption" value="no" /> Severe acute malnutrition<br />
+                <input id="mmalnutrition" type="radio" name="pregoption" value="ab" /> Moderate acute malnutrition<br />
+                <input id="obese" type="radio" name="pregoption" value="mc" />Overweight/Obese<br />
+
+    </td>
+    <td></td>
+
+</tr>
+
+<!-- .pw Greencard addittions nutritional status and food by prescription  -->
+<tr>
+    <th rowspan="2"> Pregnancy </th>
+    <td colspan="2">Status</td>
+    <td>(h)</td>
+<td>
+    <includeIf velocityTest="$patient.gender == 'F' ">
+        <ifMode mode="VIEW" include="true">
+            Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+            Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+        </ifMode>
+        <ifMode mode="VIEW" include="false">
+            <input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
+            <input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
+            <input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
+            <input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)<br />
+            <input id="pregoption-lb" type="radio" name="pregoption" value="lb" /> Live birth<br />
+            <input id="pregoption-sb" type="radio" name="pregoption" value="sb" /> Still birth<br />
+            <div style="display: none">
+                <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+            </div>
+        </ifMode>
+    </includeIf>
+
+</td>
+    <td><!-- pw Greencard addittions LMP and ANC/PNC profile  -->
         <includeIf velocityTest="$patient.gender == 'F' ">
-            <ifMode mode="VIEW" include="true">
-                Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-                Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-            </ifMode>
-            <ifMode mode="VIEW" include="false">
-                <input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
-                <input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
-                <input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
-                <input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)<br />
-                <input id="pregoption-lb" type="radio" name="pregoption" value="lb" /> Live birth<br />
-                <input id="pregoption-sb" type="radio" name="pregoption" value="sb" /> Still birth<br />
-                <div style="display: none">
-                    <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                </div>
-            </ifMode>
+            LMP*  <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+        </includeIf>
+        <br></br><br></br>
+        <includeIf velocityTest="$patient.gender == 'F' ">
+            ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+            ANC/PNC Profile
+            <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
         </includeIf>
     </td>
     <td>
-        <includeIf velocityTest="$patient.gender == 'F' ">
-            ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </includeIf>
+
     </td>
 </tr>
 <tr>
@@ -478,10 +508,11 @@ jq(function() {
         </includeIf>
     </td>
 </tr>
+
 <tr>
-    <th colspan="3">Potential Side Effects</th>
+    <th colspan="3">Potential Side Effects/Adverse drug reactions</th>
     <td>(n)</td>
-    <td colspan="2">
+    <td>
         <div style="float: left; padding-right: 20px">
             <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Nausea (N)" /><br />
             <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Rash (R)" /><br />
@@ -506,11 +537,17 @@ jq(function() {
             <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
         </obsgroup>
     </td>
+    <td>
+        <!-- pw Greencard addittions onset date  -->
+        Onset Date*:
+        <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
+    </td>
 </tr>
 <tr>
     <th colspan="3">New OIs &amp; Other Problems</th>
     <td>(o)</td>
-    <td colspan="2">
+    <td colspan="2" >
         <div style="float: left; padding-right: 20px">
             <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Zoster (Z)" /><br/>
             <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - oral" /><br/>
@@ -541,6 +578,12 @@ jq(function() {
         Other <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
         <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
         <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />
+
+        <!-- pw Greencard addittions onset date  -->
+
+        Onset Date*:
+        <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
     </td>
 </tr>
 <tr>
@@ -551,6 +594,34 @@ jq(function() {
         (age: <span id="calculated-age" class="value" />)
     </td>
 </tr>
+<!-- pw Greencard addittions Antigen today  -->
+<tr>
+    <th colspan="3">Antigen Today*</th>
+    <td>(p)</td>
+    <td colspan="2" >Vaccine
+
+        <select>
+            <option value="Select">Select</option>
+            <option value="BCG">BCG</option>
+            <option value="PV">PV</option>
+            <option value="PVC">PVC"</option>
+            <option value="Penta">Penta</option>
+            <option value="Measles">Measles</option>
+        </select>
+    Vaccine Stage
+
+        <select>
+            <option value="Select">Select</option>
+            <option value="Stage1">Stage1</option>
+            <option value="Stage2">Stage2</option>
+            <option value="Stage3">Stage3"</option>
+            <option value="Stage4">Stage4</option>
+        </select>
+        Vaccination Date:
+        <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+    </td>
+</tr>
+<!-- .pw Greencard addittions Antigen today  -->
 <tr>
     <th rowspan="2">Cotrimoxazole</th>
     <th colspan="2">Adherence</th>
@@ -589,6 +660,7 @@ jq(function() {
     </td>
 </tr>
 <tr>
+    <!-- pw Greencard addittions added dispence date  -->
     <th colspan="3">Other Medications Dispensed</th>
     <td>(t)</td>
     <td colspan="2">
@@ -600,6 +672,8 @@ jq(function() {
                 <th style="color: #888; text-align: center">Frequency</th>
                 <th style="color: #888; text-align: center">Duration</th>
                 <th style="color: #888; text-align: center">Duration units</th>
+                <th style="color: #888; text-align: center">Dispence date*</th>
+
             </tr>
             <repeat>
                 <template>
@@ -621,6 +695,65 @@ jq(function() {
                                      answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Hours,Days,Weeks,Months" />
                             </td>
+                            <td><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+                           </tr>
+                    </obsgroup>
+                </template>
+                <render n="1" concept="Drug"/>
+                <render n="2" concept="Drug"/>
+                <render n="3" concept="Drug"/>
+                <render n="4" concept="Drug"/>
+                <render n="5" concept="Drug"/>
+            </repeat>
+        </table>
+    </td>
+</tr>
+<!-- pw Greencard addittions chronic illnesss and cormobidities  -->
+<tr>
+    <th colspan="3">Chronic illnesses and cormobidities*</th>
+    <td>(t)</td>
+    <td colspan="2">
+        <table cellspacing="0">
+            <tr>
+                <th style="color: #888">Illness</th>
+                <th style="color: #888">Drug</th>
+                <th style="color: #888; text-align: center">Dose</th>
+                <th style="color: #888; text-align: center">Units</th>
+                <th style="color: #888; text-align: center">Frequency</th>
+                <th style="color: #888; text-align: center">Duration</th>
+                <th style="color: #888; text-align: center">Duration units</th>
+                <th style="color: #888; text-align: center">Onset Date</th>
+            </tr>
+            <repeat>
+                <template>
+                    <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <tr>
+                            <td><select>
+                                <option value="Select">Select</option>
+                                <option value="Diabetes">Diabetes</option>
+                                <option value="Cancer">Cancer</option>
+                                <option value="Asthma">Asthma</option>
+                                <option value="Arthritis">Arthritis</option>
+                                <option value="Arthritis">Anaemia</option>
+                                <option value="Chronic Hepatitis">Chronic Hepatitis</option>
+                            </select></td>
+                            <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                            <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                            <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                            <td>
+                                <obs
+                                        conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                />
+                            </td>
+                            <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                            <td>
+                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Hours,Days,Weeks,Months" />
+                            </td>
+                            <td><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
                         </tr>
                     </obsgroup>
                 </template>
@@ -633,6 +766,7 @@ jq(function() {
         </table>
     </td>
 </tr>
+<!-- .pw Greencard addittions chronic illnesss and cormobidities  -->
 <tr>
     <th rowspan="3">ARV Drugs</th>
     <th colspan="2">Adherence</th>
@@ -704,13 +838,30 @@ jq(function() {
     <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 </tr>
 <tr>
-    <th colspan="2">HIV Viral Load</th>
+    <th colspan="2">HIV Viral Load*</th>
     <td>(ab)</td>
-    <td colspan="2" >
-       <span id="vLoadResults"> <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value"/></span>
+    <!-- pw Greencard addittions viral load tracker  -->
+    <td>Order reason:
+        <select>
+            <option value=""></option>
+            <option value="Baseline">Baseline</option>
+            <option value="Routine">Routine</option>
+            <option value="Confirmatory">Confirmatory</option>
+            <option value="Suspected Drug ressistance">Suspected Drug resistance</option>
+            <option value="Other">Other</option>
+        </select>
+
+    Order date:
+    <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+
+    <td>Results:
+        <span id="vLoadResults"> <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value"/></span>
         or
         <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"/>
+        Date:
+        <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
     </td>
+    <!-- pw Greencard addittions viral load tracker  -->
 </tr>
 
 <tr>
@@ -759,12 +910,20 @@ jq(function() {
     </td>
 </tr>
 <tr>
-    <th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
+    <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
     <th>Disclosure</th>
     <th>Partner Tested</th>
     <td>(af)</td>
     <td><obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
     <td><obs id="pwp-partnertested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+</tr>
+<!-- pw Greencard addittions screening and notification  -->
+<tr>
+    <th>Screened CaCx*</th>
+    <th>STI Patrner Notification</th>
+    <td>(ag)</td>
+    <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+    <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 </tr>
 <tr>
     <th>Condoms</th>
@@ -773,10 +932,20 @@ jq(function() {
     <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
     <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
 </tr>
-<tr>
-    <th colspan="3">Date of Next Appointment</th>
+<tr><!-- pw Greencard addittions differentiated care and app reason -->
+    <th colspan="3">Date of Next Appointment / Differenciated Care*</th>
     <td>(ah)</td>
-    <td colspan="2"><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+    <td>Date:
+        <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+         Reason*:
+         <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+<td> Differentiated Care*
+    <select>
+        <option value="Standard">Standard</option>
+        <option value="Express">Express</option>
+        <option value="Community dispensing">Community dispensing</option>
+    </select>
+</td>
 </tr>
 <tr>
     <th colspan="3">Clinician Initials</th>
