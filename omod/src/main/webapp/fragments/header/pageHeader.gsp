@@ -11,6 +11,11 @@
 		<% if (systemLocation) { %>
 			<span style="font-weight: bold; margin-left: 12px; border-top: 1px gray solid;">${ ui.format(systemLocation) }</span>
 			<span style="font-size: 10px;">(${ systemLocationCode })</span>
+		   <!-- pw greencard additions  -->
+		     <span style="font-size: 10px;">Tier 2</span>
+		    <span style="font-weight: bold; 10px;">Siaya County</span>
+		    <span style="font-size: 10px;"> Bondo Sub-County</span>
+		    <!-- .pw greencard additions  -->
 		<% } %>
 	</div>
 

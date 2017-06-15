@@ -3,13 +3,20 @@
 
     def nameFields = [
             [
-                    [object: command, property: "personName.familyName", label: "Surname *"],
+                    [object: command, property: "personName.familyName", label: "Surname "],
                     [object: command, property: "personName.givenName", label: "First name *"],
                     [object: command, property: "personName.middleName", label: "Other name(s)"]
             ],
     ]
 
     def otherDemogFieldRows = [
+            //pw greencard additions
+            [
+                    [object: command, property: "dead", label: "In School"],
+                    [object: command, property: "dead", label: "Orphan <18 yrs"],
+
+            ],
+            //.pw greencard additions
             [
                     [object: command, property: "maritalStatus", label: "Marital status", config: [style: "list", options: maritalStatusOptions]],
                     [object: command, property: "occupation", label: "Occupation", config: [style: "list", answerTo: occupationConcept]],
@@ -31,30 +38,35 @@
                     [object: command, property: "nextOfKinAddress", label: "Next of kin address"]
             ]
     ]
-
-    def addressFieldRows = [
+    def guardianfieldrows  = [
             [
-                    [object: command, property: "telephoneContact", label: "Telephone contact"]
-            ],
-            [
-                    [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
-                    [object: command, property: "personAddress.country", label: "County", config: [size: 60]],
-                    [object: command, property: "subChiefName", label: "Subchief name"]
-            ],
-            [
-                    [object: command, property: "personAddress.address3", label: "School/Employer Address", config: [size: 60]],
-                    [object: command, property: "personAddress.countyDistrict", label: "District"],
-                    [object: command, property: "personAddress.stateProvince", label: "Province", config: [size: 60]]
-            ],
-            [[object: command, property: "personAddress.address6", label: "Location"],
-             [object: command, property: "personAddress.address5", label: "Sub-location"],
-             [object: command, property: "personAddress.address4", label: "Division", config: [size: 60]]
-            ],
-            [
-                    [object: command, property: "personAddress.cityVillage", label: "Village/Estate"],
-                    [object: command, property: "personAddress.address2", label: "Landmark"],
-                    [object: command, property: "personAddress.postalCode", label: "House/Plot Number"]
+                    [object: command, property: "nameOfNextOfKin", label: "Guardian last name"],
+                    [object: command, property: "nextOfKinRelationship", label: "Guardian first name"]
             ]
+
+
+    ]
+    def addressFieldRows = [
+            [   //pw greencard additions -- alternate phone and email
+                    [object: command, property: "telephoneContact", label: "Telephone contact*"],
+                    [object: command, property: "nextOfKinAddress", label: "Alternate phone number"],
+                    [object: command, property: "nextOfKinAddress", label: "Email address"]
+            ], //.pw greencard additions -- alternat phone and email
+            [
+                    [object: command, property: "personAddress.address1", label: "Postal Address*", config: [size: 60]],
+                    [object: command, property: "personAddress.country", label: "County*", config: [size: 60]],
+                    [object: command, property: "subChiefName", label: "Sub County*"]
+            ],
+            [
+                    [object: command, property: "personAddress.address3", label: "Ward*", config: [size: 60]],
+                    [object: command, property: "personAddress.countyDistrict", label: "Location"],
+                    [object: command, property: "personAddress.stateProvince", label: "Sub Location"]
+            ],
+            [[object: command, property: "personAddress.address6", label: "Village"],
+             [object: command, property: "personAddress.address5", label: "Landmark*"],
+             [object: command, property: "personAddress.address4", label: "Nearest Health Center*"]
+            ]
+
     ]
 %>
 
@@ -93,7 +105,7 @@
                 <tr>
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(if available)<% } %></td>
+                    <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number if available.)<% } %></td>
                 </tr>
             </table>
 
@@ -121,7 +133,7 @@
                     </td>
                     <td valign="top"></td>
                     <td valign="top">
-                        <label class="ke-field-label">Birthdate *</label>
+                        <label class="ke-field-label">Date of Birth *</label>
                         <span class="ke-field-content">
                             ${ui.includeFragment("kenyaui", "widget/field", [id: "patient-birthdate", object: command, property: "birthdate"])}
 
@@ -143,6 +155,9 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
+            <% guardianfieldrows.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
         </fieldset>
 
         <fieldset>

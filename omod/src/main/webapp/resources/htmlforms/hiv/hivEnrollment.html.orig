@@ -94,6 +94,20 @@
                     return false;
                 }
 
+<<<<<<< HEAD
+                if (encounterDate &lt; birthDate) {
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
+                    return false;
+                }
+                if (confirmedPveDate &lt; birthDate){
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be earlier than birth date').show();
+                    return false;
+                }
+                if (confirmedPveDate &gt; encounterDate){
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+                    return false;
+                }
+=======
 				if(/^[0-9]{5}-[0-9]{5}$/.test(upn) === false) {
 					alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
 					return false;
@@ -111,6 +125,7 @@
 					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
 					return false;
 				}
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
 
                 return true;
             });
@@ -183,6 +198,10 @@
 						<td>Unique Patient Number (UPN)</td>
 						<td>
 							<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
+<<<<<<< HEAD
+						<!-- 	<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>   -->
+=======
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
 							<input type="button" id="generate-hiv-id" value="Generate"/>
 						</td>
 					</tr>

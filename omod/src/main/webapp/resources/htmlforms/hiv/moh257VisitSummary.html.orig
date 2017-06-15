@@ -357,15 +357,25 @@ jq(function() {
     <td>(d)</td>
     <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
 </tr>
-<tr class="patient-details">
+<<<<<<< HEAD
+<tr>
     <th colspan="3">Weight / Blood Pressure</th>
+=======
+<tr class="patient-details">
+    <th colspan="3">Weight (kg) / Blood Pressure</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <td>(e)</td>
     <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
     <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
 </tr>
-<tr class="patient-details">
+<<<<<<< HEAD
+<tr>
     <!-- pw Greencard additions --added MUAC  -->
     <th colspan="3">Height / MUAC* </th>
+=======
+<tr class="patient-details">
+    <th colspan="3">Height (cm)</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <td>(f)</td>
     <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
     <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
@@ -375,10 +385,16 @@ jq(function() {
     <td>(g)</td>
     <td colspan="2"><span id="calculated-bmi" class="value"></span></td>
 </tr>
+<<<<<<< HEAD
 <!-- pw Greencard addittions nutritional status and food by prescription  -->
 <tr>
     <th>Nutritional/Food by Prescription*</th>
      <th colspan="2">Status</th>
+=======
+<tr class="patient-details">
+    <th rowspan="2">Pregnancy</th>
+    <th colspan="2">Status</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <td>(h)</td>
     <td>
 
@@ -522,9 +538,14 @@ jq(function() {
         </includeIf>
     </td>
 </tr>
+<<<<<<< HEAD
 
 <tr>
     <th colspan="3">Potential Side Effects/Adverse drug reactions</th>
+=======
+<tr class="patient-details">
+    <th colspan="3">Potential Side Effects</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <td>(n)</td>
     <td>
         <div style="float: left; padding-right: 20px">
@@ -851,8 +872,13 @@ jq(function() {
     <td>(aa)</td>
     <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
 </tr>
-<tr class="patient-details">
+<<<<<<< HEAD
+<tr>
     <th colspan="2">HIV Viral Load*</th>
+=======
+<tr class="patient-details">
+    <th colspan="2">HIV Viral Load</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <td>(ab)</td>
     <!-- pw Greencard addittions viral load tracker  -->
     <td>Order reason:
@@ -923,8 +949,13 @@ jq(function() {
         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" style="checkbox" />
     </td>
 </tr>
-<tr class="patient-details">
+<<<<<<< HEAD
+<tr>
     <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
+=======
+<tr class="patient-details">
+    <th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
     <th>Disclosure</th>
     <th>Partner Tested</th>
     <td>(af)</td>
@@ -949,6 +980,7 @@ jq(function() {
 <tr><!-- pw Greencard addittions differentiated care and app reason -->
     <th colspan="3">Date of Next Appointment / Differenciated Care*</th>
     <td>(ah)</td>
+<<<<<<< HEAD
     <td>Date:
         <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
          Reason*:
@@ -960,6 +992,9 @@ jq(function() {
         <option value="Community dispensing">Community dispensing</option>
     </select>
 </td>
+=======
+    <td colspan="2"><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
+>>>>>>> c508198058f0dfe76e59754fabcaab4a193764df
 </tr>
 <tr>
     <th colspan="3">Clinician Initials</th>
