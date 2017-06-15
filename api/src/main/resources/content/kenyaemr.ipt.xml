@@ -13,7 +13,7 @@
 		<property name="visitForms" >
 			<set>
 				<ref bean="kenyaemr.ipt.form.followup" />
-				<ref bean="kenyaemr.common.form.geneXpert" />
+				<!--<ref bean="kenyaemr.common.form.geneXpert" />-->
 			</set>
 		</property>
 	
@@ -84,6 +84,19 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:ipt/iptFollowUp.html" />
+	</bean>
+
+	<!--IPT outcome -->
+	<bean id="kenyaemr.ipt.form.outcome" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5bdd3b65-8b7b-46a0-9f7b-dfe764143848" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:ipt/iptOutcome.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

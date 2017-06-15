@@ -8,6 +8,7 @@ import java.util.Set;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -35,15 +36,15 @@ public class MissingPyridoxineCalculation extends AbstractPatientCalculation imp
 		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		
 		// Get all patients who are alive and initiated into IPT
-		Set<Integer> alive = Filters.alive(cohort, context);
+		/*Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 		
 		Concept pyridoxine = Dictionary.getConcept(Dictionary.PYRIDOXINE);
-				
-		CalculationResultMap nutritionSupportObs = Calculations.allObs(Dictionary.getConcept(Dictionary.NUTRITIONAL_SUPPORT), inTbProgram, context); 	
+		//Dictionary.getConcept(*//*Dictionary.NUTRITIONAL_SUPPORT*//*
+		CalculationResultMap nutritionSupportObs = Calculations.allObs(Context.getConceptService().getConcept(5484), inTbProgram, context);*/
 		CalculationResultMap ret = new CalculationResultMap();
 		
-		for(Integer ptId: cohort){
+		/*for(Integer ptId: cohort){
 			
 			Boolean missingPyridoxine = false;
 			
@@ -65,7 +66,7 @@ public class MissingPyridoxineCalculation extends AbstractPatientCalculation imp
 			
 			ret.put(ptId, new BooleanResult(missingPyridoxine, this, context));
 		}
-
+*/
 		return ret;
 	}
 
