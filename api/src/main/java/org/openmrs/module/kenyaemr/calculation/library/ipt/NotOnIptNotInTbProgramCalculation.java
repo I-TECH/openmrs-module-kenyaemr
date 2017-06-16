@@ -32,7 +32,7 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 			PatientCalculationContext context) {
 
-		Program iptProgram = MetadataUtils.existing(Program.class, IPTMetadata._Program.IPT);
+		/*Program iptProgram = MetadataUtils.existing(Program.class, IPTMetadata._Program.IPT);
 		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
 		EncounterType iptOutcome = MetadataUtils.existing(EncounterType.class, IPTMetadata._EncounterType.IPT_OUTCOME);
@@ -42,9 +42,9 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 		Set<Integer> onIptProgram = Filters.inProgram(iptProgram, alive, context);
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 
-		CalculationResultMap lastIptMap = Calculations.lastEncounter(iptOutcome, alive, context);
+		CalculationResultMap lastIptMap = Calculations.lastEncounter(iptOutcome, alive, context);*/
 		CalculationResultMap ret = new CalculationResultMap();
-
+/*
 		for (Integer ptId : cohort) {
 
 			Boolean notOnIpt = false;
@@ -73,7 +73,7 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 			
 			ret.put(ptId, new BooleanResult(notOnIpt, this, context));
 			
-		}
+		}*/
 		
 		return ret;
 	}

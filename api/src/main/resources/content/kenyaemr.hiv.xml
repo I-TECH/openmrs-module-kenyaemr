@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress SpringFacetInspection -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
@@ -137,6 +138,35 @@
 		<property name="order" value="201030" />
 	</bean>
 
+	<!-- ====================== adding TB Screening forms =================== -->
+
+	<!-- Clinical Encounter - TB Screening -->
+	<bean id="kenyaemr.common.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
+		<property name="order" value="201080" />
+	</bean>
+
+	<!-- Clinical Encounter - Gene Xpert Form -->
+	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="f1eaceeb-c865-4e23-b68e-6523de403ac7" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
+		<property name="order" value="201090" />
+	</bean>
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.hiv.report.qi.adult.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
