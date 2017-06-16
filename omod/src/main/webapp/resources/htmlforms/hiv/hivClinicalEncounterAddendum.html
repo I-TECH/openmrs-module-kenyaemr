@@ -14,31 +14,31 @@
 <htmlform>
 
 	<script type="text/javascript">
-		var pAge;
-		jq(document).ready(function(){
-			pAge = parseInt('<lookup expression="patient.age"/>');
-			if (pAge &gt; 15) {
-				whoChild.style.display='none';
-			}
-			if (pAge &lt; 15) {
-				whoAdult.style.display='none';
-			}
-			beforeSubmit.push(function() {
-				var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
-				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-				var encouterDateValue = new Date(getValue('encounter-date.value'));
-				var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
-				if (returnDate &lt; encounterDate)  {
-					getField('returnVisitDate.error').html('Return Visit date should be after encounter date').show();
-					return false;
-				}
+        var pAge;
+        jq(document).ready(function(){
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            if (pAge &gt; 15) {
+                whoChild.style.display='none';
+            }
+            if (pAge &lt; 15) {
+                whoAdult.style.display='none';
+            }
+            beforeSubmit.push(function() {
+                var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
+                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+                var encouterDateValue = new Date(getValue('encounter-date.value'));
+                var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
+                if (returnDate &lt; encounterDate)  {
+                    getField('returnVisitDate.error').html('Return Visit date should be after encounter date').show();
+                    return false;
+                }
 
-				if (returnDate &gt; fourMonthsFromEncounterDate) {
-					alert('Return Visit date is more than four months from Encounter Date');
-				}
-				return true;
-			});
-		});
+                if (returnDate &gt; fourMonthsFromEncounterDate) {
+                    alert('Return Visit date is more than four months from Encounter Date');
+                }
+                return true;
+            });
+        });
 	</script>
 
 	<div class="ke-form-header">
@@ -74,13 +74,13 @@
 											<td><obs conceptId="160759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160757AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
 											<td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
 											<td>
-											<obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE"
-												 style="dropdown"
+												<obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE"
+													 style="dropdown"
 
 
-											/>
+												/>
 
 											</td>
 										</tr>
@@ -151,16 +151,16 @@
 					<!-- .pw greencard additions physical examination findings -->
 
 					<td>Physical examination*:</td>
-						<td>
+					<td>
 
-							<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="Jaundice,Oedema,Thrush,Pallor"  /><br/>
+						<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="Jaundice,Oedema,Thrush,Pallor"  /><br/>
 
-						 </td>
+					</td>
 					<!-- .pw greencard additions physical examination findings -->
 				</tr>
 			</table>
 		</fieldset>
-		<!-- pw greencard additions LAbs-->
+		<!-- pw greencard additions LAbs -->
 		<fieldset>
 			<legend>Laboratory* </legend>
 			<table>
@@ -170,50 +170,50 @@
 						<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 
 						Order reason:
-<!--missing question id-->
+						<!-- missing question id -->
 						<obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Baseline,Routine,Confirmatory,Suspected Drug Resistance,Other,"
 							 style="dropdowm"  />
 
-					Order date:
-					<obs id="lab-order-date" conceptId="162078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                   </td>
+						Order date:
+						<obs id="lab-order-date" conceptId="162078AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+					</td>
 
 				</tr>
 				<tr>
 					<td>Laboratory Notes:</td>
 
-				<td>
-					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="75" /> </td>
+					<td>
+						<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="75" /> </td>
 				</tr>
-				<!-- .pw greencard additions LAbs-->
+				<!-- .pw greencard additions LAbs -->
 				<!-- .pw greencard additions Antigen today vaccination -->
 			</table>
 		</fieldset>
 		<fieldset>
 			<legend>Antigen today*</legend>
 			<table>
-					<tr>
-						<td>Vaccine</td>
-						<td>
-							<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Measles,Polio,BCG,Penta,PV,PCV"  /><br/>
+				<tr>
+					<td>Vaccine</td>
+					<td>
+						<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Measles,Polio,BCG,Penta,PV,PCV"  /><br/>
 
-						</td>
-						<td>Vaccine Stage</td>
-						<td>
-							<select>
-								<option value="Select">Select</option>
-								<option value="Stage1">Stage1</option>
-								<option value="Stage2">Stage2</option>
-								<option value="Stage3">Stage3</option>
-								<option value="Stage4">Stage4</option>
-							</select>
-						</td>
-						<td>
+					</td>
+					<td>Vaccine Stage</td>
+					<td>
+						<select>
+							<option value="Select">Select</option>
+							<option value="Stage1">Stage1</option>
+							<option value="Stage2">Stage2</option>
+							<option value="Stage3">Stage3</option>
+							<option value="Stage4">Stage4</option>
+						</select>
+					</td>
+					<td>
 						Vaccination Date:
 						<obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-						</td>
+					</td>
 				</tr>
 			</table>
 		</fieldset>
@@ -233,7 +233,7 @@
 											answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											answerLabels="Good (G),Fair (F),Poor (P)"
 											style="radio"
-											/>
+									/>
 								</td>
 							</tr>
 							<tr>
@@ -244,7 +244,7 @@
 											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											answerLabels="Yes,No,Not applicable (N/A)"
 											style="radio"
-											/>
+									/>
 								</td>
 							</tr>
 						</table>
@@ -267,7 +267,7 @@
 											answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											answerLabels="Good (G),Fair (F),Poor (P)"
 											style="radio"
-											/>
+									/>
 								</td>
 							</tr>
 						</table>
@@ -294,10 +294,10 @@
 					<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
 						Reason*:
 						<obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-						style="dropdowm"  />
-					 Differentiated Care*
+							 answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
+							 style="dropdowm"  />
+						Differentiated Care*
 						<select>
 							<option value="Standard">Standard</option>
 							<option value="Express">Express</option>
@@ -305,7 +305,8 @@
 						</select>
 					</td>
 
-			</tr>
+				</tr>
+
 			</table>
 		</fieldset>
 

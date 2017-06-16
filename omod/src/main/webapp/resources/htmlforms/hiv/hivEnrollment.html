@@ -88,29 +88,29 @@
 				 alert("This number already exist");
 				 return false;
 				 }*/
-/*  pw greencard additions  validation  */
-                if(/^[0-9]{5}-[0-9]{5}$/.test(upn) === false) {
+				/*  pw greencard additions  validation
+				 if(/^[0-9]{5}-[0-9]{5}$/.test(upn) === false) {
+				 alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
+				 return false;
+				 }
+				 */
+                if(/^[0-9]{5}$/.test(upn) === false) {
                     alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
                     return false;
                 }
 
-				if(/^[0-9]{5}-[0-9]{5}$/.test(upn) === false) {
-					alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
-					return false;
-				}
-
-				if (encounterDate &lt; birthDate) {
-					getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
-					return false;
-				}
-				if (confirmedPveDate &lt; birthDate){
-					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be earlier than birth date').show();
-					return false;
-				}
-				if (confirmedPveDate &gt; encounterDate){
-					getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
-					return false;
-				}
+                if (encounterDate &lt; birthDate) {
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
+                    return false;
+                }
+                if (confirmedPveDate &lt; birthDate){
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be earlier than birth date').show();
+                    return false;
+                }
+                if (confirmedPveDate &gt; encounterDate){
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+                    return false;
+                }
 
                 return true;
             });
@@ -144,19 +144,19 @@
 				<tr>
 					<td>Entry point*</td>
 
-				<!-- pw greencard additions increased entry points -->
-				<td colspan="3">
-					<obs style="radio" answerSeparator=" "
-						 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self-Test,Other(eg STI)"
+					<!-- pw greencard additions increased entry points -->
+					<td colspan="3">
+						<obs style="radio" answerSeparator=" "
+							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
 
-					/>
-				<td><obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-				</obsgroup></td>
-				</td>
-				<!-- .pw greencard additions increased entry points -->
+						/>
+					<td><obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</obsgroup></td>
+					</td>
+					<!-- .pw greencard additions increased entry points -->
 				</tr>
 				<tr>
 					<td>Transfer in</td>
@@ -200,11 +200,11 @@
 						<td>Transferred from facility:</td>
 						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> in County*:
 							<select>
-							<option value="Select">Select</option>
-							<option value="Siaya">Siaya</option>
-							<option value="Kisumu">Kisumu</option>
-							<option value="Nairobi">Nairobi</option>
-						</select> </td>
+								<option value="Select">Select</option>
+								<option value="Siaya">Siaya</option>
+								<option value="Kisumu">Kisumu</option>
+								<option value="Nairobi">Nairobi</option>
+							</select> </td>
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
