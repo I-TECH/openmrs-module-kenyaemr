@@ -148,7 +148,7 @@
 					</td>
 				</tr>
 				<tr>
-					<!-- .pw greencard additions physical examination findings -->
+					<!--greencard additions physical examination findings -->
 
 					<td>Physical examination*:</td>
 					<td>
@@ -158,11 +158,11 @@
 							 style="dropdown" answerLabels="Jaundice,Oedema,Thrush,Pallor"  /><br/>
 
 					</td>
-					<!-- .pw greencard additions physical examination findings -->
+					<!--greencard additions physical examination findings -->
 				</tr>
 			</table>
 		</fieldset>
-		<!-- pw greencard additions LAbs -->
+		<!-- greencard additions LAbs -->
 		<!--<fieldset>
 			<legend>Laboratory* </legend>
 			<table>
@@ -195,30 +195,46 @@
 		</fieldset>-->
 		<fieldset>
 			<legend>Antigen today*</legend>
-			<table>
-				<tr>
-					<td>Vaccine</td>
-					<td>
-						<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="Measles,Polio,BCG,Penta,PV,PCV"  /><br/>
+		<table>
+			<tr>
+				<td>Vaccine</td>
+				<td>Vaccine Stage</td>
+				<td>Vaccination Date</td>
+			</tr>
+			<repeat>
+				<template>
+					<obsgroup groupingConceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td>
+								<obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 style="dropdown"
+									 answerLabels="Measles,Polio,BCG,Penta,PV,PCV"  />
 
-					</td>
-					<td>Vaccine Stage</td>
-					<td>
-						<select>
-							<option value="Select">Select</option>
-							<option value="Stage1">Stage1</option>
-							<option value="Stage2">Stage2</option>
-							<option value="Stage3">Stage3</option>
-							<option value="Stage4">Stage4</option>
-						</select>
-					</td>
-					<td>
-						Vaccination Date:
-						<obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-					</td>
-				</tr>
-			</table>
-		</fieldset>
+							</td>
+							<td>
+								<select>
+									<option value="Select">Select</option>
+									<option value="Stage1">Stage1</option>
+									<option value="Stage2">Stage2</option>
+									<option value="Stage3">Stage3</option>
+									<option value="Stage4">Stage4</option>
+								</select>
+							</td>
+							<td>
+								<obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+							</td>
+
+						</tr>
+					</obsgroup>
+				</template>
+				<render n="1" concept=" " />
+				<render n="2" concept=" " />
+				<render n="3" concept=" " />
+				<render n="4" concept=" " />
+				<render n="5" concept=" " />
+			</repeat>
+		</table><hr/>
+			</fieldset>
 		<!-- .pw greencard additions Antigen today vaccination -->
 
 		<fieldset>
@@ -300,7 +316,7 @@
 							 answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
 							 style="dropdowm"  />
 						Differentiated Care*
-						<obs conceptId="161625AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						<obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1751AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Standard,Express,Community Dispensing"
 							 style="dropdowm"  />

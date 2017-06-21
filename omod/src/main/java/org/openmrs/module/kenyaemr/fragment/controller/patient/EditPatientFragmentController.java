@@ -60,6 +60,7 @@ public class EditPatientFragmentController {
 
 	// We don't record cause of death, but data model requires a concept
 	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
+	//private static final String INSCHOOL = Dictionary.INSCHOOL;
 
 	/**
 	 * Main controller method
@@ -90,6 +91,18 @@ public class EditPatientFragmentController {
 		educationOptions.add(Dictionary.getConcept(Dictionary.SECONDARY_EDUCATION));
 		educationOptions.add(Dictionary.getConcept(Dictionary.COLLEGE_UNIVERSITY_POLYTECHNIC));
 		model.addAttribute("educationOptions", educationOptions);
+
+		/*Create list of occupation answer concepts  */
+		List<Concept> occupationOptions = new ArrayList<Concept>();
+		occupationOptions.add(Dictionary.getConcept(Dictionary.FARMER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.TRADER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.EMPLOYEE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.STUDENT));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.DRIVER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.NONE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.OTHER_NON_CODED));
+		model.addAttribute("occupationOptions", occupationOptions);
+
 
 		// Create a list of marital status answer concepts
 		List<Concept> maritalStatusOptions = new ArrayList<Concept>();
@@ -156,16 +169,16 @@ public class EditPatientFragmentController {
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
+
 		private Obs savedMaritalStatus;
 		private Obs savedOccupation;
 		private Obs savedEducation;
+		//private Boolean inSchool;
 		private Boolean dead = false;
 		private Date deathDate;
-
 		private String nationalIdNumber;
 		private String patientClinicNumber;
 		private String uniquePatientNumber;
-
 		private String telephoneContact;
 		private String nameOfNextOfKin;
 		private String nextOfKinRelationship;
@@ -208,7 +221,7 @@ public class EditPatientFragmentController {
 			birthdateEstimated = person.getBirthdateEstimated();
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
-
+           // inSchool = person.isinSchool();
 			PersonWrapper wrapper = new PersonWrapper(person);
 			telephoneContact = wrapper.getTelephoneContact();
 		}
@@ -245,6 +258,8 @@ public class EditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
+
+
 		}
 
 		private Obs getLatestObs(Patient patient, String conceptIdentifier) {
@@ -360,6 +375,7 @@ public class EditPatientFragmentController {
 			toSave.setBirthdate(birthdate);
 			toSave.setBirthdateEstimated(birthdateEstimated);
 			toSave.setDead(dead);
+			//toSave.setInSchool(inSchool);
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(dead ? Dictionary.getConcept(CAUSE_OF_DEATH_PLACEHOLDER) : null);
 
@@ -417,6 +433,7 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
+
 
 			for (Obs o : obsToVoid) {
 				Context.getObsService().voidObs(o, "KenyaEMR edit patient");
@@ -662,7 +679,16 @@ public class EditPatientFragmentController {
 		public void setDead(Boolean dead) {
 			this.dead = dead;
 		}
+		/*  greencard
+		public Boolean getInschool(){
+			return inSchool;
+		}
 
+		public void setInSchool(Boolean inSchool) {
+			this.inSchool = inSchool;
+		}
+
+		/*  .greencard   */
 		public Date getDeathDate() {
 			return deathDate;
 		}

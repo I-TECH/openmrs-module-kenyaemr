@@ -10,23 +10,18 @@
     ]
 
     def otherDemogFieldRows = [
-            //pw greencard additions
-            [
-                    [object: command, property: "dead", label: "In School"],
-                    [object: command, property: "dead", label: "Orphan <18 yrs"],
-
-            ],
-            //.pw greencard additions
-            [
+              [
                     [object: command, property: "maritalStatus", label: "Marital status", config: [style: "list", options: maritalStatusOptions]],
-                    [object: command, property: "occupation", label: "Occupation", config: [style: "list", answerTo: occupationConcept]],
+                    [object: command, property: "occupation", label: "Occupation", config: [style: "list", options: occupationOptions]],
                     [object: command, property: "education", label: "Education", config: [style: "list", options: educationOptions]]
-            ],
+             ]
+      ]
+    def deathFieldRows = [
             [
                     [object: command, property: "dead", label: "Deceased"],
                     [object: command, property: "deathDate", label: "Date of death"]
             ]
-    ]
+      ]
 
     def nextOfKinFieldRows = [
             [
@@ -38,7 +33,14 @@
                     [object: command, property: "nextOfKinAddress", label: "Next of kin address"]
             ]
     ]
-    def guardianfieldrows  = [
+    def childfieldrows  = [
+            /* pw greencard additions  */
+            [
+                    [object: command, property: "dead", label: "In School"],
+                    [object: command, property: "dead", label: "Orphan <18 yrs"],
+
+            ],
+            // greencard additions
             [
                     [object: command, property: "nameOfNextOfKin", label: "Guardian last name"],
                     [object: command, property: "nextOfKinRelationship", label: "Guardian first name"]
@@ -51,7 +53,7 @@
                     [object: command, property: "telephoneContact", label: "Telephone contact*"],
                     [object: command, property: "nextOfKinAddress", label: "Alternate phone number"],
                     [object: command, property: "nextOfKinAddress", label: "Email address"]
-            ], //.pw greencard additions -- alternat phone and email
+            ], //.pw greencard additions -- alternate phone and email
             [
                     [object: command, property: "personAddress.address1", label: "Postal Address*", config: [size: 60]],
                     [object: command, property: "personAddress.country", label: "County*", config: [size: 60]],
@@ -154,8 +156,10 @@
             <% otherDemogFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
-            <% guardianfieldrows.each { %>
+            <% deathFieldRows.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+            <% childfieldrows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
         </fieldset>
