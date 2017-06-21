@@ -25,6 +25,7 @@ import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -55,6 +56,9 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
 	private MchMetadata mchMetadata;
+
+	@Autowired
+	private IPTMetadata iptMetadata;
 
 	@Autowired
 	private IdentifierManager identifierManager;
@@ -90,6 +94,7 @@ public class MetadataIntegrationTest extends BaseModuleContextSensitiveTest {
 		installBundleWithFlush(hivMetadata);
 		installBundleWithFlush(tbMetadata);
 		installBundleWithFlush(mchMetadata);
+		installBundleWithFlush(iptMetadata);
 
 		// Easiest way to check that we're not missing any identifiers, programs, forms or encounter types
 		identifierManager.refresh();
