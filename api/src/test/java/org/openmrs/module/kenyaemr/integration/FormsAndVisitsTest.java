@@ -25,6 +25,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.wrapper.VisitWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -59,6 +60,9 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 	private MchMetadata mchMetadata;
 
 	@Autowired
+	private IPTMetadata iptMetadata;
+
+	@Autowired
 	private FormManager formManager;
 
 	/**
@@ -72,7 +76,7 @@ public class FormsAndVisitsTest extends BaseModuleContextSensitiveTest {
 		hivMetadata.install();
 		tbMetadata.install();
 		mchMetadata.install();
-
+		iptMetadata.install();
 		formManager.refresh();
 
 		// Configure the visit handler
