@@ -20,7 +20,7 @@
 
             $(".hiv-status select").change(function () {
                 var row = $(this).parent().parent().parent();
-                if (this.value == '1065') {
+                if (this.value == '664') {
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                 } else {
@@ -35,7 +35,7 @@
                 var table = document.getElementById("table");
                 for (var i = 0, row; row = table.rows[i]; i++) {
                     var hivStatus = $(row).find('.hiv-status select').val();
-                    if (hivStatus === '1065') {
+                    if (hivStatus === '664') {
                         $(row).find('.in-care select').attr('disabled', false);
                         $(row).find('.ccc-no input').attr('disabled', false);
                     } else {

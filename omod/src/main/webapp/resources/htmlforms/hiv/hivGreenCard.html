@@ -1,0 +1,940 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<!--
+Green Card follow-up visit form
+-->
+<htmlform>
+
+    <style type="text/css">
+        table.right-aligned-first td:first-child {
+            text-align: right;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function onWeightOrHeightChange() {
+            var display = '';
+            var weightKg = parseFloat(getValue('weight.value'));
+            var heightM = parseFloat(getValue('height.value')) / 100;
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                var bmi = weightKg / (heightM * heightM);
+                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                    display = 'Abnormal value. Were height and height entered correctly?';
+                }
+                else {
+                    display = bmi.toFixed(2);
+                }
+            }
+            jq('#calculated-bmi').html(display);
+        }
+        function displayRecentBmi() {
+            var weightKg = "<lookup expression="
+            fn.latestObs(5089).valueNumeric
+            "/>"
+            var heightM = ("<lookup expression="
+            fn.latestObs(5090).valueNumeric
+            "/>"
+        )/
+            100
+            var bmi = '';
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                bmi = weightKg / (heightM * heightM);
+            }
+            jq('#recent-calculated-bmi').html(bmi.toFixed(2));
+        }
+
+        jq(function () {
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            onWeightOrHeightChange();
+            displayRecentBmi();
+
+            var strtext = "";
+            var familyPlanningOption = getValue('fplanning.value');
+            var pregnancyOption = getValue('pregnancyOption.value');
+            if (pregnancyOption == 1066) {
+                jq('#pregnancyOptionValues :input').prop('disabled', true);
+            }
+            if (familyPlanningOption == "") {
+                jq('#onFp :input').prop('disabled', true);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+            if (familyPlanningOption == "965") {
+                jq('#onFp :input').prop('disabled', false);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+            if (familyPlanningOption == "160652") {
+                jq('#onFp :input').prop('disabled', true);
+                jq('#notOnFp :input').prop('disabled', false);
+            }
+            if (familyPlanningOption == "1360") {
+                jq('#onFp :input').prop('disabled', false);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+            jq('#pregnancyOption input:radio').click(function () {
+                if ((getValue('pregnancyOption.value')) == 1066) {
+                    jq('#pregnancyOptionValues :input').prop('disabled', true);
+                }
+                else {
+                    jq('#pregnancyOptionValues :input').prop('disabled', false);
+                }
+            });
+
+            jq("#fplanning select ").change(function () {
+
+                jq("#fplanning select option:selected").each(function () {
+                    strtext += $(this).val();
+                });
+
+                if (strtext == "") {
+                    $('#notOnFp :input').prop('checked', false);
+                    $('#onFp :input').prop('checked', false);
+                    $('#onFp :input').prop('disabled', true);
+                    $('#notOnFp :input').prop('disabled', true);
+                }
+                if (strtext == "965") {
+                    $('#notOnFp :input').prop('checked', false);
+                    $('#onFp :input').prop('disabled', false);
+                    $('#notOnFp :input').prop('disabled', true);
+                }
+                if (strtext == "160652") {
+                    $('#onFp :input').prop('checked', false);
+                    $('#onFp :input').prop('disabled', true);
+                    $('#notOnFp :input').prop('disabled', false);
+                }
+                if (strtext == "1360") {
+                    $('#notOnFp :input').prop('checked', false);
+                    $('#onFp :input').prop('disabled', false);
+                    $('#notOnFp :input').prop('disabled', true);
+                }
+
+                strtext = "";
+            });
+
+            var pbirthdate = new Date("<lookup expression="
+            patient.birthdate
+            " />"
+            ).
+            getTime();
+            var pgender = "<lookup expression="
+            patient.gender
+            " />";
+
+            if (pgender == 'F') {
+                beforeSubmit.push(function () {
+                    var lmpdate = new Date(getValue('lmp-date.value')).getTime();
+                    if (lmpdate &lt; pbirthdate) {
+                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
+                        return false;
+                    }
+                    return true;
+                });
+            }
+        });
+    </script>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td>Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
+        <fieldset>
+            <legend>Visit Type</legend>
+            <!--pw greencard additions visit type and appointment type -->
+            <table cellspacing="5">
+                <tr>
+                    <th>Scheduled/Unscheduled</th>
+                    <th align="left">Visit by</th>
+                </tr>
+                <tr>
+
+                    <td>
+                        <obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+                        Scheduled
+                    </td>
+                    <td>
+                        <obs
+                                id="person-present"
+                                conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
+                                style="radio"
+                                answerSeparator="&lt;br /&gt;"
+                        />
+                        <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <!--.pw greencard additions visit type and appointment type -->
+                </tr>
+            </table>
+
+        </fieldset>
+
+        <!--Triage-->
+        <fieldset>
+            <legend>Vital Signs</legend>
+
+            <table cellspacing="5" style="display: inline-block; border: 1px solid; float: left; ">
+                <tr>
+                    <th></th>
+                    <th align="left">Current</th>
+                    <th align="left">Recent</th>
+                </tr>
+                <tr>
+                    <td>Temp</td>
+                    <td>
+                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
+                    </td>
+                    <td>
+                        <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pulse Rate</td>
+                    <td>
+                        <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>BP</td>
+                    <td>
+                        <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        /
+                        <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        mmHg
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
+                            conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>Respiratory Rate</td>
+                    <td>
+                        <obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>Oxygen Saturation</td>
+                    <td>
+                        <obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+            </table>
+            <table cellspacing="10" style="display: inline-block; border: 1px solid; ">
+                <tr>
+                    <th></th>
+                    <th align="left" colspan="2">Other Recordings</th>
+                </tr>
+                <tr>
+                    <td>Weight</td>
+                    <td>
+                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        kg
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>Height</td>
+                    <td>
+                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        cm
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>BMI</td>
+                    <td><span id="calculated-bmi" class="value"></span></td>
+                    <td><span id="recent-calculated-bmi" class="value"></span></td>
+                </tr>
+                <tr>
+                    <td>MUAC</td>
+                    <td>
+                        <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <includeIf velocityTest="$patient.gender == 'F' ">
+                    <tr>
+                        <td>LMP</td>
+                        <td>
+                            <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                        <td><span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                </includeIf>
+            </table>
+        </fieldset>
+        <!--Presenting complaints today-->
+
+        <fieldset>
+            <legend>Complaints and History of complaints</legend>
+
+            <table cellspacing="5">
+                <tr>
+                    <th style="color: #888">Illness</th>
+
+                    <th style="color: #888; text-align: center">Duration</th>
+                    <th style="color: #888; text-align: center">Onset Date</th>
+                </tr>
+                <repeat>
+                    <template>
+                        <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <tr>
+                                <td>
+
+                                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis"
+                                         style="autocomplete"/>
+                                </td>
+
+                                <td>
+                                    <input type="text" id="illness_duration"/>
+                                </td>
+                                <td>
+                                    <obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         allowFutureDates="false"/>
+                                </td>
+                            </tr>
+                        </obsgroup>
+                    </template>
+                    <render n="1" concept="Drug"/>
+                    <render n="2" concept="Drug"/>
+                    <render n="3" concept="Drug"/>
+                    <render n="4" concept="Drug"/>
+                    <render n="5" concept="Drug"/>
+                </repeat>
+            </table>
+            <table>
+                <tr>
+                    <td colspan="2">Clinical Notes</td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80"/>
+                    </td>
+                    <td>
+                        <span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+
+
+                </tr>
+            </table>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Additional History</legend>
+            <!--TB Screening-->
+            <fieldset>
+                <legend>TB Screening</legend>
+                <table cellspacing="10">
+                    <tr>
+                        <th></th>
+                        <th align="left">Current</th>
+                        <th align="left">Recent</th>
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
+                        <td>
+                            <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            kg
+                        </td>
+                        <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td>
+                            <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            cm
+                        </td>
+                        <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BMI</td>
+                        <td><span id="calculated-bmi" class="value"></span></td>
+                        <td><span id="recent-calculated-bmi" class="value"></span></td>
+                    </tr>
+                    <tr>
+                        <td>MUAC</td>
+                        <td>
+                            <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                        <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        <tr>
+                            <td>LMP</td>
+                            <td>
+                                <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                            <td><span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                            </td>
+                        </tr>
+                    </includeIf>
+                </table>
+            </fieldset>
+            <!--Allergies-->
+            <fieldset>
+                <legend>Allergies</legend>
+                <table cellspacing="5">
+                    <tr>
+                        <th style="color: #888">Allergies</th>
+
+                        <th style="color: #888; text-align: center">Duration</th>
+                        <th style="color: #888; text-align: center">Onset Date</th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+
+                                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis"
+                                             style="autocomplete"/>
+                                    </td>
+
+                                    <td>
+                                        <input type="text" id="illness_duration"/>
+                                    </td>
+                                    <td>
+                                        <obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             allowFutureDates="false"/>
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="Drug"/>
+                        <render n="2" concept="Drug"/>
+                        <render n="3" concept="Drug"/>
+                        <render n="4" concept="Drug"/>
+                        <render n="5" concept="Drug"/>
+                    </repeat>
+                </table>
+            </fieldset>
+
+            <!--Adverse Drug Reactions-->
+            <fieldset>
+                <legend>Adverse Drug Reactions</legend>
+                <table>
+                    <tr>
+                        <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
+                            <table>
+                                <tr>
+                                    <td>Date of onset</td>
+                                    <td>Reaction</td>
+                                    <td>Grading</td>
+                                    <td>Causative agent</td>
+                                    <td>Action taken*</td>  <!-- pw.Greencard additions action taken missing question id -->
+                                </tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td><obs conceptId="160644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td><obs conceptId="160759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
+                                                <td>
+                                                    <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE"
+                                                         style="dropdown"
+
+
+                                                    />
+
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                    </template>
+                                    <render n="1" concept=" " />
+                                    <render n="2" concept=" " />
+                                    <render n="3" concept=" " />
+                                    <render n="4" concept=" " />
+                                    <render n="5" concept=" " />
+                                    <render n="6" concept=" " />
+                                    <render n="7" concept=" " />
+                                    <render n="8" concept=" " />
+                                    <render n="9" concept=" " />
+                                    <render n="10" concept=" " />
+                                </repeat>
+                            </table><hr/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>WHO Staging:</td>
+                        <td>
+                            <div id="whoAdult">
+                                <table>
+                                    <tr>
+                                        <td><strong>Adult</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="whoChild">
+                                <table>
+                                    <tr>
+                                        <td><strong>Child</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <!--Chronic Illnesses-->
+
+            <fieldset>
+                <legend>Chronic Illnesses and Cormobidities</legend>
+                <table cellspacing="0">
+                    <tr>
+                        <th style="color: #888">Illness</th>
+                        <th style="color: #888">Drug</th>
+                        <th style="color: #888; text-align: center">Dose</th>
+                        <th style="color: #888; text-align: center">Units</th>
+                        <th style="color: #888; text-align: center">Frequency</th>
+                        <th style="color: #888; text-align: center">Duration</th>
+                        <th style="color: #888; text-align: center">Duration units</th>
+                        <th style="color: #888; text-align: center">Onset Date</th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+
+                                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/></td>
+
+
+                                    <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                    <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                    <td>
+                                        <obs
+                                                conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                        />
+                                    </td>
+                                    <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td>
+                                        <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="Hours,Days,Weeks,Months" />
+                                    </td>
+                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="Drug"/>
+                        <render n="2" concept="Drug"/>
+                        <render n="3" concept="Drug"/>
+                        <render n="4" concept="Drug"/>
+                        <render n="5" concept="Drug"/>
+                    </repeat>
+                </table>
+            </fieldset>
+
+            <!--Sexual and Obstetric History-->
+            <fieldset>
+                <legend>Sexual and Obstetric History</legend>
+
+                <includeIf velocityTest="$patient.gender == 'F' ">
+                    <fieldset>
+                        <legend>Pregnancy Details</legend>
+                        <table class="right-aligned-first" style="width: 100%;" border="0">
+                            <tr>
+                                <td colspan="2" style="text-align: left">
+                                    <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         labelText="Is Patient Pregnant?: "
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <table id="pregnancyOptionValues">
+                            <tr>
+                                <td width="8%" style="text-align: left">ANC Number:</td>
+                                <td>
+                                    <obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">LMP</td>
+                                <td colspan="2">
+                                    <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                </td>
+                                <!--<td>
+                                    <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                </td>-->
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left">EDD:</td>
+                                <td colspan="2">
+                                    <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                                         allowFutureDates="true" labelText=" "/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: left">
+                                    ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+                                    ANC/PNC Profile
+                                    <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
+
+                                </td>
+
+                            </tr>
+                            <includeIf velocityTest="$patient.gender == 'F' ">
+                                ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+                                ANC/PNC Profile
+                                <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
+                            </includeIf>
+                            <tr>
+                                <td style="text-align: left">Gravida:</td>
+                                <td>
+                                    <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Parity:</td>
+                                <td>
+                                    <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                                </td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+                        <table>
+
+                            <tr>
+                                <td>Screened CaCx</td>
+                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                            </tr>
+                            <tr>
+                                <td>STI Patrner Notification</td>
+                                <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                            </tr>
+                            <tr>
+                                <td>Condoms</td>
+                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                            </tr>
+                            <tr>
+                                <td>Screened STI</td>
+                                <td class="patient-details"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                            </tr>
+                        </table>
+
+                    </fieldset>
+                </includeIf>
+                <!--Family Planning-->
+                <fieldset>
+                    <legend>Family Planning Status</legend>
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                Family Planning Status :
+                                <obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fplanning"
+                                     answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown"
+                                     answerLabels="On Family Planning,Not using Family Planning,Wants Family Planning"/>
+                                <hr/>
+                                <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="onFp">
+                                    If currently using Family Planning, or wants Family Planning, specify which method(s)
+                                    <hr/>
+                                    <includeIf velocityTest="$patient.gender == 'F' ">
+                                        <table class="right-aligned-first" style="width: 100%;" border="0">
+                                            <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <tr>
+                                                    <td width="10%"></td>
+
+                                                    <td style="text-align: left">
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Emergency contraceptive pills" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Oral Contraceptives Pills" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Injectible" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Implant" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Intrauterine Device" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Lactational Amenorhea Method" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Diaphram/Cervical Cap" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Fertility Awareness"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Tubal Ligation" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Condoms" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Vasectomy(Partner)" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Undecided" style="checkbox"/>
+                                                    </td>
+                                                </tr>
+                                            </obsgroup>
+                                        </table>
+                                    </includeIf>
+
+                                    <includeIf velocityTest="$patient.gender == 'M' ">
+                                        <table class="right-aligned-first" style="width: 100%;" border="0">
+                                            <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <tr>
+                                                    <td width="10%"></td>
+
+                                                    <td style="text-align: left">
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Condoms" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Vasectomy" style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Undecided" style="checkbox"/>
+                                                    </td>
+
+                                                </tr>
+                                            </obsgroup>
+                                        </table>
+                                    </includeIf>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="notOnFp">
+                                    <br/>Not using Family Planning? Specify reason(s)
+                                    <hr/>
+                                    <includeIf velocityTest="$patient.gender == 'F' ">
+                                        <table style="width: 100%" border="0">
+                                            <obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <tr>
+                                                    <td width="10%"></td>
+                                                    <td>
+                                                        <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Wants to get Pregnant"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Thinks can't get pregnant"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Not sexually active now"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                    </td>
+                                                </tr>
+                                            </obsgroup>
+                                        </table>
+                                    </includeIf>
+                                    <includeIf velocityTest="$patient.gender == 'M' ">
+                                        <table style="width: 100%" border="0">
+                                            <obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <tr>
+                                                    <td width="10%"></td>
+                                                    <td>
+                                                        <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Not sexually active now"
+                                                             style="checkbox"/>
+                                                    </td>
+                                                </tr>
+                                            </obsgroup>
+                                        </table>
+                                    </includeIf>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </fieldset>
+        </fieldset>
+
+
+        <!--Physical Examination-->
+
+        <fieldset>
+            <legend>Physical Examination</legend>
+            <!--General Examination-->
+            <fieldset>
+                <legend>General Examination</legend>
+                <table class="right-aligned-first" style="width: 100%;" border="0">
+                    <tr>
+                        <!-- .pw greencard additions physical examination findings -->
+
+                        <td>Physical examination*:</td>
+                        <td>
+
+                            <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,"
+                                 style="dropdown" answerLabels="Jaundice,Oedema,Thrush,Pallor"  /><br/>
+
+                        </td>
+                        <!-- .pw greencard additions physical examination findings -->
+                    </tr>
+                </table>
+            </fieldset>
+
+            <!--System Examination-->
+            <fieldset>
+                <legend>System Examination</legend>
+                <table class="right-aligned-first" style="width: 100%;" border="0">
+                    <tr>
+                        <td colspan="2" style="text-align: left">
+                            <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 labelText="Is Patient Pregnant?: "
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table id="pregnancyOptionValues">
+                    <tr>
+                        <td width="8%" style="text-align: left">ANC Number:</td>
+                        <td>
+                            <obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">EDD:</td>
+                        <td colspan="2">
+                            <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                                 allowFutureDates="true" labelText=" "/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Gravida:</td>
+                        <td>
+                            <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Parity:</td>
+                        <td>
+                            <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </fieldset>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Treatment/Management</legend>
+            <table style="width: 100%;" border="0">
+                <tr>
+                    <td colspan="2">Current Diagnoses <b> Noted Today</b></td>
+                    <td>Workup</td>
+                </tr>
+
+                <repeat>
+                    <template>
+                        <tr>
+                            <td colspan="2">
+                                <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/><br/>
+                            </td>
+                            <td>
+                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="120"/><br/>
+                            </td>
+                        </tr>
+                    </template>
+                    <render n="11" concept="Diagnosis"/>
+                    <render n="12" concept="Diagnosis"/>
+                    <render n="13" concept="Diagnosis"/>
+                    <render n="14" concept="Diagnosis"/>
+                    <render n="15" concept="Diagnosis"/>
+                    <render n="16" concept="Diagnosis"/>
+                    <render n="17" concept="Diagnosis"/>
+                    <render n="18" concept="Diagnosis"/>
+                    <render n="19" concept="Diagnosis"/>
+                    <render n="20" concept="Diagnosis"/>
+                </repeat>
+
+                <tr>
+                    <td colspan="3"><hr/></td>
+                </tr>
+
+            </table>
+        </fieldset>
+
+    </div>
+
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
