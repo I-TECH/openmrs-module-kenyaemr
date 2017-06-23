@@ -13,6 +13,7 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />
 		<property name="visitForms">
 			<set>
+				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
 				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
@@ -66,6 +67,20 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.html" />
+	</bean>
+
+	<!-- Clinical Encounter - HIV Green Card -->
+	<bean id="kenyaemr.hiv.form.hivGreenCard" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="22c68f86-bbf0-49ba-b2d1-23fa7ccf0259" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivGreenCard.html" />
+		<property name="order" value="201010" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
