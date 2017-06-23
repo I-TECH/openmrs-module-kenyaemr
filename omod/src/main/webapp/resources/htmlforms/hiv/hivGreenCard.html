@@ -141,6 +141,169 @@ Green Card follow-up visit form
                     return true;
                 });
             }
+
+            /*TB Screening form validation*/
+            var valbirthdate = "<lookup  expression="patient.birthdate" />"
+            var valChangedToDateFormat = new Date(valbirthdate).getTime();
+
+            beforeSubmit.push(function() {
+                var valonform = getValue('tbrxdate.value');
+                var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+
+                //tb rx date should be later than date of birth
+                if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
+                    getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+                    return false;
+                }
+                //tb rx date cannot be same as birth date
+                if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
+                    getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
+                    return false;
+                }
+                return true;
+            });
+
+            var screeningRadios = $('#screening-questions').find('input[type=radio]');
+            var iptClientWorkupRadios = $('#ipt-client-workup').find('input[type=radio]');
+
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066
+
+            //This function will perform the folllowing:
+            //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
+            //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
+            var showHideTabs = function() {
+                var actionTakenTab = $('#action-taken');
+                var iptClientWorkupTab = $('#ipt-client-workup');
+
+                var showActionTakenTab = false;
+                var showIPTClientWorkupTab = false;
+
+                var screeningYesResponses = [];
+                var screeningNoResponses = [];
+
+                //Fetch responses for the screening questions
+                $.each(screeningRadios, function(){
+
+                    //Push any responses to the respective screeningYesResponses and screeningNoResponses array
+                    if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                        screeningYesResponses.push(this);
+
+                    }
+
+                    if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                        screeningNoResponses.push(this);
+
+                    }
+
+                });
+
+                //If no responses have been recorded than hide the ActionTaken and IPTClientWorkup tabs
+                if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+                } else {
+
+                    if (screeningYesResponses.length &gt; 0) {
+                        showActionTakenTab = true;
+
+                    } else {
+
+                        //Check if we have 5 NO responses
+                        if (screeningNoResponses.length == screeningRadios.length / 2 ) {
+                            showIPTClientWorkupTab = true;
+
+                        }
+                    }
+
+                }
+
+                if (showActionTakenTab) {
+                    actionTakenTab.show();
+
+                } else {
+                    actionTakenTab.hide();
+                    clearRadios(actionTakenTab);
+
+                }
+
+                if (showIPTClientWorkupTab) {
+                    iptClientWorkupTab.show();
+
+                } else {
+                    iptClientWorkupTab.hide();
+                    clearRadios(iptClientWorkupTab);
+
+                }
+
+            };
+
+            var showHideIPTInitiationTab = function() {
+
+                var iptInitiationTab = $('#ipt-initiation');
+                var showIPTInitiationTab = false;
+
+                var iptClientWorkupYesResponses = [];
+                var iptClientWorkupNoResponses = [];
+
+                //Fetch responses for the IPT client workup questions
+                $.each(iptClientWorkupRadios, function() {
+
+                    //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
+                    if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                        iptClientWorkupYesResponses.push(this);
+
+                    }
+
+                    if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                        iptClientWorkupNoResponses.push(this);
+
+                    }
+
+                });
+
+                if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
+                } else {
+
+                    if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) {
+                        showIPTInitiationTab = true;
+
+                    }
+                }
+
+                if (showIPTInitiationTab) {
+                    iptInitiationTab.show();
+
+                } else {
+                    iptInitiationTab.hide();
+
+                }
+
+            };
+
+            var clearRadios = function(parentObj) {
+
+                parentObj.find('input[type=radio]').each(function() {
+
+                    this.checked = false;
+
+                });
+
+            }
+
+            screeningRadios.change(function() {
+
+                showHideTabs();
+
+            });
+
+            iptClientWorkupRadios.change(function() {
+
+                showHideIPTInitiationTab();
+
+            });
+
+            showHideTabs();
+            showHideIPTInitiationTab();
+
         });
     </script>
 
@@ -350,91 +513,149 @@ Green Card follow-up visit form
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
-                <table cellspacing="10">
-                    <tr>
-                        <th></th>
-                        <th align="left">Current</th>
-                        <th align="left">Recent</th>
-                    </tr>
-                    <tr>
-                        <td>Weight</td>
-                        <td>
-                            <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                            kg
-                        </td>
-                        <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Height</td>
-                        <td>
-                            <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                            cm
-                        </td>
-                        <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>BMI</td>
-                        <td><span id="calculated-bmi" class="value"></span></td>
-                        <td><span id="recent-calculated-bmi" class="value"></span></td>
-                    </tr>
-                    <tr>
-                        <td>MUAC</td>
-                        <td>
-                            <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                        </td>
-                        <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                    <includeIf velocityTest="$patient.gender == 'F' ">
+                <fieldset>
+                    <legend>Screening Questions</legend>
+                    <table id="screening-questions">
                         <tr>
-                            <td>LMP</td>
-                            <td>
-                                <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                            </td>
-                            <td><span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                            </td>
-                        </tr>
-                    </includeIf>
-                </table>
-            </fieldset>
-            <!--Allergies-->
-            <fieldset>
-                <legend>Allergies</legend>
-                <table cellspacing="5">
-                    <tr>
-                        <th style="color: #888">Allergies</th>
-
-                        <th style="color: #888; text-align: center">Duration</th>
-                        <th style="color: #888; text-align: center">Onset Date</th>
-                    </tr>
-                    <repeat>
-                        <template>
-                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                <tr>
-                                    <td>
-
-                                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis"
-                                             style="autocomplete"/>
-                                    </td>
-
-                                    <td>
-                                        <input type="text" id="illness_duration"/>
-                                    </td>
-                                    <td>
-                                        <obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             allowFutureDates="false"/>
-                                    </td>
-                                </tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
+						</span>
+                                <td>Cough of any duration:</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </obsgroup>
-                        </template>
-                        <render n="1" concept="Drug"/>
-                        <render n="2" concept="Drug"/>
-                        <render n="3" concept="Drug"/>
-                        <render n="4" concept="Drug"/>
-                        <render n="5" concept="Drug"/>
-                    </repeat>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
+						</span>
+                                <td>Contact with a TB Case:</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
+						</span>
+                                <td>Fever:</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
+						</span>
+                                <td>Noticeable weight loss or poor weight gain:</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
+						</span>
+                                <td>Night sweats:</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <fieldset id="action-taken">
+                    <legend>Indicate Action Taken</legend>
+                    <table>
+                        <tr>
+                            <td>Sputum Smear:</td>
+                            <td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                        <tr>
+                            <td>Chest X-ray:</td>
+                            <td><obs conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                        <tr>
+                            <td>Start Anti-TBs:</td>
+                            <td><obs conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                        <tr>
+                            <td>Invitation of contacts:</td>
+                            <td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                        <tr>
+                            <td>Evaluated for IPT:</td>
+                            <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelTExt=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <fieldset id="ipt-client-workup">
+                    <legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
+                    <table>
+                        <tr>
+                            <td colspan="2" class="ke-panel-header">Ask for the following</td>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="162311"/>
+						</span>
+                                <td>1. Yellow Urine</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="132652"/>
+						</span>
+                                <td>2. Numbness/ burning sensation on the hands or feet</td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="ke-panel-header">Examine the following</td>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="5192"/>
+						</span>
+                                <td>1. Yellowness of eyes </td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                        <tr>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<span style="display: none">
+							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124994"/>
+						</span>
+                                <td>2.Tenderness in the upper right quadrant of the abdomen </td>
+                                <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                            </obsgroup>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
+
+                <table>
+                    <tr>
+                        <td colspan="2"><p> </p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"> <p></p></td>
+                    </tr>
+                    <tr>
+                        <td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
+                        <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
+                    </tr>
                 </table>
             </fieldset>
 
@@ -446,20 +667,20 @@ Green Card follow-up visit form
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
                                 <tr>
-                                    <td>Date of onset</td>
-                                    <td>Reaction</td>
-                                    <td>Grading</td>
                                     <td>Causative agent</td>
-                                    <td>Action taken*</td>  <!-- pw.Greencard additions action taken missing question id -->
+                                    <td>Reaction</td>
+                                    <td>Severity</td>
+                                    <td>Date of Onset</td>
+                                    <td>Action taken</td>  <!-- pw.Greencard additions action taken missing question id -->
                                 </tr>
                                 <repeat>
                                     <template>
                                         <obsgroup groupingConceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                             <tr>
-                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
                                                 <td><obs conceptId="160644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                 <td><obs conceptId="160759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
+                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                 <td>
                                                     <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -484,11 +705,12 @@ Green Card follow-up visit form
                                     <render n="9" concept=" " />
                                     <render n="10" concept=" " />
                                 </repeat>
-                            </table><hr/>
+                            </table>
                         </td>
                     </tr>
 
-                    <tr>
+
+                    <!--<tr>
                         <td>WHO Staging:</td>
                         <td>
                             <div id="whoAdult">
@@ -505,6 +727,33 @@ Green Card follow-up visit form
                                     </tr>
                                 </table>
                             </div>
+                        </td>
+                    </tr>-->
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Antigen Today</legend>
+                <table>
+                    <tr>
+
+                        <td colspan="2" >Vaccine
+
+                            <obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown"
+                                 answerLabels="Measles,Polio,BCG,Penta,PV,PCV" />
+
+                            Vaccine Stage
+
+                            <select>
+                                <option value="Select">Select</option>
+                                <option value="Stage1">Stage1</option>
+                                <option value="Stage2">Stage2</option>
+                                <option value="Stage3">Stage3</option>
+                                <option value="Stage4">Stage4</option>
+                            </select>
+                            Vaccination Date:
+                            <obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                         </td>
                     </tr>
                 </table>
@@ -828,19 +1077,33 @@ Green Card follow-up visit form
             <!--General Examination-->
             <fieldset>
                 <legend>General Examination</legend>
-                <table class="right-aligned-first" style="width: 100%;" border="0">
+                <table cellspacing="0">
                     <tr>
-                        <!-- .pw greencard additions physical examination findings -->
+                        <td colspan="3">
+                            <div style="float: left; padding-right: 20px">
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Jaundice" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oedema" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral thrush" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pallor" /><br />
 
-                        <td>Physical examination*:</td>
-                        <td>
+                            </div>
+                            <div style="float: left">
 
-                            <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,"
-                                 style="dropdown" answerLabels="Jaundice,Oedema,Thrush,Pallor"  /><br/>
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Finger Clubbing" />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="126952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph Node Axillary" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cyanosis" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="126939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph Nodes Inguinal" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Wasting" /><br />
+
+                            </div>
+                            <div style="clear: both">
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dehydration" />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" /><br />
+                            </div>
 
                         </td>
-                        <!-- .pw greencard additions physical examination findings -->
                     </tr>
                 </table>
             </fieldset>
@@ -897,31 +1160,31 @@ Green Card follow-up visit form
             <legend>Treatment/Management</legend>
             <table style="width: 100%;" border="0">
                 <tr>
-                    <td colspan="2">Current Diagnoses <b> Noted Today</b></td>
-                    <td>Workup</td>
+                    <td>Diagnosis</td>
+                    <td>Treatment</td>
                 </tr>
 
                 <repeat>
                     <template>
+                        <obsgroup groupingConceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                         <tr>
+
                             <td colspan="2">
                                 <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/><br/>
                             </td>
                             <td>
-                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="120"/><br/>
+                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80"/><br/>
                             </td>
+
                         </tr>
+                        </obsgroup>
                     </template>
                     <render n="11" concept="Diagnosis"/>
                     <render n="12" concept="Diagnosis"/>
                     <render n="13" concept="Diagnosis"/>
                     <render n="14" concept="Diagnosis"/>
                     <render n="15" concept="Diagnosis"/>
-                    <render n="16" concept="Diagnosis"/>
-                    <render n="17" concept="Diagnosis"/>
-                    <render n="18" concept="Diagnosis"/>
-                    <render n="19" concept="Diagnosis"/>
-                    <render n="20" concept="Diagnosis"/>
+
                 </repeat>
 
                 <tr>
