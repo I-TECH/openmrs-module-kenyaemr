@@ -740,5 +740,6 @@ public class EditPatientFragmentController {
 		public void setSubChiefName(String subChiefName) {
 			this.subChiefName = subChiefName;
 		}
+
 	}
 }
