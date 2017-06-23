@@ -83,21 +83,17 @@
                 var encounterDate = new Date(getValue('encounter-date.value')).getTime();
                 var confirmedPveDate = new Date(getValue('confirmed-positive-date.value')).getTime();
                 var upn = jq('#hiv-id input[type=text]').val();
-
-				/*if(onSubmitWithUpnField(upn) != null) {
-				 alert("This number already exist");
-				 return false;
-				 }*/
-				/*  pw greencard additions  validation
-				 if(/^[0-9]{5}-[0-9]{5}$/.test(upn) === false) {
-				 alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
-				 return false;
-				 }
-				 */
-                if(/^[0-9]{5}$/.test(upn) === false) {
+       /*
+				if(onSubmitWithUpnField(upn) != null) {
+                        alert("This number already exist");
+                        return false;
+				 }    */
+				/*  pw greencard additions  validation  */
+                if(/^[0-9]{10}$/.test(upn) === false) {
                     alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
                     return false;
                 }
+
 
                 if (encounterDate &lt; birthDate) {
                     getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();

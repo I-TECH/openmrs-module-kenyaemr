@@ -36,17 +36,17 @@
     def childfieldrows  = [
             /* pw greencard additions  */
             [
-                    [object: command, property: "dead", label: "In School"],
+                    [object: command, property: "inSchool", label: "In School", config: [style: "list" , options: yesNoOptions]],
                     [object: command, property: "dead", label: "Orphan <18 yrs"],
 
             ],
-            // greencard additions
+
             [
                     [object: command, property: "nameOfNextOfKin", label: "Guardian last name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Guardian first name"]
+                    [object: command, property: "nameOfNextOfKin", label: "Guardian first name"]
             ]
 
-
+            // greencard additions
     ]
     def addressFieldRows = [
             [   //pw greencard additions -- alternate phone and email
@@ -159,9 +159,35 @@
             <% deathFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-            <% childfieldrows.each { %>
-            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
-            <% } %>
+
+            <table>
+                <tr>
+
+            <td valign="top">
+                <label class="ke-field-label">In School *</label>
+                <span class="ke-field-content">
+                    <input type="radio" name="inSchool" value="1065"
+                           id="inSchool-Y" ${command.inSchool == '1065' ? 'checked="checked"' : ''}/> Yes
+                    <input type="radio" name="inSchool" value="1066"
+                           id="inSchool-N" ${command.inSchool == '1066' ? 'checked="checked"' : ''}/> No
+                    <span id="inSchool-Y-error" class="error" style="display: none"></span>
+                    <span id="inSchool-N-error" class="error" style="display: none"></span>
+                </span>
+            </td>
+                    <td valign="top">
+                        <label class="ke-field-label">Orphan(<18 years) *</label>
+                        <span class="ke-field-content">
+                            <input type="radio" name="orphan" value="1065"
+                                   id="orphan-Y" ${command.orphan == '1065' ? 'checked="checked"' : ''}/> Yes
+                            <input type="radio" name="orphan" value="1066"
+                                   id="orphan-N" ${command.orphan == '1066' ? 'checked="checked"' : ''}/> No
+                            <span id="orphan-Y-error" class="error" style="display: none"></span>
+                            <span id="orphan-N-error" class="error" style="display: none"></span>
+                        </span>
+                    </td>
+                </tr>
+        </table>
+
         </fieldset>
 
         <fieldset>

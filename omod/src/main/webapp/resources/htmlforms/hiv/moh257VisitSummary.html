@@ -615,7 +615,7 @@
                 <td>(p)</td>
                 <td colspan="2" >Vaccine
 
-                    <obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    <obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          style="dropdown"
                          answerLabels="Measles,Polio,BCG,Penta,PV,PCV" />
@@ -635,7 +635,7 @@
             </tr>
             <!-- .pw Greencard addittions Antigen today  -->
             <tr>
-                <th rowspan="2">Cotrimoxazole</th>
+                <th rowspan="2">Cotrimoxazole/Dapsone </th>
                 <th colspan="2">Adherence</th>
                 <td>(q)</td>
                 <td colspan="2">
@@ -825,29 +825,13 @@
                 </td>
             </tr>
             <tr>
-                <th rowspan="7">Laboratory<br />Investigations<br />Done</th>
-                <!--  Greencard addittions viral load tracker  -->
-                <th colspan="2">Lab Order(s)*</th>
-                <td>(x)</td> <td colspan="2">
-                Lab Name
-                <obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                Reason
-                <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                     answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                     answerLabels="Baseline,Routine,Confirmatory,Suspected Drug Resistance,Other,"
-                     style="dropdowm"  />
-
-                Order date:
-                <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-            </td>
-
+                <th rowspan="7">Laboratory<br/>Investigations<br />Done</th>
             </tr>
-            <!-- .pw Greencard addittions viral load tracker  -->
-
+            <tr class="patient-details">
             <th colspan="2">CD4 (# or %)</th>
             <td>(x)</td>
             <td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
-
+            </tr>
             <tr class="patient-details">
                 <th colspan="2">Hgb</th>
                 <td>(y)</td>
@@ -951,16 +935,13 @@
                 <td>Date:
                     <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                     Reason*:
-                    <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-                         style="dropdowm"  /> </td>
+
+                 </td>
                 <td> Differentiated Care*
-                    <select>
-                        <option value="Standard">Standard</option>
-                        <option value="Express">Express</option>
-                        <option value="Community dispensing">Community dispensing</option>
-                    </select>
+                    <obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1751AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerLabels="Standard,Express,Community Dispensing"
+                         style="dropdowm"  />
                 </td>
             </tr>
             <tr>

@@ -118,6 +118,12 @@ public class EditPatientFragmentController {
 		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
 		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
 		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
+
+		// Create a list of yes_no options
+		List<Concept> yesNoOptions = new ArrayList<Concept>();
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.YES));
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.NO));
+		model.addAttribute("yesNoOptions", yesNoOptions);
 	}
 
 	/**
@@ -169,11 +175,13 @@ public class EditPatientFragmentController {
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
-
+		private Concept inSchool;
+		private Concept orphan;
 		private Obs savedMaritalStatus;
 		private Obs savedOccupation;
 		private Obs savedEducation;
-		//private Boolean inSchool;
+		private Obs savedInSchool;
+		private Obs savedOrphan;
 		private Boolean dead = false;
 		private Date deathDate;
 		private String nationalIdNumber;
@@ -221,7 +229,6 @@ public class EditPatientFragmentController {
 			birthdateEstimated = person.getBirthdateEstimated();
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
-           // inSchool = person.isinSchool();
 			PersonWrapper wrapper = new PersonWrapper(person);
 			telephoneContact = wrapper.getTelephoneContact();
 		}
@@ -258,7 +265,14 @@ public class EditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
-
+			savedInSchool = getLatestObs(patient, Dictionary.IN_SCHOOL);
+			if (savedInSchool != null) {
+				inSchool = savedInSchool.getValueCoded();
+			}
+			savedOrphan = getLatestObs(patient, Dictionary.ORPHAN);
+			if (savedOrphan != null) {
+				orphan = savedOrphan.getValueCoded();
+			}
 
 		}
 
@@ -375,7 +389,6 @@ public class EditPatientFragmentController {
 			toSave.setBirthdate(birthdate);
 			toSave.setBirthdateEstimated(birthdateEstimated);
 			toSave.setDead(dead);
-			//toSave.setInSchool(inSchool);
 			toSave.setDeathDate(deathDate);
 			toSave.setCauseOfDeath(dead ? Dictionary.getConcept(CAUSE_OF_DEATH_PLACEHOLDER) : null);
 
@@ -433,6 +446,8 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.IN_SCHOOL), savedInSchool, inSchool);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.ORPHAN), savedOrphan, orphan);
 
 
 			for (Obs o : obsToVoid) {
@@ -475,6 +490,34 @@ public class EditPatientFragmentController {
 			}
 		}
 
+		/**
+		 * Handles saving a field which is stored as an obs whose value is boolean
+		 * @param patient the patient being saved
+		 * @param obsToSave
+		 * @param obsToVoid
+		 * @param question
+		 * @param savedObs
+		 * @param newValue
+		 */
+		protected void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
+											   Obs savedObs, Boolean newValue) {
+			if (!OpenmrsUtil.nullSafeEquals(savedObs != null ? savedObs.getValueBoolean() : null, newValue)) {
+				// there was a change
+				if (savedObs != null && newValue == null) {
+					// treat going from a value to null as voiding all past civil status obs
+					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, question));
+				}
+				if (newValue != null) {
+					Obs o = new Obs();
+					o.setPerson(patient);
+					o.setConcept(question);
+					o.setObsDatetime(new Date());
+					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+					o.setValueBoolean(newValue);
+					obsToSave.add(o);
+				}
+			}
+		}
 		public boolean isInHivProgram() {
 			if (original == null || !original.isPatient()) {
 				return false;
@@ -679,13 +722,22 @@ public class EditPatientFragmentController {
 		public void setDead(Boolean dead) {
 			this.dead = dead;
 		}
-		/*  greencard
-		public Boolean getInschool(){
+		/*  greencard  */
+
+		public Concept getInSchool() {
 			return inSchool;
 		}
 
-		public void setInSchool(Boolean inSchool) {
+		public void setInSchool(Concept inSchool) {
 			this.inSchool = inSchool;
+		}
+
+		public Concept getOrphan() {
+			return orphan;
+		}
+
+		public void setOrphan(Concept orphan) {
+			this.orphan = orphan;
 		}
 
 		/*  .greencard   */

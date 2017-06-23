@@ -58,14 +58,16 @@
         <table id="table" width="100%">
             <thead>
             <tr>
-                <th>Name of Members</th>
-                <th>Age</th>
-                <th>Relation</th>
-                <th>HIV Result</th>
-                <th>Reason</th>
-                <th>Test Date</th>
-                <th>In Care?</th>
-                <th>CCC Number</th><th>Refer</th>
+                <th align="left">Name of Members</th>
+                <th align="left">Age</th>
+                <th align="left">Relation</th>
+                <th align="left">Baseline HIV Status</th>
+                <th align="left">Reason</th>
+                <th align="left">New Test Date</th>
+                <th align="left">HIV Result</th>
+                <th align="left">In Care?</th>
+                <th align="left">CCC Number</th>
+                <th align="left">Refer</th>
             </tr>
             </thead>
             <tbody>
@@ -88,7 +90,7 @@
                                      answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse,Partner,Co-Wife,Guardian,Other"/>
                             </td>
                             <td>
-                                <obs class="hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
                             </td>
@@ -102,6 +104,11 @@
                             </td>
                             <td>
                                 <obs id="next-apt-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                            </td>
+                            <td>
+                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
                             </td>
                             <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
