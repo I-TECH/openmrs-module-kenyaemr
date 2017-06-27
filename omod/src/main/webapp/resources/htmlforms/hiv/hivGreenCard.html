@@ -65,9 +65,7 @@ Green Card follow-up visit form
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
-            if (pregnancyOption == 1066) {
-                jq('#pregnancyOptionValues :input').prop('disabled', true);
-            }
+
             if (familyPlanningOption == "") {
                 jq('#onFp :input').prop('disabled', true);
                 jq('#notOnFp :input').prop('disabled', true);
@@ -84,12 +82,17 @@ Green Card follow-up visit form
                 jq('#onFp :input').prop('disabled', false);
                 jq('#notOnFp :input').prop('disabled', true);
             }
-            jq('#pregnancyOption input:radio').click(function () {
+            jq('#pregnancyOption input:radio').change(function () {
                 if ((getValue('pregnancyOption.value')) == 1066) {
                     jq('#pregnancyOptionValues :input').prop('disabled', true);
+                    jq('#fp-details').show();
+                    jq('#fpOptionValues :input').prop('disabled', false);
+                    jq('#fpOptionValues :input').prop('checked', false);
                 }
-                else {
+                else if((getValue('pregnancyOption.value')) == 1065){
                     jq('#pregnancyOptionValues :input').prop('disabled', false);
+                    jq('#fp-details').hide();
+                    //jq('#fpOptionValues :input').prop('checked', false);
                 }
             });
 
@@ -124,14 +127,8 @@ Green Card follow-up visit form
                 strtext = "";
             });
 
-            var pbirthdate = new Date("<lookup expression="
-            patient.birthdate
-            " />"
-            ).
-            getTime();
-            var pgender = "<lookup expression="
-            patient.gender
-            " />";
+            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+            var pgender = "<lookup expression="patient.gender" />";
 
             if (pgender == 'F') {
                 beforeSubmit.push(function () {
@@ -167,6 +164,8 @@ Green Card follow-up visit form
 
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
+            var pregnancyStatus = getField('#pregnancyOption');
+            var pregnantStatusRadios = jq('#fp-details').find('input[type=checkbox]');
 
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066
@@ -199,8 +198,7 @@ Green Card follow-up visit form
                     }
 
                 });
-
-                //If no responses have been recorded then hide the ActionTaken and IPTClientWorkup tabs
+                //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 } else {
 
@@ -240,6 +238,7 @@ Green Card follow-up visit form
                 }
 
             };
+
 
             var showHideIPTInitiationTab = function() {
 
@@ -283,7 +282,6 @@ Green Card follow-up visit form
                 }
 
             };
-
             var clearRadios = function(parentObj) {
 
                 parentObj.find('input[type=radio]').each(function() {
@@ -965,7 +963,6 @@ Green Card follow-up visit form
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
-
                             </tr>
                         </table>
                         <table id="pregnancyOptionValues">
@@ -981,9 +978,7 @@ Green Card follow-up visit form
                                 <td colspan="2">
                                     <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 </td>
-                                <!--<td>
-                                    <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                </td>-->
+
                             </tr>
 
                             <tr>
@@ -993,16 +988,7 @@ Green Card follow-up visit form
                                          allowFutureDates="true" labelText=" "/>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="3" style="text-align: left">
-                                    ANC/PNC Profile
-                                    <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
-
-                                </td>
-
-                            </tr>
-                            <includeIf velocityTest="$patient.gender == 'F' ">
-                                ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+                          <includeIf velocityTest="$patient.gender == 'F' ">
                                 ANC/PNC Profile
                                 <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
                             </includeIf>
@@ -1045,9 +1031,9 @@ Green Card follow-up visit form
                     </fieldset>
                 </includeIf>
                 <!--Family Planning-->
-                <fieldset>
+                <fieldset id="fp-details" >
                     <legend>Family Planning Status</legend>
-                    <table>
+                    <table id="fpOptionValues">
                         <tr>
                             <td colspan="2">
                                 Family Planning Status :
@@ -1134,8 +1120,6 @@ Green Card follow-up visit form
                                         <table class="right-aligned-first" style="width: 100%;" border="0">
                                             <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                 <tr>
-                                                    <td width="10%"></td>
-
                                                     <td style="text-align: left">
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1148,7 +1132,7 @@ Green Card follow-up visit form
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Undecided" style="checkbox"/>
-                                                    </td>
+                                                        </td>
 
                                                 </tr>
                                             </obsgroup>
