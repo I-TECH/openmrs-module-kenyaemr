@@ -52,7 +52,10 @@
 	</div>
 
 	<div class="ke-form-content">
+		<fieldset>
+			<legend>Common Laboratory Investigations</legend>
 		<table style="width: 80%">
+
 			<tr>
 				<th align="left">No. </th>
 				<th align="left">Test</th>
@@ -146,7 +149,7 @@
 				<td>Gene Xpert</td>
 				<td>
 				<obs 
-				conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+				conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 				answerConceptIds="162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 								162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 								164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
@@ -159,9 +162,52 @@
 								Invalid/No result/Error" 
 				dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
 
-			</tr>			
+			</tr>
 		</table>
-	</div>
+		</fieldset>
+		<fieldset>
+			<legend>Other Laboratory Investigations</legend>
+			<table>
+				<tr>
+				<tr>
+					<td>Lab Name</td>
+					<td>Order Reason</td>
+					<td>Date Ordered</td>
+					<td>Result</td>
+					<td>Date Collected</td>
+				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
+								</td>
+								<td>
+									<obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Baseline,Routine,Confirmatory,Suspected Drug Resistance,Other,"
+										 style="dropdowm"  />
+								</td>
+								<td>
+									<obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+								</td>
+								<td><obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="1" concept=" " />
+					<render n="2" concept=" " />
+					<render n="3" concept=" " />
+					<render n="4" concept=" " />
+					<render n="5" concept=" " />
+				</repeat>
+				</tr>
+
+
+		</table>
+		</fieldset></div>
 	<div class="ke-form-footer">
 		<submit />
 	</div>

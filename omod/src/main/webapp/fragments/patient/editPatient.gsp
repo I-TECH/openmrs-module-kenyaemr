@@ -10,23 +10,18 @@
     ]
 
     def otherDemogFieldRows = [
-            //pw greencard additions
-            [
-                    [object: command, property: "dead", label: "In School"],
-                    [object: command, property: "dead", label: "Orphan <18 yrs"],
-
-            ],
-            //.pw greencard additions
-            [
+              [
                     [object: command, property: "maritalStatus", label: "Marital status", config: [style: "list", options: maritalStatusOptions]],
-                    [object: command, property: "occupation", label: "Occupation", config: [style: "list", answerTo: occupationConcept]],
+                    [object: command, property: "occupation", label: "Occupation", config: [style: "list", options: occupationOptions]],
                     [object: command, property: "education", label: "Education", config: [style: "list", options: educationOptions]]
-            ],
+             ]
+      ]
+    def deathFieldRows = [
             [
                     [object: command, property: "dead", label: "Deceased"],
                     [object: command, property: "deathDate", label: "Date of death"]
             ]
-    ]
+      ]
 
     def nextOfKinFieldRows = [
             [
@@ -38,20 +33,27 @@
                     [object: command, property: "nextOfKinAddress", label: "Next of kin address"]
             ]
     ]
-    def guardianfieldrows  = [
+    def childfieldrows  = [
+            /* pw greencard additions  */
+            [
+                    [object: command, property: "inSchool", label: "In School", config: [style: "list" , options: yesNoOptions]],
+                    [object: command, property: "dead", label: "Orphan <18 yrs"],
+
+            ],
+
             [
                     [object: command, property: "nameOfNextOfKin", label: "Guardian last name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Guardian first name"]
+                    [object: command, property: "nameOfNextOfKin", label: "Guardian first name"]
             ]
 
-
+            // greencard additions
     ]
     def addressFieldRows = [
             [   //pw greencard additions -- alternate phone and email
                     [object: command, property: "telephoneContact", label: "Telephone contact*"],
                     [object: command, property: "nextOfKinAddress", label: "Alternate phone number"],
                     [object: command, property: "nextOfKinAddress", label: "Email address"]
-            ], //.pw greencard additions -- alternat phone and email
+            ], //.pw greencard additions -- alternate phone and email
             [
                     [object: command, property: "personAddress.address1", label: "Postal Address*", config: [size: 60]],
                     [object: command, property: "personAddress.country", label: "County*", config: [size: 60]],
@@ -154,10 +156,38 @@
             <% otherDemogFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
-            <% guardianfieldrows.each { %>
+            <% deathFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
+
+            <table>
+                <tr>
+
+            <td valign="top">
+                <label class="ke-field-label">In School *</label>
+                <span class="ke-field-content">
+                    <input type="radio" name="inSchool" value="1065"
+                           id="inSchool-Y" ${command.inSchool == '1065' ? 'checked="checked"' : ''}/> Yes
+                    <input type="radio" name="inSchool" value="1066"
+                           id="inSchool-N" ${command.inSchool == '1066' ? 'checked="checked"' : ''}/> No
+                    <span id="inSchool-Y-error" class="error" style="display: none"></span>
+                    <span id="inSchool-N-error" class="error" style="display: none"></span>
+                </span>
+            </td>
+                    <td valign="top">
+                        <label class="ke-field-label">Orphan(<18 years) *</label>
+                        <span class="ke-field-content">
+                            <input type="radio" name="orphan" value="1065"
+                                   id="orphan-Y" ${command.orphan == '1065' ? 'checked="checked"' : ''}/> Yes
+                            <input type="radio" name="orphan" value="1066"
+                                   id="orphan-N" ${command.orphan == '1066' ? 'checked="checked"' : ''}/> No
+                            <span id="orphan-Y-error" class="error" style="display: none"></span>
+                            <span id="orphan-N-error" class="error" style="display: none"></span>
+                        </span>
+                    </td>
+                </tr>
+        </table>
+
         </fieldset>
 
         <fieldset>
