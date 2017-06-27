@@ -39,14 +39,8 @@ Green Card follow-up visit form
             jq('#calculated-bmi').html(display);
         }
         function displayRecentBmi() {
-            var weightKg = "<lookup expression="
-            fn.latestObs(5089).valueNumeric
-            "/>"
-            var heightM = ("<lookup expression="
-            fn.latestObs(5090).valueNumeric
-            "/>"
-        )/
-            100
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
                 bmi = weightKg / (heightM * heightM);
@@ -54,11 +48,11 @@ Green Card follow-up visit form
             jq('#recent-calculated-bmi').html(bmi.toFixed(2));
         }
 
-        jQuery(function($) {
+        jq(function() {
          getField('weight.value').change(onWeightOrHeightChange);
-          getField('height.value').change(onWeightOrHeightChange);
-           onWeightOrHeightChange();
-            displayRecentBmi();
+         getField('height.value').change(onWeightOrHeightChange);
+         onWeightOrHeightChange();
+         displayRecentBmi();
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -94,29 +88,29 @@ Green Card follow-up visit form
             jq("#fplanning select ").change(function () {
 
                 jq("#fplanning select option:selected").each(function () {
-                    strtext += $(this).val();
+                    strtext += jq(this).val();
                 });
 
                 if (strtext == "") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
                 if (strtext == "965") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
                 if (strtext == "160652") {
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', false);
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', false);
                 }
                 if (strtext == "1360") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
 
                 strtext = "";
@@ -163,8 +157,8 @@ Green Card follow-up visit form
                 return true;
             });
 
-            var screeningRadios = $('#screening-questions').find('input[type=radio]');
-            var iptClientWorkupRadios = $('#ipt-client-workup').find('input[type=radio]');
+            var screeningRadios = jq('#screening-questions').find('input[type=radio]');
+            var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
 
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066
@@ -173,37 +167,38 @@ Green Card follow-up visit form
             //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
             //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
             var showHideTabs = function() {
-                var actionTakenTab = $('#action-taken');
-                var iptClientWorkupTab = $('#ipt-client-workup');
+                var actionTakenTab = jq('#action-taken');
+                var iptClientWorkupTab = jq('#ipt-client-workup');
+                var iptFollowup = jq('#ipt-followup');
 
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
+                var showIPTFollowupTab = false;
 
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
 
                 //Fetch responses for the screening questions
-                $.each(screeningRadios, function(){
+                jq.each(screeningRadios, function(){
 
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
                     if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
-
                     }
 
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningNoResponses.push(this);
-
                     }
 
                 });
 
-                //If no responses have been recorded than hide the ActionTaken and IPTClientWorkup tabs
+                //If no responses have been recorded then hide the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 } else {
 
                     if (screeningYesResponses.length &gt; 0) {
                         showActionTakenTab = true;
+                        showIPTFollowupTab = true;
 
                     } else {
 
@@ -218,9 +213,11 @@ Green Card follow-up visit form
 
                 if (showActionTakenTab) {
                     actionTakenTab.show();
+                    iptFollowup.show();
 
                 } else {
                     actionTakenTab.hide();
+                    iptFollowup.hide();
                     clearRadios(actionTakenTab);
 
                 }
@@ -238,14 +235,14 @@ Green Card follow-up visit form
 
             var showHideIPTInitiationTab = function() {
 
-                var iptInitiationTab = $('#ipt-initiation');
+                var iptInitiationTab = jq('#ipt-initiation');
                 var showIPTInitiationTab = false;
 
                 var iptClientWorkupYesResponses = [];
                 var iptClientWorkupNoResponses = [];
 
                 //Fetch responses for the IPT client workup questions
-                $.each(iptClientWorkupRadios, function() {
+                jq.each(iptClientWorkupRadios, function() {
 
                     //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
                     if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
@@ -658,7 +655,7 @@ Green Card follow-up visit form
                     </tr>
                 </table>
             </fieldset>
-            <fieldset>
+            <fieldset id="ipt-followup">
                 <legend>IPT Followup</legend>
 
                 <table>
@@ -773,6 +770,7 @@ Green Card follow-up visit form
                 </table>
 
             </fieldset>
+
             <!--Adverse Drug Reactions-->
             <fieldset>
                 <legend>Adverse Drug Reactions</legend>
@@ -781,12 +779,11 @@ Green Card follow-up visit form
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
                                 <tr>
-                                    <th style="color: #888">Causative agent</th>
-                                    <th style="color: #888">Reaction</th>
-                                    <th style="color: #888" >Severity</th>
-                                    <th style="color: #888">Date of Onset</th>
-                                    <th style="color: #888" > Action taken</th>
-                                    <!-- pw.Greencard additions action taken missing question id -->
+                                    <td>Causative agent</td>
+                                    <td>Reaction</td>
+                                    <td>Severity</td>
+                                    <td>Date of Onset</td>
+                                    <td>Action taken</td>  <!-- pw.Greencard additions action taken missing question id -->
                                 </tr>
                                 <repeat>
                                     <template>
@@ -848,25 +845,18 @@ Green Card follow-up visit form
             </fieldset>
             <fieldset>
                 <legend>Antigen Today</legend>
-
-                <table cellspacing="0">
+                <table>
                     <tr>
-                        <th style="color: #888">Vaccine</th>
-                        <th style="color: #888">Vaccine Stage</th>
-                        <th style="color: #888; text-align: center">Vaccination Date</th>
-                    </tr>
-                    <repeat>
-                        <template>
-                            <obsgroup groupingConceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                <tr>
 
-                        <td>
+                        <td colspan="2" >Vaccine
 
                             <obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  style="dropdown"
                                  answerLabels="Measles,Polio,BCG,Penta,PV,PCV" />
-                        </td><td>
+
+                            Vaccine Stage
+
                             <select>
                                 <option value="Select">Select</option>
                                 <option value="Stage1">Stage1</option>
@@ -874,18 +864,10 @@ Green Card follow-up visit form
                                 <option value="Stage3">Stage3</option>
                                 <option value="Stage4">Stage4</option>
                             </select>
-                                </td><td>
+                            Vaccination Date:
                             <obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                         </td>
                     </tr>
-                            </obsgroup>
-                        </template>
-                        <render n="1" concept="Vaccine"/>
-                        <render n="2" concept="Vaccine"/>
-                        <render n="3" concept="Vaccine"/>
-                        <render n="4" concept="Vaccine"/>
-                        <render n="5" concept="Vaccine"/>
-                    </repeat>
                 </table>
             </fieldset>
 
@@ -1241,124 +1223,45 @@ Green Card follow-up visit form
             <!--System Examination-->
             <fieldset>
                 <legend>System Examination</legend>
-                <table style="width: 100%;" border="0">
+                <table class="right-aligned-first" style="width: 100%;" border="0">
                     <tr>
-                        <th align="left">No. </th>
-                        <th align="left">System Review</th>
-                        <th align="left">Findings</th>
-                        <th align="left">Findings Notes</th>
+                        <td colspan="2" style="text-align: left">
+                            <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 labelText="Is Patient Pregnant?: "
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table id="pregnancyOptionValues">
+                    <tr>
+                        <td width="8%" style="text-align: left">ANC Number:</td>
+                        <td>
+                            <obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                        </td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>1.</td>
-                        <td>Skin</td>
-                        <td><obs
-                                conceptId="1120AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="150555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136455AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1249AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Abscess,Swelling/Growth,Hair Loss,Itching,Kaposi Sarcoma,Skin eruptions/Rashes,Oral sores"
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="160981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                              />
+                        <td style="text-align: left">EDD:</td>
+                        <td colspan="2">
+                            <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                                 allowFutureDates="true" labelText=" "/>
                         </td>
                     </tr>
                     <tr>
-                        <td>2.</td>
-                        <td>Eyes</td>
-                        <td><obs
-                                conceptId="163309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="123074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140827AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Visual Disturbance,Excessive tearing,Eye pain,Eye redness,Light sensitive,Itchy eyes"
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
+                        <td style="text-align: left">Gravida:</td>
+                        <td>
+                            <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
                         </td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>3.</td>
-                        <td>ENT</td>
-                        <td><obs
-                                conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="148517AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,128055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110099AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126318AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Apnea,Hearing disorder,Dental caries,Erythema,Frequent colds,Gingival bleeding,Hairy cell leukoplakia,Hearing loss,Hoarseness,Kaposi Sarcoma,Masses,Nasal discharge,Nosebleed,Pain,Post nasal discharge,Sinus problems,Snoring,Sore thoat,Oral sores,Thrush,Tinnitus,Toothache,Ulcers,Vertigo"
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
+                        <td style="text-align: left">Parity:</td>
+                        <td>
+                            <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>4.</td>
-                        <td>Chest</td>
-                        <td><obs
-                                conceptId="1123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="146893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145712AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5209AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Bronchial breathing,Crackles,Dullness,Reduced breathing,Respiratory distress,Wheezing"
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                        </td>
-                    </tr>
-                    <tr>
-                    <td>5.</td>
-                    <td>CVS</td>
-                    <td><obs
-                            conceptId="1124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerConceptIds="140147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,130560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerLabels="Elevated blood pressure,Irregular heartbeat,Cardiac murmur,Cardiac rub"
-                            style="dropdowm"
-                    /></td>
-
-                    <td><obs conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                    />
-                    </td>
-                </tr>
-                    <tr>
-                        <td>6.</td>
-                        <td>Abdomen</td>
-                        <td><obs
-                                conceptId="1125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="150915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5103AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Abdominal distension,Hepatomegaly,Abdominal mass,Splenomegaly,Abdominal tenderness"
-                                style="dropdowm "
-                        /></td>
-
-                        <td><obs conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>7.</td>
-                        <td>CNS</td>
-                        <td><obs
-                                conceptId="1130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="118872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,150817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,157498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Altered sensation,Bulging fontenelle,Abnormal reflexes,Confusion,Limb weakness,Stiff neck,Kernicterus"
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>8.</td>
-                        <td>GUS</td>
-                        <td><obs
-                                conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,154311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Bleeding,Rectal discharge,Urethral discharge,Vaginal discharge,Ulceration "
-                                style="dropdowm"
-                        /></td>
-
-                        <td><obs conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                        </td>
+                        <td></td>
                     </tr>
                 </table>
             </fieldset>
@@ -1402,134 +1305,7 @@ Green Card follow-up visit form
 
             </table>
         </fieldset>
-        <fieldset>
-            <legend>Cotrimoxazole/Dapsone</legend>
-            <table>
-                <tr>
-                    <td>
-                        <table cellpadding="0" border="0" cellspacing="5">
-                            <tr>
-                                <td>Adherence</td>
-                                <td>
-                                    <obs
-                                            conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
-                                            style="radio"
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Dispensed</td>
-                                <td>
-                                    <obs
-                                            conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Yes,No,Not applicable (N/A)"
-                                            style="radio"
-                                    />
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
 
-        <fieldset>
-            <legend>ARV</legend>
-            <table>
-                <tr>
-                    <td>
-                        <table cellpadding="0" border="0" cellspacing="5">
-                            <tr>
-                                <td>Adherence</td>
-                                <td>
-                                    <obs
-                                            conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
-                                            style="radio"
-                                    />
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-
-        <fieldset >
-            <legend>Population type</legend>
-            <table>
-                <tr>
-                    <td valign="top">Is the client a member of at-risk population?</td>
-                    <td>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Discordant Couple" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Injectable Drug User" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Male who has sex with men" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Sex Worker" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Client of Sex Worker" style="checkbox" />
-
-                    </td>
-                </tr>
-            </table>
-        </fieldset >
-
-        <fieldset >
-            <legend>PwP Services</legend>
-            <table>
-                <tr>
-                    <td>Has the client been given condoms this visit?</td>
-                    <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                </tr>
-                <tr>
-                    <td>Has the Client disclosed HIV status to their sexually active partner?</td>
-                    <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                </tr>
-                <tr>
-                    <td>Has the client's partner received on-site HIV testing?</td>
-                    <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                </tr>
-                <tr>
-                    <td>Has the client been screened for STI (in this visit)?</td>
-                    <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                </tr>
-            </table>
-        </fieldset >
-        <fieldset>
-            <legend>Return Visit</legend>
-            <table>
-                <tr>
-                    <td>Return Visit Date:</td>
-                    <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
-                        Reason*:
-                        <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-                             style="dropdowm"  />
-                    </td>
-
-                </tr><tr></tr>
-                <tr>
-                    <td>Differentiated Care</td>
-
-                    <td>
-
-                        <obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1751AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Standard,Express,Community Dispensing"
-                             style="dropdowm"  />
-                    </td>
-                </tr>
-
-            </table>
-        </fieldset>
     </div>
 
     <div class="ke-form-footer">
@@ -1537,3 +1313,4 @@ Green Card follow-up visit form
     </div>
 
 </htmlform>
+
