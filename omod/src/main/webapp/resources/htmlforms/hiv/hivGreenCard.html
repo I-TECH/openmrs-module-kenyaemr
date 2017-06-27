@@ -54,10 +54,10 @@ Green Card follow-up visit form
             jq('#recent-calculated-bmi').html(bmi.toFixed(2));
         }
 
-        jq(function () {
-            getField('weight.value').change(onWeightOrHeightChange);
-            getField('height.value').change(onWeightOrHeightChange);
-           // onWeightOrHeightChange();
+        jQuery(function($) {
+         getField('weight.value').change(onWeightOrHeightChange);
+          getField('height.value').change(onWeightOrHeightChange);
+           onWeightOrHeightChange();
             displayRecentBmi();
 
             var strtext = "";
