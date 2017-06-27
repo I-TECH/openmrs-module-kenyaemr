@@ -54,6 +54,14 @@ Green Card follow-up visit form
          onWeightOrHeightChange();
          displayRecentBmi();
 
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            if (pAge &gt; 15) {
+                whoChild.style.display='none';
+            }
+            if (pAge &lt; 15) {
+                whoAdult.style.display='none';
+            }
+
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
@@ -449,6 +457,31 @@ Green Card follow-up visit form
                 </includeIf>
             </table>
         </fieldset>
+        <!-- WHO staging -->
+        <fieldset>
+            <legend>WHO Staging</legend>
+     <table>
+             <tr>
+                      <td>WHO Staging:</td>
+                      <td>
+                          <div id="whoAdult">
+                              <table>
+                                  <tr>
+                                      <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                  </tr>
+                              </table>
+                          </div>
+                          <div id="whoChild">
+                              <table>
+                                  <tr>
+                                      <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                  </tr>
+                              </table>
+                          </div>
+                      </td>
+                  </tr>
+            </table>
+        </fieldset>
         <!--Presenting complaints today-->
 
         <fieldset>
@@ -822,27 +855,6 @@ Green Card follow-up visit form
                             </table>
                         </td>
                     </tr>
-
-
-                    <!--<tr>
-                        <td>WHO Staging:</td>
-                        <td>
-                            <div id="whoAdult">
-                                <table>
-                                    <tr>
-                                        <td><strong>Adult</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div id="whoChild">
-                                <table>
-                                    <tr>
-                                        <td><strong>Child</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>-->
                 </table>
             </fieldset>
             <fieldset>
