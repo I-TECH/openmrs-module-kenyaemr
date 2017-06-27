@@ -39,14 +39,8 @@ Green Card follow-up visit form
             jq('#calculated-bmi').html(display);
         }
         function displayRecentBmi() {
-            var weightKg = "<lookup expression="
-            fn.latestObs(5089).valueNumeric
-            "/>"
-            var heightM = ("<lookup expression="
-            fn.latestObs(5090).valueNumeric
-            "/>"
-        )/
-            100
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
                 bmi = weightKg / (heightM * heightM);
@@ -54,11 +48,11 @@ Green Card follow-up visit form
             jq('#recent-calculated-bmi').html(bmi.toFixed(2));
         }
 
-        jQuery(function($) {
+        jq(function() {
          getField('weight.value').change(onWeightOrHeightChange);
-          getField('height.value').change(onWeightOrHeightChange);
-           onWeightOrHeightChange();
-            displayRecentBmi();
+         getField('height.value').change(onWeightOrHeightChange);
+         onWeightOrHeightChange();
+         displayRecentBmi();
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -94,29 +88,29 @@ Green Card follow-up visit form
             jq("#fplanning select ").change(function () {
 
                 jq("#fplanning select option:selected").each(function () {
-                    strtext += $(this).val();
+                    strtext += jq(this).val();
                 });
 
                 if (strtext == "") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
                 if (strtext == "965") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
                 if (strtext == "160652") {
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', false);
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', false);
                 }
                 if (strtext == "1360") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
                 }
 
                 strtext = "";
@@ -163,8 +157,8 @@ Green Card follow-up visit form
                 return true;
             });
 
-            var screeningRadios = $('#screening-questions').find('input[type=radio]');
-            var iptClientWorkupRadios = $('#ipt-client-workup').find('input[type=radio]');
+            var screeningRadios = jq('#screening-questions').find('input[type=radio]');
+            var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
 
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066
@@ -173,37 +167,38 @@ Green Card follow-up visit form
             //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
             //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
             var showHideTabs = function() {
-                var actionTakenTab = $('#action-taken');
-                var iptClientWorkupTab = $('#ipt-client-workup');
+                var actionTakenTab = jq('#action-taken');
+                var iptClientWorkupTab = jq('#ipt-client-workup');
+                var iptFollowup = jq('#ipt-followup');
 
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
+                var showIPTFollowupTab = false;
 
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
 
                 //Fetch responses for the screening questions
-                $.each(screeningRadios, function(){
+                jq.each(screeningRadios, function(){
 
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
                     if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
-
                     }
 
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningNoResponses.push(this);
-
                     }
 
                 });
 
-                //If no responses have been recorded than hide the ActionTaken and IPTClientWorkup tabs
+                //If no responses have been recorded then hide the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 } else {
 
                     if (screeningYesResponses.length &gt; 0) {
                         showActionTakenTab = true;
+                        showIPTFollowupTab = true;
 
                     } else {
 
@@ -218,9 +213,11 @@ Green Card follow-up visit form
 
                 if (showActionTakenTab) {
                     actionTakenTab.show();
+                    iptFollowup.show();
 
                 } else {
                     actionTakenTab.hide();
+                    iptFollowup.hide();
                     clearRadios(actionTakenTab);
 
                 }
@@ -238,14 +235,14 @@ Green Card follow-up visit form
 
             var showHideIPTInitiationTab = function() {
 
-                var iptInitiationTab = $('#ipt-initiation');
+                var iptInitiationTab = jq('#ipt-initiation');
                 var showIPTInitiationTab = false;
 
                 var iptClientWorkupYesResponses = [];
                 var iptClientWorkupNoResponses = [];
 
                 //Fetch responses for the IPT client workup questions
-                $.each(iptClientWorkupRadios, function() {
+                jq.each(iptClientWorkupRadios, function() {
 
                     //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
                     if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
@@ -660,7 +657,7 @@ Green Card follow-up visit form
                     </tr>
                 </table>
             </fieldset>
-            <fieldset>
+            <fieldset id="ipt-followup">
                 <legend>IPT Followup</legend>
 
                 <table>
@@ -775,6 +772,7 @@ Green Card follow-up visit form
                 </table>
 
             </fieldset>
+
             <!--Adverse Drug Reactions-->
             <fieldset>
                 <legend>Adverse Drug Reactions</legend>
@@ -783,12 +781,11 @@ Green Card follow-up visit form
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
                                 <tr>
-                                    <th style="color: #888">Causative agent</th>
-                                    <th style="color: #888">Reaction</th>
-                                    <th style="color: #888" >Severity</th>
-                                    <th style="color: #888">Date of Onset</th>
-                                    <th style="color: #888" > Action taken</th>
-                                    <!-- pw.Greencard additions action taken missing question id -->
+                                    <td>Causative agent</td>
+                                    <td>Reaction</td>
+                                    <td>Severity</td>
+                                    <td>Date of Onset</td>
+                                    <td>Action taken</td>  <!-- pw.Greencard additions action taken missing question id -->
                                 </tr>
                                 <repeat>
                                     <template>
@@ -850,8 +847,7 @@ Green Card follow-up visit form
             </fieldset>
             <fieldset>
                 <legend>Antigen Today</legend>
-
-                <table cellspacing="0">
+                <table>
                     <tr>
                         <th style="color: #888">Vaccine</th>
                         <th style="color: #888">Vaccine Stage</th>
@@ -1242,6 +1238,7 @@ Green Card follow-up visit form
             <!--System Examination-->
             <fieldset>
                 <legend>System Examination</legend>
+
                 <table style="width: 70%;" border="0">
                     <tr>
                         <th align="left">No. </th>
@@ -1527,6 +1524,7 @@ Green Card follow-up visit form
 
             </table>
         </fieldset>
+
     </div>
 
     <div class="ke-form-footer">
@@ -1534,3 +1532,4 @@ Green Card follow-up visit form
     </div>
 
 </htmlform>
+
