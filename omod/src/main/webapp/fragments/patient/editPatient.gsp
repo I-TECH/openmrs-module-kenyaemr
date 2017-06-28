@@ -37,7 +37,8 @@
             /* pw greencard additions  */
             [
                     [object: command, property: "inSchool", label: "In School", config: [style: "list" , options: yesNoOptions]],
-                    [object: command, property: "dead", label: "Orphan <18 yrs"],
+                    [object: command, property: "orphan", label: "Orphan <18 yrs", config: [style: "list" , options: yesNoOptions]],
+
 
             ],
 
