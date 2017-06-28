@@ -15,7 +15,6 @@
 Green Card follow-up visit form
 -->
 <htmlform>
-
     <style type="text/css">
         table.right-aligned-first td:first-child {
             text-align: right;
@@ -53,7 +52,42 @@ Green Card follow-up visit form
          getField('height.value').change(onWeightOrHeightChange);
          onWeightOrHeightChange();
          displayRecentBmi();
+         jq('input[type=radio].on-ipt').prop("disabled", true);
+         jq('input[type=radio].on-ipt').prop("checked", false);
+         jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
+         jq("#tb-screening-result").hide();
+         jq('#pregnancyOptionValues').hide();
+         jq('#fp-details').hide();
+         jq('input[type=radio].on-anti-tb-drugs').change(function(){
+             var val = jq(this).val();
+             var actionTakenTab = jq('#action-taken');
+             var iptClientWorkupTab = jq('#ipt-client-workup');
+             var iptFollowup = jq('#ipt-followup');
+             var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+             if(val == 1066) {
+                 jq('input[type=radio].on-ipt').prop("disabled", false);
+             } else {
+                 jq('input[type=radio].on-ipt').prop("disabled", true);
+                 jq('input[type=radio].on-ipt').prop("checked", false);
+                 jq("#tb-screening-result").hide();
+                 jq("#tb-screening-tab").hide();
+                 actionTakenTab.hide();
+                 clearRadios(actionTakenTab);
+                 iptClientWorkupTab.hide()
+                 clearRadios(iptClientWorkupTab);
+                 iptFollowup.hide();
+                 clearRadios(iptFollowup);
+                 tbScreeningQuestionsTab.hide();
+                 clearRadios(tbScreeningQuestionsTab);
 
+             }
+         });
+
+            jq('input[type=radio].on-ipt').change(function(){
+               jq("#tb-screening-tab").show();
+                jq("#tb-screening-result").show();
+            });
+            jq("#tb-screening-tab").hide();
             pAge = parseInt('<lookup expression="patient.age"/>');
             if (pAge &gt; 15) {
                 whoChild.style.display='none';
@@ -65,9 +99,7 @@ Green Card follow-up visit form
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
-            if (pregnancyOption == 1066) {
-                jq('#pregnancyOptionValues :input').prop('disabled', true);
-            }
+
             if (familyPlanningOption == "") {
                 jq('#onFp :input').prop('disabled', true);
                 jq('#notOnFp :input').prop('disabled', true);
@@ -84,12 +116,19 @@ Green Card follow-up visit form
                 jq('#onFp :input').prop('disabled', false);
                 jq('#notOnFp :input').prop('disabled', true);
             }
-            jq('#pregnancyOption input:radio').click(function () {
+            jq('#pregnancyOption input:radio').change(function () {
                 if ((getValue('pregnancyOption.value')) == 1066) {
-                    jq('#pregnancyOptionValues :input').prop('disabled', true);
+                    //jq('#pregnancyOptionValues :input').prop('disabled', true);
+                    jq('#pregnancyOptionValues').hide();
+                    jq('#fp-details').show();
+                    jq('#fpOptionValues :input').prop('disabled', false);
+                    jq('#fpOptionValues :input').prop('checked', false);
                 }
-                else {
+                else if((getValue('pregnancyOption.value')) == 1065){
                     jq('#pregnancyOptionValues :input').prop('disabled', false);
+                    jq('#pregnancyOptionValues').show();
+                    jq('#fp-details').hide();
+                    //jq('#fpOptionValues :input').prop('checked', false);
                 }
             });
 
@@ -124,14 +163,8 @@ Green Card follow-up visit form
                 strtext = "";
             });
 
-            var pbirthdate = new Date("<lookup expression="
-            patient.birthdate
-            " />"
-            ).
-            getTime();
-            var pgender = "<lookup expression="
-            patient.gender
-            " />";
+            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+            var pgender = "<lookup expression="patient.gender" />";
 
             if (pgender == 'F') {
                 beforeSubmit.push(function () {
@@ -167,6 +200,8 @@ Green Card follow-up visit form
 
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
+            var pregnancyStatus = getField('#pregnancyOption');
+            var pregnantStatusRadios = jq('#fp-details').find('input[type=checkbox]');
 
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066
@@ -178,6 +213,7 @@ Green Card follow-up visit form
                 var actionTakenTab = jq('#action-taken');
                 var iptClientWorkupTab = jq('#ipt-client-workup');
                 var iptFollowup = jq('#ipt-followup');
+                var tbScreeningQuestionsTab = jq("#tb-screening-tab");
 
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
@@ -199,8 +235,7 @@ Green Card follow-up visit form
                     }
 
                 });
-
-                //If no responses have been recorded then hide the ActionTaken and IPTClientWorkup tabs
+                //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 } else {
 
@@ -240,6 +275,7 @@ Green Card follow-up visit form
                 }
 
             };
+
 
             var showHideIPTInitiationTab = function() {
 
@@ -283,7 +319,6 @@ Green Card follow-up visit form
                 }
 
             };
-
             var clearRadios = function(parentObj) {
 
                 parentObj.find('input[type=radio]').each(function() {
@@ -545,7 +580,15 @@ Green Card follow-up visit form
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
-                <fieldset>
+                <div>
+                   Patient on anti-TB Drugs? <input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"/> Yes
+                    <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
+                </div>
+                <div>
+                    Patient on IPT? <input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
+                    <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
+                </div>
+                <fieldset id="tb-screening-tab">
                     <legend>Screening Questions</legend>
                     <table id="screening-questions">
                         <tr>
@@ -672,7 +715,7 @@ Green Card follow-up visit form
 
                 <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
 
-                <table>
+                <table id="tb-screening-result">
                     <tr>
                         <td colspan="2"><p> </p></td>
                     </tr>
@@ -724,7 +767,7 @@ Green Card follow-up visit form
                     </tr>
                     <tr>
                         <td>Action Taken</td>
-                        <td><obs id="action-taken" conceptId="160632" cols="30" rows="6" /></td>
+                        <td><obs id="action-taken" conceptId="160632" cols="45" rows="1" /></td>
                     </tr>
                 </table>
             </fieldset>
@@ -814,11 +857,11 @@ Green Card follow-up visit form
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
                                 <tr>
-                                    <td>Causative agent</td>
-                                    <td>Reaction</td>
-                                    <td>Severity</td>
-                                    <td>Date of Onset</td>
-                                    <td>Action taken</td>  <!-- pw.Greencard additions action taken missing question id -->
+                                    <th>Causative agent</th>
+                                    <th>Reaction</th>
+                                    <th>Severity</th>
+                                    <th>Date of Onset</th>
+                                    <th>Action taken</th>  <!-- pw.Greencard additions action taken missing question id -->
                                 </tr>
                                 <repeat>
                                     <template>
@@ -859,43 +902,42 @@ Green Card follow-up visit form
             </fieldset>
             <fieldset>
                 <legend>Antigen Today</legend>
-                <table>
+                <table width="30%">
                     <tr>
-                        <th style="color: #888">Vaccine</th>
-                        <th style="color: #888">Vaccine Stage</th>
-                        <th style="color: #888; text-align: center">Vaccination Date</th>
-                    </tr>
-                    <repeat>
-                        <template>
-                            <obsgroup groupingConceptId="164464AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                <tr>
+                        <th style="color: #888" align="left">Antigen</th>
+                        <th style="color: #888" align="left">Recent</th>
+                        <th style="color: #888" align="left">Count</th>
+                      </tr>
 
-                        <td>
-
-                            <obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown"
-                                 answerLabels="Measles,Polio,BCG,Penta,PV,PCV" />
-                        </td><td>
-                            <select>
-                                <option value="Select">Select</option>
-                                <option value="Stage1">Stage1</option>
-                                <option value="Stage2">Stage2</option>
-                                <option value="Stage3">Stage3</option>
-                                <option value="Stage4">Stage4</option>
-                            </select>
-                                </td><td>
-                            <obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                        </td>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="BCG" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>
                     </tr>
-                            </obsgroup>
-                        </template>
-                        <render n="1" concept="Vaccine"/>
-                        <render n="2" concept="Vaccine"/>
-                        <render n="3" concept="Vaccine"/>
-                        <render n="4" concept="Vaccine"/>
-                        <render n="5" concept="Vaccine"/>
-                    </repeat>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PV" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
+                    </tr>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Penta" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>
+                    </tr>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCV" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>
+                    </tr>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Measles" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>
+                    </tr>
+
+
+
+
                 </table>
             </fieldset>
 
@@ -965,7 +1007,6 @@ Green Card follow-up visit form
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
-
                             </tr>
                         </table>
                         <table id="pregnancyOptionValues">
@@ -981,9 +1022,7 @@ Green Card follow-up visit form
                                 <td colspan="2">
                                     <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 </td>
-                                <!--<td>
-                                    <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                </td>-->
+
                             </tr>
 
                             <tr>
@@ -994,19 +1033,6 @@ Green Card follow-up visit form
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: left">
-                                    ANC/PNC Profile
-                                    <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
-
-                                </td>
-
-                            </tr>
-                            <includeIf velocityTest="$patient.gender == 'F' ">
-                                ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
-                                ANC/PNC Profile
-                                <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
-                            </includeIf>
-                            <tr>
                                 <td style="text-align: left">Gravida:</td>
                                 <td>
                                     <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
@@ -1014,14 +1040,16 @@ Green Card follow-up visit form
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="text-align: left">Parity:</td>
-                                <td>
-                                    <obs conceptId="1053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
-                                </td>
-                                <td></td>
-                            </tr>
+                                <includeIf velocityTest="$patient.gender == 'F' ">
+                                    <td style="text-align: left">ANC/PNC Profile</td>
+                                    <td>
+                                        <obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                                    </td>
+                                </includeIf>
 
-                        </table>
+                            </tr>
+                            </table>
+
                         <table>
 
                             <tr>
@@ -1045,9 +1073,9 @@ Green Card follow-up visit form
                     </fieldset>
                 </includeIf>
                 <!--Family Planning-->
-                <fieldset>
+                <fieldset id="fp-details" >
                     <legend>Family Planning Status</legend>
-                    <table>
+                    <table id="fpOptionValues">
                         <tr>
                             <td colspan="2">
                                 Family Planning Status :
@@ -1134,8 +1162,6 @@ Green Card follow-up visit form
                                         <table class="right-aligned-first" style="width: 100%;" border="0">
                                             <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                 <tr>
-                                                    <td width="10%"></td>
-
                                                     <td style="text-align: left">
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1148,7 +1174,7 @@ Green Card follow-up visit form
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Undecided" style="checkbox"/>
-                                                    </td>
+                                                        </td>
 
                                                 </tr>
                                             </obsgroup>
