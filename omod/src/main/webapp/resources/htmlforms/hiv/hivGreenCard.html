@@ -47,47 +47,77 @@ Green Card follow-up visit form
             jq('#recent-calculated-bmi').html(bmi.toFixed(2));
         }
 
-        jq(function() {
-         getField('weight.value').change(onWeightOrHeightChange);
-         getField('height.value').change(onWeightOrHeightChange);
-         onWeightOrHeightChange();
-         displayRecentBmi();
-         jq('input[type=radio].on-ipt').prop("disabled", true);
-         jq('input[type=radio].on-ipt').prop("checked", false);
-         jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
-         jq("#tb-screening-result").hide();
-         jq('#pregnancyOptionValues').hide();
-         jq('#fp-details').hide();
-         jq('input[type=radio].on-anti-tb-drugs').change(function(){
-             var val = jq(this).val();
-             var actionTakenTab = jq('#action-taken');
-             var iptClientWorkupTab = jq('#ipt-client-workup');
-             var iptFollowup = jq('#ipt-followup');
-             var tbScreeningQuestionsTab = jq("#tb-screening-tab");
-             if(val == 1066) {
-                 jq('input[type=radio].on-ipt').prop("disabled", false);
-             } else {
-                 jq('input[type=radio].on-ipt').prop("disabled", true);
-                 jq('input[type=radio].on-ipt').prop("checked", false);
-                 jq("#tb-screening-result").hide();
-                 jq("#tb-screening-tab").hide();
-                 actionTakenTab.hide();
-                 clearRadios(actionTakenTab);
-                 iptClientWorkupTab.hide()
-                 clearRadios(iptClientWorkupTab);
-                 iptFollowup.hide();
-                 clearRadios(iptFollowup);
-                 tbScreeningQuestionsTab.hide();
-                 clearRadios(tbScreeningQuestionsTab);
+        var onAntiTbDrugs = function(){
+            var val = jq(this).val();
+            var actionTakenTab = jq('#action-taken');
+            var iptClientWorkupTab = jq('#ipt-client-workup');
+            var iptFollowup = jq('#ipt-followup');
+            var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+            var iptInitiationTab = jq('#ipt-initiation');
+            everOnIPTSelected = null;
+            patientCurrentlyOnIPT = null;
+            if(val == 1066) {
+                jq('input[type=radio].on-ipt').prop("disabled", false);
+            } else {
+                jq('input[type=radio].on-ipt').prop("disabled", true);
+                jq('input[type=radio].on-ipt').prop("checked", false);
+                jq("#tb-screening-result").hide();
+                jq("#tb-screening-tab").hide();
+                jq("#ever-on-ipt").hide();
+                clearRadios(jq("#ever-on-ipt"));
+                actionTakenTab.hide();
+                clearRadios(actionTakenTab);
+                iptClientWorkupTab.hide()
+                clearRadios(iptClientWorkupTab);
+                iptFollowup.hide();
+                clearRadios(iptFollowup);
+                tbScreeningQuestionsTab.hide();
+                clearRadios(tbScreeningQuestionsTab);
+               iptInitiationTab.hide();
 
-             }
-         });
+            }
+        }
 
-            jq('input[type=radio].on-ipt').change(function(){
-               jq("#tb-screening-tab").show();
+        var onIPT = function(){
+            var val = jq(this).val();
+            patientCurrentlyOnIPT = val;
+            everOnIPTSelected = null;
+            var actionTakenTab = jq('#action-taken');
+            var iptClientWorkupTab = jq('#ipt-client-workup');
+            var iptFollowup = jq('#ipt-followup');
+            var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+            var iptInitiationTab = jq('#ipt-initiation');
+            var tbScreeningResult = jq("#tb-screening-result");
+            if(val == 1066) {
+
+                jq("#ever-on-ipt").show();
+                iptFollowup.hide();
+                actionTakenTab.hide();
+                tbScreeningQuestionsTab.hide();
+                tbScreeningResult.hide();
+
+                //clear radios in hidden sections
+                clearRadios(iptFollowup);
+                clearRadios(actionTakenTab);
+                clearRadios(tbScreeningQuestionsTab);
+                clearRadios(tbScreeningResult);
+
+            } else {
+                jq("#ever-on-ipt").hide();
+                clearRadios(jq("#ever-on-ipt"));
+                jq("#ipt-followup").show();
+                tbScreeningQuestionsTab.show();
                 jq("#tb-screening-result").show();
-            });
-            jq("#tb-screening-tab").hide();
+                iptClientWorkupTab.hide();
+                actionTakenTab.hide();
+
+                //clear radios
+                clearRadios(iptClientWorkupTab);
+                clearRadios(actionTakenTab);
+            }
+        }
+
+        var ageGroup = function () {
             pAge = parseInt('<lookup expression="patient.age"/>');
             if (pAge &gt; 15) {
                 whoChild.style.display='none';
@@ -95,6 +125,94 @@ Green Card follow-up visit form
             if (pAge &lt; 15) {
                 whoAdult.style.display='none';
             }
+        }
+
+        var everOnIPT = function () {
+            var val = jq(this).val();
+            everOnIPTSelected = val;
+            var tbScreeningResultTab = jq("#tb-screening-result");
+            var tbScreeningTab = jq("#tb-screening-tab");
+            var iptClientWorkupTab = jq('#ipt-client-workup');
+            if(val == 1066) {
+                // show TB screening, TB results and IPT workup forms
+                tbScreeningTab.show();
+                tbScreeningResultTab.show();
+                iptClientWorkupTab.show();
+                //clear radios
+                clearRadios(tbScreeningTab);
+
+            } else {
+                // show TB screening and TB result forms
+                iptClientWorkupTab.hide();
+                tbScreeningTab.show();
+                tbScreeningResultTab.show();
+
+                //clear radios for hidden sections
+                clearRadios(iptClientWorkupTab);
+                clearRadios(tbScreeningTab);
+
+
+            }
+        }
+        //Resulting TB status for Action Positive Sputum smear
+        var sputumSmearAction  = function () {
+            var val = getValue("sputum-smear-action.value");
+            if(val ==703){
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+
+            }else {
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+
+            }
+        }
+        //Resulting TB status for Action start anti tb
+        var startAntiTb  = function () {
+
+            var val = getValue("start-anti-tb-action.value");
+            if(val ==1065){
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+
+            }else {
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+
+            }
+        }
+        jq(function() {
+         getField('weight.value').change(onWeightOrHeightChange);
+         getField('height.value').change(onWeightOrHeightChange);
+         onWeightOrHeightChange();
+         displayRecentBmi();
+
+         everOnIPTSelected = null;
+         patientCurrentlyOnIPT = null;
+         //Defaults on ready
+         jq('input[type=radio].on-ipt').prop("disabled", true);
+         jq('input[type=radio].on-ipt').prop("checked", false);
+         jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
+         jq("#tb-screening-result").hide();
+         jq('#pregnancyOptionValues').hide();
+         jq('#fp-details').hide();
+         jq("#tb-screening-tab").hide();
+         jq("#ever-on-ipt").hide();
+         var actionTakenTab = jq('#action-taken');
+         var iptClientWorkupTab = jq('#ipt-client-workup');
+         var iptFollowup = jq('#ipt-followup');
+         var iptInitiationTab = jq('#ipt-initiation');
+         actionTakenTab.hide();
+         iptClientWorkupTab.hide();
+         iptFollowup.hide();
+         iptInitiationTab.hide();
+         ageGroup();
+
+         //Event Handlers
+         jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
+         jq('input[type=radio].on-ipt').change(onIPT);
+         jq("input[type=radio].ever-on-ipt").change(everOnIPT);
+         jq("#sputum-smear-action").change(sputumSmearAction);
+         jq("#start-anti-tb-action").change(startAntiTb);
+
+
+
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -214,6 +332,7 @@ Green Card follow-up visit form
                 var iptClientWorkupTab = jq('#ipt-client-workup');
                 var iptFollowup = jq('#ipt-followup');
                 var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+                var everOnIPTRadio = everOnIPTSelected;
 
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
@@ -221,6 +340,8 @@ Green Card follow-up visit form
 
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
+
+                //defaults
 
                 //Fetch responses for the screening questions
                 jq.each(screeningRadios, function(){
@@ -237,40 +358,41 @@ Green Card follow-up visit form
                 });
                 //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+
+
                 } else {
+                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+                        actionTakenTab.show();
+                        iptClientWorkupTab.show();
+                        iptFollowup.hide();
 
-                    if (screeningYesResponses.length &gt; 0) {
-                        showActionTakenTab = true;
-                        showIPTFollowupTab = true;
+                        //clear radios for hidden sections
+                        clearRadios(iptFollowup);
 
-                    } else {
+                    }else if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
-                        //Check if we have 5 NO responses
-                        if (screeningNoResponses.length == screeningRadios.length / 2 ) {
-                            showIPTClientWorkupTab = true;
+                        actionTakenTab.show();
+                        iptClientWorkupTab.hide();
+                        iptFollowup.hide();
 
-                        }
+                        //clear radios for hidden sections
+
+                        clearRadios(iptClientWorkupTab);
+                        clearRadios(iptFollowup);
+
+                    }else if(screeningYesResponses.length == 0) {
+
+                        actionTakenTab.hide();
+
                     }
 
-                }
 
-                if (showActionTakenTab) {
-                    actionTakenTab.show();
-                    iptFollowup.show();
+                    if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
-                } else {
-                    actionTakenTab.hide();
-                    iptFollowup.hide();
-                    clearRadios(actionTakenTab);
+                        actionTakenTab.show();
+                        iptFollowup.show();
 
-                }
-
-                if (showIPTClientWorkupTab) {
-                    iptClientWorkupTab.show();
-
-                } else {
-                    iptClientWorkupTab.hide();
-                    clearRadios(iptClientWorkupTab);
+                    }
 
                 }
 
@@ -291,20 +413,17 @@ Green Card follow-up visit form
                     //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
                     if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
                         iptClientWorkupYesResponses.push(this);
-
                     }
 
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         iptClientWorkupNoResponses.push(this);
-
                     }
-
                 });
 
                 if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
                 } else {
 
-                    if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) {
+                    if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) { // check if all No responses are checked: total radios / 2
                         showIPTInitiationTab = true;
 
                     }
@@ -319,7 +438,7 @@ Green Card follow-up visit form
                 }
 
             };
-            var clearRadios = function(parentObj) {
+            clearRadios = function(parentObj) {
 
                 parentObj.find('input[type=radio]').each(function() {
 
@@ -341,7 +460,7 @@ Green Card follow-up visit form
 
             });
 
-            showHideTabs();
+
             showHideIPTInitiationTab();
 
         });
@@ -585,8 +704,13 @@ Green Card follow-up visit form
                     <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
                 </div>
                 <div>
-                    Patient on IPT? <input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
+                    Patient currently on IPT? <input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
                     <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
+                </div>
+                <div id="ever-on-ipt" >
+                    Patient ever on IPT? <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes
+                    <input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No
+
                 </div>
                 <fieldset id="tb-screening-tab">
                     <legend>Screening Questions</legend>
@@ -644,7 +768,8 @@ Green Card follow-up visit form
                     <table>
                         <tr>
                             <td>Sputum Smear:</td>
-                            <td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                            <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+
                         </tr>
                         <tr>
                             <td>Chest X-ray:</td>
@@ -652,7 +777,7 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
                             <td>Start Anti-TBs:</td>
-                            <td><obs conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                            <td><obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                         </tr>
                         <tr>
                             <td>Invitation of contacts:</td>
@@ -721,7 +846,7 @@ Green Card follow-up visit form
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
+                            <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
                         </td>
                     </tr>
                     <tr>
@@ -889,11 +1014,6 @@ Green Card follow-up visit form
                                     <render n="3" concept=" " />
                                     <render n="4" concept=" " />
                                     <render n="5" concept=" " />
-                                    <render n="6" concept=" " />
-                                    <render n="7" concept=" " />
-                                    <render n="8" concept=" " />
-                                    <render n="9" concept=" " />
-                                    <render n="10" concept=" " />
                                 </repeat>
                             </table>
                         </td>
