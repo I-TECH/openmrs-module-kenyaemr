@@ -14,7 +14,7 @@
 <!--
 Green Card follow-up visit form
 -->
-<htmlform>
+<htmlform xmlns="http://www.w3.org/1999/html">
     <style type="text/css">
         table.right-aligned-first td:first-child {
             text-align: right;
@@ -41,6 +41,7 @@ Green Card follow-up visit form
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
+            var nutritional_status = '';
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
                 bmi = weightKg / (heightM * heightM);
             }
@@ -133,24 +134,27 @@ Green Card follow-up visit form
             var tbScreeningResultTab = jq("#tb-screening-result");
             var tbScreeningTab = jq("#tb-screening-tab");
             var iptClientWorkupTab = jq('#ipt-client-workup');
+            var actionTakenTab = jq('#action-taken');
             if(val == 1066) {
                 // show TB screening, TB results and IPT workup forms
                 tbScreeningTab.show();
                 tbScreeningResultTab.show();
                 iptClientWorkupTab.show();
+                actionTakenTab.hide();
                 //clear radios
                 clearRadios(tbScreeningTab);
+                clearRadios(actionTakenTab);
 
             } else {
                 // show TB screening and TB result forms
                 iptClientWorkupTab.hide();
                 tbScreeningTab.show();
                 tbScreeningResultTab.show();
-
+                actionTakenTab.hide();
                 //clear radios for hidden sections
                 clearRadios(iptClientWorkupTab);
                 clearRadios(tbScreeningTab);
-
+                clearRadios(actionTakenTab);
 
             }
         }
@@ -171,12 +175,27 @@ Green Card follow-up visit form
             var val = getValue("start-anti-tb-action.value");
             if(val ==1065){
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
-
+                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
             }else {
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
 
             }
         }
+        //Resulting TB status for Abnormal chest x ray
+        var chestXray = function () {
+            var val = getValue("chest-xray-action.value");
+            if(val == 15252){
+                jq("#tb-result-status.input[value=142177]").prop("checked", true);
+
+            }else{
+                jq("tb-result-status.input[value=142177]").prop("checked", false);
+            }
+
+        }
+
+//Start on jq onready
         jq(function() {
          getField('weight.value').change(onWeightOrHeightChange);
          getField('height.value').change(onWeightOrHeightChange);
@@ -192,6 +211,11 @@ Green Card follow-up visit form
          jq("#tb-screening-result").hide();
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
+         jq("#wants-pregnancy").hide();
+         /*jq('#fpOptionValues :input').prop('disabled', true);
+         jq('#fpOptionValues :input').prop('checked', false);
+         jq('#notOnFp :input').prop('disabled', true);
+         jq('#notOnFp :input').prop('checked', false);*/
          jq("#tb-screening-tab").hide();
          jq("#ever-on-ipt").hide();
          var actionTakenTab = jq('#action-taken');
@@ -208,8 +232,9 @@ Green Card follow-up visit form
          jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
          jq('input[type=radio].on-ipt').change(onIPT);
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
-         jq("#sputum-smear-action").change(sputumSmearAction);
          jq("#start-anti-tb-action").change(startAntiTb);
+         jq("#sputum-smear-action").change(sputumSmearAction);
+         jq("#chest-xray-action").change(chestXray);
 
 
 
@@ -238,14 +263,16 @@ Green Card follow-up visit form
                 if ((getValue('pregnancyOption.value')) == 1066) {
                     //jq('#pregnancyOptionValues :input').prop('disabled', true);
                     jq('#pregnancyOptionValues').hide();
-                    jq('#fp-details').show();
+                    jq('#fp-details').hide();
                     jq('#fpOptionValues :input').prop('disabled', false);
                     jq('#fpOptionValues :input').prop('checked', false);
+                    jq("#wants-pregnancy").show();
                 }
                 else if((getValue('pregnancyOption.value')) == 1065){
                     jq('#pregnancyOptionValues :input').prop('disabled', false);
                     jq('#pregnancyOptionValues').show();
                     jq('#fp-details').hide();
+                    jq("#wants-pregnancy").hide();
                     //jq('#fpOptionValues :input').prop('checked', false);
                 }
             });
@@ -279,6 +306,13 @@ Green Card follow-up visit form
                 }
 
                 strtext = "";
+            });
+
+            jq("#wants-pregnancy").change(function(){
+                getField('fplanning.value').prop("selectedIndex", 0);
+                jq('#fp-details').show();
+                jq('#fpOptionValues :input[type=checkbox]').prop('disabled', true);
+                jq('#fpOptionValues :input').prop('checked', false);
             });
 
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
@@ -488,6 +522,7 @@ Green Card follow-up visit form
                 <tr>
                     <th>Scheduled/Unscheduled</th>
                     <th align="left">Visit by</th>
+                    <th align="left">Population type</th>
                 </tr>
                 <tr>
 
@@ -506,7 +541,23 @@ Green Card follow-up visit form
                         />
                         <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
-                    <!--.pw greencard additions visit type and appointment type -->
+                    <td>
+
+
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Discordant Couple" style="checkbox" /><br/>
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Injectable Drug User" style="checkbox" /><br/>
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Male who has sex with men" style="checkbox" /><br/>
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Sex Worker" style="checkbox" /><br/>
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Client of Sex Worker" style="checkbox" />
+
+                     </td>
+
+
                 </tr>
             </table>
 
@@ -516,7 +567,7 @@ Green Card follow-up visit form
         <fieldset>
             <legend>Vital Signs</legend>
 
-            <table cellspacing="5" style="display: inline-block;float: left; ">
+            <table cellspacing="5" style=" float: left; ">
                 <tr>
                     <th>Vital signs</th>
                     <th align="left">Current</th>
@@ -564,12 +615,13 @@ Green Card follow-up visit form
                     <td><span class="value"><recentObs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
             </table>
-            <table cellspacing="10" style="display: inline-block; ">
+            <table cellspacing="5" style="display: inline-block; ">
 
                 <tr>
                     <th>Other Recordings</th>
                     <th align="left">Current</th>
                     <th align="left">Recent</th>
+                    <th align="left">Nutritional Status</th>
                 </tr>
                 <tr>
                     <td>Weight</td>
@@ -578,6 +630,16 @@ Green Card follow-up visit form
                         kg
                     </td>
                     <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                    <td rowspan="4">
+                        <obs
+                                conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
+                                style="radio"
+                                answerSeparator="&lt;br /&gt;"
+                        />
+                    </td>
+
                 </tr>
                 <tr>
                     <td>Height</td>
@@ -597,20 +659,17 @@ Green Card follow-up visit form
                     <td>
                         <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
+                </tr>
+                <tr>
                     <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
-                <includeIf velocityTest="$patient.gender == 'F' ">
-                    <tr>
-                        <td>LMP</td>
-                        <td>
-                            <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                        </td>
-                        <td><span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                </includeIf>
+
+
+
             </table>
+
         </fieldset>
+
         <!-- WHO staging -->
         <fieldset>
             <legend>WHO Staging</legend>
@@ -643,7 +702,7 @@ Green Card follow-up visit form
 
             <table cellspacing="5">
                 <tr>
-                    <th style="color: #888">Illness</th>
+                    <th style="color: #888">Complaint</th>
 
                     <th style="color: #888; text-align: center">Duration</th>
                     <th style="color: #888; text-align: center">Onset Date</th>
@@ -678,7 +737,7 @@ Green Card follow-up visit form
             <table>
                 <tr>
                     <th  style="color: #888" >Clinical Notes</th>
-                    <th  style="color: #888" >Recent</th>
+                    <th  style="color: #888" >Previous visit's notes</th>
                 </tr>
                 <tr>
 
@@ -694,8 +753,9 @@ Green Card follow-up visit form
             </table>
 
         </fieldset>
-
-
+<!-- Additional History  -->
+        <fieldset>
+            <legend>Additional History</legend>
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
@@ -773,7 +833,7 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
                             <td>Chest X-ray:</td>
-                            <td><obs conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                            <td><obs id="chest-xray-action" conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                         </tr>
                         <tr>
                             <td>Start Anti-TBs:</td>
@@ -786,6 +846,23 @@ Green Card follow-up visit form
                         <tr>
                             <td>Evaluated for IPT:</td>
                             <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelTExt=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+                    </table>
+                    <table id="tb-screening-result">
+                        <tr>
+                            <td colspan="2"><p> </p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <p></p></td>
+                        </tr>
+                        <tr>
+                            <td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
+                            <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -840,23 +917,6 @@ Green Card follow-up visit form
 
                 <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
 
-                <table id="tb-screening-result">
-                    <tr>
-                        <td colspan="2"><p> </p></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"> <p></p></td>
-                    </tr>
-                    <tr>
-                        <td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
-                        <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
-                    </tr>
-                </table>
             </fieldset>
             <fieldset id="ipt-followup">
                 <legend>IPT Followup</legend>
@@ -998,8 +1058,8 @@ Green Card follow-up visit form
                                                 <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                 <td>
                                                     <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE"
+                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
                                                          style="dropdown"
 
 
@@ -1022,6 +1082,7 @@ Green Card follow-up visit form
             </fieldset>
             <fieldset>
                 <legend>Antigen Today</legend>
+                <includeIf velocityTest="$patient.age &lt; 15">
                 <table width="30%">
                     <tr>
                         <th style="color: #888" align="left">Antigen</th>
@@ -1059,6 +1120,37 @@ Green Card follow-up visit form
 
 
                 </table>
+                </includeIf>
+                <includeIf velocityTest="$patient.age &gt; 15">
+                <table width="30%">
+                    <tr>
+                        <th style="color: #888" align="left">Antigen</th>
+                        <th style="color: #888" align="left">Recent</th>
+                        <th style="color: #888" align="left">Count</th>
+                    </tr>
+
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="782AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HBV" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(782).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(782).size()"/> </td>
+                    </tr>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5261AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Flu" style="checkbox" /></td>
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5261).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
+                    </tr>
+
+                </table>
+                <table>
+                    <tr>
+                        <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox"
+                        /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+
+                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5622).obsDateTime"/> </td>
+                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(5622).size()"/> </td>
+                    </tr>
+                </table>
+                </includeIf>
             </fieldset>
 
             <!--Chronic Illnesses-->
@@ -1068,22 +1160,22 @@ Green Card follow-up visit form
                 <table cellspacing="0">
                     <tr>
                         <th style="color: #888">Illness</th>
+                        <th style="color: #888; text-align: center">Onset Date</th>
                         <th style="color: #888">Drug</th>
                         <th style="color: #888; text-align: center">Dose</th>
                         <th style="color: #888; text-align: center">Units</th>
                         <th style="color: #888; text-align: center">Frequency</th>
                         <th style="color: #888; text-align: center">Duration</th>
                         <th style="color: #888; text-align: center">Duration units</th>
-                        <th style="color: #888; text-align: center">Onset Date</th>
+
                     </tr>
                     <repeat>
                         <template>
                             <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr>
-                                    <td>
+                                    <td><obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/></td>
 
-                                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/></td>
-
+                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
 
                                     <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
                                     <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -1101,7 +1193,7 @@ Green Card follow-up visit form
                                              answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Hours,Days,Weeks,Months" />
                                     </td>
-                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+
                                 </tr>
                             </obsgroup>
                         </template>
@@ -1117,18 +1209,34 @@ Green Card follow-up visit form
             <!--Sexual and Obstetric History-->
                 <includeIf velocityTest="$patient.gender == 'F' ">
                     <fieldset>
-                        <legend>Pregnancy Details</legend>
+                    <legend>Sexual and Reproductive History</legend>
                         <table class="right-aligned-first" style="width: 100%;" border="0">
                             <tr>
 
                                 <td colspan="3" style="text-align: left">
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         labelText="Is Patient Pregnant?: "
+                                         labelText="Patient Pregnant?: "
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
                             </tr>
+                            <tr>
+
+                                <td style="text-align: left" colspan="3">
+                                  <obs id="lmp-date" labelText="LMP:       " conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                    <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                </td>
+                            </tr>
+
                         </table>
+                        <div id="wants-pregnancy">
+                            Wants to get pregnant in the next three months? <br/>
+                            <obs conceptId="1426AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="radio" answerLabels="Yes,NO" />
+
+                        </div>
+
                         <table id="pregnancyOptionValues">
                             <tr>
                                 <td width="8%" style="text-align: left">ANC Number:</td>
@@ -1137,14 +1245,6 @@ Green Card follow-up visit form
                                 </td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <td style="text-align: left">LMP</td>
-                                <td colspan="2">
-                                    <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                </td>
-
-                            </tr>
-
                             <tr>
                                 <td style="text-align: left">EDD:</td>
                                 <td colspan="2">
@@ -1314,11 +1414,11 @@ Green Card follow-up visit form
                                                 <tr>
                                                     <td>
                                                         <div style="float: left; padding-right: 50px">
-                                                        <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Wants to get Pregnant"
-                                                             style="checkbox"/>
-                                                        <br/>
+                                                        <!--<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                             <!--answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                             <!--answerLabel="Wants to get Pregnant"-->
+                                                             <!--style="checkbox"/>-->
+                                                        <!--<br/>-->
                                                         <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Thinks can't get pregnant"
@@ -1518,13 +1618,15 @@ Green Card follow-up visit form
                     </tr>
                 </table>
         </fieldset>
+        </fieldset>
 
         <fieldset>
-            <legend>Treatment/Management</legend>
+
+            <legend>Treatment/Management Plan</legend>
             <table style="width: 70%;" border="0">
                 <tr>
                     <th align="left">Diagnosis</th>
-                    <th align="left">Treatment</th>
+                    <th align="left">Treatment Plan</th>
                 </tr>
 
                 <repeat>
@@ -1609,29 +1711,6 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-
-        <fieldset >
-            <legend>Population type</legend>
-            <table>
-                <tr>
-                    <td valign="top">Is the client a member of at-risk population?</td>
-                </tr><tr>
-                    <td>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Discordant Couple" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Injectable Drug User" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Male who has sex with men" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Sex Worker" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Client of Sex Worker" style="checkbox" />
-
-                    </td>
-                </tr>
-            </table>
-        </fieldset >
 
         <fieldset >
             <legend>PwP Services</legend>
