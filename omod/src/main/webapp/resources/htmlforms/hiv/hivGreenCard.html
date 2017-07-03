@@ -14,7 +14,7 @@
 <!--
 Green Card follow-up visit form
 -->
-<htmlform xmlns="http://www.w3.org/1999/html">
+<htmlform>
     <style type="text/css">
         table.right-aligned-first td:first-child {
             text-align: right;
@@ -22,12 +22,13 @@ Green Card follow-up visit form
     </style>
 
     <script type="text/javascript">
+        var bmi = null;
         function onWeightOrHeightChange() {
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                var bmi = weightKg / (heightM * heightM);
+                 bmi = weightKg / (heightM * heightM);
                 if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
                     display = 'Abnormal value. Were height and height entered correctly?';
                 }
@@ -35,17 +36,30 @@ Green Card follow-up visit form
                     display = bmi.toFixed(2);
                 }
             }
+            //set nutritional status and bmi
             jq('#calculated-bmi').html(display);
+            if (bmi &lt; 16) {
+                jq("#nutritional-status input[value=163302]").prop("checked", true);
+            } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
+                jq("#nutritional-status input[value=163303]").prop("checked", true);
+            } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
+                jq("#nutritional-status input[value=1115]").prop("checked", true);
+            } else if (bmi &gt; 25) {
+                jq("#nutritional-status input[value=114413]").prop("checked", true);
+            }
+
         }
+
         function displayRecentBmi() {
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
-            var nutritional_status = '';
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
                 bmi = weightKg / (heightM * heightM);
+
+                jq('#recent-calculated-bmi').html(bmi.toFixed(2));
+
             }
-            jq('#recent-calculated-bmi').html(bmi.toFixed(2));
         }
 
         var onAntiTbDrugs = function(){
@@ -205,6 +219,8 @@ Green Card follow-up visit form
          everOnIPTSelected = null;
          patientCurrentlyOnIPT = null;
          //Defaults on ready
+         //jq("#nutritional-status input[type=radio]").prop("disabled", true);
+         jq("#nutritional-status input[type=radio]").prop("checked", false);
          jq('input[type=radio].on-ipt').prop("disabled", true);
          jq('input[type=radio].on-ipt').prop("checked", false);
          jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
@@ -212,6 +228,7 @@ Green Card follow-up visit form
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
          jq("#wants-pregnancy").hide();
+
          /*jq('#fpOptionValues :input').prop('disabled', true);
          jq('#fpOptionValues :input').prop('checked', false);
          jq('#notOnFp :input').prop('disabled', true);
@@ -235,9 +252,6 @@ Green Card follow-up visit form
          jq("#start-anti-tb-action").change(startAntiTb);
          jq("#sputum-smear-action").change(sputumSmearAction);
          jq("#chest-xray-action").change(chestXray);
-
-
-
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -631,7 +645,7 @@ Green Card follow-up visit form
                     </td>
                     <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                     <td rowspan="4">
-                        <obs
+                        <obs    id="nutritional-status"
                                 conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
@@ -659,8 +673,6 @@ Green Card follow-up visit form
                     <td>
                         <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
-                </tr>
-                <tr>
                     <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
 
@@ -703,7 +715,6 @@ Green Card follow-up visit form
             <table cellspacing="5">
                 <tr>
                     <th style="color: #888">Complaint</th>
-
                     <th style="color: #888; text-align: center">Duration</th>
                     <th style="color: #888; text-align: center">Onset Date</th>
                 </tr>
@@ -712,9 +723,19 @@ Green Card follow-up visit form
                         <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                             <tr>
                                 <td>
+                                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                            141585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162626AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140070AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142247AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135462AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116214AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112989AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                             121657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,144576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133469AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,132653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                               141597AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Abdominal pain,Abnormal Uterine Bleeding,Anxiety,Depression,Back pain,Bloody Urine,Breast Pain,Chest Pain,Cold and Chills,Confusion,Delirium,Convulsions,Seizure,Cough,Crying Infant,Diarrhea,Difficult in breathing,Difficulty in swallowing,Dizziness,Ear Pain,Epigastric Pain,Eye apin,Facial Pain,Fatigue/weakness,Fever,Flank Pain,Vaginal Discharge,Discharge from Penis,Genital Ulcer,Headache,Hearing Loss,Hypotension,Shock,Itchiness/Pruritus,Joint Pain,Leg Pain,Loss of Appetite,Lymphadenopathy,Memory Loss,Coma,Lethargy,Mouth Pain,Mouth Ulceration,Muscle cramps,Muscle Pain,Nausea,Neck Pain,Night sweats,Numbness,Pain when Swallowing,Pelvic Pain,Poor Vision,Rash,Red Eye,Running/Blocked nose,Scrotal Pain,Shoulder Pain,
+                                                       Sleep Disturbance,Sore Throat,Excessive Sweating,Swollen Legs,Tremors,Urinary Symptoms,Vertigo,Vomiting,Weight Loss"
+                                         style="dropdown"
 
-                                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis"
-                                         style="autocomplete"/>
+
+                                    />
+
+
                                 </td>
 
                                 <td>
@@ -1042,7 +1063,7 @@ Green Card follow-up visit form
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
                                 <tr>
-                                    <th>Causative agent</th>
+                                    <th>Medicine Causing Reaction</th>
                                     <th>Reaction</th>
                                     <th>Severity</th>
                                     <th>Date of Onset</th>
@@ -1050,11 +1071,26 @@ Green Card follow-up visit form
                                 </tr>
                                 <repeat>
                                     <template>
-                                        <obsgroup groupingConceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                             <tr>
-                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
-                                                <td><obs conceptId="160644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-                                                <td><obs conceptId="160759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
+                                                         style="dropdown"
+
+
+                                                />
+
+                                                </td>
+                                                <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
+                                                         style="dropdown"
+                                                /></td>
+                                                <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
                                                 <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                 <td>
                                                     <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1080,6 +1116,69 @@ Green Card follow-up visit form
                     </tr>
                 </table>
             </fieldset>
+            <!-- Known allergies   -->
+            <fieldset>
+                <legend>Known Allergies</legend>
+                <table>
+                    <tr>
+                        <td colspan="2">Record any known allergies<br/>
+                            <table>
+                                <tr>
+                                    <th>Causative agent</th>
+                                    <th>Reaction</th>
+                                    <th>Severity</th>
+                                    <th>Date of Onset</th>
+                                    <th>Action taken</th>
+                                </tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="121689AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="162543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162545AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            162176AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Beef,Caffeine,Chocolate,Dairy Food,Eggs,Fish,Milk Protein,Peanuts,Shellfish,Soy,Strawberries,Wheat,Adhesive Tape,Bee Stings,Dust,Latex,Mold,Pollen,Ragweed,Other"
+                                                         style="dropdown"
+
+
+                                                />
+
+                                                </td>
+                                                <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
+                                                         style="dropdown"
+                                                /></td>
+                                                <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td>
+                                                    <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                         style="dropdown"
+
+
+                                                    />
+
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                    </template>
+                                    <render n="1" concept=" " />
+                                    <render n="2" concept=" " />
+                                    <render n="3" concept=" " />
+                                    <render n="4" concept=" " />
+                                    <render n="5" concept=" " />
+                                </repeat>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+
             <fieldset>
                 <legend>Antigen Today</legend>
                 <includeIf velocityTest="$patient.age &lt; 15">
@@ -1173,7 +1272,14 @@ Green Card follow-up visit form
                         <template>
                             <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr>
-                                    <td><obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/></td>
+                                    <td>
+                                        <obs
+                                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
+                                                style="dropdown"
+                                        />
+                                    </td>
 
                                     <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
 
@@ -1604,7 +1710,7 @@ Green Card follow-up visit form
                     </tr>
                     <tr>
                         <td>8.</td>
-                        <td>GUS</td>
+                        <td>Genitourinary System </td>
                         <td><obs
                                 conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,154311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
