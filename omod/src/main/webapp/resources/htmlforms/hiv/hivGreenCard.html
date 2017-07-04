@@ -111,6 +111,26 @@ Green Card follow-up visit form
             }
         }
 
+        var generalExamSelected = function(){
+           var val = jq(this).val();
+           var generalExamsChecked = $("#general-exam-findings input:checkbox:checked");
+
+           if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+
+               jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
+               jq(this).prop("disabled",false);
+
+           }else {
+
+
+               jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
+               jq("#general-exam-findings input[value=1107]").prop("disabled",true);
+          }
+         if(generalExamsChecked.length ==0){
+             jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+
+         }
+        }
         var onIPT = function(){
             var val = jq(this).val();
             patientCurrentlyOnIPT = val;
@@ -243,6 +263,7 @@ Green Card follow-up visit form
          //Defaults on ready
          //jq("#nutritional-status input[type=radio]").prop("disabled", true);
          jq("#nutritional-status input[type=radio]").prop("checked", false);
+         jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
          jq('#person-present input').click(onPersonPresentChange);
          jq('input[type=radio].on-ipt').prop("disabled", true);
          jq('input[type=radio].on-ipt').prop("checked", false);
@@ -278,6 +299,8 @@ Green Card follow-up visit form
          jq("#start-anti-tb-action").change(startAntiTb);
          jq("#sputum-smear-action").change(sputumSmearAction);
          jq("#chest-xray-action").change(chestXray);
+         jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
+
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -580,7 +603,6 @@ Green Card follow-up visit form
                 <tr>
                     <th>Scheduled/Unscheduled</th>
                     <th align="left">Visit by</th>
-                    <th align="left">Population type</th>
                 </tr>
                 <tr>
 
@@ -599,23 +621,6 @@ Green Card follow-up visit form
                         />
                         <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
-                    <td>
-
-
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Discordant Couple" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Injectable Drug User" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Male who has sex with men" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Sex Worker" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Client of Sex Worker" style="checkbox" />
-
-                     </td>
-
-
                 </tr>
             </table>
 
@@ -723,6 +728,29 @@ Green Card follow-up visit form
 
 
             </table>
+        </fieldset>
+        <!-- Population Type  -->
+            <fieldset>
+                <legend>Population Type</legend>
+                <table>
+                    <tr>
+                        <td>
+
+
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Discordant Couple" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Injectable Drug User" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Male who has sex with men" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Sex Worker" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Client of Sex Worker" style="checkbox" />
+
+                        </td>
+                    </tr>
+                </table>
 
         </fieldset>
 
@@ -1253,6 +1281,65 @@ Green Card follow-up visit form
                     </tr>
                 </table>
             </fieldset>
+            <!--Chronic Illnesses-->
+
+            <fieldset>
+                <legend>Chronic Illnesses and Cormobidities</legend>
+                <table cellspacing="0">
+                    <tr>
+                        <th style="color: #888">Illness</th>
+                        <th style="color: #888; text-align: center">Onset Date</th>
+                        <th style="color: #888">Drug</th>
+                        <th style="color: #888; text-align: center">Dose</th>
+                        <th style="color: #888; text-align: center">Units</th>
+                        <th style="color: #888; text-align: center">Frequency</th>
+                        <th style="color: #888; text-align: center">Duration</th>
+                        <th style="color: #888; text-align: center">Duration units</th>
+
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs
+                                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
+                                                style="dropdown"
+                                        />
+                                    </td>
+
+                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+
+                                    <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                    <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                    <td>
+                                        <obs
+                                                conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                        />
+                                    </td>
+                                    <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td>
+                                        <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="Hours,Days,Weeks,Months" />
+                                    </td>
+
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="Drug"/>
+                        <render n="2" concept="Drug"/>
+                        <render n="3" concept="Drug"/>
+                        <render n="4" concept="Drug"/>
+                        <render n="5" concept="Drug"/>
+                    </repeat>
+                </table>
+            </fieldset>
 
 
             <fieldset>
@@ -1328,66 +1415,6 @@ Green Card follow-up visit form
                 </includeIf>
             </fieldset>
 
-            <!--Chronic Illnesses-->
-
-            <fieldset>
-                <legend>Chronic Illnesses and Cormobidities</legend>
-                <table cellspacing="0">
-                    <tr>
-                        <th style="color: #888">Illness</th>
-                        <th style="color: #888; text-align: center">Onset Date</th>
-                        <th style="color: #888">Drug</th>
-                        <th style="color: #888; text-align: center">Dose</th>
-                        <th style="color: #888; text-align: center">Units</th>
-                        <th style="color: #888; text-align: center">Frequency</th>
-                        <th style="color: #888; text-align: center">Duration</th>
-                        <th style="color: #888; text-align: center">Duration units</th>
-
-                    </tr>
-                    <repeat>
-                        <template>
-                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                <tr>
-                                    <td>
-                                        <obs
-                                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
-                                                style="dropdown"
-                                        />
-                                    </td>
-
-                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
-
-                                    <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-                                    <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                    <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
-                                    <td>
-                                        <obs
-                                                conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-                                        />
-                                    </td>
-                                    <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                    <td>
-                                        <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabels="Hours,Days,Weeks,Months" />
-                                    </td>
-
-                                </tr>
-                            </obsgroup>
-                        </template>
-                        <render n="1" concept="Drug"/>
-                        <render n="2" concept="Drug"/>
-                        <render n="3" concept="Drug"/>
-                        <render n="4" concept="Drug"/>
-                        <render n="5" concept="Drug"/>
-                    </repeat>
-                </table>
-            </fieldset>
-
             <!--Sexual and Obstetric History-->
             <a id="reproductive-section"></a>
             <table class="link" width="100%">
@@ -1405,7 +1432,13 @@ Green Card follow-up visit form
                     <legend>Sexual and Reproductive History</legend>
                         <table class="right-aligned-first" style="width: 100%;" border="0">
                             <tr>
-
+                                <td style="text-align: left" colspan="3">
+                                    <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                                         conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                    <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="3" style="text-align: left">
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          labelText="Patient Pregnant?: &#160;&#160;&#160;&#160;&#160;&#160;&#160;"
@@ -1413,15 +1446,6 @@ Green Card follow-up visit form
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
                             </tr>
-                            <tr>
-
-                                <td style="text-align: left" colspan="3">
-                                  <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
-                                       conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                    <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                                </td>
-                            </tr>
-
                         </table>
                         <div id="wants-pregnancy">
                             Wants to get pregnant in the next three months? <br/>
@@ -1665,8 +1689,8 @@ Green Card follow-up visit form
                 </tr>
             </table>
             <fieldset>
-                <legend>General Examination</legend>
-                <table cellspacing="0">
+                <legend>General Examination Findings</legend>
+                <table id="general-exam-findings">
                     <tr>
                         <td colspan="3">
                             <div style="float: left; padding-right: 50px">
@@ -1884,7 +1908,7 @@ Green Card follow-up visit form
                                     <obs
                                             conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
+                                            answerLabels="Good (G),Adequate (A),Poor (P)"
                                             style="radio"
                                     />
                                 </td>
@@ -1918,7 +1942,7 @@ Green Card follow-up visit form
                                     <obs
                                             conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
+                                            answerLabels="Good (G),Adequate(A),Poor (P)"
                                             style="radio"
                                     />
                                 </td>
@@ -1930,7 +1954,7 @@ Green Card follow-up visit form
         </fieldset>
 
         <fieldset >
-            <legend>PwP Services</legend>
+            <legend>PHDP Services</legend>
             <table>
                 <tr>
                     <td>Has the client been given condoms this visit?</td>
