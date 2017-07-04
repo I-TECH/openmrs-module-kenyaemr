@@ -20,12 +20,12 @@ Green Card follow-up visit form
             text-align: right;
         }
         table.link {
-            text-align: left;
+            text-align: right;
             border:2px solid darkgray;
             padding: inherit;
         }
         .show-links {
-            text-align: left;
+            text-align: right;
             border:2px solid darkgray;
             padding: inherit;
 
@@ -115,6 +115,7 @@ Green Card follow-up visit form
             var val = jq(this).val();
             patientCurrentlyOnIPT = val;
             everOnIPTSelected = null;
+
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
@@ -124,6 +125,7 @@ Green Card follow-up visit form
             if(val == 1066) {
 
                 jq("#ever-on-ipt").show();
+                jq("#ipt-uptake").hide();
                 iptFollowup.hide();
                 actionTakenTab.hide();
                 tbScreeningQuestionsTab.hide();
@@ -143,6 +145,8 @@ Green Card follow-up visit form
                 jq("#tb-screening-result").show();
                 iptClientWorkupTab.hide();
                 actionTakenTab.hide();
+                jq("#ipt-uptake").show();
+
 
                 //clear radios
                 clearRadios(iptClientWorkupTab);
@@ -243,6 +247,7 @@ Green Card follow-up visit form
          jq('input[type=radio].on-ipt').prop("disabled", true);
          jq('input[type=radio].on-ipt').prop("checked", false);
          jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
+         jq("#ipt-uptake").hide();
          jq("#tb-screening-result").hide();
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
@@ -462,6 +467,7 @@ Green Card follow-up visit form
                         actionTakenTab.show();
                         iptFollowup.show();
 
+
                     }
 
                 }
@@ -559,12 +565,12 @@ Green Card follow-up visit form
        <a id="visit-summary-section"></a>
         <table class="link" width="100%">
             <tr>
-                <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                 <td width="80%">
-                    <div class="nav-links">
+                        <div class="nav-links">
                         <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
                     </div>
                 </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
             </tr>
         </table>
         <fieldset>
@@ -749,12 +755,12 @@ Green Card follow-up visit form
         <a id="complaints-section"></a>
         <table class="link" width="100%">
             <tr>
-                <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                 <td width="80%">
                     <div class="nav-links">
                         <a href="#visit-summary-section">Visit Summary</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
                     </div>
                 </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
             </tr>
         </table>
         <fieldset>
@@ -826,12 +832,12 @@ Green Card follow-up visit form
         <a id="tb-screening-section" ></a>
         <table class="link" width="100%">
             <tr>
-                <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                 <td width="80%">
                     <div class="nav-links">
                         <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
                     </div>
                 </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
             </tr>
         </table>
         <fieldset>
@@ -1037,8 +1043,8 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
 
-            <fieldset>
-                <legend>History</legend>
+            <fieldset id="ipt-uptake">
+                <legend>IPT Uptake History</legend>
 
                 <table>
                     <tr>
@@ -1118,12 +1124,12 @@ Green Card follow-up visit form
             <a id="allergies-chronic-illnesses-section"></a>
             <table class="link" width="100%">
                 <tr>
-                    <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                     <td width="80%">
                         <div class="nav-links">
                             <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
                         </div>
                     </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
                 </tr>
             </table>
             <fieldset>
@@ -1386,14 +1392,12 @@ Green Card follow-up visit form
             <a id="reproductive-section"></a>
             <table class="link" width="100%">
                 <tr>
-                    <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                     <td width="80%">
                         <div class="nav-links">
                             <a href="#visit-summary-section">Visit Summary</a> |<a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-
-
                         </div>
                     </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
                 </tr>
             </table>
                 <includeIf velocityTest="$patient.gender == 'F' ">
@@ -1651,13 +1655,13 @@ Green Card follow-up visit form
             <a id="physical-exam-section"></a>
             <table class="link" width="100%">
                 <tr>
-                    <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                     <td width="80%">
                         <div class="nav-links">
                             <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#treatment-plan-section">Treatment Plan</a>
 
                         </div>
                     </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
                 </tr>
             </table>
             <fieldset>
@@ -1825,12 +1829,12 @@ Green Card follow-up visit form
         <a id="treatment-plan-section"></a>
         <table class="link" width="100%">
             <tr>
-                <td width="20%"> <div><a class="show-nav-links" onclick="showNavigationLinks();"></a></div></td>
                 <td width="80%">
                     <div class="nav-links">
                         <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a>
                     </div>
                 </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
             </tr>
         </table>
         <fieldset>
