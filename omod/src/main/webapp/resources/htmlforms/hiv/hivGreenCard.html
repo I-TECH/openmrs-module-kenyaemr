@@ -19,16 +19,22 @@ Green Card follow-up visit form
         table.right-aligned-first td:first-child {
             text-align: right;
         }
-
-        .link {
-            text-align: center;
+        table.link {
+            text-align: right;
             border:2px solid darkgray;
             padding: inherit;
+        }
+        .show-links {
+            text-align: right;
+            border:2px solid darkgray;
+            padding: inherit;
+
         }
     </style>
 
     <script type="text/javascript">
         var bmi = null;
+        var SELF = 978;
         function onWeightOrHeightChange() {
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
@@ -55,7 +61,13 @@ Green Card follow-up visit form
             }
 
         }
-
+        function onPersonPresentChange() {
+            if (getValue('person-present.value') == SELF) {
+                jq('.patient-details :input').prop('disabled', false);
+            } else {
+                jq('.patient-details :input').prop('disabled', true);
+            }
+        }
         function displayRecentBmi() {
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
@@ -112,6 +124,7 @@ Green Card follow-up visit form
             if(val == 1066) {
 
                 jq("#ever-on-ipt").show();
+                jq("#ipt-uptake").hide();
                 iptFollowup.hide();
                 actionTakenTab.hide();
                 tbScreeningQuestionsTab.hide();
@@ -131,6 +144,8 @@ Green Card follow-up visit form
                 jq("#tb-screening-result").show();
                 iptClientWorkupTab.hide();
                 actionTakenTab.hide();
+                jq("#ipt-uptake").show();
+
 
                 //clear radios
                 clearRadios(iptClientWorkupTab);
@@ -227,13 +242,17 @@ Green Card follow-up visit form
          //Defaults on ready
          //jq("#nutritional-status input[type=radio]").prop("disabled", true);
          jq("#nutritional-status input[type=radio]").prop("checked", false);
+         jq('#person-present input').click(onPersonPresentChange);
          jq('input[type=radio].on-ipt').prop("disabled", true);
          jq('input[type=radio].on-ipt').prop("checked", false);
          jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
+         jq("#ipt-uptake").hide();
          jq("#tb-screening-result").hide();
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
          jq("#wants-pregnancy").hide();
+         jq(".nav-links").hide();
+         jq(".show-nav-links").text("Click to Show/Hide Form Sections");
 
          /*jq('#fpOptionValues :input').prop('disabled', true);
          jq('#fpOptionValues :input').prop('checked', false);
@@ -376,7 +395,8 @@ Green Card follow-up visit form
             var pregnantStatusRadios = jq('#fp-details').find('input[type=checkbox]');
 
             const YES_CONCEPT_ID = 1065;
-            const NO_CONCEPT_ID = 1066
+            const NO_CONCEPT_ID = 1066;
+
 
             //This function will perform the folllowing:
             //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
@@ -517,6 +537,11 @@ Green Card follow-up visit form
 
             showHideIPTInitiationTab();
 
+            jq(".show-nav-links").click(function () {
+                jq(this).closest('tr').find("div.nav-links").toggle();
+
+            });
+
         });
     </script>
 
@@ -535,9 +560,17 @@ Green Card follow-up visit form
 
     <div class="ke-form-content">
         <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
-        <div class="link">
-            <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-        </div>
+       <a id="visit-summary-section"></a>
+        <table class="link" width="100%">
+            <tr>
+                <td width="80%">
+                        <div class="nav-links">
+                        <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+                    </div>
+                </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+            </tr>
+        </table>
         <fieldset>
             <legend>Visit Type</legend>
             <!--pw greencard additions visit type and appointment type -->
@@ -596,7 +629,7 @@ Green Card follow-up visit form
                     <th align="left">Current</th>
                     <th align="left">Recent</th>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Temp</td>
                     <td>
                         <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
@@ -605,14 +638,14 @@ Green Card follow-up visit form
                         <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Pulse Rate</td>
                     <td>
                         <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
                     <td><span class="value"><recentObs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>BP</td>
                     <td>
                         <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -623,14 +656,14 @@ Green Card follow-up visit form
                     <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
                             conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Respiratory Rate</td>
                     <td>
                         <obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
                     <td><span class="value"><recentObs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Oxygen Saturation</td>
                     <td>
                         <obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -646,7 +679,7 @@ Green Card follow-up visit form
                     <th align="left">Recent</th>
                     <th align="left">Nutritional Status</th>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Weight</td>
                     <td>
                         <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -664,7 +697,7 @@ Green Card follow-up visit form
                     </td>
 
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>Height</td>
                     <td>
                         <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -672,12 +705,12 @@ Green Card follow-up visit form
                     </td>
                     <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>BMI</td>
                     <td><span id="calculated-bmi" class="value"></span></td>
                     <td><span id="recent-calculated-bmi" class="value"></span></td>
                 </tr>
-                <tr>
+                <tr class="patient-details">
                     <td>MUAC</td>
                     <td>
                         <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -717,9 +750,17 @@ Green Card follow-up visit form
             </table>
         </fieldset>
         <!--Presenting complaints today-->
-        <div class="link">
-            <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-        </div>
+        <a id="complaints-section"></a>
+        <table class="link" width="100%">
+            <tr>
+                <td width="80%">
+                    <div class="nav-links">
+                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+                    </div>
+                </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+            </tr>
+        </table>
         <fieldset>
             <legend>Complaints and History of complaints</legend>
 
@@ -786,16 +827,24 @@ Green Card follow-up visit form
 
         </fieldset>
 <!-- Additional History  -->
-        <div class="link">
-            <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-        </div>
+        <a id="tb-screening-section" ></a>
+        <table class="link" width="100%">
+            <tr>
+                <td width="80%">
+                    <div class="nav-links">
+                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+                    </div>
+                </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+            </tr>
+        </table>
         <fieldset>
             <legend>Additional History</legend>
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
                 <div>
-                   Patient on anti-TB Drugs? <input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"/> Yes
+                   Patient on anti-TB Drugs? <input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes
                     <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
                 </div>
                 <div>
@@ -992,8 +1041,8 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
 
-            <fieldset>
-                <legend>History</legend>
+            <fieldset id="ipt-uptake">
+                <legend>IPT Uptake History</legend>
 
                 <table>
                     <tr>
@@ -1068,10 +1117,19 @@ Green Card follow-up visit form
                 </table>
 
             </fieldset>
-            <div class="link">
-                <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-            </div>
+
             <!--Adverse Drug Reactions-->
+            <a id="allergies-chronic-illnesses-section"></a>
+            <table class="link" width="100%">
+                <tr>
+                    <td width="80%">
+                        <div class="nav-links">
+                            <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+                        </div>
+                    </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+                </tr>
+            </table>
             <fieldset>
                 <legend>Adverse Drug Reactions</legend>
                 <table>
@@ -1269,9 +1327,7 @@ Green Card follow-up visit form
             </fieldset>
 
             <!--Chronic Illnesses-->
-            <div class="link">
-                <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-            </div>
+
             <fieldset>
                 <legend>Chronic Illnesses and Cormobidities</legend>
                 <table cellspacing="0">
@@ -1331,6 +1387,17 @@ Green Card follow-up visit form
             </fieldset>
 
             <!--Sexual and Obstetric History-->
+            <a id="reproductive-section"></a>
+            <table class="link" width="100%">
+                <tr>
+                    <td width="80%">
+                        <div class="nav-links">
+                            <a href="#visit-summary-section">Visit Summary</a> |<a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+                        </div>
+                    </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+                </tr>
+            </table>
                 <includeIf velocityTest="$patient.gender == 'F' ">
                     <fieldset>
                     <legend>Sexual and Reproductive History</legend>
@@ -1339,7 +1406,7 @@ Green Card follow-up visit form
 
                                 <td colspan="3" style="text-align: left">
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         labelText="Patient Pregnant?: "
+                                         labelText="Patient Pregnant?: &#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
@@ -1347,7 +1414,8 @@ Green Card follow-up visit form
                             <tr>
 
                                 <td style="text-align: left" colspan="3">
-                                  <obs id="lmp-date" labelText="LMP:       " conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                  <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                                       conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                     <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
                             </tr>
@@ -1582,9 +1650,18 @@ Green Card follow-up visit form
 
         <!--Physical Examination-->
             <!--General Examination-->
-            <div class="link">
-                <b>Vitals</b> | <a href="#page2">Complaints</a> | <a href="#page2">Patient Screening</a> | <a href="#page3">Physical Examination</a> | <a href="#page3">Adverse Events</a> | <a href="#page3">Allergies</a> | <a href="#page3">Chronic Illnesses</a>| <a href="#page3">Treatment Plan</a>
-            </div>
+            <a id="physical-exam-section"></a>
+            <table class="link" width="100%">
+                <tr>
+                    <td width="80%">
+                        <div class="nav-links">
+                            <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#treatment-plan-section">Treatment Plan</a>
+
+                        </div>
+                    </td>
+                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+                </tr>
+            </table>
             <fieldset>
                 <legend>General Examination</legend>
                 <table cellspacing="0">
@@ -1747,6 +1824,17 @@ Green Card follow-up visit form
         </fieldset>
         </fieldset>
 
+        <a id="treatment-plan-section"></a>
+        <table class="link" width="100%">
+            <tr>
+                <td width="80%">
+                    <div class="nav-links">
+                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a>
+                    </div>
+                </td>
+                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
+            </tr>
+        </table>
         <fieldset>
 
             <legend>Treatment/Management Plan</legend>
