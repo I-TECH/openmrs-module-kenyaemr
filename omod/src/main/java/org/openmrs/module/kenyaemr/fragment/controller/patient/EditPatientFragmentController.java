@@ -51,7 +51,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -83,6 +85,22 @@ public class EditPatientFragmentController {
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
+
+		// create list of counties
+
+
+		List<String> countyList = new ArrayList<String>();
+		List<Location> locationList = Context.getLocationService().getAllLocations();
+		for(Location loc: locationList) {
+			String locationCounty = loc.getCountyDistrict();
+			if(!StringUtils.isEmpty(locationCounty) && !StringUtils.isBlank(locationCounty)) {
+				countyList.add(locationCounty);
+			}
+		}
+
+		Set<String> uniqueCountyList = new HashSet<String>(countyList);
+		model.addAttribute("countyList", uniqueCountyList);
+
 
 		// Create list of education answer concepts
 		List<Concept> educationOptions = new ArrayList<Concept>();
@@ -193,6 +211,9 @@ public class EditPatientFragmentController {
 		private String nextOfKinContact;
 		private String nextOfKinAddress;
 		private String subChiefName;
+		private String alternatePhoneContact;
+		private String nearestHealthFacility;
+		private String emailAddress;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -250,6 +271,9 @@ public class EditPatientFragmentController {
 			nextOfKinContact = wrapper.getNextOfKinContact();
 			nextOfKinAddress = wrapper.getNextOfKinAddress();
 			subChiefName = wrapper.getSubChiefName();
+			alternatePhoneContact = wrapper.getAlternativePhoneContact();
+			emailAddress = wrapper.getEmailAddress();
+			nearestHealthFacility = wrapper.getNearestHealthFacility();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -417,6 +441,9 @@ public class EditPatientFragmentController {
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
 			wrapper.setSubChiefName(subChiefName);
+			wrapper.setAlternativePhoneContact(alternatePhoneContact);
+			wrapper.setNearestHealthFacility(nearestHealthFacility);
+			wrapper.setEmailAddress(emailAddress);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -819,5 +846,28 @@ public class EditPatientFragmentController {
 			this.subChiefName = subChiefName;
 		}
 
+		public String getAlternatePhoneContact() {
+			return alternatePhoneContact;
+		}
+
+		public void setAlternatePhoneContact(String alternatePhoneContact) {
+			this.alternatePhoneContact = alternatePhoneContact;
+		}
+
+		public String getNearestHealthFacility() {
+			return nearestHealthFacility;
+		}
+
+		public void setNearestHealthFacility(String nearestHealthFacility) {
+			this.nearestHealthFacility = nearestHealthFacility;
+		}
+
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
+		}
 	}
 }
