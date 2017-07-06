@@ -1,5 +1,6 @@
 <%
     ui.decorateWith("kenyaui", "panel", [heading: (config.heading ?: "Edit Patient"), frameOnly: true])
+    def countyName = command.personAddress.country == null ? false : command.personAddress.country.toLowerCase()
 
     def nameFields = [
             [
@@ -34,7 +35,6 @@
             ]
     ]
     def childfieldrows  = [
-            /* pw greencard additions  */
             [
                     [object: command, property: "inSchool", label: "In School", config: [style: "list" , options: yesNoOptions]],
                     [object: command, property: "orphan", label: "Orphan <18 yrs", config: [style: "list" , options: yesNoOptions]],
@@ -49,27 +49,30 @@
 
             // greencard additions
     ]
-    def addressFieldRows = [
+    def phoneAndEmailFields = [
             [   //pw greencard additions -- alternate phone and email
                     [object: command, property: "telephoneContact", label: "Telephone contact*"],
                     [object: command, property: "nextOfKinAddress", label: "Alternate phone number"],
                     [object: command, property: "nextOfKinAddress", label: "Email address"]
-            ], //.pw greencard additions -- alternate phone and email
-            [
-                    [object: command, property: "personAddress.address1", label: "Postal Address*", config: [size: 60]],
-                    [object: command, property: "personAddress.country", label: "County*", config: [size: 60]],
-                    [object: command, property: "subChiefName", label: "Sub County*"]
-            ],
+            ]
+    ]
+
+    def wardLocationSubLocationFields = [
+
             [
                     [object: command, property: "personAddress.address3", label: "Ward*", config: [size: 60]],
                     [object: command, property: "personAddress.countyDistrict", label: "Location"],
                     [object: command, property: "personAddress.stateProvince", label: "Sub Location"]
-            ],
-            [[object: command, property: "personAddress.address6", label: "Village"],
-             [object: command, property: "personAddress.address5", label: "Landmark*"],
-             [object: command, property: "personAddress.address4", label: "Nearest Health Center*"]
             ]
+    ]
 
+    def villageLandmarkNearestFacilityFields = [
+
+            [
+                    [object: command, property: "personAddress.address6", label: "Village"],
+                    [object: command, property: "personAddress.address5", label: "Landmark*"],
+                    [object: command, property: "personAddress.address4", label: "Nearest Health Center*"]
+            ]
     ]
 %>
 
@@ -139,7 +142,6 @@
                         <label class="ke-field-label">Date of Birth *</label>
                         <span class="ke-field-content">
                             ${ui.includeFragment("kenyaui", "widget/field", [id: "patient-birthdate", object: command, property: "birthdate"])}
-
                             <span id="patient-birthdate-estimated">
                                 <input type="radio" name="birthdateEstimated"
                                        value="true" ${command.birthdateEstimated ? 'checked="checked"' : ''}/> Estimated
@@ -194,10 +196,38 @@
         <fieldset>
             <legend>Address</legend>
 
-            <% addressFieldRows.each { %>
+            <% phoneAndEmailFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
+            <table>
+            <tr>
+                <td class="ke-field-label">Postal Address</td>
+                <td class="ke-field-label" width="260px">County</td>
+                <td class="ke-field-label">Sub County</td>
+            </tr>
+
+            <tr>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address1"])}</td>
+                <td width="260px">
+                    <select name="personAddress.country">
+                        <option></option>
+                        <%countyList.each { %>
+                        <option ${!countyName? "" : it.toLowerCase() == command.personAddress.country.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                        <%}%>
+                    </select>
+                </td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "subChiefName"])}</td>
+
+            </tr>
+            </table>
+            <% wardLocationSubLocationFields.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+
+            <% villageLandmarkNearestFacilityFields.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
         </fieldset>
 
         <fieldset>
@@ -264,7 +294,6 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
             }
         });
-    });
 
     function updateBirthdate(data) {
         var birthdate = new Date(data.birthdate);
