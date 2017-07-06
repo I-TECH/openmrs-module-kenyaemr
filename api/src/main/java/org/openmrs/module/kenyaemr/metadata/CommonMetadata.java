@@ -79,8 +79,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _RelationshipType {
-		public static final String PARTNER = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
+		public static final String SPOUSE = "d6895098-5d8d-11e3-94ee-b35a4132a5e3";
 		public static final String GUARDIAN_DEPENDANT = "5f115f62-68b7-11e3-94ee-6bef9086de92";
+		public static final String PARTNER = "007b765f-6725-4ae9-afee-9966302bace4";
 	}
 
 	public static final class _VisitAttributeType {
@@ -108,6 +109,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
 		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
+
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
@@ -153,7 +155,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 4.3, _PersonAttributeType.NEAREST_HEALTH_CENTER));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
-		install(relationshipType("Partner", "Partner", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.PARTNER));
+		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
+		install(relationshipType("Partner", "Partner", "Someone I had sex with for fun without commitment to a relationship", _RelationshipType.PARTNER));
 
 		install(visitAttributeType("Source form", "The form whose submission created the visit",
 				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));

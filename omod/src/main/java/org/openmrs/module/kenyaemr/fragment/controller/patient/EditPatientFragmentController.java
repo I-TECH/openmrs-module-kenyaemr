@@ -213,6 +213,7 @@ public class EditPatientFragmentController {
 		private String subChiefName;
 		private String alternatePhoneContact;
 		private String nearestHealthFacility;
+		private String emailAddress;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -270,6 +271,9 @@ public class EditPatientFragmentController {
 			nextOfKinContact = wrapper.getNextOfKinContact();
 			nextOfKinAddress = wrapper.getNextOfKinAddress();
 			subChiefName = wrapper.getSubChiefName();
+			alternatePhoneContact = wrapper.getAlternativePhoneContact();
+			emailAddress = wrapper.getEmailAddress();
+			nearestHealthFacility = wrapper.getNearestHealthFacility();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -439,6 +443,7 @@ public class EditPatientFragmentController {
 			wrapper.setSubChiefName(subChiefName);
 			wrapper.setAlternativePhoneContact(alternatePhoneContact);
 			wrapper.setNearestHealthFacility(nearestHealthFacility);
+			wrapper.setEmailAddress(emailAddress);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -855,6 +860,14 @@ public class EditPatientFragmentController {
 
 		public void setNearestHealthFacility(String nearestHealthFacility) {
 			this.nearestHealthFacility = nearestHealthFacility;
+		}
+
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
 		}
 	}
 }

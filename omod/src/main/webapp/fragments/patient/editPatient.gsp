@@ -34,44 +34,32 @@
                     [object: command, property: "nextOfKinAddress", label: "Next of kin address"]
             ]
     ]
-    def childfieldrows  = [
+
+    def contactsFields = [
             [
-                    [object: command, property: "inSchool", label: "In School", config: [style: "list" , options: yesNoOptions]],
-                    [object: command, property: "orphan", label: "Orphan <18 yrs", config: [style: "list" , options: yesNoOptions]],
-
-
+                    [object: command, property: "telephoneContact", label: "Telephone contact"]
             ],
-
             [
-                    [object: command, property: "nameOfNextOfKin", label: "Guardian last name"],
-                    [object: command, property: "nameOfNextOfKin", label: "Guardian first name"]
-            ]
-
-            // greencard additions
-    ]
-    def phoneAndEmailFields = [
-            [   //pw greencard additions -- alternate phone and email
-                    [object: command, property: "telephoneContact", label: "Telephone contact*"],
-                    [object: command, property: "nextOfKinAddress", label: "Alternate phone number"],
-                    [object: command, property: "nextOfKinAddress", label: "Email address"]
+                    [object: command, property: "alternatePhoneContact", label: "Alternate phone number"],
+                    [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
+                    [object: command, property: "emailAddress", label: "Email address"]
             ]
     ]
 
-    def wardLocationSubLocationFields = [
+    def locationSubLocationVillageFields = [
 
             [
-                    [object: command, property: "personAddress.address3", label: "Ward*", config: [size: 60]],
-                    [object: command, property: "personAddress.countyDistrict", label: "Location"],
-                    [object: command, property: "personAddress.stateProvince", label: "Sub Location"]
+                    [object: command, property: "personAddress.address6", label: "Location"],
+                    [object: command, property: "personAddress.address5", label: "Sub-location"],
+                    [object: command, property: "personAddress.cityVillage", label: "Village"]
             ]
     ]
 
-    def villageLandmarkNearestFacilityFields = [
+    def landmarkNearestFacilityFields = [
 
             [
-                    [object: command, property: "personAddress.address6", label: "Village"],
-                    [object: command, property: "personAddress.address5", label: "Landmark*"],
-                    [object: command, property: "personAddress.address4", label: "Nearest Health Center*"]
+                    [object: command, property: "personAddress.address2", label: "Landmark"],
+                    [object: command, property: "nearestHealthFacility", label: "Nearest Health Center"]
             ]
     ]
 %>
@@ -196,36 +184,35 @@
         <fieldset>
             <legend>Address</legend>
 
-            <% phoneAndEmailFields.each { %>
+            <% contactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
             <table>
             <tr>
-                <td class="ke-field-label">Postal Address</td>
-                <td class="ke-field-label" width="260px">County</td>
-                <td class="ke-field-label">Sub County</td>
+                <td class="ke-field-label" style="width: 260px">County</td>
+                <td class="ke-field-label" style="width: 260px">Sub-County</td>
+                <td class="ke-field-label" style="width: 260px">Ward</td>
             </tr>
 
             <tr>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address1"])}</td>
-                <td width="260px">
-                    <select name="personAddress.country">
+                <td style="width: 260px">
+                    <select name="personAddress.countyDistrict">
                         <option></option>
                         <%countyList.each { %>
                         <option ${!countyName? "" : it.toLowerCase() == command.personAddress.country.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
                         <%}%>
                     </select>
                 </td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "subChiefName"])}</td>
-
+                <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.stateProvince"])}</td>
+                <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address4"])}</td>
             </tr>
             </table>
-            <% wardLocationSubLocationFields.each { %>
+            <% locationSubLocationVillageFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
-            <% villageLandmarkNearestFacilityFields.each { %>
+            <% landmarkNearestFacilityFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
         </fieldset>
@@ -276,11 +263,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 <script type="text/javascript">
     jQuery(function () {
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
-
         jQuery('#edit-patient-form .cancel-button').click(function () {
             ui.navigate('${ config.returnUrl }');
         });
-
         kenyaui.setupAjaxPost('edit-patient-form', {
             onSuccess: function (data) {
                 if (data.id) {
@@ -294,10 +279,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
             }
         });
-
+    });
     function updateBirthdate(data) {
         var birthdate = new Date(data.birthdate);
-
         kenyaui.setDateField('patient-birthdate', birthdate);
         kenyaui.setRadioField('patient-birthdate-estimated', 'true');
     }
