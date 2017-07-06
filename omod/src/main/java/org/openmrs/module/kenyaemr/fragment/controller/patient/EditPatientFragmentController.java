@@ -49,9 +49,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -83,6 +88,22 @@ public class EditPatientFragmentController {
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
+
+		// create list of counties
+
+
+		List<String> countyList = new ArrayList<String>();
+		List<Location> locationList = Context.getLocationService().getAllLocations();
+		for(Location loc: locationList) {
+			String locationCounty = loc.getCountyDistrict();
+			if(!StringUtils.isEmpty(locationCounty) && !StringUtils.isBlank(locationCounty)) {
+				countyList.add(locationCounty);
+			}
+		}
+
+		Set<String> uniqueCountyList = new HashSet<String>(countyList);
+		model.addAttribute("countyList", uniqueCountyList);
+
 
 		// Create list of education answer concepts
 		List<Concept> educationOptions = new ArrayList<Concept>();
