@@ -49,13 +49,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -214,6 +211,8 @@ public class EditPatientFragmentController {
 		private String nextOfKinContact;
 		private String nextOfKinAddress;
 		private String subChiefName;
+		private String alternatePhoneContact;
+		private String nearestHealthFacility;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -438,6 +437,8 @@ public class EditPatientFragmentController {
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
 			wrapper.setSubChiefName(subChiefName);
+			wrapper.setAlternativePhoneContact(alternatePhoneContact);
+			wrapper.setNearestHealthFacility(nearestHealthFacility);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -840,5 +841,20 @@ public class EditPatientFragmentController {
 			this.subChiefName = subChiefName;
 		}
 
+		public String getAlternatePhoneContact() {
+			return alternatePhoneContact;
+		}
+
+		public void setAlternatePhoneContact(String alternatePhoneContact) {
+			this.alternatePhoneContact = alternatePhoneContact;
+		}
+
+		public String getNearestHealthFacility() {
+			return nearestHealthFacility;
+		}
+
+		public void setNearestHealthFacility(String nearestHealthFacility) {
+			this.nearestHealthFacility = nearestHealthFacility;
+		}
 	}
 }
