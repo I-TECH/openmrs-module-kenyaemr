@@ -13,10 +13,14 @@
 -->
 <!--
 Green Card follow-up visit form
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>  -->
 -->
 <htmlform>
+
     <style type="text/css">
-        table.right-aligned-first td:first-child {
+
+
+            table.right-aligned-first td:first-child {
             text-align: right;
         }
         table.link {
@@ -31,8 +35,9 @@ Green Card follow-up visit form
 
         }
     </style>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
     <script type="text/javascript">
+
         var bmi = null;
         var SELF = 978;
         function onWeightOrHeightChange() {
@@ -79,7 +84,98 @@ Green Card follow-up visit form
 
             }
         }
+        var generalExamSelected = function(){
+            var val = jq(this).val();
+            var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
 
+            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+
+                jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
+                jq(this).prop("disabled",false);
+
+            }else {
+
+
+                jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
+                jq("#general-exam-findings input[value=1107]").prop("disabled",true);
+            }
+            if(generalExamsChecked.length ==0){
+                jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+
+            }
+        }
+        var complaintSelected = function() {
+
+            var val = jq(this).val();
+            if (val == 1066){
+                jq("#tbl-complaints-today").hide();
+
+            }else {
+                jq("#tbl-complaints-today").show();
+            }
+        }
+        var complaintDurationInput = function() {
+
+            //jq(this).closest('tr').find("div.nav-links").toggle();
+            var val = jq(this).val();
+            //jq(this).closest("tr").find().val( getField('complaint-date.value');
+
+            //var val = jq(this).closest('tr').find("#complait-duration").val();
+           // console.log("Number of days" + val);
+            var encounterDate = new Date(getValue('encounter-date.value'));
+            //console.log("encounter date " + encounterDate);
+            var complaint_date= new Date(encounterDate.getTime()-(val*24*60*60*1000)).toISOString().substr(0,10);
+            var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+            //console.log("Formatted Complaint Date " + formattedComplaintDate);
+            getField('complaint-date.value').val(formattedComplaintDate);
+
+        }
+        var complaintDateInput = function() {
+
+            var complaintDate = jq(this).val();
+            var encounterDate = new Date(getValue('encounter-date.value'));
+            console.log("Complaint date" + complaintDate);
+            console.log("Encounter date" + encounterDate);
+
+            var formattedComplaintDate=moment(moment(complaintDate, 'DD-MMM-YYYY').toDate()).format('DD-MM-YYYY');
+            console.log("Formatted complaint date " +formattedComplaintDate);
+
+
+
+           // var date_diff=new Date(encounterDate).getTime()/1000-new Date(complaintDate).getTime() / 1000
+            //var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+           // console.log("Date diff in unix " + date_diff);
+            //getField('complaint-date.value').val(formattedComplaintDate);
+
+        }
+
+        var adverseReactionSelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq("#tbl-adverse-reactions").hide();
+
+            }else {
+            jq("#tbl-adverse-reactions").show();
+            }
+        }
+        var knownAllergiesSelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq("#tbl-known-allergies").hide();
+
+            }else {
+                jq("#tbl-known-allergies").show();
+            }
+        }
+        var chronicIllnessesSelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq("#tbl-chronic-illness").hide();
+
+            }else {
+                jq("#tbl-chronic-illness").show();
+            }
+        }
         var onAntiTbDrugs = function(){
             var val = jq(this).val();
             var actionTakenTab = jq('#action-taken');
@@ -193,41 +289,153 @@ Green Card follow-up visit form
 
             }
         }
+        //Resulting TB status for Ordered test
+        var testOrdered  = function () {
+            var val = jq(this).val();
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var startAntiTb = getValue("start-anti-tb-action.value");
+            var xray = getValue("chest-xray-action.value");
+
+            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb !=1065){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+
+            }
+            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb ==1065){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+                //set TB RX date to todays date
+                var encounterDate = getValue('encounter-date.value');
+                getField('tbrxdate.value').val(encounterDate);
+            }
+            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb ==1066){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').show();
+            }
+        }
+
+
         //Resulting TB status for Action Positive Sputum smear
         var sputumSmearAction  = function () {
-            var val = getValue("sputum-smear-action.value");
-            if(val ==703){
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var startAntiTb = getValue("start-anti-tb-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
 
-            }else {
+            if(sputumSmear ==703 &amp;&amp; startAntiTb ==1065) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+                //set TB RX date to todays date
+                var encounterDate = getValue('encounter-date.value');
+                getField('tbrxdate.value').val(encounterDate);
+            }
+            if(sputumSmear ==703 &amp;&amp; startAntiTb ==1066) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
 
+            if(sputumSmear ==703 &amp;&amp; startAntiTb !=1065) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').show();
+            }
+
+        }
+        //Resulting TB status for Abnormal chest x ray
+        var chestXray = function () {
+            var xray = getValue("chest-xray-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var startAntiTb = getValue("start-anti-tb-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            if(xray == 152526 &amp;&amp; startAntiTb ==1065){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+                //set TB RX date to todays date
+                var encounterDate = getValue('encounter-date.value');
+                getField('tbrxdate.value').val(encounterDate);
+
+            }
+            if(xray == 152526 &amp;&amp; startAntiTb ==1066){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+
+            }
+            if(xray == 152526 &amp;&amp; startAntiTb !=1066){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').show();
             }
         }
         //Resulting TB status for Action start anti tb
-        var startAntiTb  = function () {
+        var startAntiTbAction  = function () {
+            var startAntiTb = getValue("start-anti-tb-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
 
-            var val = getValue("start-anti-tb-action.value");
-            if(val ==1065){
+            if(startAntiTb ==1065){
+                jq("#tb-result-status input[value=1662]").prop("disabled", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq("#tb-result-status.input[value=142177]").prop("disabled", true);
                 jq("#tb-result-status.input[value=1660]").prop("disabled", true);
                 jq("#tb-result-status.input[value=160737]").prop("disabled", true);
-            }else {
+                jq('#ipt-client-workup').hide();
+                jq('#ipt-initiation').hide();
+                jq('#ipt-result-status').hide();
+                //set TB RX date to todays date
+                var encounterDate = getValue('encounter-date.value');
+                //Validate for moment
+                //var momentEncounteDate =moment(moment('encounterDate','yyyy-mm-dd').toDate()).format("DD-MMM-YYYY");
+                getField('tbrxdate.value').val(encounterDate);
+            }
+            if(startAntiTb ==1066 ){
+                jq("#tb-result-status input[value=1662]").prop("disabled", true);
+                jq('#tbrxdate').val(" ");
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526) {
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
-
+                jq('#ipt-client-workup').show();
+                getField('tbrxdate.value').val("");
             }
-        }
-        //Resulting TB status for Abnormal chest x ray
-        var chestXray = function () {
-            var val = getValue("chest-xray-action.value");
-            if(val == 15252){
-                jq("#tb-result-status.input[value=142177]").prop("checked", true);
-
-            }else{
-                jq("tb-result-status.input[value=142177]").prop("checked", false);
-            }
-
         }
 
 //Start on jq onready
@@ -240,8 +448,18 @@ Green Card follow-up visit form
          everOnIPTSelected = null;
          patientCurrentlyOnIPT = null;
          //Defaults on ready
-         //jq("#nutritional-status input[type=radio]").prop("disabled", true);
+         jq("#tbl-adverse-reactions").hide();
+         jq('input[type=radio].adverse-reactions').prop("checked", false);
+         jq("#tbl-complaints-today").hide();
+         jq('input[type=radio].complaints-today').prop("checked", false);
+         jq("#tbl-known-allergies").hide();
+         jq('input[type=radio].known-allergies').prop("checked", false);
+         jq("#tbl-chronic-illness").hide();
+         jq('input[type=radio].chronic-illness').prop("checked", false);
+
+            //jq("#nutritional-status input[type=radio]").prop("disabled", true);
          jq("#nutritional-status input[type=radio]").prop("checked", false);
+         jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
          jq('#person-present input').click(onPersonPresentChange);
          jq('input[type=radio].on-ipt').prop("disabled", true);
          jq('input[type=radio].on-ipt').prop("checked", false);
@@ -253,11 +471,6 @@ Green Card follow-up visit form
          jq("#wants-pregnancy").hide();
          jq(".nav-links").hide();
          jq(".show-nav-links").text("Click to Show/Hide Form Sections");
-
-         /*jq('#fpOptionValues :input').prop('disabled', true);
-         jq('#fpOptionValues :input').prop('checked', false);
-         jq('#notOnFp :input').prop('disabled', true);
-         jq('#notOnFp :input').prop('checked', false);*/
          jq("#tb-screening-tab").hide();
          jq("#ever-on-ipt").hide();
          var actionTakenTab = jq('#action-taken');
@@ -269,15 +482,22 @@ Green Card follow-up visit form
          iptFollowup.hide();
          iptInitiationTab.hide();
          ageGroup();
-
          //Event Handlers
          jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
          jq('input[type=radio].on-ipt').change(onIPT);
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
-         jq("#start-anti-tb-action").change(startAntiTb);
+         //tb action
+         jq("#start-anti-tb-action").change(startAntiTbAction);
          jq("#sputum-smear-action").change(sputumSmearAction);
          jq("#chest-xray-action").change(chestXray);
-
+         jq("#tb-test-ordered").change(testOrdered);
+         jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
+         jq('input[type=radio].complaints-today').change(complaintSelected);
+         getField('complaint-duration.value').change(complaintDurationInput);
+        // getField('complaint-date.value').change(complaintDateInput);
+         jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
+         jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
+         jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
@@ -312,7 +532,11 @@ Green Card follow-up visit form
                     jq('#pregnancyOptionValues').show();
                     jq('#fp-details').hide();
                     jq("#wants-pregnancy").hide();
-                    //jq('#fpOptionValues :input').prop('checked', false);
+                  //Automate EDC Computation
+                    var lmpdate = new Date(getValue('lmp-date.value'));
+                    var edd= new Date(lmpdate.getTime()+(280*24*60*60*1000)).toISOString().substr(0,10);
+                    var formattedEdd=moment(moment(edd, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                    getField('patient-edd.value').val(formattedEdd);
                 }
             });
 
@@ -432,10 +656,18 @@ Green Card follow-up visit form
                 });
                 //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
                 if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
-
+                  //Do nothing
 
                 } else {
                     if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+                        actionTakenTab.show();
+                        iptClientWorkupTab.hide();
+                        iptFollowup.hide();
+
+                        //clear radios for hidden sections
+                        clearRadios(iptFollowup);
+
+                    }else if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
@@ -443,7 +675,7 @@ Green Card follow-up visit form
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
 
-                    }else if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+                    } else if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
@@ -465,6 +697,11 @@ Green Card follow-up visit form
 
                         actionTakenTab.show();
                         iptFollowup.show();
+
+                    }
+                    if(screeningYesResponses.length &gt; 0) {
+
+                        iptClientWorkupTab.hide();
 
                     }
 
@@ -505,6 +742,7 @@ Green Card follow-up visit form
 
                 if (showIPTInitiationTab) {
                     iptInitiationTab.show();
+                    jq('#ipt-result-status').show();
 
                 } else {
                     iptInitiationTab.hide();
@@ -544,7 +782,7 @@ Green Card follow-up visit form
 
         });
     </script>
-
+    <!--<uiInclude provider="kenyaemr" javascript="moment.js"></uiInclude>-->
     <div class="ke-form-header">
         <table width="100%">
             <tr>
@@ -578,7 +816,6 @@ Green Card follow-up visit form
                 <tr>
                     <th>Scheduled/Unscheduled</th>
                     <th align="left">Visit by</th>
-                    <th align="left">Population type</th>
                 </tr>
                 <tr>
 
@@ -597,23 +834,6 @@ Green Card follow-up visit form
                         />
                         <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
-                    <td>
-
-
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Discordant Couple" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Injectable Drug User" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Male who has sex with men" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Sex Worker" style="checkbox" /><br/>
-                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Client of Sex Worker" style="checkbox" />
-
-                     </td>
-
-
                 </tr>
             </table>
 
@@ -721,6 +941,29 @@ Green Card follow-up visit form
 
 
             </table>
+        </fieldset>
+        <!-- Population Type  -->
+            <fieldset>
+                <legend>Population Type</legend>
+                <table>
+                    <tr>
+                        <td>
+
+
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Discordant Couple" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Injectable Drug User" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Male who has sex with men" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Sex Worker" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Client of Sex Worker" style="checkbox" />
+
+                        </td>
+                    </tr>
+                </table>
 
         </fieldset>
 
@@ -763,8 +1006,11 @@ Green Card follow-up visit form
         </table>
         <fieldset>
             <legend>Complaints and History of complaints</legend>
-
-            <table cellspacing="5">
+            <div>
+                Patient having complaint(s) today? <input type="radio" name="complaints-today" class="complaints-today" value="1065"/> Yes
+                <input type="radio" name="complaints-today" class="complaints-today" value="1066"/> No
+            </div>
+            <table cellspacing="5" id="tbl-complaints-today">
                 <tr>
                     <th style="color: #888">Complaint</th>
                     <th style="color: #888; text-align: center">Duration</th>
@@ -783,18 +1029,11 @@ Green Card follow-up visit form
                                          answerLabels="Abdominal pain,Abnormal Uterine Bleeding,Anxiety,Depression,Back pain,Bloody Urine,Breast Pain,Chest Pain,Cold and Chills,Confusion,Delirium,Convulsions,Seizure,Cough,Crying Infant,Diarrhea,Difficult in breathing,Difficulty in swallowing,Dizziness,Ear Pain,Epigastric Pain,Eye apin,Facial Pain,Fatigue/weakness,Fever,Flank Pain,Vaginal Discharge,Discharge from Penis,Genital Ulcer,Headache,Hearing Loss,Hypotension,Shock,Itchiness/Pruritus,Joint Pain,Leg Pain,Loss of Appetite,Lymphadenopathy,Memory Loss,Coma,Lethargy,Mouth Pain,Mouth Ulceration,Muscle cramps,Muscle Pain,Nausea,Neck Pain,Night sweats,Numbness,Pain when Swallowing,Pelvic Pain,Poor Vision,Rash,Red Eye,Running/Blocked nose,Scrotal Pain,Shoulder Pain,
                                                        Sleep Disturbance,Sore Throat,Excessive Sweating,Swollen Legs,Tremors,Urinary Symptoms,Vertigo,Vomiting,Weight Loss"
                                          style="dropdown"
-
-
                                     />
-
-
                                 </td>
-
+                                <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id ="complaint-duration" /></td>
                                 <td>
-                                    <input type="text" id="illness_duration"/>
-                                </td>
-                                <td>
-                                    <obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs id="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          allowFutureDates="false"/>
                                 </td>
                             </tr>
@@ -909,7 +1148,19 @@ Green Card follow-up visit form
 
                 <fieldset id="action-taken">
                     <legend>Indicate Action Taken</legend>
+                    <table id="tb-test-ordered">
+                        <tr>
+                            <td>Tests Ordered:</td>
+                            <td><obs id="ord-sputum-smear" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sputum Smear" answerConceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /><hr/></td>
+                            <td><obs id="ord-chest-xray" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Chest Xray" answerConceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /><hr/></td>
+                            <td><obs id="ord-gene-xpert" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="GeneXpert" answerConceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" />
+                                <hr/> </td>
+
+                        </tr>
+                    </table>
+
                     <table>
+
                         <tr>
                             <td>Sputum Smear:</td>
                             <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
@@ -938,19 +1189,18 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
+                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Rx,TB Screening Not Done" />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2"> <p></p></td>
                         </tr>
-                        <tr>
+                        <tr id="tbrxfield">
                             <td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
                             <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
                         </tr>
                     </table>
                 </fieldset>
-
                 <fieldset id="ipt-client-workup">
                     <legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
                     <table>
@@ -999,7 +1249,16 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
 
-                <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
+                <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
+                    <table>
+                    <tr>
+                        <td colspan="2">
+                            <obs id="ipt-result-status" conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting IPT Action:" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="IPT Started,IPT Not Started" />
+                            <hr />
+                        </td>
+                    </tr>
+                </table>
+                </div>
 
             </fieldset>
             <fieldset id="ipt-followup">
@@ -1132,7 +1391,11 @@ Green Card follow-up visit form
             </table>
             <fieldset>
                 <legend>Adverse Drug Reactions</legend>
-                <table>
+                <div>
+                    Patient has adverse drug reaction(s)? <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1065"/> Yes
+                    <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1066"/> No
+                </div>
+                <table id="tbl-adverse-reactions">
                     <tr>
                         <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
                             <table>
@@ -1193,7 +1456,12 @@ Green Card follow-up visit form
             <!-- Known allergies   -->
             <fieldset>
                 <legend>Known Allergies</legend>
-                <table>
+                <div>
+                    Patient has any known allergie(s)? &#160;&#160;&#160;&#160; <input type="radio" name="known-allergies" class="known-allergies" value="1065"/> Yes
+                    <input type="radio" name="known-allergies" class="known-allergies" value="1066"/> No
+                </div>
+
+                <table id="tbl-known-allergies">
                     <tr>
                         <td colspan="2">Record any known allergies<br/>
                             <table>
@@ -1249,6 +1517,71 @@ Green Card follow-up visit form
                             </table>
                         </td>
                     </tr>
+                </table>
+            </fieldset>
+            <!--Chronic Illnesses-->
+
+            <fieldset>
+                <legend>Chronic Illnesses and Cormobidities</legend>
+                <div>
+                    Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;<input type="radio" name="chronic-illness" class="chronic-illness" value="1065"/> Yes
+                    <input type="radio" name="chronic-illness" class="chronic-illness" value="1066"/> No
+                </div>
+
+
+                <table id="tbl-chronic-illness">
+                    <tr>
+                        <th style="color: #888">Illness</th>
+                        <th style="color: #888; text-align: center">Onset Date</th>
+                        <th style="color: #888">Drug</th>
+                        <th style="color: #888; text-align: center">Dose</th>
+                        <th style="color: #888; text-align: center">Units</th>
+                        <th style="color: #888; text-align: center">Frequency</th>
+                        <th style="color: #888; text-align: center">Duration</th>
+                        <th style="color: #888; text-align: center">Duration units</th>
+
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs
+                                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
+                                                style="dropdown"
+                                        />
+                                    </td>
+
+                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+
+                                    <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                    <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                    <td>
+                                        <obs
+                                                conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                        />
+                                    </td>
+                                    <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                    <td>
+                                        <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="Hours,Days,Weeks,Months" />
+                                    </td>
+
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="Drug"/>
+                        <render n="2" concept="Drug"/>
+                        <render n="3" concept="Drug"/>
+                        <render n="4" concept="Drug"/>
+                        <render n="5" concept="Drug"/>
+                    </repeat>
                 </table>
             </fieldset>
 
@@ -1326,66 +1659,6 @@ Green Card follow-up visit form
                 </includeIf>
             </fieldset>
 
-            <!--Chronic Illnesses-->
-
-            <fieldset>
-                <legend>Chronic Illnesses and Cormobidities</legend>
-                <table cellspacing="0">
-                    <tr>
-                        <th style="color: #888">Illness</th>
-                        <th style="color: #888; text-align: center">Onset Date</th>
-                        <th style="color: #888">Drug</th>
-                        <th style="color: #888; text-align: center">Dose</th>
-                        <th style="color: #888; text-align: center">Units</th>
-                        <th style="color: #888; text-align: center">Frequency</th>
-                        <th style="color: #888; text-align: center">Duration</th>
-                        <th style="color: #888; text-align: center">Duration units</th>
-
-                    </tr>
-                    <repeat>
-                        <template>
-                            <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                <tr>
-                                    <td>
-                                        <obs
-                                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
-                                                style="dropdown"
-                                        />
-                                    </td>
-
-                                    <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
-
-                                    <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-                                    <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                    <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
-                                    <td>
-                                        <obs
-                                                conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-                                        />
-                                    </td>
-                                    <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                    <td>
-                                        <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabels="Hours,Days,Weeks,Months" />
-                                    </td>
-
-                                </tr>
-                            </obsgroup>
-                        </template>
-                        <render n="1" concept="Drug"/>
-                        <render n="2" concept="Drug"/>
-                        <render n="3" concept="Drug"/>
-                        <render n="4" concept="Drug"/>
-                        <render n="5" concept="Drug"/>
-                    </repeat>
-                </table>
-            </fieldset>
-
             <!--Sexual and Obstetric History-->
             <a id="reproductive-section"></a>
             <table class="link" width="100%">
@@ -1403,7 +1676,13 @@ Green Card follow-up visit form
                     <legend>Sexual and Reproductive History</legend>
                         <table class="right-aligned-first" style="width: 100%;" border="0">
                             <tr>
-
+                                <td style="text-align: left" colspan="3">
+                                    <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                                         conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                    <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="3" style="text-align: left">
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          labelText="Patient Pregnant?: &#160;&#160;&#160;&#160;&#160;&#160;&#160;"
@@ -1411,15 +1690,6 @@ Green Card follow-up visit form
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
                                 </td>
                             </tr>
-                            <tr>
-
-                                <td style="text-align: left" colspan="3">
-                                  <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
-                                       conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                                    <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                                </td>
-                            </tr>
-
                         </table>
                         <div id="wants-pregnancy">
                             Wants to get pregnant in the next three months? <br/>
@@ -1441,7 +1711,7 @@ Green Card follow-up visit form
                                 <td style="text-align: left">EDD:</td>
                                 <td colspan="2">
                                     <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
-                                         allowFutureDates="true" labelText=" "/>
+                                         allowFutureDates="true" labelText=" " id="patient-edd" readonly="true"/>
                                 </td>
                             </tr>
                             <tr>
@@ -1663,8 +1933,8 @@ Green Card follow-up visit form
                 </tr>
             </table>
             <fieldset>
-                <legend>General Examination</legend>
-                <table cellspacing="0">
+                <legend>General Examination Findings</legend>
+                <table id="general-exam-findings">
                     <tr>
                         <td colspan="3">
                             <div style="float: left; padding-right: 50px">
@@ -1881,8 +2151,8 @@ Green Card follow-up visit form
                                 <td>
                                     <obs
                                             conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
+                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Good (G),Inadequate (I),Poor (P)"
                                             style="radio"
                                     />
                                 </td>
@@ -1915,8 +2185,8 @@ Green Card follow-up visit form
                                 <td>
                                     <obs
                                             conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Good (G),Fair (F),Poor (P)"
+                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Good (G),Inadequate(I),Poor (P)"
                                             style="radio"
                                     />
                                 </td>
@@ -1928,7 +2198,7 @@ Green Card follow-up visit form
         </fieldset>
 
         <fieldset >
-            <legend>PwP Services</legend>
+            <legend>PHDP Services</legend>
             <table>
                 <tr>
                     <td>Has the client been given condoms this visit?</td>
