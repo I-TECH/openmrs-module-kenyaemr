@@ -20,14 +20,14 @@
 
             $(".hiv-status select").change(function () {
                 var row = $(this).parent().parent().parent();
-                if (this.value == '664') {
-                    $(row).find('.in-care select').attr('disabled', false);
-                    $(row).find('.ccc-no input').attr('disabled', false);
-                } else {
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+                if (this.value == '664') {    //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
+                } else {                     //positive
+                    $(row).find('.in-care select').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
                 }
             });
 
@@ -35,10 +35,10 @@
                 var table = document.getElementById("table");
                 for (var i = 0, row; row = table.rows[i]; i++) {
                     var hivStatus = $(row).find('.hiv-status select').val();
-                    if (hivStatus === '664') {
+                    if (hivStatus === '664') {     //negative
                         $(row).find('.in-care select').attr('disabled', false);
                         $(row).find('.ccc-no input').attr('disabled', false);
-                    } else {
+                    } else {                            //positive
                         $(row).find('.in-care select').attr('disabled', true);
                         $(row).find('.ccc-no input').attr('disabled', true);
                     }
@@ -90,7 +90,7 @@
                                      answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse,Partner,Co-Wife,Guardian,Other"/>
                             </td>
                             <td>
-                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                <obs class="hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
                             </td>
@@ -103,10 +103,10 @@
                                 />
                             </td>
                             <td>
-                                <obs id="next-apt-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                                <obs id="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                             </td>
                             <td>
-                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                <obs class="hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
                             </td>
