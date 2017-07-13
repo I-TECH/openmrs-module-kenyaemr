@@ -34,7 +34,9 @@ Green Card follow-up visit form
 
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+
     <script type="text/javascript">
 
         var bmi = null;
@@ -82,6 +84,15 @@ Green Card follow-up visit form
                 jq('#recent-calculated-bmi').html(bmi.toFixed(2));
 
             }
+        }
+        function onParityChange() {
+            var gravida = '';
+            var parityTerm = parseInt(getValue('parity-term.value'));
+            var parityAbortion = parseInt(getValue('parity-abortion.value'));
+           if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+                gravida = parityTerm + parityAbortion + 1;
+                getField('gravida.value').val(gravida);
+                }
         }
         var generalExamSelected = function(){
             var val = jq(this).val();
@@ -289,21 +300,31 @@ Green Card follow-up visit form
             }
         }
         //Resulting TB status for Ordered test
+        var populationTypeSelected = function () {
+            var val = jq(this).val();
+            if (val == 1066 ){
+                jq("#key-population").show();
+
+            }else{
+                jq("#key-population").hide();
+
+            }
+        }
         var testOrdered  = function () {
             var val = jq(this).val();
             var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
             var sputumSmear = getValue("sputum-smear-action.value");
-            var startAntiTb = getValue("start-anti-tb-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
             var xray = getValue("chest-xray-action.value");
 
-            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb !=1065){
+            if(testOrderedChecked.length >=0 &amp;&amp; clinicalDiagnosis !=1065){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
 
             }
-            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb ==1065){
+            if(testOrderedChecked.length >=0 &amp;&amp; clinicalDiagnosis ==1065){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
@@ -312,13 +333,13 @@ Green Card follow-up visit form
                 var encounterDate = getValue('encounter-date.value');
                 getField('tbrxdate.value').val(encounterDate);
             }
-            if(testOrderedChecked.length >=0 &amp;&amp; startAntiTb ==1066){
+            if(testOrderedChecked.length >=0 &amp;&amp; clinicalDiagnosis ==1066){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
             }
-            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526){
                 jq("#tb-result-status input[value=1660]").prop("checked", true);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
@@ -330,11 +351,11 @@ Green Card follow-up visit form
         //Resulting TB status for Action Positive Sputum smear
         var sputumSmearAction  = function () {
             var sputumSmear = getValue("sputum-smear-action.value");
-            var startAntiTb = getValue("start-anti-tb-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
             var xray = getValue("chest-xray-action.value");
             var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
 
-            if(sputumSmear ==703 &amp;&amp; startAntiTb ==1065) {
+            if(sputumSmear ==703 &amp;&amp; clinicalDiagnosis ==1065) {
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
@@ -343,20 +364,58 @@ Green Card follow-up visit form
                 var encounterDate = getValue('encounter-date.value');
                 getField('tbrxdate.value').val(encounterDate);
             }
-            if(sputumSmear ==703 &amp;&amp; startAntiTb ==1066) {
+            if(sputumSmear ==703 &amp;&amp; clinicalDiagnosis ==1066) {
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
             }
 
-            if(sputumSmear ==703 &amp;&amp; startAntiTb !=1065) {
+            if(sputumSmear ==703 &amp;&amp; clinicalDiagnosis !=1065) {
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
             }
-            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').show();
+            }
+
+        }
+        //Resulting TB status for Action Positive GeneXpert
+        var geneXpertAction  = function () {
+            var geneXpert = getValue("genexpert-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            if(geneXpert ==703 &amp;&amp; clinicalDiagnosis ==1065) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+                //set TB RX date to todays date
+               // var encounterDate = getValue('encounter-date.value');
+               // getField('tbrxdate.value').val(encounterDate);
+            }
+            if(geneXpert ==703 &amp;&amp; clinicalDiagnosis ==1066) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+
+            if(geneXpert ==703 &amp;&amp; clinicalDiagnosis !=1065) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526){
                 jq("#tb-result-status input[value=1660]").prop("checked", true);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
@@ -368,10 +427,10 @@ Green Card follow-up visit form
         var chestXray = function () {
             var xray = getValue("chest-xray-action.value");
             var sputumSmear = getValue("sputum-smear-action.value");
-            var startAntiTb = getValue("start-anti-tb-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
             var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
 
-            if(xray == 152526 &amp;&amp; startAntiTb ==1065){
+            if(xray == 152526 &amp;&amp; clinicalDiagnosis ==1065){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
@@ -381,25 +440,59 @@ Green Card follow-up visit form
                 getField('tbrxdate.value').val(encounterDate);
 
             }
-            if(xray == 152526 &amp;&amp; startAntiTb ==1066){
+            if(xray == 152526 &amp;&amp; clinicalDiagnosis ==1066){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
 
             }
-            if(xray == 152526 &amp;&amp; startAntiTb !=1066){
+            if(xray == 152526 &amp;&amp; clinicalDiagnosis !=1066){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').hide();
 
             }
-            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526){
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526){
                 jq("#tb-result-status input[value=1660]").prop("checked", true);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
                 jq('#ipt-client-workup').show();
+            }
+        }
+        //Resulting TB status for Action clinical diagnosis
+        var clinicalDiagnosisAction  = function () {
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            if(clinicalDiagnosis ==1065){
+                jq("#tb-result-status input[value=1662]").prop("disabled", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
+                jq('#ipt-client-workup').hide();
+                jq('#ipt-initiation').hide();
+                jq('#ipt-result-status').hide();
+                //set TB RX date to todays date
+               // var encounterDate = getValue('encounter-date.value');
+                //Validate for moment
+                //var momentEncounteDate =moment(moment('encounterDate','yyyy-mm-dd').toDate()).format("DD-MMM-YYYY");
+               // getField('tbrxdate.value').val(encounterDate);
+            }
+            if(clinicalDiagnosis ==1066 ){
+               jq("#tb-result-status input[value=1662]").prop("checked", false);
+              //  jq('#tbrxdate').val(" ");
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526) {
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').show();
+               // getField('tbrxdate.value').val("");
             }
         }
         //Resulting TB status for Action start anti tb
@@ -425,16 +518,17 @@ Green Card follow-up visit form
                 getField('tbrxdate.value').val(encounterDate);
             }
             if(startAntiTb ==1066 ){
-                jq("#tb-result-status input[value=1662]").prop("disabled", true);
-                jq('#tbrxdate').val(" ");
-            }
-            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526) {
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').show();
+               // jq("#tb-result-status input[value=1662]").prop("disabled", true);
+                //jq('#tbrxdate').val(" ");
                 getField('tbrxdate.value').val("");
             }
+//            if(testOrderedChecked.length ==0 &amp;&amp; startAntiTb !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; geneXpert !=703 &amp;&amp; xray !=152526) {
+//                jq("#tb-result-status input[value=1660]").prop("checked", true);
+//                jq("#tb-result-status input[value=142177]").prop("checked", false);
+//                jq("#tb-result-status input[value=1662]").prop("checked", false);
+//                jq('#ipt-client-workup').show();
+//                getField('tbrxdate.value').val("");
+//            }
         }
 
 //Start on jq onready
@@ -455,7 +549,8 @@ Green Card follow-up visit form
          jq('input[type=radio].known-allergies').prop("checked", false);
          jq("#tbl-chronic-illness").hide();
          jq('input[type=radio].chronic-illness').prop("checked", false);
-
+         jq("#key-population").hide();
+         jq('input[type=radio].key-population').prop("checked", false);
             //jq("#nutritional-status input[type=radio]").prop("disabled", true);
          jq("#nutritional-status input[type=radio]").prop("checked", false);
          jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
@@ -487,7 +582,9 @@ Green Card follow-up visit form
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
          //tb action
          jq("#start-anti-tb-action").change(startAntiTbAction);
+         jq("#clinical-diagnosis-action").change(clinicalDiagnosisAction);
          jq("#sputum-smear-action").change(sputumSmearAction);
+         jq("#genexpert-action").change(geneXpertAction);
          jq("#chest-xray-action").change(chestXray);
          jq("#tb-test-ordered").change(testOrdered);
          jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
@@ -497,6 +594,12 @@ Green Card follow-up visit form
          jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
          jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
          jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
+         jq('input[type=radio].population-type').change(populationTypeSelected);
+         //Gravida
+         getField('parity-term.value').change(onParityChange);
+         getField('parity-abortion.value').change(onParityChange);
+         onParityChange();
+
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
@@ -532,10 +635,11 @@ Green Card follow-up visit form
                     jq('#fp-details').hide();
                     jq("#wants-pregnancy").hide();
                   //Automate EDC Computation
-                    var lmpdate = new Date(getValue('lmp-date.value'));
-                    var edd= new Date(lmpdate.getTime()+(280*24*60*60*1000)).toISOString().substr(0,10);
-                    var formattedEdd=moment(moment(edd, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-                    getField('patient-edd.value').val(formattedEdd);
+                    var lmpDate = getValue('lmp-date.value');
+                    var formattedEdd=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDate = moment(formattedEdd, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+
+                    getField('patient-edd.value').val(expectedDeliveryDate);
                 }
             });
 
@@ -779,8 +883,10 @@ Green Card follow-up visit form
 
             });
 
+
         });
     </script>
+
     <div class="ke-form-header">
         <table width="100%">
             <tr>
@@ -943,22 +1049,24 @@ Green Card follow-up visit form
         <!-- Population Type  -->
             <fieldset>
                 <legend>Population Type</legend>
-                <table>
+                <div>
+                    Patient population type  <input type="radio" name="population-type" class="population-type" value="1065"/> General Population
+                    <input type="radio" name="population-type" class="population-type" value="1066"/> Key Population
+                </div>
+                <table id="key-population">
                     <tr>
+
                         <td>
 
 
-                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Discordant Couple" style="checkbox" /><br/>
+                            <!--<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                 <!--answerLabel="Discordant Couple" style="checkbox" /><br/>-->
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Injectable Drug User" style="checkbox" /><br/>
+                                 answerLabel="People who inject drugs" style="checkbox" /><br/>
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Male who has sex with men" style="checkbox" /><br/>
+                                 answerLabel="Men who have sex with men" style="checkbox" /><br/>
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Sex Worker" style="checkbox" /><br/>
-                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Client of Sex Worker" style="checkbox" />
-
+                                 answerLabel="Female sex Worker" style="checkbox" /><br/>
                         </td>
                     </tr>
                 </table>
@@ -1023,9 +1131,9 @@ Green Card follow-up visit form
                                          answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                             141585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162626AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140070AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142247AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135462AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116214AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112989AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                              121657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,144576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133469AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,132653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                               141597AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                               141597AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Abdominal pain,Abnormal Uterine Bleeding,Anxiety,Depression,Back pain,Bloody Urine,Breast Pain,Chest Pain,Cold and Chills,Confusion,Delirium,Convulsions,Seizure,Cough,Crying Infant,Diarrhea,Difficult in breathing,Difficulty in swallowing,Dizziness,Ear Pain,Epigastric Pain,Eye apin,Facial Pain,Fatigue/weakness,Fever,Flank Pain,Vaginal Discharge,Discharge from Penis,Genital Ulcer,Headache,Hearing Loss,Hypotension,Shock,Itchiness/Pruritus,Joint Pain,Leg Pain,Loss of Appetite,Lymphadenopathy,Memory Loss,Coma,Lethargy,Mouth Pain,Mouth Ulceration,Muscle cramps,Muscle Pain,Nausea,Neck Pain,Night sweats,Numbness,Pain when Swallowing,Pelvic Pain,Poor Vision,Rash,Red Eye,Running/Blocked nose,Scrotal Pain,Shoulder Pain,
-                                                       Sleep Disturbance,Sore Throat,Excessive Sweating,Swollen Legs,Tremors,Urinary Symptoms,Vertigo,Vomiting,Weight Loss"
+                                                       Sleep Disturbance,Sore Throat,Excessive Sweating,Swollen Legs,Tremors,Urinary Symptoms,Vertigo,Vomiting,Weight Loss,Other"
                                          style="dropdown"
                                     />
                                 </td>
@@ -1160,18 +1268,32 @@ Green Card follow-up visit form
                     <table>
 
                         <tr>
-                            <td>Sputum Smear:</td>
-                            <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        <td>Sputum Smear:</td>
+                        <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
 
                         </tr>
+
                         <tr>
                             <td>Chest X-ray:</td>
                             <td><obs id="chest-xray-action" conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                         </tr>
                         <tr>
-                            <td>Start Anti-TBs:</td>
-                            <td><obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                            <td>GeneXpert:</td>
+                            <td><obs id="genexpert-action" conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown"
+
+                            /></td>
+
                         </tr>
+                        <tr>
+                            <td colspan="2"><p> </p></td>
+                        </tr>
+                        <tr>
+                            <td>Clinical diagnosis:</td>
+                            <td><obs  id="clinical-diagnosis-action" conceptId="163752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                        </tr>
+
                         <tr>
                             <td>Invitation of contacts:</td>
                             <td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
@@ -1186,13 +1308,22 @@ Green Card follow-up visit form
                             <td colspan="2"><p> </p></td>
                         </tr>
                         <tr>
+
                             <td colspan="2">
-                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Rx,TB Screening Not Done" />
+                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2"> <p></p></td>
                         </tr>
+
+                        <tr>
+                        <td>Start Anti-TBs:
+                        <obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" />
+                        </td>
+                    </tr>
+                  <tr><p></p></tr>
+
                         <tr id="tbrxfield">
                             <td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
                             <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
@@ -1585,11 +1716,11 @@ Green Card follow-up visit form
 
 
             <fieldset>
-                <legend>Antigen Today</legend>
+                <legend>Vaccination(s) today</legend>
                 <includeIf velocityTest="$patient.age &lt; 15">
                 <table width="30%">
                     <tr>
-                        <th style="color: #888" align="left">Antigen</th>
+                        <th style="color: #888" align="left">Vaccination</th>
                         <th style="color: #888" align="left">Recent</th>
                         <th style="color: #888" align="left">Count</th>
                       </tr>
@@ -1628,7 +1759,7 @@ Green Card follow-up visit form
                 <includeIf velocityTest="$patient.age &gt; 15">
                 <table width="30%">
                     <tr>
-                        <th style="color: #888" align="left">Antigen</th>
+                        <th style="color: #888" align="left">Vaccination</th>
                         <th style="color: #888" align="left">Recent</th>
                         <th style="color: #888" align="left">Count</th>
                     </tr>
@@ -1669,8 +1800,9 @@ Green Card follow-up visit form
                     <td width="20%"> <div><a class="show-nav-links"></a></div></td>
                 </tr>
             </table>
-                <includeIf velocityTest="$patient.gender == 'F' ">
-                    <fieldset>
+                <!--<includeIf velocityTest="$patient.gender == 'F' ">-->
+                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 13)">
+                    <fieldset >
                     <legend>Sexual and Reproductive History</legend>
                         <table class="right-aligned-first" style="width: 100%;" border="0">
                             <tr>
@@ -1710,14 +1842,8 @@ Green Card follow-up visit form
                                 <td colspan="2">
                                     <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
                                          allowFutureDates="true" labelText=" " id="patient-edd" readonly="true"/>
+                                    <span class="value"><recentObs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left">Gravida:</td>
-                                <td>
-                                    <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
-                                </td>
-                                <td></td>
                             </tr>
                             <tr>
                                 <includeIf velocityTest="$patient.gender == 'F' ">
@@ -1727,6 +1853,21 @@ Green Card follow-up visit form
                                     </td>
                                 </includeIf>
 
+                            </tr>
+                            <tr>
+                                <td>Parity:</td>
+                                <td>
+                                    <obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
+                                    +
+                                    <obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+                                         id="parity-abortion"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Gravida:</td>
+                                <td>
+                                    <obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+                                </td>
                             </tr>
                             </table>
 
