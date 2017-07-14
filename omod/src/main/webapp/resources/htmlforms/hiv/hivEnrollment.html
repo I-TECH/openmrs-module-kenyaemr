@@ -25,17 +25,43 @@
 
         function onTransferStatusChange() {
             if (getValue('transfer-in-status.value') == NO_CONCEPT_ID) {
-                jq('#transfer-details :input').prop('disabled', true);
+                jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
+                jq('#transfer-details').hide();
+                jq('#patient-history').show();
+                jq('#art-history').show();
+                jq('#baseline-assessment1').show();
+                jq('#baseline-assessment2').show();
+                jq('#baseline-assessment3').show();
+                jq('#treatment-supporter').show();
                 jq('#generate-hiv-id').show();
+                jq('#transit-patient').hide();
             } else if (getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq('#transfer-details').show();
+                jq('#patient-history').show();
+                jq('#art-history').show();
+                jq('#baseline-assessment1').show();
+                jq('#baseline-assessment2').show();
+                jq('#baseline-assessment3').show();
+                jq('#treatment-supporter').show();
+                jq('#generate-hiv-id').hide();
+                jq('#transit-patient').hide();
             } else if (getValue('transfer-in-status.value') == TRANSIT) {
-                jq('#transfer-details :input').prop('disabled', false);
+                jq('#transit-patient').show();
+                jq('#transfer-details').hide();
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-assessment1').hide();
+                jq('#baseline-assessment2').hide();
+                jq('#baseline-assessment3').hide();
+                jq('#treatment-supporter').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+
             }else{
                 jq('#transfer-details :input').prop('disabled', true);
                 jq('#hiv-id :input').prop('disabled', true);
@@ -75,20 +101,62 @@
             });
             return isPresent;
         }
+        //Validate baseline bmi
+        function onWeightOrHeightChange() {
+            var display = '';
+            var weightKg = parseFloat(getValue('weight.value'));
+            var heightM = parseFloat(getValue('height.value')) / 100;
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                var bmi = weightKg / (heightM * heightM);
+                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                    display = 'Abnormal value. Were height and height entered correctly?';
+                }
+                else {
+                    display = bmi.toFixed(2);
+                }
+            }
+            jQuery('#calculated-bmi').html(display);
+        }
 
         jq(function() {
+            //Get age and gender for validation
+            var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+           // console.log("Gender" +pgender);
+
             jq('#transfer-in-status input').click(onTransferStatusChange);
             jq('#art-status input').click(onArtStatusChange);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
+            //Transit validation
+            jq('#transit-patient').hide();
 
+            //Baseline
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            onWeightOrHeightChange();
+//            jq("#pregnant input[type=radio]").prop("disabled" ,false);
+//            jq("#breastfeeding input[type=radio]").prop("disabled" ,false);
+
+            //limit letters only in text field
+            jQuery('#rsn').keypress(function(event) {
+                var code = (event.keyCode ? event.keyCode : event.which);
+                //alert(code)
+                if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                    event.preventDefault();
+            });
             onTransferStatusChange();
             onArtStatusChange();
+            if (pgender == 'M' || pAge &lt; 10) {
+                jq("#pregnant input[type=radio]").prop("disabled" ,true);
+                jq("#breastfeeding input[type=radio]").prop("disabled" ,true);
+            }
 
             beforeSubmit.push(function() {
                 var birthDate = new Date("<lookup expression="patient.birthdate" />").getTime();
                 var encounterDate = new Date(getValue('encounter-date.value')).getTime();
                 var confirmedPveDate = new Date(getValue('confirmed-positive-date.value')).getTime();
                 var upn = jq('#hiv-id input[type=text]').val();
+
        /*
 				if(onSubmitWithUpnField(upn) != null) {
                         alert("This number already exist");
@@ -182,7 +250,17 @@
 					</tr>
 				</excludeIf>
 			</table>
+			<table id="transit-patient" style="display: inline-block">
+				<tr>
+					<td>Facility from: </td>
+					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+						<obsgroup groupingConceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</obsgroup>
 
+					</td>
+				</tr>
+			</table>
 			<div id="transfer-details">
 				<table>
 					<tr>
@@ -212,7 +290,7 @@
 			</div>
 		</fieldset>
 
-		<fieldset>
+		<fieldset id="patient-history" >
 			<legend>ART History</legend>
 
 			<table>
@@ -402,43 +480,178 @@
 				</obsgroup>
 			</table>
 		</fieldset>
+		<!-- Baseline assessments  -->
+		<fieldset>
+			<legend>Baseline assessment</legend>
 
+			<table id="baseline-assessment1" cellspacing="10" style="float:left; ">
+
+				<tr>
+					<td>HBV Infected</td>
+					<td>
+						<obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="111759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No"
+							 style="radio"
+						/>
+					</td>
+				</tr>
+
+				<tr>
+					<td>TB Infected</td>
+					<td>
+						<obs conceptId="164500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No"
+							 style="radio"
+						/>
+					</td>
+				</tr>
+				<tr>
+					<td>Pregnant</td>
+					<td>
+						<obs id = "pregnant" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No"
+							 style="radio"
+						/>
+					</td>
+				</tr>
+				<tr>
+					<td>Breastfeeding</td>
+					<td>
+						<obs id = "breastfeeding" conceptId="5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No"
+							 style="radio"
+						/>
+					</td>
+				</tr>
+			</table>
+			<table id="baseline-assessment2" cellspacing="10" style="float: left;">
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>Weight</td>
+					<td>
+						<obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						kg
+					</td>
+
+
+				</tr>
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>Height</td>
+					<td>
+						<obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						cm
+					</td>
+
+				</tr>
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>BMI</td>
+					<td><span id="calculated-bmi" class="value"></span></td>
+				</tr>
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>MUAC</td>
+					<td>
+						<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+
+				</tr>
+			</table>
+			<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>CD4 Count</td>
+					<td>
+						<obs id="cd4-count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						cells/uL
+					</td>
+				</tr>
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>Baseline Viral Load</td>
+					<td>
+						<obs id="viral-load" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						copies/ml
+					</td>
+
+				</tr>
+				<tr class="patient-details">
+					<td colspan="2"></td>
+					<td>Regimen</td>
+					<td>
+						<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="D4T/3TC/NVP,
+															 LPV/R,
+															 AZT/3TC,
+															 D4T,
+															 DDI,
+															 ABC,
+															 NELFINAVIR,
+															 NVP,
+															 EFV,
+															 3TC,
+															 TDF,
+															 IDV,
+															 AZT/3TC/EFV,
+															 D4T/3TC/EFV,
+															 AZT,
+															 FTC,
+															 LPV,
+															 RTV,
+															 ATV,
+															 3TC/NVP/AZT,
+															 3TC/D4T,
+															 TDF/3TC,
+															 EDF/3TC/EFV,
+															 ABC/3TC,
+															 EFV/FTC/TDF,
+															 3TC/LPV/r/TDF,
+															 ABC/3TC/AZT,
+															 ABC/NVP/3TC,
+															 3TC/ABC/LPV/r"
+							  			/>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
 		<fieldset>
 			<legend>Treatment Supporter</legend>
+			<table id="treatment-supporter" style="width: 70%;" border="0">
+				<tr>
+					<th align="left">Name</th>
+					<th align="left">Relationship</th>
+					<th align="left">Telephone Number</th>
+					<th align="left">Postal Addrress</th>
+				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>
+									<obs
+										id="treatment-supporter-relationship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
+										answerConceptIds="973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Grandparent,Sibling,Guardian,Parent,Spouse,Partner,Other"
+								/>
+								</td>
+								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 
-			<table>
-				<tr>
-					<td style="text-align: left;">Name</td>
-					<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-					<td style="text-align: left;">Relationship</td>
-					<td>
-						<obs
-								id="treatment-supporter-relationship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
-								answerConceptIds="973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Grandparent,Sibling,Guardian,Parent,Spouse,Partner,Other"
-						/>
-					</td>
-					<td style="text-align: left;">Postal Address</td>
-					<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-					<td style="text-align: left;">Telephone number</td>
-					<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-				</tr>
-				<tr>
-					<td style="text-align: left;">Name</td>
-					<td><obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-					<td style="text-align: left;">Relationship</td>
-					<td>
-						<obs
-								id="treatment-supporter-relationship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
-								answerConceptIds="973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Grandparent,Sibling,Guardian,Parent,Spouse,Partner,Other"
-						/>
-					</td>
-					<td style="text-align: left;">Postal Address</td>
-					<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/></td>
-					<td style="text-align: left;">Telephone number</td>
-					<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-				</tr>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="11" concept="Treatment Supporter"/>
+					<render n="12" concept="Treatment Supporter"/>
+			</repeat>
 			</table>
 		</fieldset>
 

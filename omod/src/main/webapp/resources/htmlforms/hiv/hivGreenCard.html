@@ -596,9 +596,9 @@ Green Card follow-up visit form
          jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
          jq('input[type=radio].population-type').change(populationTypeSelected);
          //Gravida
-         getField('parity-term.value').change(onParityChange);
-         getField('parity-abortion.value').change(onParityChange);
-         onParityChange();
+         //getField('parity-term.value').change(onParityChange);
+        // getField('parity-abortion.value').change(onParityChange);
+        // onParityChange();
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -1801,7 +1801,7 @@ Green Card follow-up visit form
                 </tr>
             </table>
                 <!--<includeIf velocityTest="$patient.gender == 'F' ">-->
-                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 13)">
+                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
                     <fieldset >
                     <legend>Sexual and Reproductive History</legend>
                         <table class="right-aligned-first" style="width: 100%;" border="0">
@@ -2341,19 +2341,36 @@ Green Card follow-up visit form
             <table>
                 <tr>
                     <td>Has the client been given condoms this visit?</td>
-                    <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                    <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No,Unkown"
+                             style="radio"
+
+                    /></td>
                 </tr>
                 <tr>
                     <td>Has the Client disclosed HIV status to their sexually active partner?</td>
-                    <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  /></td>
+                    <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No,Unkown"
+                             style="radio"
+                    /></td>
                 </tr>
                 <tr>
                     <td>Has the client's partner received on-site HIV testing?</td>
-                    <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  /></td>
+                    <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No,Unkown"
+                             style="radio"
+                    /></td>
                 </tr>
                 <tr>
                     <td>Has the client been screened for STI (in this visit)?</td>
-                    <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"  /></td>
+                    <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No,Unkown"
+                             style="radio"
+                    /></td>
                 </tr>
             </table>
         </fieldset >
