@@ -18,29 +18,63 @@
 
             disableFields();
 
-            $(".hiv-status select").change(function () {
+            $(".hiv-result select").change(function () {
                 var row = $(this).parent().parent().parent();
-                if (this.value == '664') {
-                    $(row).find('.in-care select').attr('disabled', false);
-                    $(row).find('.ccc-no input').attr('disabled', false);
-                } else {
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+                var baseline = $(".baseline-hiv-status :selected").text();
+                //console.log("Baseline " + baseline);
+                if (this.value == 664 &amp;&amp; baseline !='Positive') {    //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled',true);
+                } else {                     //positive
+                    $(row).find('.in-care select').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-status select').attr('disabled', true);
+
                 }
             });
 
+            $(".baseline-hiv-status  select").change(function () {
+                var row = $(this).parent().parent().parent();
+
+                if (this.value == 664) {    //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                }
+                if(this.value == 703) {                     //positive
+                    $(row).find('.in-care select').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date').prop('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                }
+            });
             function disableFields() {
                 var table = document.getElementById("table");
                 for (var i = 0, row; row = table.rows[i]; i++) {
-                    var hivStatus = $(row).find('.hiv-status select').val();
-                    if (hivStatus === '664') {
-                        $(row).find('.in-care select').attr('disabled', false);
-                        $(row).find('.ccc-no input').attr('disabled', false);
-                    } else {
+                    var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
+                   console.log("hivStatus" + baselineHivStatus);
+                    if (baselineHivStatus == 664) {     //negative
                         $(row).find('.in-care select').attr('disabled', true);
                         $(row).find('.ccc-no input').attr('disabled', true);
+                        $(row).find('.referring-facility').attr('disabled', true);
+                        $(row).find('.next-hivtest-date').attr('disabled', false);
+                        $(row).find('.hiv-status').attr('disabled', false);
+                    }else if (baselineHivStatus == 703)  {                     //positive
+                       $(row).find('.in-care select').val('');
+                       $(row).find('.ccc-no input').val('');
+                        $(row).find('.in-care select').attr('disabled', false);
+                        $(row).find('.ccc-no input').attr('disabled', false);
+                        $(row).find('.referring-facility').attr('disabled', false);
+                        $(row).find('.next-hivtest-date').attr('disabled', true);
+                        $(row).find('.hiv-result').attr('disabled', true);
                     }
                 }
             }
@@ -61,13 +95,14 @@
                 <th align="left">Name of Members</th>
                 <th align="left">Age</th>
                 <th align="left">Relation</th>
+                <th align="left">Status</th>
+                <th align="left">Date</th>
                 <th align="left">Baseline HIV Status</th>
-                <th align="left">Reason</th>
                 <th align="left">New Test Date</th>
                 <th align="left">HIV Result</th>
                 <th align="left">In Care?</th>
                 <th align="left">CCC Number</th>
-                <th align="left">Refer</th>
+                <th align="left">Facility Tested</th>
             </tr>
             </thead>
             <tbody>
@@ -86,27 +121,28 @@
                             </td>
                             <td>
                                 <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse,Partner,Co-Wife,Guardian,Other"/>
+                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
+                            </td>
+
+                            <td>
+                                <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Current,Deceased,Unknown"/>
+                            </td>
+                            <td>
+                                <obs class="family-member-baseline-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                             </td>
                             <td>
                                 <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
+                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
                             </td>
                             <td>
-                                <obs
-                                        conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Baseline,Routine"
-                                        style="radio"
-                                />
+                                <obs class="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                             </td>
                             <td>
-                                <obs id="next-apt-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                            </td>
-                            <td>
-                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
                             </td>
@@ -117,13 +153,11 @@
                             </td>
                             <td>
                                 <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
-                            </td><td>
-                            <obs
-                                    conceptId="164849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    answerLabels="Yes,No"
-                                    style="radio"
-                            />
+                            </td>
+                            <td>
+                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+
                         </td>
                         </tr>
                     </obsgroup>

@@ -26,12 +26,18 @@
 
     def nextOfKinFieldRows = [
             [
-                    [object: command, property: "nameOfNextOfKin", label: "Next of kin name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Next of kin relationship"]
+                    [object: command, property: "nameOfNextOfKin", label: "Full Name"],
+                    [object: command, property: "nextOfKinRelationship", label: "Relationship"]
             ],
             [
-                    [object: command, property: "nextOfKinContact", label: "Next of kin contact"],
-                    [object: command, property: "nextOfKinAddress", label: "Next of kin address"]
+                    [object: command, property: "nextOfKinContact", label: "Phone Number"],
+                    [object: command, property: "nextOfKinAddress", label: "Postal Address"]
+            ]
+    ]
+    def guardianFieldRows = [
+            [
+                    [object: command, property: "nameOfNextOfKin", label: "Guardian First Name"],
+                    [object: command, property: "nextOfKinRelationship", label: "Guardian Last Name"]
             ]
     ]
 
@@ -150,8 +156,19 @@
             <% deathFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
             <table>
+                 <tr>
+                     <td>
+                         <label>Under 18 years?</label>
+                     </td>
+                     <td>
+                         <label></label>
+                         <input type="radio" value="Yes" name="age-bracket" class="age-bracket" /> Yes
+                         <input type="radio" value="No" name="age-bracket" class="age-bracket" /> No
+                     </td>
+                </tr>
+            </table>
+         <table id="underage-details" style="display: none">
                 <tr>
 
             <td valign="top">
@@ -177,7 +194,16 @@
                         </span>
                     </td>
                 </tr>
-        </table>
+                <tr>
+                    <td colspan="2">
+
+            <%  guardianFieldRows.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+                    </td>
+                </tr>
+         </table>
+        </fieldset>
 
         </fieldset>
 
@@ -223,7 +249,6 @@
             <% nextOfKinFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
         </fieldset>
 
     </div>
@@ -277,6 +302,15 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 } else {
                     kenyaui.notifyError('Saving patient was successful, but unexpected response');
                 }
+            }
+        });
+
+        // handle age-bracket radio buttons
+        jQuery(".age-bracket").change(function () {
+            if (jQuery(this).val() == "Yes") {
+                jQuery("#underage-details").show();
+            } else {
+                jQuery("#underage-details").hide();
             }
         });
     });
