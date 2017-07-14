@@ -49,6 +49,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -88,7 +89,6 @@ public class EditPatientFragmentController {
 
 		// create list of counties
 
-
 		List<String> countyList = new ArrayList<String>();
 		List<Location> locationList = Context.getLocationService().getAllLocations();
 		for(Location loc: locationList) {
@@ -101,6 +101,22 @@ public class EditPatientFragmentController {
 		Set<String> uniqueCountyList = new HashSet<String>(countyList);
 		model.addAttribute("countyList", uniqueCountyList);
 
+		// create list of next of kin relationship
+
+		List<String> nextOfKinRelationshipOptions = Arrays.asList(
+			Dictionary.getConcept(Dictionary.FATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.MOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDMOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDFATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.SIBLING).getName().getName(),
+			Dictionary.getConcept(Dictionary.CHILD).getName().getName(),
+			Dictionary.getConcept(Dictionary.AUNT).getName().getName(),
+			Dictionary.getConcept(Dictionary.UNCLE).getName().getName(),
+			Dictionary.getConcept(Dictionary.GUARDIAN).getName().getName(),
+			Dictionary.getConcept(Dictionary.OTHER_NON_CODED).getName().getName()
+		);
+
+		model.addAttribute("nextOfKinRelationshipOptions", nextOfKinRelationshipOptions);
 
 		// Create list of education answer concepts
 		List<Concept> educationOptions = new ArrayList<Concept>();
