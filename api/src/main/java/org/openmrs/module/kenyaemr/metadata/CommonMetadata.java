@@ -72,6 +72,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String EMAIL_ADDRESS = "b8d0b331-1d2d-4a9a-b741-1816f498bdb6";
 		public static final String ALTERNATE_PHONE_CONTACT = "94614350-84c8-41e0-ac29-86bc107069be";
 		public static final String NEAREST_HEALTH_CENTER = "27573398-4651-4ce5-89d8-abec5998165c";
+		public static final String GUARDIAN_FIRST_NAME = "8caf6d06-9070-49a5-b715-98b45e5d427b";
+		public static final String GUARDIAN_LAST_NAME = "0803abbd-2be4-4091-80b3-80c6940303df";
 	}
 
 	public static final class _Provider {
@@ -153,6 +155,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 4.3, _PersonAttributeType.ALTERNATE_PHONE_CONTACT));
 		install(personAttributeType("Nearest Health Facility", "Patient's nearest Health Facility",
 				String.class, null, false, 4.3, _PersonAttributeType.NEAREST_HEALTH_CENTER));
+		// guardian properties
+		install(personAttributeType("Guardian First Name", "Guardian's first name",
+				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_FIRST_NAME));
+		install(personAttributeType("Guardian Last Name", "Guardian's last name",
+				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_LAST_NAME));
+
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));

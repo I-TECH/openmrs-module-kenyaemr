@@ -32,8 +32,8 @@
     ]
     def guardianFieldRows = [
             [
-                    [object: command, property: "nameOfNextOfKin", label: "Guardian First Name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Guardian Last Name"]
+                    [object: command, property: "guardianFirstName", label: "Guardian First Name"],
+                    [object: command, property: "guardianLastName", label: "Guardian Last Name"]
             ]
     ]
 
@@ -212,13 +212,13 @@
 
             <table>
             <tr>
-                <td class="ke-field-label" style="width: 262px">County</td>
+                <td class="ke-field-label" style="width: 265px">County</td>
                 <td class="ke-field-label" style="width: 260px">Sub-County</td>
                 <td class="ke-field-label" style="width: 260px">Ward</td>
             </tr>
 
             <tr>
-                <td style="width: 262px">
+                <td style="width: 265px">
                     <select name="personAddress.countyDistrict">
                         <option></option>
                         <%countyList.each { %>

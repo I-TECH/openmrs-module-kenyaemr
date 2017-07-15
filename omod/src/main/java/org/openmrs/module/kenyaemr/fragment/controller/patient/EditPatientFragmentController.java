@@ -104,6 +104,8 @@ public class EditPatientFragmentController {
 		// create list of next of kin relationship
 
 		List<String> nextOfKinRelationshipOptions = Arrays.asList(
+			new String("Partner"),
+			new String("Spouse"),
 			Dictionary.getConcept(Dictionary.FATHER).getName().getName(),
 			Dictionary.getConcept(Dictionary.MOTHER).getName().getName(),
 			Dictionary.getConcept(Dictionary.GRANDMOTHER).getName().getName(),
@@ -113,7 +115,8 @@ public class EditPatientFragmentController {
 			Dictionary.getConcept(Dictionary.AUNT).getName().getName(),
 			Dictionary.getConcept(Dictionary.UNCLE).getName().getName(),
 			Dictionary.getConcept(Dictionary.GUARDIAN).getName().getName(),
-			Dictionary.getConcept(Dictionary.OTHER_NON_CODED).getName().getName()
+			Dictionary.getConcept(Dictionary.FRIEND).getName().getName(),
+			Dictionary.getConcept(Dictionary.CO_WORKER).getName().getName()
 		);
 
 		model.addAttribute("nextOfKinRelationshipOptions", nextOfKinRelationshipOptions);
@@ -149,7 +152,7 @@ public class EditPatientFragmentController {
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
 		// Create a list of next of kin Relationship answer concepts
-		List<Concept> nextOfKinRelationshipOptions = new ArrayList<Concept>();
+
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_POLYGAMOUS));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_MONOGAMOUS));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.DIVORCED));
@@ -242,6 +245,8 @@ public class EditPatientFragmentController {
 		private String alternatePhoneContact;
 		private String nearestHealthFacility;
 		private String emailAddress;
+		private String guardianFirstName;
+		private String guardianLastName;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -302,6 +307,8 @@ public class EditPatientFragmentController {
 			alternatePhoneContact = wrapper.getAlternativePhoneContact();
 			emailAddress = wrapper.getEmailAddress();
 			nearestHealthFacility = wrapper.getNearestHealthFacility();
+			guardianFirstName = wrapper.getGuardianFirstName();
+			guardianLastName = wrapper.getGuardianLastName();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -472,6 +479,8 @@ public class EditPatientFragmentController {
 			wrapper.setAlternativePhoneContact(alternatePhoneContact);
 			wrapper.setNearestHealthFacility(nearestHealthFacility);
 			wrapper.setEmailAddress(emailAddress);
+			wrapper.setGuardianFirstName(guardianFirstName);
+			wrapper.setGuardianLastName(guardianLastName);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -896,6 +905,22 @@ public class EditPatientFragmentController {
 
 		public void setEmailAddress(String emailAddress) {
 			this.emailAddress = emailAddress;
+		}
+
+		public String getGuardianFirstName() {
+			return guardianFirstName;
+		}
+
+		public void setGuardianFirstName(String guardianFirstName) {
+			this.guardianFirstName = guardianFirstName;
+		}
+
+		public String getGuardianLastName() {
+			return guardianLastName;
+		}
+
+		public void setGuardianLastName(String guardianLastName) {
+			this.guardianLastName = guardianLastName;
 		}
 	}
 }
