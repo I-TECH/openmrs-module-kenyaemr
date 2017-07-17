@@ -224,4 +224,32 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setEmailAddress(String email) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.EMAIL_ADDRESS, email);
 	}
+
+	/**
+	 * Gets guardian's first name
+	 * @return guardian's first name
+	 */
+	public String getGuardianFirstName() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_FIRST_NAME);
+	}
+	/**
+	 * Sets guardian's first name
+	 */
+	public void setGuardianFirstName(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_FIRST_NAME, value);
+	}
+
+	/**
+	 * Gets guardian's last name
+	 * @return guardian's last name
+	 */
+	public String getGuardianLastName() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_LAST_NAME);
+	}
+	/**
+	 * Sets guardian's last name
+	 */
+	public void setGuardianLastName(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_LAST_NAME, value);
+	}
 }

@@ -26,18 +26,14 @@
 
     def nextOfKinFieldRows = [
             [
-                    [object: command, property: "nameOfNextOfKin", label: "Full Name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Relationship"]
-            ],
-            [
                     [object: command, property: "nextOfKinContact", label: "Phone Number"],
                     [object: command, property: "nextOfKinAddress", label: "Postal Address"]
             ]
     ]
     def guardianFieldRows = [
             [
-                    [object: command, property: "nameOfNextOfKin", label: "Guardian First Name"],
-                    [object: command, property: "nextOfKinRelationship", label: "Guardian Last Name"]
+                    [object: command, property: "guardianFirstName", label: "Guardian First Name"],
+                    [object: command, property: "guardianLastName", label: "Guardian Last Name"]
             ]
     ]
 
@@ -216,13 +212,13 @@
 
             <table>
             <tr>
-                <td class="ke-field-label" style="width: 260px">County</td>
+                <td class="ke-field-label" style="width: 265px">County</td>
                 <td class="ke-field-label" style="width: 260px">Sub-County</td>
                 <td class="ke-field-label" style="width: 260px">Ward</td>
             </tr>
 
             <tr>
-                <td style="width: 260px">
+                <td style="width: 265px">
                     <select name="personAddress.countyDistrict">
                         <option></option>
                         <%countyList.each { %>
@@ -245,10 +241,28 @@
 
         <fieldset>
             <legend>Next of Kin Details</legend>
+            <table>
+                <tr>
+                    <td class="ke-field-label" style="width: 260px">Name</td>
+                    <td class="ke-field-label" style="width: 260px">Relationship</td>
+                </tr>
 
+                <tr>
+                    <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nameOfNextOfKin"])}</td>
+                    <td style="width: 260px">
+                        <select name="nextOfKinRelationship">
+                            <option></option>
+                            <%nextOfKinRelationshipOptions.each { %>
+                            <option value="${it}">${it}</option>
+                            <%}%>
+                        </select>
+                    </td>
+                </tr>
+            </table>
             <% nextOfKinFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
+
         </fieldset>
 
     </div>
@@ -313,7 +327,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 jQuery("#underage-details").hide();
             }
         });
-    });
+    }); // end of jQuery initialization block
+
     function updateBirthdate(data) {
         var birthdate = new Date(data.birthdate);
         kenyaui.setDateField('patient-birthdate', birthdate);
