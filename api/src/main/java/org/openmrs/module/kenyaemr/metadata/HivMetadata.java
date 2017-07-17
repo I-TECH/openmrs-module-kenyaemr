@@ -34,6 +34,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
 		public static final String HIV_DISCONTINUATION = "2bdada65-4c72-4a48-8730-859890e25cee";
 		public static final String HIV_ENROLLMENT = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
+		public static final String ART_REFILL = "e87aa2ad-6886-422e-9dfd-064e3bfe3aad";
 	}
 
 	public static final class _Form {
@@ -63,6 +64,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("HIV Enrollment", "Enrollment onto HIV program", _EncounterType.HIV_ENROLLMENT));
 		install(encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", _EncounterType.HIV_CONSULTATION));
 		install(encounterType("HIV Discontinuation", "Discontinuation from HIV program", _EncounterType.HIV_DISCONTINUATION));
+		install(encounterType("ART Refill", "ART Refill encounter", _EncounterType.ART_REFILL));
 
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
 		install(form("Clinical Encounter - HIV addendum", null, _EncounterType.HIV_CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));

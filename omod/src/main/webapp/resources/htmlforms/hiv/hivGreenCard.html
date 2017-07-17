@@ -74,6 +74,9 @@ Green Card follow-up visit form
                 jq('.patient-details :input').prop('disabled', true);
             }
         }
+        function onRecordIPTOutcome() {
+            jq("#tbl-ipt-outcome").toggle();
+        }
         function displayRecentBmi() {
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
@@ -126,7 +129,7 @@ Green Card follow-up visit form
         }
         var complaintDurationInput = function() {
 
-            //jq(this).closest('tr').find("div.nav-links").toggle();
+
             var val = jq(this).val();
             //jq(this).closest("tr").find().val( getField('complaint-date.value');
 
@@ -569,7 +572,20 @@ Green Card follow-up visit form
             }
 
         }
+//IPT EVENT SELECTED
+        var iptEventSelected  = function () {
 
+            var iptEvent = getValue('ipt-event-type.value');
+           // console.log("IPT EVENT "+ iptEvent);
+            if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
+
+               // console.log("IPT EVENT "+ iptEvent);
+                jq("#reason-for-discontinuation").show();
+            }
+          else{
+              jq("#reason-for-discontinuation").hide();
+              }
+        }
 //Start on jq onready
         jq(function() {
 
@@ -614,6 +630,11 @@ Green Card follow-up visit form
          jq(".show-nav-links").text("Click to Show/Hide Form Sections");
          jq("#tb-screening-tab").hide();
          jq("#ever-on-ipt").hide();
+         //IPT OUTCOME
+         jq("#tbl-ipt-outcome").hide();
+         jq("#reason-for-discontinuation").hide();
+         getField('ipt-event-type.value').change(iptEventSelected);
+         jq("#bt-ipt-outcome").click(onRecordIPTOutcome);
          var actionTakenTab = jq('#action-taken');
          var iptClientWorkupTab = jq('#ipt-client-workup');
          var iptFollowup = jq('#ipt-followup');
@@ -1353,7 +1374,7 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
                             <td>Evaluated for IPT:</td>
-                            <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelTExt=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+                            <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                         </tr>
                     </table>
                     <table id="tb-screening-result">
@@ -1362,7 +1383,7 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
 
-                            <td colspan="2">
+                            <td colspan="3">
                                 <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
                             </td>
                         </tr>
@@ -1371,8 +1392,9 @@ Green Card follow-up visit form
                         </tr>
 
                         <tr>
-                        <td>Start Anti-TBs:
-                        <obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" />
+                        <td colspan="2">Start Anti-TBs:
+                        <obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+                              answerLabels="Yes,No"/>
                         </td>
                     </tr>
                   <tr><p></p></tr>
@@ -1475,11 +1497,25 @@ Green Card follow-up visit form
                         <td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Bad= missed 9 doses/month</td>
                         <td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
                     </tr>
+                </table>
+          <br />
+                <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
+                <table id="tbl-ipt-outcome">
+
+                            <tr>
+                                <td>Event:</td>
+                                <td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=""  showDate="true"/></td>
+                            </tr>
+                            <tr id="reason-for-discontinuation">
+                                <td>Reason for discontinuation</td>
+                                <td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
+                            </tr>
                     <tr>
                         <td>Action Taken</td>
                         <td><obs id="action-taken" conceptId="160632" cols="45" rows="1" /></td>
                     </tr>
                 </table>
+
             </fieldset>
 
             <fieldset id="ipt-uptake">
