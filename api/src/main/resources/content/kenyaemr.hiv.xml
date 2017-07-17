@@ -17,6 +17,7 @@
 				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
+				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
 			</set>
 		</property>
 		<property name="reports">
@@ -180,6 +181,20 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
+		<property name="order" value="201090" />
+	</bean>
+
+	<!-- Art Fast Track Form -->
+	<bean id="kenyaemr.hiv.form.artFastTrackForm" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="83fb6ab2-faec-4d87-a714-93e77a28a201" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
 		<property name="order" value="201090" />
 	</bean>
 	<!-- ===================== Reports ===================== -->
