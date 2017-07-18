@@ -15,6 +15,10 @@
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -30,8 +34,11 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
+import org.openmrs.util.OpenmrsConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,17 +58,52 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 		// get list of recorded allergies
 		ObsService obsService = Context.getObsService();
 		Concept concept = Context.getConceptService().getConcept(160643);
-		List<Obs> allergies = obsService.getObservationsByPersonAndConcept(patient, concept);
+		List<Form> formsCollectingAllergies = Arrays.asList(
+				Context.getFormService().getFormByUuid("47814d87-2e53-45b1-8d05-ac2e944db64c"),
+				Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259")
+		);
+
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingAllergies, null, null,false);
+		List<Person> patients = new ArrayList<Person>();
+		patients.add(patient);
+
+		List<Concept> question = new ArrayList<Concept>();
+		question.add(concept);
+
+		List<Obs> allergies = obsService.getObservations(
+				patients,
+				encounters,
+				question,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null, null, false);
 
 		List<SimpleObject> allergyList = new ArrayList<SimpleObject>();
+		List<SimpleObject> illnessList = new ArrayList<SimpleObject>();
+		Concept noConcept = Context.getConceptService().getConcept(1066);
 		for(Obs obs: allergies) {
-			String allergen = obs.getValueCoded().getName().toString();
+
+			String allergen = obs.getValueCoded().equals(noConcept)? "None": obs.getValueCoded().getName().getName();
 			allergyList.add(SimpleObject.create(
 				"allergen", allergen
 			));
 		}
-		System.out.println(allergies);
+
+		List<Obs> chronicIllnesses = obsService.getObservationsByPersonAndConcept(patient, Context.getConceptService().getConcept(1284));
+		for(Obs o: chronicIllnesses) {
+			String illness = o.getValueCodedName().getName();
+			illnessList.add(SimpleObject.create(
+					"illness", illness
+			));
+		}
+		System.out.println("Total allergies: " + allergies.size() + ", Illnesses: " + illnessList.size());
+
 		model.addAttribute("patient", patient);
 		model.addAttribute("allergies", allergyList);
+		model.addAttribute("illnesses", illnessList);
 	}
 }
