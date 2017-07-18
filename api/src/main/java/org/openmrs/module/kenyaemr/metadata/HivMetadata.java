@@ -34,6 +34,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
 		public static final String HIV_DISCONTINUATION = "2bdada65-4c72-4a48-8730-859890e25cee";
 		public static final String HIV_ENROLLMENT = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
+		public static final String ART_REFILL = "e87aa2ad-6886-422e-9dfd-064e3bfe3aad";
 	}
 
 	public static final class _Form {
@@ -45,6 +46,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String MOH_257_ARV_THERAPY = "8f5b3ba5-1677-450f-8445-33b9a38107ae";
 		public static final String MOH_257_VISIT_SUMMARY = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 		public static final String HIV_GREEN_CARD = "22c68f86-bbf0-49ba-b2d1-23fa7ccf0259";
+		public static final String FAST_TRACK = "83fb6ab2-faec-4d87-a714-93e77a28a201";
 	}
 
 	public static final class _PatientIdentifierType {
@@ -63,6 +65,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("HIV Enrollment", "Enrollment onto HIV program", _EncounterType.HIV_ENROLLMENT));
 		install(encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", _EncounterType.HIV_CONSULTATION));
 		install(encounterType("HIV Discontinuation", "Discontinuation from HIV program", _EncounterType.HIV_DISCONTINUATION));
+		install(encounterType("ART Refill", "ART Refill encounter", _EncounterType.ART_REFILL));
 
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
 		install(form("Clinical Encounter - HIV addendum", null, _EncounterType.HIV_CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
@@ -72,6 +75,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("MOH 257 Visit Summary", null, _EncounterType.HIV_CONSULTATION, "1", _Form.MOH_257_VISIT_SUMMARY));
 		install(form("HIV Discontinuation", null, _EncounterType.HIV_DISCONTINUATION, "1", _Form.HIV_DISCONTINUATION));
 		install(form("HIV Green Card", "Green Card Form", _EncounterType.HIV_CONSULTATION, "1", _Form.HIV_GREEN_CARD));
+		install(form("ART Fast Track", "ART Fast Track Form", _EncounterType.ART_REFILL, "1", _Form.FAST_TRACK));
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
