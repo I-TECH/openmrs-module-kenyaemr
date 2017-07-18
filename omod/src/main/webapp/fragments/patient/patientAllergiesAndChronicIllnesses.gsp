@@ -5,19 +5,35 @@
 
 </script>
 
-<% if (allergies) { %>
+<style>
+	.list-heading {
+		color: #413c32;
+		padding: 4px;
+		text-align: left;
+		font-weight: bold;
+		font-size: 14px;
+	}
+</style>
+
 <div class="ke-panel-content">
-
+	<label class="list-heading">Allergens</label>
+<% if (allergies) { %>
 	<% allergies.each { rel -> %>
-	<div class="ke-stack-item">
-
-		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Allergen", value: rel ]) }
-
-		<div style="clear: both"></div>
-	</div>
+	<div class="ke-stack-item">	${ rel.allergen } 	</div>
 	<% } %>
-</div>
+<% } else { %>
+	<div class="ke-stack-item">	None </div>
 <% } %>
+<div style="clear: both"></div>
+	<label class="list-heading">Chronic Illnesses</label>
+<% if (illnesses) { %>
+<% illnesses.each { rel -> %>
+	<div class="ke-stack-item">	${ rel.illness } </div>
+<% } %>
+<% } else { %>
+	<div class="ke-stack-item">None</div>
+<% } %>
+</div>
 
 <div class="ke-panel-footer">
 </div>
