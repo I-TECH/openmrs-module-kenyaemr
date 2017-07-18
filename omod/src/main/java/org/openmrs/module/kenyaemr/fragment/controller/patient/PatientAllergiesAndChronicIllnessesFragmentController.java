@@ -57,7 +57,8 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 
 		// get list of recorded allergies
 		ObsService obsService = Context.getObsService();
-		Concept concept = Context.getConceptService().getConcept(160643);
+		Concept allergyQ = Context.getConceptService().getConcept(160643);
+		Concept chronicIllnessQ = Context.getConceptService().getConcept(1284);
 		List<Form> formsCollectingAllergies = Arrays.asList(
 				Context.getFormService().getFormByUuid("47814d87-2e53-45b1-8d05-ac2e944db64c"),
 				Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259")
@@ -68,7 +69,7 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 		patients.add(patient);
 
 		List<Concept> question = new ArrayList<Concept>();
-		question.add(concept);
+		question.add(allergyQ);
 
 		List<Obs> allergies = obsService.getObservations(
 				patients,
@@ -85,22 +86,26 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 		List<SimpleObject> allergyList = new ArrayList<SimpleObject>();
 		List<SimpleObject> illnessList = new ArrayList<SimpleObject>();
 		Concept noConcept = Context.getConceptService().getConcept(1066);
+		int allergyCounter = 0;
 		for(Obs obs: allergies) {
-
-			String allergen = obs.getValueCoded().equals(noConcept)? "None": obs.getValueCoded().getName().getName();
+			allergyCounter++;
+			String allergen = obs.getValueCoded().equals(noConcept)? "None": allergyCounter + "." + obs.getValueCoded().getName().getName();
 			allergyList.add(SimpleObject.create(
 				"allergen", allergen
 			));
 		}
 
-		List<Obs> chronicIllnesses = obsService.getObservationsByPersonAndConcept(patient, Context.getConceptService().getConcept(1284));
+		List<Obs> chronicIllnesses = obsService.getObservationsByPersonAndConcept(patient, new Concept(1284));
+		int illnessCounter = 0;
 		for(Obs o: chronicIllnesses) {
-			String illness = o.getValueCodedName().getName();
-			illnessList.add(SimpleObject.create(
-					"illness", illness
-			));
+			if(o.getValueCoded() != null) {
+				illnessCounter++;
+				String illness = illnessCounter + "." + o.getValueCoded().getName().getName();
+				illnessList.add(SimpleObject.create(
+						"illness", illness
+				));
+			}
 		}
-		System.out.println("Total allergies: " + allergies.size() + ", Illnesses: " + illnessList.size());
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("allergies", allergyList);
