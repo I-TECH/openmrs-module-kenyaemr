@@ -13,6 +13,7 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
@@ -37,8 +38,10 @@ import java.util.Set;
  * has completed 6 months ipt
  * age >= 20 years old
  * longer follow-up intervals (depends on clinician)
+ *
+ * Adds "Stable" flag on patient's dashboard
  */
-public class StablePatientsCalculation extends AbstractPatientCalculation {
+public class StablePatientsCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
 
@@ -122,5 +125,10 @@ public class StablePatientsCalculation extends AbstractPatientCalculation {
             ret.put(ptId, new BooleanResult(stable, this));
         }
         return ret;
+    }
+
+    @Override
+    public String getFlagMessage() {
+        return "Stable";
     }
 }
