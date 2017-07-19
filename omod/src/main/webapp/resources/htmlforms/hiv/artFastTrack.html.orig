@@ -1,0 +1,149 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <macros>
+        <macro key="artFastTrackEncounterType" value="e87aa2ad-6886-422e-9dfd-064e3bfe3aad" />
+    </macros>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+                <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>ART Fast Track for Stable Patients</legend>
+
+            <table>
+                <tr>
+                    <td>IPT Due Date</td>
+                    <td><obs conceptId="164073" /></td>
+                </tr>
+                <tr>
+                    <td>Date collected IPT</td>
+                    <td><obs conceptId="164074" /></td>
+                </tr>
+                <tr>
+                    <td>Weight</td>
+                    <td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                </tr>
+                <tr>
+                    <td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, sbdominal pain, RUQ pain, yellow urine or eyes)</td>
+                    <td><obs conceptId="159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Peripheral Neuropathy  &lt;/br&gt; Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
+                    <td><obs conceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Does the patient have Rash?	</td>
+                    <td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Bad= missed 9 doses/month</td>
+                    <td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Action Taken</td>
+                    <td><obs id="action-taken" conceptId="160632" cols="30" rows="6" /></td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>History</legend>
+
+            <table>
+                <tr>
+                    <th>IPT Due Date</th>
+                    <th>Date collected IPT</th>
+                    <th>Weight(Kg)</th>
+                    <th>Hepatotoxicity</th>
+                    <th>Peripheral Neuropathy</th>
+                    <th>Rash?</th>
+                    <th>Adherence Measurement</th>
+                </tr>
+                <lookup complexExpression="
+			#foreach($encounter in $fn.allEncounters('aadeafbe-a3b1-4c57-bc76-8461b778ebd6'))
+				&lt;tr&gt;
+				#set($iptDueDate='')
+				#set($iptCollectionDate='')
+				#set($weight='')
+				#set($hepatotoxicity='')
+				#set($peripheralneuropathy='')
+				#set($rash='')
+				#set($adherenceMeasurement='')
+
+				#foreach($obs in $encounter.obs)
+
+						#if ( $obs.concept==164073 )
+							#set($iptDueDate=($obs.getValueAsString(en)))
+						#end
+						#if ( $obs.concept==164074 )
+							#set($iptCollectionDate=$obs.getValueAsString(en))
+						#end
+						#if ( $obs.concept==5089 )
+							#set($weight=$obs.valueNumeric)
+						#end
+						#if ( $obs.concept==159098 )
+							#set($hepatotoxicity=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==118983 )
+							#set($peripheralneuropathy=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==512 )
+							#set($rash=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==164075 )
+							#set($adherenceMeasurement=$obs.valueCoded.name)
+						#end
+
+				#end
+
+				&lt;td&gt;
+					$iptDueDate
+				&lt;/td&gt;
+				&lt;td&gt;
+					$iptCollectionDate
+				&lt;/td&gt;
+				&lt;td&gt;
+					$weight
+				&lt;/td&gt;
+				&lt;td&gt;
+					$hepatotoxicity
+				&lt;/td&gt;
+				&lt;td&gt;
+					$peripheralneuropathy
+				&lt;/td&gt;
+				&lt;td&gt;
+					$rash
+				&lt;/td&gt;
+				&lt;td&gt;
+					$adherenceMeasurement
+				&lt;/td&gt;
+				&lt;/tr&gt;
+			#end"/>
+            </table>
+
+        </fieldset>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+</htmlform>
