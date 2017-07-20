@@ -67,6 +67,29 @@ Green Card follow-up visit form
             }
 
         }
+        function displayRecentBmi() {
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+            var bmi = '';
+            var recent_bmi ='';
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                bmi = weightKg / (heightM * heightM);
+                recent_bmi= bmi.toFixed(2);
+                jq('#recent-calculated-bmi').html(recent_bmi);
+
+                //set recent nutritional status from recent bmi
+                if (recent_bmi &lt; 16) {
+                    jq("#nutritional-status input[value=163302]").prop("checked", true);
+                } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
+                    jq("#nutritional-status input[value=163303]").prop("checked", true);
+                } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
+                    jq("#nutritional-status input[value=1115]").prop("checked", true);
+                } else if (recent_bmi &gt; 25) {
+                    jq("#nutritional-status input[value=114413]").prop("checked", true);
+
+                }
+            }
+        }
         function onPersonPresentChange() {
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
@@ -77,17 +100,7 @@ Green Card follow-up visit form
         function onRecordIPTOutcome() {
             jq("#tbl-ipt-outcome").toggle();
         }
-        function displayRecentBmi() {
-            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
-            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
-            var bmi = '';
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                bmi = weightKg / (heightM * heightM);
 
-                jq('#recent-calculated-bmi').html(bmi.toFixed(2));
-
-            }
-        }
         function onParityChange() {
             var gravida = '';
             var parityTerm = parseInt(getValue('parity-term.value'));
@@ -328,9 +341,7 @@ Green Card follow-up visit form
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq('#ipt-client-workup').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                getField('tbrxdate.value').val(encounterDate);
+
             }
               //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
@@ -354,7 +365,7 @@ Green Card follow-up visit form
                 jq('#ipt-client-workup').hide();
             }
             //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &gt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", true);
                 jq("#tb-result-status input[value=1662]").prop("checked", false);
@@ -378,9 +389,7 @@ Green Card follow-up visit form
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq('#ipt-client-workup').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                getField('tbrxdate.value').val(encounterDate);
+
             }
             //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
@@ -427,9 +436,7 @@ Green Card follow-up visit form
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq('#ipt-client-workup').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                getField('tbrxdate.value').val(encounterDate);
+
             }
             //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
@@ -476,9 +483,7 @@ Green Card follow-up visit form
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq('#ipt-client-workup').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                getField('tbrxdate.value').val(encounterDate);
+
             }
             //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
@@ -524,9 +529,6 @@ Green Card follow-up visit form
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
                 jq("#tb-result-status input[value=1662]").prop("checked", true);
                 jq('#ipt-client-workup').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                getField('tbrxdate.value').val(encounterDate);
             }
             //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
@@ -582,7 +584,6 @@ Green Card follow-up visit form
             if(clinicalDiagnosis ==664 ){
                jq("#tb-result-status input[value=1662]").prop("checked", false);
                jq("#tbl-start-antiTb").hide();
-              //  jq('#tbrxdate').val(" ");
             }
             if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=703 &amp;&amp; referral !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526 &amp;&amp;(geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)) {
                 jq("#tb-result-status input[value=1660]").prop("checked", true);
@@ -641,7 +642,6 @@ Green Card follow-up visit form
          getField('weight.value').change(onWeightOrHeightChange);
          getField('height.value').change(onWeightOrHeightChange);
          onWeightOrHeightChange();
-         displayRecentBmi();
          var age = parseInt('<lookup expression="patient.age"/>');
          var pgender = "<lookup expression="patient.gender" />";
             //Gravida
@@ -694,6 +694,7 @@ Green Card follow-up visit form
          iptFollowup.hide();
          iptInitiationTab.hide();
          ageGroup();
+         displayRecentBmi();
          //Event Handlers
          jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
          jq('input[type=radio].on-ipt').change(onIPT);
@@ -815,8 +816,21 @@ Green Card follow-up visit form
             var valChangedToDateFormat = new Date(valbirthdate).getTime();
 
             beforeSubmit.push(function() {
+                var tca_date = getValue('returnVisitDate.value');
+                var encounterDate = getValue('encounter-date.value');
                 var valonform = getValue('tbrxdate.value');
                 var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+
+                //Must have a Return Visit Date which should be greater tahn encounter date
+
+                if (tca_date =="") {
+                    getField('returnVisitDate.error').html('Return visit date should not be empty').show();
+                    return false;
+                }
+                if (tca_date &lt; encounterDate ){
+                        getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
+                        return false;
+                }
 
                 //tb rx date should be later than date of birth
                 if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
@@ -1186,14 +1200,20 @@ Green Card follow-up visit form
                                  <!--answerLabel="Discordant Couple" style="checkbox" /><br/>-->
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="People who inject drugs" style="checkbox" /><br/>
+
+                            <includeIf velocityTest="$patient.gender == 'M'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Men who have sex with men" style="checkbox" /><br/>
+                            </includeIf>
+
+
+                            <includeIf velocityTest="$patient.gender == 'F'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Female sex Worker" style="checkbox" /><br/>
+                                 answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
+                            </includeIf>
                         </td>
                     </tr>
                 </table>
-
         </fieldset>
 
         <!-- WHO staging -->
@@ -1544,7 +1564,7 @@ Green Card follow-up visit form
                         <td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
                     </tr>
                     <tr>
-                        <td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, sbdominal pain, RUQ pain, yellow urine or eyes)</td>
+                        <td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
                         <td><obs conceptId="159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
                     </tr>
                     <tr>
@@ -1556,7 +1576,7 @@ Green Card follow-up visit form
                         <td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
                     </tr>
                     <tr>
-                        <td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Bad= missed 9 doses/month</td>
+                        <td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
                         <td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
                     </tr>
                 </table>
