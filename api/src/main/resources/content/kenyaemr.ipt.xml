@@ -86,6 +86,20 @@
 		<property name="htmlform" value="kenyaemr:ipt/iptFollowUp.html" />
 	</bean>
 
+	<!-- Clinical Encounter - Gene Xpert Form -->
+	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="f1eaceeb-c865-4e23-b68e-6523de403ac7" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
+		<property name="order" value="201090" />
+	</bean>
+
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.ipt.report.onIpt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">

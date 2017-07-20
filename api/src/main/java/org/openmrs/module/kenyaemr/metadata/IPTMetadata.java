@@ -47,7 +47,7 @@ public class IPTMetadata extends AbstractMetadataBundle {
 	}
 
 	public static final class _Program {
-		public static final String IPT = Metadata.Program.IPT;
+		public static final String IPT = "335517a1-04bc-438b-9843-1ba49fb7fcd9";
 	}
 
 	/**
@@ -67,6 +67,6 @@ public class IPTMetadata extends AbstractMetadataBundle {
 				null, null, null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.DISTRICT_REG_NUMBER));
 
-		install(program("IPT", "Isoniazid Preventive Treatment (IPT)", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, _Program.IPT));
+		install(program("IPT", "Isoniazid Preventive Therapy (IPT)", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, _Program.IPT));
 	}
 }

@@ -78,6 +78,7 @@ public class RegimenManager implements ContentManager {
 				loadDefinitionsFromXML(stream);
 			}
 			catch (Exception ex) {
+				ex.printStackTrace();
 				throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
 			}
 		}

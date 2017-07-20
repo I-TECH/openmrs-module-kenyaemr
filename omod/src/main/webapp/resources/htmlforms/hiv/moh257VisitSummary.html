@@ -13,796 +13,955 @@
 -->
 <htmlform>
 
-<style type="text/css">
-    table.moh257 {
-        border-collapse: collapse;
-        background-color: #F3F9FF;
-    }
-    table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
-        border: 1px solid black;
-        vertical-align: baseline;
-        padding: 4px;
-        text-align: left;
-        background-color: #F3F9FF;
-    }
-</style>
-
-<script type="text/javascript">
-isPediatric = null; // Set later by AJAX lookup
-
-/**
- * TODO use a lookup tag to get these concept ids. Will require HTML-463
- */
-var SELF = 978;
-var YES_CONCEPT_ID = 1065;
-var YES_CONCEPT_ID = 1065;
-var NO_CONCEPT_ID = 1066;
-var ABORTION_CONCEPT_ID = 159896;
-var MISCARRIAGE_CONCEPT_ID = 126127;
-var LIVEBIRTH_CONCEPT_ID = 151849;
-var STILLBIRTH_CONCEPT_ID = 125872;
-var USING_FP_CONCEPT_ID = 965;
-var WANTS_FP_CONCEPT_ID = 1360;
-var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
-var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
-var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
-var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
-var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
-var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
-var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
-var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
-var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
-var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
-
-function onPersonPresentChange() {
-    if (getValue('person-present.value') == SELF) {
-        jq('.patient-details :input').prop('disabled', false);
-    } else {
-        jq('.patient-details :input').prop('disabled', true);
-    }
-}
-
-function onWeightOrHeightChange() {
-    var display = '';
-    var weightKg = parseFloat(getValue('weight.value'));
-    var heightM = parseFloat(getValue('height.value')) / 100;
-    if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
-        var bmi = weightKg / (heightM * heightM);
-        if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-            display = 'Abnormal value. Were height and height entered correctly?';
+    <style type="text/css">
+        table.moh257 {
+            border-collapse: collapse;
+            background-color: #F3F9FF;
         }
-        else {
-            display = bmi.toFixed(2);
+        table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
+            border: 1px solid black;
+            vertical-align: baseline;
+            padding: 4px;
+            text-align: left;
+            background-color: #F3F9FF;
         }
-    }
-    jq('#calculated-bmi').html(display);
-}
-
-/**
- * Updates the form due to an encounter date change
- */
-function onEncounterDateChange() {
-    var patientId = <lookup expression="patient.patientId"/>;
-    var encDate = getValue('encounter-date.value');
-    if(encDate == null) {
-        encDate = new Date();
-    }
-
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-            .done(function(data) {
-                var msg = data.duration ? data.duration : 'Not started';
-                jq('#calculated-duration-start-art').html(msg);
-            });
-
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-            .done(function(data) {
-                var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
-                jq('#calculated-duration-current-regimen').html(msg);
-            });
-
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
-            .done(function(data) {
-                onPatientAgeUpdate(data.age);
-            });
-}
-
-/**
- * Updates the form due to a patient age change
- */
-function onPatientAgeUpdate(age) {
-    isPediatric = (age &lt; 15);
-
-    jq('#whostage select option').each(function() {
-        var concept = parseInt(jq(this).prop('value'));
-
-        if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
-            jq(this).prop('disabled', !isPediatric);
-        }
-        else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
-            jq(this).prop('disabled', isPediatric);
-        }
-    });
-
-    jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
-}
-
-/**
- * Sets the pregnancy option
- */
-function setPregOption(option) {
-    switch (option) {
-        case 'yes':
-            setValue('pregstatus.value', YES_CONCEPT_ID);
-            setValue('pregoutcome.value', null);
-            break;
-        case 'no':
-            setValue('pregstatus.value', NO_CONCEPT_ID);
-            setValue('pregoutcome.value', null);
-            break;
-        case 'ab':
-            setValue('pregstatus.value', NO_CONCEPT_ID);
-            setValue('pregoutcome.value', ABORTION_CONCEPT_ID);
-            break;
-        case 'mc':
-            setValue('pregstatus.value', NO_CONCEPT_ID);
-            setValue('pregoutcome.value', MISCARRIAGE_CONCEPT_ID);
-            break;
-        case 'lb':
-            setValue('pregstatus.value', NO_CONCEPT_ID);
-            setValue('pregoutcome.value', LIVEBIRTH_CONCEPT_ID);
-            break;
-        case 'sb':
-            setValue('pregstatus.value', NO_CONCEPT_ID);
-            setValue('pregoutcome.value', STILLBIRTH_CONCEPT_ID);
-            break;
-    }
-
-    setPregDateField(option);
-}
-
-/**
- * Displays the appropriate date field for the given pregnancy option
- */
-function setPregDateField(option) {
-    var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
-    var labels = {
-        yes: 'EDD',
-        no: '',
-        ab: 'Date of abortion',
-        mc: 'Date of miscarriage',
-        lb: 'Date of delivery',
-        sb: 'Date of delivery'
-    };
-    var fields = {
-        yes: 'pregdate-yes',
-        no: null,
-        ab: 'pregdate-no',
-        mc: 'pregdate-no',
-        lb: 'pregdate-no',
-        sb: 'pregdate-no'
-    };
-
-    // Update field label
-    jq('#pregdate-label').text(labels[option]);
-
-    // Show field container of desired option
-    jq('#' + fields[option] + '-container').show();
-
-    // Remove requested option so only non-desired options remain in list
-    options.splice(options.indexOf(option), 1);
-
-    // Clear values and hide containers of the other option fields
-    for (var o = 0; o &lt; options.length; ++o) {
-        var opt = options[o];
-        if (fields[opt] &amp;&amp; (fields[opt] != fields[option])) {
-            setValue(fields[opt] + '.value', null);
-            jq('#' + fields[opt] + '-container').hide();
-        }
-    }
-}
-function viralLoadValidation(){
-    if(getValue('ldl.value') == 1302){
-        jq('#vLoadResults :input').prop( "disabled", true );
-    }
-    else {
-        jq('#vLoadResults :input').prop( "disabled", false );
-    }
-}
-
-jq(function() {
-
-    jq('#person-present input').click(onPersonPresentChange);
-
-    getField('weight.value').change(onWeightOrHeightChange);
-    getField('height.value').change(onWeightOrHeightChange);
-    getField('encounter-date.value').change(onEncounterDateChange);
-    getField('ldl.value').change(viralLoadValidation);
-
-    onPersonPresentChange();
-    onWeightOrHeightChange();
-    onEncounterDateChange();
-    viralLoadValidation();
-    beforeSubmit.push(function() {
-        var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-        var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
-
-        if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
-            getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
-            return false;
+        .left-table {
+            display: inline-block; border: 1px solid; float: left;
         }
 
-        if (isPediatric === true) {
-            var fpStatus = getValue('fp-status.value');
-            if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
-                getField('fp-status.error').html('Pediatric patient too young for FP').show();
-                return false;
-            }
+        .right-table {
+            display: inline-block; border: 1px solid;
+        }
+    </style>
 
-            if (getValue('pwp-disclosure.value') == YES_CONCEPT_ID) {
-                getField('pwp-disclosure.error').html('Pediatric patient too young').show();
-                return false;
-            }
+    <script type="text/javascript">
+        isPediatric = null; // Set later by AJAX lookup
 
-            if (getValue('pwp-partnertested.value') == YES_CONCEPT_ID) {
-                getField('pwp-partnertested.error').html('Pediatric patient too young').show();
-                return false;
+        /**
+         * TODO use a lookup tag to get these concept ids. Will require HTML-463
+         */
+        var SELF = 978;
+        var YES_CONCEPT_ID = 1065;
+        var YES_CONCEPT_ID = 1065;
+        var NO_CONCEPT_ID = 1066;
+        var ABORTION_CONCEPT_ID = 159896;
+        var MISCARRIAGE_CONCEPT_ID = 126127;
+        var LIVEBIRTH_CONCEPT_ID = 151849;
+        var STILLBIRTH_CONCEPT_ID = 125872;
+        var USING_FP_CONCEPT_ID = 965;
+        var WANTS_FP_CONCEPT_ID = 1360;
+        var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
+        var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
+        var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
+        var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
+        var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
+        var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
+        var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
+        var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
+        var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
+        var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+
+        function onPersonPresentChange() {
+            if (getValue('person-present.value') == SELF) {
+                jq('.patient-details :input').prop('disabled', false);
+            } else {
+                jq('.patient-details :input').prop('disabled', true);
             }
         }
 
-        return true;
-    });
-
-    <includeIf velocityTest="$patient.gender == 'F' ">
-
-    // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
-    var realId = $j('span#pregdate-abmc input[type=hidden]').attr('name');
-    propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
-
-    jq('input[name=pregoption]').click(function() {
-        var option = jq('input[name=pregoption]:checked').val();
-        setPregOption(option);
-    });
-
-    var initialPregStatus = getValue('pregstatus.value');
-    var initialPregOutcome = getValue('pregoutcome.value');
-    var initialPregOption = null;
-
-    if (initialPregStatus == YES_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
-        initialPregOption = 'yes';
-    } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
-        initialPregOption = 'no';
-    } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == ABORTION_CONCEPT_ID) {
-        initialPregOption = 'ab';
-    } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == MISCARRIAGE_CONCEPT_ID) {
-        initialPregOption = 'mc';
-    } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == LIVEBIRTH_CONCEPT_ID) {
-        initialPregOption = 'lb';
-    } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == STILLBIRTH_CONCEPT_ID) {
-        initialPregOption = 'sb';
-    }
-
-    if (initialPregOption) {
-        jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
-        setPregDateField(initialPregOption);
-    }
-
-    beforeSubmit.push(function() {
-        var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-        var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
-        var dodDate = new Date(getValue('pregdate-no.value')).getTime();
-
-        if (eddDate &amp;&amp; eddDate &lt; encounterDate) {
-            getField('pregdate-yes.error').html('Cannot be before encounter date').show();
-            return false;
+        function onWeightOrHeightChange() {
+            var display = '';
+            var weightKg = parseFloat(getValue('weight.value'));
+            var heightM = parseFloat(getValue('height.value')) / 100;
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+                var bmi = weightKg / (heightM * heightM);
+                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                    display = 'Abnormal value. Were height and height entered correctly?';
+                }
+                else {
+                    display = bmi.toFixed(2);
+                }
+            }
+            jq('#calculated-bmi').html(display);
         }
-        if (dodDate &amp;&amp; dodDate &gt; encounterDate) {
-            getField('pregdate-no.error').html('Cannot be after encounter date').show();
-            return false;
-        }
-        return true;
-    });
 
-    </includeIf>
-});
-</script>
+        /**
+         * Updates the form due to an encounter date change
+         */
+        function onEncounterDateChange() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
 
-<!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
-<div style="display:none">
-    <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
-</div>
-
-<div class="ke-form-content">
-<table class="moh257" align="center">
-<tbody>
-<tr>
-    <th rowspan="2">Visit Details</th>
-    <th colspan="2">Date</th>
-    <td>(a)</td>
-    <td>
-        <ifMode mode="ENTER">
-            <script type="text/javascript">
-                jq(function(){
-                    setValue("encounter-date.value", "");
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? data.duration : 'Not started';
+                    jq('#calculated-duration-start-art').html(msg);
                 });
-            </script>
-        </ifMode>
-        <encounterDate id="encounter-date" showTime="false" />
-    </td>
-    <td><encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-</tr>
-<tr>
-    <th colspan="2">Type</th>
-    <td>(b)</td>
-    <td>
-        <obs
-                id="person-present"
-                conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
-                style="radio"
-                answerSeparator="&lt;br /&gt;"
-                />
-        <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-    </td>
-    <td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
-</tr>
-<tr>
-    <th rowspan="2">Duration Since<br />(in months)</th>
-    <th colspan="2">Start ART</th>
-    <td>(c)</td>
-    <td colspan="2"><span id="calculated-duration-start-art" class="value"></span></td>
-</tr>
-<tr>
-    <th colspan="2">Current Regimen</th>
-    <td>(d)</td>
-    <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
-</tr>
-<tr class="patient-details">
-    <th colspan="3">Weight (kg) / Blood Pressure</th>
-    <td>(e)</td>
-    <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" /></td>
-    <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
-</tr>
-<tr class="patient-details">
-    <th colspan="3">Height (cm)</th>
-    <td>(f)</td>
-    <td colspan="2"><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" /></td>
-</tr>
-<tr class="patient-details">
-    <th colspan="3">BMI</th>
-    <td>(g)</td>
-    <td colspan="2"><span id="calculated-bmi" class="value"></span></td>
-</tr>
-<tr class="patient-details">
-    <th rowspan="2">Pregnancy</th>
-    <th colspan="2">Status</th>
-    <td>(h)</td>
-    <td>
-        <includeIf velocityTest="$patient.gender == 'F' ">
-            <ifMode mode="VIEW" include="true">
-                Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-                Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-            </ifMode>
-            <ifMode mode="VIEW" include="false">
-                <input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
-                <input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
-                <input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
-                <input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)<br />
-                <input id="pregoption-lb" type="radio" name="pregoption" value="lb" /> Live birth<br />
-                <input id="pregoption-sb" type="radio" name="pregoption" value="sb" /> Still birth<br />
-                <div style="display: none">
-                    <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                </div>
-            </ifMode>
-        </includeIf>
-    </td>
-    <td>
-        <includeIf velocityTest="$patient.gender == 'F' ">
-            ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </includeIf>
-    </td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2"><span id="pregdate-label"></span></th>
-    <td>(i)</td>
-    <td colspan="2">
-        <includeIf velocityTest="$patient.gender == 'F' ">
-            <ifMode mode="VIEW" include="true">
-                EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-                Date of pregnancy end: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-            </ifMode>
-            <ifMode mode="VIEW" include="false">
-                <div id="pregdate-yes-container" style="display: none">
-                    <obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                </div>
-                <div id="pregdate-no-container" style="display: none">
-                    <obs id="pregdate-no" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" allowTime="false" />
-                </div>
-            </ifMode>
-        </includeIf>
-    </td>
-</tr>
-<tr>
-    <th rowspan="2">FP Status</th>
-    <th colspan="2">FP/No FP</th>
-    <td>(j)</td>
-    <td colspan="2">
-        <obs
-                id="fp-status"
-                conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
-                style="radio"
-                />
-    </td>
-</tr>
-<tr>
-    <th colspan="2">Method/Why</th>
-    <td>(k)</td>
-    <td>
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency contraceptive pill (ECP)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral contraceptive pills (OC)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectables (INJ)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant (IMP)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Intrauterine devices (IUD)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactational amenorrhea (LAM)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diaphragm/cervical cap (D)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility awareness/periodic abstinence (FA)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal ligation/female sterilization (TL)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy - partner (V)" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Spermicide" /><br />
-        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Undecided" /><br />
-    </td>
-    <td>
-        <obs
-                conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
-                style="radio"
-                answerSeparator="&lt;br /&gt;"
-                />
-    </td>
-</tr>
-<tr class="patient-details">
-    <th rowspan="2">Tuberculosis Status</th>
-    <th colspan="2">Status</th>
-    <td>(l)</td>
-    <td>
-        <obs
-                conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="NO signs,TB suspected,TB Rx,Not done (ND)"
-                style="radio"
-                answerSeparator="&lt;br /&gt;"
-                />
-    </td>
-    <td>
-        Treatment No. <obs conceptId="161654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-    </td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2">TBRx #</th>
-    <td>(m)</td>
-    <td colspan="2">
-        <lookup class="value" expression="fn.latestObs(1113).valueDate" />
-        <includeIf velocityTest="!$fn.latestObs(1113)">
-            <span class="ke-field-instructions">This is calculated from the TB enrolment form</span>
-        </includeIf>
-    </td>
-</tr>
-<tr class="patient-details">
-    <th colspan="3">Potential Side Effects</th>
-    <td>(n)</td>
-    <td colspan="2">
-        <div style="float: left; padding-right: 20px">
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Nausea (N)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Rash (R)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="139534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Headache (H)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diarrhoea (D)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Anaemia (A)" />
-        </div>
-        <div style="float: left">
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Jaundice (J)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fatigue (F)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal pain (AB)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fat changes (FAT)" /><br />
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6004AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Burning, numb, tingling (BN)" />
-        </div>
-        <div style="clear: both">
-            <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="CNS Symptoms (dizzy, anxiety, nightmare, depression)" /><br />
-        </div>
-        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" /><br />
 
-        Other:
-        <obsgroup groupingConceptId="161879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </obsgroup>
-    </td>
-</tr>
-<tr>
-    <th colspan="3">New OIs &amp; Other Problems</th>
-    <td>(o)</td>
-    <td colspan="2">
-        <div style="float: left; padding-right: 20px">
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Zoster (Z)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - oral" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - vaginal" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cough" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Difficult breathing (DB)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fever" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dementia/Enceph (DE)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="150796AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight loss (W)" />
-        </div>
-        <div style="float: left">
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="114100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pneumonia (P)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Urethral discharge (UD)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="902AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pelvic inflammatory disease (PID)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Ulcers - mouth" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Ulcers - other" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="145762AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Genital ulcer disease (GUD)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140707AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Poor weight gain (PWG)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tuberculosis (TB)" />
-        </div>
-        <div style="clear: both">
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Immune reconstitution inflammatory syndrome (IRIS)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162330AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Severe uncomplicated malnutrition (SUM)" /><br/>
-            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162331AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Severe complicated malnutrition (SCM)" />
-        </div>
-        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" /><br />
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
+                    jq('#calculated-duration-current-regimen').html(msg);
+                });
 
-        Other <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
-        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
-        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />
-    </td>
-</tr>
-<tr class="patient-details">
-    <th colspan="3">WHO Stage</th>
-    <td>(p)</td>
-    <td colspan="2">
-        <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        (age: <span id="calculated-age" class="value" />)
-    </td>
-</tr>
-<tr>
-    <th rowspan="2">Cotrimoxazole</th>
-    <th colspan="2">Adherence</th>
-    <td>(q)</td>
-    <td colspan="2">
-        <obs
-                conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Good (G),Fair (F),Poor (P)"
-                style="radio"
-                />
-    </td>
-</tr>
-<tr>
-    <th colspan="2">Dispensed</th>
-    <td>(r)</td>
-    <td colspan="2">
-        <obs
-                conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Yes,No,Not applicable (N/A)"
-                style="radio"
-                />
-    </td>
-</tr>
-<tr>
-    <th colspan="3">INH Dispensed</th>
-    <td>(s)</td>
-    <td colspan="2">
-        <obs
-                conceptId="162230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Yes,No,Not applicable (N/A)"
-                style="radio"
-                />
-    </td>
-</tr>
-<tr>
-    <th colspan="3">Other Medications Dispensed</th>
-    <td>(t)</td>
-    <td colspan="2">
-        <table cellspacing="0">
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    onPatientAgeUpdate(data.age);
+                });
+        }
+
+        /**
+         * Updates the form due to a patient age change
+         */
+        function onPatientAgeUpdate(age) {
+            isPediatric = (age &lt; 15);
+
+            jq('#whostage select option').each(function() {
+                var concept = parseInt(jq(this).prop('value'));
+
+                if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+                    jq(this).prop('disabled', !isPediatric);
+                }
+                else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+                    jq(this).prop('disabled', isPediatric);
+                }
+            });
+
+            jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+        }
+
+        /**
+         * Sets the pregnancy option
+         */
+        function setPregOption(option) {
+            switch (option) {
+                case 'yes':
+                    setValue('pregstatus.value', YES_CONCEPT_ID);
+                    setValue('pregoutcome.value', null);
+                    break;
+                case 'no':
+                    setValue('pregstatus.value', NO_CONCEPT_ID);
+                    setValue('pregoutcome.value', null);
+                    break;
+                case 'ab':
+                    setValue('pregstatus.value', NO_CONCEPT_ID);
+                    setValue('pregoutcome.value', ABORTION_CONCEPT_ID);
+                    break;
+                case 'mc':
+                    setValue('pregstatus.value', NO_CONCEPT_ID);
+                    setValue('pregoutcome.value', MISCARRIAGE_CONCEPT_ID);
+                    break;
+                case 'lb':
+                    setValue('pregstatus.value', NO_CONCEPT_ID);
+                    setValue('pregoutcome.value', LIVEBIRTH_CONCEPT_ID);
+                    break;
+                case 'sb':
+                    setValue('pregstatus.value', NO_CONCEPT_ID);
+                    setValue('pregoutcome.value', STILLBIRTH_CONCEPT_ID);
+                    break;
+            }
+
+            setPregDateField(option);
+        }
+
+        /**
+         * Displays the appropriate date field for the given pregnancy option
+         */
+        function setPregDateField(option) {
+            var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
+            var labels = {
+                yes: 'EDD',
+                no: '',
+                ab: 'Date of abortion',
+                mc: 'Date of miscarriage',
+                lb: 'Date of delivery',
+                sb: 'Date of delivery'
+            };
+            var fields = {
+                yes: 'pregdate-yes',
+                no: null,
+                ab: 'pregdate-no',
+                mc: 'pregdate-no',
+                lb: 'pregdate-no',
+                sb: 'pregdate-no'
+            };
+
+            // Update field label
+            jq('#pregdate-label').text(labels[option]);
+
+            // Show field container of desired option
+            jq('#' + fields[option] + '-container').show();
+
+            // Remove requested option so only non-desired options remain in list
+            options.splice(options.indexOf(option), 1);
+
+            // Clear values and hide containers of the other option fields
+            for (var o = 0; o &lt; options.length; ++o) {
+                var opt = options[o];
+                if (fields[opt] &amp;&amp; (fields[opt] != fields[option])) {
+                    setValue(fields[opt] + '.value', null);
+                    jq('#' + fields[opt] + '-container').hide();
+                }
+            }
+        }
+        function viralLoadValidation(){
+            if(getValue('ldl.value') == 1302){
+                jq('#vLoadResults :input').prop( "disabled", true );
+            }
+            else {
+                jq('#vLoadResults :input').prop( "disabled", false );
+            }
+        }
+
+        jq(function() {
+
+            jq('#person-present input').click(onPersonPresentChange);
+
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            getField('encounter-date.value').change(onEncounterDateChange);
+            getField('ldl.value').change(viralLoadValidation);
+
+            onPersonPresentChange();
+            onWeightOrHeightChange();
+            onEncounterDateChange();
+            viralLoadValidation();
+            beforeSubmit.push(function() {
+                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+                var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
+
+                if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
+                    getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
+                    return false;
+                }
+
+                if (isPediatric === true) {
+                    var fpStatus = getValue('fp-status.value');
+                    if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
+                        getField('fp-status.error').html('Pediatric patient too young for FP').show();
+                        return false;
+                    }
+
+                    if (getValue('pwp-disclosure.value') == YES_CONCEPT_ID) {
+                        getField('pwp-disclosure.error').html('Pediatric patient too young').show();
+                        return false;
+                    }
+
+                    if (getValue('pwp-partnertested.value') == YES_CONCEPT_ID) {
+                        getField('pwp-partnertested.error').html('Pediatric patient too young').show();
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            <includeIf velocityTest="$patient.gender == 'F' ">
+
+            // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
+            var realId = $j('span#pregdate-abmc input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
+
+            jq('input[name=pregoption]').click(function() {
+                var option = jq('input[name=pregoption]:checked').val();
+                setPregOption(option);
+            });
+
+            var initialPregStatus = getValue('pregstatus.value');
+            var initialPregOutcome = getValue('pregoutcome.value');
+            var initialPregOption = null;
+
+            if (initialPregStatus == YES_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
+                initialPregOption = 'yes';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
+                initialPregOption = 'no';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == ABORTION_CONCEPT_ID) {
+                initialPregOption = 'ab';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == MISCARRIAGE_CONCEPT_ID) {
+                initialPregOption = 'mc';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == LIVEBIRTH_CONCEPT_ID) {
+                initialPregOption = 'lb';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == STILLBIRTH_CONCEPT_ID) {
+                initialPregOption = 'sb';
+            }
+
+            if (initialPregOption) {
+                jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
+                setPregDateField(initialPregOption);
+            }
+
+            beforeSubmit.push(function() {
+                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+                var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
+                var dodDate = new Date(getValue('pregdate-no.value')).getTime();
+
+                if (eddDate &amp;&amp; eddDate &lt; encounterDate) {
+                    getField('pregdate-yes.error').html('Cannot be before encounter date').show();
+                    return false;
+                }
+                if (dodDate &amp;&amp; dodDate &gt; encounterDate) {
+                    getField('pregdate-no.error').html('Cannot be after encounter date').show();
+                    return false;
+                }
+                return true;
+            });
+
+            </includeIf>
+        });
+    </script>
+
+    <!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
+    <div style="display:none">
+        <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
+    </div>
+
+    <div class="ke-form-content">
+        <table class="moh257" align="center">
+            <tbody>
             <tr>
-                <th style="color: #888">Drug</th>
-                <th style="color: #888; text-align: center">Dose</th>
-                <th style="color: #888; text-align: center">Units</th>
-                <th style="color: #888; text-align: center">Frequency</th>
-                <th style="color: #888; text-align: center">Duration</th>
-                <th style="color: #888; text-align: center">Duration units</th>
+                <th rowspan="2">Visit Details</th>
+                <th colspan="2">Date</th>
+                <td>(a)</td>
+                <td>
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    <encounterDate id="encounter-date" showTime="false" />
+                </td>
+                <td><encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
             </tr>
-            <repeat>
-                <template>
-                    <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                        <tr>
-                            <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-                            <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                            <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
-                            <td>
-                                <obs
-                                        conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-                                        />
-                            </td>
-                            <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                            <td>
-                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Hours,Days,Weeks,Months" />
-                            </td>
-                        </tr>
+            <tr>
+                <th colspan="2">Type</th>
+                <td>(b)</td>
+                <td>
+                    <obs
+                            id="person-present"
+                            conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
+                            style="radio"
+                            answerSeparator="&lt;br /&gt;"
+                    />
+                    <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                </td>
+                <td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
+            </tr>
+            <tr>
+                <th rowspan="2">Duration Since<br />(in months)</th>
+                <th colspan="2">Start ART</th>
+                <td>(c)</td>
+                <td colspan="2"><span id="calculated-duration-start-art" class="value"></span></td>
+            </tr>
+            <tr>
+                <th colspan="2">Current Regimen</th>
+                <td>(d)</td>
+                <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="3">Weight / Blood Pressure</th>
+                <td>(e)</td>
+                <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
+                <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
+            </tr>
+            <tr class="patient-details">
+                <!-- pw Greencard additions added MUAC  -->
+                <th colspan="3">Height / MUAC* </th>
+                <td>(f)</td>
+                <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
+                <td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="muac" />(cm)</td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="3">BMI</th>
+                <td>(g)</td>
+                <td colspan="2"><span id="calculated-bmi" class="value"></span></td>
+            </tr>
+            <!-- pw Greencard addittions nutritional status and food by prescription  -->
+            <tr>
+                <th>Nutritional/Food by Prescription*</th>
+                <th colspan="2">Status</th>
+                <td>(h)</td>
+                <td>
+                    <obs
+                            conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
+                            style="radio"
+                            answerSeparator="&lt;br /&gt;"
+                    />
+                </td>
+                <td></td>
+
+            </tr>
+
+            <!-- .pw Greencard addittions nutritional status and food by prescription  -->
+            <tr>
+                <th rowspan="2"> Pregnancy </th>
+                <td colspan="2">Status</td>
+                <td>(h)</td>
+                <td>
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        <ifMode mode="VIEW" include="true">
+                            Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                            Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </ifMode>
+                        <ifMode mode="VIEW" include="false">
+                            <input id="pregoption-yes" type="radio" name="pregoption" value="yes" /> Pregnant<br />
+                            <input id="pregoption-no" type="radio" name="pregoption" value="no" /> Not pregnant<br />
+                            <input id="pregoption-ab" type="radio" name="pregoption" value="ab" /> Abortion (AB)<br />
+                            <input id="pregoption-mc" type="radio" name="pregoption" value="mc" /> Miscarriage (MC)<br />
+                            <input id="pregoption-lb" type="radio" name="pregoption" value="lb" /> Live birth<br />
+                            <input id="pregoption-sb" type="radio" name="pregoption" value="sb" /> Still birth<br />
+                            <div style="display: none">
+                                <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                            </div>
+                        </ifMode>
+                    </includeIf>
+
+                </td>
+                <td><!-- pw Greencard addittions LMP and ANC/PNC profile  -->
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        LMP*  <obs id="lmp_date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
+                    </includeIf>
+                    <br></br><br></br>
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+                        ANC/PNC Profile
+                        <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br></br><br></br>
+                    </includeIf>
+                </td>
+                <td>
+
+                </td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2"><span id="pregdate-label"></span></th>
+                <td>(i)</td>
+                <td colspan="2">
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        <ifMode mode="VIEW" include="true">
+                            EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                            Date of pregnancy end: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                        </ifMode>
+                        <ifMode mode="VIEW" include="false">
+                            <div id="pregdate-yes-container" style="display: none">
+                                <obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                            </div>
+                            <div id="pregdate-no-container" style="display: none">
+                                <obs id="pregdate-no" conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" allowTime="false" />
+                            </div>
+                        </ifMode>
+                    </includeIf>
+                </td>
+            </tr>
+            <tr>
+                <th rowspan="2">FP Status</th>
+                <th colspan="2">FP/No FP</th>
+                <td>(j)</td>
+                <td colspan="2">
+                    <obs
+                            id="fp-status"
+                            conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
+                            style="radio"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">Method/Why</th>
+                <td>(k)</td>
+                <td>
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency contraceptive pill (ECP)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral contraceptive pills (OC)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectables (INJ)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Implant (IMP)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Intrauterine devices (IUD)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lactational amenorrhea (LAM)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diaphragm/cervical cap (D)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fertility awareness/periodic abstinence (FA)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tubal ligation/female sterilization (TL)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy - partner (V)" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Spermicide" /><br />
+                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Undecided" /><br />
+                </td>
+                <td>
+                    <obs
+                            conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
+                            style="radio"
+                            answerSeparator="&lt;br /&gt;"
+                    />
+                </td>
+            </tr>
+            <tr class="patient-details">
+                <th rowspan="2">Tuberculosis Status</th>
+                <th colspan="2">Status</th>
+                <td>(l)</td>
+                <td>
+                    <obs
+                            conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="NO signs,TB suspected,TB Rx,Not done (ND)"
+                            style="radio"
+                            answerSeparator="&lt;br /&gt;"
+                    />
+                </td>
+                <td>
+                    Treatment No. <obs conceptId="161654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                </td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2">TBRx #</th>
+                <td>(m)</td>
+                <td colspan="2">
+                    <lookup class="value" expression="fn.latestObs(1113).valueDate" />
+                    <includeIf velocityTest="!$fn.latestObs(1113)">
+                        <span class="ke-field-instructions">This is calculated from the TB enrolment form</span>
+                    </includeIf>
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="3">Potential Side Effects/Adverse drug reactions</th>
+                <td>(n)</td>
+                <td>
+                    <div style="float: left; padding-right: 20px">
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Nausea (N)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Rash (R)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="139534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Headache (H)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Diarrhoea (D)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Anaemia (A)" />
+                    </div>
+                    <div style="float: left">
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Jaundice (J)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fatigue (F)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Abdominal pain (AB)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fat changes (FAT)" /><br />
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6004AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Burning, numb, tingling (BN)" />
+                    </div>
+                    <div style="clear: both">
+                        <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120069AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="CNS Symptoms (dizzy, anxiety, nightmare, depression)" /><br />
+                    </div>
+                    <obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" /><br />
+
+                    Other:
+                    <obsgroup groupingConceptId="161879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                     </obsgroup>
-                </template>
-                <render n="1" concept="Drug"/>
-                <render n="2" concept="Drug"/>
-                <render n="3" concept="Drug"/>
-                <render n="4" concept="Drug"/>
-                <render n="5" concept="Drug"/>
-            </repeat>
+                </td>
+                <td>
+                    <!-- pw Greencard addittions onset date  -->
+                    Onset Date*:
+                    <obs id="drugReaction-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">New OIs &amp; Other Problems</th>
+                <td>(o)</td>
+                <td colspan="2" >
+                    <div style="float: left; padding-right: 20px">
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Zoster (Z)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - oral" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Thrush - vaginal" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cough" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Difficult breathing (DB)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Fever" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dementia/Enceph (DE)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="150796AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight loss (W)" />
+                    </div>
+                    <div style="float: left">
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="114100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pneumonia (P)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Urethral discharge (UD)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="902AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pelvic inflammatory disease (PID)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Ulcers - mouth" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Ulcers - other" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="145762AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Genital ulcer disease (GUD)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140707AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Poor weight gain (PWG)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Tuberculosis (TB)" />
+                    </div>
+                    <div style="clear: both">
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Immune reconstitution inflammatory syndrome (IRIS)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162330AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Severe uncomplicated malnutrition (SUM)" /><br/>
+                        <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162331AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Severe complicated malnutrition (SCM)" />
+                    </div>
+                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="None" /><br />
+
+                    Other <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
+                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />,
+                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete" />
+
+                    <!-- pw Greencard addittions onset date  -->
+
+                    Onset Date*:
+                    <obs id="oi-OtherProblems-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
+                </td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="3">WHO Stage</th>
+                <td>(p)</td>
+                <td colspan="2">
+                    <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    (age: <span id="calculated-age" class="value" />)
+                </td>
+            </tr>
+            <!-- pw Greencard addittions Antigen today  -->
+            <tr>
+                <th colspan="3">Antigen Today*</th>
+                <td>(p)</td>
+                <td colspan="2" >Vaccine
+
+                    <obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         style="dropdown"
+                         answerLabels="Measles,Polio,BCG,Penta,PV,PCV" />
+
+                    Vaccine Stage
+
+                    <select>
+                        <option value="Select">Select</option>
+                        <option value="Stage1">Stage1</option>
+                        <option value="Stage2">Stage2</option>
+                        <option value="Stage3">Stage3</option>
+                        <option value="Stage4">Stage4</option>
+                    </select>
+                    Vaccination Date:
+                    <obs id="vaccination-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                </td>
+            </tr>
+            <!-- .pw Greencard addittions Antigen today  -->
+            <tr>
+                <th rowspan="2">Cotrimoxazole/Dapsone </th>
+                <th colspan="2">Adherence</th>
+                <td>(q)</td>
+                <td colspan="2">
+                    <obs
+                            conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Good (G),Fair (F),Poor (P)"
+                            style="radio"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">Dispensed</th>
+                <td>(r)</td>
+                <td colspan="2">
+                    <obs
+                            conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Yes,No,Not applicable (N/A)"
+                            style="radio"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">INH Dispensed</th>
+                <td>(s)</td>
+                <td colspan="2">
+                    <obs
+                            conceptId="162230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Yes,No,Not applicable (N/A)"
+                            style="radio"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <!-- pw Greencard addittions added dispence date  -->
+                <th colspan="3">Other Medications Dispensed</th>
+                <td>(t)</td>
+                <td colspan="2">
+                    <table cellspacing="0">
+                        <tr>
+                            <th style="color: #888">Drug</th>
+                            <th style="color: #888; text-align: center">Dose</th>
+                            <th style="color: #888; text-align: center">Units</th>
+                            <th style="color: #888; text-align: center">Frequency</th>
+                            <th style="color: #888; text-align: center">Duration</th>
+                            <th style="color: #888; text-align: center">Duration units</th>
+                            <th style="color: #888; text-align: center">Dispence date*</th>
+
+                        </tr>
+                        <repeat>
+                            <template>
+                                <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <tr>
+                                        <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                        <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                        <td>
+                                            <obs
+                                                    conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                            />
+                                        </td>
+                                        <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td>
+                                            <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerLabels="Hours,Days,Weeks,Months" />
+                                        </td>
+                                        <td><obs id="drug-pickup-date" conceptId="162550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+                                    </tr>
+                                </obsgroup>
+                            </template>
+                            <render n="1" concept="Drug"/>
+                            <render n="2" concept="Drug"/>
+                            <render n="3" concept="Drug"/>
+                            <render n="4" concept="Drug"/>
+                            <render n="5" concept="Drug"/>
+                        </repeat>
+                    </table>
+                </td>
+            </tr>
+            <!-- pw Greencard addittions chronic illnesss and cormobidities  -->
+            <tr>
+                <th colspan="3">Chronic illnesses and cormobidities*</th>
+                <td>(t)</td>
+                <td colspan="2">
+                    <table cellspacing="0">
+                        <tr>
+                            <th style="color: #888">Illness</th>
+                            <th style="color: #888">Drug</th>
+                            <th style="color: #888; text-align: center">Dose</th>
+                            <th style="color: #888; text-align: center">Units</th>
+                            <th style="color: #888; text-align: center">Frequency</th>
+                            <th style="color: #888; text-align: center">Duration</th>
+                            <th style="color: #888; text-align: center">Duration units</th>
+                            <th style="color: #888; text-align: center">Onset Date</th>
+                        </tr>
+                        <repeat>
+                            <template>
+                                <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <tr>
+                                        <td>
+
+                                            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/></td>
+
+
+                                        <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                        <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                        <td>
+                                            <obs
+                                                    conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                            />
+                                        </td>
+                                        <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td>
+                                            <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerLabels="Hours,Days,Weeks,Months" />
+                                        </td>
+                                        <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+                                    </tr>
+                                </obsgroup>
+                            </template>
+                            <render n="1" concept="Drug"/>
+                            <render n="2" concept="Drug"/>
+                            <render n="3" concept="Drug"/>
+                            <render n="4" concept="Drug"/>
+                            <render n="5" concept="Drug"/>
+                        </repeat>
+                    </table>
+                </td>
+            </tr>
+            <!-- .pw Greencard addittions chronic illnesss and cormobidities  -->
+            <tr>
+                <th rowspan="3">ARV Drugs</th>
+                <th colspan="2">Adherence</th>
+                <td>(u)</td>
+                <td colspan="2">
+                    <obs
+                            conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Good (G),Fair (F),Poor (P)"
+                            style="radio"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">Why poor/fair</th>
+                <td>(v)</td>
+                <td colspan="2">
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Toxicity/side effects (1)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Share with others (2)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Forgot (3)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Felt better (4)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Too ill (5)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Stigma, disclosure or privacy issues (6)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug stock out at dispensary (7)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient lost/ran out of pills (8)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="820AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Delivery/travel problems (9)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Inability to pay (10)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
+                    <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" /><br />
+
+                    Other:
+                    <obsgroup groupingConceptId="161881AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </obsgroup>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">Regm/Dose/Duration</th>
+                <td>(w)</td>
+                <td><span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span></td>
+                <td>Duration
+                    <obsgroup groupingConceptId="161888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        Units: <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </obsgroup>
+                </td>
+            </tr>
+            <tr>
+                <th rowspan="7">Laboratory<br/>Investigations<br />Done</th>
+            </tr>
+            <tr class="patient-details">
+            <th colspan="2">CD4 (# or %)</th>
+            <td>(x)</td>
+            <td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2">Hgb</th>
+                <td>(y)</td>
+                <td colspan="2"><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2">RPR</th>
+                <td>(z)</td>
+                <td colspan="2"><obs conceptId="1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2">TB Sputum</th>
+                <td>(aa)</td>
+                <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
+            </tr>
+            <tr class="patient-details">
+                <th colspan="2">HIV Viral Load</th>
+                <td>(ab)</td>
+
+                <td>Results:
+                    <span id="vLoadResults"> <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value"/></span>
+                    or
+                    <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"/>
+                    Date:
+                    <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                </td>
+
+            </tr>
+
+            <tr class="patient-details">
+                <th colspan="2">Other</th>
+                <td>(ac)</td>
+                <td colspan="2">
+                    <dynamicObsContainer id="other-lab-tests" />
+
+                    <div style="text-align: right">
+                        <ifMode mode="VIEW" include="false">
+                            <span class="ke-field-instructions">Add new result for</span>
+                        </ifMode>
+                        <labTestPicker dynamicObsContainerId="other-lab-tests" excludeTests="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">Referral / Hospitalized</th>
+                <td>(ad)</td>
+                <td>
+                    1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                    2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                    3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
+                    Other:
+                    <obsgroup groupingConceptId="161360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </obsgroup>
+                </td>
+                <td>
+                    Days hospitalized <obs conceptId="1647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">At Risk Population</th>
+                <td>(ae)</td>
+                <td colspan="2">
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant couple (DC)" style="checkbox" /><br />
+                    <includeIf velocityTest="$patient.gender == 'M' ">
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
+                    </includeIf>
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable drug User (IDU)" style="checkbox" /><br />
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex worker (SW)" style="checkbox" /><br />
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of sex worker (cSW)" style="checkbox" /><br />
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Truck driver" style="checkbox" /><br />
+                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" style="checkbox" />
+                </td>
+            </tr>
+            <tr class="patient-details">
+                <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
+                <th>Disclosure</th>
+                <th>Partner Tested</th>
+                <td>(af)</td>
+                <td><obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                <td><obs id="pwp-partnertested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+            </tr>
+            <!-- pw Greencard addittions screening and notification  -->
+            <tr>
+                <th>Screened CaCx*</th>
+                <th>STI Patrner Notification</th>
+                <td>(ag)</td>
+                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+            </tr>
+            <tr>
+                <th>Condoms</th>
+                <th>Screened STI</th>
+                <td>(ag)</td>
+                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                <td class="patient-details"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+            </tr>
+            <tr><!-- pw Greencard addittions differentiated care and app reason -->
+                <th colspan="3">Date of Next Appointment / Differenciated Care*</th>
+                <td>(ah)</td>
+                <td>Date:
+                    <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                    Reason*:
+
+                 </td>
+                <td> Differentiated Care*
+                    <obs conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1751AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerLabels="Standard,Express,Community Dispensing"
+                         style="dropdowm"  />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="3">Clinician Initials</th>
+                <td>(ai)</td>
+                <td colspan="2"><obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+            </tr>
+            </tbody>
         </table>
-    </td>
-</tr>
-<tr>
-    <th rowspan="3">ARV Drugs</th>
-    <th colspan="2">Adherence</th>
-    <td>(u)</td>
-    <td colspan="2">
-        <obs
-                conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                answerLabels="Good (G),Fair (F),Poor (P)"
-                style="radio"
-                />
-    </td>
-</tr>
-<tr>
-    <th colspan="2">Why poor/fair</th>
-    <td>(v)</td>
-    <td colspan="2">
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Toxicity/side effects (1)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Share with others (2)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160587AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Forgot (3)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Felt better (4)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Too ill (5)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Stigma, disclosure or privacy issues (6)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Drug stock out at dispensary (7)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Patient lost/ran out of pills (8)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="820AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Delivery/travel problems (9)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Inability to pay (10)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Alcohol (11)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Depression (12)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pill burden (13)" /><br />
-        <obs conceptId="160582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other (14)" /><br />
+    </div>
 
-        Other:
-        <obsgroup groupingConceptId="161881AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </obsgroup>
-    </td>
-</tr>
-<tr>
-    <th colspan="2">Regm/Dose/Duration</th>
-    <td>(w)</td>
-    <td><span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span></td>
-    <td>Duration
-        <obsgroup groupingConceptId="161888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-            <obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-            Units: <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </obsgroup>
-    </td>
-</tr>
-<tr class="patient-details">
-    <th rowspan="6">Laboratory<br />Investigations<br />Done</th>
-    <th colspan="2">CD4 (# or %)</th>
-    <td>(x)</td>
-    <td colspan="2">Count: <obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> or <obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />%</td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2">Hgb</th>
-    <td>(y)</td>
-    <td colspan="2"><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2">RPR</th>
-    <td>(z)</td>
-    <td colspan="2"><obs conceptId="1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2">TB Sputum</th>
-    <td>(aa)</td>
-    <td colspan="2"><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sputumResults" answerConceptIds="159985AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Scanty,+,++,+++,Negative" /></td>
-</tr>
-<tr class="patient-details">
-    <th colspan="2">HIV Viral Load</th>
-    <td>(ab)</td>
-    <td colspan="2" >
-       <span id="vLoadResults"> <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value"/></span>
-        or
-        <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"/>
-    </td>
-</tr>
-
-<tr class="patient-details">
-    <th colspan="2">Other</th>
-    <td>(ac)</td>
-    <td colspan="2">
-        <dynamicObsContainer id="other-lab-tests" />
-
-        <div style="text-align: right">
-            <ifMode mode="VIEW" include="false">
-                <span class="ke-field-instructions">Add new result for</span>
-            </ifMode>
-            <labTestPicker dynamicObsContainerId="other-lab-tests" excludeTests="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </div>
-    </td>
-</tr>
-<tr>
-    <th colspan="3">Referral / Hospitalized</th>
-    <td>(ad)</td>
-    <td>
-        1. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-        2. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-        3. <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-        Other:
-        <obsgroup groupingConceptId="161360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-            <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-        </obsgroup>
-    </td>
-    <td>
-        Days hospitalized <obs conceptId="1647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-    </td>
-</tr>
-<tr>
-    <th colspan="3">At Risk Population</th>
-    <td>(ae)</td>
-    <td colspan="2">
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Discordant couple (DC)" style="checkbox" /><br />
-        <includeIf velocityTest="$patient.gender == 'M' ">
-            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Male who has sex with men (MSM)" style="checkbox" /><br />
-        </includeIf>
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Injectable drug User (IDU)" style="checkbox" /><br />
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sex worker (SW)" style="checkbox" /><br />
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Client of sex worker (cSW)" style="checkbox" /><br />
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Truck driver" style="checkbox" /><br />
-        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Not applicable" style="checkbox" />
-    </td>
-</tr>
-<tr class="patient-details">
-    <th rowspan="2">PwP<br />Services<br />(&#10003;)</th>
-    <th>Disclosure</th>
-    <th>Partner Tested</th>
-    <td>(af)</td>
-    <td><obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-    <td><obs id="pwp-partnertested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-</tr>
-<tr>
-    <th>Condoms</th>
-    <th>Screened STI</th>
-    <td>(ag)</td>
-    <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-    <td class="patient-details"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-</tr>
-<tr>
-    <th colspan="3">Date of Next Appointment</th>
-    <td>(ah)</td>
-    <td colspan="2"><obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
-</tr>
-<tr>
-    <th colspan="3">Clinician Initials</th>
-    <td>(ai)</td>
-    <td colspan="2"><obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-</tr>
-</tbody>
-</table>
-</div>
-
-<div class="ke-form-footer">
-    <submit />
-</div>
+    <div class="ke-form-footer">
+        <submit />
+    </div>
 
 </htmlform>

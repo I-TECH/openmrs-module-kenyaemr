@@ -24,16 +24,18 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.form.FormManager;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link EmrVisitAssignmentHandler}. Most of the functionality provided by this class is actually tested in
@@ -54,6 +56,9 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 	private MchMetadata mchMetadata;
 
 	@Autowired
+	private IPTMetadata iptMetadata;
+
+	@Autowired
 	private FormManager formManager;
 
 	/**
@@ -67,7 +72,7 @@ public class EmrVisitAssignmentHandlerTest extends BaseModuleContextSensitiveTes
 		hivMetadata.install();
 		tbMetadata.install();
 		mchMetadata.install();
-
+		iptMetadata.install();
 		formManager.refresh();
 	}
 
