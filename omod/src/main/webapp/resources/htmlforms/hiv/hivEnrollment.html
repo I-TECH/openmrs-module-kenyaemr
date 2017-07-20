@@ -24,6 +24,20 @@
 
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
+        var ageGroup = function () {
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            var adultLabelText = "Adult";
+            var childLabelText = "Child";
+            if (pAge &gt; 15) {
+                whoChild.style.display='none';
+                jq("#patient-age-group").text(adultLabelText);
+            }
+            if (pAge &lt; 15) {
+                whoAdult.style.display='none';
+                jq("#patient-age-group").text(childLabelText);
+            }
+        }
+
         function onTransferStatusChange() {
             if (getValue('transfer-in-status.value') == NO_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
@@ -119,12 +133,10 @@
         }
 
         jq(function() {
-
             //Get age and gender for validation
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
-           // console.log("Gender" +pgender);
-
+            ageGroup();
             jq('#transfer-in-status input').click(onTransferStatusChange);
             jq('#art-status input').click(onArtStatusChange);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
@@ -158,10 +170,10 @@
                 var confirmedPveDate = getValue('confirmed-positive-date.value');
                 var upn = jq('#hiv-id input[type=text]').val();
 
-//                if(/^[0-9]{10}$/.test(upn) === false) {
-//                    alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
-//                    return false;
-//                }
+                if(/^[0-9]{10}$/.test(upn) === false) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
+                    return false;
+                }
 
                 var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 if (isBirthdateBeforeEnrollment) {
@@ -224,7 +236,7 @@
 							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
 
 						/>
-					<td><obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</obsgroup></td>
 					</td>
@@ -241,16 +253,26 @@
 						/>
 					</td>
 				</tr>
+				<tr>
+					<ifMode mode="EDIT">
+						<script type="text/javascript">
+                            jq(function(){
+                                var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+                                if(PATIENT_IS_ENROLLED_HIV) {
+                                    jq('#hiv-id :input').prop('disabled', true);
+                                    jq('#generate-hiv-id').hide();
+                                }
+                            });
 
-				<excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
-					<tr>
-						<td>Unique Patient Number (UPN)</td>
-						<td>
-							<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
+						</script>
+					</ifMode>
+					<td>Unique Patient Number (UPN)</td>
+					<td>
+						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
 							<input type="button" id="generate-hiv-id" value="Generate"/>
-						</td>
-					</tr>
-				</excludeIf>
+					</td>
+				</tr>
+
 			</table>
 			<table id="transit-patient" style="display: inline-block">
 				<tr>
@@ -269,17 +291,11 @@
 						<td>Transfer in date:</td>
 						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
-					<!--<tr>-->
-						<!--&lt;!&ndash; .pw greencard additions added counties &ndash;&gt;-->
-						<!--<td>Transferred from facility:</td>-->
-						<!--<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> in County*:-->
-							<!--<select>-->
-								<!--<option value="Select">Select</option>-->
-								<!--<option value="Siaya">Siaya</option>-->
-								<!--<option value="Kisumu">Kisumu</option>-->
-								<!--<option value="Nairobi">Nairobi</option>-->
-							<!--</select> </td>-->
-					<!--</tr>-->
+					<tr>
+						<td>Transferred from facility:</td>
+						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+
+					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
 						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -302,17 +318,26 @@
 				</tr>
 				<tr>
 					<td>Facility where confirmation done</td>
-					<td>
-						<obsgroup groupingConceptId="161559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-						</obsgroup>
-
-					</td>
+					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 				</tr>
-				<!-- pw greencard additions who stage -->
 				<tr>
-					<td>WHO Stage*  </td>
-					<td>  <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> * </td>
+					<td>
+						<div id="whoAdult">
+							<table>
+								<tr>
+									<td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+								</tr>
+							</table>
+						</div>
+						<div id="whoChild">
+							<table>
+								<tr>
+									<td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+								</tr>
+							</table>
+						</div>
+					</td>
 				</tr>
 				<!-- .pw greencard additions who stage -->
 				<tr>
