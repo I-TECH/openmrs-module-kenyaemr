@@ -13,6 +13,7 @@
 -->
 <htmlform>
 
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
         /**
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
@@ -48,7 +49,6 @@
                 jq('#baseline-assessment2').show();
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
-                jq('#generate-hiv-id').hide();
                 jq('#transit-patient').hide();
             } else if (getValue('transfer-in-status.value') == TRANSIT) {
                 jq('#transit-patient').show();
@@ -119,6 +119,7 @@
         }
 
         jq(function() {
+
             //Get age and gender for validation
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
@@ -152,32 +153,33 @@
             }
 
             beforeSubmit.push(function() {
-                var birthDate = new Date("<lookup expression="patient.birthdate" />").getTime();
-                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-                var confirmedPveDate = new Date(getValue('confirmed-positive-date.value')).getTime();
+                var birthDate = "<lookup expression="patient.birthdate" />";
+                var encounterDate = getValue('encounter-date.value');
+                var confirmedPveDate = getValue('confirmed-positive-date.value');
                 var upn = jq('#hiv-id input[type=text]').val();
 
-       /*
-				if(onSubmitWithUpnField(upn) != null) {
-                        alert("This number already exist");
-                        return false;
-				 }    */
-				/*  pw greencard additions  validation  */
-                if(/^[0-9]{10}$/.test(upn) === false) {
-                    alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
+//                if(/^[0-9]{10}$/.test(upn) === false) {
+//                    alert("Invalid Unique Patien Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
+//                    return false;
+//                }
+
+                var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                if (isBirthdateBeforeEnrollment) {
+                    getField('encounter-date.error').html('Enrollment date, should not be later than birth Date').show();
                     return false;
                 }
 
 
-                if (encounterDate &lt; birthDate) {
-                    getField('encounter-date.error').html('Encounter date, should not be earlier than birth date').show();
+
+                var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                if (isBirthdateBeforeConfirmedPve) {
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
                     return false;
                 }
-                if (confirmedPveDate &lt; birthDate){
-                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be earlier than birth date').show();
-                    return false;
-                }
-                if (confirmedPveDate &gt; encounterDate){
+
+
+                var isEnrollmentDateBeforeConfirmedPve = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+                if (isEnrollmentDateBeforeConfirmedPve) {
                     getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
                     return false;
                 }
