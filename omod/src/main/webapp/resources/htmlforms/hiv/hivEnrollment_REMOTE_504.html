@@ -21,7 +21,7 @@
         var YES_CONCEPT_ID = 1065;
         var NO_CONCEPT_ID = 1066;
         var TRANSIT =5622;
-        var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
         var ageGroup = function () {
@@ -168,28 +168,13 @@
                 var birthDate = "<lookup expression="patient.birthdate" />";
                 var encounterDate = getValue('encounter-date.value');
                 var confirmedPveDate = getValue('confirmed-positive-date.value');
-                var transferInDate = getValue('transfer-in-date.value');
-                var firstEnrolledDate = getValue('first-enrolled-date.value');
-                var artStartDate = getValue('art-start-date.value');
                 var upn = jq('#hiv-id input[type=text]').val();
 
-                if (PATIENT_HAS_UPN) {
-                    if((/^[0-9]{10}$/.test(upn) === false) || (/^[0-9]{11}$/.test(upn) === false)) {
-                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
-                        return false;
-                    }
-				} else {
-                    if(/^[0-9]{10}$/.test(upn) === false) {
-                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments");
-                        return false;
-                    }
-				}
-
-
-                if (encounterDate =="") {
-                    getField('encounter-date.error').html('Enrollment date should not be empty').show();
+                if(/^[0-9]{10}$/.test(upn) === false) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
                     return false;
                 }
+
                 var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 if (isBirthdateBeforeEnrollment) {
                     getField('encounter-date.error').html('Enrollment date, should not be later than birth Date').show();
@@ -210,16 +195,7 @@
                     getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
                     return false;
                 }
-                var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-                if (isTransferInBeforeFirstEnrolled) {
-                    getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
-                    return false;
-                }
-                var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-                if (isARTStartDateBeforeFirstEnrolled) {
-                    getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
-                    return false;
-                }
+
                 return true;
             });
         });
@@ -313,7 +289,7 @@
 				<table>
 					<tr>
 						<td>Transfer in date:</td>
-						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transfer-in-date"/></td>
+						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
 					<tr>
 						<td>Transferred from facility:</td>
@@ -322,11 +298,11 @@
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
-						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>
+						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
 					<tr>
 						<td>Date started ART at transferring facility:</td>
-						<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="art-start-date"/></td>
+						<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 					</tr>
 				</table>
 			</div>
@@ -363,6 +339,7 @@
 						</div>
 					</td>
 				</tr>
+				<!-- .pw greencard additions who stage -->
 				<tr>
 					<td>Patient has been on ARVs (inc. PEP &amp; PMTCT)</td>
 					<td>
@@ -591,17 +568,12 @@
 				</tr>
 				<tr class="patient-details">
 					<td colspan="2"></td>
-					<td>HIV Viral Load</td>
+					<td>Baseline Viral Load</td>
 					<td>
 						<obs id="viral-load" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 						copies/ml
 					</td>
 
-				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>HIV Viral Load(LDL)</td>
-					<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" /></td>
 				</tr>
 				<tr class="patient-details">
 					<td colspan="2"></td>
