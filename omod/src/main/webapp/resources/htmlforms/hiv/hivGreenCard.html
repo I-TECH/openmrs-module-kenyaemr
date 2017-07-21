@@ -90,6 +90,7 @@ Green Card follow-up visit form
                 }
             }
         }
+
         function onPersonPresentChange() {
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
@@ -815,14 +816,16 @@ Green Card follow-up visit form
             var valbirthdate = "<lookup  expression="patient.birthdate" />"
             var valChangedToDateFormat = new Date(valbirthdate).getTime();
 
+
             beforeSubmit.push(function() {
+
                 var tca_date = getValue('returnVisitDate.value');
                 var encounterDate = getValue('encounter-date.value');
                 var valonform = getValue('tbrxdate.value');
                 var valChangedToDateFormatOnForm=new Date(valonform).getTime();
 
-                //Must have a Return Visit Date which should be greater tahn encounter date
 
+                //Must have a Return Visit Date which should be greater than encounter date
                 if (tca_date =="") {
                     getField('returnVisitDate.error').html('Return visit date should not be empty').show();
                     return false;
@@ -1061,8 +1064,8 @@ Green Card follow-up visit form
                 <tr>
 
                     <td>
-                        <obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-                        Scheduled
+                        <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+
                     </td>
                     <td>
                         <obs
@@ -2179,11 +2182,6 @@ Green Card follow-up visit form
                                                 <tr>
                                                     <td>
                                                         <div style="float: left; padding-right: 50px">
-                                                        <!--<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                                             <!--answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                                             <!--answerLabel="Wants to get Pregnant"-->
-                                                             <!--style="checkbox"/>-->
-                                                        <!--<br/>-->
                                                         <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Thinks can't get pregnant"
@@ -2194,6 +2192,11 @@ Green Card follow-up visit form
                                                              answerLabel="Not sexually active now"
                                                              style="checkbox"/>
                                                         <br/>
+                                                            <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                               answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                               answerLabel="Other"
+                                                               style="checkbox"/>
+
                                                         </div> </td>
                                                 </tr>
                                             </obsgroup>

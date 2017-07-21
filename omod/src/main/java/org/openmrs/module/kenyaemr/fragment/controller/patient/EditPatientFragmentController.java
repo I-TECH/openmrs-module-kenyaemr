@@ -151,18 +151,6 @@ public class EditPatientFragmentController {
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
-		// Create a list of next of kin Relationship answer concepts
-
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_POLYGAMOUS));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.MARRIED_MONOGAMOUS));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.DIVORCED));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.WIDOWED));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVING_WITH_PARTNER));
-		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
-		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
-
-
-
 		// Create a list of cause of death answer concepts
 		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
 		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
