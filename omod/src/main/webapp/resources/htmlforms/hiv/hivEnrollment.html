@@ -175,8 +175,6 @@
                     return false;
                 }
 
-
-
                 var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 if (isBirthdateBeforeConfirmedPve) {
                     getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
@@ -284,17 +282,7 @@
 						<td>Transfer in date:</td>
 						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transfer-in-date"/></td>
 					</tr>
-					<!--<tr>-->
-						<!--&lt;!&ndash; .pw greencard additions added counties &ndash;&gt;-->
-						<!--<td>Transferred from facility:</td>-->
-						<!--<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> in County*:-->
-							<!--<select>-->
-								<!--<option value="Select">Select</option>-->
-								<!--<option value="Siaya">Siaya</option>-->
-								<!--<option value="Kisumu">Kisumu</option>-->
-								<!--<option value="Nairobi">Nairobi</option>-->
-							<!--</select> </td>-->
-					<!--</tr>-->
+
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
 						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>
