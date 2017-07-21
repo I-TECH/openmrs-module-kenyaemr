@@ -21,14 +21,14 @@
             $(".hiv-result select").change(function () {
                 var row = $(this).parent().parent().parent();
                 var baseline = $(".baseline-hiv-status :selected").text();
-                //console.log("Baseline " + baseline);
+               // console.log("Baseline " + baseline);
                 if (this.value == 664 &amp;&amp; baseline !='Positive') {    //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
                     $(row).find('.referring-facility input').attr('disabled',true);
                 } else {                     //positive
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+//                    $(row).find('.in-care select').val('');
+//                    $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
@@ -47,8 +47,8 @@
                     $(row).find('.referring-facility input').attr('disabled', true);
                 }
                 if(this.value == 703) {                     //positive
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+//                    $(row).find('.in-care select').val('');
+//                    $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
@@ -67,9 +67,10 @@
                         $(row).find('.referring-facility').attr('disabled', true);
                         $(row).find('.next-hivtest-date').attr('disabled', false);
                         $(row).find('.hiv-status').attr('disabled', false);
-                    }else if (baselineHivStatus == 703)  {                     //positive
-                       $(row).find('.in-care select').val('');
-                       $(row).find('.ccc-no input').val('');
+                    }
+                   if (baselineHivStatus == 703)  {                     //positive
+//                       $(row).find('.in-care select').val('');
+//                       $(row).find('.ccc-no input').val('');
                         $(row).find('.in-care select').attr('disabled', false);
                         $(row).find('.ccc-no input').attr('disabled', false);
                         $(row).find('.referring-facility').attr('disabled', false);
@@ -155,8 +156,7 @@
                                 <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
                             </td>
                             <td>
-                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
 
                         </td>
                         </tr>

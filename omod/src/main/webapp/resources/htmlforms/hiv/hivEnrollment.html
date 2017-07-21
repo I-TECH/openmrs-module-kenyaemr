@@ -44,6 +44,7 @@
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
                 jq('#transfer-details').hide();
+                clearHiddenSections(jq('#transfer-details'));
                 jq('#patient-history').show();
                 jq('#art-history').show();
                 jq('#baseline-assessment1').show();
@@ -54,7 +55,7 @@
                 jq('#transit-patient').hide();
             } else if (getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
-                jq('#hiv-id :input').prop('disabled', false);
+                jq('#hiv-id :input').prop('readonly',true);
                 jq('#generate-hiv-id').hide();
                 jq('#transfer-details').show();
                 jq('#patient-history').show();
@@ -67,6 +68,7 @@
             } else if (getValue('transfer-in-status.value') == TRANSIT) {
                 jq('#transit-patient').show();
                 jq('#transfer-details').hide();
+                clearHiddenSections(jq('#transfer-details'));
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-assessment1').hide();
@@ -131,7 +133,30 @@
             }
             jQuery('#calculated-bmi').html(display);
         }
+        clearHiddenSections = function(parentObj) {
 
+
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+
+            });
+
+            parentObj.find('input[type=checkbox]').each(function() {
+
+                this.checked = false;
+
+            });
+            parentObj.find('input[type=text]').each(function() {
+
+                jq(this).val("");
+
+            });
+            parentObj.find('select').each(function() {
+
+                this.selectedIndex =0;
+
+            });
+        }
         jq(function() {
             //Get age and gender for validation
             var pgender = "<lookup expression="patient.gender" />";
@@ -174,7 +199,7 @@
                 var upn = jq('#hiv-id input[type=text]').val();
 
                 if (PATIENT_HAS_UPN) {
-                    if((/^[0-9]{10}$/.test(upn) === false) || (/^[0-9]{11}$/.test(upn) === false)) {
+                    if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
                         alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
                         return false;
                     }
@@ -208,18 +233,24 @@
                     getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
                     return false;
                 }
-                var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-                if (isTransferInBeforeFirstEnrolled) {
-                    getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
-                    return false;
+                if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+					var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+					if (isTransferInBeforeFirstEnrolled) {
+						getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
+						return false;
+					   }
                 }
-                var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-                if (isARTStartDateBeforeFirstEnrolled) {
-                    getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
-                    return false;
+
+                if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+					var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+						if (isARTStartDateBeforeFirstEnrolled) {
+							getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
+							return false;
+						}
                 }
                 return true;
             });
+
         });
 	</script>
 
@@ -234,7 +265,7 @@
                             });
 						</script>
 					</ifMode>
-					Enrollment date: <encounterDate id="encounter-date" showTime="false" />
+					Enrollment date: <encounterDate id="encounter-date" showTime="true" />
 				</td>
 				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
@@ -281,7 +312,7 @@
                             jq(function(){
                                 var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
                                 if(PATIENT_IS_ENROLLED_HIV) {
-                                    jq('#hiv-id :input').prop('disabled', true);
+                                    jq('#hiv-id :input').prop('readonly', true);
                                     jq('#generate-hiv-id').hide();
                                 }
                             });
@@ -313,15 +344,10 @@
 						<td>Transfer in date:</td>
 						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transfer-in-date"/></td>
 					</tr>
-<<<<<<< HEAD
-
-=======
 					<tr>
 						<td>Transferred from facility:</td>
 						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-
 					</tr>
->>>>>>> 048d8baae80114c9eb6c46e4eeb3ed51b3451ade
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
 						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>

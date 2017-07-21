@@ -90,7 +90,10 @@ Green Card follow-up visit form
                 }
             }
         }
+        function onLmpChange() {
+            jq('#pregnancyOption :input').prop('disabled', false);
 
+        }
         function onPersonPresentChange() {
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
@@ -145,15 +148,9 @@ Green Card follow-up visit form
 
 
             var val = jq(this).val();
-            //jq(this).closest("tr").find().val( getField('complaint-date.value');
-
-            //var val = jq(this).closest('tr').find("#complait-duration").val();
-           // console.log("Number of days" + val);
             var encounterDate = new Date(getValue('encounter-date.value'));
-            //console.log("encounter date " + encounterDate);
             var complaint_date= new Date(encounterDate.getTime()-(val*24*60*60*1000)).toISOString().substr(0,10);
             var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-            //console.log("Formatted Complaint Date " + formattedComplaintDate);
             getField('complaint-date.value').val(formattedComplaintDate);
 
         }
@@ -627,10 +624,7 @@ Green Card follow-up visit form
         var iptEventSelected  = function () {
 
             var iptEvent = getValue('ipt-event-type.value');
-           // console.log("IPT EVENT "+ iptEvent);
             if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
-
-               // console.log("IPT EVENT "+ iptEvent);
                 jq("#reason-for-discontinuation").show();
             }
           else{
@@ -650,7 +644,6 @@ Green Card follow-up visit form
                 getField('parity-term.value').change(onParityChange);
                 getField('parity-abortion.value').change(onParityChange);
             }
-
          everOnIPTSelected = null;
          patientCurrentlyOnIPT = null;
          //Defaults on ready
@@ -674,6 +667,7 @@ Green Card follow-up visit form
          jq("#tbl-start-antiTb").hide();
          jq("#ipt-uptake").hide();
          jq("#tb-screening-result").hide();
+         //jq('#pregnancyOption :input').prop('disabled', true);
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
          jq("#wants-pregnancy").hide();
@@ -697,6 +691,7 @@ Green Card follow-up visit form
          ageGroup();
          displayRecentBmi();
          //Event Handlers
+         jq("#lmp-date :input[type=text]").change(onLmpChange);
          jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
          jq('input[type=radio].on-ipt').change(onIPT);
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
@@ -753,11 +748,31 @@ Green Card follow-up visit form
                     jq("#wants-pregnancy").hide();
                   //Automate EDC Computation
                     var lmpDate = getValue('lmp-date.value');
-                    var formattedEdd=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-                    var expectedDeliveryDate = moment(formattedEdd, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                    var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                    //Find recent EDD if it exists
+                    //Using LMP
+                    var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
+                    var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+                   //Using recent LMP
+                    var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
 
-                    getField('patient-edd.value').val(expectedDeliveryDate);
+                    console.log("Recent LMP "+ recentLMP);
+                    console.log("Formatted Recent LMP "+ formattedRecentlmp);
+                    console.log("expectedDeliveryDateByRecentLMP "+ expectedDeliveryDateByRecentLMP);
+                    //Calculation
+                    if(recentEDD !=""){
+                        getField('patient-edd.value').val(recentEDD);
+                         }else if(recentLMP !="") {
+                         getField('patient-edd.value').val(expectedDeliveryDateByRecentLMP);
+                          }else if (lmpDate!=""){
+                             getField('patient-edd.value').val(expectedDeliveryDate);
+                              }else{
+                                   getField('patient-edd.value').val("");
+                    }
                 }
+
             });
 
             jq("#fplanning select ").change(function () {
@@ -1001,6 +1016,31 @@ Green Card follow-up visit form
 
                 });
 
+            }
+
+            clearHiddenSections = function(parentObj) {
+
+                parentObj.find('input[type=radio]').each(function() {
+
+                    this.checked = false;
+
+                });
+
+                parentObj.find('input[type=checkbox]').each(function() {
+
+                    this.checked = false;
+
+                });
+                parentObj.find('input[type=text]').each(function() {
+
+                    this.val("");
+
+                });
+                parentObj.find('select').each(function() {
+
+                    this.selectedIndex =0;
+
+                });
             }
 
             screeningRadios.change(function() {
