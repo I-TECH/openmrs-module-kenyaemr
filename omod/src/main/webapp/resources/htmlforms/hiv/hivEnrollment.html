@@ -170,7 +170,7 @@
                 var confirmedPveDate = getValue('confirmed-positive-date.value');
                 var upn = jq('#hiv-id input[type=text]').val();
 
-                if(/^[0-9]{10}$/.test(upn) === false) {
+                if((/^[0-9]{10}$/.test(upn) === false) || (/^[0-9]{11}$/.test(upn) === false)) {
                     alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
                     return false;
                 }
