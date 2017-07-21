@@ -21,7 +21,7 @@
         var YES_CONCEPT_ID = 1065;
         var NO_CONCEPT_ID = 1066;
         var TRANSIT =5622;
-
+        var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
         var ageGroup = function () {
@@ -170,10 +170,18 @@
                 var confirmedPveDate = getValue('confirmed-positive-date.value');
                 var upn = jq('#hiv-id input[type=text]').val();
 
-                if((/^[0-9]{10}$/.test(upn) === false) || (/^[0-9]{11}$/.test(upn) === false)) {
-                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits");
-                    return false;
-                }
+                if (PATIENT_HAS_UPN) {
+                    if((/^[0-9]{10}$/.test(upn) === false) || (/^[0-9]{11}$/.test(upn) === false)) {
+                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
+                        return false;
+                    }
+				} else {
+                    if(/^[0-9]{10}$/.test(upn) === false) {
+                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments");
+                        return false;
+                    }
+				}
+
 
                 var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 if (isBirthdateBeforeEnrollment) {
