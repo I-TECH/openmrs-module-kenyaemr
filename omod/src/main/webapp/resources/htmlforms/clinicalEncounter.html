@@ -20,113 +20,113 @@
 	</style>
 
 	<script type="text/javascript">
-        function onWeightOrHeightChange() {
-            var display = '';
-            var weightKg = parseFloat(getValue('weight.value'));
-            var heightM = parseFloat(getValue('height.value')) / 100;
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
-                var bmi = weightKg / (heightM * heightM);
-                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
-                }
-                else {
-                    display = bmi.toFixed(2);
-                }
-            }
-            jq('#calculated-bmi').html(display);
-        }
-        function displayRecentBmi(){
-            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
-            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
-            var bmi ='';
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
-                bmi = weightKg / (heightM * heightM);
-            }
-            jq('#recent-calculated-bmi').html(bmi.toFixed(2));
-        }
+		function onWeightOrHeightChange() {
+			var display = '';
+			var weightKg = parseFloat(getValue('weight.value'));
+			var heightM = parseFloat(getValue('height.value')) / 100;
+			if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+				var bmi = weightKg / (heightM * heightM);
+				if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+					display = 'Abnormal value. Were height and height entered correctly?';
+				}
+				else {
+					display = bmi.toFixed(2);
+				}
+			}
+			jq('#calculated-bmi').html(display);
+		}
+		function displayRecentBmi(){
+			var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+			var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+			var bmi ='';
+			if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
+				bmi = weightKg / (heightM * heightM);
+			}
+			jq('#recent-calculated-bmi').html(bmi.toFixed(2));
+		}
 
-        jq(function() {
-            getField('weight.value').change(onWeightOrHeightChange);
-            getField('height.value').change(onWeightOrHeightChange);
-            onWeightOrHeightChange();
-            displayRecentBmi();
+		jq(function() {
+			getField('weight.value').change(onWeightOrHeightChange);
+			getField('height.value').change(onWeightOrHeightChange);
+			onWeightOrHeightChange();
+			displayRecentBmi();
 
-            var strtext = "";
-            var familyPlanningOption = getValue('fplanning.value');
-            var pregnancyOption = getValue('pregnancyOption.value');
-            if (pregnancyOption == 1066) {
-                jq('#pregnancyOptionValues :input').prop('disabled', true);
-            }
-            if (familyPlanningOption == "") {
-                jq('#onFp :input').prop('disabled', true);
-                jq('#notOnFp :input').prop('disabled', true);
-            }
-            if (familyPlanningOption == "965") {
-                jq('#onFp :input').prop('disabled', false);
-                jq('#notOnFp :input').prop('disabled', true);
-            }
-            if (familyPlanningOption == "160652") {
-                jq('#onFp :input').prop('disabled', true);
-                jq('#notOnFp :input').prop('disabled', false);
-            }
-            if (familyPlanningOption == "1360") {
-                jq('#onFp :input').prop('disabled', false);
-                jq('#notOnFp :input').prop('disabled', true);
-            }
-            jq('#pregnancyOption input:radio').click(function() {
-                if ((getValue('pregnancyOption.value')) == 1066){
-                    jq('#pregnancyOptionValues :input').prop('disabled', true);
-                }
-                else {
-                    jq('#pregnancyOptionValues :input').prop('disabled', false);
-                }
-            });
+			var strtext = "";
+			var familyPlanningOption = getValue('fplanning.value');
+			var pregnancyOption = getValue('pregnancyOption.value');
+			if (pregnancyOption == 1066) {
+				jq('#pregnancyOptionValues :input').prop('disabled', true);
+			}
+			if (familyPlanningOption == "") {
+				jq('#onFp :input').prop('disabled', true);
+				jq('#notOnFp :input').prop('disabled', true);
+			}
+			if (familyPlanningOption == "965") {
+				jq('#onFp :input').prop('disabled', false);
+				jq('#notOnFp :input').prop('disabled', true);
+			}
+			if (familyPlanningOption == "160652") {
+				jq('#onFp :input').prop('disabled', true);
+				jq('#notOnFp :input').prop('disabled', false);
+			}
+			if (familyPlanningOption == "1360") {
+				jq('#onFp :input').prop('disabled', false);
+				jq('#notOnFp :input').prop('disabled', true);
+			}
+			jq('#pregnancyOption input:radio').click(function() {
+				if ((getValue('pregnancyOption.value')) == 1066){
+					jq('#pregnancyOptionValues :input').prop('disabled', true);
+				}
+				else {
+					jq('#pregnancyOptionValues :input').prop('disabled', false);
+				}
+			});
 
-            jq("#fplanning select ").change(function() {
+			jq("#fplanning select ").change(function() {
 
-                jq("#fplanning select option:selected").each(function () {
-                    strtext += $(this).val();
-                });
+				jq("#fplanning select option:selected").each(function () {
+					strtext += $(this).val();
+				});
 
-                if (strtext == ""){
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', true);
-                }
-                if (strtext == "965") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
-                }
-                if (strtext == "160652") {
-                    $('#onFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', true);
-                    $('#notOnFp :input').prop('disabled', false);
-                }
-                if (strtext == "1360") {
-                    $('#notOnFp :input').prop('checked', false);
-                    $('#onFp :input').prop('disabled', false);
-                    $('#notOnFp :input').prop('disabled', true);
-                }
+				if (strtext == ""){
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', true);
+				}
+				if (strtext == "965") {
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
+				}
+				if (strtext == "160652") {
+					$('#onFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', true);
+					$('#notOnFp :input').prop('disabled', false);
+				}
+				if (strtext == "1360") {
+					$('#notOnFp :input').prop('checked', false);
+					$('#onFp :input').prop('disabled', false);
+					$('#notOnFp :input').prop('disabled', true);
+				}
 
-                strtext = "";
-            });
+				strtext = "";
+			});
 
-            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-            var pgender    = "<lookup expression="patient.gender" />";
+			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+			var pgender    = "<lookup expression="patient.gender" />";
 
-            if (pgender == 'F' ){
-                beforeSubmit.push(function() {
-                    var lmpdate = new Date(getValue('lmp-date.value')).getTime();
-                    if (lmpdate &lt; pbirthdate) {
-                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
-                        return false;
-                    }
-                    return true;
-                });
-            }
-        });
+			if (pgender == 'F' ){
+				beforeSubmit.push(function() {
+					var lmpdate = new Date(getValue('lmp-date.value')).getTime();
+					if (lmpdate &lt; pbirthdate) {
+						getField('lmp-date.error').html('Should not be earlier than birth date').show();
+						return false;
+					}
+					return true;
+				});
+			}
+		});
 	</script>
 
 	<div class="ke-form-header">
@@ -140,41 +140,15 @@
 
 	<div class="ke-form-content">
 		<!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
-		<fieldset>
-			<legend>Visit Type</legend>
-			<!--pw greencard additions visit type and appointment type -->
-			<table cellspacing="5">
-				<tr>
-					<th>Scheduled/Unscheduled</th>
-					<th align="left">Visit by</th>
-				</tr>
-				<tr>
 
-					<td><obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /> Scheduled</td>
-					<td>
-						<obs
-								id="person-present"
-								conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
-								style="radio"
-								answerSeparator="&lt;br /&gt;"
-						/>
-						<obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-					</td>
-					<!--.pw greencard additions visit type and appointment type -->
-				</tr>
-			</table>
-
-		</fieldset>
 		<fieldset>
-			<legend>Visit Reason</legend>
+			<legend>Reason</legend>
 
 			<table cellspacing="5">
 				<tr>
 					<th></th>
 					<th></th>
-					<th align="left">Recent</th>
+					<th>Recent</th>
 				</tr>
 				<tr>
 					<td>Reason for visit</td>
@@ -182,8 +156,6 @@
 					<td>
 						<span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
 					</td>
-
-
 				</tr>
 			</table>
 		</fieldset>
@@ -194,8 +166,8 @@
 			<table cellspacing="5">
 				<tr>
 					<th></th>
-					<th align="left">Current</th>
-					<th align="left">Recent</th>
+					<th>Current</th>
+					<th>Recent</th>
 				</tr>
 				<tr>
 					<td>Temp</td>
@@ -233,8 +205,8 @@
 			<table cellspacing="10">
 				<tr>
 					<th> </th>
-					<th align="left">Current</th>
-					<th align="left">Recent</th>
+					<th>Current</th>
+					<th>Recent</th>
 				</tr>
 				<tr>
 					<td>Weight</td>
