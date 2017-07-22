@@ -44,6 +44,10 @@
 
 <div class="ke-panel-footer">
 	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" /> Add
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" /> Add Relationship
+	</button>
+
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "familyAndPartnerTesting", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" /> Family/Partner Tree
 	</button>
 </div>
