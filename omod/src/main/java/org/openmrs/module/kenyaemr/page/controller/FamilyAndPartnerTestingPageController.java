@@ -251,14 +251,14 @@ public class FamilyAndPartnerTestingPageController {
 
 		return SimpleObject.create(
 				"contact", contactName.toUpperCase(),
-				"relType", relType,
-				"relStatus", relStatus,
-				"age", new StringBuilder().append(age).append(" ").append(ageUnit),
-				"art_no" , artNo.intValue(),
-				"baselineStatus", baselineStatus,
-				"nextTestDate", nextTestDate,
-				"inCare", inCare,
-				"testResult", hivResult
+				"relType", relType != null ? relType : "",
+				"relStatus", relStatus != null ?relStatus : "",
+				"age", age != null ? new StringBuilder().append(age).append(" ").append(ageUnit): "",
+				"art_no" , artNo != null ? artNo.intValue(): "",
+				"baselineStatus", baselineStatus != null ? baselineStatus : "",
+				"nextTestDate", nextTestDate != null ? nextTestDate : "",
+				"inCare", inCare != null ? inCare: "",
+				"testResult", hivResult != null ? hivResult : ""
 		);
 
 
