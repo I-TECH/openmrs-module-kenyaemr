@@ -52,7 +52,7 @@
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
-                    $(row).find('.next-hivtest-date').prop('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-result select').attr('disabled', true);
                 }
             });
@@ -74,8 +74,8 @@
                         $(row).find('.in-care select').attr('disabled', false);
                         $(row).find('.ccc-no input').attr('disabled', false);
                         $(row).find('.referring-facility').attr('disabled', false);
-                        $(row).find('.next-hivtest-date').attr('disabled', true);
-                        $(row).find('.hiv-result').attr('disabled', true);
+                        $(row).find('.next-hivtest-date input').attr('disabled', true);
+                        $(row).find('.hiv-result select').attr('disabled', true);
                     }
                 }
             }
@@ -88,7 +88,24 @@
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
         <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
     </div>
-
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    Encounter Datetime: <encounterDate id="encounter-date" showTime="true" />
+                </td>
+                <td>Enrolled by: <encounterProvider default="currentUser" /></td>
+                <td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+            </tr>
+        </table>
+    </div>
     <div class="ke-form-content">
         <table id="table" width="100%">
             <thead>
@@ -96,8 +113,8 @@
                 <th align="left">Name of Members</th>
                 <th align="left">Age</th>
                 <th align="left">Relation</th>
-                <th align="left">Status</th>
-                <th align="left">Date</th>
+                <th align="left">Relationship Status</th>
+                <!--<th align="left">Date</th>-->
                 <th align="left">Baseline HIV Status</th>
                 <th align="left">New Test Date</th>
                 <th align="left">HIV Result</th>
@@ -131,9 +148,9 @@
                                      answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Current,Deceased,Unknown"/>
                             </td>
-                            <td>
-                                <obs class="family-member-baseline-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                            </td>
+                            <!--<td>-->
+                                <!--<obs class="family-member-baseline-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />-->
+                            <!--</td>-->
                             <td>
                                 <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
