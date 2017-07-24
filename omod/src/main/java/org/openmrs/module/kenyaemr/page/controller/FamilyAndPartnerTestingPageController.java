@@ -14,15 +14,22 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -30,7 +37,6 @@ import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.ui.framework.page.PageRequest;
@@ -42,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Controller for relationship edit page
@@ -49,6 +56,11 @@ import java.util.Map;
 @SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN})
 public class FamilyAndPartnerTestingPageController {
 
+	protected static final Log log = LogFactory.getLog(FamilyAndPartnerTestingPageController.class);
+	PatientService patientService = Context.getPatientService();
+	EncounterService encounterService = Context.getEncounterService();
+	ObsService obsService = Context.getObsService();
+	ConceptService conceptService = Context.getConceptService();
 	public void controller(@RequestParam(value="patientId") Patient patient,
 						   @RequestParam("returnUrl") String returnUrl,
 						   @SpringBean KenyaUiUtils kenyaUi,
@@ -56,13 +68,71 @@ public class FamilyAndPartnerTestingPageController {
 						   PageRequest pageRequest,
 						   PageModel model) {
 
+
+
 		// Get all relationships as simple objects
         // patient id, name, sex, age, relation, test date, test result, enrolled, art number, initiated, status
-        PatientService patientService = Context.getPatientService();
-        EncounterService encounterService = Context.getEncounterService();
 
+		String familyHistoryGroupingConcept = "160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+
+        // list of direct relations
+		/*	Mother, Father, Sibling, Child, Spouse, Partner, Co-Wife */
 		List<SimpleObject> relationships = new ArrayList<SimpleObject>();
+		List<SimpleObject> otherConctacts = new ArrayList<SimpleObject>();
+		String HIV_FAMILY_HISTORY = "7efa0ee0-6617-4cd7-8310-9f95dfee7a82";
+
+		List<RelationshipType> directRelationships = Arrays.asList(
+				Context.getPersonService().getRelationshipTypeByUuid("8d91a01c-c2cc-11de-8d13-0010c6dffd0f"), // sibling
+				Context.getPersonService().getRelationshipTypeByUuid("8d91a210-c2cc-11de-8d13-0010c6dffd0f"), // parent-child
+				Context.getPersonService().getRelationshipTypeByUuid("d6895098-5d8d-11e3-94ee-b35a4132a5e3"), // spouse
+				Context.getPersonService().getRelationshipTypeByUuid("007b765f-6725-4ae9-afee-9966302bace4"), // partner
+				Context.getPersonService().getRelationshipTypeByUuid("2ac0d501-eadc-4624-b982-563c70035d46") // co-wife
+		);
+
+		// list contacts on family history form
+		List<Encounter> familyHistoryEncounters = encounterService.getEncounters(
+				patient,
+				null,
+				null,
+				null,
+				Arrays.asList(Context.getFormService().getFormByUuid(HIV_FAMILY_HISTORY)),
+				null,
+				null,
+				null,
+				null,
+				false
+		);
+
+
+		if (familyHistoryEncounters.size() > 0) {
+			List<Obs> obs = obsService.getObservations(
+					Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
+					familyHistoryEncounters,
+					Arrays.asList(conceptService.getConceptByUuid(familyHistoryGroupingConcept)),
+					null,
+					null,
+					null,
+					Arrays.asList("obsId"),
+					null,
+					null,
+					null,
+					null,
+					false
+			);
+			for(Obs o: obs) {
+				//log.info("Obs Group: " + o.getGroupMembers());
+				otherConctacts.add(extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
+				log.info("Rows extracted: " + extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
+			}
+		}
+
 		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+
+			// Filter only direct relationships
+			if(!directRelationships.contains(relationship.getRelationshipType())) {
+				continue;
+			}
 			Person person = null;
 			String type = null;
 			Integer age = null;
@@ -122,6 +192,116 @@ public class FamilyAndPartnerTestingPageController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("relationships", relationships);
+		model.addAttribute("otherContacts", otherConctacts);
 		model.addAttribute("returnUrl", returnUrl);
+	}
+
+	SimpleObject extractFamilyAndPartnerTestingRows (Set<Obs> obsList) {
+
+		Integer contactConcept = 160750;
+		Integer	ageConcept = 160617;
+		Integer relationshipConcept = 1560;
+		Integer relStatusConcept = 163607;
+		Integer baselineHivStatusConcept =1169;
+		Integer nextTestingDateConcept = 164400;
+
+		Integer HIVTestResultConcept = 159427;
+		Integer InCareConcept = 159811;
+		Integer CCCNoConcept = 162053;
+
+		String relType = null;
+		Double age = null;
+		Double artNo = null;
+		String baselineStatus = null;
+		String relStatus = null;
+		String inCare = null;
+		String hivResult = null;
+		Date nextTestDate = null;
+		String contactName = null;
+
+
+		for(Obs obs:obsList) {
+
+			if (obs.getConcept().getConceptId().equals(contactConcept) ) {
+				contactName = obs.getValueText();
+			} else if (obs.getConcept().getConceptId().equals(ageConcept )) { // get age
+				age = obs.getValueNumeric();
+			} else if (obs.getConcept().getConceptId().equals(baselineHivStatusConcept) ) {
+				baselineStatus = hivStatusConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(relStatusConcept )) { // current HIV status
+				relStatus = hivStatusConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(HIVTestResultConcept )) { // HIV test result
+				hivResult = hivStatusConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(nextTestingDateConcept )) {
+				nextTestDate = obs.getValueDate();
+			} else if (obs.getConcept().getConceptId().equals(CCCNoConcept )) {
+				artNo = obs.getValueNumeric();
+			} else if (obs.getConcept().getConceptId().equals(InCareConcept) ) {
+				inCare = booleanAnswerConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(relationshipConcept) ) {
+				relType = relationshipConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(relStatusConcept) ) {
+				relStatus = statusConverter(obs.getValueCoded());
+		}
+		}
+
+		return SimpleObject.create(
+				"contact", contactName,
+				"relType", relType,
+				"relStatus", relStatus,
+				"age", age,
+				"art_no" , artNo,
+				"baselineStatus", baselineStatus,
+				"nextTestDate", nextTestDate,
+				"inCare", inCare,
+				"testResult", hivResult
+		);
+
+
+	}
+
+	String relationshipConverter (Concept key) {
+		Map<Concept, String> relationshipList = new HashMap<Concept, String>();
+		relationshipList.put(conceptService.getConcept(970), "Mother");
+		relationshipList.put(conceptService.getConcept(971), "Father");
+		relationshipList.put(conceptService.getConcept(972), "Sibling");
+		relationshipList.put(conceptService.getConcept(1528), "Child");
+		relationshipList.put(conceptService.getConcept(5617), "Spouse");
+		relationshipList.put(conceptService.getConcept(163565), "Partner");
+		relationshipList.put(conceptService.getConcept(162221), "Co-Wife");
+
+		return relationshipList.get(key);
+	}
+
+	String statusConverter (Concept key) {
+		Map<Concept, String> relationshipStatusList = new HashMap<Concept, String>();
+		relationshipStatusList.put(conceptService.getConcept(159450), "Current");
+		relationshipStatusList.put(conceptService.getConcept(160432), "Deceased");
+		relationshipStatusList.put(conceptService.getConcept(1067), "Unknown");
+		return relationshipStatusList.get(key);
+	}
+
+	String hivStatusConverter (Concept key) {
+		Map<Concept, String> baselineStatusList = new HashMap<Concept, String>();
+		baselineStatusList.put(conceptService.getConcept(703), "Positive");
+		baselineStatusList.put(conceptService.getConcept(664), "Negative");
+		baselineStatusList.put(conceptService.getConcept(1405), "Exposed");
+		baselineStatusList.put(conceptService.getConcept(1067), "Unknown");
+		return baselineStatusList.get(key);
+	}
+
+	String booleanAnswerConverter (Concept key) {
+		Map<Concept, String> booleanAnswerList = new HashMap<Concept, String>();
+		booleanAnswerList.put(conceptService.getConcept(1065), "Yes");
+		booleanAnswerList.put(conceptService.getConcept(1066), "No");
+		booleanAnswerList.put(conceptService.getConcept(1067), "Unknown");
+		return booleanAnswerList.get(key);
+	}
+
+	String ageUnitConverter (Concept key) {
+		Map<Concept, String> ageUnitAnsList = new HashMap<Concept, String>();
+		ageUnitAnsList.put(conceptService.getConcept(1734), "Years");
+		ageUnitAnsList.put(conceptService.getConcept(1074), "Months");
+		return ageUnitAnsList.get(key);
 	}
 }

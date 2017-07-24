@@ -28,7 +28,7 @@ div.clear     { clear: both; }
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Family/Partner Tree </div>
 		<div class="ke-panel-content">
-
+        <label>People in the facility</label>
 			<% if (relationships) { %>
             <div class="grid">
                 <div class="patient-name">&nbsp;</div>
@@ -61,6 +61,40 @@ div.clear     { clear: both; }
             No record was found
 			<% } %>
 		</div>
+
+        <div class="ke-panel-content">
+            <label>People not registered in the facility</label>
+            <% if (otherContacts) { %>
+            <div class="grid">
+                <div class="patient-name">&nbsp;</div>
+                <div class="patient-age col-header">Age</div>
+                <div class="test-date col-header">Baseline HIV Status</div>
+                <div class="test-result col-header">Test Date</div>
+                <div class="date-enrolled col-header">Test Result</div>
+                <div class="patient-no col-header">In Care</div>
+                <div class="alive col-header">ART Number</div>
+            </div>
+            <div class="clear"></div>
+            <% otherContacts.each { rel -> %>
+            <div class="ke-stack-item">
+                <div class="grid">
+                    <div class="patient-name">
+                        ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.relType), value: rel.contactName ]) }
+                    </div>
+                    <div class="patient-age">${rel.age}</div>
+                    <div class="test-date">${rel.baselineStatus}</div>
+                    <div class="test-result">${rel.nextTestDate}</div>
+                    <div class="date-enrolled">${rel.hivResult}</div>
+                    <div class="patient-no">${rel.inCare}</div>
+                    <div class="alive">${rel.art_no}</div>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <% } } else {%>
+            No record was found
+            <% } %>
+        </div>
 
 	</div>
 </div>
