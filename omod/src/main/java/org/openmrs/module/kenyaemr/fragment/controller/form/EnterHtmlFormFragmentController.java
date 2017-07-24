@@ -209,7 +209,7 @@ public class EnterHtmlFormFragmentController {
 			Date formEncounterDateTime = formEncounter.getEncounterDatetime();
 
 			if (formEncounterDateTime.before(visit.getStartDatetime())) {
-				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be after the visit start date" +visitDateTime));
+				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be after the visit start date"));
 			}
 			if (visit.getStopDatetime() != null && formEncounterDateTime.after(visit.getStopDatetime())) {
 				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be before the visit stop date"));
