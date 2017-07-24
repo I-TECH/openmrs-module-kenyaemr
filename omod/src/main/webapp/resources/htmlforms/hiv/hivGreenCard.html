@@ -213,7 +213,6 @@ Green Card follow-up visit form
 
         var screenedStiSelected = function() {
             var val = jq(this).val();
-            console.log("screened sti "+val);
             if (val == 703){
                 jq("#tbl-partner-notification").show();
 
@@ -724,7 +723,8 @@ Green Card follow-up visit form
          jq('input[type=radio].on-ipt').change(onIPT);
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
          //sti notification
-         getField('screened-sti.value').change(screenedStiSelected);
+         //getField('screened-sti.value').change(screenedStiSelected);
+         jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
          //tb action
          jq("#start-anti-tb-action").change(startAntiTbAction);
          jq("#clinical-diagnosis-action").change(clinicalDiagnosisAction);
