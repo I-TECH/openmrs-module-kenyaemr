@@ -38,10 +38,6 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-
-        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        Set<Integer> alive = Filters.alive(cohort, context);
-        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         EncounterService encounterService = Context.getEncounterService();
 
         CalculationResultMap ret = new CalculationResultMap();
