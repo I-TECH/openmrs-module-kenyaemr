@@ -5,14 +5,22 @@
 div.grid      { display:block; }
 div.grid div  { float: left; height: 30px; }
 div.patient-name    { width: 300px; }
-div.patient-age    { width: 70px; }
+div.patient-age    { width: 100px; }
 div.test-date    { width: 120px; }
 div.test-result      { width: 120px; }
 div.date-enrolled       { width: 120px; }
 div.patient-no       { width: 200px; }
-div.alive       { width: 50px; }
+div.alive       { width: 100px; }
 div.clear     { clear: both; }
 .col-header {font-weight: bold; font-size: 14px;}
+div.section-title {
+    color: black;
+    font-weight: bold;
+    display: block;
+    width: 550px;
+    float: left;
+    font-size: 16px;
+}
 </style>
 <script type="text/javascript">
 
@@ -28,7 +36,25 @@ div.clear     { clear: both; }
 	<div class="ke-panel-frame">
 		<div class="ke-panel-heading">Family/Partner Tree </div>
 		<div class="ke-panel-content">
-        <label>People in the facility</label>
+            <div class="section-title">Testing Statistics</div><div class="clear"></div>
+            <div class="grid">
+                <div class="patient-name">&nbsp;</div>
+                <div class="patient-age col-header">Total Contacts</div>
+                <div class="test-date col-header">Known Status</div>
+                <div class="test-result col-header">Positive Contacts</div>
+                <div class="date-enrolled col-header">Linked Patients</div>
+            </div>
+            <div class="clear"></div>
+            <div class="grid">
+                <div class="patient-name">&nbsp;</div>
+                <div class="patient-age col-header">${stats.totalContacts}</div>
+                <div class="test-date col-header">${stats.knownPositives}</div>
+                <div class="test-result col-header">${stats.positiveContacts}</div>
+                <div class="date-enrolled col-header">${stats.linkedPatients}</div>
+            </div>
+            <div class="clear"></div>
+
+        <div class="section-title">Contacts registered in the facility</div><div class="clear"></div>
 			<% if (relationships) { %>
             <div class="grid">
                 <div class="patient-name">&nbsp;</div>
@@ -63,23 +89,23 @@ div.clear     { clear: both; }
 		</div>
 
         <div class="ke-panel-content">
-            <label>People not registered in the facility</label>
+            <div class="section-title">Contacts not registered in the facility</div><div class="clear"></div>
             <% if (otherContacts) { %>
             <div class="grid">
                 <div class="patient-name">&nbsp;</div>
                 <div class="patient-age col-header">Age</div>
-                <div class="test-date col-header">Baseline HIV Status</div>
+                <div class="test-date col-header">Baseline Status</div>
                 <div class="test-result col-header">Test Date</div>
                 <div class="date-enrolled col-header">Test Result</div>
                 <div class="patient-no col-header">In Care</div>
-                <div class="alive col-header">ART Number</div>
+                <div class="alive col-header">ART No</div>
             </div>
             <div class="clear"></div>
             <% otherContacts.each { rel -> %>
             <div class="ke-stack-item">
                 <div class="grid">
                     <div class="patient-name">
-                        ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.relType), value: rel.contactName ]) }
+                        ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.relType), value: rel.contact ]) }
                     </div>
                     <div class="patient-age">${rel.age}</div>
                     <div class="test-date">${rel.baselineStatus}</div>

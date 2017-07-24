@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -121,9 +123,7 @@ public class FamilyAndPartnerTestingPageController {
 					false
 			);
 			for(Obs o: obs) {
-				//log.info("Obs Group: " + o.getGroupMembers());
 				otherConctacts.add(extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
-				log.info("Rows extracted: " + extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
 			}
 		}
 
@@ -193,6 +193,7 @@ public class FamilyAndPartnerTestingPageController {
 		model.addAttribute("patient", patient);
 		model.addAttribute("relationships", relationships);
 		model.addAttribute("otherContacts", otherConctacts);
+		model.addAttribute("stats", getTestingStatistics());
 		model.addAttribute("returnUrl", returnUrl);
 	}
 
@@ -204,13 +205,13 @@ public class FamilyAndPartnerTestingPageController {
 		Integer relStatusConcept = 163607;
 		Integer baselineHivStatusConcept =1169;
 		Integer nextTestingDateConcept = 164400;
-
+		Integer ageUnitConcept = 1732;
 		Integer HIVTestResultConcept = 159427;
 		Integer InCareConcept = 159811;
 		Integer CCCNoConcept = 162053;
 
 		String relType = null;
-		Double age = null;
+		Integer age = 0;
 		Double artNo = null;
 		String baselineStatus = null;
 		String relStatus = null;
@@ -218,6 +219,7 @@ public class FamilyAndPartnerTestingPageController {
 		String hivResult = null;
 		Date nextTestDate = null;
 		String contactName = null;
+		String ageUnit = null;
 
 
 		for(Obs obs:obsList) {
@@ -225,7 +227,7 @@ public class FamilyAndPartnerTestingPageController {
 			if (obs.getConcept().getConceptId().equals(contactConcept) ) {
 				contactName = obs.getValueText();
 			} else if (obs.getConcept().getConceptId().equals(ageConcept )) { // get age
-				age = obs.getValueNumeric();
+				age = obs.getValueNumeric().intValue();
 			} else if (obs.getConcept().getConceptId().equals(baselineHivStatusConcept) ) {
 				baselineStatus = hivStatusConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(relStatusConcept )) { // current HIV status
@@ -242,15 +244,17 @@ public class FamilyAndPartnerTestingPageController {
 				relType = relationshipConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(relStatusConcept) ) {
 				relStatus = statusConverter(obs.getValueCoded());
-		}
+			} else if (obs.getConcept().getConceptId().equals(ageUnitConcept) ) {
+				ageUnit = ageUnitConverter(obs.getValueCoded());
+			}
 		}
 
 		return SimpleObject.create(
-				"contact", contactName,
+				"contact", contactName.toUpperCase(),
 				"relType", relType,
 				"relStatus", relStatus,
-				"age", age,
-				"art_no" , artNo,
+				"age", new StringBuilder().append(age).append(" ").append(ageUnit),
+				"art_no" , artNo.intValue(),
 				"baselineStatus", baselineStatus,
 				"nextTestDate", nextTestDate,
 				"inCare", inCare,
@@ -274,11 +278,11 @@ public class FamilyAndPartnerTestingPageController {
 	}
 
 	String statusConverter (Concept key) {
-		Map<Concept, String> relationshipStatusList = new HashMap<Concept, String>();
-		relationshipStatusList.put(conceptService.getConcept(159450), "Current");
-		relationshipStatusList.put(conceptService.getConcept(160432), "Deceased");
-		relationshipStatusList.put(conceptService.getConcept(1067), "Unknown");
-		return relationshipStatusList.get(key);
+		Map<Concept, String> statusStatusList = new HashMap<Concept, String>();
+		statusStatusList.put(conceptService.getConcept(159450), "Current");
+		statusStatusList.put(conceptService.getConcept(160432), "Deceased");
+		statusStatusList.put(conceptService.getConcept(1067), "Unknown");
+		return statusStatusList.get(key);
 	}
 
 	String hivStatusConverter (Concept key) {
@@ -303,5 +307,19 @@ public class FamilyAndPartnerTestingPageController {
 		ageUnitAnsList.put(conceptService.getConcept(1734), "Years");
 		ageUnitAnsList.put(conceptService.getConcept(1074), "Months");
 		return ageUnitAnsList.get(key);
+	}
+
+	SimpleObject getTestingStatistics () {
+		int totalContacts = 0;
+		int knownStatus = 0; // tested or known positives
+		int positiveContacts = 0; // known positives + newly testing positive
+		int linkedPatients = 0; // those with ART number
+
+		return SimpleObject.create(
+				"totalContacts", totalContacts,
+				"knownPositives", knownStatus,
+				"positiveContacts", positiveContacts,
+				"linkedPatients", linkedPatients
+		);
 	}
 }
