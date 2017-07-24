@@ -339,6 +339,35 @@
 				</tr>
 			</table>
 			<div id="transfer-details">
+				<ifMode mode="ENTER">
+					<script type="text/javascript">
+                        jq(function(){
+                            //var date_confirmed_positive = <lookup expression="#set( $last_enrollment_enc = $fn.latestEncounter('de78a6be-bfc5-4634-adc3-5f1a280455cc') ) #set ($lastObs = $fn.getObs($last_enrollment_enc, 160554).valueDateTime)" />;
+
+                            var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+                            var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
+                            var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
+
+                            if (date_confirmed_positive != null) {
+								setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+								getField('confirmed-positive-date.value').prop("readonly", true);
+							}
+
+                            if (date_enrolled_in_care != null) {
+                                setValue('confirmed-positive-date.value', moment(moment(date_enrolled_in_care, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                                getField('confirmed-positive-date.value').prop("readonly", true);
+                            }
+
+                            if (art_start_date != null) {
+                                setValue('confirmed-positive-date.value', moment(moment(art_start_date, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                                getField('confirmed-positive-date.value').prop("readonly", true);
+                            }
+                            //var art_start_date_from_orders = "<lookup expression="fn.earliestObs(1085).getObsDatetime()"/>"; should get from orders
+
+                        });
+
+					</script>
+				</ifMode>
 				<table>
 					<tr>
 						<td>Transfer in date:</td>

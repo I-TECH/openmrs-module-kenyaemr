@@ -198,6 +198,7 @@
 		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
 		<property name="order" value="201090" />
 	</bean>
+
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.hiv.report.qi.adult.c.tx" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">

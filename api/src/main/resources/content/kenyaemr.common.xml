@@ -20,6 +20,7 @@
 				<ref bean="kenyaemr.common.form.labResults" />
 				<ref bean="kenyaemr.common.form.otherMedications" />
 				<ref bean="kenyaemr.common.form.progressNote" />
+				<ref bean="kenyaemr.common.form.familyTestingFollowup" />
 			</set>
 		</property>
 	</bean>
@@ -231,7 +232,21 @@
 		<property name="htmlform" value="kenyaemr:medicalAndSurgicalHistory.html" />
 		<property name="order" value="100030" />
 	</bean>-->
-
+	<!-- Family and Partner testing form for negative patients-->
+	<bean id="kenyaemr.common.form.familyTestingFollowup" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="62846fae-8d0b-4202-827e-8b6ffd30e587" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:familyTesting/familyTestingFollowup.html" />
+		<property name="order" value="201090" />
+	</bean>
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.missedAppointment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
