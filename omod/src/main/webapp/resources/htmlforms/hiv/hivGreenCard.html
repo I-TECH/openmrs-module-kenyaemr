@@ -191,6 +191,16 @@ Green Card follow-up visit form
                 jq("#tbl-known-allergies").show();
             }
         }
+
+        var systemsReviewSelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq("#tbl-systems-review").hide();
+
+            }else {
+                jq("#tbl-systems-review").show();
+            }
+        }
         var chronicIllnessesSelected = function() {
             var val = jq(this).val();
             if (val == 1066){
@@ -198,6 +208,17 @@ Green Card follow-up visit form
 
             }else {
                 jq("#tbl-chronic-illness").show();
+            }
+        }
+
+        var screenedStiSelected = function() {
+            var val = jq(this).val();
+            console.log("screened sti "+val);
+            if (val == 703){
+                jq("#tbl-partner-notification").show();
+
+            }else {
+                jq("#tbl-partner-notification").hide();
             }
         }
         var onAntiTbDrugs = function(){
@@ -265,6 +286,7 @@ Green Card follow-up visit form
                 iptClientWorkupTab.hide();
                 actionTakenTab.hide();
                 jq("#ipt-uptake").show();
+                iptInitiationTab.hide();
 
 
                 //clear radios
@@ -290,6 +312,7 @@ Green Card follow-up visit form
             var tbScreeningTab = jq("#tb-screening-tab");
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var actionTakenTab = jq('#action-taken');
+            var iptInitiationTab = jq('#ipt-initiation');
             if(val == 1066) {
                 // show TB screening, TB results and IPT workup forms
                 tbScreeningTab.show();
@@ -306,6 +329,8 @@ Green Card follow-up visit form
                 tbScreeningTab.show();
                 tbScreeningResultTab.show();
                 actionTakenTab.hide();
+                iptInitiationTab.hide();
+
                 //clear radios for hidden sections
                 clearRadios(iptClientWorkupTab);
                 clearRadios(tbScreeningTab);
@@ -647,9 +672,11 @@ Green Card follow-up visit form
          everOnIPTSelected = null;
          patientCurrentlyOnIPT = null;
          //Defaults on ready
+         jq("#tbl-partner-notification").hide();
          jq("#tbl-adverse-reactions").hide();
          jq('input[type=radio].adverse-reactions').prop("checked", false);
          jq("#tbl-complaints-today").hide();
+         jq("#tbl-systems-review").hide();
          jq('input[type=radio].complaints-today').prop("checked", false);
          jq("#tbl-known-allergies").hide();
          jq('input[type=radio].known-allergies').prop("checked", false);
@@ -690,11 +717,14 @@ Green Card follow-up visit form
          iptInitiationTab.hide();
          ageGroup();
          displayRecentBmi();
+
          //Event Handlers
          jq("#lmp-date :input[type=text]").change(onLmpChange);
          jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
          jq('input[type=radio].on-ipt').change(onIPT);
          jq("input[type=radio].ever-on-ipt").change(everOnIPT);
+         //sti notification
+         getField('screened-sti.value').change(screenedStiSelected);
          //tb action
          jq("#start-anti-tb-action").change(startAntiTbAction);
          jq("#clinical-diagnosis-action").change(clinicalDiagnosisAction);
@@ -709,6 +739,7 @@ Green Card follow-up visit form
         // getField('complaint-date.value').change(complaintDateInput);
          jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
          jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
+         jq('input[type=radio].systems-review').change(systemsReviewSelected);
          jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
          jq('input[type=radio].population-type').change(populationTypeSelected);
 
@@ -1526,7 +1557,9 @@ Green Card follow-up visit form
                         <tr id="tbrxfield">
                             <td width="50%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
 
-                            <td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
+                            <td><obs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"
+                                     answerConceptSetIds="160021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
+                                /></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -1732,70 +1765,7 @@ Green Card follow-up visit form
                     <td width="20%"> <div><a class="show-nav-links"></a></div></td>
                 </tr>
             </table>
-            <fieldset>
-                <legend>Adverse Drug Reactions</legend>
-                <div>
-                    Patient has adverse drug reaction(s)? <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1065"/> Yes
-                    <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1066"/> No
-                </div>
-                <table id="tbl-adverse-reactions">
-                    <tr>
-                        <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
-                            <table>
-                                <tr>
-                                    <th>Medicine Causing Reaction</th>
-                                    <th>Reaction</th>
-                                    <th>Severity</th>
-                                    <th>Date of Onset</th>
-                                    <th>Action taken</th>
-                                </tr>
-                                <repeat>
-                                    <template>
-                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                            <tr>
-                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                            75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
-                                                         style="dropdown"
 
-
-                                                />
-
-                                                </td>
-                                                <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                            111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
-                                                         style="dropdown"
-                                                /></td>
-                                                <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-                                                <td>
-                                                    <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
-                                                         style="dropdown"
-
-
-                                                    />
-
-                                                </td>
-                                            </tr>
-                                        </obsgroup>
-                                    </template>
-                                    <render n="1" concept=" " />
-                                    <render n="2" concept=" " />
-                                    <render n="3" concept=" " />
-                                    <render n="4" concept=" " />
-                                    <render n="5" concept=" " />
-                                </repeat>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </fieldset>
             <!-- Known allergies   -->
             <fieldset>
                 <legend>Known Allergies</legend>
@@ -1927,7 +1897,70 @@ Green Card follow-up visit form
                     </repeat>
                 </table>
             </fieldset>
+            <fieldset>
+                <legend>Adverse Drug Reactions</legend>
+                <div>
+                    Patient has adverse drug reaction(s)? <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1065"/> Yes
+                    <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1066"/> No
+                </div>
+                <table id="tbl-adverse-reactions">
+                    <tr>
+                        <td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
+                            <table>
+                                <tr>
+                                    <th>Medicine Causing Reaction</th>
+                                    <th>Reaction</th>
+                                    <th>Severity</th>
+                                    <th>Date of Onset</th>
+                                    <th>Action taken</th>
+                                </tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
+                                                         style="dropdown"
 
+
+                                                />
+
+                                                </td>
+                                                <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
+                                                         style="dropdown"
+                                                /></td>
+                                                <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td>
+                                                    <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                         style="dropdown"
+
+
+                                                    />
+
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                    </template>
+                                    <render n="1" concept=" " />
+                                    <render n="2" concept=" " />
+                                    <render n="3" concept=" " />
+                                    <render n="4" concept=" " />
+                                    <render n="5" concept=" " />
+                                </repeat>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
 
             <fieldset>
                 <legend>Vaccination(s) today</legend>
@@ -2083,26 +2116,25 @@ Green Card follow-up visit form
 
                             <tr>
                                 <td>Screened CaCx</td>
-                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" /></td>
                             </tr>
-                            <tr>
+                            <tr >
+                                <td>Screened STI</td>
+                                <td class="patient-details"><obs id="screened-sti" conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" /></td>
+                            </tr>
+                        </table>
+                     <table id="tbl-partner-notification">
+                            <tr >
                                 <td>STI Patrner Notification</td>
                                 <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-                            </tr>
-                            <tr>
-                                <td>Condoms</td>
-                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
-                            </tr>
-                            <tr>
-                                <td>Screened STI</td>
-                                <td class="patient-details"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
                             </tr>
                         </table>
                     </fieldset>
                 </includeIf>
                 <!--Family Planning-->
                 <fieldset id="fp-details" >
-                    <legend>Family Planning Status</legend>
+                    <legend>Family Planning Sta
+                        tus</legend>
                     <table id="fpOptionValues">
                         <tr>
                             <td colspan="2">
@@ -2305,7 +2337,7 @@ Green Card follow-up visit form
                         <div style="float: left;padding-right: 40px">
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dehydration" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" /><br />
-                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" /><br />
+                                <!--<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" /><br />-->
                             </div>
                     </td>
 
@@ -2316,8 +2348,12 @@ Green Card follow-up visit form
             <!--System Examination-->
             <fieldset>
                 <legend>System Examination</legend>
-
-                <table style="width: 70%;" border="0">
+                <div>
+                    Any abnormal finding(s) on system review?  &#160;&#160;&#160;&#160; <input type="radio" name="systems-review" class="systems-review" value="1065"/> Yes
+                    <input type="radio" name="systems-review" class="systems-review" value="1066"/> No
+                </div>
+                <br />
+                <table style="width: 70%;" border="0" id="tbl-systems-review">
                     <tr>
                         <th align="left">No. </th>
                         <th align="left">System Review</th>
@@ -2334,7 +2370,7 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="160981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="160981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                               />
                         </td>
                     </tr>
@@ -2348,7 +2384,7 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2362,7 +2398,7 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2376,7 +2412,7 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2390,7 +2426,7 @@ Green Card follow-up visit form
                             style="dropdowm"
                     /></td>
 
-                    <td><obs conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    <td><obs conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                     />
                     </td>
                 </tr>
@@ -2404,7 +2440,7 @@ Green Card follow-up visit form
                                 style="dropdowm "
                         /></td>
 
-                        <td><obs conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2418,13 +2454,13 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
                     <tr>
                         <td>8.</td>
-                        <td>Genitourinary System </td>
+                        <td>Genitourinary </td>
                         <td><obs
                                 conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,154311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -2432,7 +2468,7 @@ Green Card follow-up visit form
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <td><obs conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>

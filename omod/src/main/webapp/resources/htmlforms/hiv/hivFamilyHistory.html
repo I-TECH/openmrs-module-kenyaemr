@@ -60,7 +60,7 @@
                 var table = document.getElementById("table");
                 for (var i = 0, row; row = table.rows[i]; i++) {
                     var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
-                   console.log("hivStatus" + baselineHivStatus);
+                   //console.log("hivStatus" + baselineHivStatus);
                     if (baselineHivStatus == 664) {     //negative
                         $(row).find('.in-care select').attr('disabled', true);
                         $(row).find('.ccc-no input').attr('disabled', true);
@@ -84,28 +84,11 @@
 
     <!-- Encounter date, provider and location are not relevant for CE forms -->
     <div style="display:none">
-        <encounterDate id="encounter-date"/>
+        <encounterDate id="encounter-date" showTime="true" />
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
         <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
     </div>
-    <div class="ke-form-header">
-        <table style="width: 100%">
-            <tr>
-                <td>
-                    <ifMode mode="ENTER">
-                        <script type="text/javascript">
-                            jq(function(){
-                                setValue("encounter-date.value", "");
-                            });
-                        </script>
-                    </ifMode>
-                    Encounter Datetime: <encounterDate id="encounter-date" showTime="true" />
-                </td>
-                <td>Enrolled by: <encounterProvider default="currentUser" /></td>
-                <td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
-            </tr>
-        </table>
-    </div>
+
     <div class="ke-form-content">
         <table id="table" width="100%">
             <thead>
@@ -170,7 +153,7 @@
                                      style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
                             </td>
                             <td>
-                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
                             </td>
                             <td>
                                 <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>

@@ -207,10 +207,9 @@ public class EnterHtmlFormFragmentController {
 			// If encounter is for a specific visit then check encounter date is valid for that visit. The visit handler
 			// will ensure that the encounter is actually saved into that visit
 			Date formEncounterDateTime = formEncounter.getEncounterDatetime();
-			//Date visitDateTime = visit.getStartDatetime();
+
 			if (formEncounterDateTime.before(visit.getStartDatetime())) {
-				//validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime " +formEncounterDateTime+ " should be after the visit start date " +visitDateTime));
-				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be after the visit start date"));
+				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be after the visit start date" +visitDateTime));
 			}
 			if (visit.getStopDatetime() != null && formEncounterDateTime.after(visit.getStopDatetime())) {
 				validationErrors.add(new FormSubmissionError("general-form-error", "Encounter datetime should be before the visit stop date"));
