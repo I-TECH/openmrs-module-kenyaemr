@@ -21,14 +21,14 @@
             $(".hiv-result select").change(function () {
                 var row = $(this).parent().parent().parent();
                 var baseline = $(".baseline-hiv-status :selected").text();
-                //console.log("Baseline " + baseline);
+               // console.log("Baseline " + baseline);
                 if (this.value == 664 &amp;&amp; baseline !='Positive') {    //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
                     $(row).find('.referring-facility input').attr('disabled',true);
                 } else {                     //positive
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+//                    $(row).find('.in-care select').val('');
+//                    $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
@@ -47,12 +47,12 @@
                     $(row).find('.referring-facility input').attr('disabled', true);
                 }
                 if(this.value == 703) {                     //positive
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+//                    $(row).find('.in-care select').val('');
+//                    $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
-                    $(row).find('.next-hivtest-date').prop('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-result select').attr('disabled', true);
                 }
             });
@@ -60,21 +60,22 @@
                 var table = document.getElementById("table");
                 for (var i = 0, row; row = table.rows[i]; i++) {
                     var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
-                   console.log("hivStatus" + baselineHivStatus);
+                   //console.log("hivStatus" + baselineHivStatus);
                     if (baselineHivStatus == 664) {     //negative
                         $(row).find('.in-care select').attr('disabled', true);
                         $(row).find('.ccc-no input').attr('disabled', true);
                         $(row).find('.referring-facility').attr('disabled', true);
                         $(row).find('.next-hivtest-date').attr('disabled', false);
                         $(row).find('.hiv-status').attr('disabled', false);
-                    }else if (baselineHivStatus == 703)  {                     //positive
-                       $(row).find('.in-care select').val('');
-                       $(row).find('.ccc-no input').val('');
+                    }
+                   if (baselineHivStatus == 703)  {                     //positive
+//                       $(row).find('.in-care select').val('');
+//                       $(row).find('.ccc-no input').val('');
                         $(row).find('.in-care select').attr('disabled', false);
                         $(row).find('.ccc-no input').attr('disabled', false);
                         $(row).find('.referring-facility').attr('disabled', false);
-                        $(row).find('.next-hivtest-date').attr('disabled', true);
-                        $(row).find('.hiv-result').attr('disabled', true);
+                        $(row).find('.next-hivtest-date input').attr('disabled', true);
+                        $(row).find('.hiv-result select').attr('disabled', true);
                     }
                 }
             }
@@ -83,7 +84,7 @@
 
     <!-- Encounter date, provider and location are not relevant for CE forms -->
     <div style="display:none">
-        <encounterDate id="encounter-date"/>
+        <encounterDate id="encounter-date" showTime="true" />
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
         <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
     </div>
@@ -95,8 +96,8 @@
                 <th align="left">Name of Members</th>
                 <th align="left">Age</th>
                 <th align="left">Relation</th>
-                <th align="left">Status</th>
-                <th align="left">Date</th>
+                <th align="left">Relationship Status</th>
+                <!--<th align="left">Date</th>-->
                 <th align="left">Baseline HIV Status</th>
                 <th align="left">New Test Date</th>
                 <th align="left">HIV Result</th>
@@ -130,9 +131,9 @@
                                      answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Current,Deceased,Unknown"/>
                             </td>
-                            <td>
-                                <obs class="family-member-baseline-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
-                            </td>
+                            <!--<td>-->
+                                <!--<obs class="family-member-baseline-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />-->
+                            <!--</td>-->
                             <td>
                                 <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -152,11 +153,10 @@
                                      style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
                             </td>
                             <td>
-                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
                             </td>
                             <td>
-                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
 
                         </td>
                         </tr>
