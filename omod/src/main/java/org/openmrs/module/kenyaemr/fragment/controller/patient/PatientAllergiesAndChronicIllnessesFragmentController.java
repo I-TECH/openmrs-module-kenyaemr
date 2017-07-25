@@ -88,7 +88,7 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 		List<Obs> chronicIllnesses = obsService.getObservationsByPersonAndConcept(patient, new Concept(1284));
 		int illnessCounter = 0;
 		for(Obs o: chronicIllnesses) {
-			if(o.getValueCoded() != null) {
+			if(o.getValueCoded() != null && o.getValueCoded() == noConcept) {
 				illnessCounter++;
 				String illness = illnessCounter + "." + o.getValueCoded().getName().getName();
 				illnessList.add(SimpleObject.create(
