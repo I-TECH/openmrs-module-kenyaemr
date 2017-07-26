@@ -14,8 +14,6 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -157,7 +155,10 @@ public class FamilyAndPartnerTestingPageController {
 			age = person.getAge();
 			PatientIdentifierType pit = patientService.getPatientIdentifierTypeByUuid(Metadata.IdentifierType.UNIQUE_PATIENT_NUMBER);
 			List<PatientIdentifier> identifierList = patientService.getPatientIdentifiers(null, Arrays.asList(pit), null, Arrays.asList(patientService.getPatient(person.getId())),null);
-			UPN = identifierList.get(0);
+			if (identifierList.size() > 0) {
+				UPN = identifierList.get(0);
+			}
+
 			alive = person.isDead();
 
 
@@ -190,10 +191,11 @@ public class FamilyAndPartnerTestingPageController {
 			));
 		}
 
+		int totalContacts = relationships.size() + otherConctacts.size();
 		model.addAttribute("patient", patient);
 		model.addAttribute("relationships", relationships);
 		model.addAttribute("otherContacts", otherConctacts);
-		model.addAttribute("stats", getTestingStatistics());
+		model.addAttribute("stats", getTestingStatistics(relationships, otherConctacts));
 		model.addAttribute("returnUrl", returnUrl);
 	}
 
@@ -234,6 +236,7 @@ public class FamilyAndPartnerTestingPageController {
 				relStatus = hivStatusConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(HIVTestResultConcept )) { // HIV test result
 				hivResult = hivStatusConverter(obs.getValueCoded());
+				log.info("test result" + obs.getValueCoded().getConceptId());
 			} else if (obs.getConcept().getConceptId().equals(nextTestingDateConcept )) {
 				nextTestDate = obs.getValueDate();
 			} else if (obs.getConcept().getConceptId().equals(CCCNoConcept )) {
@@ -286,12 +289,12 @@ public class FamilyAndPartnerTestingPageController {
 	}
 
 	String hivStatusConverter (Concept key) {
-		Map<Concept, String> baselineStatusList = new HashMap<Concept, String>();
-		baselineStatusList.put(conceptService.getConcept(703), "Positive");
-		baselineStatusList.put(conceptService.getConcept(664), "Negative");
-		baselineStatusList.put(conceptService.getConcept(1405), "Exposed");
-		baselineStatusList.put(conceptService.getConcept(1067), "Unknown");
-		return baselineStatusList.get(key);
+		Map<Concept, String> hivStatusList = new HashMap<Concept, String>();
+		hivStatusList.put(conceptService.getConcept(703), "Positive");
+		hivStatusList.put(conceptService.getConcept(664), "Negative");
+		hivStatusList.put(conceptService.getConcept(1405), "Exposed");
+		hivStatusList.put(conceptService.getConcept(1067), "Unknown");
+		return hivStatusList.get(key);
 	}
 
 	String booleanAnswerConverter (Concept key) {
@@ -309,17 +312,32 @@ public class FamilyAndPartnerTestingPageController {
 		return ageUnitAnsList.get(key);
 	}
 
-	SimpleObject getTestingStatistics () {
+	SimpleObject getTestingStatistics (List<SimpleObject> localPatients, List<SimpleObject> externalPatients ) {
 		int totalContacts = 0;
 		int knownStatus = 0; // tested or known positives
 		int positiveContacts = 0; // known positives + newly testing positive
 		int linkedPatients = 0; // those with ART number
 
+		totalContacts = localPatients.size() + externalPatients.size();
+		int localLinked = 0;
+		for(SimpleObject row: localPatients) {
+			if (row.get("art_no") != null) {
+				localLinked++;
+			}
+		}
+
+		int externaLinked = 0;
+		for(SimpleObject row: externalPatients) {
+			if (row.get("art_no") != null) {
+				externaLinked++;
+			}
+		}
+
 		return SimpleObject.create(
 				"totalContacts", totalContacts,
 				"knownPositives", knownStatus,
 				"positiveContacts", positiveContacts,
-				"linkedPatients", linkedPatients
+				"linkedPatients", localLinked + externaLinked
 		);
 	}
 }
