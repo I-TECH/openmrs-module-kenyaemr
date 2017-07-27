@@ -13,15 +13,26 @@
 -->
 <htmlform>
 	<script type="text/javascript">
-		function viralLoadValidation(){
-			if(getValue('ldl.value') == 1302){
-				jq('#vLoadResults :input').prop( "disabled", true );
-			}
-			else {
-				jq('#vLoadResults :input').prop( "disabled", false );
-			}
-		}
+		function viralLoadValidation() {
+            var vl = parseInt(getValue('vl.value'));
+            //console.log("vl "+vl);
+            if (vl > 0 ) {
+                jq('#vLoadResults :input').prop("disabled", false);
+                jq('#ldlResults :input').prop("disabled", true);
 
+            }else {
+              //  jq('#vLoadResults :input').prop("disabled", true);
+                jq('#ldlResults :input').prop("disabled", false);
+
+           }
+            if (getValue('ldl.value') == 1302) {
+                jq('#vLoadResults :input').prop("disabled", true);
+                jq('#ldlResults :input').prop("disabled", false);
+            }else {
+                jq('#vLoadResults :input').prop("disabled", false);
+                jq('#ldlResults :input').prop("disabled", true);
+         	}
+        }
 		function getLatedtVlOrder(){
 			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>");
 			var testOrderVlConcept=<lookup expression="fn.latestObs(1271).valueCoded"/>
@@ -36,6 +47,7 @@
 
 		jq(function() {
 			getField('ldl.value').change(viralLoadValidation);
+            getField('vl.value').keyup(viralLoadValidation);
 			viralLoadValidation;
 			getLatedtVlOrder();
             jq('#vLoadResults :input').prop( "disabled", false );
@@ -107,7 +119,7 @@
 					<span id="lastVl"></span>
 				</td>
 				<td id="vLoadResults">
-					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="vl" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
 				</td>
 
 			</tr>
@@ -116,7 +128,7 @@
 				<td>HIV Viral Load(LDL)</td>
 				<td> - </td>
 				<td> - </td>
-				<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td id="ldlResults"><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
 
 			</tr>
 			<tr>
