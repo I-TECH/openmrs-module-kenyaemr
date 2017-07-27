@@ -29,11 +29,23 @@
             }
             jQuery('#calculated-bmi').html(display);
         }
+        function displayRecentBmi() {
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+            var bmi = '';
+            var recent_bmi ='';
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                bmi = weightKg / (heightM * heightM);
+                recent_bmi = bmi.toFixed(2);
+                jq('#recent-calculated-bmi').html(recent_bmi);
+            }
+        }
 
         jQuery(function () {
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
+            displayRecentBmi();
 
             //limit letters only in text field
             jQuery('#rsn').keypress(function(event) {
@@ -160,7 +172,7 @@
                 <tr>
                     <td>BMI</td>
                     <td><span id="calculated-bmi" class="value"></span></td>
-                    <td>-</td>
+                    <td><span id="recent-calculated-bmi"></span></td>
                 </tr>
                 <tr>
                     <td>MUAC</td>

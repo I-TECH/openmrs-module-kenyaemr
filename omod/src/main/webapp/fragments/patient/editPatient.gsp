@@ -4,7 +4,7 @@
 
     def nameFields = [
             [
-                    [object: command, property: "personName.familyName", label: "Surname "],
+                    [object: command, property: "personName.familyName", label: "Surname *"],
                     [object: command, property: "personName.givenName", label: "First name *"],
                     [object: command, property: "personName.middleName", label: "Other name(s)"]
             ],
