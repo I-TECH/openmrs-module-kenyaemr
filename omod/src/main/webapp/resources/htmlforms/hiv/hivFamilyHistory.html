@@ -14,6 +14,32 @@
 <htmlform>
 
     <script>
+
+        function disableFields() {
+            var table = document.getElementById("table");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
+
+                if (baselineHivStatus == 664) {     //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-status').attr('disabled', false);
+                }
+                if (baselineHivStatus == 703)  {                     //positive
+//                       $(row).find('.in-care select').val('');
+//                       $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                }
+            }
+        }
+
+
         $(document).ready(function () {
 
             disableFields();
@@ -26,15 +52,22 @@
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
                     $(row).find('.referring-facility input').attr('disabled',true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+
                 } else {                     //positive
-//                    $(row).find('.in-care select').val('');
-//                    $(row).find('.ccc-no input').val('');
+
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
                     $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-status select').attr('disabled', true);
-
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
                 }
             });
 
@@ -45,40 +78,26 @@
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
                     $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+
                 }
                 if(this.value == 703) {                     //positive
-//                    $(row).find('.in-care select').val('');
-//                    $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
                     $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-result select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
+
                 }
             });
-            function disableFields() {
-                var table = document.getElementById("table");
-                for (var i = 0, row; row = table.rows[i]; i++) {
-                    var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
-                   //console.log("hivStatus" + baselineHivStatus);
-                    if (baselineHivStatus == 664) {     //negative
-                        $(row).find('.in-care select').attr('disabled', true);
-                        $(row).find('.ccc-no input').attr('disabled', true);
-                        $(row).find('.referring-facility').attr('disabled', true);
-                        $(row).find('.next-hivtest-date').attr('disabled', false);
-                        $(row).find('.hiv-status').attr('disabled', false);
-                    }
-                   if (baselineHivStatus == 703)  {                     //positive
-//                       $(row).find('.in-care select').val('');
-//                       $(row).find('.ccc-no input').val('');
-                        $(row).find('.in-care select').attr('disabled', false);
-                        $(row).find('.ccc-no input').attr('disabled', false);
-                        $(row).find('.referring-facility').attr('disabled', false);
-                        $(row).find('.next-hivtest-date input').attr('disabled', true);
-                        $(row).find('.hiv-result select').attr('disabled', true);
-                    }
-                }
-            }
+
         });
     </script>
 
@@ -144,7 +163,7 @@
                             <td>
                                 <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
+                                     style="dropdown" answerLabels="Positive,Negive,Exposed infant,Unknown"/>
                             </td>
                             <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
