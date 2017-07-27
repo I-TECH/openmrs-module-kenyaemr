@@ -788,10 +788,6 @@ Green Card follow-up visit form
                    //Using recent LMP
                     var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
                     var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-
-                    console.log("Recent LMP "+ recentLMP);
-                    console.log("Formatted Recent LMP "+ formattedRecentlmp);
-                    console.log("expectedDeliveryDateByRecentLMP "+ expectedDeliveryDateByRecentLMP);
                     //Calculation
                     if(recentEDD !=""){
                         getField('patient-edd.value').val(recentEDD);
@@ -818,10 +814,11 @@ Green Card follow-up visit form
                     jq('#onFp :input').prop('disabled', true);
                     jq('#notOnFp :input').prop('disabled', true);
                 }
-                if (strtext == "965") {
+                if (strtext == "965") {       //on family planning
                     jq('#notOnFp :input').prop('checked', false);
                     jq('#onFp :input').prop('disabled', false);
                     jq('#notOnFp :input').prop('disabled', true);
+
                 }
                 if (strtext == "160652") {
                     jq('#onFp :input').prop('checked', false);
@@ -869,7 +866,9 @@ Green Card follow-up visit form
                 var encounterDate = getValue('encounter-date.value');
                 var valonform = getValue('tbrxdate.value');
                 var valChangedToDateFormatOnForm=new Date(valonform).getTime();
-
+                var fpMethodsChecked = jq("#onFp input:checkbox:checked");
+                var notOnfpMethodsChecked = jq("#onFp input:checkbox:checked");
+                var onfpMethodChecked = getField("fplanning.value").val();
 
                 //Must have a Return Visit Date which should be greater than encounter date
                 if (tca_date =="") {
@@ -891,7 +890,26 @@ Green Card follow-up visit form
                     getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
                     return false;
                 }
+                //Validate fp options chooses atleast one option if on fp
+                if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
+                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                    jq('#fp-details').show();
+                    return false;
+                }
+                //Validate fp options chooses atleast one option if wants family planning
+                if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
+                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                    jq('#fp-details').show();
+                    return false;
+                }
+                //Validate not-on-fp options chooses atleast one option if not on fp
+                if(onfpMethodChecked ==160652 &amp;&amp; fpMethodsChecked.length == 0 ){
+                    getField('notOnfp-error.error').html('Please add atleast one reason.').show();
+                    jq('#fp-details').show();
+                    return false;
+                }
                 return true;
+
             });
 
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
@@ -912,14 +930,12 @@ Green Card follow-up visit form
                 var iptFollowup = jq('#ipt-followup');
                 var tbScreeningQuestionsTab = jq("#tb-screening-tab");
                 var everOnIPTRadio = everOnIPTSelected;
-
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
                 var showIPTFollowupTab = false;
 
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
-
                 //defaults
 
                 //Fetch responses for the screening questions
@@ -940,6 +956,7 @@ Green Card follow-up visit form
                   //Do nothing
 
                 } else {
+
                     if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
@@ -949,21 +966,24 @@ Green Card follow-up visit form
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
 
-                    }else if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
+                    }
+                   if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
-                    }else if (screeningNoResponses.length == screeningNoResponses.length / 2) { // check if all screening No responses are checked: total radios / 2
+                    }
+                   if (screeningNoResponses.length == screeningNoResponses.length / 2) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
-                    }else if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+                    }
+                   if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
@@ -974,31 +994,21 @@ Green Card follow-up visit form
 
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptFollowup);
-
-                    }else if(screeningYesResponses.length == 0) {
-
-                        actionTakenTab.hide();
-
                     }
-
-
+                    if(screeningYesResponses.length == 0) {
+                        actionTakenTab.hide();
+                    }
                     if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
-
                         actionTakenTab.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
                     }
                     if(screeningYesResponses.length &gt; 0) {
-
+                        actionTakenTab.show();
                         iptClientWorkupTab.hide();
-
                     }
-
                 }
-
             };
-
-
             var showHideIPTInitiationTab = function() {
 
                 var iptInitiationTab = jq('#ipt-initiation');
@@ -1025,28 +1035,22 @@ Green Card follow-up visit form
 
                     if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) { // check if all No responses are checked: total radios / 2
                         showIPTInitiationTab = true;
-
                     }
                 }
-
                 if (showIPTInitiationTab) {
                     iptInitiationTab.show();
                     jq('#ipt-result-status').show();
 
                 } else {
                     iptInitiationTab.hide();
-
                 }
-
             };
             clearRadios = function(parentObj) {
 
                 parentObj.find('input[type=radio]').each(function() {
 
                     this.checked = false;
-
                 });
-
             }
 
             clearHiddenSections = function(parentObj) {
@@ -2133,8 +2137,7 @@ Green Card follow-up visit form
                 </includeIf>
                 <!--Family Planning-->
                 <fieldset id="fp-details" >
-                    <legend>Family Planning Sta
-                        tus</legend>
+                    <legend>Family Planning Status</legend>
                     <table id="fpOptionValues">
                         <tr>
                             <td colspan="2">
@@ -2210,9 +2213,10 @@ Green Card follow-up visit form
                                                             <br />
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Undecided" style="checkbox"/>
+                                                             answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                             <br />
-                                                        </div></td>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </obsgroup>
                                         </table>
@@ -2233,7 +2237,7 @@ Green Card follow-up visit form
                                                         <br/>
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Undecided" style="checkbox"/>
+                                                             answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                         </td>
 
                                                 </tr>
@@ -2267,7 +2271,7 @@ Green Card follow-up visit form
                                                             <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                answerLabel="Other"
-                                                               style="checkbox"/>
+                                                               style="checkbox" id="notOnfp-error" />
 
                                                         </div> </td>
                                                 </tr>

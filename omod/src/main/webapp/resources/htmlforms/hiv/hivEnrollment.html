@@ -93,7 +93,15 @@
                 jq('#art-history :input').prop('disabled', true);
             }
         }
+        var onPregnancySelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq(".muac").hide();
 
+            }else {
+                jq(".muac").show();
+            }
+        }
         function onUpnGenerateClick() {
             kenyaui.openConfirmDialog({
                 heading: 'Generate UPN',
@@ -131,6 +139,7 @@
                     display = bmi.toFixed(2);
                 }
             }
+
             jQuery('#calculated-bmi').html(display);
         }
         clearHiddenSections = function(parentObj) {
@@ -162,11 +171,14 @@
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
+            jq('.muac').hide();
             jq('#transfer-in-status input').click(onTransferStatusChange);
             jq('#art-status input').click(onArtStatusChange);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
+            jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             //Transit validation
             jq('#transit-patient').hide();
+
 
             //Baseline
             getField('weight.value').change(onWeightOrHeightChange);
@@ -184,9 +196,14 @@
             });
             onTransferStatusChange();
             onArtStatusChange();
+            //Gender based validations  pregnancy and breastfeeding
             if (pgender == 'M' || pAge &lt; 10) {
                 jq("#pregnant input[type=radio]").prop("disabled" ,true);
                 jq("#breastfeeding input[type=radio]").prop("disabled" ,true);
+            }
+             //Gender based Validations bmi and muac
+            if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                jq('.muac').show();
             }
 
             beforeSubmit.push(function() {
@@ -564,7 +581,7 @@
 				<tr>
 					<td>HBV Infected</td>
 					<td>
-						<obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						<obs conceptId="6032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="111759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Yes,No"
 							 style="radio"
@@ -608,7 +625,7 @@
 					<td colspan="2"></td>
 					<td>Weight</td>
 					<td>
-						<obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" />
 						kg
 					</td>
 
@@ -618,26 +635,27 @@
 					<td colspan="2"></td>
 					<td>Height</td>
 					<td>
-						<obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" />
 						cm
 					</td>
 
 				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>BMI</td>
-					<td><span id="calculated-bmi" class="value"></span></td>
-				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>MUAC</td>
-					<td>
-						<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
 
-				</tr>
+						<tr class="bmi">
+							<td colspan="2"></td>
+							<td>BMI</td>
+							<td><span id="calculated-bmi" class="value"></span></td>
+						</tr>
+
+			          <tr class="muac">
+									<td colspan="2"></td>
+									<td>MUAC</td>
+									<td>
+										<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+					</tr>
 			</table>
-			<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
+				<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
 				<tr class="patient-details">
 					<td colspan="2"></td>
 					<td>CD4 Count</td>
