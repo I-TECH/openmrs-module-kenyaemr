@@ -12,9 +12,8 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
 	<div class="ke-form-header">
-		<table width="100%">
+		<table width="100%" id="table">
 			<tr>
 				<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
@@ -23,7 +22,7 @@
 	</div>
 
 	<div class="ke-form-content">
-		<table width="100%">
+		<table width="100%" class="table">
 			<tr>
 				<th>Drug Prescribed</th>
 				<th>Dose Prescribed</th>
@@ -36,7 +35,7 @@
 				<template>
 					<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<tr>
-							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug"/></td>
+							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" id="drug_dispensed" /></td>
 							<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=""/></td>
 							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
 							<td>

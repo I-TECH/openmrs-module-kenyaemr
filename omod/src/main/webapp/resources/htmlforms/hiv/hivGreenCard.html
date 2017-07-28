@@ -42,51 +42,56 @@ Green Card follow-up visit form
         var bmi = null;
         var SELF = 978;
         function onWeightOrHeightChange() {
+            pAge = parseInt('<lookup expression="patient.age"/>');
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                 bmi = weightKg / (heightM * heightM);
-                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
+            if (pAge &gt; 14) {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                        display = 'Abnormal value. Were height and height entered correctly?';
+                    }
+                    else {
+                        display = bmi.toFixed(2);
+                    }
                 }
-                else {
-                    display = bmi.toFixed(2);
+                //set nutritional status and bmi
+                jq('#calculated-bmi').html(display);
+                if (bmi &lt; 16) {
+                    jq("#nutritional-status input[value=163302]").prop("checked", true);
+                } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
+                    jq("#nutritional-status input[value=163303]").prop("checked", true);
+                } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
+                    jq("#nutritional-status input[value=1115]").prop("checked", true);
+                } else if (bmi &gt; 25) {
+                    jq("#nutritional-status input[value=114413]").prop("checked", true);
                 }
             }
-            //set nutritional status and bmi
-            jq('#calculated-bmi').html(display);
-            if (bmi &lt; 16) {
-                jq("#nutritional-status input[value=163302]").prop("checked", true);
-            } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
-                jq("#nutritional-status input[value=163303]").prop("checked", true);
-            } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
-                jq("#nutritional-status input[value=1115]").prop("checked", true);
-            } else if (bmi &gt; 25) {
-                jq("#nutritional-status input[value=114413]").prop("checked", true);
-            }
-
         }
         function displayRecentBmi() {
+            pAge = parseInt('<lookup expression="patient.age"/>');
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                bmi = weightKg / (heightM * heightM);
-                recent_bmi= bmi.toFixed(2);
-                jq('#recent-calculated-bmi').html(recent_bmi);
+            if (pAge &gt; 14) {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    recent_bmi = bmi.toFixed(2);
+                    jq('#recent-calculated-bmi').html(recent_bmi);
 
-                //set recent nutritional status from recent bmi
-                if (recent_bmi &lt; 16) {
-                    jq("#nutritional-status input[value=163302]").prop("checked", true);
-                } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
-                    jq("#nutritional-status input[value=163303]").prop("checked", true);
-                } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
-                    jq("#nutritional-status input[value=1115]").prop("checked", true);
-                } else if (recent_bmi &gt; 25) {
-                    jq("#nutritional-status input[value=114413]").prop("checked", true);
+                    //set recent nutritional status from recent bmi
+                    if (recent_bmi &lt; 16) {
+                        jq("#nutritional-status input[value=163302]").prop("checked", true);
+                    } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
+                        jq("#nutritional-status input[value=163303]").prop("checked", true);
+                    } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
+                        jq("#nutritional-status input[value=1115]").prop("checked", true);
+                    } else if (recent_bmi &gt; 25) {
+                        jq("#nutritional-status input[value=114413]").prop("checked", true);
 
+                    }
                 }
             }
         }
@@ -146,12 +151,12 @@ Green Card follow-up visit form
         }
         var complaintDurationInput = function() {
 
+                var val = jq(this).val();
+                    var encounterDate = new Date(getValue('encounter-date.value'));
+                    var complaint_date = new Date(encounterDate.getTime() - (val * 24 * 60 * 60 * 1000)).toISOString().substr(0, 10);
+                    var formattedComplaintDate = moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
 
-            var val = jq(this).val();
-            var encounterDate = new Date(getValue('encounter-date.value'));
-            var complaint_date= new Date(encounterDate.getTime()-(val*24*60*60*1000)).toISOString().substr(0,10);
-            var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-            getField('complaint-date.value').val(formattedComplaintDate);
+                     getField('complaint-date.value').val(formattedComplaintDate);
 
         }
         var complaintDateInput = function() {
@@ -867,7 +872,7 @@ Green Card follow-up visit form
                 var valonform = getValue('tbrxdate.value');
                 var valChangedToDateFormatOnForm=new Date(valonform).getTime();
                 var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-                var notOnfpMethodsChecked = jq("#onFp input:checkbox:checked");
+                var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
                 var onfpMethodChecked = getField("fplanning.value").val();
 
                 //Must have a Return Visit Date which should be greater than encounter date
@@ -903,8 +908,8 @@ Green Card follow-up visit form
                     return false;
                 }
                 //Validate not-on-fp options chooses atleast one option if not on fp
-                if(onfpMethodChecked ==160652 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('notOnfp-error.error').html('Please add atleast one reason.').show();
+                if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
+                    getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
                     jq('#fp-details').show();
                     return false;
                 }
@@ -1244,11 +1249,13 @@ Green Card follow-up visit form
                     </td>
                     <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
+                <includeIf velocityTest="$patient.age &gt; 14">
                 <tr class="patient-details">
                     <td>BMI</td>
                     <td><span id="calculated-bmi" class="value"></span></td>
                     <td><span id="recent-calculated-bmi" class="value"></span></td>
                 </tr>
+                </includeIf>
                 <tr class="patient-details">
                     <td>MUAC</td>
                     <td>
@@ -2641,9 +2648,9 @@ Green Card follow-up visit form
                     <td>
 
                         <obs conceptId="1758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fast-track"
-                             answerConceptIds="1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="dropdown"
-                             answerLabels="Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
+                             answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
                     </td>
                 </tr>
 

@@ -169,11 +169,13 @@
                         <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
                 </tr>
+                <includeIf velocityTest="$patient.age &gt; 14">
                 <tr>
                     <td>BMI</td>
                     <td><span id="calculated-bmi" class="value"></span></td>
                     <td><span id="recent-calculated-bmi"></span></td>
                 </tr>
+                </includeIf>
                 <tr>
                     <td>MUAC</td>
                     <td>
