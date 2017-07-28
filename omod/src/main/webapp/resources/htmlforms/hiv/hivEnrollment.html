@@ -82,15 +82,33 @@
                 jq('#transfer-details :input').prop('disabled', true);
                 jq('#hiv-id :input').prop('disabled', true);
                 jq('#generate-hiv-id').hide();
+            }
+        }
+        function onArtStatusChange() {
+            if (getValue('art-status.value') == 'false') {
+                jq('#art-history :input').prop('disabled', true);
 
+            } else {
+                jq('#art-history :input').prop('disabled', false);
+                jq('#pmtctRegimen :input').prop('disabled', true);
+                jq('#pepRegimen :input').prop('disabled', true);
             }
         }
 
-        function onArtStatusChange() {
-            if (getValue('art-status.value') == 'true') {
-                jq('#art-history :input').prop('disabled', false);
-            } else {
-                jq('#art-history :input').prop('disabled', true);
+        function onPmtctSelected() {
+           var val = getValue('pmtctChecked.value');
+            if(val == 1065){
+				jq('#pmtctRegimen :input').prop('disabled', false);
+					}else{
+                jq('#pmtctRegimen :input').prop('disabled', true);
+			}
+        }
+        function onPepSelected() {
+            var val = getValue('pepChecked.value');
+            if(val == 1065){
+                jq('#pepRegimen :input').prop('disabled', false);
+            }else{
+                jq('#pepRegimen :input').prop('disabled', true);
             }
         }
         var onPregnancySelected = function() {
@@ -172,21 +190,18 @@
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
-            jq('#transfer-in-status input').click(onTransferStatusChange);
-            jq('#art-status input').click(onArtStatusChange);
+            jq('#transfer-in-status input').change(onTransferStatusChange);
+            jq('#art-status input').change(onArtStatusChange);
+            jq('#pmtctChecked input').click(onPmtctSelected);
+            jq('#pepChecked input').click(onPepSelected);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
-            //Transit validation
             jq('#transit-patient').hide();
-
-
-            //Baseline
+            jq('#art-history :input').prop('disabled', true);
+           // jq('#pmtctCheck :input').prop('checked', false);
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
-//            jq("#pregnant input[type=radio]").prop("disabled" ,false);
-//            jq("#breastfeeding input[type=radio]").prop("disabled" ,false);
-
             //limit letters only in text field
             jQuery('#rsn').keypress(function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
@@ -195,7 +210,7 @@
                     event.preventDefault();
             });
             onTransferStatusChange();
-            onArtStatusChange();
+
             //Gender based validations  pregnancy and breastfeeding
             if (pgender == 'M' || pAge &lt; 10) {
                 jq("#pregnant input[type=radio]").prop("disabled" ,true);
@@ -226,8 +241,6 @@
                         return false;
                     }
 				}
-
-
                 if (encounterDate =="") {
                     getField('encounter-date.error').html('Enrollment date should not be empty').show();
                     return false;
@@ -455,7 +468,7 @@
 				</tr>
 				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
-						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" /></td>
+						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" id="pmtctChecked"/></td>
 						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -479,12 +492,12 @@
                                                3TC/ABC/EFV,
                                                ABC/LPV/R/TDF,
                                                ABC/DDI/LPV/r"
-								 dateLabel="" defaultDatetime=""/></td>
+								 dateLabel="" defaultDatetime="" id="pmtctRegimen" /></td>
 					</tr>
 				</obsgroup>
 				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
-						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" /></td>
+						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -508,7 +521,7 @@
                                                3TC/ABC/EFV,
                                                ABC/LPV/R/TDF,
                                                ABC/DDI/LPV/r"
-								 dateLabel="" /></td>
+								 dateLabel=""  id="pepRegimen"/></td>
 					</tr>
 				</obsgroup>
 				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
