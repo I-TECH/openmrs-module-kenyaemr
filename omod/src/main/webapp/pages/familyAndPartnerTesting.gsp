@@ -4,13 +4,12 @@
 <style>
 div.grid      { display:block; }
 div.grid div  { float: left; height: 30px; }
-div.patient-name    { width: 300px; }
-div.patient-age    { width: 100px; }
-div.test-date    { width: 120px; }
-div.test-result      { width: 120px; }
-div.date-enrolled       { width: 120px; }
-div.patient-no       { width: 200px; }
-div.alive       { width: 100px; }
+div.column-one    { width: 300px; }
+div.column-two    { width: 100px; }
+div.column-three    { width: 120px; }
+div.column-four      { width: 120px; }
+div.column-five       { width: 120px; }
+div.column-six       { width: 100px; }
 div.clear     { clear: both; }
 .col-header {font-weight: bold; font-size: 14px;}
 div.section-title {
@@ -38,46 +37,44 @@ div.section-title {
 		<div class="ke-panel-content">
             <div class="section-title">Testing Statistics</div><div class="clear"></div>
             <div class="grid">
-                <div class="patient-name">&nbsp;</div>
-                <div class="patient-age col-header">Total Contacts</div>
-                <div class="test-date col-header">Known Status</div>
-                <div class="test-result col-header">Positive Contacts</div>
-                <div class="date-enrolled col-header">Linked Patients</div>
+                <div class="column-one">&nbsp;</div>
+                <div class="column-two col-header">Total Contacts</div>
+                <div class="column-three col-header">Known Status</div>
+                <div class="column-four col-header">Positive Contacts</div>
+                <div class="column-five col-header">Linked Patients</div>
             </div>
             <div class="clear"></div>
             <div class="grid">
-                <div class="patient-name">&nbsp;</div>
-                <div class="patient-age col-header">${stats.totalContacts}</div>
-                <div class="test-date col-header">${stats.knownPositives}</div>
-                <div class="test-result col-header">${stats.positiveContacts}</div>
-                <div class="date-enrolled col-header">${stats.linkedPatients}</div>
+                <div class="column-one">&nbsp;</div>
+                <div class="column-two col-header">${stats.totalContacts}</div>
+                <div class="column-three col-header">${stats.knownPositives}</div>
+                <div class="column-four col-header">${stats.positiveContacts}</div>
+                <div class="column-five col-header">${stats.linkedPatients}</div>
             </div>
             <div class="clear"></div>
 
         <div class="section-title">Contacts registered in the facility</div><div class="clear"></div>
-			<% if (relationships) { %>
+			<% if (enrolledRelationships) { %>
             <div class="grid">
-                <div class="patient-name">&nbsp;</div>
-                <div class="patient-age col-header">Age</div>
-                <div class="test-date col-header">Test Date</div>
-                <div class="test-result col-header">Test Result</div>
-                <div class="date-enrolled col-header">Date Enrolled</div>
-                <div class="patient-no col-header">ART No</div>
-                <div class="alive col-header">Status</div>
+                <div class="column-one">&nbsp;</div>
+                <div class="column-two col-header">Age</div>
+                <div class="column-three col-header">Date Confirmed</div>
+                <div class="column-four col-header">Date Enrolled</div>
+                <div class="column-five col-header">ART No</div>
+                <div class="column-six col-header">Status</div>
             </div>
             <div class="clear"></div>
-			<% relationships.each { rel -> %>
+			<% enrolledRelationships.each { rel -> %>
 			<div class="ke-stack-item">
                 <div class="grid">
-                    <div class="patient-name">
+                    <div class="column-one">
                         ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.type), value: rel.personLink ]) }
                     </div>
-                    <div class="patient-age">${rel.age}</div>
-                    <div class="test-date">Test Date</div>
-                    <div class="test-result">Test Result</div>
-                    <div class="date-enrolled">Date Enrolled</div>
-                    <div class="patient-no">${rel.art_no}</div>
-                    <div class="alive">${rel.status}</div>
+                    <div class="column-two">${rel.age}</div>
+                    <div class="column-three">${rel.dateConfirmed}</div>
+                    <div class="column-four">${rel.dateEnrolled}</div>
+                    <div class="column-five">${rel.art_no}</div>
+                    <div class="column-six">${rel.status}</div>
                 </div>
                 <div class="clear"></div>
 
@@ -89,30 +86,62 @@ div.section-title {
 		</div>
 
         <div class="ke-panel-content">
+            <div class="section-title">HIV Negative Contacts registered in this facility</div><div class="clear"></div>
+            <% if (hivNegativeRelationships) { %>
+            <div class="grid">
+                <div class="column-one">&nbsp;</div>
+                <div class="column-two col-header">Age</div>
+                <div class="column-three col-header">Last Test</div>
+                <div class="column-four col-header">Test Result</div>
+                <div class="column-five col-header">Next Test Date</div>
+                <div class="column-six col-header">Status</div>
+            </div>
+            <div class="clear"></div>
+            <% hivNegativeRelationships.each { rel -> %>
+            <div class="ke-stack-item">
+                <div class="grid">
+                    <div class="column-one">
+                        ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.type), value: rel.personLink ]) }
+                    </div>
+                    <div class="column-two">${rel.age}</div>
+                    <div class="column-three">${rel.lastTestDate}</div>
+                    <div class="column-four">${rel.lastTestResult}</div>
+                    <div class="column-five">${rel.nextTestDate}</div>
+                    <div class="column-six">${rel.status}</div>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <% } } else {%>
+            No record was found
+            <% } %>
+        </div>
+
+        <div class="ke-panel-content">
             <div class="section-title">Contacts not registered in the facility</div><div class="clear"></div>
             <% if (otherContacts) { %>
             <div class="grid">
-                <div class="patient-name">&nbsp;</div>
-                <div class="patient-age col-header">Age</div>
-                <div class="test-date col-header">Baseline Status</div>
-                <div class="test-result col-header">Test Date</div>
-                <div class="date-enrolled col-header">Test Result</div>
-                <div class="patient-no col-header">In Care</div>
-                <div class="alive col-header">ART No</div>
+                <div class="column-one">&nbsp;</div>
+                <div class="column-two col-header">Age</div>
+                <div class="column-three col-header">Baseline Status</div>
+                <div class="column-four col-header">Test Date</div>
+                <div class="column-five col-header">Test Result</div>
+                <div class="column-six col-header">In Care</div>
+                <div class="column-five col-header">ART No</div>
             </div>
             <div class="clear"></div>
             <% otherContacts.each { rel -> %>
             <div class="ke-stack-item">
                 <div class="grid">
-                    <div class="patient-name">
+                    <div class="column-one">
                         ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: ui.format(rel.relType), value: rel.contact ]) }
                     </div>
-                    <div class="patient-age">${rel.age}</div>
-                    <div class="test-date">${rel.baselineStatus}</div>
-                    <div class="test-result">${rel.nextTestDate}</div>
-                    <div class="date-enrolled">${rel.hivResult}</div>
-                    <div class="patient-no">${rel.inCare}</div>
-                    <div class="alive">${rel.art_no}</div>
+                    <div class="column-two">${rel.age}</div>
+                    <div class="column-three">${rel.baselineStatus}</div>
+                    <div class="column-four">${rel.nextTestDate}</div>
+                    <div class="column-five">${rel.testResult}</div>
+                    <div class="column-six">${rel.inCare}</div>
+                    <div class="column-five">${rel.art_no}</div>
                 </div>
                 <div class="clear"></div>
 
