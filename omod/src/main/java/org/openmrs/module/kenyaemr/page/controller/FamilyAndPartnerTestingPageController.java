@@ -138,7 +138,9 @@ public class FamilyAndPartnerTestingPageController {
 					false
 			);
 			for(Obs o: obs) {
-				otherConctacts.add(extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
+				if (extractFamilyAndPartnerTestingRows(o.getGroupMembers()) != null) {
+					otherConctacts.add(extractFamilyAndPartnerTestingRows(o.getGroupMembers()));
+				}
 			}
 		}
 
@@ -263,7 +265,7 @@ public class FamilyAndPartnerTestingPageController {
 
 		}
 
-		int totalContacts = enrolledRelationships.size() + hivNegativeRelationships.size() + otherConctacts.size();
+
 		model.addAttribute("patient", patient);
 		model.addAttribute("enrolledRelationships", enrolledRelationships);
 		model.addAttribute("hivNegativeRelationships", hivNegativeRelationships);
@@ -323,18 +325,20 @@ public class FamilyAndPartnerTestingPageController {
 				ageUnit = ageUnitConverter(obs.getValueCoded());
 			}
 		}
-		return SimpleObject.create(
-				"contact", contactName.toUpperCase(),
-				"relType", relType != null ? relType : "",
-				"relStatus", relStatus != null ?relStatus : "",
-				"age", age != null ? new StringBuilder().append(age).append(" ").append(ageUnit): "",
-				"art_no" , artNo != null ? artNo.intValue(): "",
-				"baselineStatus", baselineStatus != null ? baselineStatus : "",
-				"nextTestDate", nextTestDate != null ? nextTestDate : "",
-				"inCare", inCare != null ? inCare: "",
-				"testResult", hivTestResult != null ? hivTestResult : ""
-		);
-
+		if(contactName != null) {
+			return SimpleObject.create(
+					"contact", contactName.toUpperCase(),
+					"relType", relType != null ? relType : "",
+					"relStatus", relStatus != null ? relStatus : "",
+					"age", age != null ? new StringBuilder().append(age).append(" ").append(ageUnit) : "",
+					"art_no", artNo != null ? artNo.intValue() : "",
+					"baselineStatus", baselineStatus != null ? baselineStatus : "",
+					"nextTestDate", nextTestDate != null ? nextTestDate : "",
+					"inCare", inCare != null ? inCare : "",
+					"testResult", hivTestResult != null ? hivTestResult : ""
+			);
+		}
+		return null;
 
 	}
 
