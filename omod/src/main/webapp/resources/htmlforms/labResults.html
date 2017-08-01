@@ -34,8 +34,9 @@
          	}
         }
 		function getLatedtVlOrder(){
-			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>");
-			var testOrderVlConcept=<lookup expression="fn.latestObs(1271).valueCoded"/>
+
+			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>")
+			var testOrderVlConcept= "<lookup expression="fn.latestObs(1271).valueCoded"/>"
 
 			if (testOrderVlConcept == 856) {
 			//alert(testOrderVlConcept)

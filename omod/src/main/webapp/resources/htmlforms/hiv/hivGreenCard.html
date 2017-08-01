@@ -42,51 +42,73 @@ Green Card follow-up visit form
         var bmi = null;
         var SELF = 978;
         function onWeightOrHeightChange() {
+            pAge = parseInt('<lookup expression="patient.age"/>');
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                 bmi = weightKg / (heightM * heightM);
-                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
+            if (pAge &gt; 14) {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                        display = 'Abnormal value. Were height and height entered correctly?';
+                    }
+                    else {
+                        display = bmi.toFixed(2);
+                    }
                 }
-                else {
-                    display = bmi.toFixed(2);
+                //set nutritional status and bmi
+                jq('#calculated-bmi').html(display);
+                if (bmi &lt; 16) {
+                    jq("#nutritional-status input[value=163302]").prop("checked", true);
+                } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
+                    jq("#nutritional-status input[value=163303]").prop("checked", true);
+                } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
+                    jq("#nutritional-status input[value=1115]").prop("checked", true);
+                } else if (bmi &gt; 25) {
+                    jq("#nutritional-status input[value=114413]").prop("checked", true);
                 }
             }
-            //set nutritional status and bmi
-            jq('#calculated-bmi').html(display);
-            if (bmi &lt; 16) {
-                jq("#nutritional-status input[value=163302]").prop("checked", true);
-            } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
-                jq("#nutritional-status input[value=163303]").prop("checked", true);
-            } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
-                jq("#nutritional-status input[value=1115]").prop("checked", true);
-            } else if (bmi &gt; 25) {
-                jq("#nutritional-status input[value=114413]").prop("checked", true);
+        }
+        function onEncounterDateChange() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
             }
-
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? data.duration : 'Not started';
+                    jq('#calculated-duration-start-art').html(msg);
+                });
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? (data.regimen ) : 'None';
+                    jq('#calculated-duration-current-regimen').html(msg);
+                });
         }
         function displayRecentBmi() {
+            pAge = parseInt('<lookup expression="patient.age"/>');
             var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                bmi = weightKg / (heightM * heightM);
-                recent_bmi= bmi.toFixed(2);
-                jq('#recent-calculated-bmi').html(recent_bmi);
+            if (pAge &gt; 14) {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    recent_bmi = bmi.toFixed(2);
+                    jq('#recent-calculated-bmi').html(recent_bmi);
 
-                //set recent nutritional status from recent bmi
-                if (recent_bmi &lt; 16) {
-                    jq("#nutritional-status input[value=163302]").prop("checked", true);
-                } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
-                    jq("#nutritional-status input[value=163303]").prop("checked", true);
-                } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
-                    jq("#nutritional-status input[value=1115]").prop("checked", true);
-                } else if (recent_bmi &gt; 25) {
-                    jq("#nutritional-status input[value=114413]").prop("checked", true);
+                    //set recent nutritional status from recent bmi
+                    if (recent_bmi &lt; 16) {
+                        jq("#nutritional-status input[value=163302]").prop("checked", true);
+                    } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
+                        jq("#nutritional-status input[value=163303]").prop("checked", true);
+                    } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
+                        jq("#nutritional-status input[value=1115]").prop("checked", true);
+                    } else if (recent_bmi &gt; 25) {
+                        jq("#nutritional-status input[value=114413]").prop("checked", true);
 
+                    }
                 }
             }
         }
@@ -117,21 +139,15 @@ Green Card follow-up visit form
         var generalExamSelected = function(){
             var val = jq(this).val();
             var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
-
             if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
-
                 jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
                 jq(this).prop("disabled",false);
-
             }else {
-
-
                 jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
                 jq("#general-exam-findings input[value=1107]").prop("disabled",true);
             }
             if(generalExamsChecked.length ==0){
                 jq("#general-exam-findings input[value=1107]").prop("disabled",false);
-
             }
         }
         var complaintSelected = function() {
@@ -146,31 +162,17 @@ Green Card follow-up visit form
         }
         var complaintDurationInput = function() {
 
-
-            var val = jq(this).val();
+            var table = document.getElementById("tbl-complaints-today");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var val = jq(this).closest('tr').find(".complaint-time input").val();
             var encounterDate = new Date(getValue('encounter-date.value'));
-            var complaint_date= new Date(encounterDate.getTime()-(val*24*60*60*1000)).toISOString().substr(0,10);
-            var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-            getField('complaint-date.value').val(formattedComplaintDate);
+            var complaint_date = new Date(encounterDate.getTime() - (val * 24 * 60 * 60 * 1000)).toISOString().substr(0, 10);
+            var formattedComplaintDate = moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                if(val >0 ) {
+                    jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
+                }
 
-        }
-        var complaintDateInput = function() {
-
-            var complaintDate = jq(this).val();
-            var encounterDate = new Date(getValue('encounter-date.value'));
-            console.log("Complaint date" + complaintDate);
-            console.log("Encounter date" + encounterDate);
-
-            var formattedComplaintDate=moment(moment(complaintDate, 'DD-MMM-YYYY').toDate()).format('DD-MM-YYYY');
-            console.log("Formatted complaint date " +formattedComplaintDate);
-
-
-
-           // var date_diff=new Date(encounterDate).getTime()/1000-new Date(complaintDate).getTime() / 1000
-            //var formattedComplaintDate=moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-           // console.log("Date diff in unix " + date_diff);
-            //getField('complaint-date.value').val(formattedComplaintDate);
-
+            }
         }
 
         var adverseReactionSelected = function() {
@@ -191,7 +193,6 @@ Green Card follow-up visit form
                 jq("#tbl-known-allergies").show();
             }
         }
-
         var systemsReviewSelected = function() {
             var val = jq(this).val();
             if (val == 1066){
@@ -661,6 +662,7 @@ Green Card follow-up visit form
          getField('weight.value').change(onWeightOrHeightChange);
          getField('height.value').change(onWeightOrHeightChange);
          onWeightOrHeightChange();
+         onEncounterDateChange();
          var age = parseInt('<lookup expression="patient.age"/>');
          var pgender = "<lookup expression="patient.gender" />";
             //Gravida
@@ -735,7 +737,8 @@ Green Card follow-up visit form
          jq("#tb-test-ordered").change(testOrdered);
          jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
          jq('input[type=radio].complaints-today').change(complaintSelected);
-         getField('complaint-duration.value').change(complaintDurationInput);
+         jq(".complaint-time input").change(complaintDurationInput);
+        // getField('complaint-duration.value').change(complaintDurationInput);
         // getField('complaint-date.value').change(complaintDateInput);
          jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
          jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
@@ -867,7 +870,7 @@ Green Card follow-up visit form
                 var valonform = getValue('tbrxdate.value');
                 var valChangedToDateFormatOnForm=new Date(valonform).getTime();
                 var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-                var notOnfpMethodsChecked = jq("#onFp input:checkbox:checked");
+                var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
                 var onfpMethodChecked = getField("fplanning.value").val();
 
                 //Must have a Return Visit Date which should be greater than encounter date
@@ -903,8 +906,8 @@ Green Card follow-up visit form
                     return false;
                 }
                 //Validate not-on-fp options chooses atleast one option if not on fp
-                if(onfpMethodChecked ==160652 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('notOnfp-error.error').html('Please add atleast one reason.').show();
+                if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
+                    getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
                     jq('#fp-details').show();
                     return false;
                 }
@@ -965,6 +968,7 @@ Green Card follow-up visit form
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
+                        clearRadios(iptInitiationTab);
 
                     }
                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
@@ -994,6 +998,7 @@ Green Card follow-up visit form
 
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptFollowup);
+                        clearRadios(iptInitiationTab);
                     }
                     if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
@@ -1043,6 +1048,7 @@ Green Card follow-up visit form
 
                 } else {
                     iptInitiationTab.hide();
+                    clearRadios(iptInitiationTab);
                 }
             };
             clearRadios = function(parentObj) {
@@ -1244,11 +1250,13 @@ Green Card follow-up visit form
                     </td>
                     <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
+                <includeIf velocityTest="$patient.age &gt; 14">
                 <tr class="patient-details">
                     <td>BMI</td>
                     <td><span id="calculated-bmi" class="value"></span></td>
                     <td><span id="recent-calculated-bmi" class="value"></span></td>
                 </tr>
+                </includeIf>
                 <tr class="patient-details">
                     <td>MUAC</td>
                     <td>
@@ -1348,7 +1356,7 @@ Green Card follow-up visit form
                         <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                             <tr>
                                 <td>
-                                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class="complaint" conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                             141585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162626AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140070AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142247AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135462AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116214AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112989AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                              121657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,144576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133469AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,132653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1358,9 +1366,9 @@ Green Card follow-up visit form
                                          style="dropdown"
                                     />
                                 </td>
-                                <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id ="complaint-duration" /></td>
+                                <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration"  /></td>
                                 <td>
-                                    <obs id="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          allowFutureDates="false"/>
                                 </td>
                             </tr>
@@ -1409,20 +1417,46 @@ Green Card follow-up visit form
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
-                <div>
-                   Patient on anti-TB Drugs? &#160;<input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes
-                    <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
-                </div>
-                <div>
-                    Patient currently on IPT? &#160;&#160;<input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
-                    <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
-                </div>
-                <div id="ever-on-ipt" >
-                    Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes
-                    <input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No
+                <table cellspacing="5" style=" float: left; " >
+                    <tr>
+                        <th  style="color: #888" >Current Status </th>
+                        <th  style="color: #888" >Recent </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            Patient on anti-TB Drugs? &#160;<input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes
+                            <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
+                        </td>
+                       <td>
+                           <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        Patient currently on IPT? &#160;&#160;<input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
+                        <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
 
-                </div>
-                <fieldset id="tb-screening-tab">
+                        </td>
+                        <td>
+                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                       <td>
+                        <div id="ever-on-ipt" >
+                            Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes
+                            <input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No
+                        </div>
+                    </td>
+                        <td>
+                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                </table>
+
+            </fieldset>
+
+           <fieldset id="tb-screening-tab">
                     <legend>Screening Questions</legend>
                     <table id="screening-questions">
                         <tr>
@@ -2477,7 +2511,7 @@ Green Card follow-up visit form
                         </td>
                     </tr>
                 </table>
-        </fieldset>
+
         </fieldset>
 
         <a id="treatment-plan-section"></a>
@@ -2567,6 +2601,10 @@ Green Card follow-up visit form
                     <td>
                         <table cellpadding="0" border="0" cellspacing="5">
                             <tr>
+                                <td>Current Regimen:</td>
+                                <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+                            </tr>
+                            <tr>
                                 <td>Adherence</td>
                                 <td>
                                     <obs
@@ -2641,9 +2679,9 @@ Green Card follow-up visit form
                     <td>
 
                         <obs conceptId="1758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fast-track"
-                             answerConceptIds="1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="dropdown"
-                             answerLabels="Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
+                             answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
                     </td>
                 </tr>
 

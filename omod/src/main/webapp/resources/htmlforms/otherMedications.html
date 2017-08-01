@@ -12,9 +12,35 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
+	<script>
+        var LabOrderList =[];
+        var drugs_added = 0;
+        var onDrugDispensed = function() {
 
+            var table = document.getElementById('tbl-medication');
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var drug_dispensed = jq(this).closest('tr').find(".drug-prescribed input").val();
+                drugs_added = jQuery.inArray("" + drug_dispensed + "", LabOrderList);
+                if (drugs_added > -1) {
+                    getField('drug-dispensed.error').html('This drug already exists').show();
+                    jq(this).closest('tr').find('.drug-prescribed input').val("");
+                    return false;
+                }
+                LabOrderList.push(drug_dispensed);
+                return true;
+            }
+        }
+
+//On ready
+       jQuery(function () {
+
+            jq("#drug-dispensed input").change(onDrugDispensed);
+           beforeSubmit.push(function() {
+           });
+        });
+	</script>
 	<div class="ke-form-header">
-		<table width="100%">
+		<table width="100%" id="table">
 			<tr>
 				<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
@@ -23,7 +49,7 @@
 	</div>
 
 	<div class="ke-form-content">
-		<table width="100%">
+		<table width="100%" id="tbl-medication">
 			<tr>
 				<th>Drug Prescribed</th>
 				<th>Dose Prescribed</th>
@@ -36,7 +62,7 @@
 				<template>
 					<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<tr>
-							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug"/></td>
+							<td><obs class ="drug-prescribed" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" id="drug-dispensed" /></td>
 							<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=""/></td>
 							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
 							<td>
@@ -67,9 +93,11 @@
 				<render />
 			</repeat>
 		</table>
+		<br/><br />
 		<table>
 			<tr>
-				<th colspan="2">Nutirional Support</th>
+				<th colspan="2">Nutritional Support</th>
+				<hr />
 			</tr>
 			<tr>
 				<td>Therapeutic feeds</td>
