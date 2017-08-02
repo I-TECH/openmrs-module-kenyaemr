@@ -968,7 +968,6 @@ Green Card follow-up visit form
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
-                        clearRadios(iptInitiationTab);
 
                     }
                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
@@ -998,7 +997,6 @@ Green Card follow-up visit form
 
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptFollowup);
-                        clearRadios(iptInitiationTab);
                     }
                     if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
@@ -1048,7 +1046,6 @@ Green Card follow-up visit form
 
                 } else {
                     iptInitiationTab.hide();
-                    clearRadios(iptInitiationTab);
                 }
             };
             clearRadios = function(parentObj) {
@@ -1417,7 +1414,9 @@ Green Card follow-up visit form
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
-                <table cellspacing="5" style=" float: left; " >
+
+
+                <table>
                     <tr>
                         <th  style="color: #888" >Current Status </th>
                         <th  style="color: #888" >Recent </th>
@@ -1427,36 +1426,50 @@ Green Card follow-up visit form
                             Patient on anti-TB Drugs? &#160;<input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes
                             <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
                         </td>
-                       <td>
-                           <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                       </td>
                     </tr>
-                    <tr>
-                        <td>
+                    <tr></tr>
+
                         Patient currently on IPT? &#160;&#160;<input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
                         <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
-
-                        </td>
-                        <td>
-                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                    <tr>
-                       <td>
+                    </td><td>
                         <div id="ever-on-ipt" >
                             Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes
                             <input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No
+
                         </div>
                     </td>
+                    </tr>
+                    <tr>
                         <td>
-                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                            <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                         </td>
+                        <td>
+                            <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                        <td>
+                            <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+
                     </tr>
                 </table>
 
-            </fieldset>
+                <!--<div>-->
+                   <!--Patient on anti-TB Drugs? &#160;<input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes-->
+                    <!--<input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No-->
+                <!--</div>-->
+                <!--<div>-->
+                    <!--Patient currently on IPT? &#160;&#160;<input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes-->
+                    <!--<input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No-->
+                <!--</div>-->
+                <!--<div id="ever-on-ipt" >-->
+                    <!--Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes-->
+                    <!--<input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No-->
 
-           <fieldset id="tb-screening-tab">
+                <!--</div>-->
+
+
+
+                <fieldset id="tb-screening-tab">
                     <legend>Screening Questions</legend>
                     <table id="screening-questions">
                         <tr>
@@ -2511,7 +2524,7 @@ Green Card follow-up visit form
                         </td>
                     </tr>
                 </table>
-
+        </fieldset>
         </fieldset>
 
         <a id="treatment-plan-section"></a>

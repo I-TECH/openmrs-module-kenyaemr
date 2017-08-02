@@ -14,11 +14,31 @@
 <htmlform>
 
     <script type="text/javascript">
+        var confirmatoryTestSelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq('#confirmatory-hiv-result select').prop('disabled', true);
+                jq('#confirmatory-test-date input').prop("disabled",true);
+            }else {
+                jq('#confirmatory-hiv-result select').prop('disabled', false);
+                jq('#confirmatory-test-date input').prop("disabled",true);
+            }
 
+        }
+        var confirmatoryResultSelected = function() {
+            var confirmatoryResult = getField("confirmatory-hiv-result.value").val();
+            if (confirmatoryResult == 703){
+                jq('#confirmatory-test-date input').prop("disabled",false);
+            }else {
+                jq('#confirmatory-test-date input').prop("disabled",true);
+            }
 
+        }
         jQuery(function () {
-
-
+            jq('#confirmatory-test :input[type=radio]').change(confirmatoryTestSelected);
+            jq("#confirmatory-hiv-result select").change(confirmatoryResultSelected);
+            jq('#confirmatory-hiv-result select').prop('disabled', true);
+            jq('#confirmatory-test-date input').prop("disabled",true);
         });
     </script>
 
@@ -39,20 +59,35 @@
 
 
         <fieldset>
-            <legend>HIV Details</legend>
+            <legend>HIV Confirmatory Test Details</legend>
             <table>
                 <tr>
-                    <td>HIV Test Result this visit</td>
+                    <td>Patient has done HIV Reconfirmatory Test? &#160;&#160;&#160;&#160;</td>
                     <td>
-                        <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Pos,Neg,Exposed,Unknown"/>
+                        <obs id="confirmatory-test" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"/>
                     </td>
                 </tr>
+            </table>
+            <hr/>
+             <br/>
+            <table>
                 <tr>
-                    <td>Next HIV Test Date</td>
+                    <td>Reconfirmatory Test Result :&#160;&#160;&#160;&#160;</td>
                     <td>
-                        <obs class="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                        <obs id="confirmatory-hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Positive,Negative,Indeterminate"/>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table>
+                <tr>
+                    <td>Reconfirmatory Test Date : &#160;&#160;&#160;&#160;&#160; </td>
+                    <td>
+                        <obs id="confirmatory-test-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
                     </td>
                 </tr>
             </table>
