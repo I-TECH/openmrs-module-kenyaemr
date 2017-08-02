@@ -21,6 +21,7 @@
 				<ref bean="kenyaemr.common.form.otherMedications" />
 				<ref bean="kenyaemr.common.form.progressNote" />
 				<ref bean="kenyaemr.common.form.familyTestingFollowup" />
+				<ref bean="kenyaemr.common.form.hivConfirmatoryTest"/>
 			</set>
 		</property>
 	</bean>
@@ -246,6 +247,22 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:familyTesting/familyTestingFollowup.html" />
 		<property name="order" value="201090" />
+	</bean>
+
+	<!-- HIV Confirmatory test form -->
+	<bean id="kenyaemr.common.form.hivConfirmatoryTest" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="4fad1a4e-2f37-4f5f-80f8-4a7698c062c2" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivConfirmation.html" />
+		<property name="order" value="201000" />
 	</bean>
 	<!-- ===================== Reports ===================== -->
 
