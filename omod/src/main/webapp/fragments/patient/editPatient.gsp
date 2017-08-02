@@ -160,7 +160,7 @@
                      <td>
                          <label></label>
                          <input type="radio" value="Yes" name="age-bracket" class="age-bracket" /> Yes
-                         <input type="radio" value="No" name="age-bracket" class="age-bracket" /> No
+                         <input type="radio" value="No" name="age-bracket" class="age-bracket"  /> No
                      </td>
                 </tr>
             </table>
@@ -171,7 +171,7 @@
                 <label class="ke-field-label">In School *</label>
                 <span class="ke-field-content">
                     <input type="radio" name="inSchool" value="1065"
-                           id="inSchool-Y" ${command.inSchool == '1065' ? 'checked="checked"' : ''}/> Yes
+                           id="inSchool-Y" ${command.inSchool == '1065' ? 'checked="checked"' : ''} required = "true"/> Yes
                     <input type="radio" name="inSchool" value="1066"
                            id="inSchool-N" ${command.inSchool == '1066' ? 'checked="checked"' : ''}/> No
                     <span id="inSchool-Y-error" class="error" style="display: none"></span>
@@ -182,7 +182,7 @@
                         <label class="ke-field-label">Orphan(<18 years) *</label>
                         <span class="ke-field-content">
                             <input type="radio" name="orphan" value="1065"
-                                   id="orphan-Y" ${command.orphan == '1065' ? 'checked="checked"' : ''}/> Yes
+                                   id="orphan-Y" ${command.orphan == '1065' ? 'checked="checked"' : ''} required = "true"/> Yes
                             <input type="radio" name="orphan" value="1066"
                                    id="orphan-N" ${command.orphan == '1066' ? 'checked="checked"' : ''}/> No
                             <span id="orphan-Y-error" class="error" style="display: none"></span>
@@ -300,7 +300,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 ])}
 
 <script type="text/javascript">
+    //On ready
     jQuery(function () {
+
+        jQuery("#underage-details input").prop("disabled",true);
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
         jQuery('#edit-patient-form .cancel-button').click(function () {
             ui.navigate('${ config.returnUrl }');
@@ -321,12 +324,16 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
         // handle age-bracket radio buttons
         jQuery(".age-bracket").change(function () {
-            if (jQuery(this).val() == "Yes") {
+            var ageBracket = jQuery(this).val();
+            if (ageBracket == "Yes") {
                 jQuery("#underage-details").show();
-            } else {
+                jQuery("#underage-details input").prop("disabled",false);
+            } else if(ageBracket == "No" || ageBracket == ""){
                 jQuery("#underage-details").hide();
+                jQuery("#underage-details input").prop("disabled",true);
             }
         });
+
     }); // end of jQuery initialization block
 
     function updateBirthdate(data) {
