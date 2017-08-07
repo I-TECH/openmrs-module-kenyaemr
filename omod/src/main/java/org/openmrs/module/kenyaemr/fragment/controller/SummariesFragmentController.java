@@ -67,16 +67,11 @@ public class SummariesFragmentController {
         //gender
         patientSummary.setGender(patient.getGender());
 
-
-
-
         PatientIdentifierType type = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         List<PatientIdentifier> upn = patientService.getPatientIdentifiers(null, Arrays.asList(type), null, Arrays.asList(patient), false);
         if(upn.size() > 0){
             patientSummary.setUpn(upn.get(0).getIdentifier());
         }
-
-
 
         PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
         context.setNow(new Date());
@@ -353,20 +348,20 @@ public class SummariesFragmentController {
         Set<Integer> ios = new HashSet<Integer>();
         String iosResults = "";
         List<Integer> iosIntoList = new ArrayList<Integer>();
-        for(Obs obs:problemsAddedListObs) {
-            ios.add(obs.getValueCoded().getConceptId());
-        }
-        iosIntoList.addAll(ios);
-        if(iosIntoList.size() == 1) {
-            iosResults = ios(iosIntoList.get(0));
-        }
-        else {
-            for(Integer values : iosIntoList){
-                if(values != 1107) {
-                    iosResults += ios(values) + " ";
+            for (Obs obs : problemsAddedListObs) {
+                    ios.add(obs.getValueCoded().getConceptId());
+                  }
+            iosIntoList.addAll(ios);
+            if (iosIntoList.size() == 1) {
+                iosResults = ios(iosIntoList.get(0));
+            } else {
+                for (Integer values : iosIntoList) {
+                    if (values != 1107) {
+                        iosResults += ios(values) + " ";
+                    }
                 }
             }
-        }
+
         //current art regimen
         CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
         if(currentRegimenResults != null) {
