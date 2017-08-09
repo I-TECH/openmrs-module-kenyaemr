@@ -336,7 +336,7 @@ Green Card follow-up visit form
 
             }
         }
-        //Resulting TB status for Ordered test
+
         var populationTypeSelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
@@ -347,6 +347,7 @@ Green Card follow-up visit form
 
             }
         }
+        //Resulting TB status for Ordered test
         var testOrdered  = function () {
             var val = jq(this).val();
             var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
@@ -859,78 +860,6 @@ Green Card follow-up visit form
             /*TB Screening form validation*/
             var valbirthdate = "<lookup  expression="patient.birthdate" />"
             var valChangedToDateFormat = new Date(valbirthdate).getTime();
-
-
-            beforeSubmit.push(function() {
-
-                var tca_date = getValue('returnVisitDate.value');
-                var encounterDate = getValue('encounter-date.value');
-                var valonform = getValue('tbrxdate.value');
-                var valChangedToDateFormatOnForm=new Date(valonform).getTime();
-                var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-                var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
-                var onfpMethodChecked = getField("fplanning.value").val();
-                var systemsReview = getValue('systems-review.value');
-                var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');
-                var onIpt = getValue('on-ipt.value');
-
-                //Must have a Return Visit Date which should be greater than encounter date
-                if (tca_date =="") {
-                    getField('returnVisitDate.error').html('Return visit date should not be empty').show();
-                    return false;
-                }
-                if (tca_date &lt; encounterDate ){
-                        getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
-                        return false;
-                }
-
-                //tb rx date should be later than date of birth
-                if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
-                    getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
-                    return false;
-                }
-                //tb rx date cannot be same as birth date
-                if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
-                    getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
-                    return false;
-                }
-                //Validate fp options chooses atleast one option if on fp
-                if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                //Validate fp options chooses atleast one option if wants family planning
-                if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                //Validate not-on-fp options chooses atleast one option if not on fp
-                if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
-                    getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                //Systems review is mandatory field
-                if (systemsReview == false) {
-                    getField('systems-review.error').html('Please record systems review findings').show();
-                    return false;
-                }
-                //TB Screening is mandatory field
-                if (onAntiTbDrugs == false) {
-                    getField('on-anti-tb-drugs.error').html('Please indicate whether on Anti-TB drugs').show();
-                    return false;
-                }
-                //IPT Screening is mandatory field
-                if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
-                    getField('on-ipt.error').html('Please indicate whether currently on IPT').show();
-                    return false;
-                }
-                return true;
-
-            });
-
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
             var pregnancyStatus = getField('#pregnancyOption');
@@ -1119,6 +1048,77 @@ Green Card follow-up visit form
 
 
         });
+        //End on ready
+        //Before submit
+        beforeSubmit.push(function() {
+
+            var tca_date = getValue('returnVisitDate.value');
+            var encounterDate = getValue('encounter-date.value');
+            var valonform = getValue('tbrxdate.value');
+            var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
+            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
+            var onfpMethodChecked = getField("fplanning.value").val();
+            var systemsReview = getValue('systems-review.value');
+            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');
+            var onIpt = getValue('on-ipt.value');
+
+            //Must have a Return Visit Date which should be greater than encounter date
+            if (tca_date =="") {
+                getField('returnVisitDate.error').html('Return visit date should not be empty').show();
+                return false;
+            }
+            if (tca_date &lt; encounterDate ){
+                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
+                return false;
+            }
+
+            //tb rx date should be later than date of birth
+            if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
+                getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+                return false;
+            }
+            //tb rx date cannot be same as birth date
+            if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
+                getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
+                return false;
+            }
+            //Validate fp options chooses atleast one option if on fp
+            if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
+                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Validate fp options chooses atleast one option if wants family planning
+            if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
+                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Validate not-on-fp options chooses atleast one option if not on fp
+            if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
+                getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Systems review is mandatory field
+            if (systemsReview == false) {
+                getField('systems-review.error').html('Please record systems review findings').show();
+                return false;
+            }
+            //TB Screening is mandatory field
+            if (onAntiTbDrugs == false) {
+                getField('on-anti-tb-drugs.error').html('Please indicate whether on Anti-TB drugs').show();
+                return false;
+            }
+            //IPT Screening is mandatory field
+            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
+                getField('on-ipt.error').html('Please indicate whether currently on IPT').show();
+                return false;
+            }
+            return true;
+
+        });
     </script>
 
     <div class="ke-form-header">
@@ -1291,21 +1291,13 @@ Green Card follow-up visit form
                 </div>
                 <table id="key-population">
                     <tr>
-
                         <td>
-
-
-                            <!--<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                 <!--answerLabel="Discordant Couple" style="checkbox" /><br/>-->
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="People who inject drugs" style="checkbox" /><br/>
-
                             <includeIf velocityTest="$patient.gender == 'M'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Men who have sex with men" style="checkbox" /><br/>
                             </includeIf>
-
-
                             <includeIf velocityTest="$patient.gender == 'F'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
