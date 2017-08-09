@@ -195,7 +195,7 @@ Green Card follow-up visit form
         }
         var systemsReviewSelected = function() {
             var val = jq(this).val();
-            if (val == 1066){
+            if (val == 1116){
                 jq("#tbl-systems-review").hide();
 
             }else {
@@ -231,14 +231,13 @@ Green Card follow-up visit form
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
             if(val == 1066) {
-                jq('input[type=radio].on-ipt').prop("disabled", false);
+                jq('#on-ipt input').prop("disabled", false);
             } else {
                 jq('input[type=radio].on-ipt').prop("disabled", true);
                 jq('input[type=radio].on-ipt').prop("checked", false);
                 jq("#tb-screening-result").hide();
                 jq("#tb-screening-tab").hide();
-                jq("#ever-on-ipt").hide();
-                clearRadios(jq("#ever-on-ipt"));
+                jq("#tbl-ever-on-ipt").hide();
                 actionTakenTab.hide();
                 clearRadios(actionTakenTab);
                 iptClientWorkupTab.hide()
@@ -247,7 +246,7 @@ Green Card follow-up visit form
                 clearRadios(iptFollowup);
                 tbScreeningQuestionsTab.hide();
                 clearRadios(tbScreeningQuestionsTab);
-               iptInitiationTab.hide();
+                iptInitiationTab.hide();
 
             }
         }
@@ -264,7 +263,7 @@ Green Card follow-up visit form
             var tbScreeningResult = jq("#tb-screening-result");
             if(val == 1066) {
 
-                jq("#ever-on-ipt").show();
+                jq("#tbl-ever-on-ipt").show();
                 jq("#ipt-uptake").hide();
                 iptFollowup.hide();
                 actionTakenTab.hide();
@@ -278,8 +277,7 @@ Green Card follow-up visit form
                 clearRadios(tbScreeningResult);
 
             } else {
-                jq("#ever-on-ipt").hide();
-                clearRadios(jq("#ever-on-ipt"));
+                jq("#tbl-ever-on-ipt").hide();
                 jq("#ipt-followup").show();
                 tbScreeningQuestionsTab.show();
                 jq("#tb-screening-result").show();
@@ -338,7 +336,7 @@ Green Card follow-up visit form
 
             }
         }
-        //Resulting TB status for Ordered test
+
         var populationTypeSelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
@@ -349,6 +347,7 @@ Green Card follow-up visit form
 
             }
         }
+        //Resulting TB status for Ordered test
         var testOrdered  = function () {
             var val = jq(this).val();
             var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
@@ -689,9 +688,9 @@ Green Card follow-up visit form
          jq("#nutritional-status input[type=radio]").prop("checked", false);
          jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
          jq('#person-present input').click(onPersonPresentChange);
-         jq('input[type=radio].on-ipt').prop("disabled", true);
-         jq('input[type=radio].on-ipt').prop("checked", false);
-         jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
+         jq('#on-ipt input').prop("disabled", true);
+         //jq('input[type=radio].on-ipt').prop("checked", false);
+         //jq('input[type=radio].on-anti-tb-drugs').prop("checked", false);
          jq("#tbl-start-antiTb").hide();
          jq("#ipt-uptake").hide();
          jq("#tb-screening-result").hide();
@@ -702,7 +701,7 @@ Green Card follow-up visit form
          jq(".nav-links").hide();
          jq(".show-nav-links").text("Click to Show/Hide Form Sections");
          jq("#tb-screening-tab").hide();
-         jq("#ever-on-ipt").hide();
+         jq("#tbl-ever-on-ipt").hide();
          //IPT OUTCOME
          jq("#tbl-ipt-outcome").hide();
          jq("#reason-for-discontinuation").hide();
@@ -721,9 +720,9 @@ Green Card follow-up visit form
 
          //Event Handlers
          jq("#lmp-date :input[type=text]").change(onLmpChange);
-         jq('input[type=radio].on-anti-tb-drugs').change(onAntiTbDrugs);
-         jq('input[type=radio].on-ipt').change(onIPT);
-         jq("input[type=radio].ever-on-ipt").change(everOnIPT);
+         jq("#on-anti-tb-drugs :input[type=radio]").change(onAntiTbDrugs);
+         jq("#on-ipt :input[type=radio]").change(onIPT);
+         jq("#ever-on-ipt :input[type=radio]").change(everOnIPT);
          //sti notification
          //getField('screened-sti.value').change(screenedStiSelected);
          jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
@@ -742,7 +741,7 @@ Green Card follow-up visit form
         // getField('complaint-date.value').change(complaintDateInput);
          jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
          jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
-         jq('input[type=radio].systems-review').change(systemsReviewSelected);
+         jq('#systems-review :input[type=radio]').change(systemsReviewSelected);
          jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
          jq('input[type=radio].population-type').change(populationTypeSelected);
 
@@ -861,60 +860,6 @@ Green Card follow-up visit form
             /*TB Screening form validation*/
             var valbirthdate = "<lookup  expression="patient.birthdate" />"
             var valChangedToDateFormat = new Date(valbirthdate).getTime();
-
-
-            beforeSubmit.push(function() {
-
-                var tca_date = getValue('returnVisitDate.value');
-                var encounterDate = getValue('encounter-date.value');
-                var valonform = getValue('tbrxdate.value');
-                var valChangedToDateFormatOnForm=new Date(valonform).getTime();
-                var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-                var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
-                var onfpMethodChecked = getField("fplanning.value").val();
-
-                //Must have a Return Visit Date which should be greater than encounter date
-                if (tca_date =="") {
-                    getField('returnVisitDate.error').html('Return visit date should not be empty').show();
-                    return false;
-                }
-                if (tca_date &lt; encounterDate ){
-                        getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
-                        return false;
-                }
-
-                //tb rx date should be later than date of birth
-                if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
-                    getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
-                    return false;
-                }
-                //tb rx date cannot be same as birth date
-                if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
-                    getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
-                    return false;
-                }
-                //Validate fp options chooses atleast one option if on fp
-                if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                //Validate fp options chooses atleast one option if wants family planning
-                if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
-                    getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                //Validate not-on-fp options chooses atleast one option if not on fp
-                if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
-                    getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
-                    jq('#fp-details').show();
-                    return false;
-                }
-                return true;
-
-            });
-
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
             var pregnancyStatus = getField('#pregnancyOption');
@@ -968,7 +913,6 @@ Green Card follow-up visit form
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
-                        clearRadios(iptInitiationTab);
 
                     }
                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
@@ -998,7 +942,6 @@ Green Card follow-up visit form
 
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptFollowup);
-                        clearRadios(iptInitiationTab);
                     }
                     if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
@@ -1048,7 +991,6 @@ Green Card follow-up visit form
 
                 } else {
                     iptInitiationTab.hide();
-                    clearRadios(iptInitiationTab);
                 }
             };
             clearRadios = function(parentObj) {
@@ -1104,6 +1046,77 @@ Green Card follow-up visit form
 
             });
 
+
+        });
+        //End on ready
+        //Before submit
+        beforeSubmit.push(function() {
+
+            var tca_date = getValue('returnVisitDate.value');
+            var encounterDate = getValue('encounter-date.value');
+            var valonform = getValue('tbrxdate.value');
+            var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
+            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
+            var onfpMethodChecked = getField("fplanning.value").val();
+            var systemsReview = getValue('systems-review.value');
+            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');
+            var onIpt = getValue('on-ipt.value');
+
+            //Must have a Return Visit Date which should be greater than encounter date
+            if (tca_date =="") {
+                getField('returnVisitDate.error').html('Return visit date should not be empty').show();
+                return false;
+            }
+            if (tca_date &lt; encounterDate ){
+                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
+                return false;
+            }
+
+            //tb rx date should be later than date of birth
+            if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
+                getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+                return false;
+            }
+            //tb rx date cannot be same as birth date
+            if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
+                getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
+                return false;
+            }
+            //Validate fp options chooses atleast one option if on fp
+            if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
+                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Validate fp options chooses atleast one option if wants family planning
+            if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
+                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Validate not-on-fp options chooses atleast one option if not on fp
+            if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
+                getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
+                jq('#fp-details').show();
+                return false;
+            }
+            //Systems review is mandatory field
+            if (systemsReview == false) {
+                getField('systems-review.error').html('Please record systems review findings').show();
+                return false;
+            }
+            //TB Screening is mandatory field
+            if (onAntiTbDrugs == false) {
+                getField('on-anti-tb-drugs.error').html('Please indicate whether on Anti-TB drugs').show();
+                return false;
+            }
+            //IPT Screening is mandatory field
+            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
+                getField('on-ipt.error').html('Please indicate whether currently on IPT').show();
+                return false;
+            }
+            return true;
 
         });
     </script>
@@ -1278,21 +1291,13 @@ Green Card follow-up visit form
                 </div>
                 <table id="key-population">
                     <tr>
-
                         <td>
-
-
-                            <!--<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                 <!--answerLabel="Discordant Couple" style="checkbox" /><br/>-->
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="People who inject drugs" style="checkbox" /><br/>
-
                             <includeIf velocityTest="$patient.gender == 'M'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Men who have sex with men" style="checkbox" /><br/>
                             </includeIf>
-
-
                             <includeIf velocityTest="$patient.gender == 'F'">
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
@@ -1417,46 +1422,58 @@ Green Card follow-up visit form
             <!--TB Screening-->
             <fieldset>
                 <legend>TB Screening</legend>
-                <table cellspacing="5" style=" float: left; " >
+                <table cellspacing="10" >
                     <tr>
                         <th  style="color: #888" >Current Status </th>
                         <th  style="color: #888" >Recent </th>
                     </tr>
                     <tr>
                         <td>
-                            Patient on anti-TB Drugs? &#160;<input type="radio" name="on-anti-tb-drugs" class="on-anti-tb-drugs" value="1065"  /> Yes
-                            <input type="radio" class="on-anti-tb-drugs" name="on-anti-tb-drugs" value="1066"/> No
+                            Patient on anti-TB Drugs? &#160;
+                            <obs conceptId="1110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Yes,No"
+                                 style="radio"
+                                 id="on-anti-tb-drugs" />
+                            <br/>
                         </td>
-                       <td>
-                           <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        <td>
+                            <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Patient currently on IPT? &#160;&#160;
+                            <obs conceptId="1110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Yes,No"
+                                 style="radio"
+                                 id="on-ipt" />
+                            <br/>
                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        Patient currently on IPT? &#160;&#160;<input type="radio" name="on-ipt" class="on-ipt" value="1065"/> Yes
-                        <input type="radio" name="on-ipt" class="on-ipt" value="1066"/> No
-
-                        </td>
-                        <td>
-                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                        </td>
-                    </tr>
-                    <tr>
-                       <td>
-                        <div id="ever-on-ipt" >
-                            Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <input type="radio" name="patient_ever_on_ipt" class="ever-on-ipt" value="1065"/> Yes
-                            <input type="radio" class="ever-on-ipt" name="patient_ever_on_ipt" value="1066"/> No
-                        </div>
-                    </td>
                         <td>
                             <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                         </td>
                     </tr>
                 </table>
-
-            </fieldset>
-
-           <fieldset id="tb-screening-tab">
+                <table id="tbl-ever-on-ipt">
+                    <tr>
+                        <td>
+                            Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                            <obs conceptId="1681AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Yes,No"
+                                 style="radio"
+                                 id="ever-on-ipt" />
+                            <br/>
+                          </td>
+                        <td>
+                            <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <fieldset id="tb-screening-tab">
                     <legend>Screening Questions</legend>
                     <table id="screening-questions">
                         <tr>
@@ -2386,11 +2403,20 @@ Green Card follow-up visit form
             <!--System Examination-->
             <fieldset>
                 <legend>System Examination</legend>
-                <div>
-                    Any abnormal finding(s) on system review?  &#160;&#160;&#160;&#160; <input type="radio" name="systems-review" class="systems-review" value="1065"/> Yes
-                    <input type="radio" name="systems-review" class="systems-review" value="1066"/> No
-                </div>
-                <br />
+               <table>
+                   <tr>
+                       <td>
+                       Any abnormal finding(s) on system review?  &#160;&#160;&#160;&#160;
+                   </td>
+                       <td><obs
+                                   conceptId="159615AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                   answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                   answerLabels="Yes,No"
+                                   style="radio" id="systems-review" />
+                       </td>
+                   </tr>
+               </table>
+                 <br />
                 <table style="width: 70%;" border="0" id="tbl-systems-review">
                     <tr>
                         <th align="left">No. </th>
@@ -2511,7 +2537,7 @@ Green Card follow-up visit form
                         </td>
                     </tr>
                 </table>
-
+        </fieldset>
         </fieldset>
 
         <a id="treatment-plan-section"></a>
