@@ -33,6 +33,7 @@
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
+				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<ref bean="kenyaemr.common.report.dhis2" />
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
@@ -285,6 +286,17 @@
 		<property name="name" value="MOH 731" />
 		<property name="description" value="Comprehensive HIV/AIDS Facility Reporting Form - NASCOP" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh731.xls" />
+	</bean>
+
+	<bean id="kenyaemr.etl.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="b90e5c71-4e7b-4996-b8b8-b2278d5929af" />
+		<property name="name" value="ETL MOH 731 Report" />
+		<property name="description" value="MOH 731 Report based on ETL tables" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
 
