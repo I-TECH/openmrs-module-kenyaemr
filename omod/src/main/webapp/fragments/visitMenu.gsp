@@ -80,7 +80,7 @@
 </div>
 
 <div id="visit-summary" title="Visit Summary" style="display: none">
-	${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: currentPatient, complete: true, activeOnly: false ]) }
+	${ ui.includeFragment("kenyaemr", "patient/visitSummary", [ patient: currentPatient, complete: true, activeOnly: false ]) }
 	<div align="center">
 		<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Close</button>
 	</div>
