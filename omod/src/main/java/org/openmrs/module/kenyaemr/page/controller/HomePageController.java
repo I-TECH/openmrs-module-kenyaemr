@@ -14,28 +14,17 @@
 
 package org.openmrs.module.kenyaemr.page.controller;
 
-import com.mchange.v2.c3p0.util.TestUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.reporting.cohort.Cohorts;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
-import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -43,7 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
