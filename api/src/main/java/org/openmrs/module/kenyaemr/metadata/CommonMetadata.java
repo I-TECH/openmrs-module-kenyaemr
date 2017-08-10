@@ -14,6 +14,7 @@
 
 package org.openmrs.module.kenyaemr.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
@@ -47,6 +48,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PROGRESS_NOTE = Metadata.Form.PROGRESS_NOTE;
 		public static final String SURGICAL_AND_MEDICAL_HISTORY = Metadata.Form.SURGICAL_AND_MEDICAL_HISTORY;
 		public static final String TRIAGE = Metadata.Form.TRIAGE;
+		public static final String HTS_REGISTER = "402dc5d7-46da-42d4-b2be-f43ea4ad87b0";
 	}
 
 	public static final class _OrderType {
@@ -112,6 +114,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
 		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
+		install(form("HTS Register", "Register for HTS Services", _EncounterType.CONSULTATION, "1", _Form.HTS_REGISTER));
 
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",

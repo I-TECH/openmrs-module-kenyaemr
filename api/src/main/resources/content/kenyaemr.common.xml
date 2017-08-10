@@ -22,6 +22,7 @@
 				<ref bean="kenyaemr.common.form.progressNote" />
 				<ref bean="kenyaemr.common.form.familyTestingFollowup" />
 				<ref bean="kenyaemr.common.form.hivConfirmatoryTest"/>
+				<ref bean="kenyaemr.common.form.htsRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -263,6 +264,22 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivConfirmation.html" />
+		<property name="order" value="201000" />
+	</bean>
+
+	<!-- HTS Register -->
+	<bean id="kenyaemr.common.form.htsRegister" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="402dc5d7-46da-42d4-b2be-f43ea4ad87b0" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hts/htsRegister.html" />
 		<property name="order" value="201000" />
 	</bean>
 	<!-- ===================== Reports ===================== -->
