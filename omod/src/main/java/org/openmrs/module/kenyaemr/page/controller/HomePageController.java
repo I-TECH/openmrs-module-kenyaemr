@@ -62,7 +62,7 @@ public class HomePageController {
 			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "admin/firstTimeSetup");
 		}
 
-		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0;
+		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0, suppressedInLast12Months = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -90,11 +90,19 @@ public class HomePageController {
 		Set<Integer> startingArt = DashBoardCohorts.newOnART(evaluationContext).getMemberIds();
 		patientsNewOnArt = startingArt != null? startingArt.size(): 0;
 
+		Set<Integer> vlResultsInLast12Months = DashBoardCohorts.viralLoadResultsIn12Months(evaluationContext).getMemberIds();
+		vlInLast12Months = vlResultsInLast12Months != null? vlResultsInLast12Months.size(): 0;
+
+		Set<Integer> viralSuppressionInLast12Months = DashBoardCohorts.viralLoadSuppressionIn12Months(evaluationContext).getMemberIds();
+		suppressedInLast12Months = viralSuppressionInLast12Months != null? viralSuppressionInLast12Months.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
 		model.addAttribute("newOnArt", patientsNewOnArt);
 		model.addAttribute("reportPeriod", reportingPeriod);
+		model.addAttribute("vlResults", vlInLast12Months);
+		model.addAttribute("suppressedVl", suppressedInLast12Months);
 		
 		return null;
 	}

@@ -5,6 +5,8 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCo
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnCareCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLNewOnARTCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithVLInLast12MonthsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
@@ -116,6 +118,30 @@ public class DashBoardCohorts {
             return getService().evaluate(new ETLNewOnARTCohortDefinition(), context);
         } catch (EvaluationException e) {
             throw new IllegalStateException("Error evaluating new on art", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort viralLoadResultsIn12Months(EvaluationContext context) {
+        try {
+            return getService().evaluate(new ETLPatientsWithVLInLast12MonthsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients with VL results in last 12 months", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort viralLoadSuppressionIn12Months(EvaluationContext context) {
+        try {
+            return getService().evaluate(new ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients with viral load suppression in 12 months", e);
         }
     }
     private static CohortDefinitionService getService() {
