@@ -89,11 +89,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_Denominator", "12 months cohort", ReportUtils.map(datimIndicators.art12MonthCohort(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
 
         // 3.4 (Starting ART)
-     /*   EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), indParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), endDateParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
 
         // 3.5 (Revisits ART)
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), indParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
-      */  return cohortDsd;
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), endDateParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
+        return cohortDsd;
 
     }
 }

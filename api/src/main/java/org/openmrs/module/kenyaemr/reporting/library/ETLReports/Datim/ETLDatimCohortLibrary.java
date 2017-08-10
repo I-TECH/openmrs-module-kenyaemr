@@ -162,4 +162,48 @@ public class ETLDatimCohortLibrary {
 
     }
 
+    /**
+     * TX_PVLS
+     * Patients with VL in the last 12 months
+     * @return
+     */
+    protected CohortDefinition viralLoadResultsInLast12Months() {
+
+        String sqlQuery =" select distinct patient_id \n" +
+                "from kenyaemr_etl.etl_laboratory_extract \n" +
+                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
+                "and (lab_test in (856, 1305));";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_PVLS_Denominator");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("VL in last 12 months");
+        return cd;
+
+    }
+
+    /**
+     * TX_PVLS Datim Indicator
+     * Patients with viral suppression in last 12 months
+     * @return
+     */
+    protected CohortDefinition viralSuppressionInLast12Months() {
+
+        String sqlQuery = " select distinct patient_id \n" +
+                "from kenyaemr_etl.etl_laboratory_extract \n" +
+                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
+                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_PVLS_Numerator");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("on Therapy At 12 Months");
+        return cd;
+
+    }
+
 }
