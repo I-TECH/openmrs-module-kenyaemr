@@ -43,6 +43,7 @@
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.common.report.mer-indicators" />
+				<ref bean="kenyaemr.etl.common.report.datim"/>
 			</set>
 		</property>
 	</bean>
@@ -310,6 +311,18 @@
 		<property name="targetUuid" value="b90e5c71-4e7b-4996-b8b8-b2278d5929af" />
 		<property name="name" value="ETL MOH 731 Report" />
 		<property name="description" value="MOH 731 Report based on ETL tables" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:moh731.xls" />
+	</bean>
+
+	<!-- introduction of viral load alert-->
+	<bean id="kenyaemr.etl.common.report.datim" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="ed84df22-6f07-486e-8f64-749decb08365" />
+		<property name="name" value="DATIM Report" />
+		<property name="description" value="DATIM Report" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
