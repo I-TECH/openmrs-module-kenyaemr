@@ -112,68 +112,157 @@
         <table id="table" width="100%">
             <thead>
             <tr>
-                <th align="left">Name of Members</th>
-                <th align="left">Age</th>
-                <th align="left">Relation</th>
-                <th align="left">Relationship Status</th>
-                <th align="left">Baseline HIV Status</th>
-                <th align="left">Test Date</th>
+                <th align="left">Population Type</th>
+                <th align="left">Ever Tested</th>
+                <th align="left">Retest(Months)</th>
+                <th align="left">Disability</th>
+                <th align="left">Informed Consent</th>
+                <th align="left">Tested as Couple</th>
+                <th align="left">HTS Strategy</th>
+                <th align="left">HIV Test 1 Result</th>
+                <th align="left">Kit Name</th>
+                <th align="left">Lot No.</th>
+                <th align="left">Expiry Date</th>
+                <th align="left">HIV Test 2 Result</th>
+                <th align="left">Kit Name</th>
+                <th align="left">Lot No.</th>
+                <th align="left">Expiry Date</th>
                 <th align="left">HIV Result</th>
-                <th align="left">In Care?</th>
-                <th align="left">CCC Number</th>
-                <th align="left">Facility Enrolled</th>
+                <th align="left">Result Given?</th>
+                <th align="left">Couple Discordant</th>
+                <th align="left">TB Screening Results</th>
+                <th align="left">Linked to Care</th>
+                <th align="left">HIV Self Test This Year</th>
+                <th align="left">Provider Name</th>
+                <th align="left">Remarks</th>
             </tr>
             </thead>
             <tbody>
             <repeat>
                 <template>
                     <obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
                         <tr>
                             <td>
-                                <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
+
+                                <obs class="population-type"  conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="N/A,SW,MSM,IDU,Other"/>
                             </td>
                             <td>
-                                <obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/>
-                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Years,Months"/>
+                                <obs class="ever-tested" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO"/>
                             </td>
                             <td>
-                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
+                                <obs class="retest-duration" conceptId="159813AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+
                             </td>
 
                             <td>
-                                <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Current,Deceased,Unknown"/>
+                                <obs class="disability" conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Deaf,Blind,Mental,Physical,Other"/>
                             </td>
                             <td>
-                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
+                                <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="yes_no" />
                             </td>
                             <td>
-                                <obs class="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                                <obs class="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO"/>
                             </td>
                             <td>
-                                <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Positive,Negive,Exposed infant,Unknown"/>
+                                <obs class="hts-strategy"
+                                     conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="HP,NP,VI,VS,HBTC,MO,Other"
+                            />
                             </td>
+                            <td>
+                                <obs class="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negive,Inconclusive"/>
+                            </td>
+                            <td>
+                                <!--<obs class="kit-name"-->
+                                     <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                      <!--answerConceptId="162401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels=" "-->
+                                <!--/>-->
+                                <input type="text" name="kit-name" />
+                            </td>
+                            <td>
+                                <!--<obs class="lot-number"-->
+                                     <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                     <!--answerConceptId="162398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                <!--/>-->
+                                <input type="text" name="lot-number" />
+                            </td>
+                            <td>
+                                <obs class="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                />
+                            </td>
+                            <td>
+                                <obs class="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negive,Inconclusive"/>
+                            </td>
+                            <td>
+                                <!--<obs class="kit-name" style="text"-->
+                                     <!--conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                     <!--answerConceptId="162401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                <!--/>-->
+                                <input type="text" name="kit-name" />
+                            </td>
+                            <td>
+                                <!--<obs class="lot-number"-->
+                                     <!--conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                     <!--answerConceptId="162398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                <!--/>-->
+                                <input type="text" name="lot-number" />
+                            </td>
+                            <td>
+                                <obs class="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                />
+                            </td>
+
+                            <td>
+                                <obs class="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negive,Inconclusive"/>
+                            </td>
+                            <td>
+                                <obs class="result-given" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO"/>
+                            </td>
+                            <td>
+                                <obs class="couple-discordant" conceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO,N/A"/>
+                            </td>
+                            <td>
+                                <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="No TB Signs,Presumed TB,TB Confirmed,Not Done" />
+                        </td>
                             <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO,N/A"/>
                             </td>
                             <td>
-                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" size ="15"/>
+                                <obs class="hb-self-test" conceptId="1492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="yes_no" />
                             </td>
                             <td>
-                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
-
-                        </td>
+                                <obs class="provider-name" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                />
+                            </td>
+                            <td>
+                                <obs class="remarks" conceptId="163761AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                />
+                            </td>
                         </tr>
                     </obsgroup>
                 </template>
