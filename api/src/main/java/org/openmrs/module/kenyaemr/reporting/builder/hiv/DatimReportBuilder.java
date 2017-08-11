@@ -61,38 +61,54 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.setName("3");
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.datimFineAgeGroups(), "onDate=${endDate}"));
         cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
         ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
-        ColumnParameters colMPeds = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
-        ColumnParameters colFPeds = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
-        ColumnParameters colMAdults = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
-        ColumnParameters colFAdults = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
+        ColumnParameters m_1_to_9 = new ColumnParameters(null, "1-9, Male", "gender=M|age=1-9");
+        ColumnParameters f_1_to_9 = new ColumnParameters(null, "1-9, Female", "gender=F|age=1-9");
+
+        ColumnParameters m_10_to_14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
+        ColumnParameters f_10_to_14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
+
+        ColumnParameters m_15_to_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
+        ColumnParameters f_15_to_19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
+
+        ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
+        ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
+
+        ColumnParameters m_25_to_49 = new ColumnParameters(null, "25-49, Male", "gender=M|age=25-49");
+        ColumnParameters f_25_to_49 = new ColumnParameters(null, "25-49, Female", "gender=F|age=25-49");
+
+        ColumnParameters m_50_and_above = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
+        ColumnParameters f_50_and_above = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
+
         ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
 
-        List<ColumnParameters> allColumns = Arrays.asList(colInfants, colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
-        List<ColumnParameters> nonInfantColumns = Arrays.asList(colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
+        List<ColumnParameters> allColumns = Arrays.asList(
+                colInfants, f_1_to_9,  m_1_to_9, f_10_to_14, m_10_to_14,f_15_to_19, m_15_to_19,
+                f_20_to_24,m_20_to_24,f_25_to_49, m_25_to_49,f_50_and_above,m_50_and_above , colTotal);
+        //List<ColumnParameters> nonInfantColumns = Arrays.asList(colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
 
         // 3.1 (On CTX Prophylaxis)
-        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Started on Art", ReportUtils.map(datimIndicators.startedOnArt(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Started on Art", ReportUtils.map(datimIndicators.startedOnArt(), indParams), allColumns, Arrays.asList("03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16"));
 
-        EmrReportingUtils.addRow(cohortDsd, "TX_Curr", "Currently on Art", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_Curr", "Currently on Art", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), allColumns, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"));
 
         // 3.2 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Numerator", "Retention at 12 months", ReportUtils.map(datimIndicators.onTherapyAt12Months(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13")); //adds 08, 09 to the col titles
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Numerator", "Retention at 12 months", ReportUtils.map(datimIndicators.onTherapyAt12Months(), indParams), allColumns, Arrays.asList("31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44"));
 
         // 3.3 (Currently in Care)
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Denominator", "12 months cohort", ReportUtils.map(datimIndicators.art12MonthCohort(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Denominator", "12 months cohort", ReportUtils.map(datimIndicators.art12MonthCohort(), indParams), allColumns, Arrays.asList("45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58"));
 
         // 3.4 (Starting ART)
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), endDateParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), endDateParams), allColumns, Arrays.asList("59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72"));
 
         // 3.5 (Revisits ART)
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), endDateParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), endDateParams), allColumns, Arrays.asList("73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86"));
         return cohortDsd;
 
     }
