@@ -1,0 +1,199 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script>
+
+        function disableFields() {
+            var table = document.getElementById("table");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
+
+                if (baselineHivStatus == 664) {     //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-status').attr('disabled', false);
+                }
+                if (baselineHivStatus == 703)  {                     //positive
+//                       $(row).find('.in-care select').val('');
+//                       $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                }
+            }
+        }
+
+
+        $(document).ready(function () {
+
+            disableFields();
+
+            $(".hiv-result select").change(function () {
+                var row = $(this).parent().parent().parent();
+                var baseline = $(".baseline-hiv-status :selected").text();
+               // console.log("Baseline " + baseline);
+                if (this.value == 664 &amp;&amp; baseline !='Positive') {    //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled',true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+
+                } else {                     //positive
+
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-status select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
+                }
+            });
+
+            $(".baseline-hiv-status  select").change(function () {
+                var row = $(this).parent().parent().parent();
+
+                if (this.value == 664) {    //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+
+                }
+                if(this.value == 703) {                     //positive
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
+
+                }
+            });
+
+        });
+    </script>
+
+    <!-- Encounter date, provider and location are not relevant for CE forms -->
+    <div style="display:none">
+        <encounterDate id="encounter-date" showTime="true" />
+        <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
+        <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+    </div>
+
+    <div class="ke-form-content">
+        <table id="table" width="100%">
+            <thead>
+            <tr>
+                <th align="left">Name of Members</th>
+                <th align="left">Age</th>
+                <th align="left">Relation</th>
+                <th align="left">Relationship Status</th>
+                <th align="left">Baseline HIV Status</th>
+                <th align="left">Test Date</th>
+                <th align="left">HIV Result</th>
+                <th align="left">In Care?</th>
+                <th align="left">CCC Number</th>
+                <th align="left">Facility Enrolled</th>
+            </tr>
+            </thead>
+            <tbody>
+            <repeat>
+                <template>
+                    <obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <tr>
+                            <td>
+                                <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
+                            </td>
+                            <td>
+                                <obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/>
+                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Years,Months"/>
+                            </td>
+                            <td>
+                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
+                            </td>
+
+                            <td>
+                                <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Current,Deceased,Unknown"/>
+                            </td>
+                            <td>
+                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
+                            </td>
+                            <td>
+                                <obs class="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                            </td>
+                            <td>
+                                <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negive,Exposed infant,Unknown"/>
+                            </td>
+                            <td>
+                                <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
+                            </td>
+                            <td>
+                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" size ="15"/>
+                            </td>
+                            <td>
+                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+
+                        </td>
+                        </tr>
+                    </obsgroup>
+                </template>
+                <render n="1" concept=" "/>
+                <render n="2" concept=" "/>
+                <render n="3" concept=" "/>
+                <render n="4" concept=" "/>
+                <render n="5" concept=" "/>
+                <render n="6" concept=" "/>
+                <render n="7" concept=" "/>
+                <render n="8" concept=" "/>
+                <render n="9" concept=" "/>
+                <render n="10" concept=" "/>
+            </repeat>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
