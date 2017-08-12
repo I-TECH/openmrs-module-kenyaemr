@@ -85,8 +85,8 @@
 	<br/>
 	<br/>
 	<br/>
-	<div style="align: center; margin: 5px;" >
-		<button style="float: right" type="button" class="ke-app" onclick="${ onClick }"><img src="${ ui.resourceLink("kenyaemr", "images/continue.png") }" />Proceed to Home Page</button>
+	<div style="text-align: center; margin: 5px;" >
+		<button  type="button" class="ke-app" onclick="${ onClick }"><img src="${ ui.resourceLink("kenyaemr", "images/forward.png") }" />Proceed to Home Page</button>
 	</div>
 </div>
 
