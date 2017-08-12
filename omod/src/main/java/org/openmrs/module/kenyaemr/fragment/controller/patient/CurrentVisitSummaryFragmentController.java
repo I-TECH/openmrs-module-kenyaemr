@@ -17,6 +17,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.patient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -36,11 +38,14 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.PrivilegeConstants;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Visit summary fragment
@@ -80,6 +85,7 @@ public class CurrentVisitSummaryFragmentController {
 		 - Triage
 		 */
 
+		// Get vitals recorded during the visit
 		if(visit != null) {
 			// Get recorded triage
 			List<Obs> obs = obsService.getObservations(
@@ -100,18 +106,143 @@ public class CurrentVisitSummaryFragmentController {
 			if (obs != null) {
 
 				model.addAttribute("vitals", getVisitVitals(obs));
-				log.info("Existing Triage" + getVisitVitals(obs));
 			} else {
 				model.addAttribute("vitals", null);
 			}
 		}
-		/*model.addAttribute("visit", visit);
-		model.addAttribute("sourceForm", new VisitWrapper(visit).getSourceForm());
-		model.addAttribute("allowVoid", Context.hasPrivilege(PrivilegeConstants.DELETE_VISITS));*/
+
+		// Get the last 5 diagnoses
+		/**
+		 * Diagnosis concept in blue card and green card: 6042
+		 * Grouping concept in green card: 159947
+		 *
+		 */
+		// Limit diagnosis to green card, hiv addendum and moh 257 visit summary
+		List<Form> formsCollectingDiagnosis = Arrays.asList(
+				Context.getFormService().getFormByUuid("23b4ebbd-29ad-455e-be0e-04aa6bc30798"), // moh 257 visit summary
+				Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259"), //green card
+				Context.getFormService().getFormByUuid("bd598114-4ef4-47b1-a746-a616180ccfc0") // hiv addendum
+		);
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingDiagnosis, null, null,false);
+		// Get recorded triage
+		List<Obs> diagnosisObs = obsService.getObservations(
+				Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
+				encounters,
+				Arrays.asList(conceptService.getConcept(6042)),
+				null,
+				null,
+				null,
+				null,
+				5,
+				null,
+				null,
+				visit.getStopDatetime(),
+				false
+		);
+
+		if (diagnosisObs != null) {
+
+			model.addAttribute("diagnoses", getDiagnoses(diagnosisObs));
+		} else {
+			model.addAttribute("diagnoses", null);
+		}
+
+		// Get medications
+		/**
+		 * Grouping concept: 1442
+		 * Drug: 1282
+		 * Dose: 1443
+		 * Duration: 159368
+		 * Units: 1732
+		 */
+		// Limit diagnosis to green card, hiv addendum and moh 257 visit summary
+		List<Form> medicationForms = Arrays.asList(
+				Context.getFormService().getFormByUuid("23b4ebbd-29ad-455e-be0e-04aa6bc30798"), // moh 257 visit summary
+				//Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259"), //green card
+				Context.getFormService().getFormByUuid("d4ff8ad1-19f8-484f-9395-04c755de9a47") // other medications
+		);
+		List<Encounter> medicationEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, medicationForms, null, null,false);
+		// Get recorded medications
+		List<Obs> medicationObs = obsService.getObservations(
+				Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
+				encounters,
+				Arrays.asList(conceptService.getConcept(1442)),
+				null,
+				null,
+				null,
+				null,
+				5,
+				null,
+				null,
+				visit.getStopDatetime(),
+				false
+		);
+
+		List<SimpleObject> medicationList = new ArrayList<SimpleObject>();
+		for(Obs o: medicationObs) {
+			if (getMedications(o.getGroupMembers()) != null) {
+				medicationList.add(getMedications(o.getGroupMembers()));
+			}
+		}
+
+	}
+
+	private SimpleObject getMedications (Set<Obs> obsList) {
+
+		Integer drugDuration = 159368;
+		Integer	drugDurationUnit = 1732;
+		Integer frequency = 160855;
+		Integer drug = 1282;
+
+		String durationUnit = null;
+		Integer duration = 0;
+		String frequencyPrescribed  = null;
+		String drugName = null;
+
+
+		for(Obs obs:obsList) {
+
+			if (obs.getConcept().getConceptId().equals(drug) ) {
+				drugName = obs.getValueCoded().getName().getName();
+			} else if (obs.getConcept().getConceptId().equals(drugDuration )) {
+				duration = obs.getValueNumeric().intValue();
+			} else if (obs.getConcept().getConceptId().equals(frequency) ) {
+				frequencyPrescribed = durationConverter(obs.getValueCoded());
+			} else if (obs.getConcept().getConceptId().equals(drugDurationUnit )) {
+				durationUnit = durationUnitConverter(obs.getValueCoded());
+			}
+		}
+
+		if(drugName == null)
+			return null;
+
+		return SimpleObject.create(
+				"drug", drugName != null? drugName: "",
+				"frequency", frequencyPrescribed != null? frequencyPrescribed: "",
+				"duration", duration != null? duration: "",
+				"durationUnit", durationUnit != null? durationUnit: ""
+		);
+	}
+
+	private Set<SimpleObject> getDiagnoses (List<Obs> obsList) {
+		Set<SimpleObject> diagnosisList = new HashSet<SimpleObject>();
+		int diagnosisCounter = 0;
+		for(Obs o: obsList) {
+			if(o.getValueCoded() != null) {
+				diagnosisCounter++;
+
+				StringBuilder diagnosis = new StringBuilder().append(diagnosisCounter).append(".")
+						.append(o.getValueCoded().getName().getName())
+						.append(" => ").append(DATE_FORMAT.format(o.getObsDatetime()));
+				diagnosisList.add(SimpleObject.create(
+						"diagnosis", diagnosis.toString()
+				));
+			}
+		}
+		return diagnosisList;
 	}
 
 	private SimpleObject getVisitVitals(List<Obs> obsList) {
-
 		Double weight = null;
 		Double height = null;
 		Double temp = null;
@@ -195,4 +326,27 @@ public class CurrentVisitSummaryFragmentController {
 				"lmp", vitalsMap.get("lmp") != null? new StringBuilder().append(vitalsMap.get("lmp")): ""
 		);
 	}
+
+	String durationConverter (Concept key) {
+		Map<Concept, String> ageUnitAnsList = new HashMap<Concept, String>();
+		ageUnitAnsList.put(conceptService.getConcept(1822), "Hours");
+		ageUnitAnsList.put(conceptService.getConcept(1072), "Days");
+		ageUnitAnsList.put(conceptService.getConcept(1073), "Weeks");
+		ageUnitAnsList.put(conceptService.getConcept(1734), "Years");
+		ageUnitAnsList.put(conceptService.getConcept(1074), "Months");
+		return ageUnitAnsList.get(key);
+	}
+
+	String durationUnitConverter (Concept key) {
+		Map<Concept, String> ageUnitAnsList = new HashMap<Concept, String>();
+		ageUnitAnsList.put(conceptService.getConcept(160862), "Once daily");
+		ageUnitAnsList.put(conceptService.getConcept(160863), "Once daily at bedtime");
+		ageUnitAnsList.put(conceptService.getConcept(160864), "Once daily in the evening");
+		ageUnitAnsList.put(conceptService.getConcept(160865), "Once daily in the morning");
+		ageUnitAnsList.put(conceptService.getConcept(160858), "Twice daily");
+		ageUnitAnsList.put(conceptService.getConcept(160866), "Thrice daily");
+		ageUnitAnsList.put(conceptService.getConcept(160870), "Four times daily");
+		return ageUnitAnsList.get(key);
+	}
+
 }

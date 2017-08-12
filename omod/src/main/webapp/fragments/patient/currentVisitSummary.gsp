@@ -96,39 +96,15 @@
                         <div class="info-header">
                             <i class="icon-calendar"></i>
                             <h3>Diagnosis</h3>
-
-                            <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b#visits" class="right">
-                                <i class="icon-share-alt edit-action" title="Edit"></i>
-                            </a>
-
                         </div>
                         <div class="info-body">
-
-                            <ul>
-
-                                <li class="clear">
-                                    <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b&amp;visitId=174#visits" class="visit-link">
-                                        Today
-
-                                    </a>
-                                    <div class="tag">
-                                        Active -
-                                        Outpatient
-                                    </div>
-                                </li>
-
-                                <li class="clear">
-                                    <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b&amp;visitId=172#visits" class="visit-link">
-                                        01.Aug.2017
-                                        - 02.Aug.2017
-                                    </a>
-                                    <div class="tag">
-
-                                        Outpatient
-                                    </div>
-                                </li>
-
-                            </ul>
+                            <% if (diagnoses) { %>
+                            <% diagnoses.each { rel -> %>
+                            <div class="ke-stack-item">	${ rel.diagnosis } </div>
+                            <% } %>
+                            <% } else { %>
+                            <div class="ke-stack-item">None</div>
+                            <% } %>
                         </div>
                     </div>
 
