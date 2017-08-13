@@ -40,6 +40,8 @@ import org.openmrs.util.PrivilegeConstants;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -106,11 +108,10 @@ public class CurrentVisitSummaryFragmentController {
 			if (obs != null) {
 
 				model.addAttribute("vitals", getVisitVitals(obs));
-			} else {
-				model.addAttribute("vitals", null);
 			}
+		} else {
+			model.addAttribute("vitals", null);
 		}
-
 		// Get the last 5 diagnoses
 		/**
 		 * Diagnosis concept in blue card and green card: 6042
@@ -125,28 +126,30 @@ public class CurrentVisitSummaryFragmentController {
 		);
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingDiagnosis, null, null,false);
 		// Get recorded triage
-		List<Obs> diagnosisObs = obsService.getObservations(
-				Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
-				encounters,
-				Arrays.asList(conceptService.getConcept(6042)),
-				null,
-				null,
-				null,
-				null,
-				5,
-				null,
-				null,
-				visit.getStopDatetime(),
-				false
-		);
+		if(visit != null) {
+			List<Obs> diagnosisObs = obsService.getObservations(
+					Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
+					encounters,
+					Arrays.asList(conceptService.getConcept(6042)),
+					null,
+					null,
+					null,
+					null,
+					5,
+					null,
+					visit.getStartDatetime(),
+					visit.getStopDatetime(),
+					false
+			);
 
-		if (diagnosisObs != null) {
+			if (diagnosisObs != null) {
 
-			model.addAttribute("diagnoses", getDiagnoses(diagnosisObs));
+				model.addAttribute("diagnoses", getDiagnoses(diagnosisObs));
+			}
+
 		} else {
 			model.addAttribute("diagnoses", null);
 		}
-
 		// Get medications
 		/**
 		 * Grouping concept: 1442
@@ -158,33 +161,85 @@ public class CurrentVisitSummaryFragmentController {
 		// Limit diagnosis to green card, hiv addendum and moh 257 visit summary
 		List<Form> medicationForms = Arrays.asList(
 				Context.getFormService().getFormByUuid("23b4ebbd-29ad-455e-be0e-04aa6bc30798"), // moh 257 visit summary
-				//Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259"), //green card
 				Context.getFormService().getFormByUuid("d4ff8ad1-19f8-484f-9395-04c755de9a47") // other medications
 		);
 		List<Encounter> medicationEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, medicationForms, null, null,false);
 		// Get recorded medications
-		List<Obs> medicationObs = obsService.getObservations(
-				Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
-				encounters,
-				Arrays.asList(conceptService.getConcept(1442)),
-				null,
-				null,
-				null,
-				null,
-				5,
-				null,
-				null,
-				visit.getStopDatetime(),
-				false
-		);
 
-		List<SimpleObject> medicationList = new ArrayList<SimpleObject>();
-		for(Obs o: medicationObs) {
-			if (getMedications(o.getGroupMembers()) != null) {
-				medicationList.add(getMedications(o.getGroupMembers()));
+		if(visit != null) {
+			List<Obs> medicationObs = obsService.getObservations(
+					Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
+					medicationEncounters,
+					Arrays.asList(conceptService.getConcept(1442)),
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					visit.getStartDatetime(),
+					visit.getStopDatetime(),
+					false
+			);
+
+			log.info("medications: " + medicationObs);
+			List<SimpleObject> medicationList = new ArrayList<SimpleObject>();
+			for (Obs o : medicationObs) {
+				if (getMedications(o.getGroupMembers()) != null) {
+					medicationList.add(getMedications(o.getGroupMembers()));
+				}
 			}
+
+			if (medicationList != null) {
+
+				model.addAttribute("medication", medicationList);
+			}
+		} else {
+			model.addAttribute("medication", null);
 		}
 
+		/**
+		 * Get list of recent visits - 6 months ago
+		 */
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MONTH, -6);
+		List<Visit> recentVisits = Context.getVisitService().getVisits(null,
+				Collections.singleton(patient),
+				null,
+				null,
+				now.getTime(),
+				null,
+				null,
+				null,
+				null,
+				true,
+				false
+				);
+		if(recentVisits != null) {
+			model.put("recentVisits", getVisits(recentVisits));
+		} else {
+			model.put("recentVisits", null);
+		}
+
+	}
+
+	private List<SimpleObject> getVisits (List<Visit> visitList ) {
+		List<SimpleObject> visits = new ArrayList<SimpleObject>();
+		for(Visit v : visitList) {
+			if(v.getStopDatetime() == null) {
+				visits.add(SimpleObject.create(
+						"visitDate", new StringBuilder().append(DATE_FORMAT.format(v.getStartDatetime())).toString(),
+						"active", true
+				));
+			} else {
+				visits.add(SimpleObject.create(
+						"visitDate", new StringBuilder().append(DATE_FORMAT.format(v.getStartDatetime()))
+						.append(" - ").append(DATE_FORMAT.format(v.getStopDatetime())),
+						"active", false
+				));
+			}
+		}
+		return visits;
 	}
 
 	private SimpleObject getMedications (Set<Obs> obsList) {
@@ -198,12 +253,14 @@ public class CurrentVisitSummaryFragmentController {
 		Integer duration = 0;
 		String frequencyPrescribed  = null;
 		String drugName = null;
+		String visit = null;
 
 
 		for(Obs obs:obsList) {
 
 			if (obs.getConcept().getConceptId().equals(drug) ) {
 				drugName = obs.getValueCoded().getName().getName();
+				visit = DATE_FORMAT.format(obs.getObsDatetime());
 			} else if (obs.getConcept().getConceptId().equals(drugDuration )) {
 				duration = obs.getValueNumeric().intValue();
 			} else if (obs.getConcept().getConceptId().equals(frequency) ) {
@@ -220,7 +277,8 @@ public class CurrentVisitSummaryFragmentController {
 				"drug", drugName != null? drugName: "",
 				"frequency", frequencyPrescribed != null? frequencyPrescribed: "",
 				"duration", duration != null? duration: "",
-				"durationUnit", durationUnit != null? durationUnit: ""
+				"durationUnit", durationUnit != null? durationUnit: "",
+				"visitDate", visit
 		);
 	}
 

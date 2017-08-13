@@ -76,15 +76,26 @@
                         <div class="info-header">
                             <i class="icon-calendar"></i>
                             <h3>Recent Visits</h3>
-
-                            <a href="http://41.215.79.236:8080/openmrs/appointmentschedulingui/manageAppointments.page?patientId=103&amp;returnUrl=%2Fopenmrs%2Fcoreapps%2Fclinicianfacing%2Fpatient.page%3FpatientId%3D103%26app%3Dpih.app.clinicianDashboard&amp;" class="right">
-                                <i class="icon-share-alt edit-action" title="Edit"></i>
-                            </a>
-
                         </div>
                         <div class="info-body">
+                            <% if(recentVisits) { %>
+                            <ul>
+                            <% recentVisits.each { %>
+                            <li class="clear">
+                                ${it.visitDate}
+                                <div class="tag">
+                                    <% if(it.active) { %>
+                                        Active -
+                                    <% } %>
+                                    Outpatient
+                                </div>
+                            </li>
 
-                            None
+                            <% } %>
+                                </ul>
+                            <% } else { %>
+                                No visit in the last six months
+                            <% } %>
 
                         </div>
                     </div>
@@ -99,8 +110,8 @@
                         </div>
                         <div class="info-body">
                             <% if (diagnoses) { %>
-                            <% diagnoses.each { rel -> %>
-                            <div class="ke-stack-item">	${ rel.diagnosis } </div>
+                            <% diagnoses.each { d -> %>
+                            <div class="ke-stack-item">	${ d.diagnosis } </div>
                             <% } %>
                             <% } else { %>
                             <div class="ke-stack-item">None</div>
@@ -112,12 +123,30 @@
                         <div class="info-header">
                             <i class="icon-medical"></i>
                             <h3>Medications</h3>
-                            <i class="icon-pencil edit-action right" title="Edit" onclick=""></i>
                         </div>
                         <div class="info-body">
 
-                            Unknown
+                            <% if (medication) { %>
+                            <table>
+                                <tr>
+                                    <th>Drug</th>
+                                    <th>Frequency</th>
+                                    <th>Duration</th>
+                                    <th>Visit</th>
+                                </tr>
+                            <% medication.each { m-> %>
+                                <tr>
+                                    <td>${m.drug}</td>
+                                    <td>${m.frequency}</td>
+                                    <td>${m.duration} ${m.durationUnit}</td>
+                                    <td>${m.visitDate}</td>
+                                </tr>
+                            <% }  %>
+                            </table>
 
+                            <% } else { %>
+                                None
+                            <% } %>
                         </div>
                     </div>
 
