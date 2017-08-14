@@ -23,7 +23,7 @@
             vertical-align: baseline;
             padding: 4px;
             text-align: left;
-            background-color: #F3F9FF;
+            background-color: #B7F6B7;
         }
         .left-table {
             display: inline-block; border: 1px solid; float: left;
@@ -36,7 +36,6 @@
 
     <script type="text/javascript">
         isPediatric = null; // Set later by AJAX lookup
-
         /**
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
          */
@@ -219,6 +218,7 @@
         jq(function() {
 
             jq('#person-present input').click(onPersonPresentChange);
+            jq('.patient-details :input').prop('disabled', true);
 
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
@@ -323,7 +323,7 @@
             <tbody>
             <tr>
                 <th rowspan="7">Visit Details</th>
-                <th colspan="2">Date</th>
+                <th colspan="2">Date/Location</th>
                 <td>(a)</td>
                 <td>
                     <ifMode mode="ENTER">
@@ -336,7 +336,8 @@
                     <encounterDate id="encounter-date" showTime="false" />
                 </td>
                 <td><strong>Scheduled/Unscheduled </strong> <br/>
-                    <obs conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no" /> </td>
+                    <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                </td>
             </tr>
             <tr>
                 <th colspan="2">Type</th>
@@ -352,7 +353,9 @@
                     />
                     <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                 </td>
-                <td></td>
+                <td>
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+                </td>
             </tr>
             <tr class="patient-details">
                 <th colspan="2">Blood Pressure</th>
