@@ -23,7 +23,7 @@
             vertical-align: baseline;
             padding: 4px;
             text-align: left;
-            background-color: #B7F6B7;
+            background-color: #F3F9FF;
         }
         .left-table {
             display: inline-block; border: 1px solid; float: left;
@@ -321,81 +321,83 @@
     <div class="ke-form-content">
         <table class="moh257" align="center">
             <tbody>
-            <tr>
-                <th rowspan="7">Visit Details</th>
-                <th colspan="2">Date/Location</th>
-                <td>(a)</td>
-                <td>
-                    <ifMode mode="ENTER">
-                        <script type="text/javascript">
-                            jq(function(){
-                                setValue("encounter-date.value", "");
-                            });
-                        </script>
-                    </ifMode>
-                    <encounterDate id="encounter-date" showTime="false" />
-                </td>
-                <td><strong>Scheduled/Unscheduled </strong> <br/>
-                    <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
-                </td>
-            </tr>
-            <tr>
-                <th colspan="2">Type</th>
-                <td>(b)</td>
-                <td>
-                    <obs
-                            id="person-present"
-                            conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                            answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
-                            style="radio"
-                            answerSeparator="&lt;br /&gt;"
-                    />
-                    <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                </td>
-                <td>
-                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
-                </td>
-            </tr>
-            <tr class="patient-details">
-                <th colspan="2">Blood Pressure</th>
-                <td>(c)</td>
-                <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
-           <td></td>
-            </tr>
-            <tr class="patient-details">
-                <th colspan="2">Weight</th>
-                <td>(d)</td>
-                <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
-                <td></td>
-            </tr>
-            <tr class="patient-details">
-                <th colspan="2">Height</th>
-                <td>(e)</td>
-                <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
-                <td></td>
-            </tr>
-            <tr class="patient-details">
-                <th colspan="2">BMI / MUAC* </th>
-                <td>(f)</td>
-                <td><span id="calculated-bmi" class="value"></span></td>
-                <td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="muac" />(cm)</td>
-            </tr>
-            <tr class="patient-details">
-                <th colspan="2">WHO Stage</th>
-                <td>(g)</td>
-                <td colspan="2">
-                    <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    (age: <span id="calculated-age" class="value" />)
-                </td>
-            </tr>
-            <tr>
-                <th>Known Allergies*</th>
+                     <tr>
+                        <th rowspan="6">Visit Details</th>
+                        <th colspan="2">Date/Location</th>
+                        <td>(a)</td>
+                        <td>
+                            <ifMode mode="ENTER">
+                                <script type="text/javascript">
+                                    jq(function(){
+                                        setValue("encounter-date.value", "");
+                                    });
+                                </script>
+                            </ifMode>
+                            <encounterDate id="encounter-date" showTime="false" />
+                        </td>
+                        <td><strong>Scheduled/Unscheduled </strong> <br/>
+                            <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Type</th>
+                        <td>(b)</td>
+                        <td>
+                            <obs
+                                    id="person-present"
+                                    conceptId="161643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
+                                    style="radio"
+                                    answerSeparator="&lt;br /&gt;"
+                            />
+                            <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        </td>
+                        <td>
+                            <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+                        </td>
+                    </tr>
+                    <tr class="patient-details">
+                        <th colspan="2">Blood Pressure</th>
+                        <td>(c)</td>
+                        <td><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
+                        <td></td>
+                    </tr>
+                    <tr class="patient-details">
+                        <th colspan="2">Weight</th>
+                        <td>(d)</td>
+                        <td><obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight" />(kg)</td>
+                        <td></td>
+                    </tr>
+                    <tr class="patient-details">
+                        <th colspan="2">Height</th>
+                        <td>(e)</td>
+                        <td><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
+                        <td></td>
+                    </tr>
+                    <tr class="patient-details">
+                        <th colspan="2">BMI / MUAC* </th>
+                        <td>(f)</td>
+                        <td><span id="calculated-bmi" class="value"></span></td>
+                        <td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="muac" />(cm)</td>
+                    </tr>
+                <!--Who stage     -->
+          <tr class="patient-details">
+                         <th colspan="3">WHO Stage</th>
+                         <td>(g)</td>
+                         <td colspan="2">
+                             <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                             (age: <span id="calculated-age" class="value" />)
+                         </td>
+                        <td></td>
+          </tr>
+        <tr>
+             <th>Known Allergies*</th>
                 <th colspan="2">
                     <div>
                         Patient has any known allergie(s)? <br /><br/> <input type="radio" name="known-allergies" class="known-allergies" value="1065"/> Yes
                         <input type="radio" name="known-allergies" class="known-allergies" value="1066"/> No
-                     </div>
+                    </div>
                 </th>
                 <td>(h)</td>
                 <td colspan="2">
@@ -457,8 +459,7 @@
                         </tr>
                     </table>
                 </td>
-
-            </tr>
+           </tr>
             <tr>
                 <th colspan="3">Female LMP</th>
                 <td>(i)</td>
@@ -466,7 +467,7 @@
                     <includeIf velocityTest="$patient.gender == 'F' ">
                         LMP*  <obs id="lmp_date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
                     </includeIf>
-                 </td>
+                </td>
                 <td></td>
             </tr>
             <tr>
@@ -573,7 +574,7 @@
                     />
                 </td>
             </tr>
-<!-- pwp services  -->
+            <!-- pwp services  -->
             <tr class="patient-details">
                 <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
                 <th colspan="2">Screened CaCx*</th>
@@ -593,7 +594,7 @@
                 <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
                 <td></td>
             </tr>
-    <!-- .pwp services  -->
+            <!-- .pwp services  -->
             <tr>
                 <th>  Complaints and History of complaints</th>
                 <th colspan="2">
@@ -643,7 +644,7 @@
                     </table>
                 </td>
             </tr>
-<!-- General Examination Findings   -->
+            <!-- General Examination Findings   -->
             <tr>
                 <th colspan="3">General Examination Findings </th>
                 <td>(s)</td>
@@ -673,7 +674,7 @@
                 </td>
                 <td></td>
             </tr>
-<!-- TB screening and Nutritional status   -->
+            <!-- TB screening and Nutritional status   -->
             <tr class="patient-details">
                 <th>TB screening and Nutrition status</th>
                 <th colspan="2">Status</th>
@@ -695,17 +696,17 @@
                 </td>
                 <td>
                     <strong>Nutritional Status</strong><br/>
-                <obs
-                        conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
-                        style="radio"
-                        answerSeparator="&lt;br /&gt;"
-                />
+                    <obs
+                            conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
+                            style="radio"
+                            answerSeparator="&lt;br /&gt;"
+                    />
                     <!--Treatment No. <obs conceptId="161654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />-->
                 </td>
             </tr>
-<!-- Adverse drug reactions  -->
+            <!-- Adverse drug reactions  -->
             <tr>
                 <th>Adverse Drug Reactions</th>
                 <th colspan="2">
@@ -776,8 +777,8 @@
                     </table>
                 </td>
             </tr>
-    <!-- .Adverse drug reactions  -->
-    <!-- Laboratory Investigations    -->
+            <!-- .Adverse drug reactions  -->
+            <!-- Laboratory Investigations    -->
             <tr>
                 <th rowspan="2">Laboratory<br/>Investigations<br />Done</th>
 
@@ -814,8 +815,8 @@
                 </td>
             </tr>
 
-    <!-- .Laboratory Investigations    -->
-    <!-- Chronic illnesses and comorbidities  -->
+            <!-- .Laboratory Investigations    -->
+            <!-- Chronic illnesses and comorbidities  -->
             <tr>
                 <th>Chronic illnesses and comorbidities</th>
                 <th colspan="2">
@@ -941,7 +942,7 @@
                 <th colspan="2">Current ARV Regimen/Prophylaxis</th>
                 <td>(z)</td>
                 <td colspan="2">
-                <span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span>
+                    <span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span>
                 </td>
             </tr>
             <tr>
@@ -955,8 +956,8 @@
                 </td>
             </tr>
             <!-- .ARV and prophylaxis    -->
-<!-- Diagnosis  -->
-          <tr>
+            <!-- Diagnosis  -->
+            <tr>
                 <th colspan="3">Diagnosis</th>
                 <td>(ab)</td>
                 <td colspan="2">
@@ -964,8 +965,8 @@
 
                 </td>
             </tr>
- <!-- .Diagnosis  -->
- <!-- Treatment plan  -->
+            <!-- .Diagnosis  -->
+            <!-- Treatment plan  -->
             <tr>
                 <th colspan="3">Treatment Plan</th>
                 <td>(ac)</td>
@@ -974,51 +975,51 @@
 
                 </td>
             </tr>
- <!-- .Treatment plan  -->
- <!-- .Antigen Today  -->
+            <!-- .Treatment plan  -->
+            <!-- .Antigen Today  -->
             <tr>
                 <th colspan="3">Vaccinations </th>
                 <td>(ad)</td>
                 <td colspan="2" >
                     <includeIf velocityTest="$patient.age &lt; 15">
-                    <table width="30%">
-                        <tr>
-                            <th style="color: #888" align="left">Vaccination</th>
-                            <th style="color: #888" align="left">Recent</th>
-                            <th style="color: #888" align="left">Count</th>
-                        </tr>
+                        <table width="30%">
+                            <tr>
+                                <th style="color: #888" align="left">Vaccination</th>
+                                <th style="color: #888" align="left">Recent</th>
+                                <th style="color: #888" align="left">Count</th>
+                            </tr>
 
-                        <tr>
-                            <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="BCG" style="checkbox" /></td>
-                            <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>
-                            <td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>
-                        </tr>
-                        <tr>
-                            <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PV" style="checkbox" /></td>
-                            <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>
-                            <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
-                        </tr>
-                        <tr>
-                            <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Penta" style="checkbox" /></td>
-                            <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>
-                            <td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>
-                        </tr>
-                        <tr>
-                            <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCV" style="checkbox" /></td>
-                            <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>
-                            <td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>
-                        </tr>
-                        <tr>
-                            <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Measles" style="checkbox" /></td>
-                            <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>
-                            <td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>
-                        </tr>
-
-
+                            <tr>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="BCG" style="checkbox" /></td>
+                                <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>
+                                <td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>
+                            </tr>
+                            <tr>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PV" style="checkbox" /></td>
+                                <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>
+                                <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
+                            </tr>
+                            <tr>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Penta" style="checkbox" /></td>
+                                <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>
+                                <td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>
+                            </tr>
+                            <tr>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCV" style="checkbox" /></td>
+                                <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>
+                                <td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>
+                            </tr>
+                            <tr>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Measles" style="checkbox" /></td>
+                                <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>
+                                <td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>
+                            </tr>
 
 
-                    </table>
-                </includeIf>
+
+
+                        </table>
+                    </includeIf>
                     <includeIf velocityTest="$patient.age &gt; 15">
                         <table width="30%">
                             <tr>
@@ -1051,8 +1052,8 @@
                     </includeIf>
                 </td>
             </tr>
-  <!-- .Antigen Today -->
-  <!-- PHDP -->
+            <!-- .Antigen Today -->
+            <!-- PHDP -->
             <tr>
                 <th colspan="3">PHDP Services</th>
                 <td>(ae)</td>
@@ -1094,8 +1095,8 @@
                     </table>
                 </td>
             </tr>
-  <!-- .PHDP -->
- <!-- Adherence assessment  -->
+            <!-- .PHDP -->
+            <!-- Adherence assessment  -->
             <tr>
                 <th colspan="3">Adherence assessment</th>
                 <td>(af)</td>
@@ -1126,8 +1127,8 @@
                     </table>
                 </td>
             </tr>
- <!-- .Adherence assessment  -->
-  <!-- Next appointment date   -->
+            <!-- .Adherence assessment  -->
+            <!-- Next appointment date   -->
             <tr><!-- pw Greencard addittions differentiated care and app reason -->
                 <th colspan="3">Return visit date*</th>
                 <td>(ag)</td>
@@ -1147,8 +1148,8 @@
                          answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
                 </td>
             </tr>
-   <!-- .Next appointment date  -->
-    <!-- Clinicians initials  -->
+            <!-- .Next appointment date  -->
+            <!-- Clinicians initials  -->
             <tr>
                 <th colspan="3">Clinician Initials</th>
                 <td>(ai)</td>
