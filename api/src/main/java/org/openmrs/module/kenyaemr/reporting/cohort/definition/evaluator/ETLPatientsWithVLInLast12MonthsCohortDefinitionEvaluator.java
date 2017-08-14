@@ -47,8 +47,8 @@ public class ETLPatientsWithVLInLast12MonthsCohortDefinitionEvaluator implements
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
 		Date endDate = (Date)context.getParameterValue("endDate");
-		Date startDate = (Date)context.getParameterValue("startDate");
-		builder.addParameter("startDate", startDate);
+		//Date startDate = (Date)context.getParameterValue("startDate");
+		//builder.addParameter("startDate", startDate);
 		builder.addParameter("endDate", endDate);
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 

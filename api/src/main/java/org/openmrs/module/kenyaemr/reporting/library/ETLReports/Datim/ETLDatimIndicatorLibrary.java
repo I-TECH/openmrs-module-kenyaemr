@@ -58,7 +58,7 @@ public class ETLDatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator patientsWithVLResults() {
-        return cohortIndicator("VL Results", ReportUtils.<CohortDefinition>map(new ETLPatientsWithVLInLast12MonthsCohortDefinition(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("VL Results", ReportUtils.<CohortDefinition>map(datimCohorts.viralLoadResultsInLast12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
@@ -66,7 +66,7 @@ public class ETLDatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator patientsWithViralLoadSuppression() {
-        return cohortIndicator("Viral Suppression", ReportUtils.<CohortDefinition>map(new ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Viral Suppression", ReportUtils.<CohortDefinition>map(datimCohorts.viralSuppressionInLast12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
 
