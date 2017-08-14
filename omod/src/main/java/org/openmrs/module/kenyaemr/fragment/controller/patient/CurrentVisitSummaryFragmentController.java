@@ -264,9 +264,9 @@ public class CurrentVisitSummaryFragmentController {
 			} else if (obs.getConcept().getConceptId().equals(drugDuration )) {
 				duration = obs.getValueNumeric().intValue();
 			} else if (obs.getConcept().getConceptId().equals(frequency) ) {
-				frequencyPrescribed = durationConverter(obs.getValueCoded());
+				frequencyPrescribed = durationUnitConverter(obs.getValueCoded());
 			} else if (obs.getConcept().getConceptId().equals(drugDurationUnit )) {
-				durationUnit = durationUnitConverter(obs.getValueCoded());
+				durationUnit = durationConverter(obs.getValueCoded());
 			}
 		}
 
@@ -276,8 +276,7 @@ public class CurrentVisitSummaryFragmentController {
 		return SimpleObject.create(
 				"drug", drugName != null? drugName: "",
 				"frequency", frequencyPrescribed != null? frequencyPrescribed: "",
-				"duration", duration != null? duration: "",
-				"durationUnit", durationUnit != null? durationUnit: "",
+				"duration", duration != null? new StringBuilder().append(duration).append(" ").append(durationUnit): "",
 				"visitDate", visit
 		);
 	}

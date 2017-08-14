@@ -132,13 +132,13 @@
                                     <th>Drug</th>
                                     <th>Frequency</th>
                                     <th>Duration</th>
-                                    <th>Visit</th>
+                                    <th>Visit Date</th>
                                 </tr>
                             <% medication.each { m-> %>
                                 <tr>
                                     <td>${m.drug}</td>
                                     <td>${m.frequency}</td>
-                                    <td>${m.duration} ${m.durationUnit}</td>
+                                    <td>${m.duration}</td>
                                     <td>${m.visitDate}</td>
                                 </tr>
                             <% }  %>
