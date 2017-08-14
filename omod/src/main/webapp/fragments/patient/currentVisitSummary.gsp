@@ -17,12 +17,57 @@
                     <div class="info-section">
                         <div class="info-header">
                             <i class="icon-diagnosis"></i>
-                            <h3>DIAGNOSES</h3>
+                            <h3>Vitals</h3>
                         </div>
                         <div class="info-body">
+                            <% if (vitals) { %>
+                                <table>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>Value</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Weight</td>
+                                        <td>${vitals.weight}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Height</td>
+                                        <td>${vitals.height}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Temperature</td>
+                                        <td>${vitals.temperature}  &#176;C</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pulse Rate</td>
+                                        <td>${vitals.pulse}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>BP</td>
+                                        <td>${vitals.bp}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Respiratory Rate</td>
+                                        <td>${vitals.resp_rate}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Oxygen Saturation</td>
+                                        <td>${vitals.oxygen_saturation}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>MUAC</td>
+                                        <td>${vitals.muac}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LMP</td>
+                                        <td>${vitals.lmp}</td>
+                                    </tr>
 
-                            None
+                        </table>
 
+                            <% } else { %>
+                                No vitals for this visit
+                            <% } %>
                             <!-- <a class="view-more">Show more info ></a> //-->
                         </div>
                     </div>
@@ -30,16 +75,27 @@
                     <div class="info-section">
                         <div class="info-header">
                             <i class="icon-calendar"></i>
-                            <h3>APPOINTMENTS</h3>
-
-                            <a href="http://41.215.79.236:8080/openmrs/appointmentschedulingui/manageAppointments.page?patientId=103&amp;returnUrl=%2Fopenmrs%2Fcoreapps%2Fclinicianfacing%2Fpatient.page%3FpatientId%3D103%26app%3Dpih.app.clinicianDashboard&amp;" class="right">
-                                <i class="icon-share-alt edit-action" title="Edit"></i>
-                            </a>
-
+                            <h3>Recent Visits</h3>
                         </div>
                         <div class="info-body">
+                            <% if(recentVisits) { %>
+                            <ul>
+                            <% recentVisits.each { %>
+                            <li class="clear">
+                                ${it.visitDate}
+                                <div class="tag">
+                                    <% if(it.active) { %>
+                                        Active -
+                                    <% } %>
+                                    Outpatient
+                                </div>
+                            </li>
 
-                            None
+                            <% } %>
+                                </ul>
+                            <% } else { %>
+                                No visit in the last six months
+                            <% } %>
 
                         </div>
                     </div>
@@ -50,53 +106,47 @@
                     <div class="info-section">
                         <div class="info-header">
                             <i class="icon-calendar"></i>
-                            <h3>RECENT VISITS</h3>
-
-                            <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b#visits" class="right">
-                                <i class="icon-share-alt edit-action" title="Edit"></i>
-                            </a>
-
+                            <h3>Diagnosis</h3>
                         </div>
                         <div class="info-body">
-
-                            <ul>
-
-                                <li class="clear">
-                                    <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b&amp;visitId=174#visits" class="visit-link">
-                                        Today
-
-                                    </a>
-                                    <div class="tag">
-                                        Active -
-                                        Outpatient
-                                    </div>
-                                </li>
-
-                                <li class="clear">
-                                    <a href="http://41.215.79.236:8080/openmrs/coreapps/patientdashboard/patientDashboard.page?patientId=8fb27d42-1498-47a3-83a8-000d7ccb867b&amp;visitId=172#visits" class="visit-link">
-                                        01.Aug.2017
-                                        - 02.Aug.2017
-                                    </a>
-                                    <div class="tag">
-
-                                        Outpatient
-                                    </div>
-                                </li>
-
-                            </ul>
+                            <% if (diagnoses) { %>
+                            <% diagnoses.each { d -> %>
+                            <div class="ke-stack-item">	${ d.diagnosis } </div>
+                            <% } %>
+                            <% } else { %>
+                            <div class="ke-stack-item">None</div>
+                            <% } %>
                         </div>
                     </div>
 
                     <div class="info-section allergies">
                         <div class="info-header">
                             <i class="icon-medical"></i>
-                            <h3>ALLERGIES</h3>
-                            <i class="icon-pencil edit-action right" title="Edit" onclick=""></i>
+                            <h3>Medications</h3>
                         </div>
                         <div class="info-body">
 
-                            Unknown
+                            <% if (medication) { %>
+                            <table>
+                                <tr>
+                                    <th>Drug</th>
+                                    <th>Frequency</th>
+                                    <th>Duration</th>
+                                    <th>Visit Date</th>
+                                </tr>
+                            <% medication.each { m-> %>
+                                <tr>
+                                    <td>${m.drug}</td>
+                                    <td>${m.frequency}</td>
+                                    <td>${m.duration}</td>
+                                    <td>${m.visitDate}</td>
+                                </tr>
+                            <% }  %>
+                            </table>
 
+                            <% } else { %>
+                                None
+                            <% } %>
                         </div>
                     </div>
 

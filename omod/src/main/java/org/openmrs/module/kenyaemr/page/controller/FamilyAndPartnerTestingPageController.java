@@ -412,7 +412,7 @@ public class FamilyAndPartnerTestingPageController {
 			compute known status
 		 */
 
-		// include all enrolled patients to kownstatus
+		// include all enrolled patients to known status
 		knownStatus = knownStatus + enrolledPatients.size();
 
 		for(SimpleObject row: externalPatients) {
