@@ -48,7 +48,8 @@
                 var row = $(this).parent().parent().parent();
                 var baseline = $(".baseline-hiv-status :selected").text();
                // console.log("Baseline " + baseline);
-                if (this.value == 664 &amp;&amp; baseline !='Positive') {    //negative
+                if (this.value == 664 &amp;&amp; baseline !='Positive') {
+                    //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
                     $(row).find('.referring-facility input').attr('disabled',true);
@@ -57,9 +58,10 @@
                     //Clearing fields
                     $(row).find('.referring-facility input').val('');
                     $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').val('');
 
-                } else {                     //positive
-
+                } else {
+                    //positive
                     $(row).find('.in-care select').attr('disabled', false);
                     $(row).find('.ccc-no input').attr('disabled', false);
                     $(row).find('.referring-facility input').attr('disabled', false);
@@ -83,6 +85,10 @@
                     //Clearing fields
                     $(row).find('.referring-facility input').val('');
                     $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+
+
 
                 }
                 if(this.value == 703) {                     //positive
@@ -92,13 +98,32 @@
                     $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-result select').attr('disabled', true);
                     //Clearing fields
-                    $(row).find('.hiv-result input').val('');
-                    $(row).find('.next-hivtest-date input').val('');
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
 
                 }
             });
 
         });
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
     </script>
 
     <!-- Encounter date, provider and location are not relevant for CE forms -->
@@ -160,7 +185,7 @@
                             <td>
                                 <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Positive,Negive,Exposed infant,Unknown"/>
+                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
                             </td>
                             <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
