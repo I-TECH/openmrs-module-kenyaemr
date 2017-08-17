@@ -20,7 +20,7 @@ jQuery(function () {
                       type: 'column'
                   },
                   title: {
-                      text: 'Facility Statistics'
+                      text: 'Care and Treatment Chart'
                   },
                   subtitle: {
                       text: 'Click the columns to view data.'
@@ -86,7 +86,7 @@ jQuery(function () {
 jQuery(function () {
     jQuery('#hts-container').highcharts({
         title: {
-            text: 'Viral Load Trend',
+            text: 'HTS Chart',
             x: -20 //center
         },
         subtitle: {
@@ -98,7 +98,7 @@ jQuery(function () {
         },
         yAxis: {
             title: {
-                text: 'Viral Load cp/ml'
+                text: 'Total Patients'
             },
             plotLines: [{
                 value: 0,
