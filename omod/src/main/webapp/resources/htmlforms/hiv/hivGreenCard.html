@@ -856,19 +856,13 @@ Green Card follow-up visit form
                     return true;
                 });
             }
-
             /*TB Screening form validation*/
-            var valbirthdate = "<lookup  expression="patient.birthdate" />"
-            var valChangedToDateFormat = new Date(valbirthdate).getTime();
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
             var pregnancyStatus = getField('#pregnancyOption');
             var pregnantStatusRadios = jq('#fp-details').find('input[type=checkbox]');
-
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066;
-
-
             //This function will perform the folllowing:
             //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
             //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
@@ -1055,6 +1049,8 @@ Green Card follow-up visit form
             var tca_date = getValue('returnVisitDate.value');
             var encounterDate = getValue('encounter-date.value');
             var valonform = getValue('tbrxdate.value');
+            var valbirthdate = "<lookup  expression="patient.birthdate" />"
+            var valChangedToDateFormat = new Date(valbirthdate).getTime();
             var valChangedToDateFormatOnForm=new Date(valonform).getTime();
             var fpMethodsChecked = jq("#onFp input:checkbox:checked");
             var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
