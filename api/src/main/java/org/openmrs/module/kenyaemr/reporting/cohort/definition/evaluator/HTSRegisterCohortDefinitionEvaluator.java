@@ -42,11 +42,14 @@ public class HTSRegisterCohortDefinitionEvaluator implements VisitQueryEvaluator
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		VisitQueryResult queryResult = new VisitQueryResult(definition, context);
 
-		String qry = "select distinct v.visit_id from visit v where v.voided = 0 limit 20";
+		String qry = "select distinct v.visit_id from visit v \n" +
+				"inner join encounter e on e.visit_id = v.visit_id \n" +
+				"inner join\n" +
+				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et on et.id = e.encounter_type\n" +
+				"where v.voided = 0 ";
+
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
-		builder.addParameter("startDate", context.getParameterValue("startDate"));
-		builder.addParameter("endDate", context.getParameterValue("endDate"));
 
 		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
 		queryResult.getMemberIds().addAll(results);
