@@ -239,6 +239,7 @@ Green Card follow-up visit form
         }
         var onAntiTbDrugs = function(){
             var val = jq(this).val();
+            var onIpt = jq('#on-ipt');
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
@@ -248,12 +249,14 @@ Green Card follow-up visit form
             patientCurrentlyOnIPT = null;
             if(val == 1066) {
                 jq('#on-ipt input').prop("disabled", false);
-            } else {
-                jq('input[type=radio].on-ipt').prop("disabled", true);
+            }
+            if(val == 1065){
+                jq('#on-ipt input').prop("disabled", true);
                 jq('input[type=radio].on-ipt').prop("checked", false);
                 jq("#tb-screening-result").hide();
                 jq("#tb-screening-tab").hide();
                 jq("#tbl-ever-on-ipt").hide();
+                clearRadios(onIpt);
                 actionTakenTab.hide();
                 clearRadios(actionTakenTab);
                 iptClientWorkupTab.hide()
@@ -271,6 +274,7 @@ Green Card follow-up visit form
             var val = jq(this).val();
             patientCurrentlyOnIPT = val;
             everOnIPTSelected = null;
+            var everOnIpt = jq("#tbl-ever-on-ipt");
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
@@ -287,6 +291,7 @@ Green Card follow-up visit form
                 tbScreeningResult.hide();
 
                 //clear radios in hidden sections
+                clearRadios(everOnIpt);
                 clearRadios(iptFollowup);
                 clearRadios(actionTakenTab);
                 clearRadios(tbScreeningQuestionsTab);

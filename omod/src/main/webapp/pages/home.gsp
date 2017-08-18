@@ -118,7 +118,12 @@ jQuery(function () {
         series: [{
             name: 'HTS Clients',
             data: [0, 0, 0, 0, 0, 0, 0]
-        }]
+        },
+//            {
+//            name: 'Threshold',
+//            data: [0, 0, 0, 0, 0, 0, 0]
+//        }
+        ]
     });
 });
 </script>
