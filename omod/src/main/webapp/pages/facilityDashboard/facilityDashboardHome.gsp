@@ -87,7 +87,7 @@
     jQuery(function () {
         jQuery('#hts-container').highcharts({
             title: {
-                text: 'Viral Load Trend',
+                text: 'HTS Chart',
                 x: -20 //center
             },
             subtitle: {
@@ -99,7 +99,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Viral Load cp/ml'
+                    text: 'Total Patients'
                 },
                 plotLines: [{
                     value: 0,
@@ -117,11 +117,8 @@
                 borderWidth: 0
             },
             series: [{
-                name: 'VL',
-                data: [200, 300, 500, 1000, 750, 500, 400]
-            }, {
-                name: 'Threshold',
-                data: [1000, 1000, 1000, 1000, 1000, 1000, 1000]
+                name: 'HTS Clients',
+                data: [0, 0, 0, 0, 0, 0, 0]
             }]
         });
     });

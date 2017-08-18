@@ -9,21 +9,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class MaritalStatusDataDefinition extends BaseDataDefinition implements VisitDataDefinition {
+public class KenyaEMRMaritalStatusDataDefinition extends BaseDataDefinition implements VisitDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public MaritalStatusDataDefinition() {
+    public KenyaEMRMaritalStatusDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public MaritalStatusDataDefinition(String name) {
+    public KenyaEMRMaritalStatusDataDefinition(String name) {
         super(name);
     }
 
