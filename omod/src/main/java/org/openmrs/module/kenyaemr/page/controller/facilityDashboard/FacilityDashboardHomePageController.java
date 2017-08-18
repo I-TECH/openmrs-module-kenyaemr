@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.page.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,19 +36,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Home page controller
+ * Facility dashboard page controller
  */
-public class HomePageController {
+public class FacilityDashboardHomePageController {
 
 	private final Log log = LogFactory.getLog(this.getClass());
 	
-	public String controller(PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
+	public String controller(PageModel model, UiUtils ui, HttpSession session,  @SpringBean KenyaUiUtils kenyaUi) {
 
-		// Redirect to setup page if module is not yet configured
-		if (Context.getService(KenyaEmrService.class).isSetupRequired()) {
-			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "admin/firstTimeSetup");
-		}
 
 		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0, suppressedInLast12Months = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
