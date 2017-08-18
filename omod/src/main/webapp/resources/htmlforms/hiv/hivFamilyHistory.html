@@ -104,6 +104,32 @@
                     $(row).find('.in-care select').val('');
 
                 }
+                if(this.value == 1405) {      //Exposed infant
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+
+                }
+                if(this.value == 1067) {        //Unknown
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+
+                }
             });
 
         });

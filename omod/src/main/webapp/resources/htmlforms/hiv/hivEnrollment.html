@@ -126,17 +126,17 @@
 
             } else {
                 jq('#art-history :input').prop('disabled', false);
-                jq('#pmtctRegimen :input').prop('disabled', true);
-                jq('#pepRegimen :input').prop('disabled', true);
+               // jq('#pmtctRegimen :input').prop('disabled', true);
+               // jq('#pepRegimen :input').prop('disabled', true);
             }
         }
 
         function onPmtctSelected() {
            var val = getValue('pmtctChecked.value');
             if(val == 1065){
-				jq('#pmtctRegimen :input').prop('disabled', false);
+				jq('#pmtctChecked :input').prop('disabled', false);
 					}else{
-                jq('#pmtctRegimen :input').prop('disabled', true);
+                jq('#pmtctChecked :input').prop('disabled', true);
 			}
         }
         function onPepSelected() {
@@ -262,8 +262,8 @@
             jq('#transfer-in-status input').change(onTransferStatusChange);
             jq('#art-status input').change(onArtStatusChange);
             jq('input[type=radio].guardian').change(guardianTreatmentSupporter);
-            jq('#pmtctChecked input').click(onPmtctSelected);
-            jq('#pepChecked input').click(onPepSelected);
+            //jq('#pmtctChecked input').click(onPmtctSelected);
+           // jq('#pepChecked input').click(onPepSelected);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             jq('#transit-patient').hide();
