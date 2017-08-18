@@ -116,11 +116,8 @@ jQuery(function () {
             borderWidth: 0
         },
         series: [{
-            name: 'VL',
-            data: [200, 300, 500, 1000, 750, 500, 400]
-        }, {
-            name: 'Threshold',
-            data: [1000, 1000, 1000, 1000, 1000, 1000, 1000]
+            name: 'HTS Clients',
+            data: [0, 0, 0, 0, 0, 0, 0]
         }]
     });
 });

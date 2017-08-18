@@ -14,7 +14,9 @@
 -->
 <htmlform>
 
-    <script>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
         var populationTypeSelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
@@ -23,18 +25,11 @@
                 jq("#key-population").hide();
             }
         }
-//        var everTestedSelected = function () {
-//            var val = jq(this).val();
-//            if (val == 1066 ){
-//                jq('#retest-duration input').prop("disabled", true);
-//            }else{
-//                jq('#retest-duration input').prop("disabled", false);
-//            }
-//        }
         var hasDisabilitySelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
                 jq('#disability select').prop("disabled", true);
+                jq('#disability select').val('');
             }else{
                 jq('#disability select').prop("disabled", false);
             }
@@ -54,70 +49,182 @@
                 jq("#couple-discordant input[value=1065]").prop("disabled", true);
                 jq("#couple-discordant input[value=1066]").prop("disabled", true);
                 jq("#couple-discordant input[value=1175]").prop("checked", true);
+                jq("#couple-discordant input[value=1175]").prop("disabled", false);
             }else{
                 jq("#couple-discordant input[value=1065]").prop("disabled", false);
                 jq("#couple-discordant input[value=1066]").prop("disabled", false);
+                jq("#couple-discordant input[value=1175]").prop("checked", false);
                 jq("#couple-discordant input[value=1175]").prop("disabled", true);
             }
         }
         var firstTestSelected  = function () {
             var firstTest = getField("hiv-test1-result.value").val();
+            //Negative
             if(firstTest ==664) {
                 jq("#hiv-test2-result select").prop("disabled", true);
                 jq("#kitTest2 input").prop("disabled", true);
                 jq("#lotTest2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
-
-            }else{
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                clearHiddenSections(jq('#hiv-test2-result'));
+                getField('hiv-final-result.value').val(664);
+                jq('#ccc-no input').prop("disabled", true);
+                jq('#in-care input').prop("disabled", true);
+            }
+            //Positive
+            if(firstTest ==703){
                 jq("#hiv-test2-result select").prop("disabled", false);
                 jq("#kitTest2 input").prop("disabled", false);
                 jq("#lotTest2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
+                clearHiddenSections(jq('#hiv-final-result'));
+                clearHiddenSections(jq('#hiv-test2-result'));
+            }
+            //Invalid
+            if(firstTest ==163611){
+                jq("#hiv-test2-result select").prop("disabled", false);
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                clearHiddenSections(jq('#hiv-test2-result'));
             }
         }
-        var finalTestSelected  = function () {
-            var finalTest = getField("hiv-final-result.value").val();
-            if(finalTest ==703) {
-                jq('#ccc-no input').prop("disabled", false);
-                jq('#in-care input').prop("disabled", false);
-
-            }else{
+        var secondTestSelected  = function () {
+            var secondTest = getField("hiv-test2-result.value").val();
+            //Negative
+            if(secondTest ==664) {
+                jq("#kitTest2 input").prop("disabled", true);
+                jq("#lotTest2 input").prop("disabled", true);
+                jq("#expiry-date2 input").prop("disabled", true);
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#in-care input').prop("disabled", true);
             }
+            //Positive
+            if(secondTest ==703){
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(703);
+                jq('#ccc-no input').prop("disabled", false);
+                jq('#in-care input').prop("disabled", false);
+            }
+            //Invalid
+            if(secondTest ==163611){
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(1138);
+            }
+            //Invalid
+            if(secondTest ==1175){
+                clearHiddenSections(jq('#in-care'));
+                clearHiddenSections(jq('#ccc-no'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(1138);
+            }
         }
+//        var finalTestSelected  = function () {
+//            var finalTest = getField("hiv-final-result.value").val();
+//            if(finalTest ==703) {
+//                clearHiddenSections(jq('#in-care'));
+//                clearHiddenSections(jq('#ccc-no'));
+//                jq('#ccc-no input').prop("disabled", false);
+//                jq('#in-care input').prop("disabled", false);
+//
+//            }else{
+//                clearHiddenSections(jq('#in-care'));
+//                clearHiddenSections(jq('#ccc-no'));
+//                jq('#ccc-no input').prop("disabled", true);
+//                jq('#in-care input').prop("disabled", true);
+//            }
+//        }
+        var expiryDateSelected  = function () {
+            var encounterDate = getValue('encounter-date.value');
+            var testKitExpiryDate = getValue('expiry-date.value');
+            var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isTestKitExpiryBeforeEncounterDate) {
+                getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+            }
+        }
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
+
         //On Ready
         $(document).ready(function () {
             //pop type
             jq("#key-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
             jq('input[type=radio].population-type').change(populationTypeSelected);
-            //ever tested
-//            jq('#ever-tested input').change(everTestedSelected);
-//            jq('#retest-duration input').prop("disabled", true);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability select').prop("disabled", true);
             //in care
+            jq('#ccc-no input').attr('placeholder', 'If linked to care..');
             jq('#in-care input').change(inCareSelected);
-            jq('#ccc-no input').prop("disabled", true);
             //couple testing
             jq("#couple-testing input").change(coupleTestedAction);
             //hiv test123
+            jq('#hiv-final-result select').prop("disabled", true);
             jq("#hiv-test1-result select").change(firstTestSelected);
-            jq("#hiv-final-result select").change(finalTestSelected);
-
-
-
+            jq("#hiv-test2-result select").change(secondTestSelected);
+            //jq("#hiv-final-result select").change(finalTestSelected);
+            //test kit expiry
+            jq("#expiry-date input").change(expiryDateSelected);
 
         });
+
     </script>
 
-    <!-- Encounter date, provider and location are not relevant for CE forms -->
-    <div style="display:none">
-        <encounterDate id="encounter-date" showTime="true" />
-        <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
-        <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    HTS date: <encounterDate id="encounter-date" showTime="true" required="true"/>
+                </td>
+                <td>HTS Provider : <encounterProvider default="currentUser" /></td>
+                <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+            </tr>
+        </table>
     </div>
 
     <div class="ke-form-content">
@@ -125,7 +232,9 @@
         <fieldset>
             <legend>Population Type</legend>
             <div>
-                Patient population type  <input type="radio" name="population-type" class="population-type" value="1065"/> General Population
+                Client population type:
+                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                <input type="radio" name="population-type" class="population-type" value="1065"/> General Population
                 <input type="radio" name="population-type" class="population-type" value="1066"/> Key Population
             </div>
             <table id="key-population">
@@ -144,34 +253,11 @@
                     </td>
                 </tr>
             </table>
-        </fieldset>
-        <fieldset>
-            <legend>HIV Test History</legend>
-            <table id="tbl-ever-tested">
-                <tr>
-                    <td>
-                        Patient ever been tested for HIV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="ever-tested" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Yes,No"
-                             style="radio" />
-                        <br/>
-                    </td>
-                    <!-- Commented out to be derived from system  -->
-                    <!--<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Duration since last test :-->
-                        <!--&#160;&#160;&#160;&#160;&#160;-->
-                        <!--<obs id="retest-duration" conceptId="159813AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> Months-->
-
-                    <!--</td>-->
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>Disability</legend>
+            <br />
             <table id="tbl-disability">
                 <tr>
                     <td>
-                        Patient has any disability? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        Does client have any disability? &#160;&#160;&#160;&#160;&#160;
                         <obs id="has-disability" conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
@@ -180,31 +266,31 @@
                     </td>
                     <td>     &#160;&#160;&#160;&#160;&#160;  Please indicated the type of disability :
                         <obs id="disability" conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Not Applicable,Deaf,Blind,Mentally Challenged,Physically Challenged,Other"/>
+                             answerConceptIds="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Deaf,Blind,Mentally Challenged,Physically Challenged,Other"/>
                     </td>
                 </tr>
             </table>
         </fieldset>
         <fieldset>
-            <legend>Consent</legend>
-            <table id="tbl-consent">
+            <legend>HIV Test History</legend>
+            <table id="tbl-ever-tested">
                 <tr>
-                    <td>Has patient consented? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="yes_no" />
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>Couple Testing</legend>
-            <table id="tbl-couple-testing">
-                <tr>
-                    <td>Client tested as? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="couple-testing" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    <td>
+                        Has the client ever been tested for HIV by a HTS provider? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="ever-tested" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Individual,Couple"/>
+                             answerLabel="Yes,No"
+                             style="radio" />
+                        <br/>
+                    </td>
+                </tr>
+            </table>
+            <table id="tbl-hiv-selftest">
+                <tr>
+                    <td>Has the client done HIV self test in the last 12 months? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hb-self-test" conceptId="1492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="yes_no" />
                     </td>
                 </tr>
             </table>
@@ -224,7 +310,25 @@
             </table>
         </fieldset>
         <fieldset>
-            <legend>HIV Tests</legend>
+            <legend>HIV Testing</legend>
+            <table id="tbl-consent">
+                <tr>
+                    <td>Has client consented? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="yes_no" />
+                    </td>
+                </tr>
+            </table>
+            <table id="tbl-couple-testing">
+                <tr>
+                    <td>Client tested as? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="couple-testing" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Individual,Couple"/>
+                    </td>
+                </tr>
+            </table>
+            <br />
             <table id="tbl-hiv-test">
                 <tr>
                     <td>HIV Test 1 Results:
@@ -247,7 +351,7 @@
                         <input type="text" name="lot-number" />
                     </td>
                     <td>&#160;&#160;&#160;&#160;Expiry Date
-                        <obs class="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                        <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                         />
                     </td>
                 </tr>
@@ -255,7 +359,7 @@
                     <td>HIV Test 2 Results:
                         <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Positive,Negive,Invalid,N/A"/>
+                             style="dropdown" answerLabels="Positive,Negative,Invalid,N/A"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160; Kit Name
                         <!--<obs class="kit-name"-->
@@ -278,9 +382,8 @@
                 </tr>
                 <tr>
                     <td>Final Results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Positive,Negative,Inconclusive"/>
+                        <obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                              answerLabels="Positive,Negative,Inconclusive"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
                         <obs class="result-given" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -290,15 +393,30 @@
 
                 </tr>
             </table>
-        </fieldset>
-        <fieldset>
-            <legend>Discordance</legend>
+            <br />
             <table id="tbl-discordant">
                 <tr>
                     <td>Couple is discordant: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="couple-discordant" conceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="YES,NO,N/A"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Linkage to Care</legend>
+            <table id="tbl-care-status">
+                <tr>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;In care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="YES,NO,N/A"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Unique Patient Number (UPN):
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <span id="ccc-no"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false"/></span>
+                    </td>
                     </td>
                 </tr>
             </table>
@@ -315,48 +433,20 @@
             </table>
         </fieldset>
         <fieldset>
-        <legend>Linked to Care?</legend>
-        <table id="tbl-care-status">
-            <tr>
-                <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;In care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                    <obs id="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         style="radio" answerLabels="YES,NO,N/A"/>
-                </td>
-                <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC No.
-                    <obs id="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" size ="15"/>
-                </td>
-            </tr>
-        </table>
-    </fieldset>
-        <fieldset>
-            <legend>HIV Self Test </legend>
-            <table id="tbl-hiv-selftest">
-                <tr>
-                    <td>Has the client done HIV self test in the last 12 months? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="hb-self-test" conceptId="1492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="yes_no" />
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>HTS provider </legend>
-            <table id="tbl-hts-provider">
-                <tr>
-                    <td>Indicate HTS provider name: &#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="provider-name" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
             <legend>Remarks </legend>
             <table id="tbl-remarks">
                 <tr>
                     <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs class="remarks" conceptId="163761AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="1" cols="80"
+                        />
+                    </td>
+                </tr>
+            </table>
+            <br /><br />
+            <table id="tbl-hts-provider">
+                <tr>
+                    <td><strong>Indicate HTS provider name: </strong>&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="provider-name" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                         />
                     </td>
                 </tr>

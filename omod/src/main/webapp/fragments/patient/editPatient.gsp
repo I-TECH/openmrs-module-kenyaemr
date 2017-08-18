@@ -30,14 +30,8 @@
                     [object: command, property: "nextOfKinAddress", label: "Postal Address"]
             ]
     ]
-    def guardianFieldRows = [
-            [
-                    [object: command, property: "guardianFirstName", label: "Guardian First Name"],
-                    [object: command, property: "guardianLastName", label: "Guardian Last Name"]
-            ]
-    ]
 
-    def contactsFields = [
+     def contactsFields = [
             [
                     [object: command, property: "telephoneContact", label: "Telephone contact"]
             ],
@@ -152,53 +146,7 @@
             <% deathFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-            <table>
-                 <tr>
-                     <td>
-                         <label>Under 18 years?</label>
-                     </td>
-                     <td>
-                         <label></label>
-                         <input type="radio" value="Yes" name="age-bracket" class="age-bracket" /> Yes
-                         <input type="radio" value="No" name="age-bracket" class="age-bracket"  /> No
-                     </td>
-                </tr>
-            </table>
-         <table id="underage-details" style="display: none">
-                <tr>
 
-            <td valign="top">
-                <label class="ke-field-label">In School *</label>
-                <span class="ke-field-content">
-                    <input type="radio" name="inSchool" value="1065"
-                           id="inSchool-Y" ${command.inSchool == '1065' ? 'checked="checked"' : ''} required = "true"/> Yes
-                    <input type="radio" name="inSchool" value="1066"
-                           id="inSchool-N" ${command.inSchool == '1066' ? 'checked="checked"' : ''}/> No
-                    <span id="inSchool-Y-error" class="error" style="display: none"></span>
-                    <span id="inSchool-N-error" class="error" style="display: none"></span>
-                </span>
-            </td>
-                    <td valign="top">
-                        <label class="ke-field-label">Orphan(<18 years) *</label>
-                        <span class="ke-field-content">
-                            <input type="radio" name="orphan" value="1065"
-                                   id="orphan-Y" ${command.orphan == '1065' ? 'checked="checked"' : ''} required = "true"/> Yes
-                            <input type="radio" name="orphan" value="1066"
-                                   id="orphan-N" ${command.orphan == '1066' ? 'checked="checked"' : ''}/> No
-                            <span id="orphan-Y-error" class="error" style="display: none"></span>
-                            <span id="orphan-N-error" class="error" style="display: none"></span>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-
-            <%  guardianFieldRows.each { %>
-            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
-            <% } %>
-                    </td>
-                </tr>
-         </table>
         </fieldset>
 
         </fieldset>
@@ -303,7 +251,6 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     //On ready
     jQuery(function () {
 
-        jQuery("#underage-details input").prop("disabled",true);
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
         jQuery('#edit-patient-form .cancel-button').click(function () {
             ui.navigate('${ config.returnUrl }');
@@ -322,17 +269,6 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }
         });
 
-        // handle age-bracket radio buttons
-        jQuery(".age-bracket").change(function () {
-            var ageBracket = jQuery(this).val();
-            if (ageBracket == "Yes") {
-                jQuery("#underage-details").show();
-                jQuery("#underage-details input").prop("disabled",false);
-            } else if(ageBracket == "No" || ageBracket == ""){
-                jQuery("#underage-details").hide();
-                jQuery("#underage-details input").prop("disabled",true);
-            }
-        });
 
     }); // end of jQuery initialization block
 
