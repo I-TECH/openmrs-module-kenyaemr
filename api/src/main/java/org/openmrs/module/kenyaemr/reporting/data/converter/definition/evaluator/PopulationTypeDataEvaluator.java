@@ -35,10 +35,10 @@ public class PopulationTypeDataEvaluator implements VisitDataEvaluator {
         //+ " and v.date_started > :startDate  ";
 
         //we want to restrict visits to those for patients in question
-        qry = qry + " and v.visit_id in (";
+        /*qry = qry + " and v.visit_id in (";
         qry = qry + context.getBaseCohort().getMemberIds();
         qry = qry + ") ";
-
+*/
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         /*queryBuilder.addParameter("effectiveDate", ModuleFileProcessorUtil.getDefaultDate());

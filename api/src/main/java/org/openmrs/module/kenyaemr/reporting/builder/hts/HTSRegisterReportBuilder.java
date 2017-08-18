@@ -23,7 +23,16 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDisabilityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDateDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -89,11 +98,19 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("Visit Date", new VisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         // new columns
-        /*dsd.addColumn("Pregnancy Status", new PregnancyStatusDataDefinition(), null);
-        dsd.addColumn("FP", new SpeedPhasesFPUsageDataDefinition(), null);
-        dsd.addColumn("WHO Stage", new SpeedPhasesWHOStagingDataDefinition(), null);
-        dsd.addColumn("STI Screening", new SpeedPhasesSTIScreeningDataDefinition(), null);
-        dsd.addColumn("PWP Disclosure", new PWPDisclosureDataDefinition(), null);*/
+        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
+        dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
+        dsd.addColumn("disability", new PatientDisabilityDataDefinition(), null);
+        dsd.addColumn("consent", new PatientConsentDataDefinition(), null);
+        dsd.addColumn("clientTestedAs", new IndividualORCoupleTestDataDefinition(), null);
+        dsd.addColumn("testingStrategy", new HTSTestStrategyDataDefinition(), null);
+        dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
+        dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
+        dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
+        /*dsd.addColumn("coupleDiscordant", new PWPDisclosureDataDefinition(), null);
+        dsd.addColumn("tbScreening", new PWPDisclosureDataDefinition(), null);
+        dsd.addColumn("linkedToCare", new PWPDisclosureDataDefinition(), null);
+        dsd.addColumn("everHadHIVSelfTest", new PWPDisclosureDataDefinition(), null);*/
 
         dsd.addRowFilter(new HTSRegisterCohortDefinition(), "");
         return dsd;

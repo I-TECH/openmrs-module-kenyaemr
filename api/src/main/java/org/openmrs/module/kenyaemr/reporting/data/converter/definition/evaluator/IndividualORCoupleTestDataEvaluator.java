@@ -26,16 +26,18 @@ public class IndividualORCoupleTestDataEvaluator implements VisitDataEvaluator {
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedVisitData c = new EvaluatedVisitData(definition, context);
 
-        String qry = "SELECT " +
-                " v.visit_id, " +
-                " v.date_started " +
-                " FROM visit v where v.voided =0 " ;
+        String qry = "select v.visit_id, \n" +
+                "(case o.value_coded when 1066 then \"Individual\" when 1065 then \"Couple\" else \"\" end) testedAs\n" +
+                "from visit v \n" +
+                "inner join encounter e on e.visit_id = v.visit_id \n" +
+                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
+                "where o.concept_id = 161557 ";
 
         //we want to restrict visits to those for patients in question
-       /* qry = qry + " and v.visit_id in (";
-        qry = qry + ModuleFileProcessorUtil.getInitialCohortQuery();
-        qry = qry + ") ";*/
-
+        /*qry = qry + " and v.visit_id in (";
+        qry = qry + context.getBaseCohort().getMemberIds();
+        qry = qry + ") ";
+*/
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         System.out.println("Completed processing Date record created");

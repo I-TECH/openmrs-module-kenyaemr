@@ -31,9 +31,10 @@ public class VisitDateDataEvaluator implements VisitDataEvaluator {
                 " FROM visit v where v.voided =0 " ;
 
         //we want to restrict visits to those for patients in question
-       /* qry = qry + " and v.visit_id in (";
-        qry = qry + ModuleFileProcessorUtil.getInitialCohortQuery();
+        /*qry = qry + " and v.visit_id in (";
+        qry = qry + context.getBaseCohort().getMemberIds();
         qry = qry + ") ";*/
+
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

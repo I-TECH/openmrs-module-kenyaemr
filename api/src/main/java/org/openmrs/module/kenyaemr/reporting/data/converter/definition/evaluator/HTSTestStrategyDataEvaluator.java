@@ -26,14 +26,23 @@ public class HTSTestStrategyDataEvaluator implements VisitDataEvaluator {
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedVisitData c = new EvaluatedVisitData(definition, context);
 
-        String qry = "SELECT " +
-                " v.visit_id, " +
-                " v.date_started " +
-                " FROM visit v where v.voided =0 " ;
+        String qry = "select v.visit_id, \n" +
+                "(case o.value_coded \n" +
+                "\twhen 164163 then \"Provider Initiated Testing(PITC)\" \n" +
+                "\twhen 161557 then \"Non Provider Initiated Testing\" \n" +
+                "\twhen 1160539 then \"Integrated VCT Center\" \n" +
+                "\twhen 163121 then \"Stand Alone VCT Center\"\n" +
+                "\twhen 159938 then \"Home Based Testing\" \n" +
+                "\twhen 159939 then \"Mobile Outreach HTS\"\n" +
+                "\telse \"\" end) testingStrategy\n" +
+                "from visit v \n" +
+                "inner join encounter e on e.visit_id = v.visit_id \n" +
+                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
+                "where o.concept_id = 160540 ";
 
         //we want to restrict visits to those for patients in question
-       /* qry = qry + " and v.visit_id in (";
-        qry = qry + ModuleFileProcessorUtil.getInitialCohortQuery();
+        /*qry = qry + " and v.visit_id in (";
+        qry = qry + context.getBaseCohort().getMemberIds();
         qry = qry + ") ";*/
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
