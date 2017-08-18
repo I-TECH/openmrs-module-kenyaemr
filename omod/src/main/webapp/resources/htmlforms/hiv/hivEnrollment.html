@@ -42,17 +42,25 @@
             if (getValue('transfer-in-status.value') == NO_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
                 jq('#transfer-details').hide();
-                clearHiddenSections(jq('#transfer-details'));
                 jq('#patient-history').show();
                 jq('#art-history').show();
                 jq('#baseline-assessment1').show();
                 jq('#baseline-assessment2').show();
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
-                jq('#generate-hiv-id').show();
+                //jq('#generate-hiv-id').show(); Deactivate generate upn
                 jq('#transit-patient').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                clearHiddenSections(jq('#confirmed-positive-date'));
+                clearHiddenSections(jq('#facility-confirmed'));
+                clearHiddenSections(jq('#whoAdult'));
+                clearHiddenSections(jq('#whoChild'));
+                clearHiddenSections(jq('#art-status'));
+                clearHiddenSections(jq('#pmtctChecked'));
+                clearHiddenSections(jq('#pepChecked'));
+                clearHiddenSections(jq('#prepChecked'));
+                clearHiddenSections(jq('#haartChecked'));
             } else if (getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('readonly',true);
@@ -65,23 +73,51 @@
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
                 jq('#transit-patient').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                clearHiddenSections(jq('#confirmed-positive-date'));
+                clearHiddenSections(jq('#facility-confirmed'));
+                clearHiddenSections(jq('#whoAdult'));
+                clearHiddenSections(jq('#whoChild'));
+                clearHiddenSections(jq('#art-status'));
+                clearHiddenSections(jq('#pmtctChecked'));
+                clearHiddenSections(jq('#pepChecked'));
+                clearHiddenSections(jq('#prepChecked'));
+                clearHiddenSections(jq('#haartChecked'));
             } else if (getValue('transfer-in-status.value') == TRANSIT) {
                 jq('#transit-patient').show();
                 jq('#transfer-details').hide();
                 clearHiddenSections(jq('#transfer-details'));
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
-                jq('#baseline-assessment1').hide();
-                jq('#baseline-assessment2').hide();
-                jq('#baseline-assessment3').hide();
-                jq('#treatment-supporter').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                clearHiddenSections(jq('#confirmed-positive-date'));
+                clearHiddenSections(jq('#facility-confirmed'));
+                clearHiddenSections(jq('#whoAdult'));
+                clearHiddenSections(jq('#whoChild'));
+                clearHiddenSections(jq('#art-status'));
+                clearHiddenSections(jq('#pmtctChecked'));
+                clearHiddenSections(jq('#pepChecked'));
+                clearHiddenSections(jq('#prepChecked'));
+                clearHiddenSections(jq('#haartChecked'));
 
             }else{
                 jq('#transfer-details :input').prop('disabled', true);
                 jq('#hiv-id :input').prop('disabled', true);
                 jq('#generate-hiv-id').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                clearHiddenSections(jq('#confirmed-positive-date'));
+                clearHiddenSections(jq('#facility-confirmed'));
+                clearHiddenSections(jq('#whoAdult'));
+                clearHiddenSections(jq('#whoChild'));
+                clearHiddenSections(jq('#art-status'));
+                clearHiddenSections(jq('#pmtctChecked'));
+                clearHiddenSections(jq('#pepChecked'));
+                clearHiddenSections(jq('#prepChecked'));
+                clearHiddenSections(jq('#haartChecked'));
             }
         }
         function onArtStatusChange() {
@@ -90,17 +126,17 @@
 
             } else {
                 jq('#art-history :input').prop('disabled', false);
-                jq('#pmtctRegimen :input').prop('disabled', true);
-                jq('#pepRegimen :input').prop('disabled', true);
+               // jq('#pmtctRegimen :input').prop('disabled', true);
+               // jq('#pepRegimen :input').prop('disabled', true);
             }
         }
 
         function onPmtctSelected() {
            var val = getValue('pmtctChecked.value');
             if(val == 1065){
-				jq('#pmtctRegimen :input').prop('disabled', false);
+				jq('#pmtctChecked :input').prop('disabled', false);
 					}else{
-                jq('#pmtctRegimen :input').prop('disabled', true);
+                jq('#pmtctChecked :input').prop('disabled', true);
 			}
         }
         function onPepSelected() {
@@ -118,6 +154,15 @@
 
             }else {
                 jq(".muac").show();
+            }
+        }
+        var guardianTreatmentSupporter = function() {
+            var val = jq(this).val();
+            if (val == 1065){
+                jq('#tbl-guardian').hide();
+
+            }else {
+                jq('#tbl-guardian').show();
             }
         }
         function onUpnGenerateClick() {
@@ -160,6 +205,27 @@
 
             jQuery('#calculated-bmi').html(display);
         }
+        function viralLoadValidation() {
+            var vl = parseInt(getValue('vl.value'));
+            //console.log("vl "+vl);
+            if (vl > 0 ) {
+                jq('#vl :input').prop("disabled", false);
+                jq('#ldl :input').prop("disabled", true);
+
+            }else {
+                //  jq('#vLoadResults :input').prop("disabled", true);
+                jq('#ldl :input').prop("disabled", false);
+
+            }
+            if (getValue('ldl.value') == 1302) {
+                jq('#vl :input').prop("disabled", true);
+                jq('#ldl :input').prop("disabled", false);
+            }else {
+                jq('#vl :input').prop("disabled", false);
+                jq('#ldl :input').prop("disabled", true);
+            }
+        }
+
         clearHiddenSections = function(parentObj) {
 
 
@@ -184,16 +250,20 @@
 
             });
         }
+
+        //On Ready
         jq(function() {
             //Get age and gender for validation
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
+            jq('#tbl-guardian').hide();
             jq('#transfer-in-status input').change(onTransferStatusChange);
             jq('#art-status input').change(onArtStatusChange);
-            jq('#pmtctChecked input').click(onPmtctSelected);
-            jq('#pepChecked input').click(onPepSelected);
+            jq('input[type=radio].guardian').change(guardianTreatmentSupporter);
+            //jq('#pmtctChecked input').click(onPmtctSelected);
+           // jq('#pepChecked input').click(onPepSelected);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             jq('#transit-patient').hide();
@@ -203,7 +273,12 @@
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             //limit letters only in text field
-            jQuery('#rsn').keypress(function(event) {
+            //vl and ldl validation
+            getField('ldl.value').change(viralLoadValidation);
+            getField('vl.value').keyup(viralLoadValidation);
+            viralLoadValidation;
+
+			jQuery('#rsn').keypress(function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
                 //alert(code)
                 if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
@@ -221,66 +296,67 @@
                 jq('.muac').show();
             }
 
-            beforeSubmit.push(function() {
-                var birthDate = "<lookup expression="patient.birthdate" />";
-                var encounterDate = getValue('encounter-date.value');
-                var confirmedPveDate = getValue('confirmed-positive-date.value');
-                var transferInDate = getValue('transfer-in-date.value');
-                var firstEnrolledDate = getValue('first-enrolled-date.value');
-                var artStartDate = getValue('art-start-date.value');
-                var upn = jq('#hiv-id input[type=text]').val();
+        });
 
-                if (PATIENT_HAS_UPN) {
-                    if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
-                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
-                        return false;
-                    }
-				} else {
-                    if(/^[0-9]{10}$/.test(upn) === false) {
-                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments");
-                        return false;
-                    }
-				}
-                if (encounterDate =="") {
-                    getField('encounter-date.error').html('Enrollment date should not be empty').show();
+        //Before Submit
+        beforeSubmit.push(function() {
+            var birthDate = "<lookup expression="patient.birthdate" />";
+            var encounterDate = getValue('encounter-date.value');
+            var confirmedPveDate = getValue('confirmed-positive-date.value');
+            var transferInDate = getValue('transfer-in-date.value');
+            var firstEnrolledDate = getValue('first-enrolled-date.value');
+            var artStartDate = getValue('art-start-date.value');
+            var upn = jq('#hiv-id input[type=text]').val();
+
+            if (PATIENT_HAS_UPN) {
+                if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
                     return false;
                 }
-                var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                if (isBirthdateBeforeEnrollment) {
-                    getField('encounter-date.error').html('Enrollment date, should  be later than birth Date').show();
+            } else {
+                if(/^[0-9]{10}$/.test(upn) === false) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments");
                     return false;
                 }
+            }
+            if (encounterDate =="") {
+                getField('encounter-date.error').html('Enrollment date should not be empty').show();
+                return false;
+            }
+            var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isBirthdateBeforeEnrollment) {
+                getField('encounter-date.error').html('Enrollment date, should  be later than birth Date').show();
+                return false;
+            }
 
-                var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                if (isBirthdateBeforeConfirmedPve) {
-                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
+            var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isBirthdateBeforeConfirmedPve) {
+                getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
+                return false;
+            }
+
+
+            var isEnrollmentDateBeforeConfirmedPve = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isEnrollmentDateBeforeConfirmedPve) {
+                getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+                return false;
+            }
+            if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+                var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+                if (isTransferInBeforeFirstEnrolled) {
+                    getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
                     return false;
                 }
+            }
 
-
-                var isEnrollmentDateBeforeConfirmedPve = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-                if (isEnrollmentDateBeforeConfirmedPve) {
-                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+            if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+                var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+                if (isARTStartDateBeforeFirstEnrolled) {
+                    getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
                     return false;
                 }
-                if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
-					var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-					if (isTransferInBeforeFirstEnrolled) {
-						getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
-						return false;
-					   }
-                }
-
-                if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
-					var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-						if (isARTStartDateBeforeFirstEnrolled) {
-							getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
-							return false;
-						}
-                }
-                return true;
-            });
-
+            }
+            return true;
         });
 	</script>
 
@@ -310,8 +386,6 @@
 			<table>
 				<tr>
 					<td>Entry point*</td>
-
-					<!-- pw greencard additions increased entry points -->
 					<td colspan="3">
 						<obs style="radio" answerSeparator=" "
 							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -323,7 +397,6 @@
 						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 					</obsgroup></td>
 					</td>
-					<!-- .pw greencard additions increased entry points -->
 				</tr>
 				<tr></tr>
 				<tr>
@@ -429,7 +502,7 @@
 				</tr>
 				<tr>
 					<td>Facility where confirmation done</td>
-					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td>
 				</tr>
 				<tr>
 					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> * </td>
@@ -526,7 +599,7 @@
 				</obsgroup>
 				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
-						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PREP" /></td>
+						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PREP" id="prepChecked" /></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -556,7 +629,7 @@
 
 				<obsgroup groupingConceptId="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
-						<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART"/></td>
+						<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" id="haartChecked"/></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -586,7 +659,7 @@
 			</table>
 		</fieldset>
 		<!-- Baseline assessments  -->
-		<fieldset>
+		<fieldset id="baseline-fieldset">
 			<legend>Baseline assessment</legend>
 
 			<table id="baseline-assessment1" cellspacing="10" style="float:left; ">
@@ -681,7 +754,7 @@
 					<td colspan="2"></td>
 					<td>HIV Viral Load</td>
 					<td>
-						<obs id="viral-load" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 						copies/ml
 					</td>
 
@@ -724,7 +797,56 @@
 				</tr>
 			</table>
 		</fieldset>
+		<includeIf velocityTest="$patient.age &lt; 18">
 		<fieldset>
+			<legend>Under 18 Years</legend>
+			<table id="underage-details" style="width: 70%;" border="0">
+					<tr>
+						<td>In school :
+							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+							<obs conceptId="5629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="yes_no"/>
+						</td>
+					</tr>
+
+					<tr>
+						<td>Child is an orphan?
+							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+						</td>
+					</tr>
+			</table>
+			<div>
+				Is the guardian the same as treatment supporter?  <input type="radio" name="guardian" class="guardian" value="1065"/> Yes
+				<input type="radio" name="guardian" class="guardian" value="1066"/>No
+			</div>
+			<br />
+			<table id="tbl-guardian" style="width: 50%;" border="0">
+				<tr>
+					<th align="left">Guardian Name</th>
+					<th align="left">Telephone Number</th>
+					<th align="left">Postal Addrress</th>
+				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="11" concept="Treatment Supporter"/>
+					<render n="12" concept="Treatment Supporter"/>
+				</repeat>
+			</table>
+		</fieldset>
+		</includeIf>
+		<fieldset id="treatment-supporter-fieldset" >
 			<legend>Treatment Supporter</legend>
 			<table id="treatment-supporter" style="width: 70%;" border="0">
 				<tr>
