@@ -124,11 +124,6 @@
     });
 </script>
 
-<div class="ke-page-sidebar">
-	<div class="ke-panel-frame">
-        ${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Navigation", items: menuItems ]) }    </div>
-</div>
-
 <div class="ke-page-content">
     <div style="font-size: 18px; color: #006056; font-style: normal; font-weight: bold">Facility Dashboard</div>
     <table cellspacing="0" cellpadding="0" width="100%">

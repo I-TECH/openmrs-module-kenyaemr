@@ -27,6 +27,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTeste
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageToCareDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRemarksDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSSelfTestDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTBScreeningDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
@@ -41,6 +47,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
@@ -89,6 +96,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
         dsd.addColumn("Name", nameDef, "");
+        dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
@@ -107,10 +115,12 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
         dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
         dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
-        /*dsd.addColumn("coupleDiscordant", new PWPDisclosureDataDefinition(), null);
-        dsd.addColumn("tbScreening", new PWPDisclosureDataDefinition(), null);
-        dsd.addColumn("linkedToCare", new PWPDisclosureDataDefinition(), null);
-        dsd.addColumn("everHadHIVSelfTest", new PWPDisclosureDataDefinition(), null);*/
+        dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), null);
+        dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
+        dsd.addColumn("linkedToCare", new HTSLinkageToCareDataDefinition(), null);
+        dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
+        dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
+        dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
         dsd.addRowFilter(new HTSRegisterCohortDefinition(), "");
         return dsd;

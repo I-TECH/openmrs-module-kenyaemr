@@ -196,9 +196,6 @@ jQuery(function () {
 	<br/>
 	<br/>
 	<br/>
-	<div style="text-align: center; margin: 5px;" >
-		<button  type="button" class="ke-app" onclick="${ onClick }"><img src="${ ui.resourceLink("kenyaemr", "images/forward.png") }" />Proceed to Home Page</button>
-	</div>
 </div>
 
 

@@ -32,25 +32,9 @@ public class PopulationTypeDataEvaluator implements VisitDataEvaluator {
                 "inner join encounter e on e.visit_id = v.visit_id \n" +
                 "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
                 "where o.concept_id = 160581 ";
-        //+ " and v.date_started > :startDate  ";
 
-        //we want to restrict visits to those for patients in question
-        /*qry = qry + " and v.visit_id in (";
-        qry = qry + context.getBaseCohort().getMemberIds();
-        qry = qry + ") ";
-*/
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
-        /*queryBuilder.addParameter("effectiveDate", ModuleFileProcessorUtil.getDefaultDate());
-        queryBuilder.addParameter("endDate", ModuleFileProcessorUtil.getDefaultEndDate());
-        queryBuilder.addParameter("patientIds", ModuleFileProcessorUtil.defaultCohort());*/ ;
-
-        //we want to restrict visits to those for patients in question
-       /* qry = qry + " and v.visit_id in (";
-        qry = qry + ModuleFileProcessorUtil.getInitialCohortQuery();
-        qry = qry + ") ";*/
-
-        System.out.println("Completed processing Date record created");
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
