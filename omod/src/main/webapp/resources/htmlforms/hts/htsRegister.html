@@ -180,7 +180,6 @@
             });
         }
 
-
         //On Ready
         $(document).ready(function () {
             //pop type
@@ -202,6 +201,77 @@
             //test kit expiry
             jq("#expiry-date input").change(expiryDateSelected);
             //jq('#ccc-no :input').prop('readonly', true);
+            //On load states
+            //First test
+            var firstTest = getField("hiv-test1-result.value").val();
+                //Negative
+                if(firstTest ==664) {
+                    jq("#hiv-test2-result select").prop("disabled", true);
+                    jq("#kitTest2 input").prop("disabled", true);
+                    jq("#lotTest2 input").prop("disabled", true);
+                    jq("#expiry-date2 input").prop("disabled", true);
+                    getField('hiv-final-result.value').val(664);
+                    jq('#ccc-no input').prop("disabled", true);
+                    jq('#in-care input').prop("disabled", true);
+                }
+                //Positive
+                if(firstTest ==703){
+                    jq("#hiv-test2-result select").prop("disabled", false);
+                    jq("#kitTest2 input").prop("disabled", false);
+                    jq("#lotTest2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                }
+                //Invalid
+                if(firstTest ==163611){
+                    jq("#hiv-test2-result select").prop("disabled", false);
+                    jq("#kitTest2 input").prop("disabled", false);
+                    jq("#lotTest2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                }
+           //Final test
+           var secondTest = getField("hiv-test2-result.value").val();
+                //Negative
+                if(secondTest ==664) {
+                    jq("#kitTest2 input").prop("disabled", true);
+                    jq("#lotTest2 input").prop("disabled", true);
+                    jq("#expiry-date2 input").prop("disabled", true);
+                    getField('hiv-final-result.value').val(664);
+                    jq('#ccc-no input').prop("disabled", true);
+                    jq('#in-care input').prop("disabled", true);
+                }
+                //Positive
+                if(secondTest ==703){
+                    jq("#kitTest2 input").prop("disabled", false);
+                    jq("#lotTest2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(703);
+                    jq('#ccc-no input').prop("disabled", false);
+                    jq('#in-care input').prop("disabled", false);
+                }
+                //Invalid
+                if(secondTest ==163611){
+                    jq("#kitTest2 input").prop("disabled", false);
+                    jq("#lotTest2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(1138);
+                }
+                //Invalid
+                if(secondTest ==1175){
+                    jq("#kitTest2 input").prop("disabled", false);
+                    jq("#lotTest2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(1138);
+                }
+                //Final test
+            var finalTest = getField("hiv-final-result.value").val();
+            if(finalTest ==703) {
+                jq('#ccc-no input').prop("disabled", false);
+                jq('#in-care input').prop("disabled", false);
+            }else{
+                jq('#ccc-no input').prop("disabled", true);
+                jq('#in-care input').prop("disabled", true);
+            }
+
     });
 
         //Before Submit
