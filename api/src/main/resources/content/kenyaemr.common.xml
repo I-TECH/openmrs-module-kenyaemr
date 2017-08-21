@@ -32,7 +32,6 @@
 			<set>
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.missedAppointment" />
-				<ref bean="kenyaemr.common.report.moh711" />
 				<ref bean="kenyaemr.common.report.moh731" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<ref bean="kenyaemr.common.report.dhis2" />
@@ -42,8 +41,8 @@
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
-				<ref bean="kenyaemr.common.report.mer-indicators" />
 				<ref bean="kenyaemr.etl.common.report.datim"/>
+				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -328,6 +327,18 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:moh731.xls" />
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.htsRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="c759e8da-d82d-41e3-88ee-c5e65ee6c9f6" />
+		<property name="name" value="HTS Register" />
+		<property name="description" value="Register for HIV Testing Services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
 
 	<bean id="kenyaemr.common.report.artDrug" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
