@@ -43,14 +43,20 @@ public class FacilityDashboardFragmentController {
 	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0, suppressedInLast12Months = 0;
+		Integer allPatients = 0,  patientsOnArt = 0,
+				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
+				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
+				checkedIn =0 , unscheduledVisits=0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
 
+
+		SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Date> dateMap = getReportDates(thisMonth - 1);
 		Date startDate = dateMap.get("startDate");
 		Date endDate = dateMap.get("endDate");
+		Date todaysDate = todaysDate();
 		SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
 		String reportingPeriod = df.format(endDate);
 
@@ -58,6 +64,8 @@ public class FacilityDashboardFragmentController {
 
 		evaluationContext.addParameterValue("startDate", startDate);
 		evaluationContext.addParameterValue("endDate", endDate);
+		evaluationContext.addParameterValue("dateToday", new Date());
+		log.info("Today's date: " + todaysDate);
 
 		Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
 		allPatients = all != null? all.size(): 0;
@@ -77,6 +85,18 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> viralSuppressionInLast12Months = DashBoardCohorts.viralLoadSuppressionIn12Months(evaluationContext).getMemberIds();
 		suppressedInLast12Months = viralSuppressionInLast12Months != null? viralSuppressionInLast12Months.size(): 0;
 
+		Set<Integer> patientsScheduledToday = DashBoardCohorts.patientsScheduledToday(evaluationContext).getMemberIds();
+		patientsScheduled = patientsScheduledToday != null? patientsScheduledToday.size(): 0;
+
+		Set<Integer> patientsSeenToday = DashBoardCohorts.patientsSeen(evaluationContext).getMemberIds();
+		patientsSeen = patientsSeenToday != null? patientsSeenToday.size(): 0;
+
+		Set<Integer> patientsCheckedIn = DashBoardCohorts.checkedInAppointments(evaluationContext).getMemberIds();
+		checkedIn = patientsCheckedIn != null? patientsCheckedIn.size(): 0;
+
+		Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
+		unscheduledVisits = patientsWithUnscheduledVisit != null? patientsWithUnscheduledVisit.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -84,7 +104,11 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("reportPeriod", reportingPeriod);
 		model.addAttribute("vlResults", vlInLast12Months);
 		model.addAttribute("suppressedVl", suppressedInLast12Months);
-		
+		model.addAttribute("patientsScheduled", patientsScheduled);
+		model.addAttribute("patientsSeen", patientsSeen);
+		model.addAttribute("checkedIn", checkedIn);
+		model.addAttribute("unscheduled", unscheduledVisits);
+
 		return null;
 	}
 
@@ -105,6 +129,18 @@ public class FacilityDashboardFragmentController {
 		Date monthEnd = gc.getTime();
 		reportDates.put("endDate", monthEnd);
 		return reportDates;
+	}
+
+	private Date todaysDate(){
+		Calendar gc = new GregorianCalendar();
+		gc.clear(Calendar.HOUR);
+		gc.clear(Calendar.HOUR_OF_DAY);
+		gc.clear(Calendar.MINUTE);
+		gc.clear(Calendar.SECOND);
+		gc.clear(Calendar.MILLISECOND);
+		Date today = gc.getTime();
+
+		return today;
 	}
 
 }
