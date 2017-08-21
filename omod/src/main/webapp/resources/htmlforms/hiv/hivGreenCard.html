@@ -170,9 +170,9 @@ Green Card follow-up visit form
             for (var i = 0, row; row = table.rows[i]; i++) {
                 var val = jq(this).closest('tr').find(".complaint-time input").val();
             var encounterDate = new Date(getValue('encounter-date.value'));
-            var complaint_date = new Date(encounterDate.getTime() - (val * 24 * 60 * 60 * 1000)).toISOString().substr(0, 10);
-            var formattedComplaintDate = moment(moment(complaint_date, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-                if(val >0 ) {
+            var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
+            console.log("Complaint Date "+formattedComplaintDate);
+            if(val >0 ) {
                     jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
                 }
 
@@ -220,12 +220,22 @@ Green Card follow-up visit form
         }
         var systemsReviewSelected = function() {
             var val = jq(this).val();
-            var skinFindings = jq('.skin-finding');
-            var skinNotes = jq('.skin-notes input').val('');
+            var skinFindings = jq('.skin-findings');
+            var skinNotes = jq('.skin-notes textarea').val('');
+            var eyeFindings = jq('.eye-findings');
+            var eyeNotes = jq('.eye-notes textarea').val('');
+            var entFindings = jq('.ent-findings');
+            var entNotes = jq('.ent-notes textarea').val('');
+            var chestFindings = jq('.chest-findings');
+            var chestNotes = jq('.chest-notes textarea').val('');
             if (val == 1116){
                 jq("#tbl-systems-review").hide();
                 clearHiddenSections(skinFindings);
                 clearHiddenSections(skinNotes);
+                clearHiddenSections(eyeFindings);
+                clearHiddenSections(eyeNotes);
+                clearHiddenSections(entFindings);
+                clearHiddenSections(entNotes);
 
             }else {
                 jq("#tbl-systems-review").show();
@@ -820,15 +830,20 @@ Green Card follow-up visit form
             }
             jq('#pregnancyOption input:radio').change(function () {
                 if ((getValue('pregnancyOption.value')) == 1066) {
+                    var pregOtions=jq('#pregnancyOptionValues :input').val('');
+                    var ancProfile=jq('#anc-profile');
                     //jq('#pregnancyOptionValues :input').prop('disabled', true);
                     jq('#pregnancyOptionValues').hide();
                     jq('#fp-details').hide();
                     jq('#fpOptionValues :input').prop('disabled', false);
                     jq('#fpOptionValues :input').prop('checked', false);
                     jq("#wants-pregnancy").show();
+                    clearHiddenSections(pregOtions);
+                    clearHiddenSections(ancProfile);
                 }
                 else if((getValue('pregnancyOption.value')) == 1065){
                     jq('#pregnancyOptionValues :input').prop('disabled', false);
+                    var wantsPreg=jq('#anc-profile');
                     jq('#pregnancyOptionValues').show();
                     jq('#fp-details').hide();
                     jq("#wants-pregnancy").hide();
@@ -1411,17 +1426,16 @@ Green Card follow-up visit form
                                 </td>
                                 <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration"  /></td>
                                 <td>
-                                    <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         allowFutureDates="false"/>
+                                    <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"/>
                                 </td>
                             </tr>
                         </obsgroup>
                     </template>
-                    <render n="1" concept="Drug"/>
-                    <render n="2" concept="Drug"/>
-                    <render n="3" concept="Drug"/>
-                    <render n="4" concept="Drug"/>
-                    <render n="5" concept="Drug"/>
+                    <render n="1" concept="complaint"/>
+                    <render n="2" concept="complaint"/>
+                    <render n="3" concept="complaint"/>
+                    <render n="4" concept="complaint"/>
+                    <render n="5" concept="complaint"/>
                 </repeat>
             </table>
             <table>
@@ -2193,7 +2207,7 @@ Green Card follow-up visit form
                             <tr>
                                     <td style="text-align: left">ANC/PNC Profile</td>
                                     <td>
-                                        <obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                                        <obs id="anc-profile" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
                                     </td>
                             </tr>
                             <tr>
@@ -2471,7 +2485,7 @@ Green Card follow-up visit form
                     <tr>
                         <td>1.</td>
                         <td>Skin</td>
-                        <td><obs class="skin-finding"
+                        <td><obs class="skin-findings"
                                 conceptId="1120AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="150555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136455AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1249AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Abscess,Swelling/Growth,Hair Loss,Itching,Kaposi Sarcoma,Skin eruptions/Rashes,Oral sores"
@@ -2485,42 +2499,42 @@ Green Card follow-up visit form
                     <tr>
                         <td>2.</td>
                         <td>Eyes</td>
-                        <td><obs
+                        <td><obs class="eye-findings"
                                 conceptId="163309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="123074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140827AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Visual Disturbance,Excessive tearing,Eye pain,Eye redness,Light sensitive,Itchy eyes"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="eye-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
                     <tr>
                         <td>3.</td>
                         <td>ENT</td>
-                        <td><obs
+                        <td><obs class="ent-findings"
                                 conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="148517AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,128055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110099AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126318AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Apnea,Hearing disorder,Dental caries,Erythema,Frequent colds,Gingival bleeding,Hairy cell leukoplakia,Hearing loss,Hoarseness,Kaposi Sarcoma,Masses,Nasal discharge,Nosebleed,Pain,Post nasal discharge,Sinus problems,Snoring,Sore thoat,Oral sores,Thrush,Tinnitus,Toothache,Ulcers,Vertigo"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="ent-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
                     <tr>
                         <td>4.</td>
                         <td>Chest</td>
-                        <td><obs
+                        <td><obs class="chest-findings"
                                 conceptId="1123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="146893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145712AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5209AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Bronchial breathing,Crackles,Dullness,Reduced breathing,Respiratory distress,Wheezing"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="chest-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
