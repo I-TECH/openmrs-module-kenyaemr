@@ -410,6 +410,7 @@
 
             <div class="ke-tabmenu-item" data-tabid="appointments">Appointments</div>
 
+
         </div>
 
         <div class="ke-tab" data-tabid="care_and_treatment">
@@ -450,7 +451,7 @@
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of HTS Statistics</div>
+                            <div class="ke-panel-heading">Viral Load Tracker</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -458,28 +459,14 @@
                                         <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
                                     </tr>
                                     <tr>
-                                        <th>&nbsp;</th>
-                                        <th>Total Tested</th>
-                                        <th>Total Positive</th>
-                                        <th>Total Enrolled</th>
+                                        <th>Total clients with viral loads <br/>(in last 12 months)</th>
+                                        <th>Total Unsuppressed</th>
+                                        <th>Total Suppressed</th>
                                     </tr>
                                     <tr>
-                                        <td><b>Total Contacts</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Family Members</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Sexual Partner</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>${vlResults}</td>
+                                        <td>${vlResults - suppressedVl}</td>
+                                        <td>${suppressedVl}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -495,40 +482,7 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of Care and Treatment Statistics</div>
-
-                            <div class="ke-panel-content">
-                                <table class="alignLeft">
-                                    <tr>
-                                        <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: ${reportPeriod}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total Patients</th>
-                                        <th>Current in Care</th>
-                                        <th>Current on ART</th>
-                                        <th>New on ART</th>
-                                        <th>Total with Valid viral loads <br/>(in last 12 months)</th>
-                                        <th>Total suppressed</th>
-                                    </tr>
-                                    <tr>
-                                        <td>${allPatients}</td>
-                                        <td>${inCare}</td>
-                                        <td>${onArt}</td>
-                                        <td>${newOnArt}</td>
-                                        <td>${vlResults}</td>
-                                        <td>${suppressedVl}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div id="container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
-                    </td>
-                    <td style="width: 50%; vertical-align: top; padding-left: 5px">
-                        <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of HTS Statistics</div>
+                            <div class="ke-panel-heading">HTS</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -547,23 +501,50 @@
                                         <td>0</td>
                                         <td>0</td>
                                     </tr>
-                                    <tr>
-                                        <td><b>Family Members</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Sexual Partner</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; padding-left: 5px">
+                        <div class="ke-panel-frame">
+                            <div class="ke-panel-heading">Contact Testing</div>
 
-                        <div id="hts-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                            <div class="ke-panel-content">
+                                    <table class="alignLeft">
+                                        <tr>
+                                            <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <th>&nbsp;</th>
+                                            <th>Total Tested</th>
+                                            <th>Total Positive</th>
+                                            <th>Total Unknown</th>
+                                            <th>Total Enrolled</th>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total Contacts</b></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Family Members</b></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Sexual Partner</b></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                    </table>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -573,67 +554,51 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of Care and Treatment Statistics</div>
+                            <div class="ke-panel-heading">Today's Workload</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
                                         <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: ${reportPeriod}</strong>
+                                            class="heading2"><strong>Reporting Period: Today</strong>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Total Patients</th>
-                                        <th>Current in Care</th>
-                                        <th>Current on ART</th>
-                                        <th>New on ART</th>
-                                        <th>Total with Valid viral loads <br/>(in last 12 months)</th>
-                                        <th>Total suppressed</th>
+                                        <th>Number Scheduled </th>
+                                        <th>Number Checked In </th>
+                                        <th>Number Seen</th>
+                                        <th>Walk -ins</th>
+
                                     </tr>
                                     <tr>
-                                        <td>${allPatients}</td>
-                                        <td>${inCare}</td>
-                                        <td>${onArt}</td>
-                                        <td>${newOnArt}</td>
-                                        <td>${vlResults}</td>
-                                        <td>${suppressedVl}</td>
+                                        <td>${patientsScheduled}</td>
+                                        <td>${patientsSeen}</td>
+                                        <td>${patientsSeen}</td>
+                                        <td>${patientsSeen}</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
 
-                        <div id="container3" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of HTS Statistics</div>
+                            <div class="ke-panel-heading">Differentiated Care</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
-                                        <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                        <td colspan="3"
+                                            class="heading2"><strong>Reporting Period: Today</strong>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th>&nbsp;</th>
-                                        <th>Total Tested</th>
-                                        <th>Total Positive</th>
-                                        <th>Total Enrolled</th>
+                                        <th>Stable Patients </th>
+                                        <th>Unstable Patients  </th>
+
+
                                     </tr>
                                     <tr>
-                                        <td><b>Total Contacts</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Family Members</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Sexual Partner</b></td>
-                                        <td>0</td>
                                         <td>0</td>
                                         <td>0</td>
                                     </tr>
@@ -641,7 +606,6 @@
                             </div>
                         </div>
 
-                        <div id="hts-container3" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>

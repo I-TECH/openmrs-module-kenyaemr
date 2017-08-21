@@ -1,6 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnCareCohortDefinition;
@@ -140,6 +142,30 @@ public class DashBoardCohorts {
     public static EvaluatedCohort viralLoadSuppressionIn12Months(EvaluationContext context) {
         try {
             return getService().evaluate(new ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients with viral load suppression in 12 months", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort patientsSeen(EvaluationContext context) {
+        try {
+            return getService().evaluate(new AppointmentsCheckedInCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients with VL results in last 12 months", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort patientsScheduledToday(EvaluationContext context) {
+        try {
+            return getService().evaluate(new AppointmentsDailyScheduleCohortDefinition(), context);
         } catch (EvaluationException e) {
             throw new IllegalStateException("Error evaluating patients with viral load suppression in 12 months", e);
         }
