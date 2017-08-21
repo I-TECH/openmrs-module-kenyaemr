@@ -843,10 +843,11 @@ Green Card follow-up visit form
                 }
                 else if((getValue('pregnancyOption.value')) == 1065){
                     jq('#pregnancyOptionValues :input').prop('disabled', false);
-                    var wantsPreg=jq('#anc-profile');
+                    var wantsPreg=jq('#wants-pregnancy');
                     jq('#pregnancyOptionValues').show();
                     jq('#fp-details').hide();
                     jq("#wants-pregnancy").hide();
+                    clearHiddenSections(wantsPreg);
                   //Automate EDC Computation
                     var lmpDate = getValue('lmp-date.value');
                     var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
