@@ -316,8 +316,8 @@
             <div>
                 Client population type:
                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                <input type="radio" name="population-type" class="population-type" value="1065"/> General Population
-                <input type="radio" name="population-type" class="population-type" value="1066"/> Key Population
+                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                     answerLabel="Key Population, General Population" style="checkbox" /><br/>
             </div>
             <table id="key-population">
                 <tr>
@@ -412,56 +412,57 @@
             </table>
             <br />
             <table id="tbl-hiv-test">
-                <tr>
-                    <td>HIV Test 1 Results:
-                        <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Positive,Negative,Invalid"/>
-                    </td>
-                    <td>&#160;&#160;&#160;&#160; Kit Name
-                        <!--<obs class="kit-name"-->
-                        <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--answerConceptId="162401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels=" "-->
-                        <!--/>-->
-                        <input type="text" name="kit-name" />
-                    </td>
-                    <td>&#160;&#160;&#160;&#160;Lot Number
-                        <!--<obs class="lot-number"-->
-                        <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--answerConceptId="162398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--/>-->
-                        <input type="text" name="lot-number" />
-                    </td>
-                    <td>&#160;&#160;&#160;&#160;Expiry Date
-                        <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td>HIV Test 2 Results:
-                        <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Positive,Negative,Invalid,N/A"/>
-                    </td>
-                    <td>&#160;&#160;&#160;&#160; Kit Name
-                        <!--<obs class="kit-name"-->
-                        <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--answerConceptId="162401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels=" "-->
-                        <!--/>-->
-                        <input type="text" id="kitTest2" name="kit-name" />
-                    </td>
-                    <td>&#160;&#160;&#160;&#160;Lot Number
-                        <!--<obs class="lot-number"-->
-                        <!--conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--answerConceptId="162398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                        <!--/>-->
-                        <input type="text" id="lotTest2" name="lot-number" />
-                    </td>
-                    <td>&#160;&#160;&#160;&#160;Expiry Date
-                        <obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                        />
-                    </td>
-                </tr>
+                <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                    <tr>
+                        <td>HIV Test 1 Results:
+                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
+                        </td>
+                        <td>&#160;&#160;&#160;&#160; Kit Name
+                            <obs class="kit-name"
+                            conceptId="164422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            />
+
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;Lot Number
+                            <obs class="lot-number"
+                            conceptId="164409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            />
+
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;Expiry Date
+                            <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                            />
+                        </td>
+                    </tr>
+                </obsgroup>
+                <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                    <tr>
+
+                        <td>HIV Test 2 Results:
+                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,Invalid,N/A"/>
+                        </td>
+                        <td>&#160;&#160;&#160;&#160; Kit Name
+                            <obs class="kit-name"
+                                 conceptId="164422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            />
+
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;Lot Number
+                            <obs class="lot-number"
+                                 conceptId="164409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            />
+
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;Expiry Date
+                            <obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                            />
+                        </td>
+                    </tr>
+                </obsgroup>
                 <tr>
                     <td>Final Results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

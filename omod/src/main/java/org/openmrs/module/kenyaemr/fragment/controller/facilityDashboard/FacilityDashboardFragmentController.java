@@ -12,18 +12,16 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.kenyaemr.page.controller;
+package org.openmrs.module.kenyaemr.fragment.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 
 import javax.servlet.http.HttpSession;
@@ -36,19 +34,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Home page controller
+ * Facility dashboard page controller
  */
-public class HomePageController {
+public class FacilityDashboardFragmentController {
 
 	private final Log log = LogFactory.getLog(this.getClass());
 	
-	public String controller(PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
+	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
-		// Redirect to setup page if module is not yet configured
-		if (Context.getService(KenyaEmrService.class).isSetupRequired()) {
-			kenyaUi.notifySuccess(session, "First-Time Setup Needed");
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "admin/firstTimeSetup");
-		}
 
 		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0, suppressedInLast12Months = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
