@@ -56,6 +56,7 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -83,7 +84,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
     }
 
     protected DataSetDefinition datasetColumns() {
-        VisitDataSetDefinition dsd = new VisitDataSetDefinition();
+        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
         dsd.setName("HTSInformation");
         dsd.setDescription("Visit information");
 

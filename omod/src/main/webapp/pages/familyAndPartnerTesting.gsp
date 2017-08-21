@@ -86,7 +86,7 @@ div.section-title {
 		</div>
 
         <div class="ke-panel-content">
-            <div class="section-title">HIV Negative Contacts registered in this facility</div><div class="clear"></div>
+            <div class="section-title">HIV Negative Contacts registered <br/> in this facility</div><div class="clear"></div>
             <% if (hivNegativeRelationships) { %>
             <div class="grid">
                 <div class="column-one">&nbsp;</div>
@@ -118,7 +118,7 @@ div.section-title {
         </div>
 
         <div class="ke-panel-content">
-            <div class="section-title">Contacts not registered in the facility</div><div class="clear"></div>
+            <div class="section-title">Contacts not registered <br/> in the facility</div><div class="clear"></div>
             <% if (otherContacts) { %>
             <div class="grid">
                 <div class="column-one">&nbsp;</div>

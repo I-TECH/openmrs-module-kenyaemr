@@ -2,6 +2,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDateDataDefinition;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.evaluator.VisitDataEvaluator;
@@ -17,18 +20,18 @@ import java.util.Map;
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
 @Handler(supports=VisitDateDataDefinition.class, order=50)
-public class VisitDateDataEvaluator implements VisitDataEvaluator {
+public class VisitDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedVisitData c = new EvaluatedVisitData(definition, context);
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "SELECT " +
-                " v.visit_id, " +
-                " v.date_started " +
-                " FROM visit v where v.voided =0 " ;
+                " e.encounter_id, " +
+                " e.encounter_datetime " +
+                " FROM encounter e where e.voided =0 " ;
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
