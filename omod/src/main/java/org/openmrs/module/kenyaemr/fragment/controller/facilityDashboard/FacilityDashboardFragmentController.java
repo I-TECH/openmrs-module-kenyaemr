@@ -43,7 +43,10 @@ public class FacilityDashboardFragmentController {
 	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-		Integer allPatients = 0,  patientsOnArt = 0, patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0, suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0;
+		Integer allPatients = 0,  patientsOnArt = 0,
+				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
+				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
+				checkedIn =0 , unscheduledVisits=0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -88,6 +91,12 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> patientsSeenToday = DashBoardCohorts.patientsSeen(evaluationContext).getMemberIds();
 		patientsSeen = patientsSeenToday != null? patientsSeenToday.size(): 0;
 
+		Set<Integer> patientsCheckedIn = DashBoardCohorts.checkedInAppointments(evaluationContext).getMemberIds();
+		checkedIn = patientsCheckedIn != null? patientsCheckedIn.size(): 0;
+
+		Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
+		unscheduledVisits = patientsWithUnscheduledVisit != null? patientsWithUnscheduledVisit.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -97,6 +106,8 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("suppressedVl", suppressedInLast12Months);
 		model.addAttribute("patientsScheduled", patientsScheduled);
 		model.addAttribute("patientsSeen", patientsSeen);
+		model.addAttribute("checkedIn", checkedIn);
+		model.addAttribute("unscheduled", unscheduledVisits);
 
 		return null;
 	}

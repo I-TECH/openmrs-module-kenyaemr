@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsPatientsSeenCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -15,15 +15,14 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 /**
  * Evaluator for Current on ART
  */
-@Handler(supports = {AppointmentsDailyScheduleCohortDefinition.class})
-public class AppointmentsDailyScheduleCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {AppointmentsPatientsSeenCohortDefinition.class})
+public class AppointmentsPatientSeenCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -32,17 +31,21 @@ public class AppointmentsDailyScheduleCohortDefinitionEvaluator implements Cohor
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		AppointmentsDailyScheduleCohortDefinition definition = (AppointmentsDailyScheduleCohortDefinition) cohortDefinition;
+		AppointmentsPatientsSeenCohortDefinition definition = (AppointmentsPatientsSeenCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select o.person_id from obs o where o.concept_id = 5096 and date(o.value_datetime) = curdate();";
+		String qry=" select\n" +
+				"v.patient_id from visit v\n" +
+				"inner join encounter e on e.visit_id=v.visit_id \n" +
+				"where date(v.date_started) = curdate();";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
+
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));

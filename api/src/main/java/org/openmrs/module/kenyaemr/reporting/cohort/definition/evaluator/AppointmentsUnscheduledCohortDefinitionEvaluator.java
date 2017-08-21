@@ -39,20 +39,13 @@ public class AppointmentsUnscheduledCohortDefinitionEvaluator implements CohortD
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select \n" +
-				"o.person_id from obs o \n" +
-				"inner join visit v on v.patient_id = o.person_id\n" +
-				"where o.concept_id = 5096 and date(o.value_datetime) = date(:dateToday)\n" +
-				"and date(o.value_datetime) between date(v.date_started) and date(v.date_stopped);";
+		String qry=" select e.patient_id \n" +
+				"from encounter e \n" +
+				"left outer join obs o on o.concept_id = 5096 and date(o.value_datetime) = curdate()\n" +
+				"where date(e.encounter_datetime) = curdate() and o.person_id is null;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
-		Date startDate = (Date)context.getParameterValue("startDate");
-		Date endDate = (Date)context.getParameterValue("endDate");
-		Date dateToday = (Date)context.getParameterValue("dateToday");
-		builder.addParameter("endDate", endDate);
-		builder.addParameter("startDate", startDate);
-		builder.addParameter("dateToday", dateToday);
 
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 

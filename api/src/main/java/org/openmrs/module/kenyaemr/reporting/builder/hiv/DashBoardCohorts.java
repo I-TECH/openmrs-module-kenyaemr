@@ -3,6 +3,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsUnscheduledCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnCareCohortDefinition;
@@ -168,6 +169,30 @@ public class DashBoardCohorts {
             return getService().evaluate(new AppointmentsDailyScheduleCohortDefinition(), context);
         } catch (EvaluationException e) {
             throw new IllegalStateException("Error evaluating patients with viral load suppression in 12 months", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unscheduledAppointments(EvaluationContext context) {
+        try {
+            return getService().evaluate(new AppointmentsUnscheduledCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients with unscheduled visits", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort checkedInAppointments(EvaluationContext context) {
+        try {
+            return getService().evaluate(new AppointmentsCheckedInCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating patients who have been checked in", e);
         }
     }
     private static CohortDefinitionService getService() {

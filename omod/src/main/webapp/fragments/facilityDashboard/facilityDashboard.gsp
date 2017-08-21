@@ -429,11 +429,11 @@
                                     </tr>
                                     <tr>
                                         <th>Total Patients</th>
+                                        <th>Total enrolled in HIV</th>
                                         <th>Current in Care</th>
                                         <th>Current on ART</th>
+                                        <th>Newly Enrolled</th>
                                         <th>New on ART</th>
-                                        <th>Total with Valid viral loads <br/>(in last 12 months)</th>
-                                        <th>Total suppressed</th>
                                     </tr>
                                     <tr>
                                         <td>${allPatients}</td>
@@ -560,21 +560,21 @@
                                 <table class="alignLeft">
                                     <tr>
                                         <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: Today</strong>
+                                            class="heading2"><strong>Date: Today</strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Number Scheduled </th>
                                         <th>Number Checked In </th>
                                         <th>Number Seen</th>
-                                        <th>Walk -ins</th>
+                                        <th>Unscheduled Visits</th>
 
                                     </tr>
                                     <tr>
                                         <td>${patientsScheduled}</td>
+                                        <td>${checkedIn}</td>
                                         <td>${patientsSeen}</td>
-                                        <td>${patientsSeen}</td>
-                                        <td>${patientsSeen}</td>
+                                        <td>${unscheduled}</td>
                                     </tr>
                                 </table>
                             </div>
