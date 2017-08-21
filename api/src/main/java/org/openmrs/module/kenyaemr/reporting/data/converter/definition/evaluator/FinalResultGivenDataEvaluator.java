@@ -31,16 +31,10 @@ public class FinalResultGivenDataEvaluator implements VisitDataEvaluator {
                 "from visit v \n" +
                 "inner join encounter e on e.visit_id = v.visit_id \n" +
                 "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 1710 ";
-
-        //we want to restrict visits to those for patients in question
-        qry = qry + " and v.visit_id in (";
-        qry = qry + context.getBaseCohort().getMemberIds();
-        qry = qry + ") ";
+                "where o.concept_id = 17100 ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
-        System.out.println("Completed processing Date record created");
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

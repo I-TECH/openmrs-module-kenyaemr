@@ -30,15 +30,8 @@ public class VisitDateDataEvaluator implements VisitDataEvaluator {
                 " v.date_started " +
                 " FROM visit v where v.voided =0 " ;
 
-        //we want to restrict visits to those for patients in question
-        /*qry = qry + " and v.visit_id in (";
-        qry = qry + context.getBaseCohort().getMemberIds();
-        qry = qry + ") ";*/
-
-
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
-        System.out.println("Completed processing Date record created");
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
