@@ -3,6 +3,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.evaluator.VisitDataEvaluator;
@@ -18,18 +21,18 @@ import java.util.Map;
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
 @Handler(supports=HTSDiscordanceDataDefinition.class, order=50)
-public class HTSDiscordanceDataEvaluator implements VisitDataEvaluator {
+public class HTSDiscordanceDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedVisitData c = new EvaluatedVisitData(definition, context);
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.visit_id, \n" +
+        String qry = "select e.encounter_id, \n" +
                 "(case o.value_coded when 1066 then \"No\" when 1065 then \"Yes\" when 1175 then 'N/A' else \"\" end) discordance\n" +
-                "from visit v \n" +
-                "inner join encounter e on e.visit_id = v.visit_id \n" +
+                "from  \n" +
+                " encounter e  \n" +
                 "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
                 "where o.concept_id = 6096 ";
 

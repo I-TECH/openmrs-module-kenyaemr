@@ -25,15 +25,12 @@
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
 				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
-				<ref bean="kenyaemr.hiv.report.dueForCd4" />
-				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
 				<ref bean="kenyaemr.hiv.report.neverScreenedForTb" />
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
-				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -287,16 +284,5 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.htsRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="c759e8da-d82d-41e3-88ee-c5e65ee6c9f6" />
-		<property name="name" value="HTS Register" />
-		<property name="description" value="Register for HIV Testing Services" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set></property>
-		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
-	</bean>
 
 </beans>

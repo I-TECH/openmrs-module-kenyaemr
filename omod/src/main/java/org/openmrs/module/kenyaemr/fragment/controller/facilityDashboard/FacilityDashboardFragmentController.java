@@ -46,7 +46,8 @@ public class FacilityDashboardFragmentController {
 		Integer allPatients = 0,  patientsOnArt = 0,
 				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
 				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
-				checkedIn =0 , unscheduledVisits=0;
+				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
+				htsTested =0, htsPositive = 0, htsLinked = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -60,12 +61,11 @@ public class FacilityDashboardFragmentController {
 		SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
 		String reportingPeriod = df.format(endDate);
 
-		log.info("Start Date: " + startDate + ", End Date: " + endDate);
 
 		evaluationContext.addParameterValue("startDate", startDate);
 		evaluationContext.addParameterValue("endDate", endDate);
-		evaluationContext.addParameterValue("dateToday", new Date());
-		log.info("Today's date: " + todaysDate);
+		evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
+
 
 		Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
 		allPatients = all != null? all.size(): 0;
@@ -97,10 +97,27 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
 		unscheduledVisits = patientsWithUnscheduledVisit != null? patientsWithUnscheduledVisit.size(): 0;
 
+		Set<Integer> cummulativeEnrolledInHiv = DashBoardCohorts.enrolledInHiv(evaluationContext).getMemberIds();
+		enrolledInHiv = cummulativeEnrolledInHiv != null? cummulativeEnrolledInHiv.size(): 0;
+
+		Set<Integer> newEnrollmentsInHiv = DashBoardCohorts.newlyEnrolledInHiv(evaluationContext).getMemberIds();
+		newlyEnrolledInHiv = newEnrollmentsInHiv != null? newEnrollmentsInHiv.size(): 0;
+
+		Set<Integer> htsTotalTested = DashBoardCohorts.htsTotalTested(evaluationContext).getMemberIds();
+		htsTested = htsTotalTested != null? htsTotalTested.size(): 0;
+
+		Set<Integer> htsTotalPositive = DashBoardCohorts.htsTotalPositive(evaluationContext).getMemberIds();
+		htsPositive = htsTotalPositive != null? htsTotalPositive.size(): 0;
+
+		Set<Integer> htsTotalLinked = DashBoardCohorts.htsTotalLinked(evaluationContext).getMemberIds();
+		htsLinked = htsTotalLinked != null? htsTotalLinked.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
 		model.addAttribute("newOnArt", patientsNewOnArt);
+		model.addAttribute("cumulativeEnrolledInHiv", enrolledInHiv);
+		model.addAttribute("newlyEnrolledInHiv", newlyEnrolledInHiv);
 		model.addAttribute("reportPeriod", reportingPeriod);
 		model.addAttribute("vlResults", vlInLast12Months);
 		model.addAttribute("suppressedVl", suppressedInLast12Months);
@@ -108,6 +125,9 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("patientsSeen", patientsSeen);
 		model.addAttribute("checkedIn", checkedIn);
 		model.addAttribute("unscheduled", unscheduledVisits);
+		model.addAttribute("htsTested", htsTested);
+		model.addAttribute("htsPositive", htsPositive);
+		model.addAttribute("htsLinked", htsLinked);
 
 		return null;
 	}

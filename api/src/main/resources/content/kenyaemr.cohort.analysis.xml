@@ -8,12 +8,12 @@
         <property name="cohortAnalysis">
             <set>
                 <!--pre art beans declared here-->
-                <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.6" />
+                <!--<ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.6" />
                 <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.12" />
                 <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.24" />
                 <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.36" />
                 <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.48" />
-                <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.60" />
+                <ref bean="kenyaemr.hiv.report.cohort.analysis.preArt.60" />-->
                 <!--art beans to follow here -->
                 <ref bean="kenyaemr.hiv.report.art.cohort.analysis.art.6" />
                 <ref bean="kenyaemr.hiv.report.art.cohort.analysis.art.12" />

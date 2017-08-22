@@ -211,8 +211,10 @@
                                     </tr>
                                     <tr>
                                         <td>${allPatients}</td>
+                                        <td>${cumulativeEnrolledInHiv}</td>
                                         <td>${inCare}</td>
                                         <td>${onArt}</td>
+                                        <td>${newlyEnrolledInHiv}</td>
                                         <td>${newOnArt}</td>
                                     </tr>
                                 </table>
@@ -311,9 +313,9 @@
                                     </tr>
                                     <tr>
                                         <td><b>Total Contacts</b></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>${htsTested}</td>
+                                        <td>${htsPositive}</td>
+                                        <td>${htsLinked}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -336,24 +338,24 @@
                                         </tr>
                                         <tr>
                                             <td><b>Total Contacts</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td>60</td>
+                                            <td>9</td>
+                                            <td>11</td>
+                                            <td>20</td>
                                         </tr>
                                         <tr>
                                             <td><b>Family Members</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td>10</td>
+                                            <td>10</td>
+                                            <td>20</td>
+                                            <td>10</td>
                                         </tr>
                                         <tr>
                                             <td><b>Sexual Partner</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td>10</td>
+                                            <td>20</td>
+                                            <td>10</td>
+                                            <td>10</td>
                                         </tr>
                                     </table>
                             </div>
