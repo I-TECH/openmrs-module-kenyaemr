@@ -171,7 +171,7 @@ Green Card follow-up visit form
                 var val = jq(this).closest('tr').find(".complaint-time input").val();
             var encounterDate = new Date(getValue('encounter-date.value'));
             var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
-            console.log("Complaint Date "+formattedComplaintDate);
+            //console.log("Complaint Date "+formattedComplaintDate);
             if(val >0 ) {
                     jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
                 }

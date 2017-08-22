@@ -228,7 +228,6 @@
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
-<<<<<<< HEAD
                                         <td colspan="3"
                                             class="heading2"><strong>Reporting Period: ${reportPeriod}</strong>
                                         </td>
@@ -239,7 +238,6 @@
                                     </tr>
                                     <tr>
                                         <td>${vlResults}</td>
-=======
                                         <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
                                     </tr>
                                     <tr>
@@ -250,13 +248,12 @@
                                     <tr>
                                         <td>${vlResults}</td>
                                         <td>${vlResults - suppressedVl}</td>
->>>>>>> e1e9b874eda972206c1a2b116da9848e79a522ee
+
                                         <td>${suppressedVl}</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-
                         <div id="vl-container" style="min-width: 250px; height: 300px; margin: 0 auto"></div>
                     </td>
                 </tr>
@@ -267,9 +264,7 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top">
                         <div class="ke-panel-frame">
-<<<<<<< HEAD
                             <div class="ke-panel-heading">Summary of HTS Statistics</div>
-
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
@@ -302,10 +297,7 @@
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
                             <div class="ke-panel-heading">Summary of HTS Statistics</div>
-=======
                             <div class="ke-panel-heading">HTS</div>
->>>>>>> e1e9b874eda972206c1a2b116da9848e79a522ee
-
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
@@ -330,10 +322,6 @@
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
                             <div class="ke-panel-heading">Contact Testing</div>
-
-<<<<<<< HEAD
-                        %{--<div id="hts-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>--}%
-=======
                             <div class="ke-panel-content">
                                     <table class="alignLeft">
                                         <tr>
@@ -370,7 +358,6 @@
                                     </table>
                             </div>
                         </div>
->>>>>>> e1e9b874eda972206c1a2b116da9848e79a522ee
                     </td>
                 </tr>
             </table>
@@ -405,11 +392,6 @@
                                 </table>
                             </div>
                         </div>
-
-<<<<<<< HEAD
-                        %{--<div id="ct-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>--}%
-=======
->>>>>>> e1e9b874eda972206c1a2b116da9848e79a522ee
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
@@ -435,11 +417,6 @@
                                 </table>
                             </div>
                         </div>
-
-<<<<<<< HEAD
-                        %{--<div id="hts-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>--}%
-=======
->>>>>>> e1e9b874eda972206c1a2b116da9848e79a522ee
                     </td>
                 </tr>
             </table>
