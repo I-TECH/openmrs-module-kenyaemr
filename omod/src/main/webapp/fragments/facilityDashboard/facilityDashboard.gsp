@@ -8,22 +8,22 @@
 </style>
 <script>
     jQuery(function () {
-        jQuery('#container').highcharts({
+        jQuery('#care_and_treatment_chart').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Facility Statistics'
+                text: ''
             },
             subtitle: {
-                text: 'Click the columns to view data.'
+                text: ''
             },
             xAxis: {
                 type: 'category'
             },
             yAxis: {
                 title: {
-                    text: 'Total Number of Patients'
+                    text: 'Number of Patients'
                 }
 
             },
@@ -35,23 +35,27 @@
                     borderWidth: 0,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:.1f}'
+                        format: '{point.y:.0f}'
                     }
                 }
             },
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
             series: [{
-                name: 'Brands',
+                name: 'Statistics',
                 colorByPoint: true,
                 data: [{
 
                     name: 'Total Patients',
                     y:${allPatients},
+
+                }, {
+                    name: 'Total enrolled in HIV',
+                    y: ${cumulativeEnrolledInHiv},
 
                 }, {
                     name: 'Current in Care',
@@ -62,37 +66,34 @@
                     y: ${onArt},
 
                 }, {
+                    name: 'Newly Enrolled',
+                    y: ${newlyEnrolledInHiv},
+
+                }, {
                     name: 'New on ART',
                     y: ${newOnArt},
-
-                }, {
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
-
-                }, {
-                    name: 'Total Suppressed',
-                    y: ${suppressedVl},
                 }]
             }],
         });
     });
+
     jQuery(function () {
-        jQuery('#container').highcharts({
+        jQuery('#viral_load_tracker').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Facility Statistics'
+                text: ''
             },
             subtitle: {
-                text: 'Click the columns to view data.'
+                text: ''
             },
             xAxis: {
                 type: 'category'
             },
             yAxis: {
                 title: {
-                    text: 'Total Number of Patients'
+                    text: 'Number of Patients'
                 }
 
             },
@@ -104,64 +105,54 @@
                     borderWidth: 0,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:.1f}'
+                        format: '{point.y:.0f}'
                     }
                 }
             },
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
             series: [{
-                name: 'Brands',
+                name: 'Statistics',
                 colorByPoint: true,
                 data: [{
 
-                    name: 'Total Patients',
-                    y:${allPatients},
+                    name: 'Total clients with viral loads',
+                    y:${vlResults},
 
                 }, {
-                    name: 'Current in Care',
-                    y: ${inCare},
-
-                }, {
-                    name: 'Current on ART',
-                    y: ${onArt},
-
-                }, {
-                    name: 'New on ART',
-                    y: ${newOnArt},
-
-                }, {
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
+                    name: 'Total Unsuppressed',
+                    y: ${vlResults - suppressedVl},
 
                 }, {
                     name: 'Total Suppressed',
                     y: ${suppressedVl},
+
                 }]
             }],
         });
     });
+
     jQuery(function () {
-        jQuery('#container2').highcharts({
+        jQuery('#hts_tracker').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Facility Statistics'
+                text: ''
             },
             subtitle: {
-                text: 'Click the columns to view data.'
+                text: ''
             },
             xAxis: {
                 type: 'category'
             },
             yAxis: {
                 title: {
-                    text: 'Total Number of Patients'
+                    text: 'Number of Patients'
                 }
 
             },
@@ -173,230 +164,37 @@
                     borderWidth: 0,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:.1f}'
+                        format: '{point.y:.0f}'
                     }
                 }
             },
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
             series: [{
-                name: 'Brands',
+                name: 'Statistics',
                 colorByPoint: true,
                 data: [{
 
-                    name: 'Total Patients',
-                    y:${allPatients},
+                    name: 'Total Tested',
+                    y:${htsTested},
 
                 }, {
-                    name: 'Current in Care',
-                    y: ${inCare},
+                    name: 'Total Positive',
+                    y: ${htsPositive},
 
                 }, {
-                    name: 'Current on ART',
-                    y: ${onArt},
+                    name: 'Total Linked',
+                    y: ${htsLinked},
 
-                }, {
-                    name: 'New on ART',
-                    y: ${newOnArt},
-
-                }, {
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
-
-                }, {
-                    name: 'Total Suppressed',
-                    y: ${suppressedVl},
                 }]
             }],
         });
     });
-    jQuery(function () {
-        jQuery('#container3').highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Facility Statistics'
-            },
-            subtitle: {
-                text: 'Click the columns to view data.'
-            },
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                title: {
-                    text: 'Total Number of Patients'
-                }
 
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.1f}'
-                    }
-                }
-            },
-
-            tooltip: {
-                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-            },
-
-            series: [{
-                name: 'Brands',
-                colorByPoint: true,
-                data: [{
-
-                    name: 'Total Patients',
-                    y:${allPatients},
-
-                }, {
-                    name: 'Current in Care',
-                    y: ${inCare},
-
-                }, {
-                    name: 'Current on ART',
-                    y: ${onArt},
-
-                }, {
-                    name: 'New on ART',
-                    y: ${newOnArt},
-
-                }, {
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
-
-                }, {
-                    name: 'Total Suppressed',
-                    y: ${suppressedVl},
-                }]
-            }],
-        });
-    });
-    jQuery(function () {
-        jQuery('#hts-container').highcharts({
-            title: {
-                text: 'HTS Chart',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'VL cp/ml',
-                x: -20
-            },
-            xAxis: {
-                categories: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov', 'Dec']
-            },
-            yAxis: {
-                title: {
-                    text: 'Total Patients'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'cp/ml'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'HTS Clients',
-                data: [0, 0, 0, 0, 0, 0, 0]
-            }]
-        });
-    });
-    jQuery(function () {
-        jQuery('#hts-container2').highcharts({
-            title: {
-                text: 'HTS Chart',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'VL cp/ml',
-                x: -20
-            },
-            xAxis: {
-                categories: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov', 'Dec']
-            },
-            yAxis: {
-                title: {
-                    text: 'Total Patients'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'cp/ml'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'HTS Clients',
-                data: [0, 0, 0, 0, 0, 0, 0]
-            }]
-        });
-    });
-    jQuery(function () {
-        jQuery('#hts-container3').highcharts({
-            title: {
-                text: 'HTS Chart',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'VL cp/ml',
-                x: -20
-            },
-            xAxis: {
-                categories: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov', 'Dec']
-            },
-            yAxis: {
-                title: {
-                    text: 'Total Patients'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'cp/ml'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'HTS Clients',
-                data: [0, 0, 0, 0, 0, 0, 0]
-            }]
-        });
-    });
 </script>
 
 <div class="ke-page-content">
@@ -447,7 +245,7 @@
                             </div>
                         </div>
 
-                        <div id="container2" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                        <div id="care_and_treatment_chart" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
@@ -472,7 +270,7 @@
                             </div>
                         </div>
 
-                        <div id="hts-container2" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                        <div id="viral_load_tracker" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
@@ -496,7 +294,7 @@
                                         <th>Total Enrolled</th>
                                     </tr>
                                     <tr>
-                                        <td><b>Total Contacts</b></td>
+                                        <td><b>Total Clients</b></td>
                                         <td>${htsTested}</td>
                                         <td>${htsPositive}</td>
                                         <td>${htsLinked}</td>
@@ -504,6 +302,7 @@
                                 </table>
                             </div>
                         </div>
+                        <div id="hts_tracker" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">

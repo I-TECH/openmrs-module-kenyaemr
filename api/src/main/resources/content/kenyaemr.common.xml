@@ -326,7 +326,7 @@
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
-		<property name="template" value="kenyaemr:moh731.xls" />
+		<property name="template" value="kenyaemr:datim_report_template.xls" />
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.htsRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
