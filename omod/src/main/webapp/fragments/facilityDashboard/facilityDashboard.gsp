@@ -8,22 +8,22 @@
 </style>
 <script>
     jQuery(function () {
-        jQuery('#ct-container').highcharts({
+        jQuery('#care_and_treatment_chart').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Facility Statistics'
+                text: ''
             },
             subtitle: {
-                text: 'Click the columns to view data.'
+                text: ''
             },
             xAxis: {
                 type: 'category'
             },
             yAxis: {
                 title: {
-                    text: 'Total Number of Patients'
+                    text: 'Number of Patients'
                 }
 
             },
@@ -35,23 +35,27 @@
                     borderWidth: 0,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:f}'
+                        format: '{point.y:.0f}'
                     }
                 }
             },
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:f}</b><br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
             series: [{
-                name: 'Brands',
+                name: 'Statistics',
                 colorByPoint: true,
                 data: [{
 
                     name: 'Total Patients',
                     y:${allPatients},
+
+                }, {
+                    name: 'Total enrolled in HIV',
+                    y: ${cumulativeEnrolledInHiv},
 
                 }, {
                     name: 'Current in Care',
@@ -62,77 +66,34 @@
                     y: ${onArt},
 
                 }, {
+                    name: 'Newly Enrolled',
+                    y: ${newlyEnrolledInHiv},
+
+                }, {
                     name: 'New on ART',
                     y: ${newOnArt},
-
-                }, {
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
-
-                }, {
-                    name: 'Total Suppressed',
-                    y: ${suppressedVl},
                 }]
             }],
         });
     });
 
-
     jQuery(function () {
-        jQuery('#hts-container').highcharts({
-            title: {
-                text: 'HTS Chart',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'Click the columns to view data.',
-                x: -20
-            },
-            xAxis: {
-                categories: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov', 'Dec']
-            },
-            yAxis: {
-                title: {
-                    text: 'Total Patients'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'cp/ml'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'HTS Clients',
-                data: [0, 0, 0, 0, 0, 0, 0]
-            }]
-        });
-    });
-    jQuery(function () {
-        jQuery('#vl-container').highcharts({
+        jQuery('#viral_load_tracker').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Facility Statistics'
+                text: ''
             },
             subtitle: {
-                text: 'Viral Load in cp/ml.'
+                text: ''
             },
             xAxis: {
                 type: 'category'
             },
             yAxis: {
                 title: {
-                    text: 'Total Number of Patients'
+                    text: 'Number of Patients'
                 }
 
             },
@@ -144,29 +105,91 @@
                     borderWidth: 0,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:f}'
+                        format: '{point.y:.0f}'
                     }
                 }
             },
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:f}</b><br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
             series: [{
-                name: 'Brands',
+                name: 'Statistics',
                 colorByPoint: true,
                 data: [{
-                    name: 'Valid VL <12 Months',
-                    y: ${vlResults},
+
+                    name: 'Total clients with viral loads',
+                    y:${vlResults},
 
                 }, {
                     name: 'Total Unsuppressed',
-                    y: ${suppressedVl},
-                },{
+                    y: ${vlResults - suppressedVl},
+
+                }, {
                     name: 'Total Suppressed',
                     y: ${suppressedVl},
+
+                }]
+            }],
+        });
+    });
+
+    jQuery(function () {
+        jQuery('#hts_tracker').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Patients'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+
+            series: [{
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [{
+
+                    name: 'Total Tested',
+                    y:${htsTested},
+
+                }, {
+                    name: 'Total Positive',
+                    y: ${htsPositive},
+
+                }, {
+                    name: 'Total Linked',
+                    y: ${htsLinked},
+
                 }]
             }],
         });
@@ -176,6 +199,7 @@
 
 <div class="ke-page-content">
     <div style="font-size: 18px; color: #006056; font-style: normal; font-weight: bold">Facility Dashboard</div>
+
     <div id="program-tabs" class="ke-tabs">
         <div class="ke-tabmenu">
             <div class="ke-tabmenu-item" data-tabid="care_and_treatment">Care and Treatment</div>
@@ -221,7 +245,7 @@
                             </div>
                         </div>
 
-                        <div id="ct-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                        <div id="care_and_treatment_chart" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
@@ -230,16 +254,6 @@
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
-                                        <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: ${reportPeriod}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total with Valid viral loads <br/>(in last 12 months)</th>
-                                        <th>Total suppressed</th>
-                                    </tr>
-                                    <tr>
-                                        <td>${vlResults}</td>
                                         <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
                                     </tr>
                                     <tr>
@@ -250,13 +264,13 @@
                                     <tr>
                                         <td>${vlResults}</td>
                                         <td>${vlResults - suppressedVl}</td>
-
                                         <td>${suppressedVl}</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-                        <div id="vl-container" style="min-width: 250px; height: 300px; margin: 0 auto"></div>
+
+                        <div id="viral_load_tracker" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
@@ -266,40 +280,8 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of HTS Statistics</div>
-                            <div class="ke-panel-content">
-                                <table class="alignLeft">
-                                    <tr>
-                                        <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: ${reportPeriod}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total Patients</th>
-                                        <th>Current in Care</th>
-                                        <th>Current on ART</th>
-                                        <th>New on ART</th>
-                                        <th>Total with Valid viral loads <br/>(in last 12 months)</th>
-                                        <th>Total suppressed</th>
-                                    </tr>
-                                    <tr>
-                                        <td>${allPatients}</td>
-                                        <td>${inCare}</td>
-                                        <td>${onArt}</td>
-                                        <td>${newOnArt}</td>
-                                        <td>${vlResults}</td>
-                                        <td>${suppressedVl}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div id="hts-container" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
-                    </td>
-                    <td style="width: 50%; vertical-align: top; padding-left: 5px">
-                        <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Summary of HTS Statistics</div>
                             <div class="ke-panel-heading">HTS</div>
+
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
@@ -312,7 +294,7 @@
                                         <th>Total Enrolled</th>
                                     </tr>
                                     <tr>
-                                        <td><b>Total Contacts</b></td>
+                                        <td><b>Total Clients</b></td>
                                         <td>${htsTested}</td>
                                         <td>${htsPositive}</td>
                                         <td>${htsLinked}</td>
@@ -320,10 +302,12 @@
                                 </table>
                             </div>
                         </div>
+                        <div id="hts_tracker" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
                             <div class="ke-panel-heading">Contact Testing</div>
+
                             <div class="ke-panel-content">
                                     <table class="alignLeft">
                                         <tr>
@@ -394,6 +378,7 @@
                                 </table>
                             </div>
                         </div>
+
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
@@ -419,6 +404,7 @@
                                 </table>
                             </div>
                         </div>
+
                     </td>
                 </tr>
             </table>
