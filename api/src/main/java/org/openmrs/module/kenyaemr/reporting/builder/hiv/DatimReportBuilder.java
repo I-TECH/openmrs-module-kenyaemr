@@ -65,8 +65,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
         ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
-        ColumnParameters m_1_to_9 = new ColumnParameters(null, "1-9, Male", "gender=M|age=1-9");
-        ColumnParameters f_1_to_9 = new ColumnParameters(null, "1-9, Female", "gender=F|age=1-9");
+        ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
+
+        ColumnParameters m_1_to_4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
+        ColumnParameters f_1_to_4 = new ColumnParameters(null, "1-4, Female", "gender=F|age=1-4");
+
+        ColumnParameters m_5_to_9 = new ColumnParameters(null, "5-9, Male", "gender=M|age=5-9");
+        ColumnParameters f_5_to_9 = new ColumnParameters(null, "5-9, Female", "gender=F|age=5-9");
 
         ColumnParameters m_10_to_14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
         ColumnParameters f_10_to_14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
@@ -85,30 +90,33 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
 
-        List<ColumnParameters> allColumns = Arrays.asList(
-                colInfants, f_1_to_9,  m_1_to_9, f_10_to_14, m_10_to_14,f_15_to_19, m_15_to_19,
+        List<ColumnParameters> adultDisaggregation = Arrays.asList(
+                colInfants, children_1_to_9,  f_10_to_14, m_10_to_14,f_15_to_19, m_15_to_19,
                 f_20_to_24,m_20_to_24,f_25_to_49, m_25_to_49,f_50_and_above,m_50_and_above , colTotal);
-        //List<ColumnParameters> nonInfantColumns = Arrays.asList(colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
+
+        List<ColumnParameters> allAgeDisaggregation = Arrays.asList(
+                colInfants, m_1_to_4,  f_1_to_4, m_5_to_9, f_5_to_9, f_10_to_14, m_10_to_14,f_15_to_19, m_15_to_19,
+                f_20_to_24,m_20_to_24,f_25_to_49, m_25_to_49,f_50_and_above,m_50_and_above , colTotal);
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
 
         // 3.1 (On CTX Prophylaxis)
-        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Started on Art", ReportUtils.map(datimIndicators.startedOnArt(), indParams), allColumns, Arrays.asList("03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Started on Art", ReportUtils.map(datimIndicators.startedOnArt(), indParams), adultDisaggregation, Arrays.asList("03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
-        EmrReportingUtils.addRow(cohortDsd, "TX_Curr", "Currently on Art", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), allColumns, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_Curr", "Currently on Art", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), adultDisaggregation, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"));
 
         // 3.2 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Numerator", "Retention at 12 months", ReportUtils.map(datimIndicators.onTherapyAt12Months(), indParams), allColumns, Arrays.asList("31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Numerator", "Retention at 12 months", ReportUtils.map(datimIndicators.onTherapyAt12Months(), indParams), allAgeDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"));
 
         // 3.3 (Currently in Care)
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Denominator", "12 months cohort", ReportUtils.map(datimIndicators.art12MonthCohort(), indParams), allColumns, Arrays.asList("45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_Denominator", "12 months cohort", ReportUtils.map(datimIndicators.art12MonthCohort(), indParams), allAgeDisaggregation, Arrays.asList("46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61"));
 
         // 3.4 (Starting ART)
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), endDateParams), allColumns, Arrays.asList("59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Numerator", "Viral Suppression", ReportUtils.map(datimIndicators.patientsWithViralLoadSuppression(), endDateParams), allAgeDisaggregation, Arrays.asList("62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77"));
 
         // 3.5 (Revisits ART)
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), endDateParams), allColumns, Arrays.asList("73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimIndicators.patientsWithVLResults(), endDateParams), allAgeDisaggregation, Arrays.asList("78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93"));
         return cohortDsd;
 
     }
