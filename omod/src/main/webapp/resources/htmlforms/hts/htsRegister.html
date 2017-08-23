@@ -64,13 +64,11 @@
                 jq("#kitTest2 input").prop("disabled", true);
                 jq("#lotTest2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
-                jq('#in-care input').prop("disabled", true);
             }
             //Positive
             if(firstTest ==703){
@@ -87,7 +85,6 @@
                 jq("#kitTest2 input").prop("disabled", false);
                 jq("#lotTest2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
@@ -100,16 +97,13 @@
                 jq("#kitTest2 input").prop("disabled", true);
                 jq("#lotTest2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
-                jq('#in-care input').prop("disabled", true);
             }
             //Positive
             if(secondTest ==703){
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 jq("#kitTest2 input").prop("disabled", false);
@@ -117,11 +111,9 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
-                jq('#in-care input').prop("disabled", false);
             }
             //Invalid
             if(secondTest ==163611){
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 jq("#kitTest2 input").prop("disabled", false);
@@ -131,7 +123,6 @@
             }
             //Invalid
             if(secondTest ==1175){
-                clearHiddenSections(jq('#in-care'));
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 jq("#kitTest2 input").prop("disabled", false);
@@ -140,21 +131,7 @@
                 getField('hiv-final-result.value').val(1138);
             }
         }
-//        var finalTestSelected  = function () {
-//            var finalTest = getField("hiv-final-result.value").val();
-//            if(finalTest ==703) {
-//                clearHiddenSections(jq('#in-care'));
-//                clearHiddenSections(jq('#ccc-no'));
-//                jq('#ccc-no input').prop("disabled", false);
-//                jq('#in-care input').prop("disabled", false);
-//
-//            }else{
-//                clearHiddenSections(jq('#in-care'));
-//                clearHiddenSections(jq('#ccc-no'));
-//                jq('#ccc-no input').prop("disabled", true);
-//                jq('#in-care input').prop("disabled", true);
-//            }
-//        }
+
         var expiryDateSelected  = function () {
             var encounterDate = getValue('encounter-date.value');
             var testKitExpiryDate = getValue('expiry-date.value');
@@ -189,8 +166,6 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability select').prop("disabled", true);
-            //in care
-            jq('#in-care input').change(inCareSelected);
             //couple testing
             jq("#couple-testing input").change(coupleTestedAction);
             //hiv test123
@@ -212,7 +187,6 @@
                     jq("#expiry-date2 input").prop("disabled", true);
                     getField('hiv-final-result.value').val(664);
                     jq('#ccc-no input').prop("disabled", true);
-                    jq('#in-care input').prop("disabled", true);
                 }
                 //Positive
                 if(firstTest ==703){
@@ -237,7 +211,6 @@
                     jq("#expiry-date2 input").prop("disabled", true);
                     getField('hiv-final-result.value').val(664);
                     jq('#ccc-no input').prop("disabled", true);
-                    jq('#in-care input').prop("disabled", true);
                 }
                 //Positive
                 if(secondTest ==703){
@@ -246,7 +219,6 @@
                     jq("#expiry-date2 input").prop("disabled", false);
                     getField('hiv-final-result.value').val(703);
                     jq('#ccc-no input').prop("disabled", false);
-                    jq('#in-care input').prop("disabled", false);
                 }
                 //Invalid
                 if(secondTest ==163611){
@@ -262,31 +234,8 @@
                     jq("#expiry-date2 input").prop("disabled", false);
                     getField('hiv-final-result.value').val(1138);
                 }
-                //Final test
-            var finalTest = getField("hiv-final-result.value").val();
-            if(finalTest ==703) {
-                jq('#ccc-no input').prop("disabled", false);
-                jq('#in-care input').prop("disabled", false);
-            }else{
-                jq('#ccc-no input').prop("disabled", true);
-                jq('#in-care input').prop("disabled", true);
-            }
 
     });
-
-        //Before Submit
-        beforeSubmit.push(function() {
-            var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
-            var upn = jq('#hiv-id input').val();
-
-                if(upn != null &amp;&amp; upn != "") {
-                    if ((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
-                        alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
-                        return false;
-                    }
-                }
-            return true;
-        });
 
     </script>
 
@@ -411,6 +360,19 @@
                 </tr>
             </table>
             <br />
+            <table>
+            <tr>
+                <td>Type of test : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    <obs class="test-type"
+                         conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerLabels="HTS,Confirmatory"
+                         style="dropdown"
+                    />
+                </td>
+            </tr>
+            </table>
+            <br />
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
@@ -482,23 +444,6 @@
                         <obs id="couple-discordant" conceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="YES,NO,N/A"/>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>Linkage to Care</legend>
-            <table id="tbl-care-status">
-                <tr>
-                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;In care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="YES,NO,N/A"/>
-                    </td>
-                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Unique Patient Number (UPN):
-                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false" /></span>
-                    </td>
                     </td>
                 </tr>
             </table>
