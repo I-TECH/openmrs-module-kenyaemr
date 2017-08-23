@@ -107,14 +107,12 @@ Green Card follow-up visit form
                         jq("#nutritional-status input[value=1115]").prop("checked", true);
                     } else if (recent_bmi &gt; 25) {
                         jq("#nutritional-status input[value=114413]").prop("checked", true);
-
                     }
                 }
             }
         }
         function onLmpChange() {
             jq('#pregnancyOption :input').prop('disabled', false);
-
         }
         function onPersonPresentChange() {
             if (getValue('person-present.value') == SELF) {
@@ -126,7 +124,6 @@ Green Card follow-up visit form
         function onRecordIPTOutcome() {
             jq("#tbl-ipt-outcome").toggle();
         }
-
         function onParityChange() {
             var gravida = '';
             var parityTerm = parseInt(getValue('parity-term.value'));
@@ -175,10 +172,8 @@ Green Card follow-up visit form
             if(val >0 ) {
                     jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
                 }
-
             }
         }
-
         var adverseReactionSelected = function() {
             var val = jq(this).val();
             var medicineCausing= jq('.medicine-causing');
@@ -205,14 +200,12 @@ Green Card follow-up visit form
             var reaction = jq('.reaction');
             var severity = jq('.severity');
             var date = jq('.allergy-date input').val('');
-            var action = jq('.allergy-action');
             if (val == 1066){
                 jq("#tbl-known-allergies").hide();
                 clearHiddenSections(allergy);
                 clearHiddenSections(reaction);
                 clearHiddenSections(severity);
                 clearHiddenSections(date);
-                clearHiddenSections(action);
 
             }else {
                 jq("#tbl-known-allergies").show();
@@ -228,6 +221,14 @@ Green Card follow-up visit form
             var entNotes = jq('.ent-notes textarea').val('');
             var chestFindings = jq('.chest-findings');
             var chestNotes = jq('.chest-notes textarea').val('');
+            var cvsFindings = jq('.cvs-findings');
+            var cvsNotes = jq('.cvs-notes textarea').val('');
+            var abdomenFindings = jq('.abdomen-findings');
+            var abdomenNotes = jq('.abdomen-notes textarea').val('');
+            var cnsFindings = jq('.cns-findings');
+            var cnsNotes = jq('.cns-notes textarea').val('');
+            var gusFindings = jq('.gus-findings');
+            var gusNotes = jq('.gus-notes textarea').val('');
             if (val == 1116){
                 jq("#tbl-systems-review").hide();
                 clearHiddenSections(skinFindings);
@@ -236,7 +237,16 @@ Green Card follow-up visit form
                 clearHiddenSections(eyeNotes);
                 clearHiddenSections(entFindings);
                 clearHiddenSections(entNotes);
-
+                clearHiddenSections(chestFindings);
+                clearHiddenSections(chestFindings);
+                clearHiddenSections(cvsFindings);
+                clearHiddenSections(cvsNotes);
+                clearHiddenSections(abdomenFindings);
+                clearHiddenSections(abdomenNotes);
+                clearHiddenSections(cnsFindings);
+                clearHiddenSections(cnsNotes);
+                clearHiddenSections(gusFindings);
+                clearHiddenSections(gusNotes);
             }else {
                 jq("#tbl-systems-review").show();
             }
@@ -347,8 +357,6 @@ Green Card follow-up visit form
                 actionTakenTab.hide();
                 jq("#ipt-uptake").show();
                 iptInitiationTab.hide();
-
-
                 //clear radios
                 clearRadios(iptClientWorkupTab);
                 clearRadios(actionTakenTab);
@@ -395,7 +403,6 @@ Green Card follow-up visit form
                 clearRadios(iptClientWorkupTab);
                 clearRadios(tbScreeningTab);
                 clearRadios(actionTakenTab);
-
             }
         }
 
@@ -457,7 +464,6 @@ Green Card follow-up visit form
                 jq('#ipt-client-workup').hide();
             }
         }
-
 
         //Resulting TB status for Action Positive Sputum smear
         var sputumSmearAction  = function () {
@@ -750,6 +756,8 @@ Green Card follow-up visit form
             //jq("#nutritional-status input[type=radio]").prop("disabled", true);
          jq("#nutritional-status input[type=radio]").prop("checked", false);
          jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
+         //default on patient presence
+         jq('.patient-details :input').prop('disabled', true);
          jq('#person-present input').click(onPersonPresentChange);
          jq('#on-ipt input').prop("disabled", true);
          //jq('input[type=radio].on-ipt').prop("checked", false);
@@ -937,6 +945,9 @@ Green Card follow-up visit form
             //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
             var showHideTabs = function() {
                 var actionTakenTab = jq('#action-taken');
+                var tbRxdate = jq('#tbrxdate input').val('');
+                var tbRegimen = jq('#tb-regimen');
+                var actionTakenTab = jq('#action-taken');
                 var iptClientWorkupTab = jq('#ipt-client-workup');
                 var iptFollowup = jq('#ipt-followup');
                 var tbScreeningQuestionsTab = jq("#tb-screening-tab");
@@ -976,7 +987,8 @@ Green Card follow-up visit form
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
-
+                        clearRadios(iptClientWorkupTab);
+                        clearRadios(iptInitiationTab);
                     }
                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
@@ -985,6 +997,9 @@ Green Card follow-up visit form
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
+                        clearRadios(actionTakenTab);
+                        clearRadios(tbRxdate);
+                        clearRadios(tbRegimen);
                     }
                    if (screeningNoResponses.length == screeningNoResponses.length / 2) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
@@ -992,7 +1007,10 @@ Green Card follow-up visit form
                         iptFollowup.hide();
 
                         //clear radios for hidden sections
+                        clearRadios(actionTakenTab);
                         clearRadios(iptFollowup);
+                        clearRadios(tbRxdate);
+                        clearRadios(tbRegimen);
                     }
                    if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
@@ -1005,18 +1023,24 @@ Green Card follow-up visit form
 
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptFollowup);
+                        clearRadios(iptInitiationTab);
                     }
                     if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
+                        clearRadios(actionTakenTab);
+                        clearRadios(tbRxdate);
+                        clearRadios(tbRegimen);
                     }
                     if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
+                        clearRadios(iptClientWorkupTab);
                     }
                     if(screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
+                        clearRadios(iptClientWorkupTab);
                     }
                 }
             };
@@ -1054,13 +1078,22 @@ Green Card follow-up visit form
 
                 } else {
                     iptInitiationTab.hide();
+                    clearRadios(iptInitiationTab);
                 }
             };
             clearRadios = function(parentObj) {
 
                 parentObj.find('input[type=radio]').each(function() {
-
                     this.checked = false;
+                });
+                parentObj.find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+//                parentObj.find('input[type=text]').each(function() {
+//                    this.val("");
+//                });
+                parentObj.find('select').each(function() {
+                    this.selectedIndex =0;
                 });
             }
           screeningRadios.change(function() {
@@ -1364,10 +1397,13 @@ Green Card follow-up visit form
         <!-- WHO staging -->
         <fieldset>
             <legend>WHO Staging</legend>
-     <table>
+            <table cellspacing="10" >
+                <tr>
+                    <th  style="color: #888" >Current Stage </th>
+                    <th  style="color: #888" >Recent </th>
+                </tr>
              <tr>
-                      <td>WHO Staging:</td>
-                      <td>
+                       <td>
                           <div id="whoAdult">
                               <table>
                                   <tr>
@@ -1383,6 +1419,9 @@ Green Card follow-up visit form
                               </table>
                           </div>
                       </td>
+                 <td>
+                     <span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                 </td>
                   </tr>
             </table>
         </fieldset>
@@ -1665,7 +1704,7 @@ Green Card follow-up visit form
                         <tr id="tbrxfield">
                             <td width="50%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
 
-                            <td><obs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"
+                            <td><obs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:" id="tb-regimen"
                                      answerConceptSetIds="160021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
                                 /></td>
                         </tr>
@@ -1891,7 +1930,6 @@ Green Card follow-up visit form
                                     <th>Reaction</th>
                                     <th>Severity</th>
                                     <th>Date of Onset</th>
-                                    <th>Action taken</th>
                                 </tr>
                                 <repeat>
                                     <template>
@@ -1915,17 +1953,7 @@ Green Card follow-up visit form
                                                          style="dropdown"
                                                 /></td>
                                                 <td><obs class="severity" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                <td><obs class="allergy-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-                                                <td>
-                                                    <obs class="allergy-action" conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
-                                                         style="dropdown"
-
-
-                                                    />
-
-                                                </td>
+                                                <td><obs class="allergy-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
                                             </tr>
                                         </obsgroup>
                                     </template>
@@ -2049,7 +2077,7 @@ Green Card follow-up visit form
                                                         conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                <td><obs class="adverse-events-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                <td><obs class="adverse-events-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" labelText=" " /></td>
                                                 <td>
                                                     <obs class="action-taken"
                                                             conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -2166,20 +2194,30 @@ Green Card follow-up visit form
                <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
              <fieldset >
                     <legend>Sexual and Reproductive History</legend>
-                        <table class="right-aligned-first" style="width: 100%;" border="0">
+                        <!--<table class="right-aligned-first" style="width: 100%;" border="0">-->
+                 <table cellspacing="10" >
+                     <tr>
+                         <th  style="color: #888" >Current Status</th>
+                         <th  style="color: #888" >Recent </th>
+                     </tr>
                             <tr>
-                                <td style="text-align: left" colspan="3">
+                                <td>
                                     <obs id="lmp-date" labelText="LMP:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                </td>
+                                <td>
                                     <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" style="text-align: left">
+                                <td>
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          labelText="Patient Pregnant?: &#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
+                                </td>
+                                <td>
+                                    <span class="value"><recentObs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
                             </tr>
                         </table>
@@ -2542,56 +2580,56 @@ Green Card follow-up visit form
                     <tr>
                     <td>5.</td>
                     <td>CVS</td>
-                    <td><obs
+                    <td><obs class="cvs-findings"
                             conceptId="1124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerConceptIds="140147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,130560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabels="Elevated blood pressure,Irregular heartbeat,Cardiac murmur,Cardiac rub"
                             style="dropdowm"
                     /></td>
 
-                    <td><obs conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                    <td><obs class="cvs-notes" conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                     />
                     </td>
                 </tr>
                     <tr>
                         <td>6.</td>
                         <td>Abdomen</td>
-                        <td><obs
+                        <td><obs class="abdomen-findings"
                                 conceptId="1125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="150915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5103AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5009AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Abdominal distension,Hepatomegaly,Abdominal mass,Splenomegaly,Abdominal tenderness"
                                 style="dropdowm "
                         /></td>
 
-                        <td><obs conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="abdomen-notes" conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
                     <tr>
                         <td>7.</td>
                         <td>CNS</td>
-                        <td><obs
+                        <td><obs class="cns-findings"
                                 conceptId="1130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="118872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,150817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,157498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Altered sensation,Bulging fontenelle,Abnormal reflexes,Confusion,Limb weakness,Stiff neck,Kernicterus"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="cns-notes" conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
                     <tr>
                         <td>8.</td>
                         <td>Genitourinary </td>
-                        <td><obs
+                        <td><obs class="gus-findings"
                                 conceptId="1126AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,154311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Bleeding,Rectal discharge,Urethral discharge,Vaginal discharge,Ulceration "
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="gus-notes" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
