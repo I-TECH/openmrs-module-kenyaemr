@@ -15,32 +15,24 @@
 <htmlform>
 
     <script type="text/javascript">
-        var confirmatoryTestSelected = function() {
-            var val = jq(this).val();
-            if (val == 1066){
-                jq('#confirmatory-hiv-result select').prop('disabled', true);
-                jq('#confirmatory-test-date input').prop("disabled",true);
-            }else {
-                jq('#confirmatory-hiv-result select').prop('disabled', false);
-                jq('#confirmatory-test-date input').prop("disabled",true);
-            }
 
-        }
-        var confirmatoryResultSelected = function() {
-            var confirmatoryResult = getField("confirmatory-hiv-result.value").val();
-            if (confirmatoryResult == 703){
-                jq('#confirmatory-test-date input').prop("disabled",false);
-            }else {
-                jq('#confirmatory-test-date input').prop("disabled",true);
-            }
-
-        }
         jQuery(function () {
-            jq('#confirmatory-test :input[type=radio]').change(confirmatoryTestSelected);
-            jq("#confirmatory-hiv-result select").change(confirmatoryResultSelected);
-            jq('#confirmatory-hiv-result select').prop('disabled', true);
-            jq('#confirmatory-test-date input').prop("disabled",true);
+
         });
+        //Before Submit
+        beforeSubmit.push(function() {
+            var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
+            var upn = jq('#hiv-id input').val();
+
+            if(upn != null &amp;&amp; upn != "") {
+                if ((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
+                    return false;
+                }
+            }
+            return true;
+        });
+
     </script>
 
     <div class="ke-form-header">
@@ -57,38 +49,79 @@
     </div>
 
     <div class="ke-form-content">
-
-
         <fieldset>
-            <legend>HIV Confirmatory Test Details</legend>
-            <table>
+            <legend>Referral</legend>
+            <table id="transit-patient" style="display: inline-block">
                 <tr>
-                    <td>Patient has done HIV Reconfirmatory Test? &#160;&#160;&#160;&#160;</td>
-                    <td>
-                        <obs id="confirmatory-test" conceptId="164401AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No,Unknown"/>
+                    <td>Facility referred to: </td>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs conceptId="161562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
                     </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Preferred date of enrollment:</td>
+                    <td>&#160;&#160;&#160;&#160;
+                        <obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="prefer-enroll-date" allowFutureDates="true" /></td>
                 </tr>
             </table>
-            <hr/>
-            <br/>
-            <table>
+        </fieldset>
+        <fieldset>
+            <legend>Patient Tracing</legend>
+
+            <table id="tracing-patient" style="display: inline-block">
+                <obsgroup groupingConceptId="164849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                    <tr>
+                        <td>Contact type:
+                            <obs id="contact-type" conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162186AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Phone,Physical"
+                                 style="dropdown" />
+                        </td>
+                     <td> &#160;&#160;&#160;Status : &#160;&#160;&#160;
+                            <obs id="contact-status" conceptId="164849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Successful,Not successful"/>
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;Date
+                            <obs id="contact-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                            />
+                        </td>
+                    </tr>
+                </obsgroup>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Linkage to care</legend>
+            <table id="tbl-care-status">
                 <tr>
-                    <td>Reconfirmatory Test Result :&#160;&#160;&#160;&#160;</td>
-                    <td>
-                        <obs id="confirmatory-hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Positive,Negative,Indeterminate"/>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;In care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="YES,NO,N/A"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;
+                        <obsgroup groupingConceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </obsgroup>
+
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Unique Patient Number (UPN):
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false" /></span>
+                    </td>
                     </td>
                 </tr>
+                <td></td>
             </table>
-            <br/>
-            <table>
+            <table id="tbl-hts-provider">
                 <tr>
-                    <td>Reconfirmatory Test Date : &#160;&#160;&#160;&#160;&#160; </td>
-                    <td>
-                        <obs id="confirmatory-test-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"/>
+                    <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        />
+                    </td>
+                    <td><strong>Cadre : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-cadre" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        />
                     </td>
                 </tr>
             </table>

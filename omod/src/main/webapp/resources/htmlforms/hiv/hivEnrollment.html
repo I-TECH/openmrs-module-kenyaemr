@@ -131,22 +131,23 @@
             }
         }
 
-        function onPmtctSelected() {
-           var val = getValue('pmtctChecked.value');
-            if(val == 1065){
-				jq('#pmtctChecked :input').prop('disabled', false);
-					}else{
-                jq('#pmtctChecked :input').prop('disabled', true);
-			}
-        }
-        function onPepSelected() {
-            var val = getValue('pepChecked.value');
-            if(val == 1065){
-                jq('#pepRegimen :input').prop('disabled', false);
-            }else{
-                jq('#pepRegimen :input').prop('disabled', true);
-            }
-        }
+//        function onPmtctSelected() {
+//           var val = getValue('pmtctChecked.value');
+//            if(val == 1065){
+//				jq('#pmtctRegimen :input').prop('disabled', false);
+//					}else{
+//                jq('#pmtctRegimen :input').prop('disabled', true);
+//			}
+//        }
+        //Pep concept does not have an answer
+//        function onPepSelected() {
+//            var val = getValue('pepChecked.value');
+//            if(val == 1065){
+//                jq('#pepRegimen :input').prop('disabled', false);
+//            }else{
+//                jq('#pepRegimen :input').prop('disabled', true);
+//            }
+//        }
         var onPregnancySelected = function() {
             var val = jq(this).val();
             if (val == 1066){
@@ -262,8 +263,9 @@
             jq('#transfer-in-status input').change(onTransferStatusChange);
             jq('#art-status input').change(onArtStatusChange);
             jq('input[type=radio].guardian').change(guardianTreatmentSupporter);
+            //Not all ART regimens have answers
             //jq('#pmtctChecked input').click(onPmtctSelected);
-           // jq('#pepChecked input').click(onPepSelected);
+            //jq('#pepChecked input').click(onPepSelected);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             jq('#transit-patient').hide();
@@ -570,7 +572,7 @@
 				</obsgroup>
 				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
-						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
+						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
