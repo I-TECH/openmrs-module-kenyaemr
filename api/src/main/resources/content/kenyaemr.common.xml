@@ -20,9 +20,9 @@
 				<ref bean="kenyaemr.common.form.labResults" />
 				<ref bean="kenyaemr.common.form.otherMedications" />
 				<ref bean="kenyaemr.common.form.progressNote" />
-				<ref bean="kenyaemr.common.form.familyTestingFollowup" />
-				<ref bean="kenyaemr.common.form.hivConfirmatoryTest"/>
-				<ref bean="kenyaemr.common.form.htsRegister"/>
+				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
+				<ref bean="kenyaemr.common.form.htsinitialtest"/>
+				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 			</set>
 		</property>
 	</bean>
@@ -43,6 +43,8 @@
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
+				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
+				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -251,24 +253,8 @@
 		<property name="order" value="201090" />
 	</bean>
 
-	<!-- HIV Confirmatory test form -->
-	<bean id="kenyaemr.common.form.hivConfirmatoryTest" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="4fad1a4e-2f37-4f5f-80f8-4a7698c062c2" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.registration" />
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hiv/hivConfirmation.html" />
-		<property name="order" value="201000" />
-	</bean>
-
-	<!-- HTS Register -->
-	<bean id="kenyaemr.common.form.htsRegister" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- HTS Initial test form -->
+	<bean id="kenyaemr.common.form.htsinitialtest" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="402dc5d7-46da-42d4-b2be-f43ea4ad87b0" />
 		<property name="apps">
 			<set>
@@ -279,9 +265,42 @@
 		</property>
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hts/htsRegister.html" />
+		<property name="htmlform" value="kenyaemr:hts/htsInitialTest.html" />
 		<property name="order" value="201000" />
 	</bean>
+
+	<!-- HTS confirmatory test form -->
+	<bean id="kenyaemr.common.form.htsconfirmatorytest" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="b08471f6-0892-4bf7-ab2b-bf79797b8ea4" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hts/htsConfirmatoryTest.html" />
+		<property name="order" value="201001" />
+	</bean>
+
+	<!-- HTS linkage and referral form -->
+	<bean id="kenyaemr.common.form.referralAndLinkage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="050a7f12-5c52-4cad-8834-863695af335d" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hts/referralAndLinkage.html" />
+		<property name="order" value="201002" />
+	</bean>
+
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.missedAppointment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
@@ -338,6 +357,28 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+	</bean>
+	<bean id="kenyaemr.hiv.report.htsConfirmationRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="b5d9ab38-d603-4b82-8f17-55da3d1c586c" />
+		<property name="name" value="HTS Confirmation Register" />
+		<property name="description" value="Register for HIV Testing Services confirmations" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+	</bean>
+	<bean id="kenyaemr.hiv.report.htsLinkageRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="7de74ba4-5e34-4005-a576-04ab6ceb4f75" />
+		<property name="name" value="Linkage and Referral Register" />
+		<property name="description" value="Register for HIV Testing Services linkages" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_linkage_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
 
