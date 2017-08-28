@@ -22,18 +22,24 @@ import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsLinkageRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageFacilityLinkedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageProviderHandedToDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageToCareDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageUPNDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRemarksDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSSelfTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTBScreeningDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTracingContactStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTracingContactTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
@@ -57,7 +63,6 @@ import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDe
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -67,8 +72,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.htsRegister"})
-public class HTSRegisterReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.hiv.report.htsLinkageRegister"})
+public class HTSLinkageRegisterReportBuilder extends AbstractReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
@@ -103,26 +108,17 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
         dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
+        dsd.addColumn("Contact Type", new HTSTracingContactTypeDataDefinition(), null);
+        dsd.addColumn("Contact Status", new HTSTracingContactStatusDataDefinition(), null);
+
         dsd.addColumn("Unique Patient Number", identifierDef, null);
 
-        dsd.addColumn("Visit Date", new VisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Unique Patient Number Provided", new HTSLinkageUPNDataDefinition(),"");
+        dsd.addColumn("Facility Linked", new HTSLinkageFacilityLinkedDataDefinition(),"");
         // new columns
-        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
-        dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
-        dsd.addColumn("disability", new PatientDisabilityDataDefinition(), null);
-        dsd.addColumn("consent", new PatientConsentDataDefinition(), null);
-        dsd.addColumn("clientTestedAs", new IndividualORCoupleTestDataDefinition(), null);
-        dsd.addColumn("testingStrategy", new HTSTestStrategyDataDefinition(), null);
-        dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
-        dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
-        dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
-        dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), null);
-        dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
-        dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
-        dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
-        dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
+        dsd.addColumn("Provider Handed to", new HTSLinkageProviderHandedToDataDefinition(), "");
 
-        dsd.addRowFilter(new HTSRegisterCohortDefinition(), "");
+        dsd.addRowFilter(new HTSClientsLinkageRegisterCohortDefinition(), "");
         return dsd;
 
     }
