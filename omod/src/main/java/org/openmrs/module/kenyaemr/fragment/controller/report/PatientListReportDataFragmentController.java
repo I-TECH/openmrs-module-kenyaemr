@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.report.ReportData;
@@ -51,13 +52,14 @@ public class PatientListReportDataFragmentController {
 		int males = 0, females = 0;
 		for (DataSetRow row : dataSet.getRows()) {
 			String gender = (String) row.getColumnValue("Sex");
-			if (gender.equals("M")) {
-				++males;
-			} else if (gender.equals("F")) {
-				++females;
+			if (gender != "" && gender != null) {
+				if (gender.equals("M")) {
+					++males;
+				} else if (gender.equals("F")) {
+					++females;
+				}
 			}
 		}
-
 		summary.put("total", dataSet.getRows().size());
 		summary.put("males", males);
 		summary.put("females", females);

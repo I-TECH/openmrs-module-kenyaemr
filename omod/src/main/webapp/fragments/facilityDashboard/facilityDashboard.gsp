@@ -322,22 +322,22 @@
                                         </tr>
                                         <tr>
                                             <td><b>Total Contacts</b></td>
-                                            <td>60</td>
-                                            <td>9</td>
-                                            <td>11</td>
-                                            <td>20</td>
+                                            <td>${htsTested}</td>
+                                            <td>${htsPositive}</td>
+                                            <td>0</td>
+                                            <td>${htsLinked}</td>
                                         </tr>
                                         <tr>
                                             <td><b>Family Members</b></td>
-                                            <td>10</td>
-                                            <td>10</td>
-                                            <td>20</td>
+                                            <td>30</td>
+                                            <td>13</td>
+                                            <td>9</td>
                                             <td>10</td>
                                         </tr>
                                         <tr>
                                             <td><b>Sexual Partner</b></td>
                                             <td>10</td>
-                                            <td>20</td>
+                                            <td>10</td>
                                             <td>10</td>
                                             <td>10</td>
                                         </tr>

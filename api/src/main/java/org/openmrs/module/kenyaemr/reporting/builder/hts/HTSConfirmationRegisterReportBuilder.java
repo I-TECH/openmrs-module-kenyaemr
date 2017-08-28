@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
@@ -57,7 +58,6 @@ import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDe
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -67,8 +67,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.htsRegister"})
-public class HTSRegisterReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.hiv.report.htsConfirmationRegister"})
+public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
@@ -122,7 +122,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
-        dsd.addRowFilter(new HTSRegisterCohortDefinition(), "");
+        dsd.addRowFilter(new HTSConfirmationRegisterCohortDefinition(), "");
         return dsd;
 
     }
