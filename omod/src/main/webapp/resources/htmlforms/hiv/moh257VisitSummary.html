@@ -23,7 +23,8 @@
             vertical-align: baseline;
             padding: 3.6px;
             text-align: left;
-            background-color: #F3F9FF;
+            background-color: #D9F4D3;
+
         }
         .left-table {
             display: inline-block; border: 1px solid; float: left;
@@ -36,7 +37,7 @@
 
     <script type="text/javascript">
         isPediatric = null; // Set later by AJAX lookup
-        /**
+        /** E1F8DB
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
          */
         var SELF = 978;
@@ -169,6 +170,17 @@
         /**
          * Displays the appropriate date field for the given pregnancy option
          */
+        var screenedStiSelected = function() {
+            var val = jq(this).val();
+            var partnerNotification = jq("#tbl-partner-notification");
+            if (val == 703){
+                jq('.tbl-partner-notification :input').prop('disabled', false);
+
+            }else {
+                jq('.tbl-partner-notification :input').prop('disabled', true);
+            }
+        }
+
         function setPregDateField(option) {
             var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
             var labels = {
@@ -219,6 +231,8 @@
 
             jq('#person-present input').click(onPersonPresentChange);
             jq('.patient-details :input').prop('disabled', true);
+            jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
+            jq('.tbl-partner-notification :input').prop('disabled', true);
 
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
@@ -557,20 +571,20 @@
                          <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
                          <th colspan="2">Screened CaCx*</th>
                          <td>(o)</td>
-                         <td colspan="2"><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                         <td colspan="2"><obs conceptId="164934"  answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" />
                              <hr width="0" />
                           </td>
                      </tr>
                      <tr class="patient-details">
                          <th colspan="2">Screened STI</th>
                          <td>(p)</td>
-                         <td colspan="2"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                         <td colspan="2"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="screened-sti" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" />
                          </td>
                      </tr>
-                     <tr class="patient-details">
+                     <tr class="tbl-partner-notification">
                          <th colspan="2">STI Partner Notification</th>
                          <td>(q)</td>
-                         <td colspan="2"><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                         <td colspan="2"><obs conceptId="164935" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
                           </td>
                      </tr>
                      <tr>
@@ -873,11 +887,42 @@
                          </td>
                      </tr>
             <tr>
-                <th rowspan="2">ARV Drugs</th>
+                <th rowspan="2">HIV treatment and CTX prophylaxis</th>
                 <th colspan="2">Current ARV Regimen/Prophylaxis</th>
                 <td>(z)</td>
                 <td colspan="2">
                     <span class="ke-field-instructions">Regimen and dose entered via ARV regimen editor</span>
+                    <table cellpadding="0" border="0" cellspacing="5">
+                        <tr>
+                            <td>Current ARV Regimen:</td>
+                            <td> &#160;&#160;&#160;&#160;
+                            <span id="calculated-duration-current-regimen" class="value"></span>
+                            </td>
+                        </tr>
+                        <br />
+                        <tr>
+                            <td>Cotrimoxazole:</td>
+                            <td> &#160;&#160;&#160;&#160;
+                                <obs
+                                        conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No,Not applicable (N/A)"
+                                        style="radio"
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dapsone:</td>
+                            <td> &#160;&#160;&#160;&#160;
+                                <obs
+                                        conceptId="164940"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No,Not applicable (N/A)"
+                                        style="radio"
+                                />
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
@@ -1030,7 +1075,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Cotrimoxazole/Dapsone:</td>
+                            <td>Cotrimoxazole:</td>
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1039,6 +1084,17 @@
                                         style="radio"
                                 />
                             </td>
+                        </tr>
+                        <tr>
+                        <td>Dapsone:</td>
+                        <td> &#160;&#160;&#160;&#160;
+                            <obs
+                                    conceptId="164941"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                    style="radio"
+                            />
+                        </td>
                         </tr>
                     </table>
                 </td>
@@ -1056,8 +1112,8 @@
                     <hr width="0"/>
                 </td>
                 <td> Differentiated Care*
-                    <obs conceptId="1758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fast-track"
-                         answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    <obs conceptId="164947" id="fast-track"
+                         answerConceptIds="164942,164943,164944,164945,164946"
                          style="dropdown"
                          answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
                 </td>

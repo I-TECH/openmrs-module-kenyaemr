@@ -18,9 +18,9 @@
         /**
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
          */
-        var YES_CONCEPT_ID = 1065;
-        var NO_CONCEPT_ID = 1066;
-        var TRANSIT =5622;
+        var YES_CONCEPT_ID = 160563;
+        var NO_CONCEPT_ID = 164144;
+        var TRANSIT =164931;
         var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
@@ -39,6 +39,7 @@
         }
 
         function onTransferStatusChange() {
+            //New patient
             if (getValue('transfer-in-status.value') == NO_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('disabled', false);
@@ -61,6 +62,7 @@
                 clearHiddenSections(jq('#pepChecked'));
                 clearHiddenSections(jq('#prepChecked'));
                 clearHiddenSections(jq('#haartChecked'));
+                //Transfer in
             } else if (getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
                 jq('#transfer-details :input').prop('disabled', false);
                 jq('#hiv-id :input').prop('readonly',true);
@@ -83,6 +85,7 @@
                 clearHiddenSections(jq('#pepChecked'));
                 clearHiddenSections(jq('#prepChecked'));
                 clearHiddenSections(jq('#haartChecked'));
+                //Transit
             } else if (getValue('transfer-in-status.value') == TRANSIT) {
                 jq('#transit-patient').show();
                 jq('#transfer-details').hide();
@@ -405,8 +408,8 @@
 					<td>Patient Type</td>
 					<td>
 						<obs
-								id="transfer-in-status" conceptId="160563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
-								answerConceptIds="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								id="transfer-in-status" conceptId="164932" style="radio"
+								answerConceptIds="164144,160563,164931"
 								answerLabels="New Patient,Transfer in,Transit"
 						/>
 					</td>

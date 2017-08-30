@@ -148,11 +148,12 @@ Green Card follow-up visit form
             }
         }
         var complaintSelected = function() {
-            var val = jq(this).val();
+            var val = getValue('complaints-today.value');
+
             var complaint = jq('.complaint');
             var complaintDuration = jq('.complaint-time input').val('');
             var complaintDate = jq('.complaint-date input').val('');
-            if (val == 1066){
+            if (val == "false"){
                 jq("#tbl-complaints-today").hide();
                 clearHiddenSections(complaint);
                 clearHiddenSections(complaintDuration);
@@ -168,21 +169,20 @@ Green Card follow-up visit form
                 var val = jq(this).closest('tr').find(".complaint-time input").val();
             var encounterDate = new Date(getValue('encounter-date.value'));
             var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
-            //console.log("Complaint Date "+formattedComplaintDate);
             if(val >0 ) {
                     jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
                 }
             }
         }
         var adverseReactionSelected = function() {
-            var val = jq(this).val();
+            var val = getValue('adverse-reactions.value');
             var medicineCausing= jq('.medicine-causing');
             var reaction = jq('.reaction');
             var severity = jq('.severity');
             var onsetDate = jq('.adverse-events-onset-date input').val('');
             var action = jq('.action-taken');
 
-            if (val == 1066){
+            if (val == "false"){
                 jq("#tbl-adverse-reactions").hide();
                 clearHiddenSections(medicineCausing);
                 clearHiddenSections(reaction);
@@ -195,12 +195,12 @@ Green Card follow-up visit form
             }
         }
         var knownAllergiesSelected = function() {
-            var val = jq(this).val();
+            var val = getValue('known-allergies.value');
             var allergy = jq('.allergen');
             var reaction = jq('.reaction');
             var severity = jq('.severity');
             var date = jq('.allergy-date input').val('');
-            if (val == 1066){
+            if (val == "false"){
                 jq("#tbl-known-allergies").hide();
                 clearHiddenSections(allergy);
                 clearHiddenSections(reaction);
@@ -253,6 +253,7 @@ Green Card follow-up visit form
         }
         var chronicIllnessesSelected = function() {
             var val = jq(this).val();
+
             var illness = jq('.illness-chronic');
             var onset = jq('.onset-date-chronic-illness input').val('');
             var drug = jq('.drug-chronic-illness input').val('');
@@ -409,10 +410,10 @@ Green Card follow-up visit form
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
-            if (val == 1066 ){
+            if (val == 164929 ){
                 jq("#key-population").show();
             }
-            if(val == 1065){
+            if(val == 164928){
                 jq("#key-population").hide();
                 clearHiddenSections(keypop);
             }
@@ -806,15 +807,15 @@ Green Card follow-up visit form
          jq("#referral-action").change(referralAction);
          jq("#tb-test-ordered").change(testOrdered);
          jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
-         jq('input[type=radio].complaints-today').change(complaintSelected);
+         jq("#complaints-today").change(complaintSelected);       //boolean
          jq(".complaint-time input").change(complaintDurationInput);
         // getField('complaint-duration.value').change(complaintDurationInput);
         // getField('complaint-date.value').change(complaintDateInput);
-         jq('input[type=radio].adverse-reactions').change(adverseReactionSelected);
-         jq('input[type=radio].known-allergies').change(knownAllergiesSelected);
-         jq('#systems-review :input[type=radio]').change(systemsReviewSelected);
-         jq('input[type=radio].chronic-illness').change(chronicIllnessesSelected);
-         jq('input[type=radio].population-type').change(populationTypeSelected);
+         jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
+         jq('#known-allergies').change(knownAllergiesSelected);       //boolean
+         jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
+         jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+         jq('#population-type :input[type=radio]').change(populationTypeSelected);
 
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -1236,17 +1237,14 @@ Green Card follow-up visit form
         </table>
         <fieldset>
             <legend>Visit Type</legend>
-            <!--pw greencard additions visit type and appointment type -->
             <table cellspacing="15">
                 <tr>
                     <th>Visit scheduled?</th>
                     <th align="left">Visit by</th>
                 </tr>
                 <tr>
-
                     <td>
                         <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
-
                     </td>
                     <td>
                         <obs
@@ -1261,9 +1259,7 @@ Green Card follow-up visit form
                     </td>
                 </tr>
             </table>
-
         </fieldset>
-
         <!--Triage-->
         <fieldset>
             <legend>Vital Signs</legend>
@@ -1373,8 +1369,11 @@ Green Card follow-up visit form
             <fieldset>
                 <legend>Population Type</legend>
                 <div>
-                    Patient population type  <input type="radio" name="population-type" class="population-type" value="1065"/> General Population
-                    <input type="radio" name="population-type" class="population-type" value="1066"/> Key Population
+                    Population type : &#160;&#160;
+                <obs conceptId="164930"
+                     answerConceptIds="164928,164929"
+                     answerLabels="General Population,Key Population" id="population-type"
+                     style="radio" />
                 </div>
                 <table id="key-population">
                     <tr>
@@ -1439,10 +1438,12 @@ Green Card follow-up visit form
         </table>
         <fieldset>
             <legend>Complaints and History of complaints</legend>
+
             <div>
-                Patient having complaint(s) today? <input type="radio" name="complaints-today" class="complaints-today" value="1065"/> Yes
-                <input type="radio" name="complaints-today" class="complaints-today" value="1066"/> No
+                Patient having complaint(s) today?
+                <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
             </div>
+            <!-- 1154 new complaints boolean   -->
             <table cellspacing="5" id="tbl-complaints-today">
                 <tr>
                     <th style="color: #888">Complaint</th>
@@ -1451,10 +1452,10 @@ Green Card follow-up visit form
                 </tr>
                 <repeat>
                     <template>
-                        <obsgroup groupingConceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                        <obsgroup groupingConceptId="160531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                             <tr>
                                 <td>
-                                    <obs class="complaint" conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class="complaint" conceptId="5219AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122496AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141830AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                             141585AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,141128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162626AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140070AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142247AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135462AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116214AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112989AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                              121657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,144576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133028AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133469AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,132653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1917,8 +1918,8 @@ Green Card follow-up visit form
             <fieldset>
                 <legend>Known Allergies</legend>
                 <div>
-                    Patient has any known allergie(s)? &#160;&#160;&#160;&#160; <input type="radio" name="known-allergies" class="known-allergies" value="1065"/> Yes
-                    <input type="radio" name="known-allergies" class="known-allergies" value="1066"/> No
+                    Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                 </div>
 
                 <table id="tbl-known-allergies">
@@ -1969,15 +1970,15 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
             <!--Chronic Illnesses-->
-
             <fieldset>
                 <legend>Chronic Illnesses and Cormobidities</legend>
                 <div>
-                    Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;<input type="radio" name="chronic-illness" class="chronic-illness" value="1065"/> Yes
-                    <input type="radio" name="chronic-illness" class="chronic-illness" value="1066"/> No
+                    Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    style="radio" answerLabels="Yes,No"
+                    />
                 </div>
-
-
                 <table id="tbl-chronic-illness">
                     <tr>
                         <th style="color: #888">Illness</th>
@@ -1988,7 +1989,6 @@ Green Card follow-up visit form
                         <th style="color: #888; text-align: center">Frequency</th>
                         <th style="color: #888; text-align: center">Duration</th>
                         <th style="color: #888; text-align: center">Duration units</th>
-
                     </tr>
                     <repeat>
                         <template>
@@ -2036,8 +2036,8 @@ Green Card follow-up visit form
             <fieldset>
                 <legend>Adverse Drug Reactions</legend>
                 <div>
-                    Patient has adverse drug reaction(s)? <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1065"/> Yes
-                    <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1066"/> No
+                    Patient has adverse drug reaction(s)? &#160;&#160;&#160;&#160;
+                    <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                 </div>
                 <table id="tbl-adverse-reactions">
                     <tr>
@@ -2055,16 +2055,13 @@ Green Card follow-up visit form
                                         <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                             <tr>
                                                 <td><obs class="medicine-causing"
-                                                        conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                        conceptId="1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                             75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                                	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
                                                          style="dropdown"
-
-
                                                 />
-
                                                 </td>
                                                 <td><obs class ="reaction"
                                                         conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -2075,7 +2072,7 @@ Green Card follow-up visit form
                                                 /></td>
                                                 <td><obs  class="severity"
                                                         conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
                                                 <td><obs class="adverse-events-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" labelText=" " /></td>
                                                 <td>
@@ -2084,10 +2081,7 @@ Green Card follow-up visit form
                                                          answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
                                                          style="dropdown"
-
-
                                                     />
-
                                                 </td>
                                             </tr>
                                         </obsgroup>
@@ -2223,7 +2217,7 @@ Green Card follow-up visit form
                         </table>
                         <div id="wants-pregnancy">
                             Wants to get pregnant in the next three months? <br/>
-                            <obs conceptId="1426AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            <obs conceptId="164933"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  style="radio" answerLabels="Yes,NO" />
                         </div>
@@ -2268,7 +2262,7 @@ Green Card follow-up visit form
 
                             <tr>
                                 <td>Screened CaCx</td>
-                                <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" /></td>
+                                <td><obs conceptId="164934" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" /></td>
                             </tr>
                             <tr >
                                 <td>Screened STI</td>
@@ -2277,8 +2271,8 @@ Green Card follow-up visit form
                         </table>
                      <table id="tbl-partner-notification">
                             <tr >
-                                <td>STI Patrner Notification</td>
-                                <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
+                                <td>STI Partner Notification</td>
+                                <td><obs conceptId="164935" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /></td>
                             </tr>
                         </table>
                     </fieldset>
@@ -2343,7 +2337,7 @@ Green Card follow-up visit form
                                                              answerLabel="Diaphram/Cervical Cap" style="checkbox"/>
                                                            <br />
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptId="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Fertility Awareness"
                                                              style="checkbox"/>
                                                             <br />
@@ -2360,7 +2354,7 @@ Green Card follow-up visit form
                                                              answerLabel="Vasectomy(Partner)" style="checkbox"/>
                                                             <br />
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                             <br />
                                                         </div>
@@ -2384,7 +2378,7 @@ Green Card follow-up visit form
                                                              answerLabel="Vasectomy" style="checkbox"/>
                                                         <br/>
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                         </td>
 
@@ -2446,8 +2440,6 @@ Green Card follow-up visit form
                         </tr>
                     </table>
         </fieldset>
-
-
         <!--Physical Examination-->
             <!--General Examination-->
             <a id="physical-exam-section"></a>
@@ -2489,7 +2481,7 @@ Green Card follow-up visit form
                         <div style="float: left;padding-right: 40px">
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dehydration" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" /><br />
-                                <!--<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" /><br />-->
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" /><br />
                             </div>
                     </td>
 
@@ -2503,12 +2495,12 @@ Green Card follow-up visit form
                <table>
                    <tr>
                        <td>
-                       Any abnormal finding(s) on system review?  &#160;&#160;&#160;&#160;
+                       Finding(s) on systems review?  &#160;&#160;&#160;&#160;
                    </td>
                        <td><obs
                                    conceptId="159615AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                    answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                   answerLabels="Yes,No"
+                                   answerLabels="Normal,Abnormal"
                                    style="radio" id="systems-review" />
                        </td>
                    </tr>
@@ -2540,12 +2532,12 @@ Green Card follow-up visit form
                         <td>Eyes</td>
                         <td><obs class="eye-findings"
                                 conceptId="163309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="123074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140827AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="123074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140940AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,131040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140827AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139100AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Visual Disturbance,Excessive tearing,Eye pain,Eye redness,Light sensitive,Itchy eyes"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs class="eye-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="eye-notes" conceptId="164938" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2553,13 +2545,13 @@ Green Card follow-up visit form
                         <td>3.</td>
                         <td>ENT</td>
                         <td><obs class="ent-findings"
-                                conceptId="163336AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerConceptIds="148517AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,128055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110099AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126318AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                conceptId="164936"
+                                answerConceptIds="148517AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117698AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,507AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,128055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110099AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126318AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5244AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,124601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Apnea,Hearing disorder,Dental caries,Erythema,Frequent colds,Gingival bleeding,Hairy cell leukoplakia,Hearing loss,Hoarseness,Kaposi Sarcoma,Masses,Nasal discharge,Nosebleed,Pain,Post nasal discharge,Sinus problems,Snoring,Sore thoat,Oral sores,Thrush,Tinnitus,Toothache,Ulcers,Vertigo"
                                 style="dropdowm"
                         /></td>
 
-                        <td><obs class="ent-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="ent-notes" conceptId="164939" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2601,7 +2593,7 @@ Green Card follow-up visit form
                                 style="dropdowm "
                         /></td>
 
-                        <td><obs class="abdomen-notes" conceptId="160947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
+                        <td><obs class="abdomen-notes" conceptId="160948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                         />
                         </td>
                     </tr>
@@ -2609,9 +2601,9 @@ Green Card follow-up visit form
                         <td>7.</td>
                         <td>CNS</td>
                         <td><obs class="cns-findings"
-                                conceptId="1130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                conceptId="164937"
                                 answerConceptIds="118872AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,150817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120345AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,157498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,136282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                answerLabels="Altered sensation,Bulging fontenelle,Abnormal reflexes,Confusion,Limb weakness,Stiff neck,Kernicterus"
+                                answerLabels="Altered sensations,Bulging fontenelle,Abnormal reflexes,Confusion,Limb weakness,Stiff neck,Kernicterus"
                                 style="dropdowm"
                         /></td>
 
@@ -2666,7 +2658,7 @@ Green Card follow-up visit form
                                 <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/>
                             </td>
                             <td>
-                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80"/>
+                                <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80"/>
                             </td>
 
                         </tr>
@@ -2684,7 +2676,7 @@ Green Card follow-up visit form
             </table>
         </fieldset>
         <fieldset>
-            <legend>Cotrimoxazole/Dapsone</legend>
+            <legend>Cotrimoxazole</legend>
             <table>
                 <tr>
                     <td>
@@ -2716,7 +2708,39 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-
+        <fieldset>
+            <legend>Dapsone</legend>
+            <table>
+                <tr>
+                    <td>
+                        <table cellpadding="0" border="0" cellspacing="5">
+                            <tr>
+                                <td>Adherence</td>
+                                <td>
+                                    <obs
+                                            conceptId="164941"
+                                            answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                            style="radio"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dispensed</td>
+                                <td>
+                                    <obs
+                                            conceptId="164940"
+                                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Yes,No,Not applicable (N/A)"
+                                            style="radio"
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
         <fieldset>
             <legend>ARV</legend>
             <table>
@@ -2801,8 +2825,8 @@ Green Card follow-up visit form
 
                     <td>
 
-                        <obs conceptId="1758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fast-track"
-                             answerConceptIds="163510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs conceptId="164947" id="fast-track"
+                             answerConceptIds="164942,164943,164944,164945,164946"
                              style="dropdown"
                              answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
                     </td>
