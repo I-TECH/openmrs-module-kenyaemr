@@ -18,10 +18,13 @@
     <script type="text/javascript">
         var populationTypeSelected = function () {
             var val = jq(this).val();
-            if (val == 1066 ){
+            var keypop = jq('#key-population');
+            if (val == 164929 ){
                 jq("#key-population").show();
-            }else{
+            }
+            if(val == 164928){
                 jq("#key-population").hide();
+                clearHiddenSections(keypop);
             }
         }
         var hasDisabilitySelected = function () {
@@ -162,7 +165,7 @@
             //pop type
             jq("#key-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
-            jq('input[type=radio].population-type').change(populationTypeSelected);
+            jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability select').prop("disabled", true);
@@ -179,63 +182,63 @@
             //On load states
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
-                //Negative
-                if(firstTest ==664) {
-                    jq("#hiv-test2-result select").prop("disabled", true);
-                    jq("#kitTest2 input").prop("disabled", true);
-                    jq("#lotTest2 input").prop("disabled", true);
-                    jq("#expiry-date2 input").prop("disabled", true);
-                    getField('hiv-final-result.value').val(664);
-                    jq('#ccc-no input').prop("disabled", true);
-                }
-                //Positive
-                if(firstTest ==703){
-                    jq("#hiv-test2-result select").prop("disabled", false);
-                    jq("#kitTest2 input").prop("disabled", false);
-                    jq("#lotTest2 input").prop("disabled", false);
-                    jq("#expiry-date2 input").prop("disabled", false);
-                }
-                //Invalid
-                if(firstTest ==163611){
-                    jq("#hiv-test2-result select").prop("disabled", false);
-                    jq("#kitTest2 input").prop("disabled", false);
-                    jq("#lotTest2 input").prop("disabled", false);
-                    jq("#expiry-date2 input").prop("disabled", false);
-                }
-           //Final test
-           var secondTest = getField("hiv-test2-result.value").val();
-                //Negative
-                if(secondTest ==664) {
-                    jq("#kitTest2 input").prop("disabled", true);
-                    jq("#lotTest2 input").prop("disabled", true);
-                    jq("#expiry-date2 input").prop("disabled", true);
-                    getField('hiv-final-result.value').val(664);
-                    jq('#ccc-no input').prop("disabled", true);
-                }
-                //Positive
-                if(secondTest ==703){
-                    jq("#kitTest2 input").prop("disabled", false);
-                    jq("#lotTest2 input").prop("disabled", false);
-                    jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(703);
-                    jq('#ccc-no input').prop("disabled", false);
-                }
-                //Invalid
-                if(secondTest ==163611){
-                    jq("#kitTest2 input").prop("disabled", false);
-                    jq("#lotTest2 input").prop("disabled", false);
-                    jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(1138);
-                }
-                //Invalid
-                if(secondTest ==1175){
-                    jq("#kitTest2 input").prop("disabled", false);
-                    jq("#lotTest2 input").prop("disabled", false);
-                    jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(1138);
-                }
+            //Negative
+            if(firstTest ==664) {
+                jq("#hiv-test2-result select").prop("disabled", true);
+                jq("#kitTest2 input").prop("disabled", true);
+                jq("#lotTest2 input").prop("disabled", true);
+                jq("#expiry-date2 input").prop("disabled", true);
+                getField('hiv-final-result.value').val(664);
+                jq('#ccc-no input').prop("disabled", true);
+            }
+            //Positive
+            if(firstTest ==703){
+                jq("#hiv-test2-result select").prop("disabled", false);
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+            }
+            //Invalid
+            if(firstTest ==163611){
+                jq("#hiv-test2-result select").prop("disabled", false);
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+            }
+            //Final test
+            var secondTest = getField("hiv-test2-result.value").val();
+            //Negative
+            if(secondTest ==664) {
+                jq("#kitTest2 input").prop("disabled", true);
+                jq("#lotTest2 input").prop("disabled", true);
+                jq("#expiry-date2 input").prop("disabled", true);
+                getField('hiv-final-result.value').val(664);
+                jq('#ccc-no input').prop("disabled", true);
+            }
+            //Positive
+            if(secondTest ==703){
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(703);
+                jq('#ccc-no input').prop("disabled", false);
+            }
+            //Invalid
+            if(secondTest ==163611){
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(1138);
+            }
+            //Invalid
+            if(secondTest ==1175){
+                jq("#kitTest2 input").prop("disabled", false);
+                jq("#lotTest2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
+                getField('hiv-final-result.value').val(1138);
+            }
 
-    });
+        });
 
     </script>
 
@@ -263,10 +266,11 @@
         <fieldset>
             <legend>Population Type</legend>
             <div>
-                Client population type:
-                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                     answerLabel="Key Population, General Population" style="checkbox" /><br/>
+                Population type : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                <obs conceptId="164930"
+                     answerConceptIds="164928,164929"
+                     answerLabels="General Population,Key Population" id="population-type"
+                     style="radio" />
             </div>
             <table id="key-population">
                 <tr>
@@ -289,7 +293,7 @@
                 <tr>
                     <td>
                         Does client have any disability? &#160;&#160;&#160;&#160;&#160;
-                        <obs id="has-disability" conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="has-disability" conceptId="164951"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
                              style="radio" />
@@ -320,8 +324,11 @@
             <table id="tbl-hiv-selftest">
                 <tr>
                     <td>Has the client done HIV self test in the last 12 months? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="hb-self-test" conceptId="1492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="yes_no" />
+                        <obs class="hb-self-test" conceptId="164952"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio"
+                        />
                     </td>
                 </tr>
             </table>
@@ -332,8 +339,8 @@
                 <tr>
                     <td>Indicate HTS strategy used: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs class="hts-strategy"
-                             conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             conceptId="164956"
+                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Provider Initiated Testing(PITC),Non Provider Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
                         />
                     </td>
@@ -353,8 +360,8 @@
             <table id="tbl-couple-testing">
                 <tr>
                     <td>Client tested as? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="couple-testing" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="couple-testing" conceptId="164959"
+                             answerConceptIds="164957,164958"
                              style="radio" answerLabels="Individual,Couple"/>
                     </td>
                 </tr>
@@ -370,13 +377,15 @@
                         </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name"
-                            conceptId="164422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 conceptId="164962"
+                                 answerConceptIds="164960,164961,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Determine,Uni-Gold,Invalid"
                             />
 
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
                             <obs class="lot-number"
-                            conceptId="164409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 conceptId="164964"
                             />
 
                         </td>
@@ -396,13 +405,15 @@
                         </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name"
-                                 conceptId="164422AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 conceptId="164962"
+                                 answerConceptIds="164960,164961,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Determine,Uni-Gold,Invalid"
                             />
 
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
                             <obs class="lot-number"
-                                 conceptId="164409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 conceptId="164964"
                             />
 
                         </td>
@@ -415,7 +426,7 @@
                 <tr>
                     <td>Final Results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                              answerLabels="Positive,Negative,Inconclusive"/>
+                             answerLabels="Positive,Negative,Inconclusive"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
                         <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -451,16 +462,7 @@
             <table id="tbl-remarks">
                 <tr>
                     <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="remarks" conceptId="163761AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
-                        />
-                    </td>
-                </tr>
-            </table>
-            <br /><br />
-            <table id="tbl-hts-provider">
-                <tr>
-                    <td><strong>Indicate HTS provider name: </strong>&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="provider-name" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs class="remarks" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
                         />
                     </td>
                 </tr>
