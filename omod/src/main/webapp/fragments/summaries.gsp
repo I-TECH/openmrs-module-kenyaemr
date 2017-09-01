@@ -5,7 +5,7 @@
 
 table.moh257 {
     border-collapse: collapse;
-    background-color: #F3F9FF;
+    background-color: #D9F4D3;
     width: 75%;
 }
 table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
@@ -13,12 +13,12 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
     vertical-align: baseline;
     padding: 2px;
     text-align: left;
-    background-color: #F3F9FF;
+    background-color: #D9F4D3;
 }
 </style>
 <div class="ke-panel-frame">
     <div class="ke-panel-heading">Patient Summary</div>
-    <div class="ke-panel-content" style="background-color: #F3F9FF">
+    <div class="ke-panel-content" style="background-color: #D9F4D3">
         <table id="tblDetails" class="moh257" align="center" border="1" cellpadding="0" cellspacing="0">
             <tr>
                 <td>Date of report: ${patient.dateOfReport}</td>
@@ -168,12 +168,13 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td>IPT: ${onIpt}</td>
                 <td>&nbsp;</td>
             </tr>
-            <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
+
             <tr>
                 <td colspan="2">Clinics enrolled: ${clinicValues}</td>
-                <td>Transfer out date: ${toDate}</td>
+                <td>
+                    Transfer out date: ${toDate} <br />
+                    Transfer out facility: ${toFacility}
+                </td>
             </tr>
             <tr>
                 <td colspan="2">

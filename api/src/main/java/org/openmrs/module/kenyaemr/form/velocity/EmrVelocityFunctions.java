@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.form.velocity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,14 +28,19 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
 
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.api.PatientService;
+import org.openmrs.Patient;
 /**
  * Velocity functions for adding logic to HTML forms
  */
 public class EmrVelocityFunctions {
 
 	private FormEntrySession session;
-
+	protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
 	/**
 	 * Constructs a new functions provider
 	 * @param session the form entry session
@@ -66,10 +73,23 @@ public class EmrVelocityFunctions {
 	}
 
 	/**
-	 * Fetches a global property value by property name
-	 * @param name the property name
-	 * @return the global property value
+	 * Checks whether the patient is stable
+	 * @return true if patient is stable
 	 */
+
+	public Boolean patientIsStable() {
+
+		CalculationResult stablePatient = EmrCalculationUtils.evaluateForPatient(StablePatientsCalculation.class, null,session.getPatient());
+		log.info("Stability ==>"+stablePatient.getValue());
+		return 	(Boolean) stablePatient.getValue();
+
+
+	}
+		/**
+		 * Fetches a global property value by property name
+		 * @param name the property name
+		 * @return the global property value
+		 */
 	public String getGlobalProperty(String name) {
 		return Context.getAdministrationService().getGlobalProperty(name);
 	}
