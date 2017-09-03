@@ -29,12 +29,7 @@ public class HTSLinkageToCareDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded when 1066 then \"No\" when 1065 then \"Yes\" when 1175 then 'N/A' else \"\" end) patientConsented\n" +
-                "from  \n" +
-                " encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 159811 ";
+        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_referral_and_linkage ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

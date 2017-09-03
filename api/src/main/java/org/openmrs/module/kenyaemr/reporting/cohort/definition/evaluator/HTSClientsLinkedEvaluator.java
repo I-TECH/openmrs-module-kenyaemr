@@ -38,26 +38,19 @@ public class HTSClientsLinkedEvaluator implements CohortDefinitionEvaluator {
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select patient_id from (\n" +
-				"select e.patient_id, e.encounter_id, e.encounter_datetime, pp.patient_id as internalEnrollment, l.contactStatus from \n" +
-				"encounter e \n" +
-				"inner join\n" +
-				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et on et.id = e.encounter_type\n" +
-				"left outer join patient_program pp on pp.patient_id = e.patient_id\n" +
-				"left outer join (\n" +
-				"select e.patient_id, e.encounter_id, \n" +
-				"max(if(o.concept_id=164181 and o.value_coded=1650, 'Phone', if(o.concept_id=164181 and o.value_coded=162186, 'Physical', \"\"))) as contactType,\n" +
-				"max(if(o.concept_id=164849 and o.value_coded=1065, 'Contacted and Linked', if(o.concept_id=164849 and o.value_coded=1066, 'Contacted but not linked', \"\"))) as contactStatus,\n" +
-				"max(if(o.concept_id=162724,o.value_text, \"\")) as facilityLinkedTo,\n" +
-				"max(if(o.concept_id=1473,o.value_text, \"\")) as providerHandedTo,\n" +
-				"max(if(o.concept_id=162053,o.value_numeric, \"\")) as upnProvided\n" +
-				"from encounter e\n" +
-				"inner join form f on f.form_id = e.form_id and f.uuid = \"050a7f12-5c52-4cad-8834-863695af335d\"\n" +
-				"inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164181, 164849, 162724, 162053, 1473)\n" +
-				"group by e.patient_id\n" +
-				") l on l.encounter_id = e.encounter_id \n" +
-				") t\n" +
-				"where internalEnrollment is not null or contactStatus is not null;";
+		String qry=" select patient_id\n" +
+				"FROM (\n" +
+				"  SELECT\n" +
+				"    t.patient_id  patient_id,\n" +
+				"    pp.patient_id enrolled,\n" +
+				"    l.patient_id  linked,\n" +
+				"    p.name program\n" +
+				"  FROM kenyaemr_etl.etl_hts_test t\n" +
+				"    LEFT OUTER JOIN patient_program pp ON pp.patient_id = t.patient_id\n" +
+				"    LEFT JOIN program p ON p.program_id = pp.program_id AND p.name = \"HIV\"\n" +
+				"    LEFT OUTER JOIN kenyaemr_etl.etl_hts_referral_and_linkage l ON l.patient_id = t.patient_id\n" +
+				") l\n" +
+				"where (enrolled is not null and program is not null) or linked is not null;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

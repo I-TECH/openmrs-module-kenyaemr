@@ -26,12 +26,7 @@ public class HTSLinkageUPNDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select  e.encounter_id, \n" +
-                "max(if(o.concept_id=162053,o.value_numeric, \"\")) as upnProvided\n" +
-                "from encounter e\n" +
-                "inner join form f on f.form_id = e.form_id and f.uuid = \"050a7f12-5c52-4cad-8834-863695af335d\"\n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164181, 164849, 162724, 162053, 1473)\n" +
-                "group by e.encounter_id ";
+        String qry = "select encounter_id, ccc_number from kenyaemr_etl.etl_hts_referral_and_linkage ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

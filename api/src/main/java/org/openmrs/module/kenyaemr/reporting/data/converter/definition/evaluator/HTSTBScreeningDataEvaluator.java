@@ -29,18 +29,7 @@ public class HTSTBScreeningDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded \n" +
-                "\twhen 1660 then \"No TB Signs\" \n" +
-                "\twhen 142177 then \"Presumed TB\" \n" +
-                "\twhen 1662 then \"TB Confirmed\" \n" +
-                "\twhen 160737 then \"Not Done\"\n" +
-                "\twhen 1110 then \"On TB Treatment\" \n" +
-                "\telse \"\" end) screeningResult\n" +
-                "from  \n" +
-                " encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 1659 ";
+        String qry = "select encounter_id, tb_screening from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

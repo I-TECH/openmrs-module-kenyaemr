@@ -29,19 +29,7 @@ public class PatientDisabilityTypeDataEvaluator implements EncounterDataEvaluato
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded \n" +
-                "\twhen 1175 then \"Not applicable\" \n" +
-                "\twhen 120291 then \"Deaf\" \n" +
-                "\twhen 147215 then \"Blind\" \n" +
-                "\twhen 151342 then \"Mentally Challenged\"\n" +
-                "\twhen 1164538 then \"Physically Challenged\" \n" +
-                "\twhen 5622 then \"Other\"\n" +
-                "\telse \"\" end) disability_type\n" +
-                "from  \n" +
-                " encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 162558 ";
+        String qry = "select encounter_id, disability_type from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
