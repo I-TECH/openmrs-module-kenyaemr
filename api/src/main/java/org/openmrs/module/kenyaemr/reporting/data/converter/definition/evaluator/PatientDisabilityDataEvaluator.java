@@ -29,7 +29,7 @@ public class PatientDisabilityDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, patient_disabled from kenyaemr_etl.etl_hts_test ";
+        String qry = "select encounter_id, if(patient_disabled=\"Yes\",CONCAT_WS('\\n', patient_disabled, disability_type),patient_disabled) from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

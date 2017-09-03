@@ -29,7 +29,7 @@ public class HIVTestTwoDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, test_2_result from kenyaemr_etl.etl_hts_test ";
+        String qry = "select encounter_id, CONCAT_WS('\\n', test_2_kit_name, test_2_kit_lot_no, test_2_kit_expiry, test_2_result) AS test_result from kenyaemr_etl.etl_hts_test; ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

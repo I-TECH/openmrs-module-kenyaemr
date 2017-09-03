@@ -29,7 +29,7 @@ public class PopulationTypeDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, population_type from kenyaemr_etl.etl_hts_test ";
+        String qry = "select encounter_id, if(population_type=\"Key Population\",CONCAT_WS('\\n', population_type, key_population_type),population_type) from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
