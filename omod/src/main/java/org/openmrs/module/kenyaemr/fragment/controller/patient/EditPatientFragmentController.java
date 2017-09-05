@@ -247,7 +247,7 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * Creates an edit form for an existing patient
+		 * Creates an edit form for an existing person
 		 */
 		public EditPatientForm(Person person) {
 			this();

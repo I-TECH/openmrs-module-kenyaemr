@@ -31,20 +31,7 @@ public class HTSConfirmationRegisterCohortDefinitionEvaluator implements Encount
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "(select distinct e.encounter_id from \n" +
-				"encounter e \n" +
-				"inner join form f on f.form_id = e.form_id and f.uuid = \"b08471f6-0892-4bf7-ab2b-bf79797b8ea4\"\n" +
-				"inner join\n" +
-				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et \n" +
-				"on et.id = e.encounter_type\n" +
-				" )\n" +
-				"union\n" +
-				"(select e.encounter_id \n" +
-				"from encounter e inner join obs o \n" +
-				"on o.encounter_id=e.encounter_id and o.concept_id=162084 and o.value_coded=162082\n" +
-				"inner join\n" +
-				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et \n" +
-				"on et.id = e.encounter_type); ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = \"Confirmation\" and voided = 0; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

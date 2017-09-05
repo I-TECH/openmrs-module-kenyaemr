@@ -29,12 +29,7 @@ public class HIVTestOneDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded when 703 then \"Positive\" when 664 then \"Negative\" when 163611 then \"Invalid\" else \"\" end) patientConsented\n" +
-                "from  \n" +
-                " encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 1040 ";
+        String qry = "select encounter_id, CONCAT_WS('\\n', test_1_kit_name,'____________', test_1_kit_lot_no, '____________', test_1_kit_expiry, '____________', test_1_result) AS test_result from kenyaemr_etl.etl_hts_test;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

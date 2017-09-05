@@ -29,12 +29,7 @@ public class EverTestedForHIVDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded when 1066 then \"No\" when 1065 then \"Yes\" else \"\" end) patientConsented\n" +
-                "from  \n" +
-                "encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 164401 ";
+        String qry = "select encounter_id, ever_tested_for_hiv from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
