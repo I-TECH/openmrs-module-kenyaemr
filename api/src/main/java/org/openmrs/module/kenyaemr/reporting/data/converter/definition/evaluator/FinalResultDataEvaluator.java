@@ -29,12 +29,7 @@ public class FinalResultDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "(case o.value_coded when 703 then \"Positive\" when 664 then \"Negative\" when 1138 then \"Inconclusive\" else \"\" end) patientConsented\n" +
-                "from  \n" +
-                "encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 159427 ";
+        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

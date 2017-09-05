@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSPositiveResultsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -38,20 +37,7 @@ public class HTSPositiveResultsDefinitionEvaluator implements CohortDefinitionEv
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct e.patient_id from \n" +
-				"encounter e \n" +
-				"inner join form f on f.form_id = e.form_id and f.uuid != \"b08471f6-0892-4bf7-ab2b-bf79797b8ea4\"\n" +
-				"inner join obs o on o.encounter_id = e.encounter_id and o.voided=0\n" +
-				"inner join\n" +
-				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et \n" +
-				"on et.id = e.encounter_type\n" +
-				"where e.encounter_id not in (select e.encounter_id \n" +
-				"from encounter e inner join obs o \n" +
-				"on o.encounter_id=e.encounter_id and o.concept_id=162084 and o.value_coded=162082\n" +
-				"inner join\n" +
-				"(select encounter_type_id id, name from encounter_type where uuid=\"9c0a7a57-62ff-4f75-babe-5835b0e921b7\") et \n" +
-				"on et.id = e.encounter_type)\n" +
-				"and (o.concept_id = 159427 and o.value_coded = 703);";
+		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where final_test_result = \"Positive\" and voided = 0;\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

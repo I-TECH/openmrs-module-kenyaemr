@@ -29,12 +29,7 @@ public class HTSRemarksDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select e.encounter_id, \n" +
-                "o.value_text as remarks\n" +
-                "from  \n" +
-                " encounter e  \n" +
-                "inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 \n" +
-                "where o.concept_id = 163761 ";
+        String qry = "select encounter_id, remarks from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

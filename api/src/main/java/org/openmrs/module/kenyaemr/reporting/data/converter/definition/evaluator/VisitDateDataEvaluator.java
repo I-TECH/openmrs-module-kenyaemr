@@ -28,10 +28,7 @@ public class VisitDateDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "SELECT " +
-                " e.encounter_id, " +
-                " e.encounter_datetime " +
-                " FROM encounter e where e.voided =0 " ;
+        String qry = "select encounter_id, date(visit_date) from kenyaemr_etl.etl_hts_test ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
