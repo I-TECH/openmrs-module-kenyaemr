@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.openmrs.Concept;
@@ -46,6 +48,7 @@ import java.util.*;
  * A fragment controller for a patient summary details
  */
 public class SummariesFragmentController {
+    protected static final Log log = LogFactory.getLog(SummariesFragmentController.class);
 
     public void controller(@FragmentParam("patient") Patient patient,
                            FragmentModel model){
@@ -544,6 +547,17 @@ public class SummariesFragmentController {
         else {
             toDate = formatDate((Date) totResults.getValue());
         }
+       //transfer out to facility
+        String toFacility;
+        CalculationResultMap transferOutFacilty = Calculations.lastObs(Dictionary.getConcept("159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        Obs transferOutFacilityObs = EmrCalculationUtils.obsResultForPatient(transferOutFacilty, patient.getPatientId());
+        if(transferOutFacilityObs != null){
+            toFacility = transferOutFacilityObs.getValueText();
+        }
+        else {
+            toFacility = "N/A";
+        }
+     log.info("toFacility ==>"+toFacility);
 
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
@@ -559,6 +573,7 @@ public class SummariesFragmentController {
         model.addAttribute("deadDeath", dead);
         model.addAttribute("returnVisitDate", patientSummary.getNextAppointmentDate());
         model.addAttribute("toDate", toDate);
+        model.addAttribute("toFacility", toFacility);
         model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
         model.addAttribute("iosResults", iosResults);

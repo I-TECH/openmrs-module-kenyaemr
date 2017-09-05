@@ -34,7 +34,7 @@
             display: inline-block; border: 1px solid;
         }
     </style>
-
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
         isPediatric = null; // Set later by AJAX lookup
         /** E1F8DB
@@ -226,6 +226,146 @@
                 jq('#vLoadResults :input').prop( "disabled", false );
             }
         }
+        var complaintDurationInput = function() {
+
+            var table = document.getElementById("tbl-complaints-today");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var val = jq(this).closest('tr').find(".complaint-time input").val();
+                var encounterDate = getValue('encounter-date.value');
+                var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
+               if(encounterDate ==""){
+                   getField('complaint-date-field.error').html('Please add encounter date first').show();
+
+               }else if(val >0 ) {
+                    jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
+                }
+            }
+        }
+        var knownAllergiesSelected = function() {
+            var val = getValue('known-allergies.value');
+            var allergy = jq('.allergen');
+            var reaction = jq('.reaction');
+            var severity = jq('.severity');
+            var date = jq('.allergy-date input').val('');
+            if (val == "false"){
+                jq('.allergen :input').prop('disabled', true);
+                jq('.reaction :input').prop('disabled', true);
+                jq('.severity :input').prop('disabled', true);
+                jq('.allergy-date :input').prop('disabled', true);
+                clearHiddenSections(allergy);
+                clearHiddenSections(reaction);
+                clearHiddenSections(severity);
+                clearHiddenSections(date);
+
+            }else {
+                jq('.allergen :input').prop('disabled', false);
+                jq('.reaction :input').prop('disabled', false);
+                jq('.severity :input').prop('disabled', false);
+                jq('.allergy-date :input').prop('disabled', false);
+            }
+        }
+        var complaintSelected = function() {
+            var val = getValue('complaints-today.value');
+            var complaint = jq('.complaint');
+            var complaintDuration = jq('.complaint-time input').val('');
+            var complaintDate = jq('.complaint-date input').val('');
+            if (val == "false"){
+                jq('.complaint :input').prop('disabled', true);
+                jq('.complaint-time :input').prop('disabled', true);
+                jq('.complaint-date :input').prop('disabled', true);
+
+                clearHiddenSections(complaint);
+                clearHiddenSections(complaintDuration);
+                clearHiddenSections(complaintDate);
+            }else {
+                jq('.complaint :input').prop('disabled', false);
+                jq('.complaint-time :input').prop('disabled', false);
+                jq('.complaint-date :input').prop('disabled', false);
+            }
+        }
+        var adverseReactionSelected = function() {
+            var val = getValue('adverse-reactions.value');
+            var medicineCausing= jq('.medicine-causing');
+            var reaction = jq('.reaction');
+            var severity = jq('.severity');
+            var onsetDate = jq('.adverse-events-onset-date input').val('');
+            var action = jq('.action-taken');
+
+            if (val == "false"){
+                jq('.medicine-causing :input').prop('disabled', true);
+                jq('.reaction :input').prop('disabled', true);
+                jq('.severity :input').prop('disabled', true);
+                jq('.adverse-events-onset-date :input').prop('disabled', true);
+                jq('.action-taken :input').prop('disabled', true);
+                clearHiddenSections(medicineCausing);
+                clearHiddenSections(reaction);
+                clearHiddenSections(severity);
+                clearHiddenSections(onsetDate);
+                clearHiddenSections(action);
+
+            }else {
+                jq('.medicine-causing :input').prop('disabled', false);
+                jq('.reaction :input').prop('disabled', false);
+                jq('.severity :input').prop('disabled', false);
+                jq('.adverse-events-onset-date :input').prop('disabled', false);
+                jq('.action-taken :input').prop('disabled', false);
+            }
+        }
+        var chronicIllnessesSelected = function() {
+            var val = jq(this).val();
+
+            var illness = jq('.illness-chronic');
+            var onset = jq('.onset-date-chronic-illness input').val('');
+            var drug = jq('.drug-chronic-illness input').val('');
+            var dose = jq('.dose-chronic-illness input').val('');
+            var units = jq('.units-chronic-illness input').val('');
+            var frequency = jq('.frequency-chronic-illness');
+            var duration = jq('.duration-chronic-illness input').val('');
+            var durationUnits = jq('.duration-units-illness');
+
+            if (val == 1066){
+                jq('.illness-chronic :input').prop('disabled', true);
+                jq('.onset-date-chronic-illness :input').prop('disabled', true);
+                jq('.drug-chronic-illness :input').prop('disabled', true);
+                jq('.dose-chronic-illness :input').prop('disabled', true);
+                jq('.units-chronic-illnes :input').prop('disabled', true);
+                jq('.frequency-chronic-illness :input').prop('disabled', true);
+                jq('.duration-chronic-illness :input').prop('disabled', true);
+                jq('.duration-units-illness :input').prop('disabled', true);
+                clearHiddenSections(illness);
+                clearHiddenSections(onset);
+                clearHiddenSections(drug);
+                clearHiddenSections(dose);
+                clearHiddenSections(units);
+                clearHiddenSections(frequency);
+                clearHiddenSections(duration);
+                clearHiddenSections(durationUnits);
+            }else {
+                jq('.illness-chronic :input').prop('disabled', false);
+                jq('.onset-date-chronic-illness :input').prop('disabled', false);
+                jq('.drug-chronic-illness :input').prop('disabled', false);
+                jq('.dose-chronic-illness :input').prop('disabled', false);
+                jq('.units-chronic-illnes :input').prop('disabled', false);
+                jq('.frequency-chronic-illness :input').prop('disabled', false);
+                jq('.duration-chronic-illness :input').prop('disabled', false);
+                jq('.duration-units-illness :input').prop('disabled', false);
+            }
+        }
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                this.val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 
         jq(function() {
 
@@ -233,6 +373,36 @@
             jq('.patient-details :input').prop('disabled', true);
             jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
             jq('.tbl-partner-notification :input').prop('disabled', true);
+            //Known allergies
+            jq('#known-allergies').change(knownAllergiesSelected);       //boolean
+            jq('.allergen :input').prop('disabled', true);
+            jq('.reaction :input').prop('disabled', true);
+            jq('.severity :input').prop('disabled', true);
+            jq('.allergy-date :input').prop('disabled', true);
+            //complaints
+            jq("#complaints-today").change(complaintSelected);       //boolean
+            jq('.complaint :input').prop('disabled', true);
+            jq('.complaint-time :input').prop('disabled', true);
+            jq('.complaint-date :input').prop('disabled', true);
+             //Complaint duration date adjustment
+            jq(".complaint-time input").change(complaintDurationInput);
+            //Adverse drug reactions
+            jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
+            jq('.medicine-causing :input').prop('disabled', true);
+            jq('.reaction :input').prop('disabled', true);
+            jq('.severity :input').prop('disabled', true);
+            jq('.adverse-events-onset-date :input').prop('disabled', true);
+            jq('.action-taken :input').prop('disabled', true);
+              //Chronic illness
+            jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+            jq('.illness-chronic :input').prop('disabled', true);
+            jq('.onset-date-chronic-illness :input').prop('disabled', true);
+            jq('.drug-chronic-illness :input').prop('disabled', true);
+            jq('.dose-chronic-illness :input').prop('disabled', true);
+            jq('.units-chronic-illnes :input').prop('disabled', true);
+            jq('.frequency-chronic-illness :input').prop('disabled', true);
+            jq('.duration-chronic-illness :input').prop('disabled', true);
+            jq('.duration-units-illness :input').prop('disabled', true);
 
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
@@ -325,6 +495,8 @@
 
             </includeIf>
         });
+        //End on ready
+
     </script>
 
     <!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
@@ -402,8 +574,8 @@
                          <th colspan="2">Known Allergies</th>
                          <th>
                              <div>
-                                 Patient has any known allergie(s)? <br /><input type="radio" name="known-allergies" class="known-allergies" value="1065"/> Yes
-                                 <input type="radio" name="known-allergies" class="known-allergies" value="1066"/> No
+                                 Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                 <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                              </div>
                          </th>
                          <td>(h)</td>
@@ -414,13 +586,12 @@
                                                  <th>Reaction</th>
                                                  <th>Severity</th>
                                                  <th>Date of Onset</th>
-                                                 <th>Action taken</th>
                                              </tr>
                                              <repeat>
                                                  <template>
                                                      <obsgroup groupingConceptId="121689AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                          <tr>
-                                                             <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             <td><obs class="allergen" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerConceptIds="162543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162545AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                             162176AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                               	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -430,20 +601,14 @@
 
                                                              />
                                                              </td>
-                                                             <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             <td><obs class="reaction" conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                             111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
                                                                       style="dropdown"
                                                              /></td>
-                                                             <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                             <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-                                                             <td>
-                                                                 <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
-                                                                      style="dropdown"/>
-                                                             </td>
+                                                             <td><obs class="severity" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                             <td><obs class="allergy-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                          </tr>
                                                      </obsgroup>
                                                  </template>
@@ -592,8 +757,7 @@
                          <th colspan="2">
                              <div>
                                  Patient having complaint(s) today? <br /><br />
-                                 <input type="radio" name="complaints-today" class="complaints-today" value="1065"/> Yes
-                                 <input type="radio" name="complaints-today" class="complaints-today" value="1066"/> No
+                                 <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                              </div>
                          </th>
                          <td>(r)</td>
@@ -621,7 +785,7 @@
                                                  </td>
                                                  <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration"  /></td>
                                                  <td>
-                                                     <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-date-field"
                                                           allowFutureDates="false"/>
                                                  </td>
                                              </tr>
@@ -697,8 +861,7 @@
                          <th colspan="2">
                              <div>
                                  Patient has adverse drug reaction(s)? <br/><br/>
-                                 <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1065"/> Yes
-                                 <input type="radio" name="adverse-reactions" class="adverse-reactions" value="1066"/> No
+                                 <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                              </div>
                          </th>
                          <td>(u)</td>
@@ -715,23 +878,26 @@
                                                  <template>
                                                      <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                          <tr>
-                                                             <td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             <td><obs class="medicine-causing"
+                                                                     conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162298AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155060AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,73667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                             75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                                	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
                                                                       style="dropdown"/>
                                                              </td>
-                                                             <td><obs conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             <td><obs class ="reaction"
+                                                                     conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                             111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
                                                                       style="dropdown"
                                                              /></td>
-                                                             <td><obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
-                                                             <td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+                                                             <td><obs  class="severity" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                             <td><obs class="adverse-events-onset-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
                                                              <td>
-                                                                 <obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                 <obs class="action-taken"
+                                                                         conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                       answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
                                                                       style="dropdown"/>
@@ -785,8 +951,10 @@
                          <th colspan="2">
                              <div>
                                  Patient has any chronic illnesse(s)?<br/><br/>
-                                 <input type="radio" name="chronic-illness" class="chronic-illness" value="1065"/> Yes
-                                 <input type="radio" name="chronic-illness" class="chronic-illness" value="1066"/> No
+                                 <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                      style="radio" answerLabels="Yes,No"
+                                 />
                              </div>
                          </th>
                          <td>(x)</td>
@@ -807,25 +975,27 @@
                                          <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                              <tr>
                                                  <td>
-                                                     <obs    conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     <obs  class="illness-chronic"
+                                                             conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
                                                              style="dropdown"/>
                                                  </td>
-                                                 <td><obs id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
-                                                 <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-                                                 <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                                 <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                                 <td><obs class="onset-date-chronic-illness" id="diagnosis-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+                                                 <td><obs class= "drug-chronic-illness" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                                 <td><obs class = "dose-chronic-illness" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                                 <td><obs class ="units-chronic-illness" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
                                                  <td>
-                                                     <obs
+                                                     <obs class="frequency-chronic-illness"
                                                              conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
                                                      />
                                                  </td>
-                                                 <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                                 <td><obs class="duration-chronic-illness" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
                                                  <td>
-                                                     <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     <obs class="duration-units-illness"
+                                                             conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                           answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                           answerLabels="Hours,Days,Weeks,Months" />
                                                  </td>

@@ -418,7 +418,7 @@
 					<ifMode mode="EDIT">
 						<script type="text/javascript">
                             jq(function(){
-                                var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+                                var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
                                 if(PATIENT_IS_ENROLLED_HIV) {
                                     jq('#hiv-id :input').prop('readonly', true);
                                     jq('#generate-hiv-id').hide();
