@@ -33,9 +33,316 @@ Green Card follow-up visit form
             padding: inherit;
 
         }
+
+            /*
+      SmartWizard 2.0 plugin
+      jQuery Wizard control Plugin
+      by Dipu
+
+      http://www.techlaboratory.net
+      http://tech-laboratory.blogspot.com
+    */
+            .swMain {
+                position:relative;
+                display:block;
+                margin:0;
+                padding:0;
+                border: 0 solid #CCC;
+                overflow:visible;
+                float:left;
+                width:100%;
+            }
+            .swMain .stepContainer {
+                display:block;
+                position: relative;
+                margin: 0;
+                padding:0;
+                border: 0 solid #CCC;
+                overflow-x: hidden;
+                /*overflow-y: scroll;*/
+                clear:both;
+                height:98%;
+            }
+
+            .swMain .stepContainer div.content {
+                display:block;
+                position: absolute;
+                float:left;
+                margin: 0;
+                padding:5px;
+                border: 1px solid #CCC;
+                font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+                color:#5A5655;
+                background-color:#F8F8F8;
+                height:900px;
+                text-align:left;
+                overflow:visible;
+                z-index:88;
+                -webkit-border-radius: 5px;
+                -moz-border-radius  : 5px;
+                width:100%;
+                clear:both;
+            }
+
+            .swMain div.actionBar {
+                display:block;
+                position: relative;
+                clear:both;
+                margin:             3px 0 0 0;
+                border:             1px solid #CCC;
+                padding:            0;
+                color:              #5A5655;
+                background-color:   #F8F8F8;
+                height:40px;
+                text-align:left;
+                overflow:auto;
+                z-index:88;
+
+                -webkit-border-radius: 5px;
+                -moz-border-radius  : 5px;
+                left:0;
+            }
+
+            .swMain .stepContainer .StepTitle {
+                display:block;
+                position: relative;
+                margin:0;
+                border:1px solid #E0E0E0;
+                padding:5px;
+                font: bold 16px Verdana, Arial, Helvetica, sans-serif;
+                color:#5A5655;
+                background-color:#E0E0E0;
+                clear:both;
+                text-align:left;
+                z-index:88;
+                -webkit-border-radius: 5px;
+                -moz-border-radius  : 5px;
+            }
+            .swMain ul.anchor {
+                position: relative;
+                display:block;
+                float:left;
+                list-style: none;
+                padding: 0;
+                margin: 10px 0;
+                clear: both;
+                border: 0 solid #CCCCCC;
+                background: transparent; /*#EEEEEE */
+            }
+            .swMain ul.anchor li{
+                position: relative;
+                display:block;
+                margin: 0;
+                padding: 0 3px;
+                border: 0 solid #E0E0E0;
+                float: left;
+            }
+            /* Anchor Element Style */
+            .swMain ul.anchor li a {
+                display:block;
+                position:relative;
+                float:left;
+                margin: 5px 0 0 0;
+                padding:3px;
+                height:60px;
+                width:230px;
+                text-decoration: none;
+                outline-style:none;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+                z-index:99;
+            }
+            .swMain ul.anchor li a .stepNumber{
+                position:relative;
+                float:left;
+                width:30px;
+                text-align: center;
+                padding: 0 5px 5px;
+                font: bold 45px Verdana, Arial, Helvetica, sans-serif;
+            }
+            .swMain ul.anchor li a .stepDesc{
+                position:relative;
+                display:block;
+                float:left;
+                text-align: left;
+                padding:5px;
+
+                font: bold 20px Verdana, Arial, Helvetica, sans-serif;
+            }
+            .swMain ul.anchor li a .stepDesc small{
+                font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+            }
+            .swMain ul.anchor li a.selected{
+                color:#F8F8F8;
+                background: #EA8511;  /* EA8511 */
+                border: 1px solid #EA8511;
+                cursor:text;
+                -moz-box-shadow: 5px 5px 8px #888;
+                -webkit-box-shadow: 5px 5px 8px #888;
+                box-shadow: 5px 5px 8px #888;
+            }
+            .swMain ul.anchor li a.selected:hover {
+                color:#F8F8F8;
+                background: #EA8511;
+            }
+
+            .swMain ul.anchor li a.done {
+                position:relative;
+                color:#FFF;
+                background: #8CC63F;
+                border: 1px solid #8CC63F;
+                z-index:99;
+            }
+            .swMain ul.anchor li a.done:hover {
+                color:#5A5655;
+                background: #8CC63F;
+                border: 1px solid #5A5655;
+            }
+            .swMain ul.anchor li a.disabled {
+                color:#CCCCCC;
+                background: #F8F8F8;
+                border: 1px solid #CCC;
+                cursor:text;
+            }
+            .swMain ul.anchor li a.disabled:hover {
+                color:#CCCCCC;
+                background: #F8F8F8;
+            }
+
+            .swMain ul.anchor li a.error {
+                color:#6c6c6c !important;
+                background: #f08f75 !important;
+                border: 1px solid #fb3500 !important;
+            }
+            .swMain ul.anchor li a.error:hover {
+                color:#000 !important;
+            }
+
+            .swMain .buttonNext {
+                display:block;
+                float:right;
+                margin:5px 3px 0 3px;
+                padding:5px;
+                text-decoration: none;
+                text-align: center;
+                font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+                width:100px;
+                color:#FFF;
+                outline-style:none;
+                background-color:   #5A5655;
+                border: 1px solid #5A5655;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+            }
+            .swMain .buttonDisabled {
+                color:#F8F8F8  !important;
+                background-color: #CCCCCC !important;
+                border: 1px solid #CCCCCC  !important;
+                cursor:text;
+            }
+            .swMain .buttonPrevious {
+                display:block;
+                float:right;
+                margin:5px 3px 0 3px;
+                padding:5px;
+                text-decoration: none;
+                text-align: center;
+                font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+                width:100px;
+                color:#FFF;
+                outline-style:none;
+                background-color:   #5A5655;
+                border: 1px solid #5A5655;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+            }
+            .swMain .buttonFinish {
+                display:block;
+                float:right;
+                margin:5px 10px 0 3px;
+                padding:5px;
+                text-decoration: none;
+                text-align: center;
+                font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+                width:100px;
+                color:#FFF;
+                outline-style:none;
+                background-color:   #5A5655;
+                border: 1px solid #5A5655;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+            }
+
+            /* Form Styles */
+
+            .txtBox {
+                border:1px solid #CCCCCC;
+                color:#5A5655;
+                font:13px Verdana,Arial,Helvetica,sans-serif;
+                padding:2px;
+                width:430px;
+            }
+            .txtBox:focus {
+                border:1px solid #EA8511;
+            }
+
+            .swMain .loader {
+                position:relative;
+                display:none;
+                float:left;
+                margin: 2px 0 0 2px;
+                padding:8px 10px 8px 40px;
+                border: 1px solid #FFD700;
+                font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+                color:#5A5655;
+                background: #FFF url(../moduleResources/kenyaemr/images/loader.gif) no-repeat 5px;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+                z-index:998;
+            }
+            .swMain .msgBox {
+                position:relative;
+                display:none;
+                float:left;
+                margin: 4px 0 0 5px;
+                padding:5px;
+                border: 1px solid #FFD700;
+                background-color: #FFFFDD;
+                font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+                color:#5A5655;
+                -moz-border-radius  : 5px;
+                -webkit-border-radius: 5px;
+                z-index:999;
+                min-width:200px;
+            }
+            .swMain .msgBox .content {
+                font: normal 12px Verdana,Arial,Helvetica,sans-serif;
+                padding: 0;
+                float:left;
+            }
+            .swMain .msgBox .close {
+                border: 1px solid #CCC;
+                border-radius: 3px;
+                color: #CCC;
+                display: block;
+                float: right;
+                margin: 0 0 0 5px;
+                outline-style: none;
+                padding: 0 2px 0 2px;
+                position: relative;
+                text-align: center;
+                text-decoration: none;
+            }
+            .swMain .msgBox .close:hover{
+                color: #EA8511;
+                border: 1px solid #EA8511;
+            }
     </style>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <!--Wizard plugins-->
+    <!--<link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>-->
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
 
     <script type="text/javascript">
 
@@ -124,6 +431,7 @@ Green Card follow-up visit form
         function onRecordIPTOutcome() {
             jq("#tbl-ipt-outcome").toggle();
         }
+
         function onParityChange() {
             var gravida = '';
             var parityTerm = parseInt(getValue('parity-term.value'));
@@ -728,6 +1036,34 @@ Green Card follow-up visit form
 //Start on jq onready
         jq(function() {
 
+        jq('#greencard').smartWizard({
+            selected: 0,  // Selected Step, 0 = first step
+            keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+            enableAllSteps: false,  // Enable/Disable all steps on first load
+            transitionEffect: 'fade', // Effect on navigation, none/fade/slide/slideleft
+            contentURL:null, // specifying content url enables ajax content loading
+            contentURLData:null, // override ajax query parameters
+            contentCache:true, // cache step contents, if false content is fetched always from ajax url
+            cycleSteps: false, // cycle step navigation
+            enableFinishButton: false, // makes finish button enabled always
+            hideButtonsOnDisabled: false, // when the previous/next/finish buttons are disabled, hide them instead
+            errorSteps:[],    // array of step numbers to highlighting as error steps
+            labelNext:'Next', // label for Next button
+            labelPrevious:'Previous', // label for Previous button
+            labelFinish:'Submit',  // label for Finish button
+            noForwardJumping:false,
+            ajaxType: 'POST',
+            // Events
+            onLeaveStep:onLeaveStepValidation , // triggers when leaving a step
+            onShowStep: null,  // triggers when showing a step
+            onFinish: submitHtmlForm,  // triggers when Finish button is clicked
+            buttonOrder: ['finish', 'next', 'prev']  // button order, to hide a button remove it from the list
+        });
+        //Wizard set error function
+            function setError(stepnumber){
+                jq('#greencard').smartWizard('setError',{stepnum:stepnumber,iserror:true});
+            }
+
          getField('weight.value').change(onWeightOrHeightChange);
          getField('height.value').change(onWeightOrHeightChange);
          onWeightOrHeightChange();
@@ -770,8 +1106,6 @@ Green Card follow-up visit form
          jq('#pregnancyOptionValues').hide();
          jq('#fp-details').hide();
          jq("#wants-pregnancy").hide();
-         jq(".nav-links").hide();
-         jq(".show-nav-links").text("Click to Show/Hide Form Sections");
          jq("#tb-screening-tab").hide();
          jq("#tbl-ever-on-ipt").hide();
          //IPT OUTCOME
@@ -1122,13 +1456,7 @@ Green Card follow-up visit form
 
             showHideIPTInitiationTab();
 
-            jq(".show-nav-links").click(function () {
-                jq(this).closest('tr').find("div.nav-links").toggle();
-
-            });
-
-
-        });
+//        });
         //End on ready
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
@@ -1145,80 +1473,251 @@ Green Card follow-up visit form
                 this.selectedIndex =0;
             });
         }
-        //Before submit
-        beforeSubmit.push(function() {
+//        //Before submit
+////        beforeSubmit.push(function() {
+//
+//            var visit_scheduled =getValue('visit-scheduled.value');
+//            var tca_date = getValue('returnVisitDate.value');
+//            var encounterDate = getValue('encounter-date.value');
+//            var valonform = getValue('tbrxdate.value');
+//            var valbirthdate = "<lookup  expression="patient.birthdate" />"
+//            var valChangedToDateFormat = new Date(valbirthdate).getTime();
+//            var valChangedToDateFormatOnForm=new Date(valonform).getTime();
+//            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
+//            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
+//            var onfpMethodChecked = getField("fplanning.value").val();
+//            var systemsReview = getValue('systems-review.value');
+//            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');
+//            var onIpt = getValue('on-ipt.value');
+//
+//            //Must indicate whether the visit was scheduled or not
+//            if (visit_scheduled =="") {
+//               // jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+//                jq('#greencard').smartWizard({ onLeaveStep: myFunction }); function myFunction(obj, context){ alert(obj+context); return false; }
+//            }
+//
+//            //Must have a Return Visit Date which should be greater than encounter date
+//            if (tca_date =="") {
+//                getField('returnVisitDate.error').html('Return visit date should not be empty').show();
+//                return false;
+//            }
+//            if (tca_date &lt; encounterDate ){
+//                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
+//                return false;
+//            }
+//
+//            //tb rx date should be later than date of birth
+//            if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
+//                getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+//                return false;
+//            }
+//            //tb rx date cannot be same as birth date
+//            if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
+//                getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
+//                return false;
+//            }
+//            //Validate fp options chooses atleast one option if on fp
+//            if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
+//                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+//                jq('#fp-details').show();
+//                return false;
+//            }
+//            //Validate fp options chooses atleast one option if wants family planning
+//            if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
+//                getField('fp-error.error').html('Please add atleast one family planning method.').show();
+//                jq('#fp-details').show();
+//                return false;
+//            }
+//            //Validate not-on-fp options chooses atleast one option if not on fp
+//            if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
+//                getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
+//                jq('#fp-details').show();
+//                return false;
+//            }
+//            //Systems review is mandatory field
+//            if (systemsReview == false) {
+//                getField('systems-review.error').html('Please record systems review findings').show();
+//                return false;
+//            }
+//            //TB Screening is mandatory field
+//            if (onAntiTbDrugs == false) {
+//                getField('on-anti-tb-drugs.error').html('Please indicate whether on Anti-TB drugs').show();
+//                return false;
+//            }
+//            //IPT Screening is mandatory field
+//            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
+//                getField('on-ipt.error').html('Please indicate whether currently on IPT').show();
+//
+//            }
+//            return true;
 
-            var tca_date = getValue('returnVisitDate.value');
+
+
+
+
+        });
+        function onLeaveStepValidation (obj, context) {
+            var stepNum = context.fromStep;
+
+            //Validations steps
+            if (stepNum == 1) {
+                return step1Validation();
+            } else if (stepNum == 2) {
+                return step2Validation();
+            }else if (stepNum == 3) {
+                return step3Validation();
+            }else if (stepNum == 4) {
+                return step4Validation();
+            }else {
+
+                return true;
+            }
+        }
+         //Step 1 validations
+        function step1Validation(){
+            var visit_scheduled =getValue('visit-scheduled.value');
+            if (visit_scheduled == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Visit type is required');
+                return false;
+            } else {
+                jq('#greencard').smartWizard('showMessage',"");
+                return true;
+            }
+        }
+        //Step 2 validations
+        function step2Validation(){
+            var complaintsToday = getValue('complaints-today.value');
+            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
+            var knownAllergies = getValue('known-allergies.value');   //boolean
+            var chronicIllness = getValue('chronic-illness.value');   //non boolean
+            var adverseReactions = getValue('adverse-reactions.value');   // boolean
+            if (complaintsToday == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify  if patient has any complaints today.');
+                return false;
+            }
+            if (onAntiTbDrugs == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient is on anti-tb drugs.');
+                return false;
+            }
+            if (knownAllergies == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient has any known allergies.');
+                return false;
+            }
+            if (chronicIllness == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient has any chronic illness.');
+                return false;
+            }
+            if (adverseReactions == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient has any adverse drug reactions.');
+                return false;
+            }
+            else {
+                jq('#greencard').smartWizard('showMessage',"");
+                return true;
+            }
+        }
+        //Step 3 validations
+        function step3Validation(){
+            var systemsReview = getValue('systems-review.value');    //boolean
+            if (systemsReview == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:3,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient has any findings on systems review.');
+                return false;
+            } else {
+                jq('#greencard').smartWizard('showMessage',"");
+                return true;
+            }
+        }
+        //Step 4 validations
+        function step4Validation(){
             var encounterDate = getValue('encounter-date.value');
-            var valonform = getValue('tbrxdate.value');
-            var valbirthdate = "<lookup  expression="patient.birthdate" />"
-            var valChangedToDateFormat = new Date(valbirthdate).getTime();
-            var valChangedToDateFormatOnForm=new Date(valonform).getTime();
-            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
-            var onfpMethodChecked = getField("fplanning.value").val();
-            var systemsReview = getValue('systems-review.value');
-            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');
-            var onIpt = getValue('on-ipt.value');
+            var tca_date = getValue('returnVisitDate.value');
+            var tca_reason = getValue('returnVisitReason.value');
 
-            //Must have a Return Visit Date which should be greater than encounter date
-            if (tca_date =="") {
+            if (tca_date == "") {
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify return visit date for patient.');
                 getField('returnVisitDate.error').html('Return visit date should not be empty').show();
                 return false;
             }
-            if (tca_date &lt; encounterDate ){
-                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
+            if (tca_date &lt; encounterDate ) {
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Return visit date should not be earlier than encounter date.');
                 return false;
             }
-
-            //tb rx date should be later than date of birth
-            if (valChangedToDateFormatOnForm &lt; valChangedToDateFormat) {
-                getField('tbrxdate.error').html('TB Rx date, should not be earlier than date of birth').show();
+            if (tca_reason == "") {
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify reason for return visit.');
                 return false;
+            }  else {
+                jq('#greencard').smartWizard('showMessage',"");
+                return true;
             }
-            //tb rx date cannot be same as birth date
-            if (valChangedToDateFormatOnForm  == valChangedToDateFormat) {
-                getField('tbrxdate.error').html('TB Rx date, should not be same as  date of birth').show();
-                return false;
-            }
-            //Validate fp options chooses atleast one option if on fp
-            if(onfpMethodChecked ==965 &amp;&amp; fpMethodsChecked.length == 0 ){
-                getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                jq('#fp-details').show();
-                return false;
-            }
-            //Validate fp options chooses atleast one option if wants family planning
-            if(onfpMethodChecked ==1360 &amp;&amp; fpMethodsChecked.length == 0 ){
-                getField('fp-error.error').html('Please add atleast one family planning method.').show();
-                jq('#fp-details').show();
-                return false;
-            }
-            //Validate not-on-fp options chooses atleast one option if not on fp
-            if(onfpMethodChecked ==160652 &amp;&amp; notOnfpMethodsChecked.length == 0 ){
-                getField('notOnfp-error.error').html('Please add atleast one reason for not using family planning.').show();
-                jq('#fp-details').show();
-                return false;
-            }
-            //Systems review is mandatory field
-            if (systemsReview == false) {
-                getField('systems-review.error').html('Please record systems review findings').show();
-                return false;
-            }
-            //TB Screening is mandatory field
-            if (onAntiTbDrugs == false) {
-                getField('on-anti-tb-drugs.error').html('Please indicate whether on Anti-TB drugs').show();
-                return false;
-            }
-            //IPT Screening is mandatory field
-            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
-                getField('on-ipt.error').html('Please indicate whether currently on IPT').show();
-
-            }
-            return true;
-
-        });
+        }
     </script>
-
+    <div id="greencard" class="swMain">
+        <ifMode mode="ENTER">
+        <ul>
+            <li><a href="#step-1">
+                <label class="stepNumber">1</label>
+                <span class="stepDesc">
+             Visit details<br />
+          </span>
+            </a></li>
+            <li><a href="#step-2">
+                <label class="stepNumber">2</label>
+                <span class="stepDesc">
+             Complaints<br />
+          </span>
+            </a></li>
+            <li><a href="#step-3">
+                <label class="stepNumber">3</label>
+                <span class="stepDesc">
+             Examination<br />
+          </span>
+            </a></li>
+            <li><a href="#step-4">
+                <label class="stepNumber">4</label>
+                <span class="stepDesc">
+            Management<br />
+          </span>
+            </a></li>
+        </ul>
+     </ifMode>
+        <ifMode mode="EDIT">
+            <ul>
+                <li><a href="#step-1">
+                    <label class="stepNumber">1</label>
+                    <span class="stepDesc">
+             Visit details<br />
+          </span>
+                </a></li>
+                <li><a href="#step-2">
+                    <label class="stepNumber">2</label>
+                    <span class="stepDesc">
+             Complaints<br />
+          </span>
+                </a></li>
+                <li><a href="#step-3">
+                    <label class="stepNumber">3</label>
+                    <span class="stepDesc">
+             Examination<br />
+          </span>
+                </a></li>
+                <li><a href="#step-4">
+                    <label class="stepNumber">4</label>
+                    <span class="stepDesc">
+            Management<br />
+          </span>
+                </a></li>
+            </ul>
+        </ifMode>
     <div class="ke-form-header">
         <table width="100%">
             <tr>
@@ -1233,19 +1732,12 @@ Green Card follow-up visit form
     </div>
 
     <div class="ke-form-content">
+<!--Wizard Step 1-->
+        <div id="step-1">
+            <h2 class="StepTitle">Visit details</h2>
+
         <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
-       <a id="visit-summary-section"></a>
-        <table class="link" width="100%">
-            <tr>
-                <td width="80%">
-                        <div class="nav-links">
-                        <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-                    </div>
-                </td>
-                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-            </tr>
-        </table>
-        <fieldset>
+        <fieldset class="visit-details-part">
             <legend>Visit Type</legend>
             <table cellspacing="15">
                 <tr>
@@ -1271,7 +1763,7 @@ Green Card follow-up visit form
             </table>
         </fieldset>
         <!--Triage-->
-        <fieldset>
+        <fieldset class="vitals-part">
             <legend>Vital Signs</legend>
 
             <table cellspacing="5" style=" float: left; ">
@@ -1376,7 +1868,7 @@ Green Card follow-up visit form
             </table>
         </fieldset>
         <!-- Population Type  -->
-            <fieldset>
+            <fieldset class="population-type-part">
                 <legend>Population Type</legend>
                 <div>
                     Population type : &#160;&#160;
@@ -1404,7 +1896,7 @@ Green Card follow-up visit form
         </fieldset>
 
         <!-- WHO staging -->
-        <fieldset>
+        <fieldset class="who-staging-part">
             <legend>WHO Staging</legend>
             <table cellspacing="10" >
                 <tr>
@@ -1434,26 +1926,19 @@ Green Card follow-up visit form
                   </tr>
             </table>
         </fieldset>
-        <!--Presenting complaints today-->
-        <a id="complaints-section"></a>
-        <table class="link" width="100%">
-            <tr>
-                <td width="80%">
-                    <div class="nav-links">
-                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-                    </div>
-                </td>
-                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-            </tr>
-        </table>
-        <fieldset>
-            <legend>Complaints and History of complaints</legend>
 
+        </div>    <!--.step 1-->
+        <!--.step 2-->
+        <div id="step-2">
+            <h2 class="StepTitle">Presenting complaints</h2>
+            <!-- Additional History  -->
+            <!--Presenting complaints today -->
+        <fieldset class="complaints-part">
+            <legend>Complaints and History of complaints</legend>
             <div>
                 Patient having complaint(s) today?
                 <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
             </div>
-            <!-- 1154 new complaints boolean   -->
             <table cellspacing="5" id="tbl-complaints-today">
                 <tr>
                     <th style="color: #888">Complaint</th>
@@ -1502,28 +1987,12 @@ Green Card follow-up visit form
                     <td>
                         <span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                     </td>
-
-
                 </tr>
             </table>
-
         </fieldset>
-<!-- Additional History  -->
-        <a id="tb-screening-section" ></a>
-        <table class="link" width="100%">
-            <tr>
-                <td width="80%">
-                    <div class="nav-links">
-                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-                    </div>
-                </td>
-                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-            </tr>
-        </table>
-        <fieldset>
-            <legend>Additional History</legend>
+
+            <fieldset class="tb-screening-part">
             <!--TB Screening-->
-            <fieldset>
                 <legend>TB Screening</legend>
                 <table cellspacing="10" >
                     <tr>
@@ -1640,12 +2109,9 @@ Green Card follow-up visit form
                             <td><obs id="ord-chest-xray" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Chest Xray" answerConceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /><hr/></td>
                             <td><obs id="ord-gene-xpert" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="GeneXpert" answerConceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" />
                                 <hr/> </td>
-
                         </tr>
                     </table>
-
                     <table>
-
                         <tr>
                         <td>Sputum Smear:</td>
                         <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
@@ -1666,9 +2132,7 @@ Green Card follow-up visit form
                             <td><obs id="genexpert-action" conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown"
-
                             /></td>
-
                         </tr>
                         <tr>
                             <td colspan="2"><p> </p></td>
@@ -1908,24 +2372,9 @@ Green Card follow-up visit form
 				&lt;/tr&gt;
 			#end"/>
                 </table>
-
             </fieldset>
-
-            <!--Adverse Drug Reactions-->
-            <a id="allergies-chronic-illnesses-section"></a>
-            <table class="link" width="100%">
-                <tr>
-                    <td width="80%">
-                        <div class="nav-links">
-                            <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-                        </div>
-                    </td>
-                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-                </tr>
-            </table>
-
             <!-- Known allergies   -->
-            <fieldset>
+            <fieldset class="known-allergies-part">
                 <legend>Known Allergies</legend>
                 <div>
                     Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -1980,7 +2429,7 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
             <!--Chronic Illnesses-->
-            <fieldset>
+            <fieldset class="chronic-illness-part">
                 <legend>Chronic Illnesses and Cormobidities</legend>
                 <div>
                     Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -2043,7 +2492,7 @@ Green Card follow-up visit form
                     </repeat>
                 </table>
             </fieldset>
-            <fieldset>
+            <fieldset class="adverse-reactions-part">
                 <legend>Adverse Drug Reactions</legend>
                 <div>
                     Patient has adverse drug reaction(s)? &#160;&#160;&#160;&#160;
@@ -2108,7 +2557,7 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="vaccinations-part">
                 <legend>Vaccination(s) today</legend>
                 <includeIf velocityTest="$patient.age &lt; 15">
                 <table width="30%">
@@ -2143,10 +2592,6 @@ Green Card follow-up visit form
                         <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>
                         <td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>
                     </tr>
-
-
-
-
                 </table>
                 </includeIf>
                 <includeIf velocityTest="$patient.age &gt; 15">
@@ -2182,21 +2627,10 @@ Green Card follow-up visit form
             </fieldset>
 
             <!--Sexual and Obstetric History-->
-            <a id="reproductive-section"></a>
-            <table class="link" width="100%">
-                <tr>
-                    <td width="80%">
-                        <div class="nav-links">
-                            <a href="#visit-summary-section">Visit Summary</a> |<a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#physical-exam-section">Physical Examination</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-                        </div>
-                    </td>
-                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-                </tr>
-            </table>
               <!--Sexual and reproductive History validated for women over 10 years -->
 
-               <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
-             <fieldset >
+            <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+             <fieldset class="reproductive-part">
                     <legend>Sexual and Reproductive History</legend>
                         <!--<table class="right-aligned-first" style="width: 100%;" border="0">-->
                  <table cellspacing="10" >
@@ -2449,22 +2883,17 @@ Green Card follow-up visit form
                             </td>
                         </tr>
                     </table>
+
         </fieldset>
+        </div>
+        <!--.step 2-->
+        <!--System Examination-->
+        <!--step 3-->
+        <div id="step-3">
+            <h2 class="StepTitle">Patient examination</h2>
         <!--Physical Examination-->
             <!--General Examination-->
-            <a id="physical-exam-section"></a>
-            <table class="link" width="100%">
-                <tr>
-                    <td width="80%">
-                        <div class="nav-links">
-                            <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a> | <a href="#treatment-plan-section">Treatment Plan</a>
-
-                        </div>
-                    </td>
-                    <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-                </tr>
-            </table>
-            <fieldset>
+            <fieldset class="general-examinations-part">
                 <legend>General Examination Findings</legend>
                 <table id="general-exam-findings">
                     <tr>
@@ -2499,8 +2928,7 @@ Green Card follow-up visit form
                 </table>
             </fieldset>
 
-            <!--System Examination-->
-            <fieldset>
+            <fieldset class="system-examinations-part">
                 <legend>System Examination</legend>
                <table>
                    <tr>
@@ -2511,7 +2939,7 @@ Green Card follow-up visit form
                                    conceptId="159615AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                    answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                    answerLabels="Normal,Abnormal"
-                                   style="radio" id="systems-review" />
+                                   style="radio" id="systems-review" required="true"/>
                        </td>
                    </tr>
                </table>
@@ -2637,21 +3065,7 @@ Green Card follow-up visit form
                     </tr>
                 </table>
         </fieldset>
-        </fieldset>
-
-        <a id="treatment-plan-section"></a>
-        <table class="link" width="100%">
-            <tr>
-                <td width="80%">
-                    <div class="nav-links">
-                        <a href="#visit-summary-section">Visit Summary</a> | <a href="#complaints-section">Complaints</a> | <a href="#tb-screening-section">TB Screening</a> | <a href="#allergies-chronic-illnesses-section">Allergies &amp; other Illnesses</a> | <a href="#reproductive-section">Reproductive History</a>
-                    </div>
-                </td>
-                <td width="20%"> <div><a class="show-nav-links"></a></div></td>
-            </tr>
-        </table>
-        <fieldset>
-
+        <fieldset class="treatment-management-part">
             <legend>Treatment/Management Plan</legend>
             <table style="width: 70%;" border="0">
                 <tr>
@@ -2679,10 +3093,15 @@ Green Card follow-up visit form
                     <render n="13" concept="Diagnosis"/>
                     <render n="14" concept="Diagnosis"/>
                     <render n="15" concept="Diagnosis"/>
-                </repeat>
-            </table>
-        </fieldset>
-        <fieldset>
+                  </repeat>
+               </table>
+            </fieldset>
+            <!--.step 3-->
+        </div>
+        <div id="step-4">
+            <h2 class="StepTitle">Patient management</h2>    <!--step 4-->
+
+            <fieldset class="ctx-part"  >
             <legend>Cotrimoxazole</legend>
             <table>
                 <tr>
@@ -2715,7 +3134,7 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset class="dapsone-part">
             <legend>Dapsone</legend>
             <table>
                 <tr>
@@ -2748,7 +3167,7 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset class="arv-part">
             <legend>ARV</legend>
             <table>
                 <tr>
@@ -2775,7 +3194,7 @@ Green Card follow-up visit form
             </table>
         </fieldset>
 
-        <fieldset >
+        <fieldset class="phdp-part" >
             <legend>PHDP Services</legend>
             <table>
                 <tr>
@@ -2813,14 +3232,14 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset >
-        <fieldset>
+        <fieldset class="tca-part">
             <legend>Return Visit</legend>
             <table>
                 <tr>
                     <td>Return Visit Date:</td>
                     <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
                         Reason*:
-                        <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+                        <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="returnVisitReason"
                              answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
                              style="dropdowm"  />
@@ -2849,12 +3268,14 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-
+            <div class="ke-form-footer" style="display: none">
+                <submit/>
+            </div>
+            <!--.step 4-->
+        </div>
     </div>
 
-    <div class="ke-form-footer">
-        <submit/>
-    </div>
 
+    </div>
 </htmlform>
 
