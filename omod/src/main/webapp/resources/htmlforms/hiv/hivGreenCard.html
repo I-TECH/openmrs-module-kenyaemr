@@ -1575,23 +1575,54 @@ Green Card follow-up visit form
         }
          //Step 1 validations
         function step1Validation(){
+             pAge = parseInt('<lookup expression="patient.age"/>');
+
+            var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
+            var populationType =getValue('population-type.value');
+            var adultWhoStage =getField('whoStage-adult.value').val();
+            var childWhoStage =getField('whoStage-child.value').val();
+
             if (visit_scheduled == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Visit type is required');
                 return false;
-            } else {
+            } if (personPresent == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify person present');
+                return false;
+            } if (populationType == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify population type');
+                return false;
+            } if (pAge &gt; 15 &amp;&amp; adultWhoStage == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify adult WHO stage');
+                return false;
+            }
+            if (pAge &lt; 15 &amp;&amp; childWhoStage == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify child WHO stage');
+                 return false;
+            }
+            else {
                 jq('#greencard').smartWizard('showMessage',"");
                 return true;
             }
         }
         //Step 2 validations
         function step2Validation(){
+            var pgender = "<lookup expression="patient.gender" />";
             var complaintsToday = getValue('complaints-today.value');
             var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
+            var onIpt = getValue('on-ipt.value');
+            var everOnIpt= getValue('ever-on-ipt.value');
             var knownAllergies = getValue('known-allergies.value');   //boolean
             var chronicIllness = getValue('chronic-illness.value');   //non boolean
             var adverseReactions = getValue('adverse-reactions.value');   // boolean
+            var lmpDate = getValue('lmp-date.value');
+            var isPregnant = getValue('pregnancyOption.value');
+            var pregnancyIntention = getValue('pregnancyIntention.value');
             if (complaintsToday == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Please specify  if patient has any complaints today.');
@@ -1600,6 +1631,17 @@ Green Card follow-up visit form
             if (onAntiTbDrugs == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Please specify if patient is on anti-tb drugs.');
+                return false;
+            }
+            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient is currently on IPT.');
+                return false;
+            }
+            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt != 1065 &amp;&amp; everOnIpt == false) {
+                jq("#tbl-ever-on-ipt").show();    //show ever on ipt that was previously hidden
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient has ever been on IPT.');
                 return false;
             }
             if (knownAllergies == false) {
@@ -1615,6 +1657,21 @@ Green Card follow-up visit form
             if (adverseReactions == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Please specify if patient has any adverse drug reactions.');
+                return false;
+            }
+            if (pgender == 'F' &amp;&amp; lmpDate == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify patient LMP Date.');
+                return false;
+            }
+            if (pgender == 'F' &amp;&amp; isPregnant == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient is pregnant.');
+                return false;
+            }
+            if (pgender == 'F' &amp;&amp; isPregnant == 1066 &amp;&amp; pregnancyIntention == false) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify if patient wants to get pregnant in the next three months.');
                 return false;
             }
             else {
@@ -1643,12 +1700,12 @@ Green Card follow-up visit form
             if (tca_date == "") {
                 jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Please specify return visit date for patient.');
-                getField('returnVisitDate.error').html('Return visit date should not be empty').show();
                 return false;
             }
             if (tca_date &lt; encounterDate ) {
                 jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Return visit date should not be earlier than encounter date.');
+                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
                 return false;
             }
             if (tca_reason == "") {
@@ -1718,24 +1775,23 @@ Green Card follow-up visit form
                 </a></li>
             </ul>
         </ifMode>
-    <div class="ke-form-header">
-        <table width="100%">
-            <tr>
-                <td>Date:
-                    <encounterDate id="encounter-date" showTime="true"/>
-                </td>
-                <td>Location:
-                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-                </td>
-            </tr>
-        </table>
-    </div>
 
     <div class="ke-form-content">
-<!--Wizard Step 1-->
+        <!--Wizard Step 1-->
         <div id="step-1">
             <h2 class="StepTitle">Visit details</h2>
-
+            <div class="ke-form-header">
+                <table width="100%">
+                    <tr>
+                        <td>Date:
+                            <encounterDate id="encounter-date" showTime="true"/>
+                        </td>
+                        <td>Location:
+                            <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
         <fieldset class="visit-details-part">
             <legend>Visit Type</legend>
@@ -1755,7 +1811,7 @@ Green Card follow-up visit form
                                 answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                 answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
                                 style="radio"
-                                answerSeparator="&lt;br /&gt;"
+                                answerSeparator="&lt;br /&gt;" required="true"
                         />
                         <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
@@ -1903,19 +1959,19 @@ Green Card follow-up visit form
                     <th  style="color: #888" >Current Stage </th>
                     <th  style="color: #888" >Recent </th>
                 </tr>
-             <tr>
+               <tr>
                        <td>
                           <div id="whoAdult">
                               <table>
                                   <tr>
-                                      <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                      <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-adult"/></td>
                                   </tr>
                               </table>
                           </div>
                           <div id="whoChild">
                               <table>
                                   <tr>
-                                      <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+                                      <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
                                   </tr>
                               </table>
                           </div>
@@ -2002,7 +2058,7 @@ Green Card follow-up visit form
                     <tr>
                         <td>
                             Patient on anti-TB Drugs? &#160;
-                            <obs conceptId="1110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            <obs conceptId="164948"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Yes,No" required="true"
                                  style="radio"
@@ -2016,9 +2072,9 @@ Green Card follow-up visit form
                     <tr>
                         <td>
                             Patient currently on IPT? &#160;&#160;
-                            <obs conceptId="1110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            <obs conceptId="164949"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Yes,No"
+                                 answerLabel="Yes,No" required="true"
                                  style="radio"
                                  id="on-ipt" />
                             <br/>
@@ -2032,9 +2088,9 @@ Green Card follow-up visit form
                     <tr>
                         <td>
                             Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="1681AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            <obs conceptId="164950"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Yes,No"
+                                 answerLabel="Yes,No" required="true"
                                  style="radio"
                                  id="ever-on-ipt" />
                             <br/>
@@ -2563,34 +2619,34 @@ Green Card follow-up visit form
                 <table width="30%">
                     <tr>
                         <th style="color: #888" align="left">Vaccination</th>
-                        <th style="color: #888" align="left">Recent</th>
-                        <th style="color: #888" align="left">Count</th>
+                        <!--<th style="color: #888" align="left">Recent</th>-->
+                        <!--<th style="color: #888" align="left">Count</th>-->
                       </tr>
 
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="BCG" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>-->
                     </tr>
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PV" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>-->
                     </tr>
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Penta" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>-->
                     </tr>
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCV" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>-->
                     </tr>
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Measles" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>-->
                     </tr>
                 </table>
                 </includeIf>
@@ -2598,19 +2654,19 @@ Green Card follow-up visit form
                 <table width="30%">
                     <tr>
                         <th style="color: #888" align="left">Vaccination</th>
-                        <th style="color: #888" align="left">Recent</th>
-                        <th style="color: #888" align="left">Count</th>
+                        <!--<th style="color: #888" align="left">Recent</th>-->
+                        <!--<th style="color: #888" align="left">Count</th>-->
                     </tr>
 
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="782AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HBV" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(782).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(782).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(782).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(782).size()"/> </td>-->
                     </tr>
                     <tr>
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5261AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Flu" style="checkbox" /></td>
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5261).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5261).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>-->
                     </tr>
 
                 </table>
@@ -2619,8 +2675,8 @@ Green Card follow-up visit form
                         <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox"
                         /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 
-                        <td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5622).obsDateTime"/> </td>
-                        <td> <lookup expression="fn.allObs(1198).valueCoded().equals(5622).size()"/> </td>
+                        <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5622).obsDateTime"/> </td>-->
+                        <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(5622).size()"/> </td>-->
                     </tr>
                 </table>
                 </includeIf>
@@ -2663,7 +2719,7 @@ Green Card follow-up visit form
                             Wants to get pregnant in the next three months? <br/>
                             <obs conceptId="164933"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="radio" answerLabels="Yes,NO" />
+                                 style="radio" answerLabels="Yes,NO" id="pregnancyIntention />
                         </div>
                         <table id="pregnancyOptionValues">
                             <tr>
