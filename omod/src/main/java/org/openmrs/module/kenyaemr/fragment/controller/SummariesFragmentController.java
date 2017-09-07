@@ -557,7 +557,6 @@ public class SummariesFragmentController {
         else {
             toFacility = "N/A";
         }
-     log.info("toFacility ==>"+toFacility);
 
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
