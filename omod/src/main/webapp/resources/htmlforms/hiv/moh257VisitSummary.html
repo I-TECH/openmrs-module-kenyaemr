@@ -40,6 +40,7 @@
         /** E1F8DB
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
          */
+        var bmi = null;
         var SELF = 978;
         var YES_CONCEPT_ID = 1065;
         var YES_CONCEPT_ID = 1065;
@@ -50,6 +51,7 @@
         var STILLBIRTH_CONCEPT_ID = 125872;
         var USING_FP_CONCEPT_ID = 965;
         var WANTS_FP_CONCEPT_ID = 1360;
+        var NOT_USING_FP_CONCEPT_ID = 160652;
         var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
         var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
         var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
@@ -70,26 +72,38 @@
         }
 
         function onWeightOrHeightChange() {
+            pAge = parseInt('<lookup expression="patient.age"/>');
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM))  {
-                var bmi = weightKg / (heightM * heightM);
-                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
+            if (pAge &gt; 14) {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                        display = 'Abnormal value. Were height and height entered correctly?';
+                    }
+                    else {
+                        display = bmi.toFixed(2);
+                    }
                 }
-                else {
-                    display = bmi.toFixed(2);
+                //set nutritional status and bmi
+                jq('#calculated-bmi').html(display);
+                if (bmi &lt; 16) {
+                    jq("#nutritional-status input[value=163302]").prop("checked", true);
+                } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
+                    jq("#nutritional-status input[value=163303]").prop("checked", true);
+                } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
+                    jq("#nutritional-status input[value=1115]").prop("checked", true);
+                } else if (bmi &gt; 25) {
+                    jq("#nutritional-status input[value=114413]").prop("checked", true);
                 }
             }
-            jq('#calculated-bmi').html(display);
         }
-
         /**
          * Updates the form due to an encounter date change
          */
         function onEncounterDateChange() {
-            var patientId = <lookup expression="patient.patientId"/>;
+            var patientId = "<lookup expression="patient.patientId"/>";
             var encDate = getValue('encounter-date.value');
             if(encDate == null) {
                 encDate = new Date();
@@ -141,26 +155,67 @@
                 case 'yes':
                     setValue('pregstatus.value', YES_CONCEPT_ID);
                     setValue('pregoutcome.value', null);
+                    jq('#anc-number :input').prop('disabled', false);
+                    jq('#anc-profile :input').prop('disabled', false);
+                    jq('#fp-status :input').prop('disabled', true);
+                    jq("#fp-category input[type=checkbox]").prop("disabled",true);
+                    jq("#fp-category input[type=radio]").prop("disabled",false);
+                    //Automate EDC Computation
+                    var lmpDate = getValue('lmp-date.value');
+                   // console.log("lmp date"+lmpDate);
+                    var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                 //Automate EDC Computation
+                    var lmpDate = getValue('lmp-date.value');
+                    var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                    //Find recent EDD if it exists
+                    //Using LMP
+                    var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
+                    var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+                    //Using recent LMP
+                    var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
+                    var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                    //Calculation
+                    if(recentEDD !=""){
+                        getField('pregdate-yes.value').val(recentEDD);
+                    }else if(recentLMP !="") {
+                        getField('pregdate-yes.value').val(expectedDeliveryDateByRecentLMP);
+                    }else if (lmpDate!=""){
+                        getField('pregdate-yes.value').val(expectedDeliveryDate);
+                    }else{
+                        getField('pregdate-yes.value').val("");
+                    }
+
                     break;
                 case 'no':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
                     setValue('pregoutcome.value', null);
+                    var edd = jq('#pregdate-yes input').val('');
+                    jq('#anc-number :input').prop('disabled', true);
+                    jq('#anc-profile :input').prop('disabled', true);
+                    jq('#fp-status :input').prop('disabled', false);
+                    clearHiddenSections(edd);
                     break;
                 case 'ab':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
                     setValue('pregoutcome.value', ABORTION_CONCEPT_ID);
+                    jq('#anc-number :input').prop('disabled', false);
                     break;
                 case 'mc':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
                     setValue('pregoutcome.value', MISCARRIAGE_CONCEPT_ID);
+                    jq('#anc-number :input').prop('disabled', false);
                     break;
                 case 'lb':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
                     setValue('pregoutcome.value', LIVEBIRTH_CONCEPT_ID);
+                    jq('#anc-number :input').prop('disabled', false);
                     break;
                 case 'sb':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
                     setValue('pregoutcome.value', STILLBIRTH_CONCEPT_ID);
+                    jq('#anc-number :input').prop('disabled', false);
                     break;
             }
 
@@ -217,6 +272,35 @@
                     jq('#' + fields[opt] + '-container').hide();
                 }
             }
+        }
+        var fpOptionsSelected = function() {
+            var fpStatus = getValue('fp-status.value');
+            if (fpStatus == USING_FP_CONCEPT_ID ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+                jq("#fp-category input[type=radio]").prop("disabled",true);
+            }
+            if (fpStatus == WANTS_FP_CONCEPT_ID  ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+                jq("#fp-category input[type=radio]").prop("disabled",true);
+            }
+            if (fpStatus == NOT_USING_FP_CONCEPT_ID  ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",true);
+                jq("#fp-category input[type=radio]").prop("disabled",false);
+            }
+
+        }
+        var maleFpOptionsSelected = function() {
+            var maleFpStatus = getValue('male-fp-status.value');
+            if (maleFpStatus == USING_FP_CONCEPT_ID ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+            }
+            if (maleFpStatus == WANTS_FP_CONCEPT_ID  ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+            }
+            if (maleFpStatus == NOT_USING_FP_CONCEPT_ID  ) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",true);
+            }
+
         }
         function viralLoadValidation(){
             if(getValue('ldl.value') == 1302){
@@ -351,6 +435,20 @@
                 jq('.duration-units-illness :input').prop('disabled', false);
             }
         }
+        var generalExamSelected = function(){
+            var val = jq(this).val();
+            var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
+            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+                jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
+                jq(this).prop("disabled",false);
+            }else {
+                jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
+                jq("#general-exam-findings input[value=1107]").prop("disabled",true);
+            }
+            if(generalExamsChecked.length ==0){
+                jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+            }
+        }
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -403,51 +501,40 @@
             jq('.frequency-chronic-illness :input').prop('disabled', true);
             jq('.duration-chronic-illness :input').prop('disabled', true);
             jq('.duration-units-illness :input').prop('disabled', true);
-
+            //General examination findings
+            jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             getField('encounter-date.value').change(onEncounterDateChange);
            // getField('ldl.value').change(viralLoadValidation);
+            //fp options
+            jq("#fp-category input[type=checkbox]").prop("disabled",true);
+            jq("#fp-category input[type=radio]").prop("disabled",true);
+            jq('#fp-status :input[type=radio]').change(fpOptionsSelected);
+            jq('#male-fp-status :input[type=radio]').change(maleFpOptionsSelected);
 
             onPersonPresentChange();
             onWeightOrHeightChange();
             onEncounterDateChange();
             viralLoadValidation();
-            beforeSubmit.push(function() {
-                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-                var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
 
-                if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
-                    getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
-                    return false;
-                }
-
-                if (isPediatric === true) {
-                    var fpStatus = getValue('fp-status.value');
-                    if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
-                        getField('fp-status.error').html('Pediatric patient too young for FP').show();
-                        return false;
-                    }
-
-                    if (getValue('pwp-disclosure.value') == YES_CONCEPT_ID) {
-                        getField('pwp-disclosure.error').html('Pediatric patient too young').show();
-                        return false;
-                    }
-
-                    if (getValue('pwp-partnertested.value') == YES_CONCEPT_ID) {
-                        getField('pwp-partnertested.error').html('Pediatric patient too young').show();
-                        return false;
-                    }
-                }
-
-                return true;
-            });
-
-            <includeIf velocityTest="$patient.gender == 'F' ">
+            //Differentiated care
+            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+            if(PATIENT_STABLE =="true") {
+                jq('#fast-track').show();
+                jq('#standard-care').hide();
+            }else{
+                jq('#standard-care').show();
+                jq('#fast-track').hide();
+            }
 
             // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
             var realId = $j('span#pregdate-abmc input[type=hidden]').attr('name');
             propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
+//pregnancy default options
+            jq('#anc-number :input').prop('disabled', true);
+            jq('#anc-profile :input').prop('disabled', true);
+            jq('#fp-status :input').prop('disabled', true);
 
             jq('input[name=pregoption]').click(function() {
                 var option = jq('input[name=pregoption]:checked').val();
@@ -476,27 +563,40 @@
                 jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
                 setPregDateField(initialPregOption);
             }
-
-            beforeSubmit.push(function() {
-                var encounterDate = new Date(getValue('encounter-date.value')).getTime();
-                var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
-                var dodDate = new Date(getValue('pregdate-no.value')).getTime();
-
-                if (eddDate &amp;&amp; eddDate &lt; encounterDate) {
-                    getField('pregdate-yes.error').html('Cannot be before encounter date').show();
-                    return false;
-                }
-                if (dodDate &amp;&amp; dodDate &gt; encounterDate) {
-                    getField('pregdate-no.error').html('Cannot be after encounter date').show();
-                    return false;
-                }
-                return true;
-            });
-
-            </includeIf>
         });
         //End on ready
+        //Start before submit
+        beforeSubmit.push(function() {
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+            var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
+            var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
+            var dodDate = new Date(getValue('pregdate-no.value')).getTime();
 
+            if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
+                getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
+                return false;
+            }
+            if (pAge &lt; 15 === true) {
+                var fpStatus = getValue('fp-status.value');
+                if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
+                    getField('fp-status.error').html('Pediatric patient too young for FP').show();
+                    return false;
+                }
+
+                if (getValue('pwp-disclosure.value') == YES_CONCEPT_ID) {
+                    getField('pwp-disclosure.error').html('Pediatric patient too young').show();
+                    return false;
+                }
+
+                if (getValue('pwp-partnertested.value') == YES_CONCEPT_ID) {
+                    getField('pwp-partnertested.error').html('Pediatric patient too young').show();
+                    return false;
+                }
+            }
+
+            return true;
+        });
     </script>
 
     <!-- For now HFE requires encounter provider, so we set this to the "Unknown Provider" and hide it (see HTML-471) -->
@@ -626,8 +726,8 @@
                          <th colspan="2">Date</th>
                          <td>(i)</td>
                          <td colspan="2">
-                             <includeIf velocityTest="$patient.gender == 'F' ">
-                                 LMP*  <obs id="lmp_date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+                                 LMP*  <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
                              </includeIf>
                              <hr width="0" />
                          </td>
@@ -637,7 +737,7 @@
                          <td colspan="2">Status</td>
                          <td>(j)</td>
                          <td>
-                             <includeIf velocityTest="$patient.gender == 'F' ">
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
                                  <ifMode mode="VIEW" include="true">
                                      Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
                                      Outcome: <obs id="pregoutcome" conceptId="161033AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -657,8 +757,8 @@
                              </includeIf>
                          </td>
                          <td>
-                             <includeIf velocityTest="$patient.gender == 'F' ">
-                                 ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br></br><br></br>
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+                                 ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-number"/> <br></br><br></br>
                              </includeIf>
                          </td>
                      </tr>
@@ -666,12 +766,9 @@
                          <th colspan="2"><span id="pregdate-label"></span></th>
                          <td>(k)</td>
                          <td colspan="2">
-                             <includeIf velocityTest="$patient.gender == 'F' ">
-                                 <ifMode mode="VIEW" include="true">
-                                     EDD: <obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-                                     Date of pregnancy end: <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
-                                 </ifMode>
-                                 <ifMode mode="VIEW" include="false">
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+
+                                 <ifMode mode="ENTER" include="true">
                                      <div id="pregdate-yes-container" style="display: none">
                                          <obs id="pregdate-yes" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                                      </div>
@@ -686,8 +783,8 @@
                          <th colspan="3">ANC/PNC Profile</th>
                          <td>(l)</td>
                          <td colspan="2">
-                             <includeIf velocityTest="$patient.gender == 'F' ">
-                                 <obs id="pwp-disclosure" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+                                 <obs id="anc-profile" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
                              </includeIf>
                          </td>
                      </tr>
@@ -696,6 +793,7 @@
                          <th colspan="2">FP/No FP</th>
                          <td>(m)</td>
                          <td colspan="2">
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
                              <obs
                                      id="fp-status"
                                      conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -703,12 +801,25 @@
                                      answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
                                      style="radio"/>
                              <hr width="0" />
+                             </includeIf>
+                             <includeIf velocityTest="$patient.gender == 'M' ">
+                                 <obs
+                                         id="male-fp-status"
+                                         conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Currently using (FP),Not using (NOFP),Wants (WFP)"
+                                         style="radio"/>
+                                 <hr width="0" />
+                             </includeIf>
                          </td>
+
                      </tr>
-                     <tr>
+                     <tr id="fp-category" >
                          <th colspan="2">Method/Why</th>
                          <td>(n)</td>
                          <td>
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Condoms (C)" /><br />
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Emergency contraceptive pill (ECP)" /><br />
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral contraceptive pills (OC)" /><br />
@@ -722,23 +833,44 @@
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Vasectomy - partner (V)" /><br />
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Spermicide" /><br />
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Undecided" /><br />
+
+                             </includeIf>
+                             <includeIf velocityTest="$patient.gender == 'M' ">
+                             <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerLabel="Condoms" style="checkbox"/>
+                             <br/>
+                             <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerLabel="Vasectomy" style="checkbox"/>
+                             <br/>
+                             <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                  answerLabel="Undecided" style="checkbox" id="fp-error"/>
+                             </includeIf>
                          </td>
                          <td>
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
                              <obs
                                      conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Wants to get pregnant (WP),Thinks can't get pregnant (UP),Not sexually active now (NSex)"
                                      style="radio"
                                      answerSeparator="&lt;br /&gt;"/>
+                             </includeIf>
                          </td>
+
                      </tr>
                      <tr class="patient-details">
                          <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
                          <th colspan="2">Screened CaCx*</th>
                          <td>(o)</td>
-                         <td colspan="2"><obs conceptId="164934"  answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" />
+                         <td colspan="2">
+                             <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+                             <obs conceptId="164934"  answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Positive,Negative,Not Done" style="radio" />
                              <hr width="0" />
-                          </td>
+                             </includeIf>
+                         </td>
                      </tr>
                      <tr class="patient-details">
                          <th colspan="2">Screened STI</th>
@@ -800,7 +932,7 @@
                              </table>
                          </td>
                      </tr>
-                     <tr>
+                     <tr id="general-exam-findings">
                          <th colspan="2">General Examination Findings </th>
                          <th>Findings</th>
                          <td>(s)</td>
@@ -836,7 +968,7 @@
                              <obs
                                      conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="NO signs,TB suspected,TB Rx,Not done (ND)"
+                                     answerLabels="NO signs,TB presumed,TB Rx,Not done (ND)"
                                      style="radio"
                                      answerSeparator="&lt;br /&gt;"/>
                              TB RX #
@@ -847,7 +979,7 @@
                          </td>
                          <td>
                              <strong>Nutritional Status</strong><br/>
-                             <obs
+                             <obs    id="nutritional-status"
                                      conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
@@ -1273,19 +1405,32 @@
                 <th colspan="3">Return visit date*</th>
                 <td>(ag)</td>
                 <td>Date:
-                    <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+                    <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
                     Reason*:
                     <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-                         style="dropdowm"  />
+                         style="dropdowm" required="true" />
                     <hr width="0"/>
                 </td>
-                <td> Differentiated Care*
-                    <obs conceptId="164947" id="fast-track"
-                         answerConceptIds="164942,164943,164944,164945,164946"
-                         style="dropdown"
-                         answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
+                <td>
+                    <div id="standard-care">
+                         Differentiated Care
+
+                             <obs conceptId="164947" id="standard"
+                                  answerConceptIds="164942"
+                                  style="dropdown"
+                                  answerLabels="Standard Care"/>
+
+                    </div>
+                     <div id="fast-track">
+                         Differentiated Care
+
+                             <obs conceptId="164947" id="fast-track"
+                                  answerConceptIds="164942,164943,164944,164945,164946"
+                                  style="dropdown"
+                                  answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
+                     </div>
                 </td>
             </tr>
             <tr>

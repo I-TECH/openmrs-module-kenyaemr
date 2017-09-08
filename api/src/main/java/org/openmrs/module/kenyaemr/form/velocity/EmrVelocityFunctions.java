@@ -80,7 +80,6 @@ public class EmrVelocityFunctions {
 	public Boolean patientIsStable() {
 
 		CalculationResult stablePatient = EmrCalculationUtils.evaluateForPatient(StablePatientsCalculation.class, null,session.getPatient());
-//		log.info("Stability ==>"+stablePatient.getValue());
 		return 	(Boolean) stablePatient.getValue();
 
 
