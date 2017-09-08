@@ -212,7 +212,7 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
-    protected CohortDefinition startingARTPregnant() {
+    public CohortDefinition startingARTPregnant() {
 
         String sqlQuery = " select distinct fup.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup " +
@@ -232,7 +232,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition startingARTWhileTbPatient() {
+    public CohortDefinition startingARTWhileTbPatient() {
 
         String sqlQuery = "select distinct fup.patient_id \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
@@ -252,7 +252,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition tbScreening() {
+    public CohortDefinition tbScreening() {
 // look all active in care who were screened for tb
         String sqlQuery = " select distinct e.patient_id\n" +
                 "from ( \n" +
@@ -290,7 +290,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition condomsProvided() {
+    public CohortDefinition condomsProvided() {
 
         String sqlQuery = " select distinct e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
@@ -305,7 +305,7 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
-    protected CohortDefinition modernContraceptivesProvided() {
+    public CohortDefinition modernContraceptivesProvided() {
 
         String sqlQuery = " select distinct e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
@@ -322,7 +322,7 @@ public class ETLMoh731CohortLibrary {
 
 
 
-    protected CohortDefinition art12MonthNetCohort() {
+    public CohortDefinition art12MonthNetCohort() {
 
         String sqlQuery = "  select distinct net.patient_id " +
                 "  from ( " +
@@ -352,7 +352,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition onOriginalFirstLineAt12Months() {
+    public CohortDefinition onOriginalFirstLineAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
                 "  from ( " +
@@ -382,7 +382,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition onAlternateFirstLineAt12Months() {
+    public CohortDefinition onAlternateFirstLineAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
               "  from ( " +
@@ -412,7 +412,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition onSecondLineAt12Months() {
+    public CohortDefinition onSecondLineAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
                "  from ( " +
@@ -442,7 +442,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition onTherapyAt12Months() {
+    public CohortDefinition onTherapyAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
                 "  from (" +
@@ -467,7 +467,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition hivCareVisitsFemale18() {
+    public CohortDefinition hivCareVisitsFemale18() {
 
         String sqlQuery = "select distinct e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
@@ -485,7 +485,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition hivCareVisitsScheduled() {
+    public CohortDefinition hivCareVisitsScheduled() {
 
         String sqlQuery = " select distinct patient_id \n" +
                 "from (\n" +
@@ -506,7 +506,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition hivCareVisitsUnscheduled() {
+    public CohortDefinition hivCareVisitsUnscheduled() {
 
         String sqlQuery = " select distinct patient_id \n" +
                 "from (\n" +
@@ -528,7 +528,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition hivCareVisitsTotal() {
+    public CohortDefinition hivCareVisitsTotal() {
 
         String sqlQuery = " select distinct patient_id \n" +
                 "from (\n" +
@@ -549,7 +549,7 @@ public class ETLMoh731CohortLibrary {
 
     }
 
-    protected CohortDefinition inHivProgramAndOnCtxProphylaxis() {
+    public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
         String sqlQuery=" select distinct e.patient_id\n" +
                 "from ( \n" +
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
@@ -587,7 +587,7 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
-    protected CohortDefinition hivExposedInfantsWithin2Months() {
+    public CohortDefinition hivExposedInfantsWithin2Months() {
         String sqlQuery = " select distinct e.patient_id " +
                 "    from kenyaemr_etl.etl_hei_enrollment e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
@@ -601,7 +601,7 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
-    protected CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
+    public CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
         String sqlQuery = " select distinct e.patient_id " +
                 "    from kenyaemr_etl.etl_hei_enrollment e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
