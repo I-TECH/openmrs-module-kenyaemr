@@ -329,17 +329,17 @@
                                         </tr>
                                         <tr>
                                             <td><b>Family Members</b></td>
-                                            <td>30</td>
-                                            <td>13</td>
-                                            <td>9</td>
-                                            <td>10</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                         <tr>
                                             <td><b>Sexual Partner</b></td>
-                                            <td>10</td>
-                                            <td>10</td>
-                                            <td>10</td>
-                                            <td>10</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
                                         </tr>
                                     </table>
                             </div>
