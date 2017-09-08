@@ -74,7 +74,7 @@ Green Card follow-up visit form
                 font: normal 12px Verdana, Arial, Helvetica, sans-serif;
                 color:#5A5655;
                 background-color:#F8F8F8;
-                height:900px;
+                /*height:1000px;*/
                 text-align:left;
                 overflow:visible;
                 z-index:88;
@@ -1297,19 +1297,6 @@ Green Card follow-up visit form
                 jq('#fpOptionValues :input').prop('checked', false);
             });
 
-            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-            var pgender = "<lookup expression="patient.gender" />";
-
-            if (pgender == 'F') {
-                beforeSubmit.push(function () {
-                    var lmpdate = new Date(getValue('lmp-date.value')).getTime();
-                    if (lmpdate &lt; pbirthdate) {
-                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
-                        return false;
-                    }
-                    return true;
-                });
-            }
             /*TB Screening form validation*/
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
@@ -1515,6 +1502,7 @@ Green Card follow-up visit form
             var ctxDispensed = getValue('ctx-dispensed.value');
             var dapsoneAdherence = getValue('dapsone-adherence.value');
             var dapsoneDispensed = getValue('dapsone-dispensed.value');
+            var arvAdherence = getValue('arv-adherence.value');
 
             //Must have a Return Visit Date which should be greater than encounter date
             if (tca_date =="") {
@@ -1551,6 +1539,10 @@ Green Card follow-up visit form
             if (prophylaxis_Used == 74250 &amp;&amp; dapsoneDispensed == false){      //dapsone
                 jq("#dapsone-part").show();
                 getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
+                return false;
+            }
+            if (arvAdherence == false){
+                getField('arv-adherence.error').html('Please specify ARV adherence.').show();
                 return false;
             }
             return true;
@@ -1759,6 +1751,7 @@ Green Card follow-up visit form
             var ctxDispensed = getValue('ctx-dispensed.value');
             var dapsoneAdherence = getValue('dapsone-adherence.value');
             var dapsoneDispensed = getValue('dapsone-dispensed.value');
+            var arvAdherence = getValue('arv-adherence.value');
             var tca_date = getValue('returnVisitDate.value');
             var tca_reason = getValue('returnVisitReason.value');
 
@@ -1789,6 +1782,11 @@ Green Card follow-up visit form
                 jq("#dapsone-part").show();
                 jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
                 jq('#greencard').smartWizard('showMessage','Please specify if Dapsone was dispensed.');
+                return false;
+            }
+            if (arvAdherence == false){
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+                jq('#greencard').smartWizard('showMessage','Please specify ARV adherence.');
                 return false;
             }
             if (tca_date == "") {
@@ -2163,7 +2161,7 @@ Green Card follow-up visit form
                             <span class="value"><!--<recentObs conceptId="164948"/>--></span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr id="currently-onIpt">
                         <td>
                             Patient currently on IPT? &#160;&#160;
                             <obs conceptId="164949"
@@ -2177,9 +2175,18 @@ Green Card follow-up visit form
                             <span class="value"><!--<recentObs conceptId="164949"/>--></span>
                         </td>
                     </tr>
+                    <!--On edit show-->
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+                                jq('#currently-onIpt :input').prop('disabled', false);
+                            });
+                        </script>
+                    </ifMode>
+
                 </table>
                 <table id="tbl-ever-on-ipt">
-                    <tr>
+                    <tr id="ever-taken-ipt">
                         <td>
                             Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                             <obs conceptId="164950"
@@ -2193,6 +2200,16 @@ Green Card follow-up visit form
                             <span class="value"><!--<recentObs conceptId="164950"/>--></span>
                         </td>
                     </tr>
+                    <!--On edit show-->
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+                                jq("#tbl-ever-on-ipt").show();
+                                jq('#ever-taken-ipt :input').prop('disabled', false);
+                            });
+                        </script>
+                    </ifMode>
+
                 </table>
                 <br/>
                 <fieldset id="tb-screening-tab">
@@ -2815,6 +2832,19 @@ Green Card follow-up visit form
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  style="radio" answerLabels="Yes,NO" id="pregnancyIntention" />
                         </div>
+                             <!--On edit show-->
+                             <ifMode mode="EDIT">
+                                 <script type="text/javascript">
+                                     jq(function(){
+                                         var wantsPreg=getValue('wants-pregnancy.value');
+                                         if (wantsPreg != false) {     //yes_no pregnancy
+                                             jq("#wants-pregnancy").show();
+                                             jq("#fp-details").show();
+                                         }
+                                     });
+                                 </script>
+                             </ifMode>
+
                         <table id="pregnancyOptionValues">
                             <tr>
                                 <td width="8%" style="text-align: left">ANC Number:</td>
@@ -2870,6 +2900,7 @@ Green Card follow-up visit form
                         </table>
                     </fieldset>
                 </includeIf>
+
                 <!--Family Planning-->
                 <fieldset id="fp-details" >
                     <legend>Family Planning Status</legend>
@@ -3032,7 +3063,6 @@ Green Card follow-up visit form
                             </td>
                         </tr>
                     </table>
-
         </fieldset>
         </div>
         <!--.step 2-->
@@ -3300,7 +3330,21 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
-        <fieldset id="dapsone-part">
+            <ifMode mode="EDIT">
+                <script type="text/javascript">
+                    jq(function(){
+                        var ctxAdherence = getValue('ctx-adherence.value');
+                        var ctxDispensed = getValue('ctx-dispensed.value');
+
+                        if (ctxAdherence != false || ctxDispensed != false) {     //ctx
+                            jq("#ctx-part").show();
+                        }
+                    });
+
+                </script>
+            </ifMode>
+
+            <fieldset id="dapsone-part">
             <legend>Dapsone</legend>
             <table>
                 <tr>
@@ -3333,6 +3377,20 @@ Green Card follow-up visit form
                 </tr>
             </table>
         </fieldset>
+            <ifMode mode="EDIT">
+                <script type="text/javascript">
+                    jq(function(){
+                        var dapsoneAdherence = getValue('dapsone-adherence.value');
+                        var dapsoneDispensed = getValue('dapsone-dispensed.value');
+
+                        if (dapsoneAdherence != false || dapsoneDispensed != false) {     //dapsone
+                            jq("#dapsone-part").show();
+                        }
+
+                    });
+
+                </script>
+            </ifMode>
         <fieldset class="arv-part">
             <legend>ARV</legend>
             <table>
@@ -3350,7 +3408,7 @@ Green Card follow-up visit form
                                             conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerLabels="Good (G),Inadequate(I),Poor (P)"
-                                            style="radio"
+                                            style="radio" id="arv-adherence"
                                     />
                                 </td>
                             </tr>
