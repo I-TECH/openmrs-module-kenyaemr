@@ -40,22 +40,24 @@ public class ETLMoh731CohortLibrary {
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "p.unique_patient_no\n" +
+                "p.unique_patient_no, \n" +
+                "  max(d.visit_date) as date_discontinued,\n" +
+                "  d.patient_id as disc_patient \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id \n" +
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id \n" +
+                "left outer JOIN\n" +
+                "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  where date(visit_date) <= :endDate and program_name='HIV'\n" +
+                "  group by patient_id\n" +
+                "  ) d on d.patient_id = fup.patient_id \n" +
                 "where fup.visit_date <= :endDate \n" +
                 "group by patient_id \n" +
 //                "--  we may need to filter lost to follow-up using this\n" +
-                "having (latest_tca>:endDate or \n" +
-                "((latest_tca between :startDate and :endDate) or (latest_vis_date between :startDate and :endDate)) )\n" +
+                "having ((latest_tca>:endDate and (latest_tca > date_discontinued or disc_patient is null )) or \n" +
+                "(((latest_tca between :startDate and :endDate) or (latest_vis_date between :startDate and :endDate)) ) and (latest_tca > date_discontinued or disc_patient is null ))\n" +
 //                "-- drop missd completely\n" +
-                ") e\n" +
-//                "-- drop discountinued\n" +
-                "where e.patient_id not in (select patient_id from kenyaemr_etl.etl_patient_program_discontinuation \n" +
-                "where date(visit_date) <= :endDate and program_name='HIV' \n" +
-                "group by patient_id \n" +
-                "having if(e.latest_tca>max(visit_date),1,0)=0) ";
+                ") e\n" ;
 
 
         cd.setName("currentlyInCare");
