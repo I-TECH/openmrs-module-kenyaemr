@@ -39,7 +39,7 @@ public class ETLCurrentOnARTCohortDefinitionEvaluator implements CohortDefinitio
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" SELECT patient_id FROM kenyaemr_etl.etl_last_month_current_on_art";
+		String qry=" SELECT patient_id from kenyaemr_etl.etl_current_in_care where started_on_drugs is not null";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

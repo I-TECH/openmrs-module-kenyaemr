@@ -398,7 +398,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         String indParams = "";
 
         cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
-        cohortDsd.addColumn("enrolledInCare", "Enrolled in care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
+        cohortDsd.addColumn("newOncare", "New on care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
         cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
         cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
         cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");
