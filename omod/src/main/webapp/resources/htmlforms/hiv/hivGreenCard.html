@@ -33,9 +33,6 @@ Green Card follow-up visit form
             padding: inherit;
 
         }
-         /*Wizard css*/
-
-        /*.Wizard css*/
     </style>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
@@ -1468,7 +1465,6 @@ Green Card follow-up visit form
             }else{
                 getField('tb-screening-error.error').html('Please complete TB screening.').hide();
             }
-
             if (knownAllergies == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('known-allergies.error').html('Please specify if patient has any known allergies.').show();
@@ -1734,7 +1730,7 @@ Green Card follow-up visit form
                 <li><a href="#step-2">
                     <label class="stepNumber">2</label>
                     <span class="stepDesc">
-             Complaints<br />
+             History<br />
           </span>
                 </a></li>
                 <li><a href="#step-3">
@@ -1762,7 +1758,7 @@ Green Card follow-up visit form
                 <li><a href="#step-2">
                     <label class="stepNumber">2</label>
                     <span class="stepDesc">
-             Complaints<br />
+             History<br />
           </span>
                 </a></li>
                 <li><a href="#step-3">
@@ -1797,17 +1793,26 @@ Green Card follow-up visit form
                     </table>
                 </div>
                 <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
+                <!--//Insert discard button-->
                 <!--<ifMode mode="ENTER">-->
                     <!--<script type="text/javascript">-->
                         <!--jq(function(){-->
-                                    <!--jq("<button/>")-->
-                                    <!--.click(discardChanges)-->
-                                    <!--.html('Discard')-->
-                                    <!--.insertAfter('.buttonFinish');-->
-                                    <!--function discardChanges(sParam)-->
-                                    <!--{-->
-                                    <!--window.history.back();-->
-                                    <!--}-->
+                            <!--jq("<button/>")-->
+                                <!--.click(discardChanges)-->
+                                <!--.html('Discard')-->
+                                <!--.insertAfter('.buttonFinish');-->
+                            <!--function discardChanges()-->
+                            <!--{-->
+                                <!--var fullUrl = window.location.host;-->
+                                <!--console.log("fullurl ==>"+fullUrl);-->
+                                <!--var parts = fullUrl.split('returnUrl=');-->
+                                <!--var sub = parts[0];-->
+                                <!--var domain = parts[1];-->
+
+                                <!--console.log("first ==>"+sub);-->
+                                <!--console.log("second ==>"+domain);-->
+                                <!--//window.location.replace("domain");-->
+                            <!--}-->
                         <!--});-->
                     <!--</script>-->
                 <!--</ifMode>-->
@@ -3042,8 +3047,8 @@ Green Card follow-up visit form
                         </td><td>
                             <div style="float: left;padding-right: 40px">
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dehydration" style="checkbox" /><br />
-                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" style="checkbox" /><br />
-                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" id="genExams-error" style="checkbox" /><br />
+                                <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" style="checkbox" id="genExams-error" /><br />
+                                <!--<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" id="genExams-error" style="checkbox" /><br />-->
                             </div>
                         </td>
 
