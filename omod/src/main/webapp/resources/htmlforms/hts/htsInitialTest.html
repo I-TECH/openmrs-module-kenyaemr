@@ -179,7 +179,7 @@
             jq("#couple-testing input").change(coupleTestedAction);
             //hiv test123    hide second test by default
             jq("#hiv-test2").hide();
-            jq('#hiv-final-result select').prop("disabled", true);
+            jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
             jq("#hiv-test2-result select").change(secondTestSelected);
             //jq("#hiv-final-result select").change(finalTestSelected);

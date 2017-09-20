@@ -825,7 +825,6 @@ Green Card follow-up visit form
             if (age &lt; 10) {
                 jq('#fp-details').hide();
                 jq('.reproductive-part').hide();
-
             }
             var pgender = "<lookup expression="patient.gender" />";
             //Gravida
@@ -848,7 +847,7 @@ Green Card follow-up visit form
             jq("#tbl-chronic-illness").hide();
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
-            jq("#nutritional-status input[type=radio]").prop("checked", false);
+            jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
             jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
             //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
