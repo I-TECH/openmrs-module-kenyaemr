@@ -30,9 +30,12 @@
         var hasDisabilitySelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
+                jq('#disability').hide();
                 jq('#disability select').prop("disabled", true);
                 jq('#disability select').val('');
+                clearHiddenSections(jq('#disability'));
             }else{
+                jq('#disability').show();
                 jq('#disability select').prop("disabled", false);
             }
         }
@@ -63,6 +66,7 @@
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
             if(firstTest ==664) {
+                jq("#hiv-test2").hide();
                 jq("#hiv-test2-result select").prop("disabled", true);
                 jq("#kitTest2 input").prop("disabled", true);
                 jq("#lotTest2 input").prop("disabled", true);
@@ -75,6 +79,7 @@
             }
             //Positive
             if(firstTest ==703){
+                jq("#hiv-test2").show();
                 jq("#hiv-test2-result select").prop("disabled", false);
                 jq("#kitTest2 input").prop("disabled", false);
                 jq("#lotTest2 input").prop("disabled", false);
@@ -84,6 +89,7 @@
             }
             //Invalid
             if(firstTest ==163611){
+                jq("#hiv-test2").show();
                 jq("#hiv-test2-result select").prop("disabled", false);
                 jq("#kitTest2 input").prop("disabled", false);
                 jq("#lotTest2 input").prop("disabled", false);
@@ -168,11 +174,12 @@
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
-            jq('#disability select').prop("disabled", true);
+            jq('#disability').hide();
             //couple testing
             jq("#couple-testing input").change(coupleTestedAction);
-            //hiv test123
-            jq('#hiv-final-result select').prop("disabled", true);
+            //hiv test123    hide second test by default
+            jq("#hiv-test2").hide();
+            jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
             jq("#hiv-test2-result select").change(secondTestSelected);
             //jq("#hiv-final-result select").change(finalTestSelected);
@@ -184,6 +191,7 @@
             var firstTest = getField("hiv-test1-result.value").val();
                 //Negative
                 if(firstTest ==664) {
+
                     jq("#hiv-test2-result select").prop("disabled", true);
                     jq("#kitTest2 input").prop("disabled", true);
                     jq("#lotTest2 input").prop("disabled", true);
@@ -193,6 +201,7 @@
                 }
                 //Positive
                 if(firstTest ==703){
+
                     jq("#hiv-test2-result select").prop("disabled", false);
                     jq("#kitTest2 input").prop("disabled", false);
                     jq("#lotTest2 input").prop("disabled", false);
@@ -200,6 +209,7 @@
                 }
                 //Invalid
                 if(firstTest ==163611){
+
                     jq("#hiv-test2-result select").prop("disabled", false);
                     jq("#kitTest2 input").prop("disabled", false);
                     jq("#lotTest2 input").prop("disabled", false);
@@ -299,10 +309,20 @@
                              style="radio" />
                         <br/>
                     </td>
-                    <td>     &#160;&#160;&#160;&#160;&#160;  Please indicated the type of disability :
-                        <obs id="disability" conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Deaf,Blind,Mentally Challenged,Physically Challenged,Other"/>
+                </tr>
+                <tr id="disability">
+                    <td>  Please indicated the type of disability : <br/>
+                        <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Deaf" style="checkbox" /><br/>
+                            <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Blind" style="checkbox" /><br/>
+                        <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Mentally Challenged" style="checkbox"  /><br/>
+                        <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Physically Challenged" style="checkbox" /><br/>
+                        <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Other" style="checkbox"  /><br/>
+
                     </td>
                 </tr>
             </table>
@@ -396,7 +416,7 @@
                     </tr>
                 </obsgroup>
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                    <tr>
+                    <tr id="hiv-test2">
 
                         <td>HIV Test 2 Results:
                             <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
