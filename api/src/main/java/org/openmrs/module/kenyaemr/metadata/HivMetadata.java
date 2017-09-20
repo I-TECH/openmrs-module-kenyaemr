@@ -30,6 +30,9 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
 @Requires({ CommonMetadata.class })
 public class HivMetadata extends AbstractMetadataBundle {
 
+	public static final String MODULE_ID = "kenyaemr";
+	public static final String LDL_DEFAULT_VALUE = MODULE_ID + ".LDL_default_value";
+
 	public static final class _EncounterType {
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
 		public static final String HIV_DISCONTINUATION = "2bdada65-4c72-4a48-8730-859890e25cee";
@@ -88,5 +91,6 @@ public class HivMetadata extends AbstractMetadataBundle {
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
 		install(program("HIV", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, _Program.HIV));
+		install(globalProperty(LDL_DEFAULT_VALUE, "Default value for LDL results. Required for graphing", "50"));
 	}
 }
