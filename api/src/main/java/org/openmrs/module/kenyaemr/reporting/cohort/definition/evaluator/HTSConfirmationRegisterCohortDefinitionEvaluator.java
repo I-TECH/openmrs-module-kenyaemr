@@ -31,7 +31,7 @@ public class HTSConfirmationRegisterCohortDefinitionEvaluator implements Encount
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = \"Confirmation\" and voided = 0; ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 2 and voided = 0; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
