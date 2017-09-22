@@ -751,5 +751,17 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
+    protected CohortDefinition htsNumberTestedNew() {
+        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+                " and visit_date between :startDate and :endDate " +
+                " group by patient_id having min(visit_date) between :startDate and :endDate";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("htsNumberTestedNew");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Hiv Number Tested New");
+        return cd;
 
+    }
 }
