@@ -34,7 +34,7 @@
 				<ref bean="kenyaemr.common.report.missedAppointment" />
 				<ref bean="kenyaemr.common.report.moh731" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
-				<!--<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>-->
+				<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>
 				<ref bean="kenyaemr.common.report.dhis2" />
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />

@@ -44,10 +44,15 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     ColumnParameters femaleInfants = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
 
     ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
-    ColumnParameters adult_10_to_14 = new ColumnParameters(null, "1-9", "age=1-9");
-    ColumnParameters adult_15_to_19 = new ColumnParameters(null, "1-9", "age=1-9");
-    ColumnParameters adult_20_to_24 = new ColumnParameters(null, "1-9", "age=1-9");
-    ColumnParameters adult_25_and_above = new ColumnParameters(null, "1-9", "age=1-9");
+    ColumnParameters adult_10_to_14 = new ColumnParameters(null, "10-14", "age=10-14");
+    ColumnParameters adult_15_to_19 = new ColumnParameters(null, "15-19", "age=15-19");
+    ColumnParameters adult_20_to_24 = new ColumnParameters(null, "20-24", "age=20-24");
+    ColumnParameters adult_25_and_above = new ColumnParameters(null, "25+", "age=25+");
+
+    // specific to pre-art
+    ColumnParameters adult_0_to_14 = new ColumnParameters(null, "20-24", "age=20-24");
+    ColumnParameters adult_15_and_above = new ColumnParameters(null, "25+", "age=25+");
+    // end of pre-art
 
     ColumnParameters m_1_to_4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
     ColumnParameters f_1_to_4 = new ColumnParameters(null, "1-4, Female", "gender=F|age=1-4");
@@ -84,6 +89,9 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     List<ColumnParameters> allAgeDisaggregation = Arrays.asList(
             maleInfants, femaleInfants, m_1_to_4,  f_1_to_4, m_5_to_9, f_5_to_9, m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
             m_20_to_24, f_20_to_24, m_25_and_above, f_25_and_above , colTotal);
+
+    List<ColumnParameters> preARTDisaggregation = Arrays.asList(
+            adult_0_to_14,  adult_15_and_above , colTotal);
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
@@ -139,8 +147,8 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-20", "Assessed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(pmtctIndicators.assessedForArtEligibilityTotal(), indParams), "");
 
 
-        dsd.addColumn("HV02-24", "PCR within 2 months", ReportUtils.map(pmtctIndicators.pcrWithInitialIn2Months(), indParams), "");
-        dsd.addColumn("HV02-25", "PCR from 3 to 8 months", ReportUtils.map(pmtctIndicators.pcrWithInitialBetween3And8MonthsOfAge(), indParams), "");
+        dsd.addColumn("HV02-43", "PCR within 2 months", ReportUtils.map(pmtctIndicators.pcrWithInitialIn2Months(), indParams), ""); //< 8weeks
+        dsd.addColumn("HV02-44", "PCR from 3 to 8 months", ReportUtils.map(pmtctIndicators.pcrWithInitialBetween3And8MonthsOfAge(), indParams), ""); // 8 to 12 months
         dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(pmtctIndicators.serologyAntBodyTestBetween9And12Months(), indParams), "");
         dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(pmtctIndicators.pcrTestBetween9And12Months(), indParams), "");
 
@@ -152,9 +160,9 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("HV02-32", "Total Confirmed Positive(Total (Sum HV2-29 to HV02-31))", ReportUtils.map(pmtctIndicators.pcrTotalConfirmedPositive(), indParams), "");
 
-        dsd.addColumn("HV02-33", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveBreastFeedingAtSixMonths(), indParams), "");
-        dsd.addColumn("HV02-34", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
-        dsd.addColumn("HV02-35", "Mixed Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.mixedFeedingAtSixMonths(), indParams), "");
+        dsd.addColumn("HV02-52", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveBreastFeedingAtSixMonths(), indParams), "");
+        dsd.addColumn("HV02-53", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
+        dsd.addColumn("HV02-54", "Mixed Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.mixedFeedingAtSixMonths(), indParams), "");
 
         dsd.addColumn("HV02-36", "Total Exposed aged six Months( Total sum(HIV02-33 to HIV02-35))", ReportUtils.map(pmtctIndicators.totalExposedAgedSixMoths(), indParams), "");
 
@@ -189,11 +197,37 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");*/
 
 
-        // 3.1 (On CTX Prophylaxis)
+        // 3.1 (Enrolled in Care)
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        // 3.2 (Pre-ART)
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(hivIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("13", "14", "15"));
+
+        // 3.3 (Starting ART)
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+
+        // 3.4 (Currently on ART [All])
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+
+        // 3.5 (Survival and Retention on ART at 12 months)
+        cohortDsd.addColumn("HV03-40", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
+        cohortDsd.addColumn("HV03-41", "On therapy at 12 months (Total) ", ReportUtils.map(hivIndicators.onTherapyAt12Months(), indParams), "");
+
+        // 3.6 on CTX/Dapsone
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("44", "45", "46", "47", "48", "49", "50"));
+
+        // 3.7 TB Screening and presumed TB
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("51", "52", "53", "54", "55", "56", "57"));
+
+
+        // 3.12
+        cohortDsd.addColumn("HV03-88", "Clinical Visits (F18+)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
+        cohortDsd.addColumn("HV09-89", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
+
+
         //EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/dapsone Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
 
         // 3.2 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+
 
         // 3.3 (Currently in Care)
        /* EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(hivIndicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
