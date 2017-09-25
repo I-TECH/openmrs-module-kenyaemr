@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.MOH731Greencard;
-=======
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard;
->>>>>>> 183e6f61dbea6656d8775b0ecddeddb2ae7254b4
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -729,16 +725,10 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
 
     }
-<<<<<<< HEAD
-    protected CohortDefinition htsNumberTestedKeypopPositive() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and final_test_result ='Positive' and population_type ='Key Population' and visit_date between :startDate and :endDate";
-=======
 
-    public CohortDefinition htsNumberTestedKeypopPositive() {
+     public CohortDefinition htsNumberTestedKeypopPositive() {
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and population_type ='Key Population' and final_test_result='Positive' and visit_date between :startDate and :endDate";
->>>>>>> 183e6f61dbea6656d8775b0ecddeddb2ae7254b4
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedKeypopPositive");
         cd.setQuery(sqlQuery);
