@@ -726,7 +726,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     }
 
-    public CohortDefinition htsNumberTestedKeypopPositive() {
+     public CohortDefinition htsNumberTestedKeypopPositive() {
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and population_type ='Key Population' and final_test_result='Positive' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
