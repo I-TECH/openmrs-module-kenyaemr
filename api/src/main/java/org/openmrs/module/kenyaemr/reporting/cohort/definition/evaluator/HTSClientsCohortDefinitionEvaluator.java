@@ -37,7 +37,7 @@ public class HTSClientsCohortDefinitionEvaluator implements CohortDefinitionEval
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where test_type = \"Initial\" and voided = 0;";
+		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where test_type = 1 and voided = 0;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

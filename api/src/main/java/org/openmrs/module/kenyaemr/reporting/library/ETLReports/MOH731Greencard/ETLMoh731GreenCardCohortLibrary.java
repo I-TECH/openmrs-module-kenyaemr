@@ -1,4 +1,4 @@
-package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731;
+package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -12,11 +12,11 @@ import java.util.Date;
  */
 
 /**
- * Library of cohort definitions used specifically in the MOH731 report based on ETL tables
+ * Library of cohort definitions used specifically in the MOH731 report based on ETL tables. It has incorporated green card components
  */
 @Component
-public class ETLMohGreenCard731CohortLibrary {
-    public CohortDefinition hivEnrollment(){
+public class ETLMoh731GreenCardCohortLibrary {
+    public CohortDefinition hivEnrollment() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select distinct e.patient_id " +
                 "from kenyaemr_etl.etl_hiv_enrollment e " +
@@ -33,9 +33,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
     }
 
-    public  CohortDefinition currentlyInCare() {
+    public CohortDefinition currentlyInCare() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery = " select distinct e.patient_id\n" +
                 "from ( \n" +
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
@@ -67,8 +67,8 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
     }
 
-    public  CohortDefinition startedOnART() {
-        String sqlQuery="select distinct net.patient_id \n" +
+    public CohortDefinition startedOnART() {
+        String sqlQuery = "select distinct net.patient_id \n" +
                 "from ( \n" +
                 "select e.patient_id,e.date_started, \n" +
                 "e.gender,\n" +
@@ -105,7 +105,7 @@ public class ETLMohGreenCard731CohortLibrary {
 
     public CohortDefinition currentlyOnArt() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery = " select distinct e.patient_id\n" +
                 "from ( \n" +
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
@@ -139,7 +139,7 @@ public class ETLMohGreenCard731CohortLibrary {
     }
 
     public CohortDefinition revisitsArt() {
-        String sqlQuery=" select distinct e.patient_id " +
+        String sqlQuery = " select distinct e.patient_id " +
                 "from ( " +
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, " +
                 "min(e.visit_date) as enroll_date, " +
@@ -177,7 +177,7 @@ public class ETLMohGreenCard731CohortLibrary {
     }
 
     public CohortDefinition cummulativeOnArt() {
-        String sqlQuery=" select distinct net.patient_id \n" +
+        String sqlQuery = " select distinct net.patient_id \n" +
                 "from (\n" +
                 "select e.patient_id,e.date_started,min(enr.visit_date) as enrollment_date,\n" +
                 "e.gender,\n" +
@@ -321,13 +321,12 @@ public class ETLMohGreenCard731CohortLibrary {
     }
 
 
-
     protected CohortDefinition art12MonthNetCohort() {
 
         String sqlQuery = "  select distinct net.patient_id " +
                 "  from ( " +
                 "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
-                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
+                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, " +
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
                 "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
@@ -357,7 +356,7 @@ public class ETLMohGreenCard731CohortLibrary {
         String sqlQuery = "  select distinct net.patient_id " +
                 "  from ( " +
                 "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
-                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
+                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, " +
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
                 "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
@@ -385,9 +384,9 @@ public class ETLMohGreenCard731CohortLibrary {
     protected CohortDefinition onAlternateFirstLineAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
-              "  from ( " +
+                "  from ( " +
                 "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
-                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
+                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, " +
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
                 "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
@@ -415,9 +414,9 @@ public class ETLMohGreenCard731CohortLibrary {
     protected CohortDefinition onSecondLineAt12Months() {
 
         String sqlQuery = "  select distinct net.patient_id " +
-               "  from ( " +
+                "  from ( " +
                 "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
-                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
+                "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, " +
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
                 "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
@@ -550,7 +549,7 @@ public class ETLMohGreenCard731CohortLibrary {
     }
 
     protected CohortDefinition inHivProgramAndOnCtxProphylaxis() {
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery = " select distinct e.patient_id\n" +
                 "from ( \n" +
                 "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
@@ -614,11 +613,14 @@ public class ETLMohGreenCard731CohortLibrary {
         cd.setDescription("Hiv Exposed Infants Within 2 Months");
         return cd;
     }
+
     /**
      * HTS Cohort Definitions
      */
-    protected CohortDefinition htsNumberTested() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 and visit_date between :startDate and :endDate";
+
+    // HIV testing cohort. includes those who tested during the reporting period
+    public CohortDefinition htsNumberTested() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTested");
         cd.setQuery(sqlQuery);
@@ -629,9 +631,10 @@ public class ETLMohGreenCard731CohortLibrary {
 
     }
 
-    protected CohortDefinition htsNumberTestedAtFacility() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1\n" +
-                " and test_strategy in ('Integrated VCT Center','Non Provider Initiated Testing','Provider Initiated Testing(PITC)')" +
+    // facility strategies include PITC, Non Provider initiated testing, integrated vct, stand alone vct
+    public CohortDefinition htsNumberTestedAtFacility() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1\n" +
+                " and test_strategy in ('Integrated VCT Center','Non Provider Initiated Testing','Provider Initiated Testing(PITC)', 'Stand Alone VCT Center')" +
                 " and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtFacility");
@@ -642,9 +645,11 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-       protected CohortDefinition htsNumberTestedAtCommunity() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1 \n" +
-                " and test_strategy in ('Mobile Outreach HTS','Home Based Testing','Stand Alone VCT Center')" +
+
+    // community strategies include Home based testing, mobile outreaches and other
+    public CohortDefinition htsNumberTestedAtCommunity() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1 \n" +
+                " and test_strategy in ('Mobile Outreach HTS','Home Based Testing','Other')" +
                 " and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtCommunity");
@@ -655,8 +660,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
+
     protected CohortDefinition htsNumberTestedAsCouple() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and client_tested_as ='Couple' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAsCouple");
@@ -667,8 +673,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
+
     protected CohortDefinition htsNumberTestedKeyPopulation() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 \n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 \n" +
                 " and population_type ='Key Population' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedKeyPopulation");
@@ -679,8 +686,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedPositive() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+
+    public CohortDefinition htsNumberTestedPositive() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and final_test_result ='Positive' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositive");
@@ -691,8 +699,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedNegative() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+
+    public CohortDefinition htsNumberTestedNegative() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and final_test_result ='Negative' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedNegative");
@@ -703,8 +712,9 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedDiscordant() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+
+    public CohortDefinition htsNumberTestedDiscordant() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and couple_discordant ='Yes' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedDiscordant");
@@ -715,9 +725,10 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedKeypopPositive() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and population_type ='Key Population' and visit_date between :startDate and :endDate";
+
+    public CohortDefinition htsNumberTestedKeypopPositive() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+                " and population_type ='Key Population' and final_test_result='Positive' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedKeypopPositive");
         cd.setQuery(sqlQuery);
@@ -727,9 +738,13 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedPositiveAndLinked() {
-        String sqlQuery ="select r.patient_id from kenyaemr_etl.etl_hts_referral_and_linkage r inner join kenyaemr_etl.etl_hts_test t on r.patient_id = t.patient_id\n" +
-                " where r.ccc_number !=''  and r.ccc_number IS NOT NULL and r.facility_linked_to !='' and r.facility_linked_to IS NOT NULL and t.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate";
+
+    public CohortDefinition htsNumberTestedPositiveAndLinked() {
+        String sqlQuery = "select r.patient_id \n" +
+                " from kenyaemr_etl.etl_hts_referral_and_linkage r \n" +
+                "  inner join kenyaemr_etl.etl_hts_test t on r.patient_id = t.patient_id and t.final_test_result = 'Positive' \n" +
+                " where (r.ccc_number !=''  and r.ccc_number IS NOT NULL) and (r.facility_linked_to !='' and r.facility_linked_to IS NOT NULL) \n" +
+                "      and t.visit_date between date_sub(:endDate , interval 3 MONTH) and  :endDate ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositiveAndLinked");
         cd.setQuery(sqlQuery);
@@ -739,8 +754,10 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedPositiveInLastThreeMonths() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test t where test_type =1\n" +
+
+    // number tested in the last 3 months
+    public CohortDefinition htsNumberTestedPositiveInLastThreeMonths() {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test t where test_type =1\n" +
                 " and final_test_result ='Positive' and t.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositiveInLastThreeMonths");
@@ -751,16 +768,102 @@ public class ETLMohGreenCard731CohortLibrary {
         return cd;
 
     }
-    protected CohortDefinition htsNumberTestedNew() {
-        String sqlQuery ="select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and visit_date between :startDate and :endDate " +
-                " group by patient_id having min(visit_date) between :startDate and :endDate";
+
+    // new tests during the reporting period
+    public CohortDefinition htsNumberTestedNew() {
+        String sqlQuery = "select patient_id\n" +
+                "from (\n" +
+                "  SELECT\n" +
+                "    patient_id,\n" +
+                "    visit_date      AS test_date,\n" +
+                "    min(visit_date) AS first_test_date,\n" +
+                "    max(visit_date) AS last_test_date\n" +
+                "  FROM kenyaemr_etl.etl_hts_test\n" +
+                "  WHERE test_type = 1\n" +
+                "  GROUP BY patient_id\n" +
+                ") t\n" +
+                "where test_date between :startDate and :endDate and first_test_date between :startDate and :endDate\n" +
+                "GROUP BY patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedNew");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Hiv Number Tested New");
+        return cd;
+
+    }
+
+    // repeat tests during the reporting period
+    public CohortDefinition htsNumberTestedRepeat() {
+        String sqlQuery = "select patient_id\n" +
+                "from (\n" +
+                "       SELECT\n" +
+                "         patient_id,\n" +
+                "         visit_date      AS test_date,\n" +
+                "         min(visit_date) AS first_test_date,\n" +
+                "         max(visit_date) AS last_test_date\n" +
+                "       FROM kenyaemr_etl.etl_hts_test\n" +
+                "       WHERE test_type = 1\n" +
+                "       GROUP BY patient_id\n" +
+                "     ) t\n" +
+                "where test_date between :startDate and :endDate and first_test_date < :startDate\n" +
+                "GROUP BY patient_id\n" +
+                "having if(count(distinct test_date) > 1, 1, 0) = 1;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("htsNumberTestedRepeat");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Hiv Number Tested repeat");
+        return cd;
+
+    }
+
+    /**
+     * pre-art cohort
+     * looks for those qualify to be current in care but haven't started on arvs
+     */
+    public CohortDefinition preArtCohort() {
+        String sqlQuery = "select patient_id from (\n" +
+                "  SELECT\n" +
+                "    fup.visit_date,\n" +
+                "    fup.patient_id,\n" +
+                "    p.dob,\n" +
+                "    p.Gender,\n" +
+                "    min(e.visit_date)  AS enroll_date,\n" +
+                "    max(fup.visit_date) AS latest_vis_date,\n" +
+                "    mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11) AS latest_tca,\n" +
+                "    max(d.visit_date)     AS date_discontinued,\n" +
+                "    d.patient_id  AS disc_patient,\n" +
+                "    de.patient_id  AS started_on_drugs\n" +
+                "  FROM kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "    JOIN kenyaemr_etl.etl_patient_demographics p ON p.patient_id = fup.patient_id\n" +
+                "    JOIN kenyaemr_etl.etl_hiv_enrollment e ON fup.patient_id = e.patient_id\n" +
+                "    LEFT OUTER JOIN kenyaemr_etl.etl_drug_event de ON e.patient_id = de.patient_id AND date(date_started) <= :endDate\n" +
+                "    LEFT OUTER JOIN\n" +
+                "    (SELECT\n" +
+                "       patient_id,\n" +
+                "       visit_date\n" +
+                "     FROM kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "     WHERE date(visit_date) <= :endDate AND program_name = 'HIV'\n" +
+                "     GROUP BY patient_id\n" +
+                "    ) d ON d.patient_id = fup.patient_id\n" +
+                "  WHERE fup.visit_date <= :endDate\n" +
+                "  GROUP BY patient_id\n" +
+                "  HAVING (\n" +
+                "    (latest_tca > :endDate AND (latest_tca > date_discontinued OR disc_patient IS NULL)) OR\n" +
+                "    (((latest_tca BETWEEN :startDate AND :endDate) OR (latest_vis_date BETWEEN :startDate AND :endDate)) AND\n" +
+                "     (latest_tca > date_discontinued OR disc_patient IS NULL)))\n" +
+                ") active\n" +
+                "where started_on_drugs = '' or started_on_drugs is null\n" +
+                " ;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("preARTCohort");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Those in care, not started on ARVs");
         return cd;
 
     }

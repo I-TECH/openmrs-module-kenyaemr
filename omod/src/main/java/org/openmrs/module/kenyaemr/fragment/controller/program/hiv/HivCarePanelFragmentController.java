@@ -16,6 +16,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.program.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.Patient;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -85,6 +87,12 @@ public class HivCarePanelFragmentController {
 				datesRequired = calendar.getTime();
 			}
 		}
+
+		// get default LDL value
+		AdministrationService as = Context.getAdministrationService();
+		Double ldl_default_value = Double.parseDouble(as.getGlobalProperty("kenyaemr.LDL_default_value"));
+
+		model.addAttribute("ldl_default_value", ldl_default_value);
 		model.addAttribute("value", valuesRequired);
 		model.addAttribute("date", datesRequired);
 

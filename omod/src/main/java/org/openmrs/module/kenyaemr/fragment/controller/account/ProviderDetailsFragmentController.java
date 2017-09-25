@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.account;
 
 import org.openmrs.Person;
 import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaui.annotation.AppAction;
@@ -40,7 +41,7 @@ public class ProviderDetailsFragmentController {
 
 		model.addAttribute("person", person);
 		model.addAttribute("provider", provider);
-		model.addAttribute("form", newEditProviderDetailsForm(provider));
+		model.addAttribute("form", newEditProviderDetailsForm(provider, person));
 	}
 
 	@AppAction(EmrConstants.APP_ADMIN)
@@ -52,8 +53,8 @@ public class ProviderDetailsFragmentController {
 		return new SuccessResult("Saved provider details");
 	}
 
-	public EditProviderDetailsForm newEditProviderDetailsForm(@RequestParam(required = false, value = "provider.providerId") Provider provider) {
-		return new EditProviderDetailsForm(provider);
+	public EditProviderDetailsForm newEditProviderDetailsForm(@RequestParam(required = false, value = "provider.providerId") Provider provider, Person person) {
+		return new EditProviderDetailsForm(provider, person);
 	}
 
 	public class EditProviderDetailsForm extends ValidatingCommandObject {
@@ -61,11 +62,16 @@ public class ProviderDetailsFragmentController {
 		private Provider original;
 
 		private String identifier;
+		private Person origPerson;
 
-		public EditProviderDetailsForm(Provider provider) {
+		public EditProviderDetailsForm(Provider provider, Person person) {
 			this.original = provider;
+			this.origPerson = person;
 			if (provider != null) {
 				this.identifier = provider.getIdentifier();
+			} else {
+				User thisUser = Context.getUserService().getUsersByPerson(person, false).get(0);
+				this.identifier = thisUser.getSystemId();
 			}
 		}
 
@@ -77,7 +83,9 @@ public class ProviderDetailsFragmentController {
 				ret = new Provider();
 				ret.setPerson(person);
 			}
-			ret.setIdentifier(identifier);
+			User thisUser = Context.getUserService().getUsersByPerson(person, false).get(0);
+			String userSystemId = thisUser.getSystemId();
+			ret.setIdentifier(userSystemId);
 			return ret;
 		}
 
@@ -113,6 +121,8 @@ public class ProviderDetailsFragmentController {
 		public void setIdentifier(String identifier) {
 			this.identifier = identifier;
 		}
+
+
 
 	}
 }

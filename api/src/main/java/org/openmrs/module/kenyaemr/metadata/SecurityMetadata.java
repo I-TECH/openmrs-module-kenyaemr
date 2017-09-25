@@ -70,7 +70,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
 				DqConstants.APP_DATAQUALITY,
-				DqConstants.APP_DATAMANAGER
+				DqConstants.APP_DATAMANAGER,
+				EmrConstants.APP_FACILITY_DASHBOARD
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -98,7 +99,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 
@@ -108,7 +110,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 
@@ -123,7 +126,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
-						app(DqConstants.APP_DATAMANAGER)
+						app(DqConstants.APP_DATAMANAGER),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 
@@ -136,7 +140,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 
@@ -147,7 +152,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(DqConstants.APP_DATAQUALITY)
+						app(DqConstants.APP_DATAQUALITY),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 
@@ -156,7 +162,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_ADMIN),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
 				)
 		));
 	}

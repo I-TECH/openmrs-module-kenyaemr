@@ -401,7 +401,6 @@ Green Card follow-up visit form
             if (pAge &lt; 15) {
                 whoAdult.style.display='none';
             }
-
         }
 
         var everOnIPT = function () {
@@ -459,7 +458,7 @@ Green Card follow-up visit form
             var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
             var xray = getValue("chest-xray-action.value");
 
-            //TB
+             //TB
             if(clinicalDiagnosis ==703) {
                 jq("#tb-result-status input[value=1660]").prop("checked", false);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
@@ -467,7 +466,7 @@ Green Card follow-up visit form
                 jq('#ipt-client-workup').hide();
 
             }
-            //No signs
+              //No signs
             if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
                 jq("#tb-result-status input[value=1660]").prop("checked", true);
                 jq("#tb-result-status input[value=142177]").prop("checked", false);
@@ -1316,7 +1315,7 @@ Green Card follow-up visit form
 
         });
 
-        //Smart wizard validations
+//Smart wizard validations
         function onLeaveStepValidation (obj, context) {
             var stepNum = context.fromStep;
 
@@ -1334,7 +1333,7 @@ Green Card follow-up visit form
                 return true;
             }
         }
-        //Step 1 validations
+         //Step 1 validations
         function step1Validation(){
             pAge = parseInt('<lookup expression="patient.age"/>');
 
@@ -2144,7 +2143,7 @@ Green Card follow-up visit form
                                 <br/>
                             </td>
                             <td>
-                                <span class="value"><recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                <span class="value"><!--<recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>--></span>
                             </td>
                         </tr>
                         <tr id="currently-onIpt">

@@ -38,7 +38,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class)
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
         );
     }
 
