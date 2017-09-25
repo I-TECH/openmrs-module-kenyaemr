@@ -139,7 +139,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
 		install(patientIdentifierType("National Unique patient identifier", "National Unique patient identifier",
 				".{1,14}", "At most 14 characters long", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
 				LocationBehavior.REQUIRED, false, _PatientIdentifierType.CWC_NUMBER));

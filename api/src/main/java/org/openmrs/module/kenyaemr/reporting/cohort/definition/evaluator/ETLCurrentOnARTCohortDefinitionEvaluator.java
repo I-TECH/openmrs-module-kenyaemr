@@ -39,30 +39,7 @@ public class ETLCurrentOnARTCohortDefinitionEvaluator implements CohortDefinitio
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct e.patient_id\n" +
-				"from ( \n" +
-				"select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
-				"max(fup.visit_date) as latest_vis_date,\n" +
-				"mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-				"p.unique_patient_no\n" +
-				"from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id \n" +
-				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id \n" +
-				"where fup.visit_date <= :endDate \n" +
-				"group by patient_id \n" +
-//                "--  we may need to filter lost to follow-up using this\n" +
-				"having (latest_tca>:endDate or \n" +
-				"(latest_tca between :startDate and :endDate and latest_vis_date between :startDate and :endDate) )\n" +
-//                "-- drop missd completely\n" +
-				") e\n" +
-//                "-- drop discountinued\n" +
-				"where e.patient_id not in (select patient_id from kenyaemr_etl.etl_patient_program_discontinuation \n" +
-				"where date(visit_date) <= :endDate and program_name='HIV' \n" +
-				"group by patient_id \n" +
-				"having if(e.latest_tca>max(visit_date),1,0)=0) \n" +
-				"and e.patient_id in (select distinct patient_id  " +
-				"from kenyaemr_etl.etl_drug_event  " +
-				"where date(date_started) <= :endDate);";
+		String qry=" SELECT patient_id from kenyaemr_etl.etl_current_in_care where started_on_drugs is not null";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

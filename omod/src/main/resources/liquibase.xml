@@ -121,7 +121,17 @@
 		</comment>
 		<sqlFile path="sql/CorrectFreeTextOnHivAdendum.sql" />
 
+	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20170918-0956" author="aojwang">
+		<comment>
+			updates all provider ids to match their system ids. this is a requirement for muzima core module
+		</comment>
+		<sql>
+			update provider p
+			inner join users u on p.person_id=u.person_id
+			set p.identifier = u.system_id;
+		</sql>
 	</changeSet>
 
 </databaseChangeLog>

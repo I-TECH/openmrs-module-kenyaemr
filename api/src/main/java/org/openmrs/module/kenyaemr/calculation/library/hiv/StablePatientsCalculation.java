@@ -1,15 +1,13 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -20,9 +18,8 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaui.KenyaUiActivator;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;

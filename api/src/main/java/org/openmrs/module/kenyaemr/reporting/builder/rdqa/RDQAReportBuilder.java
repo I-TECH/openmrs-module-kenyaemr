@@ -56,6 +56,8 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConvert
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -77,11 +79,13 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -91,6 +95,13 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
     @Autowired
     private RDQAIndicatorLibrary rdqa;
+
+    @Autowired
+    private ETLPmtctIndicatorLibrary pmtctIndicators;
+
+    @Autowired
+    private ETLMoh731IndicatorLibrary hivIndicators;
+
 
 	/**
 	 *
@@ -296,6 +307,11 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
     protected PatientDataSetDefinition rdqaActiveDataSetDefinition(String datasetName) {
 
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
+
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
@@ -382,7 +398,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         String indParams = "";
 
         cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
-        cohortDsd.addColumn("enrolledInCare", "Enrolled in care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
+        cohortDsd.addColumn("newOncare", "New on care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
         cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
         cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
         cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");

@@ -61,10 +61,10 @@ public class RDQAIndicatorLibrary {
     }
 
     public CohortIndicator sampleFrame() {
-        return cohortIndicator("Known Positives", ReportUtils.<CohortDefinition>map(new RDQACohortSampleFrameDefinition(), ""));
+        return cohortIndicator("Sample Frame", ReportUtils.<CohortDefinition>map(new RDQACohortSampleFrameDefinition(), ""));
     }
 
     public CohortIndicator sampleSize() {
-        return cohortIndicator("Known Positives", ReportUtils.<CohortDefinition>map(new RDQACohortDefinition(), ""));
+        return cohortIndicator("Sample Size", ReportUtils.<CohortDefinition>map(new RDQACohortDefinition(), ""));
     }
 }

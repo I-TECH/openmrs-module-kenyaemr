@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAScreenedForTBCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Evaluator for patients eligible for RDQA
@@ -26,21 +29,23 @@ public class RDQAScreenedForTBCohortDefinitionEvaluator implements CohortDefinit
 
     private final Log log = LogFactory.getLog(this.getClass());
     @Autowired
-    private TbCohortLibrary tbCohorts;
+    private ETLMoh731CohortLibrary moh731Cohorts;
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         RDQAScreenedForTBCohortDefinition definition = (RDQAScreenedForTBCohortDefinition) cohortDefinition;
-        CohortDefinition cd = tbCohorts.screenedForTbAndHivPositive();//, "onOrAfter=${startDate},onOrBefore=${endDate}
-        Calendar now = Calendar.getInstance();
-        Date today = now.getTime();
+        CohortDefinition cd = moh731Cohorts.tbScreening();
 
-        now.set(2002,1,1);
-        Date startDate = now.getTime();
+        Calendar calendar = Calendar.getInstance();
+        int thisMonth = calendar.get(calendar.MONTH);
 
-        context.addParameterValue("onOrAfter", startDate);
-        context.addParameterValue("onOrBefore", today);
+        Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
+        Date startDate = dateMap.get("startDate");
+        Date endDate = dateMap.get("endDate");
+
+        context.addParameterValue("startDate", startDate);
+        context.addParameterValue("endDate", endDate);
 
         Cohort screenedForTB = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 

@@ -6,8 +6,12 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility methods for reporting
@@ -70,5 +74,36 @@ public class EmrReportingUtils {
 			String label = baseLabel + " (" + column.getLabel() + ")";
 			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
 		}
+	}
+
+	public static Map<String, Date> getReportDates(int month){
+		Map<String, Date> reportDates = new HashMap<String, Date>();
+		Calendar gc = new GregorianCalendar();
+		gc.set(Calendar.MONTH, month);
+		gc.set(Calendar.DAY_OF_MONTH, 1);
+		gc.clear(Calendar.HOUR);
+		gc.clear(Calendar.HOUR_OF_DAY);
+		gc.clear(Calendar.MINUTE);
+		gc.clear(Calendar.SECOND);
+		gc.clear(Calendar.MILLISECOND);
+		Date monthStart = gc.getTime();
+		reportDates.put("startDate", monthStart);
+		gc.add(Calendar.MONTH, 1);
+		gc.add(Calendar.DAY_OF_MONTH, -1);
+		Date monthEnd = gc.getTime();
+		reportDates.put("endDate", monthEnd);
+		return reportDates;
+	}
+
+	public static Date todaysDate(){
+		Calendar gc = new GregorianCalendar();
+		gc.clear(Calendar.HOUR);
+		gc.clear(Calendar.HOUR_OF_DAY);
+		gc.clear(Calendar.MINUTE);
+		gc.clear(Calendar.SECOND);
+		gc.clear(Calendar.MILLISECOND);
+		Date today = gc.getTime();
+
+		return today;
 	}
 }

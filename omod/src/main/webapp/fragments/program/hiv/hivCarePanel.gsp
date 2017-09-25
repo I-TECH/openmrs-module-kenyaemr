@@ -49,6 +49,9 @@
 				${ ui.includeFragment("kenyaui", "widget/obsHistoryGraph", [ id: "cd4graph", patient: currentPatient, concepts: graphingConcepts, showUnits: true, style: "height: 300px" ]) }
 			</td>
 		</tr>
+		<tr>
+			<td colspan="2"><strong>Note:*</strong> LDL default value:  ${ldl_default_value}</td>
+		</tr>
 	</table>
 </div>
 <% } %>

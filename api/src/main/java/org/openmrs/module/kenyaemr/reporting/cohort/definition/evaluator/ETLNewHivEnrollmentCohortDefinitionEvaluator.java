@@ -39,11 +39,7 @@ public class ETLNewHivEnrollmentCohortDefinitionEvaluator implements CohortDefin
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct e.patient_id " +
-				"from kenyaemr_etl.etl_hiv_enrollment e " +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-				"where  e.entry_point <> 160563  and transfer_in_date is null " +
-				"and date(e.visit_date) between :startDate and :endDate;";
+		String qry=" SELECT patient_id FROM kenyaemr_etl.etl_last_month_newly_enrolled_in_care;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
