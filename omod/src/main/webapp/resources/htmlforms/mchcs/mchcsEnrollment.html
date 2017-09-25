@@ -148,6 +148,8 @@
 				}
 
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
+                    jq('#hei-id :input').prop('disabled', false);
+                    jq('#spd :input').prop('disabled', false);
 					jq('#arv-prophylaxis :input').prop('disabled', false);
 					jq('#mother-drugs :input').prop('disabled', false);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', false);
@@ -164,6 +166,8 @@
 				}
 			}
 		jq(function() {
+         //defaults
+            jq('#reasonsForSpecialCare :input').prop('disabled', true);
 			//get cohort
 			getCohort();
 			jq('#child-status-required').hide();
@@ -176,8 +180,8 @@
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
 			onARTatEnrollment();
 			jq('#onART input').click(onARTatEnrollment);
-			needSpecialCare();
-			jq('#specialCare input').click(needSpecialCare);
+
+			jq('#specialCare input').change(needSpecialCare);
 			//including the mother details
 			includeMothersNames();
 			//include the father details if any
@@ -348,16 +352,14 @@
 				<tr>
 					<td>Special Care </td>
 					<td colspan="2">
-						<table id="reasonsForSpecialCare">
+						<table>
 							<tbody>
 								<tr>
 								  <th colpan="2">Does the child need special care?
 					  <obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/></th>
 							  </tr>
-								<tr>
+								<tr id="reasonsForSpecialCare">
 									<th colpan="2">Reasons For  Special Care(<i>Tick as appropriate</i>)</th>
-								</tr>
-								<tr>
 									<td>
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth weight less than 2.5 kg" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth less than 2 years after last birth" style="checkbox" /> <br />
@@ -494,15 +496,18 @@
 								 84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 								 161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Unkown,D4T+3TC+NVP,LPV/r,3TC+ZDV,Other,D4T,DDI,ABC,NVP,EFV,3TC,TDF,IDV,AZT+3TC+EFV,D4T+3TC+EFV,AZT,FTC,LPV,RTV,ATV,AZT+3TC+NVP,3TC+D4T,TDF+3TC,EDF+3TC+EFV,ABC+3TC" />						</td>
-						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
-                      <td></td>
+								 answerLabels="Unkown,D4T+3TC+NVP,LPV/r,3TC+ZDV,Other,D4T,DDI,ABC,NVP,EFV,3TC,TDF,IDV,AZT+3TC+EFV,D4T+3TC+EFV,AZT,FTC,LPV,RTV,ATV,AZT+3TC+NVP,3TC+D4T,TDF+3TC,EDF+3TC+EFV,ABC+3TC" />
+					  </td>
+					  <td></td>
                       <td></td>
                     </tr>
                     <tr>
                       <td>Mother On ART at Enrollment of Infant	</td>
                       <td id="on-art-at-enrollment-of-infant"><obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>	</td>
-                      <td>
+						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+					  </tr>
+					  <tr>
+						<td>
 							Select the combination
 					 </td>
 					 <td>
