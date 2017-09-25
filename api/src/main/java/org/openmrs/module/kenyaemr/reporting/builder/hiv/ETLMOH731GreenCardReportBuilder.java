@@ -38,6 +38,53 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
+
+    ColumnParameters maleInfants = new ColumnParameters(null, "<1, Male", "gender=M|age=<1");
+    ColumnParameters femaleInfants = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
+
+    ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
+    ColumnParameters adult_10_to_14 = new ColumnParameters(null, "1-9", "age=1-9");
+    ColumnParameters adult_15_to_19 = new ColumnParameters(null, "1-9", "age=1-9");
+    ColumnParameters adult_20_to_24 = new ColumnParameters(null, "1-9", "age=1-9");
+    ColumnParameters adult_25_and_above = new ColumnParameters(null, "1-9", "age=1-9");
+
+    ColumnParameters m_1_to_4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
+    ColumnParameters f_1_to_4 = new ColumnParameters(null, "1-4, Female", "gender=F|age=1-4");
+
+    ColumnParameters m_5_to_9 = new ColumnParameters(null, "5-9, Male", "gender=M|age=5-9");
+    ColumnParameters f_5_to_9 = new ColumnParameters(null, "5-9, Female", "gender=F|age=5-9");
+
+    ColumnParameters m_10_to_14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
+    ColumnParameters f_10_to_14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
+
+    ColumnParameters m_15_to_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
+    ColumnParameters f_15_to_19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
+
+    ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
+    ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
+
+    ColumnParameters m_25_and_above = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
+    ColumnParameters f_25_and_above = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
+
+    ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
+
+    List<ColumnParameters> standardDisaggregationAgeAndSex = Arrays.asList(
+            colInfants, children_1_to_9,  m_10_to_14, f_10_to_14, m_15_to_19, f_15_to_19,
+            m_20_to_24, f_20_to_24, m_25_and_above, f_25_and_above , colTotal);
+
+    List<ColumnParameters> standardAgeOnlyDisaggregation = Arrays.asList(
+            children_1_to_9,  adult_10_to_14, adult_15_to_19,
+            adult_20_to_24, adult_25_and_above , colTotal);
+
+    List<ColumnParameters> standardDisaggregationWithoutInfants = Arrays.asList(
+            children_1_to_9,  m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
+            m_20_to_24,f_20_to_24,m_25_and_above, f_25_and_above , colTotal);
+
+    List<ColumnParameters> allAgeDisaggregation = Arrays.asList(
+            maleInfants, femaleInfants, m_1_to_4,  f_1_to_4, m_5_to_9, f_5_to_9, m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
+            m_20_to_24, f_20_to_24, m_25_and_above, f_25_and_above , colTotal);
+
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
@@ -51,7 +98,8 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
         return Arrays.asList(
                 ReportUtils.map(pmtctDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(hivTestingAndCouselingDatasetDefinition(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -132,33 +180,23 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         cohortDsd.setName("3");
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.moh731GreenCardAgeGroups(), "onDate=${endDate}"));
         cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
-
-        ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
-        ColumnParameters colMPeds = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
-        ColumnParameters colFPeds = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
-        ColumnParameters colMAdults = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
-        ColumnParameters colFAdults = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
-        ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
-
-        List<ColumnParameters> allColumns = Arrays.asList(colInfants, colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
-        List<ColumnParameters> nonInfantColumns = Arrays.asList(colMPeds, colFPeds, colMAdults, colFAdults, colTotal);
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-        cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2Months(), indParams), "");
-        cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");
+       /* cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2Months(), indParams), "");
+        cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");*/
 
 
         // 3.1 (On CTX Prophylaxis)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/dapsone Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
+        //EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/dapsone Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
 
         // 3.2 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), allColumns, Arrays.asList("08", "09", "10", "11", "12", "13")); //adds 08, 09 to the col titles
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         // 3.3 (Currently in Care)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(hivIndicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
+       /* EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(hivIndicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
 
         // 3.4 (Starting ART)
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
@@ -193,7 +231,43 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", ReportUtils.map(hivIndicators.hivCareVisitsFemale18(), indParams),"");
         cohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", ReportUtils.map(hivIndicators.hivCareVisitsScheduled(), indParams),"");
         cohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", ReportUtils.map(hivIndicators.hivCareVisitsUnscheduled(), indParams),"");
-        cohortDsd.addColumn("HV03-73", "HIV care visits (Total)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
+        cohortDsd.addColumn("HV03-73", "HIV care visits (Total)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");*/
+
+
+        return cohortDsd;
+
+    }
+
+    /**
+     * Creates the dataset for section #1: hiv testing and counseling
+     *
+     * @return the dataset
+     */
+    protected DataSetDefinition hivTestingAndCouselingDatasetDefinition() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("1");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.moh731GreenCardAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+        String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        // 3.1 HIV testing and counseling
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+        cohortDsd.addColumn("1.HV01-11", "Tested Facility", ReportUtils.map(hivIndicators.htsNumberTestedAtFacility(), indParams),"");
+        cohortDsd.addColumn("1.HV01-12", "Tested Community", ReportUtils.map(hivIndicators.htsNumberTestedAtCommunity(), indParams),"");
+        cohortDsd.addColumn("1.HV01-13", "Tested New", ReportUtils.map(hivIndicators.htsNumberTestedNew(), indParams),"");
+        cohortDsd.addColumn("1.HV01-14", "Tested Repeat", ReportUtils.map(hivIndicators.htsNumberTestedRepeat(), indParams),"");
+        cohortDsd.addColumn("1.HV01-15", "Tested Couples", ReportUtils.map(hivIndicators.htsNumberTestedAsCouple(), indParams),"");
+        cohortDsd.addColumn("1.HV01-16", "Tested Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeyPopulation(), indParams),"");
+
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        cohortDsd.addColumn("1.HV01-27", "Negative Total", ReportUtils.map(hivIndicators.htsNumberTestedNegative(), indParams),"");
+        cohortDsd.addColumn("1.HV01-28", "Discordant", ReportUtils.map(hivIndicators.htsNumberTestedDiscordant(), indParams),"");
+        cohortDsd.addColumn("1.HV01-29", "Positive Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeypopPositive(), indParams),"");
+
+        // number linked
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35", "36"));
 
 
         return cohortDsd;
