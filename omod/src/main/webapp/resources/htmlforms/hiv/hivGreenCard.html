@@ -33,6 +33,52 @@ Green Card follow-up visit form
             padding: inherit;
 
         }
+        /* The Modal  */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        /* Modal Footer */
+        .modal-footer {
+            padding: 2px 16px;
+            background-color: #fefefe;
+            color: white;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+    /* .Modal  */
     </style>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
@@ -784,8 +830,70 @@ Green Card follow-up visit form
                 clearHiddenSections(dapsoneDispensed);
             }
         }
+        var adherenceAssessment  = function () {
+            var val = jq(this).val();
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066;
+            var assessmentRadios = jq('#adherence-1').find('input[type=radio]');
+            var assessmentYesResponses = [];
+            var assessmentNoResponses = [];
+            //defaults
+            //Fetch responses for the assessment questions
+            jq.each(assessmentRadios, function(){
+
+                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentYesResponses.push(this);
+                }
+
+                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+
+            });
+            //If no responses have been recorded then prompt since this assessment is mandatory
+            if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+                //Prompt to complete assessment
+            }else{
+                if(assessmentYesResponses.length &gt; 0) {
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 0) {
+                    jq("#arv-adherence input[value=159405]").prop("checked", true);
+                    jq('#adherence-2').hide();
+                }
+                if(assessmentYesResponses.length == 1 || assessmentYesResponses.length == 2 ) {
+                    jq("#arv-adherence input[value=163794]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 3 || assessmentYesResponses.length == 4 ) {
+                    jq("#arv-adherence input[value=159407]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+            }
+
+        }
+        var closeAdherenceAssessment  = function () {
+            //console.log("close me");
+            var x = jq("#modalContents");
+            x.dialog('close');
+
+        }
         //Start on jq onready
         jq(function() {
+              //ART adherence assessment Modal
+            jq(".showModal").click(function(e){
+                //Defaults
+                jq('#adherence-2').hide();
+                e.preventDefault();
+                jq("#modalContents").dialog({bgiframe: true, height: 400, width: 900, modal: true });
+                jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
+                jq("#adherence-1").change(adherenceAssessment);
+
+            });
+            jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
+
+
 
             jq('#greencard').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
@@ -3320,6 +3428,68 @@ Green Card follow-up visit form
                                         <td>Current Regimen:</td>
                                         <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
                                     </tr>
+                                    <!--Adherence Modal  -->
+                                    <tr>
+                                        <button class="showModal">Adherence Assessment</button>
+                                        <!--<a href="#" class="showModal">Show Modal Box</a>-->
+                                        <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
+                                            <div id="adherence-1">
+                                                1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                           <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
+                                                                                           <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
+
+                                                2. Are you careless at times about taking your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
+                                                                                            <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
+
+                                                3.Sometimes if you feel worse when you take the medicine, do you stop taking it? <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                                                                            <input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>
+
+                                                4.When you feel better do you sometimes stop taking your medicine?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            <input type="radio" name="question-4" class="question-4" value="1065"/> Yes
+                                                                                           <input type="radio" name="question-4" class="question-4" value="1066"/> No <br/><br/>
+                                            </div>
+                                            <div id="adherence-2">
+                                                1. Did you take your medicine yesterday? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <input type="radio" name="question-5" class="question-5" value="1065"/> Yes
+                                                <input type="radio" name="question-5" class="question-5" value="1066"/> No    <br/><br/>
+
+                                                2. When you feel like your symptoms are under control, <br/>  &#160;&#160; do you sometimes stop taking your medicine?
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <input type="radio" name="question-6" class="question-6" value="1065"/> Yes
+                                                <input type="radio" name="question-6" class="question-6" value="1066"/> No <br/><br/>
+
+                                                3.Taking medication every day is a real inconvenience for some people.<br/>  &#160;&#160; Do you feel under pressure about sticking to your treatment plan?
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <input type="radio" name="question-7" class="question-7" value="1065"/> Yes
+                                                <input type="radio" name="question-7" class="question-7" value="1066"/> No <br/><br/>
+
+                                                4.How often do you have difficulty remembering to take all your medications?&#160;&#160;
+                                                  <select name="question-8" class="question-8">
+                                                      <option value="1066">Select</option>
+                                                      <option value="1090">Never/Rarely</option>
+                                                      <option value="159416">Once in a while</option>
+                                                      <option value="1385">Sometimes</option>
+                                                      <option value="1804">Usually</option>
+                                                      <option value="1358">All the time</option>
+                                                  </select>
+                                                <br/><br/>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" id="btnCloseARVAssessment" >Save</button>
+                                            </div>
+                                        </div>
+
+                                    </tr>
+                                    <!--.Modal   -->
                                     <tr>
                                         <td>Adherence</td>
                                         <td>
