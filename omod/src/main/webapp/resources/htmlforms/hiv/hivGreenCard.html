@@ -383,6 +383,7 @@ Green Card follow-up visit form
                 jq("#tb-screening-result").hide();
                 jq("#tb-screening-tab").hide();
                 jq("#tbl-ever-on-ipt").hide();
+                jq("#ipt-uptake").hide();
                 clearRadios(onIpt);
                 actionTakenTab.hide();
                 clearRadios(actionTakenTab);
@@ -427,7 +428,7 @@ Green Card follow-up visit form
             } else {
                 jq("#tbl-ever-on-ipt").hide();
                 jq("#ipt-followup").show();
-                tbScreeningQuestionsTab.show();
+                tbScreeningQuestionsTab.hide();
                 jq("#tb-screening-result").show();
                 iptClientWorkupTab.hide();
                 actionTakenTab.hide();
@@ -435,17 +436,8 @@ Green Card follow-up visit form
                 iptInitiationTab.hide();
                 //clear radios
                 clearRadios(iptClientWorkupTab);
+                clearRadios(tbScreeningQuestionsTab);
                 clearRadios(actionTakenTab);
-            }
-        }
-
-        var ageGroup = function () {
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            if (pAge &gt; 15) {
-                whoChild.style.display='none';
-            }
-            if (pAge &lt; 15) {
-                whoAdult.style.display='none';
             }
         }
 
@@ -482,7 +474,15 @@ Green Card follow-up visit form
                 clearRadios(actionTakenTab);
             }
         }
-
+        var ageGroup = function () {
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            if (pAge &gt; 15) {
+                whoChild.style.display='none';
+            }
+            if (pAge &lt; 15) {
+                whoAdult.style.display='none';
+            }
+        }
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
@@ -1161,27 +1161,32 @@ Green Card follow-up visit form
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
                 //defaults
-
                 //Fetch responses for the screening questions
                 jq.each(screeningRadios, function(){
+                    const COUGH = 159799;
+                    const CONTACT = 124068;
+                    const FEVER = 1494;
+                    const WEIGHTLOSS = 832;
+                    const SWEAT =133027;
 
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                    if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
                     }
-
+                       //Replaced yes concept with individual symptoms
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningNoResponses.push(this);
                     }
 
                 });
+
                 //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
-                if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+                if (screeningYesResponses.length == 0 &amp;&amp; screeningYesResponses.length == 0 ) {
                     //Do nothing
 
-                } else {
+                }
 
-                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+               if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
@@ -1192,18 +1197,21 @@ Green Card follow-up visit form
                         clearRadios(iptClientWorkupTab);
                         clearRadios(iptInitiationTab);
                     }
-                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
+             if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
+                        iptInitiationTab.hide();
 
                         //clear radios for hidden sections
                         clearRadios(iptFollowup);
                         clearRadios(actionTakenTab);
+                        clearRadios(iptClientWorkupTab);
+                        clearRadios(iptInitiationTab);
                         clearRadios(tbRxdate);
                         clearRadios(tbRegimen);
                     }
-                    if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == 4) { // check if all screening No responses are checked: total radios / 2
+             if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == 4) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
@@ -1214,7 +1222,7 @@ Green Card follow-up visit form
                         clearRadios(tbRxdate);
                         clearRadios(tbRegimen);
                     }
-                    if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+              if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
 
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
@@ -1227,24 +1235,24 @@ Green Card follow-up visit form
                         clearRadios(iptFollowup);
                         clearRadios(iptInitiationTab);
                     }
-                    if(screeningYesResponses.length == 0) {
+               if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
                         clearRadios(actionTakenTab);
                         clearRadios(tbRxdate);
                         clearRadios(tbRegimen);
                     }
-                    if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
+                if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
                         clearRadios(iptClientWorkupTab);
                     }
-                    if(screeningYesResponses.length &gt; 0) {
+                if(screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         clearRadios(iptClientWorkupTab);
                     }
-                }
+              // }
             };
             var showHideIPTInitiationTab = function() {
 
@@ -1256,32 +1264,32 @@ Green Card follow-up visit form
 
                 //Fetch responses for the IPT client workup questions
                 jq.each(iptClientWorkupRadios, function() {
+                    const YELLOWURINE = 162311;
+                    const NUMBNESS = 132652;
+                    const YELLOWEYES = 5192;
+                    const TENDERNESS = 124992;
 
                     //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
-                    if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    if ((this.value == YELLOWURINE || this.value == NUMBNESS || this.value == YELLOWEYES || this.value == TENDERNESS)&amp;&amp; this.checked == true) {
                         iptClientWorkupYesResponses.push(this);
                     }
 
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         iptClientWorkupNoResponses.push(this);
                     }
-                });
+                  });
 
-                if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
-                } else {
-
-                    if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2) { // check if all No responses are checked: total radios / 2
-                        showIPTInitiationTab = true;
-                    }
+             if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
+                     //Do nothing
                 }
-                if (showIPTInitiationTab) {
-                    iptInitiationTab.show();
-                    jq('#ipt-result-status').show();
+              if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2)  { // check if all No responses are checked: total radios / 2
+                  iptInitiationTab.show();
+                  jq('#ipt-result-status').show();
+                  }else{
+                  iptInitiationTab.hide();
+                  clearRadios(iptInitiationTab);
+               }
 
-                } else {
-                    iptInitiationTab.hide();
-                    clearRadios(iptInitiationTab);
-                }
             };
             clearRadios = function(parentObj) {
 
@@ -2293,55 +2301,34 @@ Green Card follow-up visit form
                     <fieldset id="tb-screening-tab">
                         <legend>Screening Questions</legend>
                         <table id="screening-questions">
-                            <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
-						</span>
-                                    <td>Cough of any duration:</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id="tb-screening-error" /></td>
-                                </obsgroup>
-                            </tr>
-                            <includeIf velocityTest="$patient.age &lt; 15">
+                            <obsgroup groupingConceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
                                 <tr>
-                                    <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
-						</span>
+                                    <td>Cough of any duration:</td>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id="tb-screening-error" /></td>
+                                </tr>
+                                <includeIf velocityTest="$patient.age &lt; 15">
+                                <tr>
                                         <td>Contact with a TB Case:</td>
-                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                    </obsgroup>
+                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                                 </tr>
                             </includeIf>
                             <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
-						</span>
                                     <td>Fever:</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+
                             </tr>
                             <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
-						</span>
                                     <td>Noticeable weight loss or poor weight gain:</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </tr>
                             <includeIf velocityTest="$patient.age &gt; 15">
-                                <tr>
-                                    <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
-						</span>
-                                        <td>Night sweats:</td>
-                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                    </obsgroup>
-                                </tr>
+                             <tr>
+                                    <td>Night sweats:</td>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                             </tr>
                             </includeIf>
+                            </obsgroup>
                         </table>
                     </fieldset>
 
@@ -2436,45 +2423,27 @@ Green Card follow-up visit form
                             <tr>
                                 <td colspan="2" class="ke-panel-header">Ask for the following</td>
                             </tr>
-                            <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="162311"/>
-						</span>
-                                    <td>1. Yellow Urine</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                            <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                              <tr>
+						            <td>1. Yellow Urine</td>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </tr>
                             <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="132652"/>
-						</span>
                                     <td>2. Numbness/ burning sensation on the hands or feet</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </tr>
                             <tr>
                                 <td colspan="2" class="ke-panel-header">Examine the following</td>
                             </tr>
                             <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="5192"/>
-						</span>
                                     <td>1. Yellowness of eyes </td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </tr>
                             <tr>
-                                <obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124994"/>
-						</span>
                                     <td>2.Tenderness in the upper right quadrant of the abdomen </td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </obsgroup>
+                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                             </tr>
+                            </obsgroup>
                         </table>
                     </fieldset>
 
