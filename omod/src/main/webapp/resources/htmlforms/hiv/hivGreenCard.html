@@ -830,6 +830,7 @@ Green Card follow-up visit form
                 clearHiddenSections(dapsoneDispensed);
             }
         }
+        //Morisky assessment
         var adherenceAssessment  = function () {
             var val = jq(this).val();
             const YES_CONCEPT_ID = 1065;
@@ -879,21 +880,9 @@ Green Card follow-up visit form
             x.dialog('close');
 
         }
+        //.Morisky assessment
         //Start on jq onready
         jq(function() {
-              //ART adherence assessment Modal
-            jq(".showModal").click(function(e){
-                //Defaults
-                jq('#adherence-2').hide();
-                e.preventDefault();
-                jq("#modalContents").dialog({bgiframe: true, height: 400, width: 900, modal: true });
-                jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
-                jq("#adherence-1").change(adherenceAssessment);
-
-            });
-            jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
-
-
 
             jq('#greencard').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
@@ -1026,7 +1015,22 @@ Green Card follow-up visit form
                 jq('#standard-care').show();
                 jq('#fast-track').hide();
             }
+            // Morisky ART adherence assessment Modal
+            jq(".showModal").click(function(e){
+                //Defaults
+                var adherenceResponses1=jq('#adherence-1');
+                var adherenceResponses2=jq('#adherence-2');
+                jq('#adherence-2').hide();
+                clearHiddenSections(adherenceResponses1);
+                clearHiddenSections(adherenceResponses2);
+                e.preventDefault();
+                jq("#modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
+                jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
+                jq("#adherence-1").change(adherenceAssessment);
 
+            });
+            jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
+            //.Morisky
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
@@ -2156,7 +2160,7 @@ Green Card follow-up visit form
                                 <div id="whoChild">
                                     <table>
                                         <tr>
-                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA," style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
+                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -2919,7 +2923,7 @@ Green Card follow-up visit form
                             <tr>
                                 <td width="8%" style="text-align: left">ANC Number:</td>
                                 <td>
-                                    <obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
+                                    <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/>
                                 </td>
                                 <td></td>
                             </tr>
@@ -3428,6 +3432,8 @@ Green Card follow-up visit form
                                         <td>Current Regimen:</td>
                                         <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
                                     </tr>
+                                </table>
+                                <table>
                                     <!--Adherence Modal  -->
                                     <tr>
                                         <button class="showModal">Adherence Assessment</button>
@@ -3453,6 +3459,7 @@ Green Card follow-up visit form
                                                                                             <input type="radio" name="question-4" class="question-4" value="1065"/> Yes
                                                                                            <input type="radio" name="question-4" class="question-4" value="1066"/> No <br/><br/>
                                             </div>
+                                            <hr/>
                                             <div id="adherence-2">
                                                 1. Did you take your medicine yesterday? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -3462,12 +3469,12 @@ Green Card follow-up visit form
 
                                                 2. When you feel like your symptoms are under control, <br/>  &#160;&#160; do you sometimes stop taking your medicine?
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-6" class="question-6" value="1065"/> Yes
                                                 <input type="radio" name="question-6" class="question-6" value="1066"/> No <br/><br/>
 
                                                 3.Taking medication every day is a real inconvenience for some people.<br/>  &#160;&#160; Do you feel under pressure about sticking to your treatment plan?
-                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-7" class="question-7" value="1065"/> Yes
                                                 <input type="radio" name="question-7" class="question-7" value="1066"/> No <br/><br/>
 
@@ -3480,11 +3487,11 @@ Green Card follow-up visit form
                                                       <option value="1804">Usually</option>
                                                       <option value="1358">All the time</option>
                                                   </select>
-                                                <br/><br/>
+                                                <br/>
                                             </div>
 
                                             <div class="modal-footer">
-                                                <button type="button" id="btnCloseARVAssessment" >Save</button>
+                                                <button type="button" id="btnCloseARVAssessment" style="float: right;" >Save</button>
                                             </div>
                                         </div>
 
