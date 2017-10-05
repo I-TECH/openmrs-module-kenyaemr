@@ -1149,7 +1149,6 @@ Green Card follow-up visit form
                 var actionTakenTab = jq('#action-taken');
                 var tbRxdate = jq('#tbrxdate input').val('');
                 var tbRegimen = jq('#tb-regimen');
-                var actionTakenTab = jq('#action-taken');
                 var iptClientWorkupTab = jq('#ipt-client-workup');
                 var iptFollowup = jq('#ipt-followup');
                 var tbScreeningQuestionsTab = jq("#tb-screening-tab");
@@ -1507,6 +1506,21 @@ Green Card follow-up visit form
             var pgender = "<lookup expression="patient.gender" />";
             pAge = parseInt('<lookup expression="patient.age"/>');
             var complaintsToday = getValue('complaints-today.value');
+            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
+            var onIpt = getValue('on-ipt.value');
+            var everOnIpt= getValue('ever-on-ipt.value');
+            var knownAllergies = getValue('known-allergies.value');   //boolean
+            var chronicIllness = getValue('chronic-illness.value');   //non boolean
+            var adverseReactions = getValue('adverse-reactions.value');   // boolean
+            var patientHasLMP = getValue('hasLMP.value');
+            var encounterDate = getValue('encounter-date.value');
+            var lmpDate = getValue('lmp-date.value');
+            var tbrxDate = getValue('tbrxdate.value');
+            var isPregnant = getValue('pregnancyOption.value');
+            var pregnancyIntention = getValue('pregnancyIntention.value');
+            var onfpMethodChecked = getField('fplanning.value').val();
+            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
+            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
             //TB validation
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             const YES_CONCEPT_ID = 1065;
@@ -1531,20 +1545,6 @@ Green Card follow-up visit form
                     screeningNoResponses.push(this);
                 }
             });
-            var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
-            var onIpt = getValue('on-ipt.value');
-            var everOnIpt= getValue('ever-on-ipt.value');
-            var knownAllergies = getValue('known-allergies.value');   //boolean
-            var chronicIllness = getValue('chronic-illness.value');   //non boolean
-            var adverseReactions = getValue('adverse-reactions.value');   // boolean
-            var patientHasLMP = getValue('hasLMP.value');
-            var encounterDate = getValue('encounter-date.value');
-            var lmpDate = getValue('lmp-date.value');
-            var isPregnant = getValue('pregnancyOption.value');
-            var pregnancyIntention = getValue('pregnancyIntention.value');
-            var onfpMethodChecked = getField('fplanning.value').val();
-            var fpMethodsChecked = jq("#onFp input:checkbox:checked");
-            var notOnfpMethodsChecked = jq("#notOnFp input:checkbox:checked");
 
             if (complaintsToday == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
@@ -1590,6 +1590,12 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('tb-screening-error.error').html('Please complete TB screening.').hide();
+            }
+            var isTBRxDateBeforeEncounter = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(tbrxDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isTBRxDateBeforeEncounter) {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('tbrxdate.error').html('TB RX date, should  be earlier than encounter Date').show();
+                return false;
             }
             if (knownAllergies == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
@@ -1955,6 +1961,13 @@ Green Card follow-up visit form
                             var ctxDispensed = getValue('ctx-dispensed.value');
                             var dapsoneAdherence = getValue('dapsone-adherence.value');
                             var dapsoneDispensed = getValue('dapsone-dispensed.value');
+                            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+                            var screeningRadios = jq('#screening-questions').find('input[type=radio]');
+                            var actionTakenTab = jq('#action-taken');
+                            var iptClientWorkupTab = jq('#ipt-client-workup');
+                            var tbRxdate = jq('#tbrxfield');
+                            var screeningYesResponses = [];
+                            var screeningNoResponses = [];
 
                             jq('#currently-onIpt :input').prop('disabled', false);
                             jq("#tbl-ever-on-ipt").show();
@@ -1966,13 +1979,8 @@ Green Card follow-up visit form
                             }else{
                                 jq("#key-population").hide();
                             }
-                            //if key pop show which type
-                            if (everOnIPT == 1066 ){
-                                jq("#tb-screening-tab").show();
-                            }else{
-                                jq("#tb-screening-tab").hide();
-                            }
-                            //If has LMP activate date and if pg
+
+             //If has LMP activate date and if pg
                             if (hasLMP == 1065) {     //yes_no pregnancy
                                 jq('#lmp-date :input').prop('disabled', false);
                                 jq('#if-patient-pregnant').show();
@@ -1998,6 +2006,50 @@ Green Card follow-up visit form
                             if (dapsoneAdherence != false || dapsoneDispensed != false) {     //dapsone
                                 jq("#dapsone-part").show();
                             }
+                            //TB screening show on edit
+                            //if key pop show which type
+                            if (everOnIPT == 1066 ){
+                                jq("#tb-screening-tab").show();
+                            }else{
+                                jq("#tb-screening-tab").hide();
+                            }
+                            jq.each(screeningRadios, function(){
+                                const YES_CONCEPT_ID = 1065;
+                                const NO_CONCEPT_ID = 1066
+                                const COUGH = 159799;
+                                const CONTACT = 124068;
+                                const FEVER = 1494;
+                                const WEIGHTLOSS = 832;
+                                const SWEAT =133027;
+                                //Push any responses to the respective screeningYesResponses and screeningNoResponses array
+                                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
+                                    screeningYesResponses.push(this);
+
+                                }
+
+                                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                                    screeningNoResponses.push(this);
+
+                                }
+
+                            });
+                      //If no responses have been recorded than hide the ActionTaken and IPTClientWorkup tabs
+                            if (screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+                           // Do nothing
+                            }
+                            if (screeningYesResponses.length &gt; 0) {
+                                actionTakenTab.show();
+                            }
+                              //Check if we have 5 NO responses
+                            if (screeningNoResponses.length == screeningRadios.length / 2 ) {
+                                iptClientWorkupTab.show();
+                                }
+                            if (clinicalDiagnosis == 703 ){
+                                jq("#tbl-start-antiTb").show();
+                            }else{
+                                jq("#tbl-start-antiTb").hide();
+                            }
+
                         });
                     </script>
                 </ifMode>
@@ -2514,7 +2566,7 @@ Green Card follow-up visit form
                         </tr>
                         <tr>
                             <td>Action Taken</td>
-                            <td><obs id="action-taken" conceptId="160632" cols="45" rows="1" /></td>
+                            <td><obs id="action-taken" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="45" rows="1" /></td>
                         </tr>
                     </table>
 
