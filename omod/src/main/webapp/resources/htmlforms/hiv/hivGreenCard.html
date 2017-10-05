@@ -1516,8 +1516,16 @@ Green Card follow-up visit form
             //Fetch responses for the screening questions
             jq.each(screeningRadios, function(){
                 //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                const COUGH = 159799;
+                const CONTACT = 124068;
+                const FEVER = 1494;
+                const WEIGHTLOSS = 832;
+                const SWEAT =133027;
+
+                //Push any responses to the respective screeningYesResponses and screeningNoResponses array
+                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
                     screeningYesResponses.push(this);
+
                 }
                 if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                     screeningNoResponses.push(this);
@@ -1568,7 +1576,7 @@ Green Card follow-up visit form
                 getField('ever-on-ipt.error').html('Please specify if patient has ever been on IPT.').hide();
             }
             //If neither yes nor no repsonsed recorder
-            if (onAntiTbDrugs !=1065 &amp;&amp; screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+            if (onAntiTbDrugs !=1065 &amp;&amp;  onIpt != 1065 &amp;&amp; screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please conduct TB screening.').show();
                 return false;
@@ -1576,7 +1584,7 @@ Green Card follow-up visit form
                 getField('tb-screening-error.error').html('Please conduct TB screening.').hide();
             }
           //If not completed tb screening
-            if (onAntiTbDrugs !=1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
+            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please complete TB screening.').show();
                 return false;
