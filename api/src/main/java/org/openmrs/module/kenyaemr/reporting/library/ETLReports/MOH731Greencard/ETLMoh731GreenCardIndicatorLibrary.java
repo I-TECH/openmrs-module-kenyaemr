@@ -331,4 +331,13 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     public  CohortIndicator preArtCohort() {
         return cohortIndicator("pre-art cohort", map(moh731Cohorts.preArtCohort(), "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * Pre-art
+     * covers indicators HV03-013 to  HV03-015
+     * @return indicator
+     */
+    public  CohortIndicator startedOnIPT() {
+        return cohortIndicator("Started on IPT", map(moh731Cohorts.startedOnIPT(), "startDate=${startDate},endDate=${endDate}"));
+    }
 }

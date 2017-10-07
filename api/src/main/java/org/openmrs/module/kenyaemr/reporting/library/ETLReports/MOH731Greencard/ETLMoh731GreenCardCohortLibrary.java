@@ -867,4 +867,90 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
 
     }
+
+    /**
+     * started on ipt
+     * looks for patients started on ipt during a given period
+     */
+    public CohortDefinition startedOnIPT() {
+        String sqlQuery = "select patient_id \n" +
+                "from kenyaemr_etl.etl_ipt_screening \n" +
+                "where visit_date between :startDate and :endDate and ipt_started=1065 " +
+                " ;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("startedOnIPT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients started on IPT");
+        return cd;
+
+    }
+
+    public CohortDefinition tbEnrollment() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id " +
+                " from kenyaemr_etl.etl_tb_enrollment e " +
+                " join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
+                " where date(e.visit_date) between :startDate and :endDate " +
+                ";";
+        cd.setName("newTBEnrollment");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New TB Enrollment");
+
+        return cd;
+    }
+
+    public CohortDefinition tbNewKnownPositive() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_tb_enrollment e \n" +
+                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "inner join kenyaemr_etl.etl_hiv_enrollment he on he.patient_id=e.patient_id and he.visit_date > e.visit_date\n" +
+                "where  date(e.visit_date) between :startDate and :endDate " +
+                ";";
+        cd.setName("newTBKnownPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New TB HIV Known Positive");
+
+        return cd;
+    }
+
+    public CohortDefinition tbTestedForHIV() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_tb_enrollment e \n" +
+                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "inner join kenyaemr_etl.etl_hts_test h on h.patient_id=e.patient_id and h.visit_date between :startDate and :endDate\n" +
+                "where  date(e.visit_date) between :startDate and :endDate " +
+                ";";
+        cd.setName("newTBKnownPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New TB HIV Known Positive");
+
+        return cd;
+    }
+
+    public CohortDefinition tbNewTestedHIVPositive() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_tb_enrollment e \n" +
+                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "inner join kenyaemr_etl.etl_hts_test h on h.patient_id=e.patient_id and h.visit_date between :startDate and :endDate and h.final_test_result=\"Positive\"\n" +
+                "where  date(e.visit_date) between :startDate and :endDate " +
+                ";";
+        cd.setName("newTBTestedHIVPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New TB cases tested HIV Positive");
+
+        return cd;
+    }
 }

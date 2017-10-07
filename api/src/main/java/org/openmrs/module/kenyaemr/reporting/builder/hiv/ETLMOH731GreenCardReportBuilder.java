@@ -209,16 +209,17 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
 
         // 3.5 (Survival and Retention on ART at 12 months)
-        cohortDsd.addColumn("HV03-40", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
-        cohortDsd.addColumn("HV03-41", "On therapy at 12 months (Total) ", ReportUtils.map(hivIndicators.onTherapyAt12Months(), indParams), "");
+        cohortDsd.addColumn("HV03-040", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
+        cohortDsd.addColumn("HV03-041", "On therapy at 12 months (Total) ", ReportUtils.map(hivIndicators.onTherapyAt12Months(), indParams), "");
 
         // 3.6 on CTX/Dapsone
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("44", "45", "46", "47", "48", "49", "50"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
 
         // 3.7 TB Screening and presumed TB
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("51", "52", "53", "54", "55", "56", "57"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
 
-
+        // 3.10
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(hivIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
         // 3.12
         cohortDsd.addColumn("HV03-88", "Clinical Visits (F18+)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
         cohortDsd.addColumn("HV09-89", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
