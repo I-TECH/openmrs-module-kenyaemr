@@ -83,7 +83,11 @@ Green Card follow-up visit form
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <!--Wizard plugins-->
+
     <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
+
+    <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
+
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
 
     <script type="text/javascript">
@@ -955,6 +959,8 @@ Green Card follow-up visit form
             //Sexual and reproductive setion
             jq("#hasLMP :input[type=radio]").change(patientLMPStatus);
             jq('#lmp-date :input').prop('disabled', true);
+            //jq('#fp-details').hide();
+
             jq('#if-patient-pregnant').hide();
             jq('#pregnancyOptionValues').hide();
             jq("#wants-pregnancy").hide();
@@ -1014,6 +1020,16 @@ Green Card follow-up visit form
             }else{
                 jq('#standard-care').show();
                 jq('#fast-track').hide();
+            }
+            //On ART hide adherence assessment
+            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            if(PATIENT_ON_ART =="true") {
+                jq('.on-art').show();
+                jq('.showModal').show();
+
+            }else{
+                jq('.on-art').hide();
+                jq('.showModal').hide();
             }
             // Morisky ART adherence assessment Modal
             jq(".showModal").click(function(e){
@@ -1134,7 +1150,29 @@ Green Card follow-up visit form
                 jq('#fpOptionValues :input[type=checkbox]').prop('disabled', true);
                 jq('#fpOptionValues :input').prop('checked', false);
             });
-
+              /*On TB Drugs  */
+            var PATIENT_ON_TB = "<lookup expression="kenyaemr.patientInTbProgram()" />";
+            if (PATIENT_ON_TB == 'true'){
+                jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
+                jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
+                jq(".tb-patient").text("On TB Treatment");
+            }
+            /*  .On TB Drugs   */
+            /*On IPT Drugs  */
+            var PATIENT_ON_IPT = "<lookup expression="kenyaemr.patientInIPTProgram()" />";
+            if (PATIENT_ON_IPT == 'true'){
+                jq('#on-ipt input').prop("disabled", false);
+                jq("#on-ipt input[value=1065]").prop("checked", true);
+                jq("#on-anti-tb-drugs input[value=1066]").prop("checked", true);
+                jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
+                jq('#on-ipt input[type=radio]').attr("style", "pointer-events:none;");
+                jq(".ipt-patient").text("Currently on IPT");
+                jq("#tbl-ever-on-ipt").hide();
+                jq("#ipt-followup").show();
+                jq("#tb-screening-result").show();
+                jq("#ipt-uptake").show();
+            }
+            /*  .On IPT Drugs   */
             /*TB Screening form validation*/
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
@@ -1340,6 +1378,7 @@ Green Card follow-up visit form
         beforeSubmit.push(function() {
             var pgender = "<lookup expression="patient.gender" />";
             var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
             var tca_date = getValue('returnVisitDate.value');
             var tca_reason = getValue('returnVisitReason.value');
             var encounterDate = getValue('encounter-date.value');
@@ -1380,7 +1419,7 @@ Green Card follow-up visit form
                 getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
                 return false;
             }
-            if (arvAdherence == false){
+            if (PATIENT_ON_ART == 'true' &amp;&amp; arvAdherence == false){
                 getField('arv-adherence.error').html('Please specify ARV adherence.').show();
                 return false;
             }
@@ -1455,12 +1494,13 @@ Green Card follow-up visit form
          //Step 1 validations
         function step1Validation(){
             pAge = parseInt('<lookup expression="patient.age"/>');
-
+            var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
             var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
             var populationType =getValue('population-type.value');
             var adultWhoStage =getField('whoStage-adult.value').val();
             var childWhoStage =getField('whoStage-child.value').val();
+//            console.log("Recent who"+recentWHO);
 
             if (visit_scheduled == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
@@ -1483,14 +1523,14 @@ Green Card follow-up visit form
             }else{
                 getField('population-type.error').html('Please specify population type').hide();
             }
-            if (pAge &gt; 15 &amp;&amp; adultWhoStage == false) {
+            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').show();
                 return false;
             }else{
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
             }
-            if (pAge &lt; 15 &amp;&amp; childWhoStage == false) {
+            if (recentWHO =="" &amp;&amp; pAge &lt; 15 &amp;&amp; childWhoStage == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
                 getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
@@ -1725,6 +1765,7 @@ Green Card follow-up visit form
         function step4Validation(){
             var pgender = "<lookup expression="patient.gender" />";
             var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
             var encounterDate = getValue('encounter-date.value');
             var prophylaxis_Used = getValue('prophylaxis-used.value');
             var ctxAdherence = getValue('ctx-adherence.value');
@@ -1779,7 +1820,7 @@ Green Card follow-up visit form
             }else{
                 getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
             }
-            if (arvAdherence == false) {
+            if (PATIENT_ON_ART == 'true' &amp;&amp; arvAdherence == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
                 getField('arv-adherence.error').html('Please specify ARV adherence.').show();
                 return false;
@@ -1964,6 +2005,7 @@ Green Card follow-up visit form
                             var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
                             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
                             var actionTakenTab = jq('#action-taken');
+                            var tbQuestions = jq('#tb-questions');
                             var iptClientWorkupTab = jq('#ipt-client-workup');
                             var tbRxdate = jq('#tbrxfield');
                             var screeningYesResponses = [];
@@ -2038,10 +2080,12 @@ Green Card follow-up visit form
                            // Do nothing
                             }
                             if (screeningYesResponses.length &gt; 0) {
+                                tbQuestions.show();
                                 actionTakenTab.show();
                             }
                               //Check if we have 5 NO responses
                             if (screeningNoResponses.length == screeningRadios.length / 2 ) {
+                                tbQuestions.show();
                                 iptClientWorkupTab.show();
                                 }
                             if (clinicalDiagnosis == 703 ){
@@ -2307,7 +2351,7 @@ Green Card follow-up visit form
                 <fieldset class="tb-screening-part">
                     <!--TB Screening-->
                     <legend>TB Screening</legend>
-                    <table cellspacing="10" >
+                    <table cellspacing="10" id="tb-questions">
                         <tr>
                             <th  style="color: #888" >Current Status </th>
                             <th  style="color: #888" >Recent </th>
@@ -2322,9 +2366,8 @@ Green Card follow-up visit form
                                      id="on-anti-tb-drugs" />
                                 <br/>
                             </td>
-                            <td>
-                                <span class="value"><!--<recentObs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>--></span>
-                            </td>
+                            <td width="20%"> <div><a class="tb-patient"></a></div></td>
+
                         </tr>
                         <tr id="currently-onIpt">
                             <td>
@@ -2336,9 +2379,7 @@ Green Card follow-up visit form
                                      id="on-ipt" />
                                 <br/>
                             </td>
-                            <td>
-                                <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                            </td>
+                            <td width="20%"> <div><a class="ipt-patient"></a></div></td>
                         </tr>
                     </table>
                     <table id="tbl-ever-on-ipt">
@@ -2353,7 +2394,7 @@ Green Card follow-up visit form
                                 <br/>
                             </td>
                             <td>
-                                <span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                <!--<span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>-->
                             </td>
                         </tr>
                     </table>
@@ -3397,7 +3438,7 @@ Green Card follow-up visit form
                                             <obs
                                                     conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                     answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                                    answerLabels="Good (G),Fair (F),Poor (P)"
                                                     style="radio" id="ctx-adherence"
                                             />
                                         </td>
@@ -3430,7 +3471,7 @@ Green Card follow-up visit form
                                             <obs
                                                     conceptId="164941"
                                                     answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                                    answerLabels="Good (G),Fair (F),Poor (P)"
                                                     style="radio" id="dapsone-adherence"
                                             />
                                         </td>
@@ -3462,7 +3503,7 @@ Green Card follow-up visit form
                                         <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
                                     </tr>
                                 </table>
-                                <table>
+                                <table class = "on-art">
                                     <!--Adherence Modal  -->
                                     <tr>
                                         <button class="showModal">Adherence Assessment</button>
@@ -3532,7 +3573,7 @@ Green Card follow-up visit form
                                             <obs
                                                     conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                     answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Inadequate(I),Poor (P)"
+                                                    answerLabels="Good (G),Fair (F),Poor (P)"
                                                     style="radio" id="arv-adherence"
                                             />
                                         </td>
