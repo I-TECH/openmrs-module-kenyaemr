@@ -28,7 +28,10 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInIptProgramCalculation;
 
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -83,8 +86,48 @@ public class EmrVelocityFunctions {
 		return 	(Boolean) stablePatient.getValue();
 
 
+	}/**
+	 * Checks whether the patient in TB program
+	 * @return true if patient is enrolled in TB program
+	 *
+	 * */
+
+	public Boolean currentInArt() {
+
+		CalculationResult patientCurrentInART = EmrCalculationUtils.evaluateForPatient(OnArtCalculation.class, null,session.getPatient());
+		return 	(Boolean) patientCurrentInART.getValue();
+
+
 	}
-		/**
+	/**
+	 * Checks whether the patient in TB program
+	 * @return true if patient is enrolled in TB program
+	 *
+	 * */
+
+	public Boolean patientInTbProgram() {
+
+		CalculationResult patientEnrolledInTbProgram = EmrCalculationUtils.evaluateForPatient(PatientInTbProgramCalculation.class, null,session.getPatient());
+		return 	(Boolean) patientEnrolledInTbProgram.getValue();
+
+
+	}
+	/**
+	 * Checks whether the patient in TB program
+	 * @return true if patient is enrolled in TB program
+	 *
+	 * */
+
+	public Boolean patientInIPTProgram() {
+
+		CalculationResult patientEnrolledInIPTProgram = EmrCalculationUtils.evaluateForPatient(PatientInIptProgramCalculation.class, null,session.getPatient());
+		return 	(Boolean) patientEnrolledInIPTProgram.getValue();
+
+
+	}
+
+
+	/**
 		 * Fetches a global property value by property name
 		 * @param name the property name
 		 * @return the global property value
