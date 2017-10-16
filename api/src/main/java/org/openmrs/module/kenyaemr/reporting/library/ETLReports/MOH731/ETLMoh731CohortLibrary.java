@@ -55,7 +55,7 @@ public class ETLMoh731CohortLibrary {
                 "group by patient_id \n" +
 //                "--  we may need to filter lost to follow-up using this\n" +
                 "having ((latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null )) or \n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) ) and (latest_tca > date_discontinued or disc_patient is null ))\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and (latest_vis_date >= latest_tca)) ) and (latest_tca > date_discontinued or disc_patient is null ))\n" +
 //                "-- drop missd completely\n" +
                 ") e\n" ;
 
@@ -126,7 +126,7 @@ public class ETLMoh731CohortLibrary {
                 "group by patient_id\n" +
                 "having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
                 "(latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null )) )\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and (latest_vis_date >= latest_tca)) ) and (latest_tca > date_discontinued or disc_patient is null ))\n" +
                 ") e\n" +
                 ";";
 
@@ -279,7 +279,7 @@ public class ETLMoh731CohortLibrary {
                 "group by patient_id\n" +
                 "having (\n" +
                 "  (latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and (latest_vis_date >= latest_tca)) and (latest_tca > date_discontinued or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
                 ") e";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -575,7 +575,7 @@ public class ETLMoh731CohortLibrary {
                 "group by patient_id\n" +
                 "having (\n" +
                 "  (latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and (latest_vis_date >= latest_tca )) and (latest_tca > date_discontinued or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
                 ") e" +
                 "; ";
 
