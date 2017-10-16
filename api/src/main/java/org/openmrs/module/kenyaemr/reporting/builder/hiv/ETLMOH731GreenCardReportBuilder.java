@@ -50,8 +50,8 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     ColumnParameters adult_25_and_above = new ColumnParameters(null, "25+", "age=25+");
 
     // specific to pre-art
-    ColumnParameters adult_0_to_14 = new ColumnParameters(null, "20-24", "age=20-24");
-    ColumnParameters adult_15_and_above = new ColumnParameters(null, "25+", "age=25+");
+    ColumnParameters adult_0_to_14 = new ColumnParameters(null, "0-14", "age=0-14");
+    ColumnParameters adult_15_and_above = new ColumnParameters(null, "15+", "age=15+");
     // end of pre-art
 
     ColumnParameters m_1_to_4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
@@ -80,6 +80,10 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
     List<ColumnParameters> standardAgeOnlyDisaggregation = Arrays.asList(
             children_1_to_9,  adult_10_to_14, adult_15_to_19,
+            adult_20_to_24, adult_25_and_above , colTotal);
+
+    List<ColumnParameters> standardAgeOnlyDisaggregationWithInfants = Arrays.asList(
+            colInfants, children_1_to_9,  adult_10_to_14, adult_15_to_19,
             adult_20_to_24, adult_25_and_above , colTotal);
 
     List<ColumnParameters> standardDisaggregationWithoutInfants = Arrays.asList(
@@ -198,15 +202,15 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
 
         // 3.1 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011"));
         // 3.2 (Pre-ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(hivIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(hivIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("013", "014", "015"));
 
         // 3.3 (Starting ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026"));
 
         // 3.4 (Currently on ART [All])
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038"));
 
         // 3.5 (Survival and Retention on ART at 12 months)
         cohortDsd.addColumn("HV03-040", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
@@ -216,59 +220,23 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
 
         // 3.7 TB Screening and presumed TB
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
 
+        // 3.8
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(hivIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
+        cohortDsd.addColumn("HV03-066", "Completed IPT 12 months", ReportUtils.map(hivIndicators.ipt12MonthsCohort(), indParams),"");
         // 3.10
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(hivIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
+        cohortDsd.addColumn("HV03-076", "TB new cases", ReportUtils.map(hivIndicators.tbEnrollment(), indParams),"");
+        cohortDsd.addColumn("HV03-077", "TB new cases, Known Positive", ReportUtils.map(hivIndicators.tbNewKnownPositive(), indParams),"");
+        cohortDsd.addColumn("HV03-078", "TB new cases, tested for HIV", ReportUtils.map(hivIndicators.tbTestedForHIV(), indParams),"");
+        cohortDsd.addColumn("HV03-080", "TB new cases, HIV positive", ReportUtils.map(hivIndicators.tbNewTestedHIVPositive(), indParams),"");
+        cohortDsd.addColumn("HV03-082", "TB already on HAART", ReportUtils.map(hivIndicators.tbNewAlreadyOnHAART(), indParams),"");
+        cohortDsd.addColumn("HV03-083", "TB new cases start HAART", ReportUtils.map(hivIndicators.tbNewStartingHAART(), indParams),"");
+        cohortDsd.addColumn("HV03-084", "TB total on HAART", ReportUtils.map(hivIndicators.tbTotalOnHAART(), indParams),"");
         // 3.12
-        cohortDsd.addColumn("HV03-88", "Clinical Visits (F18+)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
-        cohortDsd.addColumn("HV09-89", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
-
-
-        //EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/dapsone Prophylaxis", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), nonInfantColumns, Arrays.asList("03", "04", "05", "06", "07"));
-
-        // 3.2 (Enrolled in Care)
-
-
-        // 3.3 (Currently in Care)
-       /* EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently in care", ReportUtils.map(hivIndicators.currentlyInCare(), indParams), allColumns, Arrays.asList("14", "15", "16", "17", "18", "19"));
-
-        // 3.4 (Starting ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), allColumns, Arrays.asList("20", "21", "22", "23", "24", "25"));
-        cohortDsd.addColumn("HV03-26", "Starting ART (Pregnant)", ReportUtils.map(hivIndicators.startedArtWhilePregnant(), indParams), "");
-        cohortDsd.addColumn("HV03-27", "Starting ART (TB Patient)", ReportUtils.map(hivIndicators.startedArtWhileTbPatient(), indParams), "");
-
-        // 3.5 (Revisits ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Revisits ART", ReportUtils.map(hivIndicators.revisitsArt(), indParams), allColumns, Arrays.asList("28", "29", "30", "31", "32", "33"));
-
-        // 3.6 (Currently on ART [All])
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Currently on ART [All]", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), allColumns, Arrays.asList("34", "35", "36", "37", "38", "39"));
-
-
-        // 3.7 (Cumulative Ever on ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Cumulative ever on ART", ReportUtils.map(hivIndicators.cumulativeOnArt(), indParams), nonInfantColumns, Arrays.asList("40", "41", "42", "43", "44"));
-
-        // 3.8 (Survival and Retention on ART at 12 months)
-        cohortDsd.addColumn("HV03-45", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
-        cohortDsd.addColumn("HV03-46", "On original 1st Line at 12 months", ReportUtils.map(hivIndicators.onOriginalFirstLineAt12Months(), indParams), "");
-        cohortDsd.addColumn("HV03-47", "On alternative 1st Line at 12 months", ReportUtils.map(hivIndicators.onAlternateFirstLineAt12Months(), indParams), "");
-        cohortDsd.addColumn("HV03-48", "On 2nd Line (or higher) at 12 months ", ReportUtils.map(hivIndicators.onSecondLineAt12Months(), indParams), "");
-        cohortDsd.addColumn("HV03-49", "On therapy at 12 months (Total) ", ReportUtils.map(hivIndicators.onTherapyAt12Months(), indParams), "");
-
-        // 3.9 (Screening)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Screened for TB", ReportUtils.map(hivIndicators.screenedForTb(), indParams), nonInfantColumns, Arrays.asList("50", "51", "52", "53", "54"));
-
-        // 3.10 (Prevention with Positives)
-        cohortDsd.addColumn("HV09-04", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
-        cohortDsd.addColumn("HV09-05", "Provided with condoms", ReportUtils.map(hivIndicators.condomsProvided(), indParams), "");
-
-        // 3.11 (HIV Care Visits)
-        cohortDsd.addColumn("HV03-70", "HIV care visits (Females 18+)", ReportUtils.map(hivIndicators.hivCareVisitsFemale18(), indParams),"");
-        cohortDsd.addColumn("HV03-71", "HIV care visits (Scheduled)", ReportUtils.map(hivIndicators.hivCareVisitsScheduled(), indParams),"");
-        cohortDsd.addColumn("HV03-72", "HIV care visits (Unscheduled)", ReportUtils.map(hivIndicators.hivCareVisitsUnscheduled(), indParams),"");
-        cohortDsd.addColumn("HV03-73", "HIV care visits (Total)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");*/
-
-
+        cohortDsd.addColumn("HV03-087", "Screen Cacx new F18+", ReportUtils.map(hivIndicators.screenedforCaCx(), indParams),"");
+        cohortDsd.addColumn("HV03-088", "Clinical Visits (F18+)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
+        cohortDsd.addColumn("HV03-089", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
         return cohortDsd;
 
     }
@@ -289,20 +257,21 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
         // 3.1 HIV testing and counseling
         EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
-        cohortDsd.addColumn("1.HV01-11", "Tested Facility", ReportUtils.map(hivIndicators.htsNumberTestedAtFacility(), indParams),"");
-        cohortDsd.addColumn("1.HV01-12", "Tested Community", ReportUtils.map(hivIndicators.htsNumberTestedAtCommunity(), indParams),"");
-        cohortDsd.addColumn("1.HV01-13", "Tested New", ReportUtils.map(hivIndicators.htsNumberTestedNew(), indParams),"");
-        cohortDsd.addColumn("1.HV01-14", "Tested Repeat", ReportUtils.map(hivIndicators.htsNumberTestedRepeat(), indParams),"");
-        cohortDsd.addColumn("1.HV01-15", "Tested Couples", ReportUtils.map(hivIndicators.htsNumberTestedAsCouple(), indParams),"");
-        cohortDsd.addColumn("1.HV01-16", "Tested Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeyPopulation(), indParams),"");
+        cohortDsd.addColumn("HV01-11", "Tested Facility", ReportUtils.map(hivIndicators.htsNumberTestedAtFacility(), indParams),"");
+        cohortDsd.addColumn("HV01-12", "Tested Community", ReportUtils.map(hivIndicators.htsNumberTestedAtCommunity(), indParams),"");
+        cohortDsd.addColumn("HV01-13", "Tested New", ReportUtils.map(hivIndicators.htsNumberTestedNew(), indParams),"");
+        cohortDsd.addColumn("HV01-14", "Tested Repeat", ReportUtils.map(hivIndicators.htsNumberTestedRepeat(), indParams),"");
+        cohortDsd.addColumn("HV01-15", "Tested Couples", ReportUtils.map(hivIndicators.htsNumberTestedAsCouple(), indParams),"");
+        cohortDsd.addColumn("HV01-16", "Tested Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeyPopulation(), indParams),"");
 
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
-        cohortDsd.addColumn("1.HV01-27", "Negative Total", ReportUtils.map(hivIndicators.htsNumberTestedNegative(), indParams),"");
-        cohortDsd.addColumn("1.HV01-28", "Discordant", ReportUtils.map(hivIndicators.htsNumberTestedDiscordant(), indParams),"");
-        cohortDsd.addColumn("1.HV01-29", "Positive Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeypopPositive(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        cohortDsd.addColumn("HV01-27", "Negative Total", ReportUtils.map(hivIndicators.htsNumberTestedNegative(), indParams),"");
+        cohortDsd.addColumn("HV01-28", "Discordant", ReportUtils.map(hivIndicators.htsNumberTestedDiscordant(), indParams),"");
+        cohortDsd.addColumn("HV01-29", "Positive Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeypopPositive(), indParams),"");
 
         // number linked
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35", "36"));
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(hivIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
+        cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(hivIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),"");
 
 
         return cohortDsd;
