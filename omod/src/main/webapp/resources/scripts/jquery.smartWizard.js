@@ -32,7 +32,7 @@ function SmartWizard(target, options) {
 
     var _init = function($this) {
         var elmActionBar = $('<div></div>').addClass("actionBar");
-        elmActionBar.append($this.msgBox);
+        //elmActionBar.append($this.msgBox);        // commented this to remove generic error msgBox
         $('.close',$this.msgBox).click(function() {
             $this.msgBox.fadeOut("normal");
             return false;

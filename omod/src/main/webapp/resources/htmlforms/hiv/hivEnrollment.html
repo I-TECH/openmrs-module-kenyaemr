@@ -14,6 +14,7 @@
 <htmlform>
 
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<!--<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/controllers/facility.js"></script>-->
 	<script type="text/javascript">
         /**
          * TODO use a lookup tag to get these concept ids. Will require HTML-463
@@ -44,7 +45,7 @@
             var pAge = parseInt('<lookup expression="patient.age"/>');
             //New patient
             if (transferStatus== NO_CONCEPT_ID) {
-                jq('#transfer-details :input').prop('disabled', false);
+               // jq('#transfer-details :input').prop('disabled', true);
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#transfer-details').hide();
                 jq('#patient-history').show();
@@ -491,6 +492,9 @@
 						<script type="text/javascript">
                             jq(function(){
                                 var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
+                                var YES_CONCEPT_ID = 160563;
+                                var NO_CONCEPT_ID = 164144;
+                                var TRANSIT =164931;
                                 var pgender = "<lookup expression="patient.gender" />";
                                 if(PATIENT_IS_ENROLLED_HIV) {
                                     jq('#hiv-id :input').prop('readonly', true);
@@ -514,6 +518,104 @@
                                     }
 
                                 }
+                                var transferStatus = getValue('transfer-in-status.value');
+                                var pgender = "<lookup expression="patient.gender" />";
+                                var pAge = parseInt('<lookup expression="patient.age"/>');
+                                //Defaults on edit
+                                //New patient
+                                if (transferStatus== NO_CONCEPT_ID) {
+                                    // jq('#transfer-details :input').prop('disabled', true);
+                                    jq('#hiv-id :input').prop('disabled', false);
+                                    jq('#transfer-details').hide();
+                                    jq('#patient-history').show();
+                                    jq('#art-history').show();
+                                    jq('#baseline-fieldset').show();
+                                    jq('#baseline-fieldset :input').prop('disabled', false);
+                                    jq('#baseline-assessment1').show();
+                                    jq('#baseline-assessment2').show();
+                                    jq('#baseline-assessment3').show();
+                                    jq('#treatment-supporter').show();
+                                    //jq('#generate-hiv-id').show(); Deactivate generate upn
+                                    jq('#transit-patient').hide();
+                                    //Gender based validations  pregnancy and breastfeeding
+                                    if (pgender == 'M') {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    //Gender based Validations bmi and muac
+                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                                        jq('.muac').show();
+                                    }
+                                }
+                                //Transfer in
+                                if (transferStatus== YES_CONCEPT_ID) {
+                                    jq('#transfer-details :input').prop('disabled', false);
+                                    jq('#hiv-id :input').prop('disabled', false);
+                                    // jq('#hiv-id :input').prop('readonly',true);
+                                    jq('#generate-hiv-id').hide();
+                                    jq('#transfer-details').show();
+                                    jq('#patient-history').show();
+                                    jq('#art-history').show();
+                                    jq('#baseline-fieldset').show();
+                                    jq('#baseline-fieldset :input').prop('disabled', false);
+                                    jq('#baseline-assessment1').show();
+                                    jq('#baseline-assessment2').show();
+                                    jq('#baseline-assessment3').show();
+                                    jq('#treatment-supporter').show();
+                                    jq('#transit-patient').hide();
+                                    //Gender based validations  pregnancy and breastfeeding
+                                    if (pgender == 'M') {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    //Gender based Validations bmi and muac
+                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                                        jq('.muac').show();
+                                    }
+
+                                }
+                                //Transit
+                                if (transferStatus== TRANSIT) {
+                                    jq('#hiv-id :input').prop('disabled', false);
+                                    jq('#transit-patient').show();
+                                    jq('#transfer-details').hide();
+                                    clearHiddenSections(jq('#transfer-details'));
+                                    jq('#patient-history').hide();
+                                    jq('#art-history').hide();
+                                    jq('#baseline-fieldset').hide();
+                                    jq('#treatment-supporter-fieldset').hide();
+                                    jq('#hiv-id :input').prop('disabled', false);
+                                    jq('#generate-hiv-id').hide();
+
+                                }
+                                if (transferStatus == "") {
+                                    jq('#transfer-details :input').prop('disabled', true);
+                                    jq('#hiv-id :input').prop('disabled', true);
+                                    jq('#generate-hiv-id').hide();
+                                    //Gender based validations  pregnancy and breastfeeding
+                                    if (pgender == 'M') {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
+                                        jq('#pregnant :input').prop('disabled', true);
+                                        jq('#breastfeeding :input').prop('disabled', true);
+                                    }
+                                    //Gender based Validations bmi and muac
+                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                                        jq('.muac').show();
+                                    }
+
+                                }
+
                             });
 
 						</script>
@@ -638,10 +740,11 @@
 					<tr>
 						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" id="pmtctChecked"/></td>
 						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+								 answerConceptIds="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="D4T/3TC/NVP,
+								 answerLabels="TDF-3TC-EFV,
+								               D4T/3TC/NVP,
 											   AZT/3TC/EFV,
 											   D4T/3TC/EFV,
 											   3TC/NVP/AZT,
@@ -667,10 +770,11 @@
 					<tr>
 						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+								 answerConceptIds="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="D4T/3TC/NVP,
+								 answerLabels="TDF-3TC-EFV,
+								               D4T/3TC/NVP,
 											   AZT/3TC/EFV,
 											   D4T/3TC/EFV,
 											   3TC/NVP/AZT,
@@ -696,10 +800,11 @@
 					<tr>
 						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PREP" id="prepChecked" /></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+								 answerConceptIds="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="D4T/3TC/NVP,
+								 answerLabels="TDF-3TC-EFV,
+								               D4T/3TC/NVP,
 											   AZT/3TC/EFV,
 											   D4T/3TC/EFV,
 											   3TC/NVP/AZT,
@@ -726,10 +831,11 @@
 					<tr>
 						<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" id="haartChecked"/></td>
 						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+								 answerConceptIds="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="D4T/3TC/NVP,
+								 answerLabels="TDF-3TC-EFV,
+								               D4T/3TC/NVP,
 											   AZT/3TC/EFV,
 											   D4T/3TC/EFV,
 											   3TC/NVP/AZT,
@@ -864,10 +970,11 @@
 					<td>Regimen</td>
 					<td>
 						<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 answerConceptIds="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="D4T/3TC/NVP,
+							 answerLabels="TDF-3TC-EFV,
+							                   D4T/3TC/NVP,
 											   AZT/3TC/EFV,
 											   D4T/3TC/EFV,
 											   3TC/NVP/AZT,
