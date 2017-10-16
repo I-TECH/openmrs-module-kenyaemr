@@ -18,7 +18,7 @@ import java.util.Date;
 public class ETLMoh731CohortLibrary {
     public CohortDefinition hivEnrollment(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select distinct e.patient_id " +
+        String sqlQuery = "select  e.patient_id " +
                 "from kenyaemr_etl.etl_hiv_enrollment e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
                 "where  e.entry_point <> 160563  and transfer_in_date is null " +
@@ -35,12 +35,11 @@ public class ETLMoh731CohortLibrary {
 
     public  CohortDefinition currentlyInCare() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery=" select  e.patient_id\n" +
                 "from ( \n" +
-                "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
+                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "p.unique_patient_no, \n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
@@ -50,13 +49,13 @@ public class ETLMoh731CohortLibrary {
                 "left outer JOIN\n" +
                 "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "  group by patient_id\n" +
+                "  group by patient_id\n" + //check if this line is necessary
                 "  ) d on d.patient_id = fup.patient_id \n" +
                 "where fup.visit_date <= date(:endDate) \n" +
                 "group by patient_id \n" +
 //                "--  we may need to filter lost to follow-up using this\n" +
-                "having ((latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null )) or \n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) ) and (latest_tca > date_discontinued or disc_patient is null ))\n" +
+                "having ((date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or \n" +
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca))) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
 //                "-- drop missd completely\n" +
                 ") e\n" ;
 
@@ -71,11 +70,9 @@ public class ETLMoh731CohortLibrary {
     }
 
     public  CohortDefinition startedOnART() {
-        String sqlQuery="select distinct net.patient_id \n" +
+        String sqlQuery="select  net.patient_id \n" +
                 "from ( \n" +
                 "select e.patient_id,e.date_started, \n" +
-                "e.gender,\n" +
-                "e.dob,\n" +
                 "d.visit_date as dis_date, \n" +
                 "if(d.visit_date is not null, 1, 0) as TOut,\n" +
                 "e.regimen, e.regimen_line, e.alternative_regimen, \n" +
@@ -83,7 +80,7 @@ public class ETLMoh731CohortLibrary {
                 "max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
                 "max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
                 "max(fup.visit_date) as latest_vis_date\n" +
-                "from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
+                "from (select e.patient_id, min(e.date_started) as date_started, \n" +
                 "mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
                 "mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
                 "max(if(discontinued,1,0))as alternative_regimen \n" +
@@ -108,12 +105,11 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition currentlyOnArt() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery=" select  e.patient_id\n" +
                 "from (\n" +
-                "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
+                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "    max(fup.visit_date) as latest_vis_date,\n" +
                 "    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "p.unique_patient_no,\n" +
                 "    max(d.visit_date) as date_discontinued,\n" +
                 "    d.patient_id as disc_patient,\n" +
                 "  de.patient_id as started_on_drugs\n" +
@@ -129,8 +125,8 @@ public class ETLMoh731CohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
-                "(latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null )) )\n" +
+                "(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca))) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
                 ") e\n" +
                 ";";
 
@@ -143,9 +139,9 @@ public class ETLMoh731CohortLibrary {
     }
 
     public CohortDefinition revisitsArt() {
-        String sqlQuery=" select distinct e.patient_id " +
+        String sqlQuery=" select  e.patient_id " +
                 "from ( " +
-                "select fup.visit_date,fup.patient_id,p.dob,p.Gender, " +
+                "select fup.visit_date,fup.patient_id," +
                 "min(e.visit_date) as enroll_date, " +
                 "max(fup.visit_date) as latest_vis_date, " +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca " +
@@ -162,7 +158,7 @@ public class ETLMoh731CohortLibrary {
                 "group by patient_id \n" +
                 "having if(e.latest_tca>max(visit_date),1,0)=0) \n" +
                 "and e.patient_id in (select patient_id\n" +
-                "from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
+                "from (select e.patient_id,min(e.date_started) as date_started,\n" +
                 "mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
                 "mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
                 "max(if(discontinued,1,0))as alternative_regimen\n" +
@@ -181,20 +177,19 @@ public class ETLMoh731CohortLibrary {
     }
 
     public CohortDefinition cummulativeOnArt() {
-        String sqlQuery=" select distinct net.patient_id \n" +
+        String sqlQuery=" select  net.patient_id \n" +
                 "from (\n" +
                 "select e.patient_id,e.date_started,min(enr.visit_date) as enrollment_date,\n" +
-                "e.gender,\n" +
                 "e.regimen, \n" +
                 "e.regimen_line,\n" +
                 "e.alternative_regimen,\n" +
-                "e.dob,d.visit_date as dis_date,\n" +
+                "d.visit_date as dis_date,\n" +
                 "max(if(d.visit_date is not null, 1, 0)) as TOut, \n" +
                 "max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
                 "max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
                 "enr.transfer_in_date,max(fup.visit_date) as latest_vis_date, \n" +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca \n" +
-                "from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
+                "from (select e.patient_id,min(e.date_started) as date_started, \n" +
                 "mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
                 "mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
                 "max(if(discontinued,1,0))as alternative_regimen \n" +
@@ -216,11 +211,15 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
+    /**
+     * TODO: review this query. it is a killer
+     * @return
+     */
     public CohortDefinition startingARTPregnant() {
 
-        String sqlQuery = " select distinct fup.patient_id " +
+        String sqlQuery = " select  fup.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup " +
-                "join (select * from kenyaemr_etl.etl_drug_event e " +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e " +
                 "where date_started between date(:startDate) and date(:endDate)) started_art on  " +
                 "started_art.patient_id = fup.patient_id " +
                 "where fup.pregnancy_status =1065 " +
@@ -238,9 +237,9 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition startingARTWhileTbPatient() {
 
-        String sqlQuery = "select distinct fup.patient_id \n" +
+        String sqlQuery = "select  fup.patient_id \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
-                "join (select * from kenyaemr_etl.etl_drug_event e \n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e \n" +
                 "where date_started between date(:startDate) and date(:endDate)) started_art on  \n" +
                 "started_art.patient_id = fup.patient_id \n" +
                 "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id\n" +
@@ -258,12 +257,11 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition tbScreening() {
 // look all active in care who were screened for tb
-        String sqlQuery = " select distinct e.patient_id\n" +
+        String sqlQuery = " select  e.patient_id\n" +
                 "from (\n" +
-                "select fup.visit_date,fup.patient_id,p.dob,p.Gender, min(e.visit_date) as enroll_date,\n" +
+                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "  max(fup.visit_date) as latest_vis_date,\n" +
                 "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "p.unique_patient_no,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
                 "  mid(max(concat(fup.visit_date, tb.visit_date)), 11) screened_using_icf,\n" +
@@ -280,8 +278,8 @@ public class ETLMoh731CohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca))) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
                 ") e";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -296,10 +294,10 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition condomsProvided() {
 
-        String sqlQuery = " select distinct e.patient_id " +
+        String sqlQuery = " select  e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "where  condom_provided=1065 and date(e.visit_date) between date(:startDate) and date(:endDate);";
+                "where date(e.visit_date) between date(:startDate) and date(:endDate) and  condom_provided=1065 ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("pwpCondom_provided");
         cd.setQuery(sqlQuery);
@@ -311,10 +309,10 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition modernContraceptivesProvided() {
 
-        String sqlQuery = " select distinct e.patient_id " +
+        String sqlQuery = " select  e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "where  (family_planning_method is not null and family_planning_method<>190) and date(e.visit_date) between date(:startDate) and date(:endDate);";
+                "where  date(e.visit_date) between date(:startDate) and date(:endDate) and (family_planning_method is not null and family_planning_method<>190) ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("pwpModernContraceptivesProvided");
         cd.setQuery(sqlQuery);
@@ -328,9 +326,9 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition art12MonthNetCohort() {
 
-        String sqlQuery = "  select distinct net.patient_id " +
+        String sqlQuery = "  select  net.patient_id " +
                 "  from ( " +
-                "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
+                "  select e.patient_id,e.date_started, d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
                 "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
                 "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
@@ -358,12 +356,12 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition onOriginalFirstLineAt12Months() {
 
-        String sqlQuery = "  select distinct net.patient_id " +
+        String sqlQuery = "  select  net.patient_id " +
                 "  from ( " +
-                "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
+                "  select e.patient_id,e.date_started, d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
                 "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
-                "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
+                "    from (select e.patient_id,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
                 "    mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, " +
                 "    max(if(discontinued,1,0))as alternative_regimen " +
@@ -388,12 +386,12 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition onAlternateFirstLineAt12Months() {
 
-        String sqlQuery = "  select distinct net.patient_id " +
-              "  from ( " +
-                "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
+        String sqlQuery = "  select  net.patient_id " +
+                "  from ( " +
+                "  select e.patient_id,e.date_started,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
                 "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
-                "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
+                "    from (select e.patient_id,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
                 "    mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, " +
                 "    max(if(discontinued,1,0))as alternative_regimen " +
@@ -418,12 +416,12 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition onSecondLineAt12Months() {
 
-        String sqlQuery = "  select distinct net.patient_id " +
-               "  from ( " +
-                "  select e.patient_id,e.date_started, e.gender,e.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
+        String sqlQuery = "  select  net.patient_id " +
+                "  from ( " +
+                "  select e.patient_id,e.date_started,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
                 "   e.regimen, e.regimen_line, e.alternative_regimen, mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, "+
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date" +
-                "    from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, " +
+                "    from (select e.patient_id,min(e.date_started) as date_started, " +
                 "    mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, " +
                 "    mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, " +
                 "    max(if(discontinued,1,0))as alternative_regimen " +
@@ -448,9 +446,9 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition onTherapyAt12Months() {
 
-        String sqlQuery = "  select distinct net.patient_id " +
+        String sqlQuery = "  select  net.patient_id " +
                 "  from (" +
-                "  select e.patient_id,e.date_started, p.gender,p.dob,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
+                "  select e.patient_id,e.date_started,d.visit_date as dis_date, if(d.visit_date is not null, 1, 0) as TOut," +
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date, max(fup.next_appointment_date) as latest_tca" +
                 "    from kenyaemr_etl.etl_drug_event e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
@@ -473,7 +471,7 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition hivCareVisitsFemale18() {
 
-        String sqlQuery = "select distinct e.patient_id " +
+        String sqlQuery = "select  e.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
                 "join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id " +
@@ -491,7 +489,7 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition hivCareVisitsScheduled() {
 
-        String sqlQuery = " select distinct patient_id \n" +
+        String sqlQuery = " select  patient_id \n" +
                 "from (\n" +
                 "select f1.patient_id,max(f1.visit_date) as visit_date, max(f2.next_appointment_date) as next_appointment_date \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f1\n" +
@@ -512,7 +510,7 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition hivCareVisitsUnscheduled() {
 
-        String sqlQuery = " select distinct patient_id \n" +
+        String sqlQuery = " select  patient_id \n" +
                 "from (\n" +
                 "select f1.patient_id,max(f1.visit_date) as visit_date, max(f2.next_appointment_date) as next_appointment_date \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f1\n" +
@@ -534,7 +532,7 @@ public class ETLMoh731CohortLibrary {
 
     public CohortDefinition hivCareVisitsTotal() {
 
-        String sqlQuery = " select distinct patient_id \n" +
+        String sqlQuery = " select  patient_id \n" +
                 "from (\n" +
                 "select f1.patient_id,max(f1.visit_date) as visit_date, max(f2.next_appointment_date) as next_appointment_date \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f1\n" +
@@ -554,12 +552,11 @@ public class ETLMoh731CohortLibrary {
     }
 
     public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
-        String sqlQuery=" select distinct e.patient_id\n" +
+        String sqlQuery=" select  e.patient_id\n" +
                 "from (\n" +
                 "select fup.visit_date,fup.patient_id,\n" +
                 "  max(fup.visit_date) as latest_vis_date,\n" +
                 "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "p.unique_patient_no,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
                 "  max(if(dr.is_ctx=1, 1, if(dr.is_dapsone =1, 1, 0))) as prophylaxis_given, \n" +
@@ -568,7 +565,7 @@ public class ETLMoh731CohortLibrary {
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "left join kenyaemr_etl.etl_pharmacy_extract dr on dr.patient_id = fup.patient_id and date(fup.visit_date) = date(dr.visit_date)\n" +
+                "left join kenyaemr_etl.etl_pharmacy_extract dr on date(fup.visit_date) = date(dr.visit_date) and dr.patient_id = fup.patient_id \n" +
                 "left outer JOIN\n" +
                 "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
@@ -577,8 +574,8 @@ public class ETLMoh731CohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (latest_tca>date(:endDate) and (latest_tca > date_discontinued or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) or (latest_vis_date between date(:startDate) and date(:endDate))) and (latest_tca > date_discontinued or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca) )) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
                 ") e" +
                 "; ";
 
@@ -590,12 +587,11 @@ public class ETLMoh731CohortLibrary {
         cd.setDescription("In Hiv Program And On Ctx Prophylaxis");
         return cd;
     }
-
-    public CohortDefinition hivExposedInfantsWithin2Months() {
-        String sqlQuery = " select distinct e.patient_id " +
+    protected CohortDefinition hivExposedInfantsWithin2Months() {
+        String sqlQuery = " select  e.patient_id " +
                 "    from kenyaemr_etl.etl_hei_enrollment e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "    where  child_exposed=822 and timestampdiff(month,p.dob,date(:endDate))<=2 and date(e.visit_date) between date(:startDate) and date(:endDate)";
+                "    where  child_exposed=822 and timestampdiff(month,p.dob,:endDate)<=2 and date(e.visit_date) between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("hivExposedInfantsWithin2Months");
         cd.setQuery(sqlQuery);
@@ -605,11 +601,11 @@ public class ETLMoh731CohortLibrary {
         return cd;
     }
 
-    public CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
-        String sqlQuery = " select distinct e.patient_id " +
+    protected CohortDefinition hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
+        String sqlQuery = " select  e.patient_id " +
                 "    from kenyaemr_etl.etl_hei_enrollment e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "    where  child_exposed=822 and timestampdiff(month,p.dob,date(:endDate))<=2 and date(e.visit_date) between date(:startDate) and date(:endDate)";
+                "    where  child_exposed=822 and timestampdiff(month,p.dob,:endDate)<=2 and date(e.visit_date) between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("hivExposedInfantsWithin2Months");
         cd.setQuery(sqlQuery);

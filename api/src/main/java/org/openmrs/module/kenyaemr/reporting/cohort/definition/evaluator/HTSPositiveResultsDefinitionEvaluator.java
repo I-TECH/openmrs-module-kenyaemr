@@ -37,7 +37,7 @@ public class HTSPositiveResultsDefinitionEvaluator implements CohortDefinitionEv
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where final_test_result = \"Positive\" and voided = 0;\n";
+		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where final_test_result = \"Positive\" and voided = 0 and test_type=1;\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
