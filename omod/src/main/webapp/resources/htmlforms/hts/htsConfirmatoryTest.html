@@ -39,6 +39,47 @@
                 jq('#disability select').prop("disabled", false);
             }
         }
+        var consentSelected = function () {
+            var val = jq(this).val();
+            if (val == 'true' ){
+                jq('#couple-testing input').prop("disabled", false);
+                jq('#hiv-test1-result select').prop("disabled", false);
+                jq('.kit-name select').prop("disabled", false);
+                jq('.lot-number input').prop("disabled", false);
+                jq('#expiry-date input').prop("disabled", false);
+                jq('#expiry-date2 input').prop("disabled", false);
+                jq('#hiv-final-result select').prop("disabled", false);
+                jq('.result-given select').prop("disabled", false);
+                jq("#couple-discordant input").prop("disabled", false);
+                jq("#tb-screening input").prop("disabled", false);
+
+            }
+            if (val == 'false' ){
+                jq('#couple-testing input').prop("disabled", true);
+                jq('#hiv-test1-result select').prop("disabled", true);
+                jq('.kit-name select').prop("disabled", true);
+                jq('.lot-number input').prop("disabled", true);
+                jq('#expiry-date input').prop("disabled", true);
+                jq('#expiry-date2 input').prop("disabled", true);
+                jq('#hiv-final-result select').prop("disabled", true);
+                jq('.result-given select').prop("disabled", true);
+                jq("#couple-discordant input").prop("disabled", true);
+                jq("#tb-screening input").prop("disabled", true);
+
+
+                clearHiddenSections(jq('#tbl-couple-testing'));
+                clearHiddenSections(jq('#hiv-test1-result'));
+                clearHiddenSections(jq('.kit-name'));
+                clearHiddenSections(jq('.lot-number'));
+                clearHiddenSections(jq('#expiry-date'));
+                clearHiddenSections(jq('#hiv-test2-result'));
+                clearHiddenSections(jq('.kit-name2'));
+                clearHiddenSections(jq('.lot-number2'));
+                clearHiddenSections(jq('#expiry-date2'));
+                clearHiddenSections(jq('#hiv-final-result'));
+                clearHiddenSections(jq('.result-given'));
+            }
+        }
         var inCareSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
@@ -49,13 +90,14 @@
         }
         var coupleTestedAction  = function () {
             var testingOption = getValue("couple-testing.value");
-            if(testingOption ==1065) {
+            if(testingOption ==164957) {
 
                 jq("#couple-discordant input[value=1065]").prop("disabled", true);
                 jq("#couple-discordant input[value=1066]").prop("disabled", true);
                 jq("#couple-discordant input[value=1175]").prop("checked", true);
                 jq("#couple-discordant input[value=1175]").prop("disabled", false);
-            }else{
+            }
+            if(testingOption ==164958){
                 jq("#couple-discordant input[value=1065]").prop("disabled", false);
                 jq("#couple-discordant input[value=1066]").prop("disabled", false);
                 jq("#couple-discordant input[value=1175]").prop("checked", false);
@@ -67,13 +109,12 @@
             //Negative
             if(firstTest ==664) {
                 jq("#hiv-test2").hide();
-                jq("#hiv-test2-result select").prop("disabled", true);
-                jq("#kitTest2 input").prop("disabled", true);
-                jq("#lotTest2 input").prop("disabled", true);
-                jq("#expiry-date2 input").prop("disabled", true);
+
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
+                clearHiddenSections(jq('.kit-name2'));
+                clearHiddenSections(jq('.lot-number2'));
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
             }
@@ -81,8 +122,8 @@
             if(firstTest ==703){
                 jq("#hiv-test2").show();
                 jq("#hiv-test2-result select").prop("disabled", false);
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
@@ -91,8 +132,8 @@
             if(firstTest ==163611){
                 jq("#hiv-test2").show();
                 jq("#hiv-test2-result select").prop("disabled", false);
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq("kit-name2 input").prop("disabled", false);
+                jq("lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
@@ -103,20 +144,20 @@
             var secondTest = getField("hiv-test2-result.value").val();
             //Negative
             if(secondTest ==664) {
-                jq("#kitTest2 input").prop("disabled", true);
-                jq("#lotTest2 input").prop("disabled", true);
-                jq("#expiry-date2 input").prop("disabled", true);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
+                jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
-                getField('hiv-final-result.value').val(664);
+                getField('hiv-final-result.value').val(1138);
                 jq('#ccc-no input').prop("disabled", true);
             }
             //Positive
             if(secondTest ==703){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
@@ -125,8 +166,8 @@
             if(secondTest ==163611){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
@@ -134,8 +175,8 @@
             if(secondTest ==1175){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
@@ -175,6 +216,8 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability').hide();
+            //Consent validation
+            jq('.consent input').change(consentSelected);
             //couple testing
             jq("#couple-testing input").change(coupleTestedAction);
             //hiv test123    hide second test by default
@@ -186,15 +229,15 @@
             //test kit expiry
             jq("#expiry-date input").change(expiryDateSelected);
             //jq('#ccc-no :input').prop('readonly', true);
-            //On load states
+            //On Load defaults
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
             if(firstTest ==664) {
 
                 jq("#hiv-test2-result select").prop("disabled", true);
-                jq("#kitTest2 input").prop("disabled", true);
-                jq("#lotTest2 input").prop("disabled", true);
+                jq(".kit-name2 input").prop("disabled", true);
+                jq(".lot-number2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
@@ -203,47 +246,47 @@
             if(firstTest ==703){
 
                 jq("#hiv-test2-result select").prop("disabled", false);
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
             }
             //Invalid
             if(firstTest ==163611){
 
                 jq("#hiv-test2-result select").prop("disabled", false);
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
             }
             //Final test
             var secondTest = getField("hiv-test2-result.value").val();
             //Negative
             if(secondTest ==664) {
-                jq("#kitTest2 input").prop("disabled", true);
-                jq("#lotTest2 input").prop("disabled", true);
+                jq(".kit-name2 input").prop("disabled", true);
+                jq(".lot-number2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
             }
             //Positive
             if(secondTest ==703){
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
             }
             //Invalid
             if(secondTest ==163611){
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
             //Invalid
             if(secondTest ==1175){
-                jq("#kitTest2 input").prop("disabled", false);
-                jq("#lotTest2 input").prop("disabled", false);
+                jq(".kit-name2 input").prop("disabled", false);
+                jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
@@ -260,6 +303,73 @@
                         <script type="text/javascript">
                             jq(function(){
                                 setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+
+                                //First test
+                                var firstTest = getField("hiv-test1-result.value").val();
+                                //Negative
+                                if(firstTest ==664) {
+
+                                    jq("#hiv-test2-result select").prop("disabled", true);
+                                    jq(".kit-name2 input").prop("disabled", true);
+                                    jq(".lot-number2 input").prop("disabled", true);
+                                    jq("#expiry-date2 input").prop("disabled", true);
+                                    getField('hiv-final-result.value').val(664);
+                                    jq('#ccc-no input').prop("disabled", true);
+                                }
+                                //Positive
+                                if(firstTest ==703){
+                                    jq("#hiv-test2").show();
+                                    jq("#hiv-test2-result select").prop("disabled", false);
+                                    jq(".kit-name2 input").prop("disabled", false);
+                                    jq(".lot-number2 input").prop("disabled", false);
+                                    jq("#expiry-date2 input").prop("disabled", false);
+                                }
+                                //Invalid
+                                if(firstTest ==163611){
+                                    jq("#hiv-test2").show();
+                                    jq("#hiv-test2-result select").prop("disabled", false);
+                                    jq(".kit-name2 input").prop("disabled", false);
+                                    jq(".lot-number2 input").prop("disabled", false);
+                                    jq("#expiry-date2 input").prop("disabled", false);
+                                }
+                                //Final test
+                                var secondTest = getField("hiv-test2-result.value").val();
+                                //Negative
+                                if(secondTest ==664) {
+                                    jq(".kit-name2 input").prop("disabled", true);
+                                    jq(".lot-number2 input").prop("disabled", true);
+                                    jq("#expiry-date2 input").prop("disabled", true);
+                                    getField('hiv-final-result.value').val(664);
+                                    jq('#ccc-no input').prop("disabled", true);
+                                }
+                                //Positive
+                                if(secondTest ==703){
+                                    jq(".kit-name2 input").prop("disabled", false);
+                                    jq(".lot-number2 input").prop("disabled", false);
+                                    jq("#expiry-date2 input").prop("disabled", false);
+                                    getField('hiv-final-result.value').val(703);
+                                    jq('#ccc-no input').prop("disabled", false);
+                                }
+                                //Invalid
+                                if(secondTest ==163611){
+                                    jq(".kit-name2 input").prop("disabled", false);
+                                    jq(".lot-number2 input").prop("disabled", false);
+                                    jq("#expiry-date2 input").prop("disabled", false);
+                                    getField('hiv-final-result.value').val(1138);
+                                }
+                                //Invalid
+                                if(secondTest ==1175){
+                                    jq(".kit-name2 input").prop("disabled", false);
+                                    jq(".lot-number2 input").prop("disabled", false);
+                                    jq("#expiry-date2 input").prop("disabled", false);
+                                    getField('hiv-final-result.value').val(1138);
+                                }
                             });
                         </script>
                     </ifMode>
@@ -372,7 +482,7 @@
             <table id="tbl-consent">
                 <tr>
                     <td>Has client consented? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
                              style="yes_no" />
                     </td>
                 </tr>
@@ -424,7 +534,7 @@
                                  style="dropdown" answerLabels="Positive,Negative,N/A"/>
                         </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
-                            <obs class="kit-name"
+                            <obs class="kit-name2"
                                  conceptId="164962"
                                  answerConceptIds="164960,164961"
                                  style="dropdown" answerLabels="Determine,First-Response"
@@ -432,7 +542,7 @@
 
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
-                            <obs class="lot-number"
+                            <obs class="lot-number2"
                                  conceptId="164964"
                             />
 
@@ -466,7 +576,7 @@
                 </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset id="tb-screening">
             <legend>TB Screening</legend>
             <table id="tbl-tb-screening">
                 <tr>

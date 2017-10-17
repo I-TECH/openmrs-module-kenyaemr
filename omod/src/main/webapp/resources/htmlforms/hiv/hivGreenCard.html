@@ -948,7 +948,7 @@ Green Card follow-up visit form
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
             jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
-            jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
+            //jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
             //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
             jq('#person-present input').click(onPersonPresentChange);
@@ -1475,22 +1475,27 @@ Green Card follow-up visit form
 
 //Smart wizard validations
         function onLeaveStepValidation (obj, context) {
-            var stepNum = context.fromStep;
-
+            var stepNumFrom = context.fromStep;
+            var stepNumTo = context.toStep;
             //Validations steps
-            if (stepNum == 1) {
-                return step1Validation();
-            } else if (stepNum == 2) {
-                return step2Validation();
-            }else if (stepNum == 3) {
-                return step3Validation();
-            }else if (stepNum == 4) {
-                return step4Validation();
-            }else {
+
+                if (stepNumFrom == 1) {
+                    return step1Validation();
+                }
+                else if (stepNumFrom == 2 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                    return step2Validation();
+                }
+                else if (stepNumFrom == 3 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                    return step3Validation();
+                }
+                else if (stepNumFrom == 4 &amp;&amp; stepNumTo &gt; stepNumFrom) {
+                    return step4Validation();
+                }else {
 
                 return true;
             }
         }
+
          //Step 1 validations
         function step1Validation(){
             pAge = parseInt('<lookup expression="patient.age"/>');
@@ -1996,6 +2001,11 @@ Green Card follow-up visit form
                             var age = parseInt('<lookup expression="patient.age"/>');
                             var keypop = getValue('population-type.value');
                             var everOnIPT = getValue('ever-on-ipt.value');
+                            var complaintsToday = getValue('complaints-today.value');
+                            var knownAllergies = getValue('known-allergies.value');
+                            var chronicIllness = getValue('chronic-illness.value');   //non boolean
+                            var adverseReactions = getValue('adverse-reactions.value');   // boolean
+                            var systemsReview = getValue('systems-review.value');   // non boolean
                             var hasLMP=getValue('hasLMP.value');
                             var wantsPreg=getValue('pregnancyIntention.value');
                             var ctxAdherence = getValue('ctx-adherence.value');
@@ -2021,7 +2031,32 @@ Green Card follow-up visit form
                             }else{
                                 jq("#key-population").hide();
                             }
-
+               //If any checked  complaints allergies chronic illness and adverse events
+                            if (complaintsToday == 'true'){
+                                jq("#tbl-complaints-today").show();
+                            }else{
+                                jq("#tbl-complaints-today").hide();
+                            }
+                            if (knownAllergies == 'true'){
+                                jq("#tbl-known-allergies").show();
+                            }else{
+                                jq("#tbl-known-allergies").hide();
+                            }
+                            if (chronicIllness == 1065){
+                                jq("#tbl-chronic-illness").show();
+                            }else{
+                                jq("#tbl-chronic-illness").hide();
+                            }
+                            if (adverseReactions == 'true'){
+                                jq("#tbl-adverse-reactions").show();
+                            }else{
+                                jq("#tbl-adverse-reactions").hide();
+                            }
+                            if (systemsReview == 1116){
+                                jq("#tbl-systems-review").show();
+                            }else{
+                                jq("#tbl-systems-review").hide();
+                            }
              //If has LMP activate date and if pg
                             if (hasLMP == 1065) {     //yes_no pregnancy
                                 jq('#lmp-date :input').prop('disabled', false);
@@ -3573,7 +3608,7 @@ Green Card follow-up visit form
                                             <obs
                                                     conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                     answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Fair (F),Poor (P)"
+                                                    answerLabels="Good (G),Fair (F),Poor (P)" required="true"
                                                     style="radio" id="arv-adherence"
                                             />
                                         </td>
