@@ -39,7 +39,7 @@ public class AppointmentsDailyScheduleCohortDefinitionEvaluator implements Cohor
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select o.person_id from obs o where o.concept_id = 5096 and date(o.value_datetime) = curdate();";
+		String qry="select patient_id from kenyaemr_etl.etl_patients_booked_today;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

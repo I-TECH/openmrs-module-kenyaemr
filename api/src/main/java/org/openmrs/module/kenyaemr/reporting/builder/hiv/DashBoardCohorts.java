@@ -5,6 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsPatientsSeenCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsUnscheduledCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
@@ -165,7 +166,7 @@ public class DashBoardCohorts {
      */
     public static EvaluatedCohort patientsSeen(EvaluationContext context) {
         try {
-            return getService().evaluate(new AppointmentsCheckedInCohortDefinition(), context);
+            return getService().evaluate(new AppointmentsPatientsSeenCohortDefinition(), context);
         } catch (EvaluationException e) {
             throw new IllegalStateException("Error evaluating patients with VL results in last 12 months", e);
         }
