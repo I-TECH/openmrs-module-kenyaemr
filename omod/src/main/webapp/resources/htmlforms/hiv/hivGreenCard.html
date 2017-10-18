@@ -83,11 +83,7 @@ Green Card follow-up visit form
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <!--Wizard plugins-->
-
     <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
-
-    <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
-
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
 
     <script type="text/javascript">
@@ -1550,12 +1546,17 @@ Green Card follow-up visit form
             pAge = parseInt('<lookup expression="patient.age"/>');
             var pgender = "<lookup expression="patient.gender" />";
             pAge = parseInt('<lookup expression="patient.age"/>');
-            var complaintsToday = getValue('complaints-today.value');
+            //var complaint = getValue('complaints-field.value');
+            var complaint = getField('complaint-field.value').val();
+            var complaintsToday = getValue('complaints-today.value');  //boolean
             var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
             var onIpt = getValue('on-ipt.value');
             var everOnIpt= getValue('ever-on-ipt.value');
+            var allergen = getField('allergy-field.value').val();
             var knownAllergies = getValue('known-allergies.value');   //boolean
+            var chronic = getField('chronic.value').val();
             var chronicIllness = getValue('chronic-illness.value');   //non boolean
+            var adverse = getField('adverse.value').val();   // boolean
             var adverseReactions = getValue('adverse-reactions.value');   // boolean
             var patientHasLMP = getValue('hasLMP.value');
             var encounterDate = getValue('encounter-date.value');
@@ -1597,6 +1598,13 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('complaints-today.error').html('Please specify  if patient has any complaints today.').hide();
+            }
+            if (complaintsToday == 'true' &amp;&amp; complaint == '') {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('complaint-field.error').html('Please specify the complaints.').show();
+                return false;
+            }else{
+                getField('complaint-field.error').html('Please specify the complaints.').hide();
             }
             if (onAntiTbDrugs == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
@@ -1649,6 +1657,13 @@ Green Card follow-up visit form
             }else{
                 getField('known-allergies.error').html('Please specify if patient has any known allergies.').hide();
             }
+            if (knownAllergies == 'true' &amp;&amp; allergen == '') {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('allergy-field.error').html('Please specify the allergy.').show();
+                return false;
+            }else{
+                getField('allergy-field.error').html('Please specify the allergy.').hide();
+            }
             if (chronicIllness == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
@@ -1656,12 +1671,26 @@ Green Card follow-up visit form
             }else{
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').hide();
             }
+            if (chronicIllness == 1065 &amp;&amp; chronic == '') {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('chronic.error').html('Please specify the chronic illness.').show();
+                return false;
+            }else{
+                getField('chronic.error').html('Please specify the chronic illness.').hide();
+            }
             if (adverseReactions == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('adverse-reactions.error').html('Please specify if patient has any adverse drug reactions.').show();
                 return false;
             }else{
                 getField('adverse-reactions.error').html('Please specify if patient has any adverse drug reactions.').hide();
+            }
+            if (adverseReactions == 'true' &amp;&amp; adverse == '') {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('adverse.error').html('Please specify the adverse drug reactions.').show();
+                return false;
+            }else{
+                getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
             }
             if(pgender == 'F'  &amp;&amp; pAge &gt; 10) {
                 if (patientHasLMP == false) {
@@ -2349,7 +2378,7 @@ Green Card follow-up visit form
                                                                141597AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,158843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,125198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160208AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,111525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,122983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                  answerLabels="Abdominal pain,Abnormal Uterine Bleeding,Anxiety,Depression,Back pain,Bloody Urine,Breast Pain,Chest Pain,Cold and Chills,Confusion,Delirium,Convulsions,Seizure,Cough,Crying Infant,Diarrhea,Difficult in breathing,Difficulty in swallowing,Dizziness,Ear Pain,Epigastric Pain,Eye apin,Facial Pain,Fatigue/weakness,Fever,Flank Pain,Vaginal Discharge,Discharge from Penis,Genital Ulcer,Headache,Hearing Loss,Hypotension,Shock,Itchiness/Pruritus,Joint Pain,Leg Pain,Loss of Appetite,Lymphadenopathy,Memory Loss,Coma,Lethargy,Mouth Pain,Mouth Ulceration,Muscle cramps,Muscle Pain,Nausea,Neck Pain,Night sweats,Numbness,Pain when Swallowing,Pelvic Pain,Poor Vision,Rash,Red Eye,Running/Blocked nose,Scrotal Pain,Shoulder Pain,
                                                        Sleep Disturbance,Sore Throat,Excessive Sweating,Swollen Legs,Tremors,Urinary Symptoms,Vertigo,Vomiting,Weight Loss,Other"
-                                                 style="dropdown"
+                                                 style="dropdown" id="complaint-field"
                                             />
                                         </td>
                                         <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration"  /></td>
@@ -2750,7 +2779,7 @@ Green Card follow-up visit form
                                                                             162176AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                               	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Beef,Caffeine,Chocolate,Dairy Food,Eggs,Fish,Milk Protein,Peanuts,Shellfish,Soy,Strawberries,Wheat,Adhesive Tape,Bee Stings,Dust,Latex,Mold,Pollen,Ragweed,Other"
-                                                             style="dropdown"
+                                                             style="dropdown" id="allergy-field"
 
 
                                                     />
@@ -2808,7 +2837,7 @@ Green Card follow-up visit form
                                                     conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="illness-chronic"
                                                     answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                     answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
-                                                    style="dropdown"
+                                                    style="dropdown" id="chronic"
                                             />
                                         </td>
 
@@ -2869,7 +2898,7 @@ Green Card follow-up visit form
                                                                             75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,81959AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82023AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                                                	82559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82900AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83018AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,767AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Abicavir,ACE inhibitors,Allopurinol,Aminoglycosides,ARBs (angiotensin II receptor blockers),Aspirin,Atazanavir,Carbamazepine,Cephalosporins,Chloroquine,Codeine,Didanosine,Efavirenz,Erythromycins,Ethambutol,Griseofulvin,Heparins,Hydralazine,Isoniazid,Lopinavir/ritonavir,Morphine,Nevirapine,Nitrofurans,Non-steroidal anti-inflammatory drugs,Penicillamine,Penicillin,Phenolphthaleins,Phenytoin,Procainamide,Pyrazinamide,Quinidine,Rifampin,Statins,Stavudine,Sulfonamides,Tenofovir,Tetracycline,Zidovudine,Other"
-                                                             style="dropdown"
+                                                             style="dropdown" id="adverse"
                                                     />
                                                     </td>
                                                     <td><obs class ="reaction"
