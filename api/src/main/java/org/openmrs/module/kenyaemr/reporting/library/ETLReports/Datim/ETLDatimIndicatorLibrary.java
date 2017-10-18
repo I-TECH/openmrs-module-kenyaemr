@@ -38,6 +38,22 @@ public class ETLDatimIndicatorLibrary {
     }
 
     /**
+     * Number of patients who were started on Art and are pregnant
+     * @return the indicator
+     */
+    public CohortIndicator startedOnARTAndPregnant() {
+        return cohortIndicator("Started on ART", ReportUtils.map(datimCohorts.startedOnARTAndPregnant(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of patients who were started on Art and are TB co-infected
+     * @return the indicator
+     */
+    public CohortIndicator startedOnARTAndTBCoinfected() {
+        return cohortIndicator("Started on ART", ReportUtils.map(datimCohorts.startedOnARTAndTBCoinfected(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number of patients in the ART 12 month cohort
      * @return the indicator
      */
