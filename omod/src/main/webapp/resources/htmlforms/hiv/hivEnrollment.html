@@ -223,15 +223,7 @@
                 jq(".muac").show();
             }
         }
-        var guardianTreatmentSupporter = function() {
-            var val = jq(this).val();
-            if (val == 1065){
-                jq('#tbl-guardian').hide();
 
-            }else {
-                jq('#tbl-guardian').show();
-            }
-        }
         function onUpnGenerateClick() {
             kenyaui.openConfirmDialog({
                 heading: 'Generate UPN',
@@ -325,10 +317,8 @@
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
-            jq('#tbl-guardian').hide();
             jq('#transfer-in-status input').change(onTransferStatusChange);
             jq('#art-status input').change(onArtStatusChange);
-            jq('input[type=radio].guardian').change(guardianTreatmentSupporter);
             //Not all ART regimens have answers
             //jq('#pmtctChecked input').click(onPmtctSelected);
             //jq('#pepChecked input').click(onPepSelected);
@@ -1007,23 +997,18 @@
 						<td>In school :
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<obs conceptId="5629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 style="yes_no"/>
+								 style="yes_no" required = "true"/>
 						</td>
 					</tr>
 
 					<tr>
 						<td>Child is an orphan?
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" required = "true"/>
 						</td>
 					</tr>
 			</table>
-			<div>
-				Is the guardian the same as treatment supporter?  <input type="radio" name="guardian" class="guardian" value="1065"/> Yes
-				<input type="radio" name="guardian" class="guardian" value="1066"/>No
-			</div>
-			<br />
-			<table id="tbl-guardian" style="width: 50%;" border="0">
+			<table style="width: 50%;" border="0">
 				<tr>
 					<th align="left">Guardian Name</th>
 					<th align="left">Telephone Number</th>
@@ -1034,7 +1019,7 @@
 						<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 							<tr>
 								<td>
-									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required = "true"/>
 								</td>
 								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
@@ -1042,12 +1027,13 @@
 							</tr>
 						</obsgroup>
 					</template>
-					<render n="11" concept="Treatment Supporter"/>
-					<render n="12" concept="Treatment Supporter"/>
+					<render n="1" concept="Guardian"/>
+
 				</repeat>
 			</table>
 		</fieldset>
 		</includeIf>
+		<includeIf velocityTest="$patient.age &gt; 18">
 		<fieldset id="treatment-supporter-fieldset" >
 			<legend>Treatment Supporter</legend>
 			<table id="treatment-supporter" style="width: 70%;" border="0">
@@ -1077,12 +1063,12 @@
 							</tr>
 						</obsgroup>
 					</template>
-					<render n="11" concept="Treatment Supporter"/>
-					<render n="12" concept="Treatment Supporter"/>
+					<render n="1" concept="Treatment Supporter"/>
+					<render n="2" concept="Treatment Supporter"/>
 			</repeat>
 			</table>
 		</fieldset>
-
+		</includeIf>
 		<enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 	</div>
 

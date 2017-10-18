@@ -39,6 +39,20 @@
                 jq('#disability select').prop("disabled", false);
             }
         }
+
+        var prevTestSelected = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq('#prev-test-location input').prop("disabled", false);
+                jq('#prev-test-date input').prop("disabled", false);
+
+            }else{
+                jq('#prev-test-location input').prop("disabled", true);
+                jq('#prev-test-date input').prop("disabled", true);
+                clearHiddenSections(jq('#prev-test-location'));
+                clearHiddenSections(jq('#prev-test-date'));
+            }
+        }
         var consentSelected = function () {
             var val = jq(this).val();
             if (val == 'true' ){
@@ -60,6 +74,9 @@
                 jq('.kit-name select').prop("disabled", true);
                 jq('.lot-number input').prop("disabled", true);
                 jq('#expiry-date input').prop("disabled", true);
+                jq('#hiv-test2-result select').prop("disabled", true);
+                jq('.kit-name2 select').prop("disabled", true);
+                jq('.lot-number2 input').prop("disabled", true);
                 jq('#expiry-date2 input').prop("disabled", true);
                 jq('#hiv-final-result select').prop("disabled", true);
                 jq('.result-given select').prop("disabled", true);
@@ -78,6 +95,8 @@
                 clearHiddenSections(jq('#expiry-date2'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('.result-given'));
+                clearHiddenSections(jq('#couple-discordant'));
+                clearHiddenSections(jq('#tb-screening'));
             }
         }
         var inCareSelected = function () {
@@ -216,6 +235,8 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability').hide();
+            //ever tested
+            jq('#ever-tested input').change(prevTestSelected);
             //Consent validation
             jq('.consent input').change(consentSelected);
             //couple testing
@@ -230,6 +251,19 @@
             jq("#expiry-date input").change(expiryDateSelected);
             //jq('#ccc-no :input').prop('readonly', true);
             //On Load defaults
+            var everTested = getField("hiv-test1-result.value").val();
+            if (everTested == 1065 ){
+                jq('#prev-test-location input').prop("disabled", false);
+                jq('#prev-test-date input').prop("disabled", false);
+
+            }
+            if(everTested == 1066 ){
+                jq('#prev-test-location input').prop("disabled", true);
+                jq('#prev-test-date input').prop("disabled", true);
+                clearHiddenSections(jq('#prev-test-location'));
+                clearHiddenSections(jq('#prev-test-date'));
+            }
+
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
@@ -447,8 +481,17 @@
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
                              style="radio" />
-                        <br/>
+                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                     </td>
+                    <td> Date :
+                        <obs id="prev-test-date" conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"
+                        />
+                        &#160;&#160;&#160;
+                    </td>
+                    <td>Location :
+                        <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id = "prev-test-location" />
+                    </td>
+
                 </tr>
             </table>
             <table id="tbl-hiv-selftest">
@@ -509,7 +552,7 @@
                             <obs class="kit-name"
                                  conceptId="164962"
                                  answerConceptIds="164960,164961"
-                                 style="dropdown" answerLabels="Determine,First-Response"
+                                 style="dropdown" answerLabels="Determine,First Response"
                             />
 
                         </td>
@@ -537,7 +580,7 @@
                             <obs class="kit-name2"
                                  conceptId="164962"
                                  answerConceptIds="164960,164961"
-                                 style="dropdown" answerLabels="Determine,First-Response"
+                                 style="dropdown" answerLabels="Determine,First Response"
                             />
 
                         </td>
