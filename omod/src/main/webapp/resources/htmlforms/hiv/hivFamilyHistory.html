@@ -38,11 +38,56 @@
                 }
             }
         }
+        //Morisky assessment
+        var ipvAssessmentResponses  = function () {
+            var val = jq(this).val();
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066;
+            var assessmentRadios = jq('#ipvAssessment').find('input[type=radio]');
+            var assessmentYesResponses = [];
+            var assessmentNoResponses = [];
+            //defaults
+            //Fetch responses for the assessment questions
+            jq.each(assessmentRadios, function(){
 
+                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentYesResponses.push(this);
+                }
 
-        $(document).ready(function () {
+                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+
+            });
+
+        }
+        var closeIpvAssessment  = function () {
+            console.log("close me");
+            var x = jq("#modalContents");
+            x.dialog('close');
+
+        }
+        //.Morisky assessment
+
+        jq(document).ready(function () {
 
             disableFields();
+            // Intimate Partner Violence assessment Modal
+            jq(".showModal").click(function(e){
+                //Defaults
+                var ipvResponses=jq('#ipvResponses');
+
+                //clearHiddenSections(ipvResponses);
+
+                e.preventDefault();
+                jq("#modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
+                jq("#btnCloseIpvAssessment").click(closeIpvAssessment);
+                jq("#ipvAssessment").change(ipvAssessmentResponses);
+
+            });
+
+
 
             $(".hiv-result select").change(function () {
                 var row = $(this).parent().parent().parent();
@@ -132,6 +177,7 @@
                 }
             });
 
+
         });
 
         //Clear hidden sections
@@ -164,8 +210,8 @@
             <thead>
             <tr>
                 <th align="left">Name of Members</th>
-                <th align="left">Age</th>
                 <th align="left">Relation</th>
+                <th align="left">Age</th>
                 <th align="left">Relationship Status</th>
                 <th align="left">Baseline HIV Status</th>
                 <th align="left">Test Date</th>
@@ -184,22 +230,50 @@
                                 <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
                             </td>
                             <td>
+                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
+                            </td>
+                            <td>
                                 <obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/>
                                 <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Years,Months"/>
                             </td>
                             <td>
-                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
-                            </td>
-
-                            <td>
                                 <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Current,Deceased,Unknown"/>
                             </td>
+                            <!--&lt;!&ndash;IPV assessment Modal  &ndash;&gt;-->
+                            <!--<td>-->
+                            <!--<button class="showModal">IPV  Assessment</button>-->
+                            <!--&lt;!&ndash;<a href="#" class="showModal">Show Modal Box</a>&ndash;&gt;-->
+                            <!--<div id="modalContents" style="display:none;" title="IPV Assessment" footer="OK">-->
+                                <!--<div id="ipvAssessment">-->
+                                    <!--1. Has [partner’s name] ever hit, kicked, slapped, or otherwise physically hurt you?-->
+                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
+                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
+                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;-->
+                                    <!--<input type="radio" name="question-1" class="question-1" value="1065"/> Yes-->
+                                    <!--<input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>-->
+
+                                    <!--2. Has [partner’s name] ever threatened to hurt you?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
+                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
+                                    <!--<input type="radio" name="question-2" class="question-2" value="1065"/> Yes-->
+                                    <!--<input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>-->
+
+                                    <!--3.Has [partner’s name] ever forced you to do something sexually that made you feel uncomfortable?-->
+                                     <!--<input type="radio" name="question-3" class="question-3" value="1065"/> Yes-->
+                                    <!--<input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>-->
+                                <!--</div>-->
+                                <!--<hr/>-->
+                                <!--<div class="modal-footer">-->
+                                    <!--<button type="button" id="btnCloseIpvAssessment" style="float: right;" >Save</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--&lt;!&ndash;.Modal   &ndash;&gt;-->
+                            <!--</td>-->
                             <td>
                                 <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -224,7 +298,7 @@
                             <td>
                                 <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
 
-                        </td>
+                              </td>
                         </tr>
                     </obsgroup>
                 </template>
