@@ -38,7 +38,7 @@
         <htmlformentryVersion>2.4</htmlformentryVersion>
         <htmlwidgetsVersion>1.6.6</htmlwidgetsVersion>
         <idgenVersion>2.6</idgenVersion>
-        <kenyacoreVersion>2.3</kenyacoreVersion>
+        <kenyacoreVersion>2.4-SNAPSHOT</kenyacoreVersion>
         <kenyadqVersion>1.2</kenyadqVersion>
         <kenyauiVersion>2.0.5-SNAPSHOT</kenyauiVersion>
         <logicVersion>0.5.2</logicVersion>

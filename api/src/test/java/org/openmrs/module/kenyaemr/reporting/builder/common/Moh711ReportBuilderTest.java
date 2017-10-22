@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
@@ -42,6 +43,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * Tests for {@link Moh711ReportBuilder}
  */
+@Ignore
 public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -78,6 +80,7 @@ public class Moh711ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
 		regimenManager.refresh();
 	}
+
 
 	@Test
 	public void test() throws Exception {
