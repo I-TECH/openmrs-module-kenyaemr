@@ -33,7 +33,7 @@
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
-				<ref bean="kenyaemr.common.report.moh731" />
+				<!--<ref bean="kenyaemr.common.report.moh731" />-->
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>
 				<ref bean="kenyaemr.common.report.dhis2" />
@@ -354,7 +354,7 @@
 
 	<bean id="kenyaemr.etl.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="b90e5c71-4e7b-4996-b8b8-b2278d5929af" />
-		<property name="name" value="ETL MOH 731 Report" />
+		<property name="name" value="MOH 731 Report" />
 		<property name="description" value="MOH 731 Report based on ETL tables" />
 		<property name="apps">
 			<set>
@@ -468,7 +468,7 @@
 
 	<bean id="kenyaemr.common.report.currentInCareNotStartedOnART" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="0e325e0e-e60e-40be-b83b-e4e30d0ffdd0" />
-		<property name="name" value="Current in care not started on ART Report" />
+		<property name="name" value="Pre-ART Report" />
 		<property name="description" value="Current in care not started on ART" />
 		<property name="apps">
 			<set>
