@@ -233,6 +233,7 @@ Green Card follow-up visit form
                 clearHiddenSections(complaint);
                 clearHiddenSections(complaintDuration);
                 clearHiddenSections(complaintDate);
+                getField('complaint-field.error').html('Please specify the complaints.').hide();
             }else {
                 jq("#tbl-complaints-today").show();
             }
@@ -264,7 +265,7 @@ Green Card follow-up visit form
                 clearHiddenSections(severity);
                 clearHiddenSections(onsetDate);
                 clearHiddenSections(action);
-
+                getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
             }else {
                 jq("#tbl-adverse-reactions").show();
             }
@@ -281,7 +282,7 @@ Green Card follow-up visit form
                 clearHiddenSections(reaction);
                 clearHiddenSections(severity);
                 clearHiddenSections(date);
-
+                getField('allergy-field.error').html('Please specify the allergy.').hide();
             }else {
                 jq("#tbl-known-allergies").show();
             }
@@ -348,6 +349,7 @@ Green Card follow-up visit form
                 clearHiddenSections(frequency);
                 clearHiddenSections(duration);
                 clearHiddenSections(durationUnits);
+                getField('chronic.error').html('Please specify the chronic illness.').hide();
             }else {
                 jq("#tbl-chronic-illness").show();
             }
@@ -1999,34 +2001,11 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </div>
-                <!-- These initial sections are duplicated from triage.xml, so try to keep them in sync -->
-                <!--//Insert discard button-->
-                <!--<ifMode mode="ENTER">-->
-                    <!--<script type="text/javascript">-->
-                        <!--jq(function(){-->
-                            <!--jq("<button/>")-->
-                                <!--.click(discardChanges)-->
-                                <!--.html('Discard')-->
-                                <!--.insertAfter('.buttonFinish');-->
-                            <!--function discardChanges()-->
-                            <!--{-->
-                                <!--var fullUrl = window.location.host;-->
-                                <!--console.log("fullurl ==>"+fullUrl);-->
-                                <!--var parts = fullUrl.split('returnUrl=');-->
-                                <!--var sub = parts[0];-->
-                                <!--var domain = parts[1];-->
 
-                                <!--console.log("first ==>"+sub);-->
-                                <!--console.log("second ==>"+domain);-->
-                                <!--//window.location.replace("domain");-->
-                            <!--}-->
-                        <!--});-->
-                    <!--</script>-->
-                <!--</ifMode>-->
-                <!--On Edit display-->
                 <ifMode mode="EDIT">
                     <script type="text/javascript">
                         jq(function(){
+                            var SELF = 978;
                             var age = parseInt('<lookup expression="patient.age"/>');
                             var keypop = getValue('population-type.value');
                             var everOnIPT = getValue('ever-on-ipt.value');
@@ -2054,6 +2033,12 @@ Green Card follow-up visit form
                             jq("#tbl-ever-on-ipt").show();
                             jq('#ever-taken-ipt :input').prop('disabled', false);
 
+                            //Person is present
+                            if (getValue('person-present.value') == SELF) {
+                                jq('.patient-details :input').prop('disabled', false);
+                            } else {
+                                jq('.patient-details :input').prop('disabled', true);
+                            }
                             //if key pop show which type
                             if (keypop == 164929 ){
                                 jq("#key-population").show();
@@ -3570,7 +3555,7 @@ Green Card follow-up visit form
                                 <table class = "on-art">
                                     <!--Adherence Modal  -->
                                     <tr>
-                                        <button class="showModal">Adherence Assessment</button>
+                                        <button class="showModal">Adherence Assessment*</button>
                                         <!--<a href="#" class="showModal">Show Modal Box</a>-->
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
                                             <div id="adherence-1">
@@ -3637,7 +3622,7 @@ Green Card follow-up visit form
                                             <obs
                                                     conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                     answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Fair (F),Poor (P)" required="true"
+                                                    answerLabels="Good (G),Fair (F),Poor (P)"
                                                     style="radio" id="arv-adherence"
                                             />
                                         </td>
@@ -3711,13 +3696,13 @@ Green Card follow-up visit form
                     <legend>Return Visit</legend>
                     <table>
                         <tr>
-                            <td>Return Visit Date:</td>
+                            <td>Return Visit Date:&#160;&#160;</td>
                             <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
-                                Reason*:
+                                Reason:
                                 <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="returnVisitReason"
                                      answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-                                     style="dropdowm"  />
+                                     style="dropdown"  />
                             </td>
 
                         </tr><tr></tr>

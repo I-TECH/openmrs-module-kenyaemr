@@ -423,6 +423,10 @@
                     return false;
                 }
             }
+            if (encounterDate =="") {
+                getField('encounter-date.error').html('Enrollment date should not be empty').show();
+                return false;
+            }
             return true;
         });
 	</script>
@@ -452,7 +456,7 @@
 
 			<table>
 				<tr>
-					<td>Entry point*</td>
+					<td>Entry point</td>
 					<td colspan="3">
 						<obs style="radio" answerSeparator=" "
 							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1004,7 +1008,7 @@
 					<tr>
 						<td>Child is an orphan?
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" required = "true"/>
+							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" required = "true" id="guardian-name"/>
 						</td>
 					</tr>
 			</table>
