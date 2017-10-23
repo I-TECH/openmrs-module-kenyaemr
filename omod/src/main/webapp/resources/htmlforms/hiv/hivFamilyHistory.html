@@ -13,12 +13,62 @@
 -->
 <htmlform>
 
-    <script>
+    <style type="text/css">
+
+                    /* The Modal  */
+                    .modal {
+                    display: none; /* Hidden by default */
+                    position: fixed; /* Stay in place */
+                    z-index: 1; /* Sit on top */
+                    left: 0;
+                    top: 0;
+                    width: 100%; /* Full width */
+                    height: 100%; /* Full height */
+                    overflow: auto; /* Enable scroll if needed */
+                    background-color: rgb(0,0,0); /* Fallback color */
+                    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                    }
+
+                    /* Modal Content/Box */
+                    .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto; /* 15% from the top and centered */
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%; /* Could be more or less, depending on screen size */
+                    }
+                    /* Modal Footer */
+                    .modal-footer {
+                    padding: 2px 16px;
+                    background-color: #fefefe;
+                    color: white;
+                    }
+
+                    /* The Close Button */
+                    .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    }
+
+                    .close:hover,
+                    .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                    }
+    /* .Modal  */
+    </style>
+
+    <script type="text/javascript">
 
         function disableFields() {
             var table = document.getElementById("table");
             for (var i = 0, row; row = table.rows[i]; i++) {
                 var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
+                var relation = $(row).find(".relation :selected").text();
+                curRow = jq(this).closest('tr');
 
                 if (baselineHivStatus == 664) {     //negative
                     $(row).find('.in-care select').attr('disabled', true);
@@ -36,14 +86,24 @@
                     $(row).find('.next-hivtest-date input').attr('disabled', true);
                     $(row).find('.hiv-result select').attr('disabled', true);
                 }
-            }
+               //IPV assessment
+
+                if (relation  =='Partner' || relation  =='Spouse') {
+                    $(row).find('.showModal').prop('disabled', false);
+                    $(row).find('.ipv-assessment-outcome input').prop('disabled', false);
+                }
+                else{
+                    $(row).find('.showModal').prop('disabled', true);
+                    $(row).find('.ipv-assessment-outcome input').prop('disabled', true);
+                }
+            }       //for loop
         }
-        //Morisky assessment
+        //IPV assessment
         var ipvAssessmentResponses  = function () {
             var val = jq(this).val();
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066;
-            var assessmentRadios = jq('#ipvAssessment').find('input[type=radio]');
+            var assessmentRadios = jq('.ipvAssessment').find('input[type=radio]');
             var assessmentYesResponses = [];
             var assessmentNoResponses = [];
             //defaults
@@ -58,42 +118,68 @@
                 if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                     assessmentNoResponses.push(this);
                 }
-
+                //If no responses have been recorded then prompt since this assessment is mandatory
+                if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+                    //Prompt to complete assessment
+                }else{
+                    if(assessmentYesResponses.length &gt; 0) {
+                        curRow.find(".ipv-assessment-outcome input[value=1065]").prop("checked", true);
+                    }else{
+                        jq(curRow).find(".ipv-assessment-outcome input[value=1066]").prop("checked", true);
+                    }
+                }
             });
 
         }
         var closeIpvAssessment  = function () {
-            console.log("close me");
-            var x = jq("#modalContents");
-            x.dialog('close');
-
+           var ipvResponses = jq('.ipvAssessment');
+           clearHiddenSections(ipvResponses);
+            var x = jq(".modalContents");
+                x.dialog('close');
         }
-        //.Morisky assessment
-
-        jq(document).ready(function () {
+        //.IPV assessment
+        jq(function() {
 
             disableFields();
+           jq('.ipv-assessment-outcome input[type=radio]').attr("style", "pointer-events:none;");
             // Intimate Partner Violence assessment Modal
             jq(".showModal").click(function(e){
-                //Defaults
-                var ipvResponses=jq('#ipvResponses');
-
-                //clearHiddenSections(ipvResponses);
-
                 e.preventDefault();
-                jq("#modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
-                jq("#btnCloseIpvAssessment").click(closeIpvAssessment);
-                jq("#ipvAssessment").change(ipvAssessmentResponses);
-
+                curRow = jq(this).closest('tr');
+                jq(".modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
+                jq(".ipvAssessment").change(ipvAssessmentResponses);
+                jq(".btnCloseIpvAssessment").click(closeIpvAssessment);
             });
 
-
+            $(".relation select").change(function () {
+                var row = $(this).parent().parent().parent();
+                var relation = $(".relation :selected").text();
+                //console.log("Relation current ==>"+this.value);
+                    //IPV assessment
+                    if (this.value == 5617 || this.value == 163565 ) {
+                        $(row).find('.showModal').prop('disabled', false);
+                        $(row).find('.ipv-assessment-outcome input').prop('disabled', false);
+                    }
+                    else{
+                        $(row).find('.showModal').prop('disabled', true);
+                        $(row).find('.ipv-assessment-outcome input').prop('disabled', true);
+                    }
+            });
 
             $(".hiv-result select").change(function () {
                 var row = $(this).parent().parent().parent();
                 var baseline = $(".baseline-hiv-status :selected").text();
-               // console.log("Baseline " + baseline);
-                if (this.value == 664 &amp;&amp; baseline !='Positive') {
+                if(this.value == 703) {
+                    //positive
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-status select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
+                }else{
                     //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
@@ -104,17 +190,6 @@
                     $(row).find('.referring-facility input').val('');
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').val('');
-
-                } else {
-                    //positive
-                    $(row).find('.in-care select').attr('disabled', false);
-                    $(row).find('.ccc-no input').attr('disabled', false);
-                    $(row).find('.referring-facility input').attr('disabled', false);
-                    $(row).find('.next-hivtest-date input').attr('disabled', true);
-                    $(row).find('.hiv-status select').attr('disabled', true);
-                    //Clearing fields
-                    $(row).find('.hiv-result input').val('');
-                    $(row).find('.next-hivtest-date input').val('');
                 }
             });
 
@@ -132,9 +207,6 @@
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.hiv-result select').val('');
                     $(row).find('.in-care select').val('');
-
-
-
                 }
                 if(this.value == 703) {                     //positive
                     $(row).find('.in-care select').attr('disabled', false);
@@ -147,7 +219,6 @@
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.hiv-result select').val('');
                     $(row).find('.in-care select').val('');
-
                 }
                 if(this.value == 1405) {      //Exposed infant
                     $(row).find('.in-care select').attr('disabled', true);
@@ -160,7 +231,6 @@
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.hiv-result select').val('');
                     $(row).find('.in-care select').val('');
-
                 }
                 if(this.value == 1067) {        //Unknown
                     $(row).find('.in-care select').attr('disabled', true);
@@ -173,13 +243,9 @@
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.hiv-result select').val('');
                     $(row).find('.in-care select').val('');
-
                 }
             });
-
-
         });
-
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -195,7 +261,6 @@
                 this.selectedIndex =0;
             });
         }
-
     </script>
 
     <!-- Encounter date, provider and location are not relevant for CE forms -->
@@ -204,7 +269,6 @@
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
         <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
     </div>
-
     <div class="ke-form-content">
         <table id="table" width="100%">
             <thead>
@@ -212,7 +276,9 @@
                 <th align="left">Name of Members</th>
                 <th align="left">Relation</th>
                 <th align="left">Age</th>
-                <th align="left">Relationship Status</th>
+                <th align="left">Status</th>
+                <th align="left">IPV Assessment</th>
+                <th align="left">IPV Outcome</th>
                 <th align="left">Baseline HIV Status</th>
                 <th align="left">Test Date</th>
                 <th align="left">HIV Result</th>
@@ -230,7 +296,7 @@
                                 <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
                             </td>
                             <td>
-                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                <obs class="relation" conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
                             </td>
@@ -242,38 +308,48 @@
                             </td>
                             <td>
                                 <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="Current,Deceased,Unknown"/>
+                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Current,Not Current"/>
                             </td>
-                            <!--&lt;!&ndash;IPV assessment Modal  &ndash;&gt;-->
-                            <!--<td>-->
-                            <!--<button class="showModal">IPV  Assessment</button>-->
-                            <!--&lt;!&ndash;<a href="#" class="showModal">Show Modal Box</a>&ndash;&gt;-->
-                            <!--<div id="modalContents" style="display:none;" title="IPV Assessment" footer="OK">-->
-                                <!--<div id="ipvAssessment">-->
-                                    <!--1. Has [partner’s name] ever hit, kicked, slapped, or otherwise physically hurt you?-->
-                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                    <!--<input type="radio" name="question-1" class="question-1" value="1065"/> Yes-->
-                                    <!--<input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>-->
+                            <!--IPV assessment Modal  -->
+                            <td>
+                            <button class="showModal"> IPV</button>
+                            <div class="modalContents" style="display:none;" title="IPV  Assessment" footer="OK">
+                                <div class="ipvAssessment">
+                                    1. Has he/she ever hit, kicked, slapped, or otherwise physically hurt you?
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
+                                    <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
 
-                                    <!--2. Has [partner’s name] ever threatened to hurt you?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                    <!--&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                    <!--<input type="radio" name="question-2" class="question-2" value="1065"/> Yes-->
-                                    <!--<input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>-->
+                                    2. Has he/she ever threatened to hurt you?
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
+                                    <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
 
-                                    <!--3.Has [partner’s name] ever forced you to do something sexually that made you feel uncomfortable?-->
-                                     <!--<input type="radio" name="question-3" class="question-3" value="1065"/> Yes-->
-                                    <!--<input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>-->
-                                <!--</div>-->
-                                <!--<hr/>-->
-                                <!--<div class="modal-footer">-->
-                                    <!--<button type="button" id="btnCloseIpvAssessment" style="float: right;" >Save</button>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--&lt;!&ndash;.Modal   &ndash;&gt;-->
-                            <!--</td>-->
+                                    3.Has he/she ever forced you to do something sexually that made you feel uncomfortable?
+                                     <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                    <input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>
+                                </div>
+                                <hr/>
+                                <div class="modal-footer">
+                                    <button type="button" class="btnCloseIpvAssessment" style="float: right;" >Save</button>
+                                </div>
+                            </div>
+                        <!--.Modal   -->
+                            </td>
+                            <td>
+                                <obs
+                                        conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No"
+                                        style="radio" class="ipv-assessment-outcome"
+                                />
+                            </td>
+
                             <td>
                                 <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -316,7 +392,6 @@
             </tbody>
         </table>
     </div>
-
     <div class="ke-form-footer">
         <submit/>
     </div>

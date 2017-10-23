@@ -43,7 +43,6 @@
         var bmi = null;
         var SELF = 978;
         var YES_CONCEPT_ID = 1065;
-        var YES_CONCEPT_ID = 1065;
         var NO_CONCEPT_ID = 1066;
         var ABORTION_CONCEPT_ID = 159896;
         var MISCARRIAGE_CONCEPT_ID = 126127;
@@ -151,6 +150,8 @@
          * Sets the pregnancy option
          */
         function setPregOption(option) {
+            var YES_CONCEPT_ID = 1065;
+            var NO_CONCEPT_ID = 1066;
             switch (option) {
                 case 'yes':
                     setValue('pregstatus.value', YES_CONCEPT_ID);
@@ -174,14 +175,17 @@
                     var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
                     var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
                     //Using recent LMP
+                    // console.log("lmp date"+recentLMP);
                     var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
                     var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
                     //Calculation
                     if(recentEDD !=""){
                         getField('pregdate-yes.value').val(recentEDD);
-                    }else if(recentLMP !="") {
+                    }
+                    if(recentLMP !="") {
                         getField('pregdate-yes.value').val(expectedDeliveryDateByRecentLMP);
-                    }else if (lmpDate!=""){
+                    }
+                    if (lmpDate!=""){
                         getField('pregdate-yes.value').val(expectedDeliveryDate);
                     }else{
                         getField('pregdate-yes.value').val("");
@@ -225,16 +229,7 @@
         /**
          * Displays the appropriate date field for the given pregnancy option
          */
-        var screenedStiSelected = function() {
-            var val = jq(this).val();
-            var partnerNotification = jq("#tbl-partner-notification");
-            if (val == 703){
-                jq('.tbl-partner-notification :input').prop('disabled', false);
 
-            }else {
-                jq('.tbl-partner-notification :input').prop('disabled', true);
-            }
-        }
 
         function setPregDateField(option) {
             var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
@@ -273,6 +268,17 @@
                 }
             }
         }
+        var screenedStiSelected = function() {
+            var val = jq(this).val();
+            var partnerNotification = jq("#tbl-partner-notification");
+            if (val == 703){
+                jq('.tbl-partner-notification :input').prop('disabled', false);
+
+            }else {
+                jq('.tbl-partner-notification :input').prop('disabled', true);
+            }
+        }
+
         var fpOptionsSelected = function() {
             var fpStatus = getValue('fp-status.value');
             if (fpStatus == USING_FP_CONCEPT_ID ) {
@@ -529,16 +535,26 @@
             }
 
             // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
-            var realId = $j('span#pregdate-abmc input[type=hidden]').attr('name');
+            var realId = jq('span#pregdate-abmc input[type=hidden]').attr('name');
             propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
+            var realIdyes = jq('span#pregdate-yes input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-yes.value'] = { id: realIdyes , field: dateFieldGetterFunction, setter: dateSetterFunction };
+            var realIdno = jq('span#pregdate-no input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-no.value'] = { id: realIdno , field: dateFieldGetterFunction, setter: dateSetterFunction };
 //pregnancy default options
             jq('#anc-number :input').prop('disabled', true);
             jq('#anc-profile :input').prop('disabled', true);
-            jq('#fp-status :input').prop('disabled', true);
 
+            var fpStatus = getValue('fp-status.value');
+            if (fpStatus == 965 || fpStatus == 1360) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+            }else{
+                jq("#fp-category input[type=checkbox]").prop("disabled",true);
+                clearHiddenSections(fpStatus);
+            }
             jq('input[name=pregoption]').click(function() {
                 var option = jq('input[name=pregoption]:checked').val();
-                setPregOption(option);
+               setPregOption(option);
             });
 
             var initialPregStatus = getValue('pregstatus.value');
@@ -621,7 +637,7 @@
                             </ifMode>
                             <encounterDate id="encounter-date" showTime="false" />
                         </td>
-                        <td><strong>Scheduled/Unscheduled </strong> <br/>
+                        <td><strong>Scheduled </strong> <br/>
                             <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
                         </td>
                     </tr>
@@ -667,6 +683,7 @@
                          <td>(g)</td>
                          <td colspan="2">
                              <obs id="whostage" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                             <span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                              (age: <span id="calculated-age" class="value" />)
                          </td>
                      </tr>
@@ -1402,30 +1419,26 @@
                 </td>
             </tr>
             <tr>
-                <th colspan="3">Return visit date*</th>
+                <th colspan="3">Return visit date</th>
                 <td>(ag)</td>
                 <td>Date:
                     <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
-                    Reason*:
-                    <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    Reason:
+                    <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="returnVisitReason"
                          answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
-                         style="dropdowm" required="true" />
-                    <hr width="0"/>
+                         style="dropdown"  />
                 </td>
                 <td>
                     <div id="standard-care">
                          Differentiated Care
-
                              <obs conceptId="164947" id="standard"
                                   answerConceptIds="164942"
                                   style="dropdown"
                                   answerLabels="Standard Care"/>
-
                     </div>
                      <div id="fast-track">
                          Differentiated Care
-
                              <obs conceptId="164947" id="fast-track"
                                   answerConceptIds="164942,164943,164944,164945,164946"
                                   style="dropdown"
