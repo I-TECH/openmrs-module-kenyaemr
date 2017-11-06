@@ -62,7 +62,7 @@ public class ETLMissedAppointmentsCohortDefinitionEvaluator implements CohortDef
 				"group by patient_id\n" +
 				"--  we may need to filter lost to follow-up using this\n" +
 				"having (\n" +
-				"(((date(latest_tca) < curdate()) and (date(latest_vis_date) < date(latest_tca))) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and datediff(curdate(), date(latest_tca)) <= 180)\n" +
+				"(((date(latest_tca) < curdate()) and (date(latest_vis_date) < date(latest_tca))) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and datediff(curdate(), date(latest_tca)) <= 90)\n" +
 				"-- drop missd completely\n" +
 				") e;";
 

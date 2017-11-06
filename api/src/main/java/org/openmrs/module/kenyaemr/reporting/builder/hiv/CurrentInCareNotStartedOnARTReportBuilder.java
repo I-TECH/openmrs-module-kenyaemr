@@ -81,7 +81,7 @@ public class CurrentInCareNotStartedOnARTReportBuilder extends AbstractHybridRep
 		dsd.addColumn("Unique Patient No", identifierDef, "");
 		dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
 		dsd.addColumn("Entry Point", new ObsForPersonDataDefinition("Entry Point", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), null, null), "", new PatientEntryPointDataConverter());
-        dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
+		dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 		dsd.addColumn("Transfer Out Date", new CalculationDataDefinition("Transfer Out Date", new TransferOutDateCalculation()), "", new CustomDateConverter());
 		dsd.addColumn("Date of Death", new CalculationDataDefinition("Date of Death", new DateOfDeathCalculation()), "", new CustomDateConverter());

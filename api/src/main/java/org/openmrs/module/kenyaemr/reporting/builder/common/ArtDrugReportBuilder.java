@@ -107,6 +107,7 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 		Concept ral = Dictionary.getConcept(Dictionary.RALTEGRAVIR);
 		Concept drv = Dictionary.getConcept(Dictionary.DARUNAVIR);
 		Concept atv = Context.getConceptService().getConceptByUuid("71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		Concept dtg = Context.getConceptService().getConceptByUuid("d1fd0e18-e0b9-46ae-ac0e-0452a927a94b");
 
 		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
 		List<String> indSuffixes = Arrays.asList("CH", "AD", "TT");
@@ -179,6 +180,16 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 
 		//AZT+3TC+ATV/r
 		EmrReportingUtils.addRow(dsd, "AZT+3TC+ATV/r", "Patients having (AZT+3TC+ATV/r) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(azt, tc3, atv)), indParams), allColumns, indSuffixes);
+
+		//AZT+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+DTG", "Patients having (AZT+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(azt, tc3, dtg)), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+DTG", "Patients having (TDF+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(tdf, tc3, dtg)), indParams), allColumns, indSuffixes);
+
+		//ABC+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+DTG", "Patients having (ABC+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(abc, tc3, dtg)), indParams), allColumns, indSuffixes);
+
 
 		return dsd;
 	}
