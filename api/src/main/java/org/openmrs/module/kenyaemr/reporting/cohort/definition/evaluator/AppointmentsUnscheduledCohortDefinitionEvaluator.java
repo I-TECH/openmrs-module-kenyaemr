@@ -39,10 +39,10 @@ public class AppointmentsUnscheduledCohortDefinitionEvaluator implements CohortD
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select e.patient_id \n" +
-				"from encounter e \n" +
-				"left outer join obs o on o.concept_id = 5096 and date(o.value_datetime) = curdate()\n" +
-				"where date(e.encounter_datetime) = curdate() and o.person_id is null;";
+		String qry=" select v.patient_id \n" +
+				"from visit v \n" +
+				"left outer join kenyaemr_etl.etl_patients_booked_today b on b.patient_id = v.patient_id\n" +
+				"where v.voided=0 and date(v.date_started) = curdate() and b.patient_id is null;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
