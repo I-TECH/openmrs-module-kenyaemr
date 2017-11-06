@@ -43,6 +43,7 @@ import java.util.Set;
 /**
  * Calculates whether patients are eligible for ART
  */
+
 public class EligibleForArtCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
 	/**

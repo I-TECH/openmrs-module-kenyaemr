@@ -17,6 +17,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
@@ -105,6 +106,8 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 		Concept etr = Dictionary.getConcept(Dictionary.ETRAVIRINE);
 		Concept ral = Dictionary.getConcept(Dictionary.RALTEGRAVIR);
 		Concept drv = Dictionary.getConcept(Dictionary.DARUNAVIR);
+		Concept atv = Context.getConceptService().getConceptByUuid("71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		Concept dtg = Context.getConceptService().getConceptByUuid("d1fd0e18-e0b9-46ae-ac0e-0452a927a94b");
 
 		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
 		List<String> indSuffixes = Arrays.asList("CH", "AD", "TT");
@@ -171,6 +174,22 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 
 		//ETR+TDF+3TC+LVP/r
 		EmrReportingUtils.addRow(dsd, "ETR+TDF+3TC+LVP+RIT", "Patients having (ETR+TDF+3TC+LVP+RIT) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(etr, tdf, tc3, lvp, rit)), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+ATV/r
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+ATV/r", "Patients having (TDF+3TC+ATV/r) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(tdf, tc3, atv)), indParams), allColumns, indSuffixes);
+
+		//AZT+3TC+ATV/r
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+ATV/r", "Patients having (AZT+3TC+ATV/r) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(azt, tc3, atv)), indParams), allColumns, indSuffixes);
+
+		//AZT+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "AZT+3TC+DTG", "Patients having (AZT+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(azt, tc3, dtg)), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "TDF+3TC+DTG", "Patients having (TDF+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(tdf, tc3, dtg)), indParams), allColumns, indSuffixes);
+
+		//ABC+3TC+DTG
+		EmrReportingUtils.addRow(dsd, "ABC+3TC+DTG", "Patients having (ABC+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen(Arrays.asList(abc, tc3, dtg)), indParams), allColumns, indSuffixes);
+
 
 		return dsd;
 	}

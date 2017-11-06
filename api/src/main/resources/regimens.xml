@@ -19,6 +19,8 @@
 			<drug code="ETR" conceptUuid="159810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ETRAVIRINE -->
 			<drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- RALTEGRAVIR -->
 			<drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- DARUNAVIR -->
+			<drug code="DTG" conceptUuid="d1fd0e18-e0b9-46ae-ac0e-0452a927a94b" /><!-- DOLUTEGRAVIR -->
+
 
 		</drugs>
 
@@ -73,6 +75,21 @@
 				<component drugCode="TDF" />
 				<component drugCode="3TC" />
 				<component drugCode="AZT" />
+			</regimen>
+			<regimen name="AZT + 3TC + DTG">
+				<component drugCode="AZT" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
+			</regimen>
+			<regimen name="TDF + 3TC + DTG">
+				<component drugCode="TDF" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
+			</regimen>
+			<regimen name="ABC + 3TC + DTG">
+				<component drugCode="ABC" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
 			</regimen>
 		</group>
 

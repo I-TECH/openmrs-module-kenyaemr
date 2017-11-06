@@ -386,21 +386,7 @@
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
-                                    <tr>
-                                        <td colspan="3"
-                                            class="heading2"><strong>Reporting Period: Today</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Stable Patients </th>
-                                        <th>Unstable Patients  </th>
 
-
-                                    </tr>
-                                    <tr>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>

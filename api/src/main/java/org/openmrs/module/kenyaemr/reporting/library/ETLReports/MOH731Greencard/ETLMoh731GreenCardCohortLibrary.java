@@ -22,7 +22,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_hiv_enrollment e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
                 "where  e.entry_point <> 160563  and transfer_in_date is null " +
-                "and date(e.visit_date) between date(:startDate) and date(:endDate) " +
+                "and date(e.visit_date) between date(:startDate) and date(:endDate) and (e.patient_type not in (160563, 164931) or e.patient_type is null ) " +
                 ";";
         cd.setName("newHhivEnrollment");
         cd.setQuery(sqlQuery);
@@ -841,20 +841,20 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  FROM kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "    JOIN kenyaemr_etl.etl_patient_demographics p ON p.patient_id = fup.patient_id\n" +
                 "    JOIN kenyaemr_etl.etl_hiv_enrollment e ON fup.patient_id = e.patient_id\n" +
-                "    LEFT OUTER JOIN kenyaemr_etl.etl_drug_event de ON e.patient_id = de.patient_id AND date(date_started) <= :endDate\n" +
+                "    LEFT OUTER JOIN kenyaemr_etl.etl_drug_event de ON e.patient_id = de.patient_id AND date(date_started) <= date(:endDate)\n" +
                 "    LEFT OUTER JOIN\n" +
                 "    (SELECT\n" +
                 "       patient_id,\n" +
                 "       visit_date\n" +
                 "     FROM kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "     WHERE date(visit_date) <= :endDate AND program_name = 'HIV'\n" +
+                "     WHERE date(visit_date) <= date(:endDate) AND program_name = 'HIV'\n" +
                 "     GROUP BY patient_id\n" +
                 "    ) d ON d.patient_id = fup.patient_id\n" +
-                "  WHERE fup.visit_date <= :endDate\n" +
+                "  WHERE date(fup.visit_date) <= date(:endDate)\n" +
                 "  GROUP BY patient_id\n" +
                 "  HAVING (\n" +
-                "    (latest_tca > :endDate AND (latest_tca > date_discontinued OR disc_patient IS NULL)) OR\n" +
-                "    (((latest_tca BETWEEN :startDate AND :endDate) OR (latest_vis_date BETWEEN :startDate AND :endDate)) AND\n" +
+                "    (date(latest_tca) > date(:endDate) AND (date(latest_tca) > date(date_discontinued) OR disc_patient IS NULL)) OR\n" +
+                "    (((date(latest_tca) BETWEEN date(:startDate) AND date(:endDate)) OR (date(latest_vis_date) BETWEEN date(:startDate) AND date(:endDate))) AND\n" +
                 "     (latest_tca > date_discontinued OR disc_patient IS NULL)))\n" +
                 ") active\n" +
                 "where started_on_drugs = '' or started_on_drugs is null\n" +

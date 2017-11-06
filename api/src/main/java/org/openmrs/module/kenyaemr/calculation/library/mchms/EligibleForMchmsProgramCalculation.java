@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
+import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -36,10 +38,11 @@ public class EligibleForMchmsProgramCalculation extends AbstractPatientCalculati
 		CalculationResultMap ret = new CalculationResultMap();
 
 		CalculationResultMap genders = Calculations.genders(cohort, context);
+		PersonService service = Context.getPersonService();
 
 		for (int ptId : cohort) {
-			boolean eligible = "F".equals(genders.get(ptId).getValue());
 
+			boolean eligible = "F".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() > 12? true: false;
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;

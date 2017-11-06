@@ -7,6 +7,7 @@ import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -33,7 +34,7 @@ public class ETLMOH731ReportBuilder extends AbstractReportBuilder {
     private ETLPmtctIndicatorLibrary pmtctIndicators;
 
     @Autowired
-    private ETLMoh731IndicatorLibrary hivIndicators;
+    private ETLMoh731GreenCardIndicatorLibrary hivIndicators;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
