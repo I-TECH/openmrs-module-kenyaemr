@@ -31,6 +31,7 @@
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
+				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -122,6 +123,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+		<property name="enabled" value="false" />
 		<property name="icon" value="kenyaui:forms/moh257.png" />
 		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.html" />
 	</bean>
@@ -191,7 +193,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
 		<property name="order" value="201090" />
@@ -284,5 +286,11 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
+	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
+		<property name="name" value="Viral Suppression Report" />
+		<property name="description" value="Current in Care - Viral Suppression status" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 </beans>

@@ -46,9 +46,10 @@ public class Moh257FragmentController {
 						   UiUtils ui,
 						   @SpringBean RegimenManager regimenManager) {
 
+		// removing face page from list of available forms
 		String[] page1FormUuids = {
-				HivMetadata._Form.MOH_257_FACE_PAGE,
-				/*HivMetadata._Form.MOH_257_ARV_THERAPY,*/
+				/*HivMetadata._Form.MOH_257_FACE_PAGE,
+				HivMetadata._Form.MOH_257_ARV_THERAPY,*/
 				HivMetadata._Form.FAMILY_HISTORY
 		};
 

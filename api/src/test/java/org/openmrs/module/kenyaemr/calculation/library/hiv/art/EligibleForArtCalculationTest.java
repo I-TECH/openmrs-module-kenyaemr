@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Program;
@@ -41,6 +42,12 @@ import java.util.Map;
 /**
  * Tests for {@link EligibleForArtCalculation}
  */
+
+/**
+ * The calculation should be reviewed to reflect the current guidelines of test and treat.
+ * This test will thus be ignored for v16.0
+ */
+@Ignore
 public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -96,7 +103,7 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
 
 		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // below 10 years should be put on art regardiless of other factors
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // below 10 years should be put on art regardless of other factors
 		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has low CD4
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // already on ART
 		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program

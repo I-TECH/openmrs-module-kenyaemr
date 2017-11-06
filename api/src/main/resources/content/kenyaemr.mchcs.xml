@@ -31,11 +31,11 @@
 				<ref bean="kenyaemr.mchcs.report.notPcrConfirmatoryTested" />
 				<ref bean="kenyaemr.mchcs.report.infantNotOnCTX" />
 				<ref bean="kenyaemr.mchcs.report.infantWithoutPcp" />
-				<ref bean="kenyaemr.mchcs.report.moh710" />
+				<!--<ref bean="kenyaemr.mchcs.report.moh710" />
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
 				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
-				<ref bean="kenyaemr.mchcs.report.defaulter" />
+				<ref bean="kenyaemr.mchcs.report.defaulter" />-->
 			</set>
 		</property>
 		<property name="fragments">
