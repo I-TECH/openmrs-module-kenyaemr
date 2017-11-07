@@ -11,18 +11,18 @@
     ]
 
     def otherDemogFieldRows = [
-              [
+            [
                     [object: command, property: "maritalStatus", label: "Marital status", config: [style: "list", options: maritalStatusOptions]],
                     [object: command, property: "occupation", label: "Occupation", config: [style: "list", options: occupationOptions]],
                     [object: command, property: "education", label: "Education", config: [style: "list", options: educationOptions]]
-             ]
-      ]
+            ]
+    ]
     def deathFieldRows = [
             [
                     [object: command, property: "dead", label: "Deceased"],
                     [object: command, property: "deathDate", label: "Date of death"]
             ]
-      ]
+    ]
 
     def nextOfKinFieldRows = [
             [
@@ -31,7 +31,7 @@
             ]
     ]
 
-     def contactsFields = [
+    def contactsFields = [
             [
                     [object: command, property: "telephoneContact", label: "Telephone contact"]
             ],
@@ -149,7 +149,7 @@
 
         </fieldset>
 
-        </fieldset>
+    </fieldset>
 
         <fieldset>
             <legend>Address</legend>
@@ -159,24 +159,24 @@
             <% } %>
 
             <table>
-            <tr>
-                <td class="ke-field-label" style="width: 265px">County</td>
-                <td class="ke-field-label" style="width: 260px">Sub-County</td>
-                <td class="ke-field-label" style="width: 260px">Ward</td>
-            </tr>
+                <tr>
+                    <td class="ke-field-label" style="width: 265px">County</td>
+                    <td class="ke-field-label" style="width: 260px">Sub-County</td>
+                    <td class="ke-field-label" style="width: 260px">Ward</td>
+                </tr>
 
-            <tr>
-                <td style="width: 265px">
-                    <select name="personAddress.countyDistrict">
-                        <option></option>
-                        <%countyList.each { %>
-                        <option ${!countyName? "" : it.toLowerCase() == command.personAddress.country.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
-                        <%}%>
-                    </select>
-                </td>
-                <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.stateProvince"])}</td>
-                <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address4"])}</td>
-            </tr>
+                <tr>
+                    <td style="width: 265px">
+                        <select name="personAddress.countyDistrict">
+                            <option></option>
+                            <%countyList.each { %>
+                            <option ${!countyName? "" : it.toLowerCase() == command.personAddress.country.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                            <%}%>
+                        </select>
+                    </td>
+                    <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.stateProvince"])}</td>
+                    <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address4"])}</td>
+                </tr>
             </table>
             <% locationSubLocationVillageFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
