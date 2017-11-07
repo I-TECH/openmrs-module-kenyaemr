@@ -156,7 +156,6 @@
                 clearHiddenSections(jq('#baseline-fieldset'));
 
             }
-            console.log("Transfer status==> "+transferStatus);
             if (transferStatus == RE_ENROLL) {
                 jq('#hiv-id :input').prop('disabled', true);
                 jq('#transit-patient').hide();
@@ -371,6 +370,12 @@
             if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
                 jq('.muac').show();
             }
+            //Validate for enrollment
+            var hasUPN = jq('#hiv-id input[type=text]').val();
+            if(hasUPN == null)
+			{
+                jq("#transfer-in-status input[value=159833]").prop("disabled", true);
+			}
 
         });
 
