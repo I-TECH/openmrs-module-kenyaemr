@@ -130,7 +130,7 @@
          * Updates the form due to a patient age change
          */
         function onPatientAgeUpdate(age) {
-            isPediatric = (age &lt; 15);
+            isPediatric = (age &lt; 16);
 
             jq('#whostage select option').each(function() {
                 var concept = parseInt(jq(this).prop('value'));
@@ -546,11 +546,12 @@
             jq('#anc-profile :input').prop('disabled', true);
 
             var fpStatus = getValue('fp-status.value');
+            var fpInput = jq('#fp-status');
             if (fpStatus == 965 || fpStatus == 1360) {
                 jq("#fp-category input[type=checkbox]").prop("disabled",false);
             }else{
                 jq("#fp-category input[type=checkbox]").prop("disabled",true);
-                clearHiddenSections(fpStatus);
+                clearHiddenSections(fpInput);
             }
             jq('input[name=pregoption]').click(function() {
                 var option = jq('input[name=pregoption]:checked').val();
@@ -593,7 +594,7 @@
                 getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
                 return false;
             }
-            if (pAge &lt; 15 === true) {
+            if (pAge &lt; 16 === true) {
                 var fpStatus = getValue('fp-status.value');
                 if (fpStatus == USING_FP_CONCEPT_ID || fpStatus == WANTS_FP_CONCEPT_ID) {
                     getField('fp-status.error').html('Pediatric patient too young for FP').show();
@@ -619,7 +620,6 @@
     <div style="display:none">
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
     </div>
-
     <div class="ke-form-content">
         <table class="moh257" align="center">
             <tbody>
@@ -947,6 +947,7 @@
                                      <render n="5" concept="Drug"/>
                                  </repeat>
                              </table>
+                             <hr width="0" />
                          </td>
                      </tr>
                      <tr id="general-exam-findings">
@@ -1002,7 +1003,6 @@
                                      answerLabels="Normal,Severe acute malnutrition,Moderate acute malnutrition,Overweight/Obese"
                                      style="radio"
                                      answerSeparator="&lt;br /&gt;"/>
-                             <hr width="0" />
                          </td>
                      </tr>
                      <tr>
@@ -1061,23 +1061,16 @@
                                                  <render n="5" concept=" " />
                                              </repeat>
                                          </table>
+                             <hr width="0" />
                          </td>
                      </tr>
                      <tr>
                          <th rowspan="2">Laboratory<br/>Investigations<br />Done</th>
 
-                         <th colspan="2">Lab Order(s)</th>
+                         <th colspan="2">Lab Investigation(s)</th>
                          <td>(v)</td>
                          <td colspan="2">
-                             Lab Name
-                             <obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                             Reason
-                             <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                  answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151685AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                  answerLabels="Baseline,Routine,Confirmatory,Suspected Drug Resistance,Other,"
-                                  style="dropdowm"  />
-                             Order date:
-                             <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
                          </td>
                      </tr>
                      <tr class="patient-details">
@@ -1091,8 +1084,6 @@
                                  </ifMode>
                                  <labTestPicker dynamicObsContainerId="other-lab-tests" excludeTests="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                              </div>
-                             Order date:
-                             <obs id="next-apt-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                          </td>
                      </tr>
              <tr>
@@ -1203,6 +1194,7 @@
                                      <render n="5" concept="Drug"/>
                                  </repeat>
                              </table>
+                             <hr width="0" />
                          </td>
                      </tr>
             <tr>
@@ -1272,7 +1264,7 @@
                 <th colspan="3">Vaccinations </th>
                 <td>(ad)</td>
                 <td colspan="2" >
-                    <includeIf velocityTest="$patient.age &lt; 15">
+                    <includeIf velocityTest="$patient.age &lt; 16">
                         <table width="30%">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
@@ -1374,7 +1366,6 @@
                             </td>
                         </tr>
                     </table>
-                    <hr width="0" />
                 </td>
             </tr>
             <tr>
@@ -1422,7 +1413,7 @@
                 <th colspan="3">Return visit date</th>
                 <td>(ag)</td>
                 <td>Date:
-                    <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
+                    <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"  id="returnVisitDate" required="true" />
                     Reason:
                     <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="returnVisitReason"
                          answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
