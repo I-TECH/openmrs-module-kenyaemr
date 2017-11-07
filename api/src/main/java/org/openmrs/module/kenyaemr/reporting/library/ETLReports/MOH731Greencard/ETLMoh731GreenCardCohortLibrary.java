@@ -22,7 +22,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_hiv_enrollment e " +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
                 "where  e.entry_point <> 160563  and transfer_in_date is null " +
-                "and date(e.visit_date) between date(:startDate) and date(:endDate) and (e.patient_type not in (160563, 164931) or e.patient_type is null ) " +
+                "and date(e.visit_date) between date(:startDate) and date(:endDate) and (e.patient_type not in (160563, 164931, 159833) or e.patient_type is null ) " +
                 ";";
         cd.setName("newHhivEnrollment");
         cd.setQuery(sqlQuery);
