@@ -377,9 +377,10 @@
                     const FEVER = 1494;
                     const WEIGHTLOSS = 832;
                     const SWEAT =133027;
+                    const LETHERGY =116334;
 
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
+                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY)&amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
 
 					}
@@ -524,25 +525,30 @@
 							<td>Cough of any duration:</td>
 							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id="tb-screening-error" /></td>
 						</tr>
-						<includeIf velocityTest="$patient.age &lt; 15">
-							<tr>
-								<td>Contact with a TB Case:</td>
-								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-							</tr>
-						</includeIf>
 						<tr>
 							<td>Fever:</td>
 							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-
 						</tr>
 						<tr>
 							<td>Noticeable weight loss or poor weight gain:</td>
 							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
 						</tr>
+						<!--Adult Questions-->
 						<includeIf velocityTest="$patient.age &gt; 15">
 							<tr>
-								<td>Night sweats:</td>
+								<td>Night sweats: &#160;&#160;</td>
 								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+							</tr>
+						</includeIf>
+						<!--Paed Questions-->
+						<includeIf velocityTest="$patient.age &lt; 16">
+							<tr>
+								<td>Contact with a TB Case: &#160;&#160;</td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+							</tr>
+							<tr>
+								<td>Lethergy, less playful than usual: &#160;&#160;</td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
 							</tr>
 						</includeIf>
 					</obsgroup>

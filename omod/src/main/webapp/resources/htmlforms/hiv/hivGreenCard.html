@@ -179,6 +179,8 @@ Green Card follow-up visit form
                 jq('#lmp-date :input').val('');
                 clearHiddenSections(ifPatientPregnant);
                 clearHiddenSections(pregIntention);
+                jq('#lmp-date :input').prop('disabled', true);
+                getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
             }
             if(val == 1175){
                 jq('#if-patient-pregnant').hide();
@@ -188,6 +190,8 @@ Green Card follow-up visit form
                 jq('#lmp-date :input').val('');
                 clearHiddenSections(ifPatientPregnant);
                 clearHiddenSections(pregIntention);
+                jq('#lmp-date :input').prop('disabled', true);
+                getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
             }
         }
         function onPersonPresentChange() {
@@ -483,7 +487,7 @@ Green Card follow-up visit form
             if (pAge &gt; 15) {
                 whoChild.style.display='none';
             }
-            if (pAge &lt; 15) {
+            if (pAge &lt; 16) {
                 whoAdult.style.display='none';
             }
         }
@@ -922,7 +926,7 @@ Green Card follow-up visit form
             onEncounterDateChange();
             jq('#fp-details').show();
             var age = parseInt('<lookup expression="patient.age"/>');
-            if (age &lt; 10) {
+            if (age &lt; 11) {
                 jq('#fp-details').hide();
                 jq('.reproductive-part').hide();
             }
@@ -1205,9 +1209,10 @@ Green Card follow-up visit form
                     const FEVER = 1494;
                     const WEIGHTLOSS = 832;
                     const SWEAT =133027;
+                    const LETHERGY =116334;
 
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
+                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY )&amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
                     }
                        //Replaced yes concept with individual symptoms
@@ -1248,7 +1253,7 @@ Green Card follow-up visit form
                         clearRadios(tbRxdate);
                         clearRadios(tbRegimen);
                     }
-             if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == 4) { // check if all screening No responses are checked: total radios / 2
+             if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
@@ -1535,7 +1540,7 @@ Green Card follow-up visit form
             }else{
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
             }
-            if (recentWHO =="" &amp;&amp; pAge &lt; 15 &amp;&amp; childWhoStage == false) {
+            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false) {
                 jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
                 getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
@@ -1585,9 +1590,9 @@ Green Card follow-up visit form
                 const FEVER = 1494;
                 const WEIGHTLOSS = 832;
                 const SWEAT =133027;
-
+                const LETHERGY =116334;
                 //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
+                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY )&amp;&amp; this.checked == true) {
                     screeningYesResponses.push(this);
 
                 }
@@ -1641,7 +1646,14 @@ Green Card follow-up visit form
                 getField('tb-screening-error.error').html('Please conduct TB screening.').hide();
             }
           //If not completed tb screening
-            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
+            if (onAntiTbDrugs !=1065 &amp;&amp; pAge &gt; 15 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
+                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                getField('tb-screening-error.error').html('Please complete TB screening.').show();
+                return false;
+            }else{
+                getField('tb-screening-error.error').html('Please complete TB screening.').hide();
+            }
+            if (onAntiTbDrugs !=1065 &amp;&amp; pAge &lt; 16 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 5 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please complete TB screening.').show();
                 return false;
@@ -2087,7 +2099,7 @@ Green Card follow-up visit form
                             }else{
                                 jq("#fp-details").hide();
                             }
-                            if (age &lt; 10) {
+                            if (age &lt; 11) {
                                 jq('.reproductive-part').hide();
                                 jq("#fp-details").hide();
                             }
@@ -2114,8 +2126,9 @@ Green Card follow-up visit form
                                 const FEVER = 1494;
                                 const WEIGHTLOSS = 832;
                                 const SWEAT =133027;
+                                const LETHERGY =116334;
                                 //Push any responses to the respective screeningYesResponses and screeningNoResponses array
-                                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT )&amp;&amp; this.checked == true) {
+                                if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY)&amp;&amp; this.checked == true) {
                                     screeningYesResponses.push(this);
 
                                 }
@@ -2296,7 +2309,7 @@ Green Card follow-up visit form
                                 </includeIf>
                                 <includeIf velocityTest="$patient.gender == 'F'">
                                     <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
+                                         answerLabel="Female sex worker" style="checkbox" id="female-sex-worker" /><br/>
                                 </includeIf>
                             </td>
                         </tr>
@@ -2456,30 +2469,38 @@ Green Card follow-up visit form
                             <obsgroup groupingConceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
                                 <tr>
-                                    <td>Cough of any duration:</td>
+                                    <td>Cough of any duration:  &#160;&#160; </td>
                                     <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id="tb-screening-error" /></td>
                                 </tr>
-                                <includeIf velocityTest="$patient.age &lt; 15">
                                 <tr>
-                                        <td>Contact with a TB Case:</td>
-                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                                </tr>
-                            </includeIf>
-                            <tr>
-                                    <td>Fever:</td>
+                                    <td>Fever: &#160;&#160;</td>
                                     <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
 
-                            </tr>
-                            <tr>
-                                    <td>Noticeable weight loss or poor weight gain:</td>
+                                </tr>
+                                <tr>
+                                    <td>Noticeable weight loss or poor weight gain: &#160; </td>
                                     <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                            </tr>
-                            <includeIf velocityTest="$patient.age &gt; 15">
-                             <tr>
-                                    <td>Night sweats:</td>
-                                    <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-                             </tr>
-                            </includeIf>
+                                </tr>
+                                <!--Adult Questions-->
+                                <includeIf velocityTest="$patient.age &gt; 15">
+                                    <tr>
+                                        <td>Night sweats: &#160;&#160;</td>
+                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                                    </tr>
+                                </includeIf>
+                                <!--Paed Questions-->
+                                <includeIf velocityTest="$patient.age &lt; 16">
+                                <tr>
+                                        <td>Contact with a TB Case: &#160;&#160;</td>
+                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                                </tr>
+                                    <tr>
+                                        <td>Lethergy, less playful than usual: &#160;&#160;</td>
+                                        <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                                    </tr>
+                               </includeIf>
+
+
                             </obsgroup>
                         </table>
                     </fieldset>
@@ -2505,7 +2526,7 @@ Green Card follow-up visit form
                                 <td>Chest X-ray:</td>
                                 <td><obs id="chest-xray-action" conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                             </tr>
-                            <includeIf velocityTest="$patient.age &lt; 15">
+                            <includeIf velocityTest="$patient.age &lt; 16">
                                 <tr>
                                     <td>Referral:</td>
                                     <td><obs id="referral-action" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
@@ -2925,7 +2946,7 @@ Green Card follow-up visit form
 
                 <fieldset class="vaccinations-part">
                     <legend>Vaccination(s) today</legend>
-                    <includeIf velocityTest="$patient.age &lt; 15">
+                    <includeIf velocityTest="$patient.age &lt; 16">
                         <table width="30%">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>

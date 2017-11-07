@@ -22,6 +22,7 @@
         var YES_CONCEPT_ID = 160563;
         var NO_CONCEPT_ID = 164144;
         var TRANSIT =164931;
+        var RE_ENROLL=159833;
         var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
@@ -33,7 +34,7 @@
                 whoChild.style.display='none';
                 jq("#patient-age-group").text(adultLabelText);
             }
-            if (pAge &lt; 15) {
+            if (pAge &lt; 16) {
                 whoAdult.style.display='none';
                 jq("#patient-age-group").text(childLabelText);
             }
@@ -68,7 +69,7 @@
                     jq('#breastfeeding :input').prop('disabled', true);
                 }
                 //Gender based Validations bmi and muac
-                if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
                 }
 
@@ -112,7 +113,7 @@
                     jq('#breastfeeding :input').prop('disabled', true);
                 }
                 //Gender based Validations bmi and muac
-                if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
+                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
                 }
 //                clearHiddenSections(jq('#hiv-id'));
@@ -155,23 +156,48 @@
                 clearHiddenSections(jq('#baseline-fieldset'));
 
             }
-            if (transferStatus == "") {
-                jq('#transfer-details :input').prop('disabled', true);
+            console.log("Transfer status==> "+transferStatus);
+            if (transferStatus == RE_ENROLL) {
                 jq('#hiv-id :input').prop('disabled', true);
+                jq('#transit-patient').hide();
+                jq('#transfer-details').hide();
+
+                //jq('#underage').hide();
+                //jq('#guardian-details').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
+                jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                //Gender based validations  pregnancy and breastfeeding
-                if (pgender == 'M') {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                //Gender based Validations bmi and muac
-                if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
-                    jq('.muac').show();
-                }
+//              clearHiddenSections(jq('#hiv-id'));
+                clearHiddenSections(jq('#transfer-details'));
+                clearHiddenSections(jq('#confirmed-positive-date'));
+                clearHiddenSections(jq('#facility-confirmed'));
+                clearHiddenSections(jq('#whoAdult'));
+                clearHiddenSections(jq('#whoChild'));
+                clearHiddenSections(jq('#art-status'));
+                clearHiddenSections(jq('#pmtctChecked'));
+                clearHiddenSections(jq('#pepChecked'));
+                clearHiddenSections(jq('#prepChecked'));
+                clearHiddenSections(jq('#haartChecked'));
+                clearHiddenSections(jq('#baseline-fieldset'));
+            }
+            if (transferStatus == false) {
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#transit-patient').hide();
+                jq('#transfer-details').hide();
+
+                //jq('#underage').hide();
+                //jq('#guardian-details').hide();
+                clearHiddenSections(jq('#transfer-details'));
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
 //              clearHiddenSections(jq('#hiv-id'));
                 clearHiddenSections(jq('#transfer-details'));
                 clearHiddenSections(jq('#confirmed-positive-date'));
@@ -325,7 +351,7 @@
                 if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
                     event.preventDefault();
             });
-            //onTransferStatusChange();
+            onTransferStatusChange();
 			//defaults
             jq('#transfer-details :input').prop('disabled', true);
             jq('#hiv-id :input').prop('disabled', true);
@@ -458,8 +484,8 @@
 					<td>
 						<obs
 								id="transfer-in-status" conceptId="164932" style="radio"
-								answerConceptIds="164144,160563,164931"
-								answerLabels="New Patient,Transfer in,Transit"
+								answerConceptIds="164144,160563,164931,159833"
+								answerLabels="New Patient,Transfer in,Transit,Re-enrollment"
 								required="true"
 						/>
 					</td>
@@ -472,6 +498,7 @@
                                 var YES_CONCEPT_ID = 160563;
                                 var NO_CONCEPT_ID = 164144;
                                 var TRANSIT =164931;
+                                var RE_ENROLL=159833;
                                 var pgender = "<lookup expression="patient.gender" />";
                                 if(PATIENT_IS_ENROLLED_HIV) {
                                     jq('#hiv-id :input').prop('readonly', true);
@@ -560,7 +587,7 @@
 
                                 }
                                 //Transit
-                                if (transferStatus== TRANSIT) {
+                                if (transferStatus == TRANSIT) {
                                     jq('#hiv-id :input').prop('disabled', false);
                                     jq('#transit-patient').show();
                                     jq('#transfer-details').hide();
@@ -572,6 +599,33 @@
                                     jq('#hiv-id :input').prop('disabled', false);
                                     jq('#generate-hiv-id').hide();
 
+                                }
+                                if (transferStatus == RE_ENROLL) {
+                                    jq('#hiv-id :input').prop('disabled', true);
+                                    jq('#transit-patient').hide();
+                                    jq('#transfer-details').hide();
+
+                                    //jq('#underage').hide();
+                                    //jq('#guardian-details').hide();
+                                    clearHiddenSections(jq('#transfer-details'));
+                                    jq('#patient-history').hide();
+                                    jq('#art-history').hide();
+                                    jq('#baseline-fieldset').hide();
+                                    jq('#treatment-supporter-fieldset').hide();
+                                    jq('#hiv-id :input').prop('disabled', false);
+                                    jq('#generate-hiv-id').hide();
+//              clearHiddenSections(jq('#hiv-id'));
+                                    clearHiddenSections(jq('#transfer-details'));
+                                    clearHiddenSections(jq('#confirmed-positive-date'));
+                                    clearHiddenSections(jq('#facility-confirmed'));
+                                    clearHiddenSections(jq('#whoAdult'));
+                                    clearHiddenSections(jq('#whoChild'));
+                                    clearHiddenSections(jq('#art-status'));
+                                    clearHiddenSections(jq('#pmtctChecked'));
+                                    clearHiddenSections(jq('#pepChecked'));
+                                    clearHiddenSections(jq('#prepChecked'));
+                                    clearHiddenSections(jq('#haartChecked'));
+                                    clearHiddenSections(jq('#baseline-fieldset'));
                                 }
                                 if (transferStatus == "") {
                                     jq('#transfer-details :input').prop('disabled', true);
@@ -991,7 +1045,7 @@
 			</table>
 		</fieldset>
 		<includeIf velocityTest="$patient.age &lt; 18">
-		<fieldset>
+		<fieldset id ="underage">
 			<legend>Under 18 Years</legend>
 			<table id="underage-details" style="width: 70%;" border="0">
 					<tr>
@@ -1009,7 +1063,7 @@
 						</td>
 					</tr>
 			</table>
-			<table style="width: 50%;" border="0">
+			<table id="guardian-details" style="width: 50%;" border="0">
 				<tr>
 					<th align="left">Guardian Name</th>
 					<th align="left">Telephone Number</th>
