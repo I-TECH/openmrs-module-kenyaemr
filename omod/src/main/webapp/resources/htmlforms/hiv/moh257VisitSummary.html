@@ -309,10 +309,12 @@
 
         }
         function viralLoadValidation(){
+
             if(getValue('ldl.value') == 1302){
                 jq('#vLoadResults :input').prop( "disabled", true );
+                jq('#viral-load-value input').val('');
             }
-            else {
+            if(getValue('ldl.value') != 1302){
                 jq('#vLoadResults :input').prop( "disabled", false );
             }
         }
@@ -512,7 +514,7 @@
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             getField('encounter-date.value').change(onEncounterDateChange);
-           // getField('ldl.value').change(viralLoadValidation);
+            getField('ldl.value').change(viralLoadValidation);
             //fp options
             jq("#fp-category input[type=checkbox]").prop("disabled",true);
             jq("#fp-category input[type=radio]").prop("disabled",true);
