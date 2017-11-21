@@ -33,6 +33,10 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
+    /**
+     * TODO: Review query. It takes time to execute
+     * @return
+     */
     public  CohortDefinition currentlyInCare() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery=" select  e.patient_id\n" +

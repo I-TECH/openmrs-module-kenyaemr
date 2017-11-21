@@ -60,14 +60,6 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 	}
 
 	/**
-	 * @see NeedsCd4TestCalculation#getFlagMessage()
-	 */
-	@Test
-	public void getFlagMessage() {
-		Assert.assertThat(new NeedsCd4TestCalculation().getFlagMessage(), notNullValue());
-	}
-
-	/**
 	 * @see NeedsCd4TestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients need a CD4
 	 */
