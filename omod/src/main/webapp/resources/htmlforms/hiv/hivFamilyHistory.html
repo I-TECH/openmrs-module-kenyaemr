@@ -13,57 +13,278 @@
 -->
 <htmlform>
 
-    <script>
-        $(document).ready(function () {
+    <style type="text/css">
 
-            disableFields();
+                    /* The Modal  */
+                    .modal {
+                    display: none; /* Hidden by default */
+                    position: fixed; /* Stay in place */
+                    z-index: 1; /* Sit on top */
+                    left: 0;
+                    top: 0;
+                    width: 100%; /* Full width */
+                    height: 100%; /* Full height */
+                    overflow: auto; /* Enable scroll if needed */
+                    background-color: rgb(0,0,0); /* Fallback color */
+                    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                    }
 
-            $(".hiv-status select").change(function () {
-                var row = $(this).parent().parent().parent();
-                if (this.value == '1065') {
-                    $(row).find('.in-care select').attr('disabled', false);
-                    $(row).find('.ccc-no input').attr('disabled', false);
-                } else {
-                    $(row).find('.in-care select').val('');
-                    $(row).find('.ccc-no input').val('');
+                    /* Modal Content/Box */
+                    .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto; /* 15% from the top and centered */
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%; /* Could be more or less, depending on screen size */
+                    }
+                    /* Modal Footer */
+                    .modal-footer {
+                    padding: 2px 16px;
+                    background-color: #fefefe;
+                    color: white;
+                    }
+
+                    /* The Close Button */
+                    .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    }
+
+                    .close:hover,
+                    .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                    }
+    /* .Modal  */
+    </style>
+
+    <script type="text/javascript">
+
+        function disableFields() {
+            var table = document.getElementById("table");
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var baselineHivStatus = $(row).find('.baseline-hiv-status select').val();
+                var relation = $(row).find(".relation :selected").text();
+                curRow = jq(this).closest('tr');
+
+                if (baselineHivStatus == 664) {     //negative
                     $(row).find('.in-care select').attr('disabled', true);
                     $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-status').attr('disabled', false);
+                }
+                if (baselineHivStatus == 703)  {                     //positive
+//                       $(row).find('.in-care select').val('');
+//                       $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                }
+               //IPV assessment
+
+                if (relation  =='Partner' || relation  =='Spouse') {
+                    $(row).find('.showModal').prop('disabled', false);
+                    $(row).find('.ipv-assessment-outcome input').prop('disabled', false);
+                }
+                else{
+                    $(row).find('.showModal').prop('disabled', true);
+                    $(row).find('.ipv-assessment-outcome input').prop('disabled', true);
+                }
+            }       //for loop
+        }
+        //IPV assessment
+        var ipvAssessmentResponses  = function () {
+            var val = jq(this).val();
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066;
+            var assessmentRadios = jq('.ipvAssessment').find('input[type=radio]');
+            var assessmentYesResponses = [];
+            var assessmentNoResponses = [];
+            //defaults
+            //Fetch responses for the assessment questions
+            jq.each(assessmentRadios, function(){
+
+                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentYesResponses.push(this);
+                }
+
+                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+                //If no responses have been recorded then prompt since this assessment is mandatory
+                if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+                    //Prompt to complete assessment
+                }else{
+                    if(assessmentYesResponses.length &gt; 0) {
+                        curRow.find(".ipv-assessment-outcome input[value=1065]").prop("checked", true);
+                    }else{
+                        jq(curRow).find(".ipv-assessment-outcome input[value=1066]").prop("checked", true);
+                    }
                 }
             });
 
-            function disableFields() {
-                var table = document.getElementById("table");
-                for (var i = 0, row; row = table.rows[i]; i++) {
-                    var hivStatus = $(row).find('.hiv-status select').val();
-                    if (hivStatus === '1065') {
-                        $(row).find('.in-care select').attr('disabled', false);
-                        $(row).find('.ccc-no input').attr('disabled', false);
-                    } else {
-                        $(row).find('.in-care select').attr('disabled', true);
-                        $(row).find('.ccc-no input').attr('disabled', true);
+        }
+        var closeIpvAssessment  = function () {
+           var ipvResponses = jq('.ipvAssessment');
+           clearHiddenSections(ipvResponses);
+            var x = jq(".modalContents");
+                x.dialog('close');
+        }
+        //.IPV assessment
+        jq(function() {
+
+            disableFields();
+           jq('.ipv-assessment-outcome input[type=radio]').attr("style", "pointer-events:none;");
+            // Intimate Partner Violence assessment Modal
+            jq(".showModal").click(function(e){
+                e.preventDefault();
+                curRow = jq(this).closest('tr');
+                jq(".modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
+                jq(".ipvAssessment").change(ipvAssessmentResponses);
+                jq(".btnCloseIpvAssessment").click(closeIpvAssessment);
+            });
+
+            $(".relation select").change(function () {
+                var row = $(this).parent().parent().parent();
+                var relation = $(".relation :selected").text();
+                //console.log("Relation current ==>"+this.value);
+                    //IPV assessment
+                    if (this.value == 5617 || this.value == 163565 ) {
+                        $(row).find('.showModal').prop('disabled', false);
+                        $(row).find('.ipv-assessment-outcome input').prop('disabled', false);
                     }
+                    else{
+                        $(row).find('.showModal').prop('disabled', true);
+                        $(row).find('.ipv-assessment-outcome input').prop('disabled', true);
+                    }
+            });
+
+            $(".hiv-result select").change(function () {
+                var row = $(this).parent().parent().parent();
+                var baseline = $(".baseline-hiv-status :selected").text();
+                if(this.value == 703) {
+                    //positive
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-status select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.hiv-result input').val('');
+                    $(row).find('.next-hivtest-date input').val('');
+                }else{
+                    //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled',true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.in-care select').val('');
                 }
-            }
+            });
+
+            $(".baseline-hiv-status  select").change(function () {
+                var row = $(this).parent().parent().parent();
+
+                if (this.value == 664) {    //negative
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+                }
+                if(this.value == 703) {                     //positive
+                    $(row).find('.in-care select').attr('disabled', false);
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                    $(row).find('.referring-facility input').attr('disabled', false);
+                    $(row).find('.next-hivtest-date input').attr('disabled', true);
+                    $(row).find('.hiv-result select').attr('disabled', true);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+                }
+                if(this.value == 1405) {      //Exposed infant
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+                }
+                if(this.value == 1067) {        //Unknown
+                    $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                    $(row).find('.referring-facility input').attr('disabled', true);
+                    $(row).find('.next-hivtest-date input').attr('disabled', false);
+                    $(row).find('.hiv-result select').attr('disabled', false);
+                    //Clearing fields
+                    $(row).find('.referring-facility input').val('');
+                    $(row).find('.ccc-no input').val('');
+                    $(row).find('.hiv-result select').val('');
+                    $(row).find('.in-care select').val('');
+                }
+            });
         });
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
     </script>
 
     <!-- Encounter date, provider and location are not relevant for CE forms -->
     <div style="display:none">
-        <encounterDate id="encounter-date"/>
+        <encounterDate id="encounter-date" showTime="true" />
         <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14"/>
         <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
     </div>
-
     <div class="ke-form-content">
         <table id="table" width="100%">
             <thead>
             <tr>
-                <th>Name of Members</th>
-                <th>Age</th>
-                <th>Relation</th>
-                <th>HIV Result</th>
-                <th>In Care?</th>
-                <th>CCC Number</th>
+                <th align="left">Name of Members</th>
+                <th align="left">Relation</th>
+                <th align="left">Age</th>
+                <th align="left">Status</th>
+                <th align="left">IPV Assessment</th>
+                <th align="left">IPV Outcome</th>
+                <th align="left">Baseline HIV Status</th>
+                <th align="left">Test Date</th>
+                <th align="left">HIV Result</th>
+                <th align="left">In Care?</th>
+                <th align="left">CCC Number</th>
+                <th align="left">Facility Enrolled</th>
             </tr>
             </thead>
             <tbody>
@@ -75,20 +296,72 @@
                                 <obs conceptId="160750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=" "/>
                             </td>
                             <td>
+                                <obs class="relation" conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Mother,Father,Sibling,Child,Spouse,Partner,Co-Wife"/>
+                            </td>
+                            <td>
                                 <obs conceptId="160617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Age"/>
                                 <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown" answerLabels="Years,Months"/>
                             </td>
                             <td>
-                                <obs conceptId="1560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,971AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159772AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160273AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Mother,Father,Grandmother,Grandfather,Sibling,Child,Aunt,Uncle,Spouse/partner,Co-Wife,Guardian,Other"/>
+                                <obs class="relationship-status" conceptId="163607AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="159450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Current,Not Current"/>
+                            </td>
+                            <!--IPV assessment Modal  -->
+                            <td>
+                            <button class="showModal"> IPV</button>
+                            <div class="modalContents" style="display:none;" title="IPV  Assessment" footer="OK">
+                                <div class="ipvAssessment">
+                                    1. Has he/she ever hit, kicked, slapped, or otherwise physically hurt you?
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
+                                    <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
+
+                                    2. Has he/she ever threatened to hurt you?
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
+                                    <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
+
+                                    3.Has he/she ever forced you to do something sexually that made you feel uncomfortable?
+                                     <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                    <input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>
+                                </div>
+                                <hr/>
+                                <div class="modal-footer">
+                                    <button type="button" class="btnCloseIpvAssessment" style="float: right;" >Save</button>
+                                </div>
+                            </div>
+                        <!--.Modal   -->
                             </td>
                             <td>
-                                <obs class="hiv-status" conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="P,N,E,DK"/>
+                                <obs
+                                        conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No"
+                                        style="radio" class="ipv-assessment-outcome"
+                                />
+                            </td>
+
+                            <td>
+                                <obs class="baseline-hiv-status" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
+                            </td>
+                            <td>
+                                <obs class="next-hivtest-date" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                            </td>
+                            <td>
+                                <obs class="hiv-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" answerLabels="Positive,Negative,Exposed infant,Unknown"/>
                             </td>
                             <td>
                                 <obs class="in-care" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -96,8 +369,12 @@
                                      style="dropdown" answerLabels="YES,NO,UNKNOWN"/>
                             </td>
                             <td>
-                                <obs class="ccc-no" conceptId="160752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+                                <obs class="ccc-no" conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" size ="15"/>
                             </td>
+                            <td>
+                                <obs class="referring-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""/>
+
+                              </td>
                         </tr>
                     </obsgroup>
                 </template>
@@ -115,7 +392,6 @@
             </tbody>
         </table>
     </div>
-
     <div class="ke-form-footer">
         <submit/>
     </div>

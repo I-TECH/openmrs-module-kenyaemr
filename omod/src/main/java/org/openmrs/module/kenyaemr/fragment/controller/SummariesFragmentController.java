@@ -1,5 +1,7 @@
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.openmrs.Concept;
@@ -46,6 +48,7 @@ import java.util.*;
  * A fragment controller for a patient summary details
  */
 public class SummariesFragmentController {
+    protected static final Log log = LogFactory.getLog(SummariesFragmentController.class);
 
     public void controller(@FragmentParam("patient") Patient patient,
                            FragmentModel model){
@@ -67,16 +70,11 @@ public class SummariesFragmentController {
         //gender
         patientSummary.setGender(patient.getGender());
 
-
-
-
         PatientIdentifierType type = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         List<PatientIdentifier> upn = patientService.getPatientIdentifiers(null, Arrays.asList(type), null, Arrays.asList(patient), false);
         if(upn.size() > 0){
             patientSummary.setUpn(upn.get(0).getIdentifier());
         }
-
-
 
         PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
         context.setNow(new Date());
@@ -353,20 +351,20 @@ public class SummariesFragmentController {
         Set<Integer> ios = new HashSet<Integer>();
         String iosResults = "";
         List<Integer> iosIntoList = new ArrayList<Integer>();
-        for(Obs obs:problemsAddedListObs) {
-            ios.add(obs.getValueCoded().getConceptId());
-        }
-        iosIntoList.addAll(ios);
-        if(iosIntoList.size() == 1) {
-            iosResults = ios(iosIntoList.get(0));
-        }
-        else {
-            for(Integer values : iosIntoList){
-                if(values != 1107) {
-                    iosResults += ios(values) + " ";
+            for (Obs obs : problemsAddedListObs) {
+                    ios.add(obs.getValueCoded().getConceptId());
+                  }
+            iosIntoList.addAll(ios);
+            if (iosIntoList.size() == 1) {
+                iosResults = ios(iosIntoList.get(0));
+            } else {
+                for (Integer values : iosIntoList) {
+                    if (values != 1107) {
+                        iosResults += ios(values) + " ";
+                    }
                 }
             }
-        }
+
         //current art regimen
         CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
         if(currentRegimenResults != null) {
@@ -549,6 +547,16 @@ public class SummariesFragmentController {
         else {
             toDate = formatDate((Date) totResults.getValue());
         }
+       //transfer out to facility
+        String toFacility;
+        CalculationResultMap transferOutFacilty = Calculations.lastObs(Dictionary.getConcept("159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        Obs transferOutFacilityObs = EmrCalculationUtils.obsResultForPatient(transferOutFacilty, patient.getPatientId());
+        if(transferOutFacilityObs != null){
+            toFacility = transferOutFacilityObs.getValueText();
+        }
+        else {
+            toFacility = "N/A";
+        }
 
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
@@ -564,6 +572,7 @@ public class SummariesFragmentController {
         model.addAttribute("deadDeath", dead);
         model.addAttribute("returnVisitDate", patientSummary.getNextAppointmentDate());
         model.addAttribute("toDate", toDate);
+        model.addAttribute("toFacility", toFacility);
         model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
         model.addAttribute("iosResults", iosResults);

@@ -13,18 +13,30 @@
 -->
 <htmlform>
 	<script type="text/javascript">
-		function viralLoadValidation(){
-			if(getValue('ldl.value') == 1302){
-				jq('#vLoadResults :input').prop( "disabled", true );
-			}
-			else {
-				jq('#vLoadResults :input').prop( "disabled", false );
-			}
-		}
+		function viralLoadValidation() {
+            var vl = parseInt(getValue('vl.value'));
+            //console.log("vl "+vl);
+            if (vl > 0 ) {
+                jq('#vLoadResults :input').prop("disabled", false);
+                jq('#ldlResults :input').prop("disabled", true);
 
+            }else {
+              //  jq('#vLoadResults :input').prop("disabled", true);
+                jq('#ldlResults :input').prop("disabled", false);
+
+           }
+            if (getValue('ldl.value') == 1302) {
+                jq('#vLoadResults :input').prop("disabled", true);
+                jq('#ldlResults :input').prop("disabled", false);
+            }else {
+                jq('#vLoadResults :input').prop("disabled", false);
+                jq('#ldlResults :input').prop("disabled", true);
+         	}
+        }
 		function getLatedtVlOrder(){
-			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>");
-			var testOrderVlConcept=<lookup expression="fn.latestObs(1271).valueCoded"/>
+
+			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>")
+			var testOrderVlConcept= "<lookup expression="fn.latestObs(1271).valueCoded"/>"
 
 			if (testOrderVlConcept == 856) {
 			//alert(testOrderVlConcept)
@@ -36,8 +48,10 @@
 
 		jq(function() {
 			getField('ldl.value').change(viralLoadValidation);
+            getField('vl.value').keyup(viralLoadValidation);
 			viralLoadValidation;
 			getLatedtVlOrder();
+            jq('#vLoadResults :input').prop( "disabled", false );
 		});
 
 	</script>
@@ -52,14 +66,17 @@
 	</div>
 
 	<div class="ke-form-content">
+		<fieldset>
+			<legend>Common Laboratory Investigations</legend>
 		<table style="width: 80%">
+
 			<tr>
-				<th> </th>
-				<th>Test</th>
-				<th>Ordered</th>
-				<th>Date Ordered</th>
-				<th>Result</th>
-				<th>Date Collected (if not today)</th>
+				<th align="left">No. </th>
+				<th align="left">Test</th>
+				<th align="left">Ordered</th>
+				<th align="left">Date Ordered</th>
+				<th align="left">Result</th>
+				<th align="left">Date Collected (if not today)</th>
 			</tr>
 			<tr>
 				<td>01.</td>
@@ -103,15 +120,17 @@
 					<span id="lastVl"></span>
 				</td>
 				<td id="vLoadResults">
-					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="vl" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
 				</td>
 
 			</tr>
 			<tr>
 				<td>06 (b).</td>
 				<td>HIV Viral Load(LDL)</td>
-				<td></td>
-				<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td> - </td>
+				<td> - </td>
+				<td id="ldlResults"><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
 			</tr>
 			<tr>
 				<td>07.</td>
@@ -146,7 +165,7 @@
 				<td>Gene Xpert</td>
 				<td>
 				<obs 
-				conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+				conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 				answerConceptIds="162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 								162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
 								164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
@@ -159,9 +178,10 @@
 								Invalid/No result/Error" 
 				dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
 
-			</tr>			
+			</tr>
 		</table>
-	</div>
+		</fieldset>
+		</div>
 	<div class="ke-form-footer">
 		<submit />
 	</div>

@@ -12,11 +12,327 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
+
+        //Resulting TB status for Ordered test
+        var testOrdered  = function () {
+            var val = jq(this).val();
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var geneXpert = getField("genexpert-action.value").val();
+            var referral = getValue("referral-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var xray = getValue("chest-xray-action.value");
+
+            //TB
+            if(clinicalDiagnosis ==703) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+
+            }
+            //No signs
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs with normal/negative Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB  with abnormal/positive Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &gt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+        }
+
+        //Resulting TB status for Action Positive Sputum smear
+        var sputumSmearAction  = function () {
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var geneXpert = getField("genexpert-action.value").val();
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var referral = getValue("referral-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            //TB
+            if(clinicalDiagnosis ==703) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+
+            }
+            //No signs
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs with normal/negative Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB  with abnormal/positive Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+        }
+        //Resulting TB status for Action Positive GeneXpert
+        var geneXpertAction  = function () {
+
+            var geneXpert = getField("genexpert-action.value").val();
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var referral = getValue("referral-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            //TB
+            if(clinicalDiagnosis ==703) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+
+            }
+            //No signs
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs with normal/negative Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB  with abnormal/positive Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+
+        }
+        //Resulting TB status for Abnormal chest x ray
+        var chestXrayAction = function () {
+            var xray = getValue("chest-xray-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var geneXpert = getField("genexpert-action.value").val();
+            var referral = getValue("referral-action.value");
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            //TB
+            if(clinicalDiagnosis ==703) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+
+            }
+            //No signs
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs with normal/negative Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB  with abnormal/positive Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+        }
+        //Resulting TB status for Action Referral
+        var referralAction  = function () {
+            var referral = getValue("referral-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var geneXpert = getField("genexpert-action.value").val();
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            //TB
+            if(clinicalDiagnosis ==703) {
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //No signs with normal/negative Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB  with abnormal/positive Tests results
+            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+            //Presumed TB
+            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+                jq("#tb-result-status input[value=1660]").prop("checked", false);
+                jq("#tb-result-status input[value=142177]").prop("checked", true);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+            }
+
+        }
+
+        //Resulting TB status for Action clinical diagnosis
+        var clinicalDiagnosisAction  = function () {
+            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var referral = getValue("referral-action.value");
+            var geneXpert = getField("genexpert-action.value").val();
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            if(clinicalDiagnosis ==703){
+                jq("#tb-result-status input[value=1662]").prop("disabled", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
+                jq("#tbl-start-antiTb").show();
+                jq('#ipt-client-workup').hide();
+                jq('#ipt-initiation').hide();
+                jq('#ipt-result-status').hide();
+            }
+            if(clinicalDiagnosis ==664 ){
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq("#tbl-start-antiTb").hide();
+            }
+            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=703 &amp;&amp; referral !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526 &amp;&amp;(geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)) {
+                jq("#tb-result-status input[value=1660]").prop("checked", true);
+                jq("#tb-result-status input[value=142177]").prop("checked", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", false);
+                jq('#ipt-client-workup').hide();
+                // getField('tbrxdate.value').val("");
+            }
+        }
+        //Resulting TB status for Action start anti tb
+        var startAntiTbAction  = function () {
+            var startAntiTb = getValue("start-anti-tb-action.value");
+            var sputumSmear = getValue("sputum-smear-action.value");
+            var xray = getValue("chest-xray-action.value");
+            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+
+            if(startAntiTb ==1065){
+                jq("#tb-result-status input[value=1662]").prop("disabled", false);
+                jq("#tb-result-status input[value=1662]").prop("checked", true);
+                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
+                jq('#ipt-client-workup').hide();
+                jq('#ipt-initiation').hide();
+                jq('#ipt-result-status').hide();
+                //set TB RX date to todays date
+                var encounterDate = getValue('encounter-date.value');
+                //Validate for moment
+                var momentEncounterDate =moment(moment(encounterDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
+                getField('tbrxdate.value').val(momentEncounterDate);
+            }
+            if(startAntiTb ==1066 ){
+                // jq("#tb-result-status input[value=1662]").prop("disabled", true);
+                //jq('#tbrxdate').val(" ");
+                getField('tbrxdate.value').val("");
+            }
+
+        }
+
 		jQuery(function($) {
 			var valbirthdate = "<lookup  expression="patient.birthdate" />"
 			var valChangedToDateFormat = new Date(valbirthdate).getTime();
+            var actionTakenTab = jq('#action-taken');
+            var iptClientWorkupTab = jq('#ipt-client-workup');
+            var iptFollowup = jq('#ipt-followup');
+            var iptInitiationTab = jq('#ipt-initiation');
+            var iptUtake = jq("#ipt-uptake").hide();
+            actionTakenTab.hide();
+            iptClientWorkupTab.hide();
+            iptFollowup.hide();
+            iptInitiationTab.hide();
+            iptUtake.hide();
+
+            jq("#start-anti-tb-action").change(startAntiTbAction);
+            jq("#clinical-diagnosis-action").change(clinicalDiagnosisAction);
+            jq("#sputum-smear-action").change(sputumSmearAction);
+            jq("#genexpert-action select").change(geneXpertAction);
+            jq("#chest-xray-action").change(chestXrayAction);
+            jq("#referral-action").change(referralAction);
+            jq("#tb-test-ordered").change(testOrdered);
 
 			beforeSubmit.push(function() {
 				var valonform = getValue('tbrxdate.value');
@@ -56,10 +372,16 @@
 
 				//Fetch responses for the screening questions
 				$.each(screeningRadios, function(){
+                    const COUGH = 159799;
+                    const CONTACT = 124068;
+                    const FEVER = 1494;
+                    const WEIGHTLOSS = 832;
+                    const SWEAT =133027;
+                    const LETHERGY =116334;
 
-					//Push any responses to the respective screeningYesResponses and screeningNoResponses array
-					if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
-						screeningYesResponses.push(this);
+                    //Push any responses to the respective screeningYesResponses and screeningNoResponses array
+                    if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY)&amp;&amp; this.checked == true) {
+                        screeningYesResponses.push(this);
 
 					}
 
@@ -118,12 +440,15 @@
 
 				//Fetch responses for the IPT client workup questions
 				$.each(iptClientWorkupRadios, function() {
+                    const YELLOWURINE = 162311;
+                    const NUMBNESS = 132652;
+                    const YELLOWEYES = 5192;
+                    const TENDERNESS = 124992;
 
-					//Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
-					if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
-						iptClientWorkupYesResponses.push(this);
-
-					}
+                    //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
+                    if ((this.value == YELLOWURINE || this.value == NUMBNESS || this.value == YELLOWEYES || this.value == TENDERNESS)&amp;&amp; this.checked == true) {
+                        iptClientWorkupYesResponses.push(this);
+                    }
 
 					if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
 						iptClientWorkupNoResponses.push(this);
@@ -189,152 +514,303 @@
 	</div>
 
 	<div class="ke-form-content">
-	    <fieldset>
-	    	<legend>Screening Questions</legend>
-			<table id="screening-questions">
-				<tr>
-					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="159799"/>
-						</span>
-						<td>Cough of any duration:</td>
-						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-					</obsgroup>
-				</tr>
-				<tr>
-					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124068"/>
-						</span>
-						<td>Contact with a TB Case:</td>
-						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-					</obsgroup>
-				</tr>
-				<tr>
-					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="1494"/>
-						</span>
-						<td>Fever:</td>
-						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-					</obsgroup>
-				</tr>
-				<tr>
-					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="832"/>
-						</span>
-						<td>Noticeable weight loss or poor weight gain:</td>
-						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-					</obsgroup>
-				</tr>
-				<tr>
-					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="133027"/>
-						</span>
-						<td>Night sweats:</td>
-						<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-					</obsgroup>
-				</tr>
-	        </table>
-	    </fieldset>
+		<fieldset class="tb-screening-part">
+			<!--TB Screening-->
+			<fieldset id="tb-screening-tab">
+				<legend>Screening Questions</legend>
+				<table id="screening-questions">
+					<obsgroup groupingConceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-	    <fieldset id="action-taken">
-	    	<legend>Indicate Action Taken</legend>
-	        <table>
-	            <tr>
-	            	<td>Sputum Smear:</td>
-	                <td><obs conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
-	            </tr>
-	            <tr>
-	            	<td>Chest X-ray:</td>
-	                <td><obs conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
-	            </tr>
-	            <tr>
-	            	<td>Start Anti-TBs:</td>
-	                <td><obs conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
-	            </tr>
-	            <tr>
-	            	<td>Invitation of contacts:</td>
-	                <td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
-	            </tr>
-	            <tr>
-	            	<td>Evaluated for IPT:</td>
-	                <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelTExt=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
-	            </tr>
-	        </table>
-	    </fieldset>
+						<tr>
+							<td>Cough of any duration:</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="159799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id="tb-screening-error" /></td>
+						</tr>
+						<tr>
+							<td>Fever:</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>Noticeable weight loss or poor weight gain:</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="832AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<!--Adult Questions-->
+						<includeIf velocityTest="$patient.age &gt; 15">
+							<tr>
+								<td>Night sweats: &#160;&#160;</td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="133027AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+							</tr>
+						</includeIf>
+						<!--Paed Questions-->
+						<includeIf velocityTest="$patient.age &lt; 16">
+							<tr>
+								<td>Contact with a TB Case: &#160;&#160;</td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124068AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+							</tr>
+							<tr>
+								<td>Lethergy, less playful than usual: &#160;&#160;</td>
+								<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+							</tr>
+						</includeIf>
+					</obsgroup>
+				</table>
+			</fieldset>
 
-	    <fieldset id="ipt-client-workup">
-	    	<legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
-	    	<table>
-	    		<tr>
-		    		<td colspan="2" class="ke-panel-header">Ask for the following</td>
-	    		</tr>
-	    		<tr>
-	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="162311"/>
-						</span>
-		    			<td>1. Yellow Urine</td>
-		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-	    			</obsgroup>
-	    		</tr>
-	    		<tr>
-	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="132652"/>
-						</span>	    		
-		    			<td>2. Numbness/ burning sensation on the hands or feet</td>
-		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-	    			</obsgroup>
-	    		</tr>
-	    		<tr>
-	    			<td colspan="2" class="ke-panel-header">Examine the following</td>
-	    		</tr>
-	    		<tr>
-	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="5192"/>
-						</span>	    		
-		    			<td>1. Yellowness of eyes </td>
-		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-	    			</obsgroup>
-	    		</tr>
-	    		<tr>
-	    			<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<span style="display: none">
-							<obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" defaultValue="124994"/>
-						</span>	  
-		    			<td>2.Tenderness in the upper right quadrant of the abdomen </td>
-		    			<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-		    		</obsgroup>
-	    		</tr>
-	    	</table>
-	    </fieldset>
+			<fieldset id="action-taken">
+				<legend>Indicate Action Taken</legend>
+				<table id="tb-test-ordered">
+					<tr>
+						<td>Tests Ordered:</td>
+						<td><obs id="ord-sputum-smear" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Sputum Smear" answerConceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /><hr/></td>
+						<td><obs id="ord-chest-xray" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Chest Xray" answerConceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" /><hr/></td>
+						<td><obs id="ord-gene-xpert" conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="GeneXpert" answerConceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" />
+							<hr/> </td>
+					</tr>
+				</table>
+				<table>
+					<tr>
+						<td>Sputum Smear:</td>
+						<td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
 
-		<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span></div>
+					</tr>
+					<tr>
+						<td>Chest X-ray:</td>
+						<td><obs id="chest-xray-action" conceptId="12AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,152526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+					</tr>
+					<includeIf velocityTest="$patient.age &lt; 15">
+						<tr>
+							<td>Referral:</td>
+							<td><obs id="referral-action" conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+						</tr>
+					</includeIf>
+					<tr>
+						<td>GeneXpert:</td>
+						<td><obs id="genexpert-action" conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+						/></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p> </p></td>
+					</tr>
+					<tr>
+						<td>Clinical diagnosis:</td>
+						<td><obs  id="clinical-diagnosis-action" conceptId="163752AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+					</tr>
 
-        <table>
-			<tr>
-				<td colspan="2"><p> </p></td>
-			</tr>
-			<tr>
-				<td colspan="2">
-					<obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No Signs,Suspect,TB Rx,Not Done" />
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"> <p></p></td>
-			</tr>
-			<tr>
-				<td width="30%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
-				<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:"/></td>
-			</tr>
-		</table>
+					<tr>
+						<td>Invitation of contacts:</td>
+						<td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+					</tr>
+					<tr>
+						<td>Evaluated for IPT:</td>
+						<td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
+					</tr>
+				</table>
+				<table id="tb-screening-result">
+					<tr>
+						<td colspan="2"><p> </p></td>
+					</tr>
+					<tr>
+
+						<td colspan="3">
+							<obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"> <p></p></td>
+					</tr>
+				</table>
+				<table id="tbl-start-antiTb">
+					<tr>
+						<td colspan="2">Start Anti-TBs:
+							<obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+								  answerLabels="Yes,No"/>
+							<hr />
+						</td>
+
+					</tr>
+					<tr><p></p></tr>
+
+					<tr id="tbrxfield">
+						<td width="50%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
+
+						<td><obs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:" id="tb-regimen"
+								 answerConceptSetIds="160021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
+						/></td>
+					</tr>
+				</table>
+			</fieldset>
+			<fieldset id="ipt-client-workup">
+				<legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
+				<table>
+					<tr>
+						<td colspan="2" class="ke-panel-header">Ask for the following</td>
+					</tr>
+					<obsgroup groupingConceptId="1727AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td>1. Yellow Urine</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="162311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>2. Numbness/ burning sensation on the hands or feet</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="132652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="ke-panel-header">Examine the following</td>
+						</tr>
+						<tr>
+							<td>1. Yellowness of eyes </td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="5192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>2.Tenderness in the upper right quadrant of the abdomen </td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="124994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+					</obsgroup>
+				</table>
+			</fieldset>
+
+			<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
+				<table>
+					<tr>
+						<td colspan="2">
+							<obs id="ipt-result-status" conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting IPT Action:" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="IPT Started,IPT Not Started" />
+							<hr />
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</fieldset>
+		<fieldset id="ipt-followup">
+			<legend>IPT Followup</legend>
+
+			<table>
+				<tr>
+					<td>IPT Due Date</td>
+					<td><obs conceptId="164073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+				</tr>
+				<tr>
+					<td>Date collected IPT</td>
+					<td><obs conceptId="164074" allowFutureDates="true" /></td>
+				</tr>
+				<tr>
+					<td>Weight</td>
+					<td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+				</tr>
+				<tr>
+					<td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
+					<td><obs conceptId="159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+				</tr>
+				<tr>
+					<td>Peripheral Neuropathy  &lt;/br&gt; Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
+					<td><obs conceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+				</tr>
+				<tr>
+					<td>Does the patient have Rash?	</td>
+					<td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+				</tr>
+				<tr>
+					<td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
+					<td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+				</tr>
+			</table>
+			<br />
+			<div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
+			<table id="tbl-ipt-outcome">
+
+				<tr>
+					<td>Event:</td>
+					<td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=""  showDate="true"/></td>
+				</tr>
+				<tr id="reason-for-discontinuation">
+					<td>Reason for discontinuation</td>
+					<td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
+				</tr>
+				<tr>
+					<td>Action Taken</td>
+					<td><obs id="action-taken" conceptId="160632" cols="45" rows="1" /></td>
+				</tr>
+			</table>
+
+		</fieldset>
+
+		<fieldset id="ipt-uptake">
+			<legend>IPT Uptake History</legend>
+
+			<table>
+				<tr>
+					<th>IPT Due Date</th>
+					<th>Date collected IPT</th>
+					<th>Weight(Kg)</th>
+					<th>Hepatotoxicity</th>
+					<th>Peripheral Neuropathy</th>
+					<th>Rash?</th>
+					<th>Adherence Measurement</th>
+				</tr>
+				<lookup complexExpression="
+			#foreach($encounter in $fn.allEncounters('aadeafbe-a3b1-4c57-bc76-8461b778ebd6'))
+				&lt;tr&gt;
+				#set($iptDueDate='')
+				#set($iptCollectionDate='')
+				#set($weight='')
+				#set($hepatotoxicity='')
+				#set($peripheralneuropathy='')
+				#set($rash='')
+				#set($adherenceMeasurement='')
+
+				#foreach($obs in $encounter.obs)
+
+						#if ( $obs.concept==164073 )
+							#set($iptDueDate=($obs.getValueAsString(en)))
+						#end
+						#if ( $obs.concept==164074 )
+							#set($iptCollectionDate=$obs.getValueAsString(en))
+						#end
+						#if ( $obs.concept==5089 )
+							#set($weight=$obs.valueNumeric)
+						#end
+						#if ( $obs.concept==159098 )
+							#set($hepatotoxicity=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==118983 )
+							#set($peripheralneuropathy=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==512 )
+							#set($rash=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==164075 )
+							#set($adherenceMeasurement=$obs.valueCoded.name)
+						#end
+
+				#end
+
+				&lt;td&gt;
+					$iptDueDate
+				&lt;/td&gt;
+				&lt;td&gt;
+					$iptCollectionDate
+				&lt;/td&gt;
+				&lt;td&gt;
+					$weight
+				&lt;/td&gt;
+				&lt;td&gt;
+					$hepatotoxicity
+				&lt;/td&gt;
+				&lt;td&gt;
+					$peripheralneuropathy
+				&lt;/td&gt;
+				&lt;td&gt;
+					$rash
+				&lt;/td&gt;
+				&lt;td&gt;
+					$adherenceMeasurement
+				&lt;/td&gt;
+				&lt;/tr&gt;
+			#end"/>
+			</table>
+		</fieldset>
 	</div>
-
 	<div class="ke-form-footer">
 		<submit />
 	</div>

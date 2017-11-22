@@ -1,0 +1,118 @@
+
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script type="text/javascript">
+
+        jQuery(function () {
+
+        });
+        //Before Submit
+        beforeSubmit.push(function() {
+            var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
+            var upn = jq('#hiv-id input').val();
+
+            if(upn != null &amp;&amp; upn != "") {
+                if ((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
+                    return false;
+                }
+            }
+            return true;
+        });
+
+    </script>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+
+        <fieldset>
+            <legend>Patient Tracing</legend>
+
+            <table id="tracing-patient" style="display: inline-block">
+
+                    <tr>
+                        <td>Contact type:
+                            <obs id="contact-type" conceptId="164966"
+                                 answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164965"
+                                 answerLabels="Phone tracing,Physical tracing"
+                                 style="dropdown" />
+                        </td>
+                     <td> &#160;&#160;&#160;Status : &#160;&#160;&#160;
+                            <obs id="contact-status" conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Contacted and linked,Contacted but not linked"/>
+                        </td>
+                    </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Linkage to care</legend>
+            <table id="tbl-care-status">
+                <tr>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;
+
+                            <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Unique Patient Number (UPN):
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <!--<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false" /></span>-->
+                    <obs class="upn" conceptId="162053"
+                    />
+                </td>
+                    </td>
+                </tr>
+                <td></td>
+            </table>
+            <table id="tbl-hts-provider">
+                <tr>
+                    <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Remarks </legend>
+            <table id="tbl-remarks">
+                <tr>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="remarks" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+</htmlform>

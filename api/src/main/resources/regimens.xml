@@ -19,6 +19,8 @@
 			<drug code="ETR" conceptUuid="159810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- ETRAVIRINE -->
 			<drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- RALTEGRAVIR -->
 			<drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- DARUNAVIR -->
+			<drug code="DTG" conceptUuid="d1fd0e18-e0b9-46ae-ac0e-0452a927a94b" /><!-- DOLUTEGRAVIR -->
+
 
 		</drugs>
 
@@ -73,6 +75,21 @@
 				<component drugCode="TDF" />
 				<component drugCode="3TC" />
 				<component drugCode="AZT" />
+			</regimen>
+			<regimen name="AZT + 3TC + DTG">
+				<component drugCode="AZT" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
+			</regimen>
+			<regimen name="TDF + 3TC + DTG">
+				<component drugCode="TDF" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
+			</regimen>
+			<regimen name="ABC + 3TC + DTG">
+				<component drugCode="ABC" />
+				<component drugCode="3TC" />
+				<component drugCode="DTG" />
 			</regimen>
 		</group>
 
@@ -207,13 +224,13 @@
 			<drug code="R60" drugUuid="161f633d-ab5d-4cd1-94c5-7a012dedc388" /><!-- Rifampicin 60mg -->
 			<drug code="H150" drugUuid="89b72116-108d-4b65-b7fe-5a841192e095" /><!-- Isoniazid 150mg -->
 			<drug code="H75" drugUuid="97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7" /><!-- Isoniazid 75mg -->
-			<drug code="H60" drugUuid="6424ea7b-657b-4ad0-ad10-7ee8e685f3d3" /><!-- Isoniazid 60mg -->
+			<!--<drug code="H60" drugUuid="6424ea7b-657b-4ad0-ad10-7ee8e685f3d3" />--><!-- Isoniazid 60mg -->
 			<drug code="H30" drugUuid="9a012906-3778-4e2e-848f-e0272bfe9e27" /><!-- Isoniazid 30mg -->
 			<drug code="Z400" drugUuid="0dbc4971-67ea-40d7-8089-7c327e5f3c6e" /><!-- Pyrazinamide 400mg -->
 			<drug code="Z150" drugUuid="c97032a4-2136-4e92-8ff8-3fc6faab4133" /><!-- Pyrazinamide 150mg -->
 			<drug code="E400" drugUuid="37e185a3-ba6b-447a-83e0-7ff3edbe76f7" /><!-- Ethambutol 400mg -->
 			<drug code="E275" drugUuid="52690c5a-e9cd-4561-8aad-3b646fb7deaa" /><!-- Ethambutol 275mg -->
-			<drug code="E100" drugUuid="a7815762-5b75-4d6f-80f4-737e7f50c1aa" /><!-- Ethambutol 100mg -->
+			<!--<drug code="E100" drugUuid="a7815762-5b75-4d6f-80f4-737e7f50c1aa" />--><!-- Ethambutol 100mg -->
 			<drug code="S1" drugUuid="13b56178-a15b-4070-951d-2ce813cccc32" /><!-- Streptomycin 1g -->
 			<drug code="Rfb150" drugUuid="c0b4caf2-3fc4-42db-b4ea-5d082136b651" /><!-- RIFABUTIN 150mg -->
 		</drugs>
@@ -351,7 +368,7 @@
 			</regimen>
 			<regimen name="S (1 gm vial)">
 				<component drugCode="S1" dose="1" units="g" frequency="OD" />
-			</regimen> 
+			</regimen>
 		</group>
 
 		<group code="child-intensive" name="Intensive Phase (Child)">
@@ -363,12 +380,12 @@
 			<regimen name="E (400 mg tab)">
 				<component drugCode="E400" units="tab" frequency="OD" />
 			</regimen>
-			<regimen name="E (100 mg tab)">
+			<!--<regimen name="E (100 mg tab)">
 				<component drugCode="E100" units="tab" frequency="OD" />
-			</regimen>
+			</regimen>-->
 			<regimen name="RH (60mg/60mg tabs)">
 				<component drugCode="R60" units="tab" frequency="OD" />
-				<component drugCode="H60" units="tab" frequency="OD" />
+				<!--<component drugCode="H60" units="tab" frequency="OD" />-->
 			</regimen>
 			<regimen name="RH (60mg/30 mg tabs) ">
 				<component drugCode="R60" units="tab" frequency="OD" />

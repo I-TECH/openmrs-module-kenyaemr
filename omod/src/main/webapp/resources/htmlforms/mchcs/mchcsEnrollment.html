@@ -97,7 +97,7 @@
 				}
 				else if (getValue('onART.value') == YES_CONCEPT_ID) {
 					jq('#mother-on-art-at-enrollment :input').prop('disabled', false);
-					jq('#mother-on-art-at-enrollment1 :input').prop('disabled',false);
+
 				}
 				else {
 					jq('#mother-on-art-at-enrollment :input').prop('disabled', true);
@@ -148,6 +148,8 @@
 				}
 
 				if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID) {
+                    jq('#hei-id :input').prop('disabled', false);
+                    jq('#spd :input').prop('disabled', false);
 					jq('#arv-prophylaxis :input').prop('disabled', false);
 					jq('#mother-drugs :input').prop('disabled', false);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', false);
@@ -164,6 +166,8 @@
 				}
 			}
 		jq(function() {
+         //defaults
+            jq('#reasonsForSpecialCare :input').prop('disabled', true);
 			//get cohort
 			getCohort();
 			jq('#child-status-required').hide();
@@ -174,10 +178,10 @@
 			jq('#tbcontact input').click(tbContactInHouseHold);
 			pmtctDrugsForMother();
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
-			onARTatEnrollment();
-			jq('#onART input').click(onARTatEnrollment);
-			needSpecialCare();
-			jq('#specialCare input').click(needSpecialCare);
+			//onARTatEnrollment();
+			jq('#onART input').change(onARTatEnrollment);
+
+			jq('#specialCare input').change(needSpecialCare);
 			//including the mother details
 			includeMothersNames();
 			//include the father details if any
@@ -348,16 +352,14 @@
 				<tr>
 					<td>Special Care </td>
 					<td colspan="2">
-						<table id="reasonsForSpecialCare">
+						<table>
 							<tbody>
 								<tr>
 								  <th colpan="2">Does the child need special care?
 					  <obs conceptId="161630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="161628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="specialCare"/></th>
 							  </tr>
-								<tr>
+								<tr id="reasonsForSpecialCare">
 									<th colpan="2">Reasons For  Special Care(<i>Tick as appropriate</i>)</th>
-								</tr>
-								<tr>
 									<td>
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth weight less than 2.5 kg" style="checkbox" /> <br />
 										<obs conceptId="161601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Birth less than 2 years after last birth" style="checkbox" /> <br />
@@ -452,7 +454,7 @@
 								  </tr>
 								  <tr>
 									<td>Is the mother Breastfeeding? </td>
-									<td><obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/></td>
+									<td><obs conceptId="159941AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" style="radio"/></td>
 									<td></td>
 									<td></td>
 								  </tr>
@@ -482,27 +484,49 @@
                     <tr>
                       <td>Mother Alive? </td>
                       <td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
-                      <td>Mother received Drugs for PMTCT?  </td>
-                      <td id="mother-drugs"><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/></td>
+
                     </tr>
                     <tr>
-                      <td>If yes, select regimen</td>
-                      <td id="mother-on-art-at-enrollment">
-					  	<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="5811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-								 84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-								 84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-								 79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-								 161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Unkown,D4T+3TC+NVP,LPV/r,3TC+ZDV,Other,D4T,DDI,ABC,NVP,EFV,3TC,TDF,IDV,AZT+3TC+EFV,D4T+3TC+EFV,AZT,FTC,LPV,RTV,ATV,AZT+3TC+NVP,3TC+D4T,TDF+3TC,EDF+3TC+EFV,ABC+3TC" />						</td>
-						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
-                      <td></td>
+
+					  <td></td>
                       <td></td>
                     </tr>
                     <tr>
                       <td>Mother On ART at Enrollment of Infant	</td>
-                      <td id="on-art-at-enrollment-of-infant"><obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"/>	</td>
-                      <td>
+                      <td id="on-art-at-enrollment-of-infant"><obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"  />	</td>
+
+						<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;If yes, select regimen</td>
+						<td id="mother-on-art-at-enrollment">
+							<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="D4T/3TC/NVP,
+											   AZT/3TC/EFV,
+											   D4T/3TC/EFV,
+											   3TC/NVP/AZT,
+											   EDF/3TC/EFV,
+											   EFV/FTC/TDF,
+											   3TC/LPV/TDF/r,
+											   ABC/3TC/AZT,
+										       ABC/NVP/3TC,
+											   3TC/ABC/LPV/r,
+							                   3TC/NVP/TDF,
+                                               3TC/NVP/AZT,
+                                               3TC/AZT/LPV/r,
+                                               AZT-3TC-ATV/r,
+                                               TDF-3TC-ATV/r,
+                                               3TC/D4T/LPV/r,
+                                               3TC/ABC/EFV,
+                                               ABC/LPV/R/TDF,
+                                               ABC/DDI/LPV/r" />
+						</td>
+						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+					  </tr>
+					  <tr>
+						  <td>Mother received Drugs for PMTCT?  </td>
+						  <td id="mother-drugs"><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/></td>
+						<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							Select the combination
 					 </td>
 					 <td>

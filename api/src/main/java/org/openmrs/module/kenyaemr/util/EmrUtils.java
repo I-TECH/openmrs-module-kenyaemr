@@ -17,15 +17,21 @@ package org.openmrs.module.kenyaemr.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.User;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -125,5 +131,58 @@ public class EmrUtils {
 		Person person = user.getPerson();
 		Collection<Provider> providers = Context.getProviderService().getProvidersByPerson(person);
 		return providers.size() > 0 ? providers.iterator().next() : null;
+	}
+
+	/**
+	 * Finds the last encounter during the program enrollment with the given encounter type
+	 *
+	 * @param type the encounter type
+	 *
+	 * @return the encounter
+	 */
+	public static Encounter lastEncounter(Patient patient, EncounterType type) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
+	/**
+	 * Finds the first encounter during the program enrollment with the given encounter type
+	 *
+	 * @param type the encounter type
+	 *
+	 * @return the encounter
+	 */
+	public static Encounter firstEncounter(Patient patient, EncounterType type) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(0) : null;
+	}
+
+	/**
+	 * Finds the last encounter of a given type entered via a given form.
+	 *
+	 * @param encounterType the type of encounter
+	 * @param form          the form through which the encounter was entered.
+	 */
+	public static Encounter encounterByForm(Patient patient, EncounterType encounterType, Form form) {
+		List<Form> forms = null;
+		if (form != null) {
+			forms = new ArrayList<Form>();
+			forms.add(form);
+		}
+		EncounterService encounterService = Context.getEncounterService();
+		List<Encounter> encounters = encounterService.getEncounters
+				(
+						patient,
+						null,
+						null,
+						null,
+						forms,
+						Collections.singleton(encounterType),
+						null,
+						null,
+						null,
+						false
+				);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 }

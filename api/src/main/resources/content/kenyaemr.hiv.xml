@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress SpringFacetInspection -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
@@ -12,9 +13,11 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />
 		<property name="visitForms">
 			<set>
+				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
 				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
+				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
 			</set>
 		</property>
 		<property name="reports">
@@ -22,14 +25,13 @@
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
 				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
-				<ref bean="kenyaemr.hiv.report.dueForCd4" />
-				<ref bean="kenyaemr.hiv.report.decliningCd4" />
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
 				<ref bean="kenyaemr.hiv.report.neverScreenedForTb" />
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
+				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -65,6 +67,20 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivEnrollment.html" />
+	</bean>
+
+	<!-- Clinical Encounter - HIV Green Card -->
+	<bean id="kenyaemr.hiv.form.hivGreenCard" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="22c68f86-bbf0-49ba-b2d1-23fa7ccf0259" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/hivGreenCard.html" />
+		<property name="order" value="201010" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
@@ -107,6 +123,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+		<property name="enabled" value="false" />
 		<property name="icon" value="kenyaui:forms/moh257.png" />
 		<property name="htmlform" value="kenyaemr:hiv/moh257FacePage.html" />
 	</bean>
@@ -135,6 +152,51 @@
 		<property name="icon" value="kenyaui:forms/moh257.png" />
 		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.html" />
 		<property name="order" value="201030" />
+	</bean>
+
+	<!-- ====================== adding TB Screening forms =================== -->
+
+	<!-- Clinical Encounter - TB Screening -->
+	<bean id="kenyaemr.common.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
+		<property name="order" value="201080" />
+	</bean>
+
+	<!-- Clinical Encounter - Gene Xpert Form -->
+	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="f1eaceeb-c865-4e23-b68e-6523de403ac7" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
+		<property name="order" value="201090" />
+	</bean>
+
+	<!-- Art Fast Track Form -->
+	<bean id="kenyaemr.hiv.form.artFastTrackForm" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="83fb6ab2-faec-4d87-a714-93e77a28a201" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
+		<property name="order" value="201090" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
@@ -221,6 +283,13 @@
 		<property name="targetUuid" value="ec1535a8-0b65-11e5-99a4-c3eb412c64d3" />
 		<property name="name" value="Patients eligible for Viral Load" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsViralLoadTestCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
+		<property name="name" value="Viral Suppression Report" />
+		<property name="description" value="Current in Care - Viral Suppression status" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 

@@ -12,7 +12,7 @@
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
 	<import resource="content/kenyaemr.cohort.analysis.xml" />
-	<import resource="content/kenyaemr.ipt.xml" />
+	<!--<import resource="content/kenyaemr.ipt.xml" />-->
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -54,6 +54,14 @@
 		<constructor-arg value="kenyaemr/reports/reportsHome.page" />
 		<constructor-arg value="kenyaui:apps/reports.png" />
 		<constructor-arg value="500" />
+	</bean>
+
+	<bean id="kenyaemr.app.facilityDashboard" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.facilityDashboard" />
+		<constructor-arg value="Facility Dashboard" />
+		<constructor-arg value="kenyaemr/facilityDashboard/facilityDashboardHome.page" />
+		<constructor-arg value="kenyaui:apps/reports.png" />
+		<constructor-arg value="510" />
 	</bean>
 
 	<bean id="kenyaemr.app.directory" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">

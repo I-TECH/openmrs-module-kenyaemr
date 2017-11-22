@@ -49,9 +49,12 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -60,6 +63,7 @@ public class EditPatientFragmentController {
 
 	// We don't record cause of death, but data model requires a concept
 	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
+	//private static final String INSCHOOL = Dictionary.INSCHOOL;
 
 	/**
 	 * Main controller method
@@ -83,6 +87,40 @@ public class EditPatientFragmentController {
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
 
+		// create list of counties
+
+		List<String> countyList = new ArrayList<String>();
+		List<Location> locationList = Context.getLocationService().getAllLocations();
+		for(Location loc: locationList) {
+			String locationCounty = loc.getCountyDistrict();
+			if(!StringUtils.isEmpty(locationCounty) && !StringUtils.isBlank(locationCounty)) {
+				countyList.add(locationCounty);
+			}
+		}
+
+		Set<String> uniqueCountyList = new HashSet<String>(countyList);
+		model.addAttribute("countyList", uniqueCountyList);
+
+		// create list of next of kin relationship
+
+		List<String> nextOfKinRelationshipOptions = Arrays.asList(
+			new String("Partner"),
+			new String("Spouse"),
+			Dictionary.getConcept(Dictionary.FATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.MOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDMOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDFATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.SIBLING).getName().getName(),
+			Dictionary.getConcept(Dictionary.CHILD).getName().getName(),
+			Dictionary.getConcept(Dictionary.AUNT).getName().getName(),
+			Dictionary.getConcept(Dictionary.UNCLE).getName().getName(),
+			Dictionary.getConcept(Dictionary.GUARDIAN).getName().getName(),
+			Dictionary.getConcept(Dictionary.FRIEND).getName().getName(),
+			Dictionary.getConcept(Dictionary.CO_WORKER).getName().getName()
+		);
+
+		model.addAttribute("nextOfKinRelationshipOptions", nextOfKinRelationshipOptions);
+
 		// Create list of education answer concepts
 		List<Concept> educationOptions = new ArrayList<Concept>();
 		educationOptions.add(Dictionary.getConcept(Dictionary.NONE));
@@ -90,6 +128,18 @@ public class EditPatientFragmentController {
 		educationOptions.add(Dictionary.getConcept(Dictionary.SECONDARY_EDUCATION));
 		educationOptions.add(Dictionary.getConcept(Dictionary.COLLEGE_UNIVERSITY_POLYTECHNIC));
 		model.addAttribute("educationOptions", educationOptions);
+
+		/*Create list of occupation answer concepts  */
+		List<Concept> occupationOptions = new ArrayList<Concept>();
+		occupationOptions.add(Dictionary.getConcept(Dictionary.FARMER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.TRADER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.EMPLOYEE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.STUDENT));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.DRIVER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.NONE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.OTHER_NON_CODED));
+		model.addAttribute("occupationOptions", occupationOptions);
+
 
 		// Create a list of marital status answer concepts
 		List<Concept> maritalStatusOptions = new ArrayList<Concept>();
@@ -105,6 +155,12 @@ public class EditPatientFragmentController {
 		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
 		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
 		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
+
+		// Create a list of yes_no options
+		List<Concept> yesNoOptions = new ArrayList<Concept>();
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.YES));
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.NO));
+		model.addAttribute("yesNoOptions", yesNoOptions);
 	}
 
 	/**
@@ -156,22 +212,29 @@ public class EditPatientFragmentController {
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
+		private Concept inSchool;
+		private Concept orphan;
 		private Obs savedMaritalStatus;
 		private Obs savedOccupation;
 		private Obs savedEducation;
+		private Obs savedInSchool;
+		private Obs savedOrphan;
 		private Boolean dead = false;
 		private Date deathDate;
-
 		private String nationalIdNumber;
 		private String patientClinicNumber;
 		private String uniquePatientNumber;
-
 		private String telephoneContact;
 		private String nameOfNextOfKin;
 		private String nextOfKinRelationship;
 		private String nextOfKinContact;
 		private String nextOfKinAddress;
 		private String subChiefName;
+		private String alternatePhoneContact;
+		private String nearestHealthFacility;
+		private String emailAddress;
+		private String guardianFirstName;
+		private String guardianLastName;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -184,7 +247,7 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * Creates an edit form for an existing patient
+		 * Creates an edit form for an existing person
 		 */
 		public EditPatientForm(Person person) {
 			this();
@@ -208,7 +271,6 @@ public class EditPatientFragmentController {
 			birthdateEstimated = person.getBirthdateEstimated();
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
-
 			PersonWrapper wrapper = new PersonWrapper(person);
 			telephoneContact = wrapper.getTelephoneContact();
 		}
@@ -230,6 +292,11 @@ public class EditPatientFragmentController {
 			nextOfKinContact = wrapper.getNextOfKinContact();
 			nextOfKinAddress = wrapper.getNextOfKinAddress();
 			subChiefName = wrapper.getSubChiefName();
+			alternatePhoneContact = wrapper.getAlternativePhoneContact();
+			emailAddress = wrapper.getEmailAddress();
+			nearestHealthFacility = wrapper.getNearestHealthFacility();
+			guardianFirstName = wrapper.getGuardianFirstName();
+			guardianLastName = wrapper.getGuardianLastName();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -245,6 +312,15 @@ public class EditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
+			savedInSchool = getLatestObs(patient, Dictionary.IN_SCHOOL);
+			if (savedInSchool != null) {
+				inSchool = savedInSchool.getValueCoded();
+			}
+			savedOrphan = getLatestObs(patient, Dictionary.ORPHAN);
+			if (savedOrphan != null) {
+				orphan = savedOrphan.getValueCoded();
+			}
+
 		}
 
 		private Obs getLatestObs(Patient patient, String conceptIdentifier) {
@@ -388,6 +464,11 @@ public class EditPatientFragmentController {
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
 			wrapper.setSubChiefName(subChiefName);
+			wrapper.setAlternativePhoneContact(alternatePhoneContact);
+			wrapper.setNearestHealthFacility(nearestHealthFacility);
+			wrapper.setEmailAddress(emailAddress);
+			wrapper.setGuardianFirstName(guardianFirstName);
+			wrapper.setGuardianLastName(guardianLastName);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -417,6 +498,9 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.IN_SCHOOL), savedInSchool, inSchool);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.ORPHAN), savedOrphan, orphan);
+
 
 			for (Obs o : obsToVoid) {
 				Context.getObsService().voidObs(o, "KenyaEMR edit patient");
@@ -458,6 +542,34 @@ public class EditPatientFragmentController {
 			}
 		}
 
+		/**
+		 * Handles saving a field which is stored as an obs whose value is boolean
+		 * @param patient the patient being saved
+		 * @param obsToSave
+		 * @param obsToVoid
+		 * @param question
+		 * @param savedObs
+		 * @param newValue
+		 */
+		protected void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
+											   Obs savedObs, Boolean newValue) {
+			if (!OpenmrsUtil.nullSafeEquals(savedObs != null ? savedObs.getValueBoolean() : null, newValue)) {
+				// there was a change
+				if (savedObs != null && newValue == null) {
+					// treat going from a value to null as voiding all past civil status obs
+					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, question));
+				}
+				if (newValue != null) {
+					Obs o = new Obs();
+					o.setPerson(patient);
+					o.setConcept(question);
+					o.setObsDatetime(new Date());
+					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+					o.setValueBoolean(newValue);
+					obsToSave.add(o);
+				}
+			}
+		}
 		public boolean isInHivProgram() {
 			if (original == null || !original.isPatient()) {
 				return false;
@@ -662,7 +774,25 @@ public class EditPatientFragmentController {
 		public void setDead(Boolean dead) {
 			this.dead = dead;
 		}
+		/*  greencard  */
 
+		public Concept getInSchool() {
+			return inSchool;
+		}
+
+		public void setInSchool(Concept inSchool) {
+			this.inSchool = inSchool;
+		}
+
+		public Concept getOrphan() {
+			return orphan;
+		}
+
+		public void setOrphan(Concept orphan) {
+			this.orphan = orphan;
+		}
+
+		/*  .greencard   */
 		public Date getDeathDate() {
 			return deathDate;
 		}
@@ -739,6 +869,46 @@ public class EditPatientFragmentController {
 		 */
 		public void setSubChiefName(String subChiefName) {
 			this.subChiefName = subChiefName;
+		}
+
+		public String getAlternatePhoneContact() {
+			return alternatePhoneContact;
+		}
+
+		public void setAlternatePhoneContact(String alternatePhoneContact) {
+			this.alternatePhoneContact = alternatePhoneContact;
+		}
+
+		public String getNearestHealthFacility() {
+			return nearestHealthFacility;
+		}
+
+		public void setNearestHealthFacility(String nearestHealthFacility) {
+			this.nearestHealthFacility = nearestHealthFacility;
+		}
+
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
+		}
+
+		public String getGuardianFirstName() {
+			return guardianFirstName;
+		}
+
+		public void setGuardianFirstName(String guardianFirstName) {
+			this.guardianFirstName = guardianFirstName;
+		}
+
+		public String getGuardianLastName() {
+			return guardianLastName;
+		}
+
+		public void setGuardianLastName(String guardianLastName) {
+			this.guardianLastName = guardianLastName;
 		}
 	}
 }

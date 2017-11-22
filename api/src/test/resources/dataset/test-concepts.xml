@@ -2073,6 +2073,9 @@
   <concept_name concept_id="1211" name="Verruca Plana" locale="en" creator="1" date_created="2007-10-18 04:28:24.0" concept_name_id="99951" voided="0" voided_by="1" uuid="99951BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
   <concept_name concept_id="1211" name="FLAT WART" locale="en" creator="1" date_created="2005-02-09 00:00:00.0" concept_name_id="91982" voided="0" voided_by="1" uuid="91982BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
   <concept_name concept_id="1211" name="PLANE WART" locale="en" creator="1" date_created="2005-02-09 00:00:00.0" concept_name_id="96547" voided="0" voided_by="1" uuid="96547BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
+  <!--adding nutritional support-->
+  <concept concept_id="5484" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-01-12 00:00:00.0" version="" changed_by="1" date_changed="2011-02-03 18:58:18.0" retired_by="1" uuid="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <!---->
   <concept concept_id="836" retired="1" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-05-04 00:00:00.0" version="" changed_by="1" date_changed="2007-10-14 07:33:18.0" retired_by="1" uuid="836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_id="836" name="SHINGLES" locale="en" creator="1" date_created="2005-02-09 00:00:00.0" concept_name_id="98034" voided="0" voided_by="1" uuid="98034BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
   <concept_name concept_id="836" name="HERPES ZOSTER" locale="en" creator="1" date_created="2004-05-04 00:00:00.0" concept_name_id="876" voided="0" voided_by="1" uuid="876BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>

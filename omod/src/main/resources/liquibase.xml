@@ -121,7 +121,32 @@
 		</comment>
 		<sqlFile path="sql/CorrectFreeTextOnHivAdendum.sql" />
 
+	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20170918-0956" author="aojwang">
+		<comment>
+			updates all provider ids to match their system ids. this is a requirement for muzima core module
+		</comment>
+		<sql>
+			update provider p
+			inner join users u on p.person_id=u.person_id
+			set p.identifier = u.system_id;
+		</sql>
+	</changeSet>
+
+	<changeSet id="${project.parent.artifactId}-20171018-1044" author="aojwang">
+		<comment>
+			update arv therapy entries to hiv consultation as opposed to hiv enrollment
+		</comment>
+		<sql>
+			update encounter e
+			inner join (
+			select e.encounter_id
+			from encounter e
+			inner join form f on f.form_id = e.form_id and f.uuid = "8f5b3ba5-1677-450f-8445-33b9a38107ae"
+			) t on e.encounter_id = t.encounter_id
+			set e.encounter_type = (select encounter_type_id from encounter_type where uuid = "a0034eee-1940-4e35-847f-97537a35d05e");
+		</sql>
 	</changeSet>
 
 </databaseChangeLog>

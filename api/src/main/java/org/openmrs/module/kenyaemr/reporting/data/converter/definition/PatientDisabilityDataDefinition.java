@@ -1,0 +1,39 @@
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition;
+
+import org.openmrs.module.reporting.data.BaseDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+/**
+ * Visit ID Column
+ */
+@Caching(strategy=ConfigurationPropertyCachingStrategy.class)
+public class PatientDisabilityDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+
+    public static final long serialVersionUID = 1L;
+
+    /**
+     * Default Constructor
+     */
+    public PatientDisabilityDataDefinition() {
+        super();
+    }
+
+    /**
+     * Constructor to populate name only
+     */
+    public PatientDisabilityDataDefinition(String name) {
+        super(name);
+    }
+
+    //***** INSTANCE METHODS *****
+
+    /**
+     * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
+     */
+    public Class<?> getDataType() {
+        return Double.class;
+    }
+}

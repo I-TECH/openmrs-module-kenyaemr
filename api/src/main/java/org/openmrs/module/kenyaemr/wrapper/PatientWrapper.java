@@ -183,4 +183,73 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setSubChiefName(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.SUBCHIEF_NAME, value);
 	}
+
+	/**
+	 * Gets patient's alternate phone contact
+	 * @return phone contact
+	 */
+	public String getAlternativePhoneContact() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.ALTERNATE_PHONE_CONTACT);
+	}
+	/**
+	 * Sets patient's alternative phone contact
+	 */
+	public void setAlternativePhoneContact(String contact) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.ALTERNATE_PHONE_CONTACT, contact);
+	}
+	/**
+	 * Gets patient's alternate phone contact
+	 * @return phone contact
+	 */
+	public String getNearestHealthFacility() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.NEAREST_HEALTH_CENTER);
+	}
+	/**
+	 * Sets patient's alternative phone contact
+	 */
+	public void setNearestHealthFacility(String facility) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.NEAREST_HEALTH_CENTER, facility);
+	}
+
+	/**
+	 * Gets patient's alternate phone contact
+	 * @return phone contact
+	 */
+	public String getEmailAddress() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.EMAIL_ADDRESS);
+	}
+	/**
+	 * Sets patient's alternative phone contact
+	 */
+	public void setEmailAddress(String email) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.EMAIL_ADDRESS, email);
+	}
+
+	/**
+	 * Gets guardian's first name
+	 * @return guardian's first name
+	 */
+	public String getGuardianFirstName() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_FIRST_NAME);
+	}
+	/**
+	 * Sets guardian's first name
+	 */
+	public void setGuardianFirstName(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_FIRST_NAME, value);
+	}
+
+	/**
+	 * Gets guardian's last name
+	 * @return guardian's last name
+	 */
+	public String getGuardianLastName() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_LAST_NAME);
+	}
+	/**
+	 * Sets guardian's last name
+	 */
+	public void setGuardianLastName(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_LAST_NAME, value);
+	}
 }
