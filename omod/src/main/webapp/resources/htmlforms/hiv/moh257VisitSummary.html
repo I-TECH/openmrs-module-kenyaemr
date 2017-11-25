@@ -527,14 +527,14 @@
             viralLoadValidation();
 
             //Differentiated care
-            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            if(PATIENT_STABLE =="true") {
-                jq('#fast-track').show();
-                jq('#standard-care').hide();
-            }else{
-                jq('#standard-care').show();
-                jq('#fast-track').hide();
-            }
+//            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+//            if(PATIENT_STABLE =="true") {
+//                jq('#fast-track').show();
+//                jq('#standard-care').hide();
+//            }else{
+//                jq('#standard-care').show();
+//                jq('#fast-track').hide();
+//            }
 
             // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
             var realId = jq('span#pregdate-abmc input[type=hidden]').attr('name');
@@ -1426,13 +1426,13 @@
                          style="dropdown"  />
                 </td>
                 <td>
-                    <div id="standard-care">
-                         Differentiated Care
-                             <obs conceptId="164947" id="standard"
-                                  answerConceptIds="164942"
-                                  style="dropdown"
-                                  answerLabels="Standard Care"/>
-                    </div>
+                    <!--<div id="standard-care">-->
+                         <!--Differentiated Care-->
+                             <!--<obs conceptId="164947" id="standard"-->
+                                  <!--answerConceptIds="164942"-->
+                                  <!--style="dropdown"-->
+                                  <!--answerLabels="Standard Care"/>-->
+                    <!--</div>-->
                      <div id="fast-track">
                          Differentiated Care
                              <obs conceptId="164947" id="fast-track"
