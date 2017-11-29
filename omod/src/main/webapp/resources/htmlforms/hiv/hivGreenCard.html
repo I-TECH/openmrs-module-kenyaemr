@@ -90,6 +90,8 @@ Green Card follow-up visit form
 
         var bmi = null;
         var SELF = 978;
+        var TS = 161642;
+
         function onWeightOrHeightChange() {
             pAge = parseInt('<lookup expression="patient.age"/>');
             var display = '';
@@ -194,11 +196,28 @@ Green Card follow-up visit form
                 getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
             }
         }
+
         function onPersonPresentChange() {
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
+                jq('#greencard').smartWizard('enableFinish', false);
             } else {
+                jq(".on-art").hide();
+                jq('.showModal').hide();
+                jq("#tbl-phdp").hide();
                 jq('.patient-details :input').prop('disabled', true);
+                jq('#greencard').smartWizard('goToStep', 4);
+                jq('#greencard').smartWizard('enableFinish', true);
+            }
+        }
+
+        function onVisitScheduledChange() {
+            var personPresent = getValue('person-present.value');
+            var visitScheduled = getValue('visit-scheduled.value');
+            if (visitScheduled != null &amp;&amp; personPresent == TS) {
+                jq('.patient-details :input').prop('disabled', true);
+                jq('#greencard').smartWizard('goToStep', 4);
+                jq('#greencard').smartWizard('enableFinish', true);
             }
         }
         function onRecordIPTOutcome() {
@@ -956,6 +975,7 @@ Green Card follow-up visit form
             //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
             jq('#person-present input').click(onPersonPresentChange);
+            jq('#visit-scheduled input').click(onVisitScheduledChange);
             jq('#on-ipt input').prop("disabled", true);
             jq("#tbl-start-antiTb").hide();
             jq("#ipt-uptake").hide();
@@ -1017,14 +1037,14 @@ Green Card follow-up visit form
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
 
             //Differentiated care
-            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            if(PATIENT_STABLE =="true") {
-                jq('#fast-track').show();
-                jq('#standard-care').hide();
-            }else{
-                jq('#standard-care').show();
-                jq('#fast-track').hide();
-            }
+//            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+//            if(PATIENT_STABLE =="true") {
+//                jq('#fast-track').show();
+//                jq('#standard-care').hide();
+//            }else{
+//                jq('#standard-care').show();
+//                jq('#fast-track').hide();
+//            }
             //On ART hide adherence assessment
             var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
             if(PATIENT_ON_ART =="true") {
@@ -1382,8 +1402,9 @@ Green Card follow-up visit form
         // Before submit equivalent to Step 4 validation
         beforeSubmit.push(function() {
             var pgender = "<lookup expression="patient.gender" />";
-            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+            //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
             var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            var personPresent =getValue('person-present.value');
             var tca_date = getValue('returnVisitDate.value');
             var tca_reason = getValue('returnVisitReason.value');
             var encounterDate = getValue('encounter-date.value');
@@ -1424,27 +1445,27 @@ Green Card follow-up visit form
                 getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
                 return false;
             }
-            if (PATIENT_ON_ART == 'true' &amp;&amp; arvAdherence == false){
+            if (PATIENT_ON_ART == 'true' &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false){
                 getField('arv-adherence.error').html('Please specify ARV adherence.').show();
                 return false;
             }
             //Cacx screening on over 18 years is mandatory
             if (pgender == 'F') {
-                if (pAge &gt; 18 &amp;&amp; cacxScreened == false) {
+                if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
                     getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
                     return false;
                 } else {
                     getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
                 }
             }
-            if (stiScreened == false) {
-                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+            if (stiScreened == false &amp;&amp; personPresent == SELF ) {
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
                 getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
                 return false;
             }
-            if (stiScreened == 703 &amp;&amp; stiPartnerNotification == false) {
+            if (stiScreened == 703 &amp;&amp; personPresent == SELF &amp;&amp; stiPartnerNotification == false) {
                 jq("#tbl-partner-notification").show();
-                jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
+                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
                 getField('sti-partnerNotification.error').html('Please specify partner notification status.').show();
                 return false;
             }
@@ -1464,27 +1485,26 @@ Green Card follow-up visit form
                 getField('returnVisitReason.error').html('Please specify reason for return visit.').show();
                 return false;
             }
-            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
-                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
-                return false;
-            }
-            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
-                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-                getField('standard.error').html('Please specify patient differentiated care status.').show();
-                return false;
-            }
+//            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
+//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+//                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
+//                return false;
+//            }
+//            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
+//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+//                getField('standard.error').html('Please specify patient differentiated care status.').show();
+//                return false;
+//            }
             return true;
 
         });
 
 //Smart wizard validations
-        function onLeaveStepValidation (obj, context) {
+       function onLeaveStepValidation (obj, context) {
             var stepNumFrom = context.fromStep;
             var stepNumTo = context.toStep;
             //Validations steps
-
-                if (stepNumFrom == 1) {
+             if (stepNumFrom == 1)  {
                     return step1Validation();
                 }
                 else if (stepNumFrom == 2 &amp;&amp; stepNumTo &gt; stepNumFrom) {
@@ -1495,7 +1515,8 @@ Green Card follow-up visit form
                 }
                 else if (stepNumFrom == 4 &amp;&amp; stepNumTo &gt; stepNumFrom) {
                     return step4Validation();
-                }else {
+                }
+                else {
 
                 return true;
             }
@@ -1510,7 +1531,6 @@ Green Card follow-up visit form
             var populationType =getValue('population-type.value');
             var adultWhoStage =getField('whoStage-adult.value').val();
             var childWhoStage =getField('whoStage-child.value').val();
-//            console.log("Recent who"+recentWHO);
 
             if (visit_scheduled == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
@@ -1526,21 +1546,21 @@ Green Card follow-up visit form
             }else{
                 getField('person-present.error').html('Please specify person present').hide();
             }
-            if (populationType == false) {
+            if (populationType == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
                 getField('population-type.error').html('Please specify population type').show();
                 return false;
             }else{
                 getField('population-type.error').html('Please specify population type').hide();
             }
-            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false) {
+            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false &amp;&amp; personPresent == SELF ) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').show();
                 return false;
             }else{
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
             }
-            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false) {
+            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
                 getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
@@ -1556,6 +1576,7 @@ Green Card follow-up visit form
             var pgender = "<lookup expression="patient.gender" />";
             pAge = parseInt('<lookup expression="patient.age"/>');
             //var complaint = getValue('complaints-field.value');
+            var personPresent =getValue('person-present.value');
             var complaint = getField('complaint-field.value').val();
             var complaintsToday = getValue('complaints-today.value');  //boolean
             var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
@@ -1601,7 +1622,7 @@ Green Card follow-up visit form
                 }
             });
 
-            if (complaintsToday == false) {
+            if (complaintsToday == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
                 return false;
@@ -1615,21 +1636,21 @@ Green Card follow-up visit form
             }else{
                 getField('complaint-field.error').html('Please specify the complaints.').hide();
             }
-            if (onAntiTbDrugs == false) {
+            if (onAntiTbDrugs == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('on-anti-tb-drugs.error').html('Please specify if patient is on anti-tb drugs.').show();
                 return false;
             }else{
                 getField('on-anti-tb-drugs.error').html('Please specify if patient is on anti-tb drugs.').hide();
             }
-            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt == false) {
+            if (onAntiTbDrugs == 1066 &amp;&amp; onIpt == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('on-ipt.error').html('Please specify if patient is currently on IPT.').show();
                 return false;
             }else{
                 getField('on-ipt.error').html('Please specify if patient is currently on IPT.').hide();
             }
-            if (onAntiTbDrugs !=1065 &amp;&amp; onIpt != 1065 &amp;&amp; everOnIpt == false) {
+            if (onAntiTbDrugs == 1066 &amp;&amp; onIpt == 1066 &amp;&amp; everOnIpt == false) {
                 jq("#tbl-ever-on-ipt").show();    //show ever on ipt that was previously hidden
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('ever-on-ipt.error').html('Please specify if patient has ever been on IPT.').show();
@@ -1638,7 +1659,7 @@ Green Card follow-up visit form
                 getField('ever-on-ipt.error').html('Please specify if patient has ever been on IPT.').hide();
             }
             //If neither yes nor no repsonsed recorder
-            if (onAntiTbDrugs !=1065 &amp;&amp;  onIpt != 1065 &amp;&amp; screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
+            if (onAntiTbDrugs == 1066 &amp;&amp;  onIpt == 1066 &amp;&amp; screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please conduct TB screening.').show();
                 return false;
@@ -1646,14 +1667,14 @@ Green Card follow-up visit form
                 getField('tb-screening-error.error').html('Please conduct TB screening.').hide();
             }
           //If not completed tb screening
-            if (onAntiTbDrugs !=1065 &amp;&amp; pAge &gt; 15 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
+            if (onAntiTbDrugs == 1066 &amp;&amp; pAge &gt; 15 &amp;&amp; onIpt == 1066 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 4 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please complete TB screening.').show();
                 return false;
             }else{
                 getField('tb-screening-error.error').html('Please complete TB screening.').hide();
             }
-            if (onAntiTbDrugs !=1065 &amp;&amp; pAge &lt; 16 &amp;&amp; onIpt != 1065 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 5 ) {
+            if (onAntiTbDrugs == 1066 &amp;&amp; pAge &lt; 16 &amp;&amp; onIpt == 1066 &amp;&amp; screeningYesResponses.length + screeningNoResponses.length != 5 ) {
                 jq('#greencard').smartWizard('setError',{stepnum:2,iserror:true});
                 getField('tb-screening-error.error').html('Please complete TB screening.').show();
                 return false;
@@ -1666,7 +1687,7 @@ Green Card follow-up visit form
                 getField('tbrxdate.error').html('TB RX date, should  be earlier than encounter Date').show();
                 return false;
             }
-            if (knownAllergies == false) {
+            if (knownAllergies == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('known-allergies.error').html('Please specify if patient has any known allergies.').show();
                 return false;
@@ -1680,7 +1701,7 @@ Green Card follow-up visit form
             }else{
                 getField('allergy-field.error').html('Please specify the allergy.').hide();
             }
-            if (chronicIllness == false) {
+            if (chronicIllness == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
                 return false;
@@ -1694,7 +1715,7 @@ Green Card follow-up visit form
             }else{
                 getField('chronic.error').html('Please specify the chronic illness.').hide();
             }
-            if (adverseReactions == false) {
+            if (adverseReactions == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('adverse-reactions.error').html('Please specify if patient has any adverse drug reactions.').show();
                 return false;
@@ -1708,7 +1729,7 @@ Green Card follow-up visit form
             }else{
                 getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
             }
-            if(pgender == 'F'  &amp;&amp; pAge &gt; 10) {
+            if(pgender == 'F'  &amp;&amp; personPresent == SELF &amp;&amp; pAge &gt; 10) {
                 if (patientHasLMP == false) {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                     getField('hasLMP.error').html('Please specify if patient has normal menses.').show();
@@ -1792,16 +1813,17 @@ Green Card follow-up visit form
         function step3Validation(){
             var systemsReview = getValue('systems-review.value');    //boolean
             var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
+            var personPresent =getValue('person-present.value');
 
             //Validate general examinations findings
-            if (generalExamsChecked.length == 0 ) {
+            if (generalExamsChecked.length == 0 &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 3, iserror: true});
                 getField('genExams-error.error').html('Please specify general examinations findings.').show();
                 return false;
             }else{
                 getField('genExams-error.error').html('Please specify general examinations findings.').hide();
             }
-            if (systemsReview == false) {
+            if (systemsReview == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 3, iserror: true});
                 getField('systems-review.error').html('Please specify if patient has any findings on systems review.').show();
                 return false;
@@ -1814,8 +1836,9 @@ Green Card follow-up visit form
         //Step 4 validations
         function step4Validation(){
             var pgender = "<lookup expression="patient.gender" />";
-            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+            //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
             var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            var personPresent =getValue('person-present.value');
             var encounterDate = getValue('encounter-date.value');
             var prophylaxis_Used = getValue('prophylaxis-used.value');
             var ctxAdherence = getValue('ctx-adherence.value');
@@ -1870,7 +1893,7 @@ Green Card follow-up visit form
             }else{
                 getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
             }
-            if (PATIENT_ON_ART == 'true' &amp;&amp; arvAdherence == false) {
+            if (PATIENT_ON_ART == 'true' &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
                 getField('arv-adherence.error').html('Please specify ARV adherence.').show();
                 return false;
@@ -1879,7 +1902,7 @@ Green Card follow-up visit form
             }
             //Cacx screening on over 18 years is mandatory
             if (pgender == 'F') {
-                if (pAge &gt; 18 &amp;&amp; cacxScreened == false) {
+                if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
                     jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
                     getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
                     return false;
@@ -1887,14 +1910,14 @@ Green Card follow-up visit form
                     getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
                 }
             }
-            if (stiScreened == false) {
+            if (stiScreened == false &amp;&amp; personPresent == SELF ) {
                 jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
                 getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
                 return false;
             }else{
                 getField('screened-sti.error').html('Please specify whether patient was screened for STI.').hide();
             }
-            if (stiScreened == 703 &amp;&amp; stiPartnerNotification == false) {
+            if (stiScreened == 703 &amp;&amp; personPresent == SELF &amp;&amp; stiPartnerNotification == false) {
                 jq("#tbl-partner-notification").show();
                 jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
                 getField('sti-partnerNotification.error').html('Please specify partner notification status.').show();
@@ -1923,22 +1946,22 @@ Green Card follow-up visit form
             }else{
                 getField('returnVisitReason.error').html('Please specify reason for return visit.').hide();
             }
-            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
-                return false;
-            }else{
-                getField('fast-track.error').html('Please specify patient differentiated care status.').hide();
-            }
-            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
-                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-                getField('standard.error').html('Please specify patient differentiated care status.').show();
-                return false;
-            }
-            else {
+//            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
+//                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
+//                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
+//                return false;
+//            }else{
+//                getField('fast-track.error').html('Please specify patient differentiated care status.').hide();
+//            }
+//            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
+//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
+//                getField('standard.error').html('Please specify patient differentiated care status.').show();
+//                return false;
+//            }
+//            else {
                 jq('#greencard').smartWizard('showMessage',"");
                 return true;
-            }
+            //}
         }
     </script>
     <div id="greencard" class="swMain">
@@ -1971,7 +1994,7 @@ Green Card follow-up visit form
             </ul>
         </ifMode>
         <ifMode mode="EDIT">
-            <ul>
+              <ul class="patient-details">
                 <li><a href="#step-1">
                     <label class="stepNumber">1</label>
                     <span class="stepDesc">
@@ -2020,6 +2043,7 @@ Green Card follow-up visit form
                     <script type="text/javascript">
                         jq(function(){
                             var SELF = 978;
+                            var TS = 161642;
                             var age = parseInt('<lookup expression="patient.age"/>');
                             var keypop = getValue('population-type.value');
                             var everOnIPT = getValue('ever-on-ipt.value');
@@ -2052,6 +2076,8 @@ Green Card follow-up visit form
                                 jq('.patient-details :input').prop('disabled', false);
                             } else {
                                 jq('.patient-details :input').prop('disabled', true);
+                                jq('#greencard').smartWizard('goToStep', 4);
+                                jq('#greencard').smartWizard('enableFinish', true);
                             }
                             //if key pop show which type
                             if (keypop == 164929 ){
@@ -2166,12 +2192,12 @@ Green Card follow-up visit form
                     <legend>Visit Type</legend>
                     <table cellspacing="15">
                         <tr>
-                            <th>Visit scheduled?</th>
-                            <th align="left">Visit by</th>
+                            <th>Visit scheduled?  <span style="color:red;"><strong>*</strong></span></th>
+                            <th align="left">Visit by:  <span style="color:red;"><strong>*</strong></span></th>
                         </tr>
                         <tr>
                             <td>
-                                <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                                <obs id="visit-scheduled" conceptId="1246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
                             </td>
                             <td>
                                 <obs
@@ -2180,7 +2206,7 @@ Green Card follow-up visit form
                                         answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
                                         style="radio"
-                                        answerSeparator="&lt;br /&gt;" required="true"
+                                        answerSeparator="&lt;br /&gt;"
                                 />
                                 <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                             </td>
@@ -2289,10 +2315,10 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
                 <!-- Population Type  -->
-                <fieldset class="population-type-part">
+                <fieldset class="patient-details">
                     <legend>Population Type</legend>
                     <div>
-                        Population type : &#160;&#160;
+                        Population type :  <span style="color:red;"><strong>*</strong></span> &#160;&#160;
                         <obs conceptId="164930"
                              answerConceptIds="164928,164929"
                              answerLabels="General Population,Key Population" id="population-type"
@@ -2317,7 +2343,7 @@ Green Card follow-up visit form
                 </fieldset>
 
                 <!-- WHO staging -->
-                <fieldset class="who-staging-part">
+                <fieldset class="patient-details">
                     <legend>WHO Staging</legend>
                     <table cellspacing="10" >
                         <tr>
@@ -2354,11 +2380,12 @@ Green Card follow-up visit form
                 <h2 class="StepTitle">Presenting complaints</h2>
                 <!-- Additional History  -->
                 <!--Presenting complaints today -->
-                <fieldset class="complaints-part">
+                <fieldset class="patient-details">
                     <legend>Complaints and History of complaints</legend>
                     <div>
                         Patient having complaint(s) today?
-                        <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                        <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+                        <span style="color:red;"><strong>*</strong></span>
                     </div>
                     <table cellspacing="5" id="tbl-complaints-today">
                         <tr>
@@ -2412,7 +2439,7 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
 
-                <fieldset class="tb-screening-part">
+                <fieldset class="patient-details">
                     <!--TB Screening-->
                     <legend>TB Screening</legend>
                     <table cellspacing="10" id="tb-questions">
@@ -2425,9 +2452,10 @@ Green Card follow-up visit form
                                 Patient on anti-TB Drugs? &#160;
                                 <obs conceptId="164948"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabel="Yes,No" required="true"
+                                     answerLabel="Yes,No"
                                      style="radio"
                                      id="on-anti-tb-drugs" />
+                                <span style="color:red;"><strong>*</strong></span>
                                 <br/>
                             </td>
                             <td width="20%"> <div><a class="tb-patient"></a></div></td>
@@ -2761,11 +2789,12 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
                 <!-- Known allergies   -->
-                <fieldset class="known-allergies-part">
+                <fieldset class="patient-details">
                     <legend>Known Allergies</legend>
                     <div>
                         Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                        <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
+                        <span style="color:red;"><strong>*</strong></span>
                     </div>
 
                     <table id="tbl-known-allergies">
@@ -2816,14 +2845,15 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
                 <!--Chronic Illnesses-->
-                <fieldset class="chronic-illness-part">
+                <fieldset class="patient-details">
                     <legend>Chronic Illnesses and Cormobidities</legend>
                     <div>
                         Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="Yes,No" required="true"
+                             style="radio" answerLabels="Yes,No"
                         />
+                        <span style="color:red;"><strong>*</strong></span>
                     </div>
                     <table id="tbl-chronic-illness">
                         <tr>
@@ -2879,11 +2909,12 @@ Green Card follow-up visit form
                         </repeat>
                     </table>
                 </fieldset>
-                <fieldset class="adverse-reactions-part">
+                <fieldset class="patient-details">
                     <legend>Adverse Drug Reactions</legend>
                     <div>
                         Patient has adverse drug reaction(s)? &#160;&#160;&#160;&#160;
-                        <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                        <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
+                        <span style="color:red;"><strong>*</strong></span>
                     </div>
                     <table id="tbl-adverse-reactions">
                         <tr>
@@ -2944,7 +2975,7 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
 
-                <fieldset class="vaccinations-part">
+                <fieldset class="patient-details">
                     <legend>Vaccination(s) today</legend>
                     <includeIf velocityTest="$patient.age &lt; 16">
                         <table width="30%">
@@ -3017,18 +3048,18 @@ Green Card follow-up visit form
 
                 <!--Sexual and reproductive History validated for women over 10 years -->
                 <includeIf velocityTest="$patient.gender == 'F'">
-                    <fieldset class="reproductive-part">
+                    <fieldset class="patient-details">
                         <legend>Sexual and Reproductive History</legend>
                         <!--<table class="right-aligned-first" style="width: 100%;" border="0">-->
                         <table cellspacing="18" >
                             <tr>
-                                <th  style="color: #888" >Current Status</th>
+                                <th  style="color: #888" >Current Status <span style="color:red;"><strong>*</strong></span></th>
                                 <th  style="color: #888" >Date </th>
                                 <th  style="color: #888" >Recent </th>
                             </tr>
                             <tr>
                                 <td>
-                                    <obs labelText="Does patient normally have menses?  &#160;&#160;&#160;&#160;" conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="hasLMP"
+                                    <obs labelText="Does patient normally have menses? &#160;&#160;&#160;&#160;" conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="hasLMP"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,No,N/A"
                                     />
@@ -3273,7 +3304,7 @@ Green Card follow-up visit form
                 <h2 class="StepTitle">Patient examination</h2>
                 <!--Physical Examination-->
                 <!--General Examination-->
-                <fieldset class="general-examinations-part">
+                <fieldset class="patient-details">
                     <legend>General Examination Findings</legend>
                     <table id="general-exam-findings">
                         <tr>
@@ -3308,7 +3339,7 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
 
-                <fieldset class="system-examinations-part">
+                <fieldset class="patient-details">
                     <legend>System Examination</legend>
                     <table>
                         <tr>
@@ -3319,7 +3350,8 @@ Green Card follow-up visit form
                                     conceptId="159615AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerLabels="Normal,Abnormal"
-                                    style="radio" id="systems-review" required="true"/>
+                                    style="radio" id="systems-review"/>
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                     </table>
@@ -3445,7 +3477,7 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-                <fieldset class="treatment-management-part">
+                <fieldset class="patient-details">
                     <legend>Treatment/Management Plan</legend>
                     <table style="width: 70%;" border="0">
                         <tr>
@@ -3491,7 +3523,8 @@ Green Card follow-up visit form
                                     conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerLabels="Cotrimoxazole,Dapsone,None"
-                                    style="radio" id="prophylaxis-used" required="true"/>
+                                    style="radio" id="prophylaxis-used"/>
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                     </table>
@@ -3564,7 +3597,7 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-                <fieldset class="arv-part">
+                <fieldset class="patient-details">
                     <legend>ARV</legend>
                     <table>
                         <tr>
@@ -3656,9 +3689,9 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
 
-                <fieldset class="phdp-part" >
+                <fieldset class="patient-details">
                     <legend>PHDP Services</legend>
-                    <table>
+                    <table id = "tbl-phdp">
                         <tr>
                             <td>Has the client been given condoms this visit?</td>
                             <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -3720,27 +3753,29 @@ Green Card follow-up visit form
                     <table>
                         <tr>
                             <td>Return Visit Date:&#160;&#160;</td>
-                            <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" />
+                            <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+                                <span style="color:red;"><strong>*</strong></span>
                                 Reason:
-                                <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="returnVisitReason"
+                                <obs conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="returnVisitReason"
                                      answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
                                      style="dropdown"  />
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
 
                         </tr><tr></tr>
                     </table>
                     <table>
-                        <tr id="standard-care">
-                            <td>Differentiated Care</td>
-                            <td>
-                                <obs conceptId="164947" id="standard"
-                                     answerConceptIds="164942"
-                                     style="dropdown"
-                                     answerLabels="Standard Care"
-                                />
-                            </td>
-                        </tr>
+                        <!--<tr id="standard-care">-->
+                            <!--<td>Differentiated Care</td>-->
+                            <!--<td>-->
+                                <!--<obs conceptId="164947" id="standard"-->
+                                     <!--answerConceptIds="164942"-->
+                                     <!--style="dropdown"-->
+                                     <!--answerLabels="Standard Care"-->
+                                <!--/>-->
+                            <!--</td>-->
+                        <!--</tr>-->
                         <tr id="fast-track">
                             <td>Differentiated Care</td>
                             <td>
