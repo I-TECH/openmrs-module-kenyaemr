@@ -196,19 +196,57 @@ Green Card follow-up visit form
                 getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
             }
         }
-
+    //Treatment supporter Validations
         function onPersonPresentChange() {
             var popType = jq("#population-type");
+            var keyPop = jq("#key-population");
+            var nutStatus = jq("#nutritional-status");
+            var whoAdult = jq("#whoAdult");
+            var whoChild = jq("#whoChild");
             var complaintsToday = jq("#complaints-today");
             var onAntTb = jq("#on-anti-tb-drugs");
             var onIPTDrugs = jq("#on-ipt");
             var everOnIPTDrugs = jq("#ever-on-ipt");
             var tbScreeningAnswers = jq("#screening-questions");
+            var workupAnswers = jq("#ipt-workup");
+            var iptStatus = jq("#ipt-result-status");
+            var tBtestsOrdered = jq("#tb-test-ordered");
+            var tBtestResults = jq("#tb-results");
+            var startantiTb = jq("#startAnti-tb");
+            var tbRegimen = jq("#tb-regimen");
+            var familypStatus = jq("#fpOptionValues");
+            var allergiesSelected = jq("#known-allergies");
+            var chronicIllnessSelected = jq("#chronic-illness");
+            var adverseReactionsSelected = jq("#adverse-reactions");
+            var adultVaccSelected = jq('#adult-vacc');
+            var childVaccSelected = jq('#child-vacc');
+            var otherVaccSelected = jq('#otherVacc');
+            var hasMenses = jq('#hasLMP');
+            var pregOption = jq('#pregnancyOption');
+            var preIntention = jq('#pregnancyIntention');
+            var generalExamSelected = jq('#general-exam-findings');
+            var systemsFindingsSelected = jq('#systems-review');
+            var skinFindingsSelected = jq('.skin-findings');
+            var eyeFindingsSelected = jq('.eye-findings');
+            var entFindingsSelected = jq('.ent-findings');
+            var chestFindingsSelected = jq('.chest-findings');
+            var cvsFindingsSelected = jq('.cvs-findings');
+            var abdomenFindingsSelected = jq('.abdomen-findings');
+            var cnsFindingsSelected = jq('.cns-findings');
+            var gusFindingsSelected = jq('.gus-findings');
 
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
                 jq('#greencard').smartWizard('enableFinish', false);
+                jq(".on-art").show();
+                jq('.showModal').show();
+                jq("#tbl-phdp").show();
             } else {
+                complaintSelected();
+                knownAllergiesSelected();
+                chronicIllnessesSelected();
+                adverseReactionSelected();
+
                 jq(".on-art").hide();
                 jq('.showModal').hide();
                 jq("#tbl-phdp").hide();
@@ -216,11 +254,67 @@ Green Card follow-up visit form
                 jq('#greencard').smartWizard('goToStep', 4);
                 jq('#greencard').smartWizard('enableFinish', true);
                 clearHiddenSections(popType);
+                clearHiddenSections(keyPop);
+                clearHiddenSections(whoAdult);
+                clearHiddenSections(whoChild);
+                clearHiddenSections(nutStatus);
                 clearHiddenSections(complaintsToday);
                 clearHiddenSections(onAntTb);
                 clearHiddenSections(onIPTDrugs);
                 clearHiddenSections(everOnIPTDrugs);
                 clearHiddenSections(tbScreeningAnswers);
+                clearHiddenSections(workupAnswers);
+                clearHiddenSections(iptStatus);
+                clearHiddenSections(tBtestsOrdered);
+                clearHiddenSections(tBtestResults);
+                clearHiddenSections(startantiTb);
+                clearHiddenSections(tbRegimen);
+                clearHiddenSections(allergiesSelected);
+                clearHiddenSections(chronicIllnessSelected);
+                clearHiddenSections(adverseReactionsSelected);
+                clearHiddenSections(adultVaccSelected);
+                clearHiddenSections(childVaccSelected);
+                clearHiddenSections(otherVaccSelected);
+                clearHiddenSections(hasMenses);
+                clearHiddenSections(pregOption);
+                clearHiddenSections(preIntention);
+                clearHiddenSections(familypStatus);
+                clearHiddenSections(generalExamSelected);
+                clearHiddenSections(systemsFindingsSelected);
+                clearHiddenSections(skinFindingsSelected);
+                clearHiddenSections(eyeFindingsSelected);
+                clearHiddenSections(entFindingsSelected);
+                clearHiddenSections(chestFindingsSelected);
+                clearHiddenSections(cvsFindingsSelected);
+                clearHiddenSections(abdomenFindingsSelected);
+                clearHiddenSections(cnsFindingsSelected);
+                clearHiddenSections(gusFindingsSelected);
+                jq('#weight input').val('');
+                jq('#height input').val('');
+                jq('#muac input').val('');
+                jq('#calculated-bmi').html('');
+                jq('#other-vacc input').val('');
+                jq('#lmp-date input').val('');
+                jq('#diagnosis-type input').val('');
+                jq('#treatment-plan textarea').val('');
+                jq('#clinical-notes textarea').val('');
+                jq('.skin-notes textarea').val('');
+                jq('.eye-notes textarea').val('');
+                jq('.ent-notes textarea').val('');
+                jq('.chest-notes textarea').val('');
+                jq('.cvs-notes textarea').val('');
+                jq('.abdomen-notes textarea').val('');
+                jq('.cns-notes textarea').val('');
+                jq('.gus-notes textarea').val('');
+                jq('#temp input').val('');
+                jq('#pulse input').val('');
+                jq('#systolic input').val('');
+                jq('#diastolic input').val('');
+                jq('#resp input').val('');
+                jq('#oxygen input').val('');
+                jq('#tbrxdate input').val('');
+
+
 
             }
         }
@@ -264,10 +358,10 @@ Green Card follow-up visit form
         var complaintSelected = function() {
             var val = getValue('complaints-today.value');
 
-            var complaint = jq('.complaint');
+            var complaint = jq('.complaint select').val('');
             var complaintDuration = jq('.complaint-time input').val('');
             var complaintDate = jq('.complaint-date input').val('');
-            if (val == "false"){
+            if (val == "false" || val == 1066){
                 jq("#tbl-complaints-today").hide();
                 clearHiddenSections(complaint);
                 clearHiddenSections(complaintDuration);
@@ -291,13 +385,13 @@ Green Card follow-up visit form
         }
         var adverseReactionSelected = function() {
             var val = getValue('adverse-reactions.value');
-            var medicineCausing= jq('.medicine-causing');
-            var reaction = jq('.reaction');
-            var severity = jq('.severity');
+            var medicineCausing= jq('.medicine-causing select').val('');
+            var reaction = jq('.reaction select').val('');
+            var severity = jq('.severity select').val('');
             var onsetDate = jq('.adverse-events-onset-date input').val('');
-            var action = jq('.action-taken');
+            var action = jq('.action-taken select').val('');
 
-            if (val == "false"){
+            if (val == "false" || val == 1066){
                 jq("#tbl-adverse-reactions").hide();
                 clearHiddenSections(medicineCausing);
                 clearHiddenSections(reaction);
@@ -311,11 +405,11 @@ Green Card follow-up visit form
         }
         var knownAllergiesSelected = function() {
             var val = getValue('known-allergies.value');
-            var allergy = jq('.allergen');
-            var reaction = jq('.reaction');
-            var severity = jq('.severity');
+            var allergy = jq('.allergen select').val('');
+            var reaction = jq('.reaction select').val('');
+            var severity = jq('.severity select').val('');
             var date = jq('.allergy-date input').val('');
-            if (val == "false"){
+            if (val == "false" || val == 1066){
                 jq("#tbl-known-allergies").hide();
                 clearHiddenSections(allergy);
                 clearHiddenSections(reaction);
@@ -367,18 +461,18 @@ Green Card follow-up visit form
             }
         }
         var chronicIllnessesSelected = function() {
-            var val = jq(this).val();
 
-            var illness = jq('.illness-chronic');
+            var val = getValue('chronic-illness.value');
+            var illness = jq('.illness-chronic select').val('');
             var onset = jq('.onset-date-chronic-illness input').val('');
             var drug = jq('.drug-chronic-illness input').val('');
             var dose = jq('.dose-chronic-illness input').val('');
             var units = jq('.units-chronic-illness input').val('');
-            var frequency = jq('.frequency-chronic-illness');
+            var frequency = jq('.frequency-chronic-illness select').val('');
             var duration = jq('.duration-chronic-illness input').val('');
-            var durationUnits = jq('.duration-units-illness');
+            var durationUnits = jq('.duration-units-illness select').val('');
 
-            if (val == 1066){
+            if (val == "false" || val == 1066){
                 jq("#tbl-chronic-illness").hide();
                 clearHiddenSections(illness);
                 clearHiddenSections(onset);
@@ -2245,7 +2339,7 @@ Green Card follow-up visit form
                         <tr class="patient-details">
                             <td>Temp</td>
                             <td>
-                                <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> &#176;C
+                                <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="temp"/> &#176;C
                             </td>
                             <td>
                                 <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
@@ -2254,16 +2348,16 @@ Green Card follow-up visit form
                         <tr class="patient-details">
                             <td>Pulse Rate</td>
                             <td>
-                                <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="pulse"/>
                             </td>
                             <td><span class="value"><recentObs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
                         <tr class="patient-details">
                             <td>BP</td>
                             <td>
-                                <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic"/>
                                 /
-                                <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic"/>
                                 mmHg
                             </td>
                             <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
@@ -2272,14 +2366,14 @@ Green Card follow-up visit form
                         <tr class="patient-details">
                             <td>Respiratory Rate</td>
                             <td>
-                                <obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="resp"/>
                             </td>
                             <td><span class="value"><recentObs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
                         <tr class="patient-details">
                             <td>Oxygen Saturation</td>
                             <td>
-                                <obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="oxygen"/>
                             </td>
                             <td><span class="value"><recentObs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
@@ -2327,7 +2421,7 @@ Green Card follow-up visit form
                         <tr class="patient-details">
                             <td>MUAC</td>
                             <td>
-                                <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="muac"/>
                             </td>
                             <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
@@ -2449,7 +2543,7 @@ Green Card follow-up visit form
                         <tr>
 
                             <td>
-                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80"/>
+                                <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80" id="clinical-notes"/>
                             </td>
                             <td>
                                 <span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
@@ -2563,7 +2657,7 @@ Green Card follow-up visit form
                                     <hr/> </td>
                             </tr>
                         </table>
-                        <table>
+                        <table id="tb-results">
                             <tr>
                                 <td>Sputum Smear:</td>
                                 <td><obs id="sputum-smear-action" conceptId="307AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
@@ -2618,7 +2712,7 @@ Green Card follow-up visit form
                             </tr>
                         </table>
                         <table id="tbl-start-antiTb">
-                            <tr>
+                            <tr id="startAnti-tb">
                                 <td colspan="2">Start Anti-TBs:
                                     <obs  id="start-anti-tb-action" conceptId="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
                                           answerLabels="Yes,No"/>
@@ -2639,7 +2733,7 @@ Green Card follow-up visit form
                     </fieldset>
                     <fieldset id="ipt-client-workup">
                         <legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
-                        <table>
+                        <table id="ipt-workup">
                             <tr>
                                 <td colspan="2" class="ke-panel-header">Ask for the following</td>
                             </tr>
@@ -2997,7 +3091,7 @@ Green Card follow-up visit form
                 <fieldset class="patient-details">
                     <legend>Vaccination(s) today</legend>
                     <includeIf velocityTest="$patient.age &lt; 16">
-                        <table width="30%">
+                        <table width="30%" id="child-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
                                 <!--<th style="color: #888" align="left">Recent</th>-->
@@ -3032,7 +3126,7 @@ Green Card follow-up visit form
                         </table>
                     </includeIf>
                     <includeIf velocityTest="$patient.age &gt; 15">
-                        <table width="30%">
+                        <table width="30%" id="adult-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
                                 <!--<th style="color: #888" align="left">Recent</th>-->
@@ -3051,10 +3145,10 @@ Green Card follow-up visit form
                             </tr>
 
                         </table>
-                        <table>
+                        <table >
                             <tr>
-                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox"
-                                /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox" id="otherVacc"
+                                /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="other-vacc"  /></td>
 
                                 <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5622).obsDateTime"/> </td>-->
                                 <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(5622).size()"/> </td>-->
@@ -3067,10 +3161,10 @@ Green Card follow-up visit form
 
                 <!--Sexual and reproductive History validated for women over 10 years -->
                 <includeIf velocityTest="$patient.gender == 'F'">
-                    <fieldset class="patient-details">
+                    <fieldset class="reproductive-part">
                         <legend>Sexual and Reproductive History</legend>
                         <!--<table class="right-aligned-first" style="width: 100%;" border="0">-->
-                        <table cellspacing="18" >
+                        <table cellspacing="18" class="patient-details" >
                             <tr>
                                 <th  style="color: #888" >Current Status <span style="color:red;"><strong>*</strong></span></th>
                                 <th  style="color: #888" >Date </th>
@@ -3510,10 +3604,10 @@ Green Card follow-up visit form
                                     <tr>
 
                                         <td>
-                                            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/>
+                                            <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
                                         </td>
                                         <td>
-                                            <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80"/>
+                                            <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80" id="treatment-plan"/>
                                         </td>
 
                                     </tr>
