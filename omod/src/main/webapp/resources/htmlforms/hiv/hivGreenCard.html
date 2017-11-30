@@ -87,7 +87,7 @@ Green Card follow-up visit form
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
 
     <script type="text/javascript">
-
+//Global variable
         var bmi = null;
         var SELF = 978;
         var TS = 161642;
@@ -198,6 +198,13 @@ Green Card follow-up visit form
         }
 
         function onPersonPresentChange() {
+            var popType = jq("#population-type");
+            var complaintsToday = jq("#complaints-today");
+            var onAntTb = jq("#on-anti-tb-drugs");
+            var onIPTDrugs = jq("#on-ipt");
+            var everOnIPTDrugs = jq("#ever-on-ipt");
+            var tbScreeningAnswers = jq("#screening-questions");
+
             if (getValue('person-present.value') == SELF) {
                 jq('.patient-details :input').prop('disabled', false);
                 jq('#greencard').smartWizard('enableFinish', false);
@@ -208,6 +215,13 @@ Green Card follow-up visit form
                 jq('.patient-details :input').prop('disabled', true);
                 jq('#greencard').smartWizard('goToStep', 4);
                 jq('#greencard').smartWizard('enableFinish', true);
+                clearHiddenSections(popType);
+                clearHiddenSections(complaintsToday);
+                clearHiddenSections(onAntTb);
+                clearHiddenSections(onIPTDrugs);
+                clearHiddenSections(everOnIPTDrugs);
+                clearHiddenSections(tbScreeningAnswers);
+
             }
         }
 
@@ -1046,7 +1060,8 @@ Green Card follow-up visit form
 //                jq('#fast-track').hide();
 //            }
             //On ART hide adherence assessment
-            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            //var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            var PATIENT_ON_ART = "false";
             if(PATIENT_ON_ART =="true") {
                 jq('.on-art').show();
                 jq('.showModal').show();
@@ -1175,7 +1190,8 @@ Green Card follow-up visit form
                 jq('#fpOptionValues :input').prop('checked', false);
             });
               /*On TB Drugs  */
-            var PATIENT_ON_TB = "<lookup expression="kenyaemr.patientInTbProgram()" />";
+            //var PATIENT_ON_TB = "<lookup expression="kenyaemr.patientInTbProgram()" />";
+            var PATIENT_ON_TB ="false";
             if (PATIENT_ON_TB == 'true'){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
                 jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
@@ -1183,7 +1199,8 @@ Green Card follow-up visit form
             }
             /*  .On TB Drugs   */
             /*On IPT Drugs  */
-            var PATIENT_ON_IPT = "<lookup expression="kenyaemr.patientInIPTProgram()" />";
+            //var PATIENT_ON_IPT = "<lookup expression="kenyaemr.patientInIPTProgram()" />";
+            var PATIENT_ON_IPT = "false";
             if (PATIENT_ON_IPT == 'true'){
                 jq('#on-ipt input').prop("disabled", false);
                 jq("#on-ipt input[value=1065]").prop("checked", true);
@@ -1403,7 +1420,8 @@ Green Card follow-up visit form
         beforeSubmit.push(function() {
             var pgender = "<lookup expression="patient.gender" />";
             //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            //var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            var PATIENT_ON_ART = "false";
             var personPresent =getValue('person-present.value');
             var tca_date = getValue('returnVisitDate.value');
             var tca_reason = getValue('returnVisitReason.value');
@@ -1837,7 +1855,8 @@ Green Card follow-up visit form
         function step4Validation(){
             var pgender = "<lookup expression="patient.gender" />";
             //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+           // var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
+            var PATIENT_ON_ART = "false";
             var personPresent =getValue('person-present.value');
             var encounterDate = getValue('encounter-date.value');
             var prophylaxis_Used = getValue('prophylaxis-used.value');
