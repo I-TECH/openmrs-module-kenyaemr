@@ -44,12 +44,9 @@ import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSi
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
  * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
  */
-public class NeedsCd4TestCalculation extends AbstractPatientCalculation  {
+public class NeedsCd4TestCalculation extends AbstractPatientCalculation {
 
-	/**
-	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
-	*/
-
+	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,y
 	 *
