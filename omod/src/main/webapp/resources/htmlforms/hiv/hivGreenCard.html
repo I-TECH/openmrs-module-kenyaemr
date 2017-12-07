@@ -15,10 +15,7 @@
 Green Card follow-up visit form
 -->
 <htmlform>
-
     <style type="text/css">
-
-
         table.right-aligned-first td:first-child {
             text-align: right;
         }
@@ -31,7 +28,6 @@ Green Card follow-up visit form
             text-align: right;
             border:2px solid darkgray;
             padding: inherit;
-
         }
         /* The Modal  */
         .modal {
@@ -46,7 +42,6 @@ Green Card follow-up visit form
             background-color: rgb(0,0,0); /* Fallback color */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
-
         /* Modal Content/Box */
         .modal-content {
             background-color: #fefefe;
@@ -61,7 +56,6 @@ Green Card follow-up visit form
             background-color: #fefefe;
             color: white;
         }
-
         /* The Close Button */
         .close {
             color: #aaa;
@@ -69,956 +63,32 @@ Green Card follow-up visit form
             font-size: 28px;
             font-weight: bold;
         }
-
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
-
-
     /* .Modal  */
     </style>
-
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <!--Wizard plugins-->
     <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
-
     <script type="text/javascript">
-//Global variable
+//Global variables
         var bmi = null;
         var SELF = 978;
         var TS = 161642;
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
+        var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var pAge = parseInt('<lookup expression="patient.age"/>');
+        var pgender = "<lookup expression="patient.gender" />";
 
-        function onWeightOrHeightChange() {
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            var display = '';
-            var weightKg = parseFloat(getValue('weight.value'));
-            var heightM = parseFloat(getValue('height.value')) / 100;
-            if (pAge &gt; 14) {
-                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                    bmi = weightKg / (heightM * heightM);
-                    if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                        display = 'Abnormal value. Were height and height entered correctly?';
-                    }
-                    else {
-                        display = bmi.toFixed(2);
-                    }
-                }
-                //set nutritional status and bmi
-                jq('#calculated-bmi').html(display);
-                if (bmi &lt; 16) {
-                    jq("#nutritional-status input[value=163302]").prop("checked", true);
-                } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
-                    jq("#nutritional-status input[value=163303]").prop("checked", true);
-                } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
-                    jq("#nutritional-status input[value=1115]").prop("checked", true);
-                } else if (bmi &gt; 25) {
-                    jq("#nutritional-status input[value=114413]").prop("checked", true);
-                }
-            }
-        }
-        function onEncounterDateChange() {
-            var patientId = <lookup expression="patient.patientId"/>;
-            var encDate = getValue('encounter-date.value');
-            if(encDate == null) {
-                encDate = new Date();
-            }
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? data.duration : 'Not started';
-                    jq('#calculated-duration-start-art').html(msg);
-                });
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? (data.regimen ) : 'None';
-                    jq('#calculated-duration-current-regimen').html(msg);
-                });
-        }
-        function displayRecentBmi() {
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
-            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
-            var bmi = '';
-            var recent_bmi ='';
-            if (pAge &gt; 14) {
-                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                    bmi = weightKg / (heightM * heightM);
-                    recent_bmi = bmi.toFixed(2);
-                    jq('#recent-calculated-bmi').html(recent_bmi);
-
-                    //set recent nutritional status from recent bmi
-                    if (recent_bmi &lt; 16) {
-                        jq("#nutritional-status input[value=163302]").prop("checked", true);
-                    } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
-                        jq("#nutritional-status input[value=163303]").prop("checked", true);
-                    } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
-                        jq("#nutritional-status input[value=1115]").prop("checked", true);
-                    } else if (recent_bmi &gt; 25) {
-                        jq("#nutritional-status input[value=114413]").prop("checked", true);
-                    }
-                }
-            }
-        }
-        function onLmpChange() {
-            jq('#pregnancyOption :input').prop('disabled', false);
-        }
-        function patientLMPStatus(){
-            var val = getValue('hasLMP.value');
-            var ifPatientPregnant =  jq('#if-patient-pregnant');
-            var pregIntention = jq("#pregnancyIntention");
-            if(val == 1065){
-                jq('#if-patient-pregnant').show();
-                jq('#lmp-date :input').prop('disabled', false);
-            }
-            if(val == 1066){
-                jq('#if-patient-pregnant').hide();
-                jq('#pregnancyOptionValues').hide();
-                jq('#fp-details').hide();
-                jq("#wants-pregnancy").hide();
-                jq('#lmp-date :input').val('');
-                clearHiddenSections(ifPatientPregnant);
-                clearHiddenSections(pregIntention);
-                jq('#lmp-date :input').prop('disabled', true);
-                getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
-            }
-            if(val == 1175){
-                jq('#if-patient-pregnant').hide();
-                jq('#pregnancyOptionValues').hide();
-                jq('#fp-details').hide();
-                jq("#wants-pregnancy").hide();
-                jq('#lmp-date :input').val('');
-                clearHiddenSections(ifPatientPregnant);
-                clearHiddenSections(pregIntention);
-                jq('#lmp-date :input').prop('disabled', true);
-                getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
-            }
-        }
-    //Treatment supporter Validations
-        function onPersonPresentChange() {
-            var popType = jq("#population-type");
-            var keyPop = jq("#key-population");
-            var nutStatus = jq("#nutritional-status");
-            var whoAdult = jq("#whoAdult");
-            var whoChild = jq("#whoChild");
-            var complaintsToday = jq("#complaints-today");
-            var onAntTb = jq("#on-anti-tb-drugs");
-            var onIPTDrugs = jq("#on-ipt");
-            var everOnIPTDrugs = jq("#ever-on-ipt");
-            var tbScreeningAnswers = jq("#screening-questions");
-            var workupAnswers = jq("#ipt-workup");
-            var iptStatus = jq("#ipt-result-status");
-            var tBtestsOrdered = jq("#tb-test-ordered");
-            var tBtestResults = jq("#tb-results");
-            var startantiTb = jq("#startAnti-tb");
-            var tbRegimen = jq("#tb-regimen");
-            var familypStatus = jq("#fpOptionValues");
-            var allergiesSelected = jq("#known-allergies");
-            var chronicIllnessSelected = jq("#chronic-illness");
-            var adverseReactionsSelected = jq("#adverse-reactions");
-            var adultVaccSelected = jq('#adult-vacc');
-            var childVaccSelected = jq('#child-vacc');
-            var otherVaccSelected = jq('#otherVacc');
-            var hasMenses = jq('#hasLMP');
-            var pregOption = jq('#pregnancyOption');
-            var preIntention = jq('#pregnancyIntention');
-            var generalExamSelected = jq('#general-exam-findings');
-            var systemsFindingsSelected = jq('#systems-review');
-            var skinFindingsSelected = jq('.skin-findings');
-            var eyeFindingsSelected = jq('.eye-findings');
-            var entFindingsSelected = jq('.ent-findings');
-            var chestFindingsSelected = jq('.chest-findings');
-            var cvsFindingsSelected = jq('.cvs-findings');
-            var abdomenFindingsSelected = jq('.abdomen-findings');
-            var cnsFindingsSelected = jq('.cns-findings');
-            var gusFindingsSelected = jq('.gus-findings');
-
-            if (getValue('person-present.value') == SELF) {
-                jq('.patient-details :input').prop('disabled', false);
-                jq('#greencard').smartWizard('enableFinish', false);
-                jq(".on-art").show();
-                jq('.showModal').show();
-                jq("#tbl-phdp").show();
-            } else {
-                complaintSelected();
-                knownAllergiesSelected();
-                chronicIllnessesSelected();
-                adverseReactionSelected();
-
-                jq(".on-art").hide();
-                jq('.showModal').hide();
-                jq("#tbl-phdp").hide();
-                jq('.patient-details :input').prop('disabled', true);
-                jq('#greencard').smartWizard('goToStep', 4);
-                jq('#greencard').smartWizard('enableFinish', true);
-                clearHiddenSections(popType);
-                clearHiddenSections(keyPop);
-                clearHiddenSections(whoAdult);
-                clearHiddenSections(whoChild);
-                clearHiddenSections(nutStatus);
-                clearHiddenSections(complaintsToday);
-                clearHiddenSections(onAntTb);
-                clearHiddenSections(onIPTDrugs);
-                clearHiddenSections(everOnIPTDrugs);
-                clearHiddenSections(tbScreeningAnswers);
-                clearHiddenSections(workupAnswers);
-                clearHiddenSections(iptStatus);
-                clearHiddenSections(tBtestsOrdered);
-                clearHiddenSections(tBtestResults);
-                clearHiddenSections(startantiTb);
-                clearHiddenSections(tbRegimen);
-                clearHiddenSections(allergiesSelected);
-                clearHiddenSections(chronicIllnessSelected);
-                clearHiddenSections(adverseReactionsSelected);
-                clearHiddenSections(adultVaccSelected);
-                clearHiddenSections(childVaccSelected);
-                clearHiddenSections(otherVaccSelected);
-                clearHiddenSections(hasMenses);
-                clearHiddenSections(pregOption);
-                clearHiddenSections(preIntention);
-                clearHiddenSections(familypStatus);
-                clearHiddenSections(generalExamSelected);
-                clearHiddenSections(systemsFindingsSelected);
-                clearHiddenSections(skinFindingsSelected);
-                clearHiddenSections(eyeFindingsSelected);
-                clearHiddenSections(entFindingsSelected);
-                clearHiddenSections(chestFindingsSelected);
-                clearHiddenSections(cvsFindingsSelected);
-                clearHiddenSections(abdomenFindingsSelected);
-                clearHiddenSections(cnsFindingsSelected);
-                clearHiddenSections(gusFindingsSelected);
-                jq('#weight input').val('');
-                jq('#height input').val('');
-                jq('#muac input').val('');
-                jq('#calculated-bmi').html('');
-                jq('#other-vacc input').val('');
-                jq('#lmp-date input').val('');
-                jq('#diagnosis-type input').val('');
-                jq('#treatment-plan textarea').val('');
-                jq('#clinical-notes textarea').val('');
-                jq('.skin-notes textarea').val('');
-                jq('.eye-notes textarea').val('');
-                jq('.ent-notes textarea').val('');
-                jq('.chest-notes textarea').val('');
-                jq('.cvs-notes textarea').val('');
-                jq('.abdomen-notes textarea').val('');
-                jq('.cns-notes textarea').val('');
-                jq('.gus-notes textarea').val('');
-                jq('#temp input').val('');
-                jq('#pulse input').val('');
-                jq('#systolic input').val('');
-                jq('#diastolic input').val('');
-                jq('#resp input').val('');
-                jq('#oxygen input').val('');
-                jq('#tbrxdate input').val('');
-
-
-
-            }
-        }
-
-        function onVisitScheduledChange() {
-            var personPresent = getValue('person-present.value');
-            var visitScheduled = getValue('visit-scheduled.value');
-            if (visitScheduled != null &amp;&amp; personPresent == TS) {
-                jq('.patient-details :input').prop('disabled', true);
-                jq('#greencard').smartWizard('goToStep', 4);
-                jq('#greencard').smartWizard('enableFinish', true);
-            }
-        }
-        function onRecordIPTOutcome() {
-            jq("#tbl-ipt-outcome").toggle();
-        }
-
-        function onParityChange() {
-            var gravida = '';
-            var parityTerm = parseInt(getValue('parity-term.value'));
-            var parityAbortion = parseInt(getValue('parity-abortion.value'));
-            if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
-                gravida = parityTerm + parityAbortion + 1;
-                getField('gravida.value').val(gravida);
-            }
-        }
-        var generalExamSelected = function(){
-            var val = jq(this).val();
-            var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
-            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
-                jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
-                jq(this).prop("disabled",false);
-            }else {
-                jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
-                jq("#general-exam-findings input[value=1107]").prop("disabled",true);
-            }
-            if(generalExamsChecked.length ==0){
-                jq("#general-exam-findings input[value=1107]").prop("disabled",false);
-            }
-        }
-        var complaintSelected = function() {
-            var val = getValue('complaints-today.value');
-
-            var complaint = jq('.complaint select').val('');
-            var complaintDuration = jq('.complaint-time input').val('');
-            var complaintDate = jq('.complaint-date input').val('');
-            if (val == "false" || val == 1066){
-                jq("#tbl-complaints-today").hide();
-                clearHiddenSections(complaint);
-                clearHiddenSections(complaintDuration);
-                clearHiddenSections(complaintDate);
-                getField('complaint-field.error').html('Please specify the complaints.').hide();
-            }else {
-                jq("#tbl-complaints-today").show();
-            }
-        }
-        var complaintDurationInput = function() {
-
-            var table = document.getElementById("tbl-complaints-today");
-            for (var i = 0, row; row = table.rows[i]; i++) {
-                var val = jq(this).closest('tr').find(".complaint-time input").val();
-                var encounterDate = new Date(getValue('encounter-date.value'));
-                var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
-                if(val >0 ) {
-                    jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
-                }
-            }
-        }
-        var adverseReactionSelected = function() {
-            var val = getValue('adverse-reactions.value');
-            var medicineCausing= jq('.medicine-causing select').val('');
-            var reaction = jq('.reaction select').val('');
-            var severity = jq('.severity select').val('');
-            var onsetDate = jq('.adverse-events-onset-date input').val('');
-            var action = jq('.action-taken select').val('');
-
-            if (val == "false" || val == 1066){
-                jq("#tbl-adverse-reactions").hide();
-                clearHiddenSections(medicineCausing);
-                clearHiddenSections(reaction);
-                clearHiddenSections(severity);
-                clearHiddenSections(onsetDate);
-                clearHiddenSections(action);
-                getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
-            }else {
-                jq("#tbl-adverse-reactions").show();
-            }
-        }
-        var knownAllergiesSelected = function() {
-            var val = getValue('known-allergies.value');
-            var allergy = jq('.allergen select').val('');
-            var reaction = jq('.reaction select').val('');
-            var severity = jq('.severity select').val('');
-            var date = jq('.allergy-date input').val('');
-            if (val == "false" || val == 1066){
-                jq("#tbl-known-allergies").hide();
-                clearHiddenSections(allergy);
-                clearHiddenSections(reaction);
-                clearHiddenSections(severity);
-                clearHiddenSections(date);
-                getField('allergy-field.error').html('Please specify the allergy.').hide();
-            }else {
-                jq("#tbl-known-allergies").show();
-            }
-        }
-        var systemsReviewSelected = function() {
-            var val = jq(this).val();
-            var skinFindings = jq('.skin-findings');
-            var skinNotes = jq('.skin-notes textarea').val('');
-            var eyeFindings = jq('.eye-findings');
-            var eyeNotes = jq('.eye-notes textarea').val('');
-            var entFindings = jq('.ent-findings');
-            var entNotes = jq('.ent-notes textarea').val('');
-            var chestFindings = jq('.chest-findings');
-            var chestNotes = jq('.chest-notes textarea').val('');
-            var cvsFindings = jq('.cvs-findings');
-            var cvsNotes = jq('.cvs-notes textarea').val('');
-            var abdomenFindings = jq('.abdomen-findings');
-            var abdomenNotes = jq('.abdomen-notes textarea').val('');
-            var cnsFindings = jq('.cns-findings');
-            var cnsNotes = jq('.cns-notes textarea').val('');
-            var gusFindings = jq('.gus-findings');
-            var gusNotes = jq('.gus-notes textarea').val('');
-            if (val == 1115){
-                jq("#tbl-systems-review").hide();
-                clearHiddenSections(skinFindings);
-                clearHiddenSections(skinNotes);
-                clearHiddenSections(eyeFindings);
-                clearHiddenSections(eyeNotes);
-                clearHiddenSections(entFindings);
-                clearHiddenSections(entNotes);
-                clearHiddenSections(chestFindings);
-                clearHiddenSections(chestFindings);
-                clearHiddenSections(cvsFindings);
-                clearHiddenSections(cvsNotes);
-                clearHiddenSections(abdomenFindings);
-                clearHiddenSections(abdomenNotes);
-                clearHiddenSections(cnsFindings);
-                clearHiddenSections(cnsNotes);
-                clearHiddenSections(gusFindings);
-                clearHiddenSections(gusNotes);
-            }else {
-                jq("#tbl-systems-review").show();
-            }
-        }
-        var chronicIllnessesSelected = function() {
-
-            var val = getValue('chronic-illness.value');
-            var illness = jq('.illness-chronic select').val('');
-            var onset = jq('.onset-date-chronic-illness input').val('');
-            var drug = jq('.drug-chronic-illness input').val('');
-            var dose = jq('.dose-chronic-illness input').val('');
-            var units = jq('.units-chronic-illness input').val('');
-            var frequency = jq('.frequency-chronic-illness select').val('');
-            var duration = jq('.duration-chronic-illness input').val('');
-            var durationUnits = jq('.duration-units-illness select').val('');
-
-            if (val == "false" || val == 1066){
-                jq("#tbl-chronic-illness").hide();
-                clearHiddenSections(illness);
-                clearHiddenSections(onset);
-                clearHiddenSections(drug);
-                clearHiddenSections(dose);
-                clearHiddenSections(units);
-                clearHiddenSections(frequency);
-                clearHiddenSections(duration);
-                clearHiddenSections(durationUnits);
-                getField('chronic.error').html('Please specify the chronic illness.').hide();
-            }else {
-                jq("#tbl-chronic-illness").show();
-            }
-        }
-
-        var screenedStiSelected = function() {
-            var val = jq(this).val();
-            var partnerNotification = jq("#tbl-partner-notification");
-            if (val == 703){
-                jq("#tbl-partner-notification").show();
-
-            }else {
-                jq("#tbl-partner-notification").hide();
-                clearHiddenSections(partnerNotification);
-            }
-        }
-        var onAntiTbDrugs = function(){
-            var val = jq(this).val();
-            var onIpt = jq('#on-ipt');
-            var actionTakenTab = jq('#action-taken');
-            var iptClientWorkupTab = jq('#ipt-client-workup');
-            var iptFollowup = jq('#ipt-followup');
-            var tbScreeningQuestionsTab = jq("#tb-screening-tab");
-            var iptInitiationTab = jq('#ipt-initiation');
-            everOnIPTSelected = null;
-            patientCurrentlyOnIPT = null;
-            if(val == 1066) {
-                jq('#on-ipt input').prop("disabled", false);
-            }
-            if(val == 1065){
-                jq('#on-ipt input').prop("disabled", true);
-                jq('input[type=radio].on-ipt').prop("checked", false);
-                jq("#tb-screening-result").hide();
-                jq("#tb-screening-tab").hide();
-                jq("#tbl-ever-on-ipt").hide();
-                jq("#ipt-uptake").hide();
-                clearRadios(onIpt);
-                actionTakenTab.hide();
-                clearRadios(actionTakenTab);
-                iptClientWorkupTab.hide()
-                clearRadios(iptClientWorkupTab);
-                iptFollowup.hide();
-                clearRadios(iptFollowup);
-                tbScreeningQuestionsTab.hide();
-                clearRadios(tbScreeningQuestionsTab);
-                iptInitiationTab.hide();
-
-            }
-        }
-
-        var onIPT = function(){
-            var val = jq(this).val();
-            patientCurrentlyOnIPT = val;
-            everOnIPTSelected = null;
-            var everOnIpt = jq("#tbl-ever-on-ipt");
-            var actionTakenTab = jq('#action-taken');
-            var iptClientWorkupTab = jq('#ipt-client-workup');
-            var iptFollowup = jq('#ipt-followup');
-            var tbScreeningQuestionsTab = jq("#tb-screening-tab");
-            var iptInitiationTab = jq('#ipt-initiation');
-            var tbScreeningResult = jq("#tb-screening-result");
-            if(val == 1066) {
-
-                jq("#tbl-ever-on-ipt").show();
-                jq("#ipt-uptake").hide();
-                iptFollowup.hide();
-                actionTakenTab.hide();
-                tbScreeningQuestionsTab.hide();
-                tbScreeningResult.hide();
-
-                //clear radios in hidden sections
-                clearRadios(everOnIpt);
-                clearRadios(iptFollowup);
-                clearRadios(actionTakenTab);
-                clearRadios(tbScreeningQuestionsTab);
-                clearRadios(tbScreeningResult);
-
-            } else {
-                jq("#tbl-ever-on-ipt").hide();
-                jq("#ipt-followup").show();
-                tbScreeningQuestionsTab.hide();
-                jq("#tb-screening-result").show();
-                iptClientWorkupTab.hide();
-                actionTakenTab.hide();
-                jq("#ipt-uptake").show();
-                iptInitiationTab.hide();
-                //clear radios
-                clearRadios(iptClientWorkupTab);
-                clearRadios(tbScreeningQuestionsTab);
-                clearRadios(actionTakenTab);
-            }
-        }
-
-        var everOnIPT = function () {
-            var val = jq(this).val();
-            everOnIPTSelected = val;
-            var tbScreeningResultTab = jq("#tb-screening-result");
-            var tbScreeningTab = jq("#tb-screening-tab");
-            var iptClientWorkupTab = jq('#ipt-client-workup');
-            var actionTakenTab = jq('#action-taken');
-            var iptInitiationTab = jq('#ipt-initiation');
-            if(val == 1066) {
-                // show TB screening, TB results and IPT workup forms
-                tbScreeningTab.show();
-                tbScreeningResultTab.show();
-                iptClientWorkupTab.hide();
-                actionTakenTab.hide();
-                //clear radios
-                clearRadios(iptClientWorkupTab);
-                clearRadios(tbScreeningTab);
-                clearRadios(actionTakenTab);
-
-            } else {
-                // show TB screening and TB result forms
-                iptClientWorkupTab.hide();
-                tbScreeningTab.show();
-                tbScreeningResultTab.show();
-                actionTakenTab.hide();
-                iptInitiationTab.hide();
-
-                //clear radios for hidden sections
-                clearRadios(iptClientWorkupTab);
-                clearRadios(tbScreeningTab);
-                clearRadios(actionTakenTab);
-            }
-        }
-        var ageGroup = function () {
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            if (pAge &gt; 15) {
-                whoChild.style.display='none';
-            }
-            if (pAge &lt; 16) {
-                whoAdult.style.display='none';
-            }
-        }
-        var populationTypeSelected = function () {
-            var val = jq(this).val();
-            var keypop = jq('#key-population');
-            if (val == 164929 ){
-                jq("#key-population").show();
-            }
-            if(val == 164928){
-                jq("#key-population").hide();
-                clearHiddenSections(keypop);
-            }
-        }
-        //Resulting TB status for Ordered test
-        var testOrdered  = function () {
-            var val = jq(this).val();
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var geneXpert = getField("genexpert-action.value").val();
-            var referral = getValue("referral-action.value");
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var xray = getValue("chest-xray-action.value");
-
-             //TB
-            if(clinicalDiagnosis ==703) {
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq('#ipt-client-workup').hide();
-
-            }
-              //No signs
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs with normal/negative Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB  with abnormal/positive Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &gt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-        }
-
-        //Resulting TB status for Action Positive Sputum smear
-        var sputumSmearAction  = function () {
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var geneXpert = getField("genexpert-action.value").val();
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var xray = getValue("chest-xray-action.value");
-            var referral = getValue("referral-action.value");
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            //TB
-            if(clinicalDiagnosis ==703) {
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq('#ipt-client-workup').hide();
-
-            }
-            //No signs
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs with normal/negative Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB  with abnormal/positive Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-        }
-        //Resulting TB status for Action Positive GeneXpert
-        var geneXpertAction  = function () {
-
-            var geneXpert = getField("genexpert-action.value").val();
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var xray = getValue("chest-xray-action.value");
-            var referral = getValue("referral-action.value");
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            //TB
-            if(clinicalDiagnosis ==703) {
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq('#ipt-client-workup').hide();
-
-            }
-            //No signs
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs with normal/negative Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB  with abnormal/positive Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-
-        }
-        //Resulting TB status for Abnormal chest x ray
-        var chestXrayAction = function () {
-            var xray = getValue("chest-xray-action.value");
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var geneXpert = getField("genexpert-action.value").val();
-            var referral = getValue("referral-action.value");
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            //TB
-            if(clinicalDiagnosis ==703) {
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq('#ipt-client-workup').hide();
-
-            }
-            //No signs
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs with normal/negative Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB  with abnormal/positive Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-        }
-        //Resulting TB status for Action Referral
-        var referralAction  = function () {
-            var referral = getValue("referral-action.value");
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var geneXpert = getField("genexpert-action.value").val();
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var xray = getValue("chest-xray-action.value");
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            //TB
-            if(clinicalDiagnosis ==703) {
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //No signs with normal/negative Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB  with abnormal/positive Tests results
-            if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-            //Presumed TB
-            if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
-                jq("#tb-result-status input[value=1660]").prop("checked", false);
-                jq("#tb-result-status input[value=142177]").prop("checked", true);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-            }
-
-        }
-
-        //Resulting TB status for Action clinical diagnosis
-        var clinicalDiagnosisAction  = function () {
-            var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var xray = getValue("chest-xray-action.value");
-            var referral = getValue("referral-action.value");
-            var geneXpert = getField("genexpert-action.value").val();
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            if(clinicalDiagnosis ==703){
-                jq("#tb-result-status input[value=1662]").prop("disabled", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
-                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
-                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
-                jq("#tbl-start-antiTb").show();
-                jq('#ipt-client-workup').hide();
-                jq('#ipt-initiation').hide();
-                jq('#ipt-result-status').hide();
-            }
-            if(clinicalDiagnosis ==664 ){
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq("#tbl-start-antiTb").hide();
-            }
-            if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=703 &amp;&amp; referral !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526 &amp;&amp;(geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)) {
-                jq("#tb-result-status input[value=1660]").prop("checked", true);
-                jq("#tb-result-status input[value=142177]").prop("checked", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", false);
-                jq('#ipt-client-workup').hide();
-                // getField('tbrxdate.value').val("");
-            }
-        }
-        //Resulting TB status for Action start anti tb
-        var startAntiTbAction  = function () {
-            var startAntiTb = getValue("start-anti-tb-action.value");
-            var sputumSmear = getValue("sputum-smear-action.value");
-            var xray = getValue("chest-xray-action.value");
-            var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
-
-            if(startAntiTb ==1065){
-                jq("#tb-result-status input[value=1662]").prop("disabled", false);
-                jq("#tb-result-status input[value=1662]").prop("checked", true);
-                jq("#tb-result-status.input[value=142177]").prop("disabled", true);
-                jq("#tb-result-status.input[value=1660]").prop("disabled", true);
-                jq("#tb-result-status.input[value=160737]").prop("disabled", true);
-                jq('#ipt-client-workup').hide();
-                jq('#ipt-initiation').hide();
-                jq('#ipt-result-status').hide();
-                //set TB RX date to todays date
-                var encounterDate = getValue('encounter-date.value');
-                //Validate for moment
-                var momentEncounterDate =moment(moment(encounterDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
-                getField('tbrxdate.value').val(momentEncounterDate);
-            }
-            if(startAntiTb ==1066 ){
-                // jq("#tb-result-status input[value=1662]").prop("disabled", true);
-                //jq('#tbrxdate').val(" ");
-                getField('tbrxdate.value').val("");
-            }
-
-        }
-        //IPT EVENT SELECTED
-        var iptEventSelected  = function () {
-
-            var iptEvent = getValue('ipt-event-type.value');
-            if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
-                jq("#reason-for-discontinuation").show();
-            }
-            else{
-                jq("#reason-for-discontinuation").hide();
-            }
-        }
-        //Prophylaxis selected
-        var prophylaxisSelected  = function () {
-
-            var prophylaxisUsed = getValue('prophylaxis-used.value');
-            var ctxAdherence = jq('#ctx-adherence');
-            var ctxDispensed = jq('#ctx-dispensed');
-            var dapsoneAdherence = jq('#dapsone-adherence');
-            var dapsoneDispensed = jq('#dapsone-dispensed');
-            if(prophylaxisUsed == 105281){
-                jq("#ctx-part").show();
-                jq("#dapsone-part").hide();
-                clearHiddenSections(dapsoneAdherence);
-                clearHiddenSections(dapsoneDispensed);
-            }
-            if(prophylaxisUsed == 74250){
-                jq("#dapsone-part").show();
-                jq("#ctx-part").hide();
-                clearHiddenSections(ctxAdherence);
-                clearHiddenSections(ctxDispensed);
-            }
-            if(prophylaxisUsed == 1107){
-                jq("#dapsone-part").hide();
-                jq("#ctx-part").hide();
-                clearHiddenSections(ctxAdherence);
-                clearHiddenSections(ctxDispensed);
-                clearHiddenSections(dapsoneAdherence);
-                clearHiddenSections(dapsoneDispensed);
-            }
-        }
-        //Morisky assessment
-        var adherenceAssessment  = function () {
-            var val = jq(this).val();
-            const YES_CONCEPT_ID = 1065;
-            const NO_CONCEPT_ID = 1066;
-            var assessmentRadios = jq('#adherence-1').find('input[type=radio]');
-            var assessmentYesResponses = [];
-            var assessmentNoResponses = [];
-            //defaults
-            //Fetch responses for the assessment questions
-            jq.each(assessmentRadios, function(){
-
-                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
-                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
-                    assessmentYesResponses.push(this);
-                }
-
-                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
-                    assessmentNoResponses.push(this);
-                }
-
-            });
-            //If no responses have been recorded then prompt since this assessment is mandatory
-            if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
-                //Prompt to complete assessment
-            }else{
-                if(assessmentYesResponses.length &gt; 0) {
-                    jq('#adherence-2').show();
-                }
-                if(assessmentYesResponses.length == 0) {
-                    jq("#arv-adherence input[value=159405]").prop("checked", true);
-                    jq('#adherence-2').hide();
-                }
-                if(assessmentYesResponses.length == 1 || assessmentYesResponses.length == 2 ) {
-                    jq("#arv-adherence input[value=163794]").prop("checked", true);
-                    jq('#adherence-2').show();
-                }
-                if(assessmentYesResponses.length == 3 || assessmentYesResponses.length == 4 ) {
-                    jq("#arv-adherence input[value=159407]").prop("checked", true);
-                    jq('#adherence-2').show();
-                }
-            }
-
-        }
-        var closeAdherenceAssessment  = function () {
-            //console.log("close me");
-            var x = jq("#modalContents");
-            x.dialog('close');
-
-        }
-        //.Morisky assessment
-        //Start on jq onready
+//Start on jq onready
         jq(function() {
-
             jq('#greencard').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
                 keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
@@ -1046,7 +116,6 @@ Green Card follow-up visit form
             function setError(stepnumber){
                 jq('#greencard').smartWizard('setError',{stepnum:stepnumber,iserror:true});
             }
-
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
@@ -1057,7 +126,6 @@ Green Card follow-up visit form
                 jq('#fp-details').hide();
                 jq('.reproductive-part').hide();
             }
-            var pgender = "<lookup expression="patient.gender" />";
             //Gravida
             if (pgender == 'F' &amp;&amp; age &gt; 10 ) {
                 getField('parity-term.value').change(onParityChange);
@@ -1079,7 +147,6 @@ Green Card follow-up visit form
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
             jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
-            //jq("#general-exam-findings :input[type=checkbox]").prop("checked",false);
             //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
             jq('#person-present input').click(onPersonPresentChange);
@@ -1091,8 +158,6 @@ Green Card follow-up visit form
             //Sexual and reproductive setion
             jq("#hasLMP :input[type=radio]").change(patientLMPStatus);
             jq('#lmp-date :input').prop('disabled', true);
-            //jq('#fp-details').hide();
-
             jq('#if-patient-pregnant').hide();
             jq('#pregnancyOptionValues').hide();
             jq("#wants-pregnancy").hide();
@@ -1123,7 +188,6 @@ Green Card follow-up visit form
             jq("#on-ipt :input[type=radio]").change(onIPT);
             jq("#ever-on-ipt :input[type=radio]").change(everOnIPT);
             //sti notification
-            //getField('screened-sti.value').change(screenedStiSelected);
             jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
             //tb action
             jq("#start-anti-tb-action").change(startAntiTbAction);
@@ -1136,30 +200,15 @@ Green Card follow-up visit form
             jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
             jq("#complaints-today").change(complaintSelected);       //boolean
             jq(".complaint-time input").change(complaintDurationInput);
-            // getField('complaint-duration.value').change(complaintDurationInput);
-            // getField('complaint-date.value').change(complaintDateInput);
             jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
             jq('#known-allergies').change(knownAllergiesSelected);       //boolean
             jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
-
-            //Differentiated care
-//            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-//            if(PATIENT_STABLE =="true") {
-//                jq('#fast-track').show();
-//                jq('#standard-care').hide();
-//            }else{
-//                jq('#standard-care').show();
-//                jq('#fast-track').hide();
-//            }
             //On ART hide adherence assessment
-            //var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
-            var PATIENT_ON_ART = "false";
             if(PATIENT_ON_ART =="true") {
                 jq('.on-art').show();
                 jq('.showModal').show();
-
             }else{
                 jq('.on-art').hide();
                 jq('.showModal').hide();
@@ -1170,20 +219,16 @@ Green Card follow-up visit form
                 var adherenceResponses1=jq('#adherence-1');
                 var adherenceResponses2=jq('#adherence-2');
                 jq('#adherence-2').hide();
-                clearHiddenSections(adherenceResponses1);
-                clearHiddenSections(adherenceResponses2);
+                clearHiddenSections([adherenceResponses1, adherenceResponses2]);
                 e.preventDefault();
                 jq("#modalContents").dialog({bgiframe: true, height: 425, width: 900, modal: true });
                 jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
                 jq("#adherence-1").change(adherenceAssessment);
-
             });
             jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
-            //.Morisky
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
-
             if (familyPlanningOption == "") {
                 jq('#onFp :input').prop('disabled', true);
                 jq('#notOnFp :input').prop('disabled', true);
@@ -1201,56 +246,49 @@ Green Card follow-up visit form
                 jq('#notOnFp :input').prop('disabled', true);
             }
             jq('#pregnancyOption input:radio').change(function () {
-                if ((getValue('pregnancyOption.value')) == 1066) {
-                    var pregOtions=jq('#pregnancyOptionValues :input').val('');
-                    var ancProfile=jq('#anc-profile');
-                    //jq('#pregnancyOptionValues :input').prop('disabled', true);
-                    jq('#pregnancyOptionValues').hide();
-                    jq('#fp-details').hide();
-                    jq('#fpOptionValues :input').prop('disabled', false);
-                    jq('#fpOptionValues :input').prop('checked', false);
-                    jq("#wants-pregnancy").show();
-                    clearHiddenSections(pregOtions);
-                    clearHiddenSections(ancProfile);
-                }
-                if((getValue('pregnancyOption.value')) == 1065){
-                    jq('#pregnancyOptionValues :input').prop('disabled', false);
-                    var wantsPreg=jq('#wants-pregnancy');
-                    jq('#pregnancyOptionValues').show();
-                    jq('#fp-details').hide();
-                    jq("#wants-pregnancy").hide();
-                    clearHiddenSections(wantsPreg);
-                    //Automate EDC Computation
-                    var lmpDate = getValue('lmp-date.value');
-                    var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
-                    var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-                    //Find recent EDD if it exists
-                    //Using LMP
-                    var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
-                    var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
-                    //Using recent LMP
-                    var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
-                    var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-                    //Calculation
-                    if(recentEDD !=""){
-                        getField('patient-edd.value').val(recentEDD);
-                    }else if(recentLMP !="") {
-                        getField('patient-edd.value').val(expectedDeliveryDateByRecentLMP);
-                    }else if (lmpDate!=""){
-                        getField('patient-edd.value').val(expectedDeliveryDate);
-                    }else{
-                        getField('patient-edd.value').val("");
-                    }
-                }
-
+                            if ((getValue('pregnancyOption.value')) == 1066) {
+                                var pregOtions=jq('#pregnancyOptionValues :input').val('');
+                                var ancProfile=jq('#anc-profile');
+                                jq('#pregnancyOptionValues').hide();
+                                jq('#fp-details').hide();
+                                jq('#fpOptionValues :input').prop('disabled', false);
+                                jq('#fpOptionValues :input').prop('checked', false);
+                                jq("#wants-pregnancy").show();
+                                clearHiddenSections([pregOtions,ancProfile]);
+                            }
+                            if((getValue('pregnancyOption.value')) == 1065){
+                                jq('#pregnancyOptionValues :input').prop('disabled', false);
+                                var wantsPreg=jq('#wants-pregnancy');
+                                jq('#pregnancyOptionValues').show();
+                                jq('#fp-details').hide();
+                                jq("#wants-pregnancy").hide();
+                                clearHiddenSections([wantsPreg]);
+                                //Automate EDC Computation
+                                var lmpDate = getValue('lmp-date.value');
+                                var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
+                                var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                                //Find recent EDD if it exists Using LMP
+                                var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
+                                var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+                                //Using recent LMP
+                                var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
+                                var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+                                //Calculation
+                                if(recentEDD !=""){
+                                    getField('patient-edd.value').val(recentEDD);
+                                }else if(recentLMP !="") {
+                                    getField('patient-edd.value').val(expectedDeliveryDateByRecentLMP);
+                                }else if (lmpDate!=""){
+                                    getField('patient-edd.value').val(expectedDeliveryDate);
+                                }else{
+                                    getField('patient-edd.value').val("");
+                                }
+                            }
             });
-
             jq("#fplanning select ").change(function () {
-
                 jq("#fplanning select option:selected").each(function () {
                     strtext += jq(this).val();
                 });
-
                 if (strtext == "") {
                     jq('#notOnFp :input').prop('checked', false);
                     jq('#onFp :input').prop('checked', false);
@@ -1261,7 +299,6 @@ Green Card follow-up visit form
                     jq('#notOnFp :input').prop('checked', false);
                     jq('#onFp :input').prop('disabled', false);
                     jq('#notOnFp :input').prop('disabled', true);
-
                 }
                 if (strtext == "160652") {
                     jq('#onFp :input').prop('checked', false);
@@ -1273,10 +310,8 @@ Green Card follow-up visit form
                     jq('#onFp :input').prop('disabled', false);
                     jq('#notOnFp :input').prop('disabled', true);
                 }
-
                 strtext = "";
             });
-
             jq("#wants-pregnancy").change(function(){
                 getField('fplanning.value').prop("selectedIndex", 0);
                 jq('#fp-details').show();
@@ -1284,17 +319,13 @@ Green Card follow-up visit form
                 jq('#fpOptionValues :input').prop('checked', false);
             });
               /*On TB Drugs  */
-            //var PATIENT_ON_TB = "<lookup expression="kenyaemr.patientInTbProgram()" />";
-            var PATIENT_ON_TB ="false";
-            if (PATIENT_ON_TB == 'true'){
+
+            if (PATIENT_ON_TB == "true"){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
                 jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
                 jq(".tb-patient").text("On TB Treatment");
             }
-            /*  .On TB Drugs   */
             /*On IPT Drugs  */
-            //var PATIENT_ON_IPT = "<lookup expression="kenyaemr.patientInIPTProgram()" />";
-            var PATIENT_ON_IPT = "false";
             if (PATIENT_ON_IPT == 'true'){
                 jq('#on-ipt input').prop("disabled", false);
                 jq("#on-ipt input[value=1065]").prop("checked", true);
@@ -1307,7 +338,6 @@ Green Card follow-up visit form
                 jq("#tb-screening-result").show();
                 jq("#ipt-uptake").show();
             }
-            /*  .On IPT Drugs   */
             /*TB Screening form validation*/
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
@@ -1315,9 +345,6 @@ Green Card follow-up visit form
             var pregnantStatusRadios = jq('#fp-details').find('input[type=checkbox]');
             const YES_CONCEPT_ID = 1065;
             const NO_CONCEPT_ID = 1066;
-            //This function will perform the folllowing:
-            //Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
-            //Only show 'Action Taken' tab if any of the screening questions evaluate to YES
             var showHideTabs = function() {
                 var actionTakenTab = jq('#action-taken');
                 var tbRxdate = jq('#tbrxdate input').val('');
@@ -1329,10 +356,8 @@ Green Card follow-up visit form
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
                 var showIPTFollowupTab = false;
-
                 var screeningYesResponses = [];
                 var screeningNoResponses = [];
-                //defaults
                 //Fetch responses for the screening questions
                 jq.each(screeningRadios, function(){
                     const COUGH = 159799;
@@ -1341,7 +366,6 @@ Green Card follow-up visit form
                     const WEIGHTLOSS = 832;
                     const SWEAT =133027;
                     const LETHERGY =116334;
-
                     //Push any responses to the respective screeningYesResponses and screeningNoResponses array
                     if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY )&amp;&amp; this.checked == true) {
                         screeningYesResponses.push(this);
@@ -1350,267 +374,888 @@ Green Card follow-up visit form
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         screeningNoResponses.push(this);
                     }
-
                 });
-
                 //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
-                if (screeningYesResponses.length == 0 &amp;&amp; screeningYesResponses.length == 0 ) {
-                    //Do nothing
-
-                }
+                if (screeningYesResponses.length == 0 &amp;&amp; screeningYesResponses.length == 0 ) {}
 
                if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-
-                        //clear radios for hidden sections
-                        clearRadios(iptFollowup);
-                        clearRadios(iptClientWorkupTab);
-                        clearRadios(iptInitiationTab);
+                        clearRadios([iptFollowup, iptClientWorkupTab, iptInitiationTab]);
                     }
              if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-
-                        //clear radios for hidden sections
-                        clearRadios(iptFollowup);
-                        clearRadios(actionTakenTab);
-                        clearRadios(iptClientWorkupTab);
-                        clearRadios(iptInitiationTab);
-                        clearRadios(tbRxdate);
-                        clearRadios(tbRegimen);
+                        clearRadios([iptFollowup, actionTakenTab, iptClientWorkupTab, iptInitiationTab, tbRxdate, tbRegimen]);
                     }
              if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
                         iptFollowup.hide();
-
-                        //clear radios for hidden sections
-                        clearRadios(actionTakenTab);
-                        clearRadios(iptFollowup);
-                        clearRadios(tbRxdate);
-                        clearRadios(tbRegimen);
+                        clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
                     }
               if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
-
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-
-                        //clear radios for hidden sections
-
-                        clearRadios(iptClientWorkupTab);
-                        clearRadios(iptFollowup);
-                        clearRadios(iptInitiationTab);
+                        clearRadios([iptClientWorkupTab, iptFollowup, iptInitiationTab]);
                     }
                if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
-                        clearRadios(actionTakenTab);
-                        clearRadios(tbRxdate);
-                        clearRadios(tbRegimen);
+                        clearRadios([actionTakenTab, tbRxdate, tbRegimen]);
                     }
                 if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
-                        clearRadios(iptClientWorkupTab);
+                        clearRadios([iptClientWorkupTab]);
                     }
                 if(screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
-                        clearRadios(iptClientWorkupTab);
+                        clearRadios([iptClientWorkupTab]);
                     }
-              // }
             };
             var showHideIPTInitiationTab = function() {
-
                 var iptInitiationTab = jq('#ipt-initiation');
                 var showIPTInitiationTab = false;
-
                 var iptClientWorkupYesResponses = [];
                 var iptClientWorkupNoResponses = [];
-
                 //Fetch responses for the IPT client workup questions
                 jq.each(iptClientWorkupRadios, function() {
                     const YELLOWURINE = 162311;
                     const NUMBNESS = 132652;
                     const YELLOWEYES = 5192;
                     const TENDERNESS = 124992;
-
                     //Push any responses to the respective iptClientWorkupYesResponses and iptClientWorkupNoResponses array
                     if ((this.value == YELLOWURINE || this.value == NUMBNESS || this.value == YELLOWEYES || this.value == TENDERNESS)&amp;&amp; this.checked == true) {
                         iptClientWorkupYesResponses.push(this);
                     }
-
                     if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                         iptClientWorkupNoResponses.push(this);
                     }
                   });
+                  if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {}
 
-             if (iptClientWorkupYesResponses.length == 0 &amp;&amp; iptClientWorkupNoResponses.length == 0) {
-                     //Do nothing
-                }
-              if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2)  { // check if all No responses are checked: total radios / 2
+                  if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2)  { // check if all No responses are checked: total radios / 2
                   iptInitiationTab.show();
                   jq('#ipt-result-status').show();
                   }else{
                   iptInitiationTab.hide();
-                  clearRadios(iptInitiationTab);
+                  clearRadios([iptInitiationTab]);
                }
-
             };
             clearRadios = function(parentObj) {
-
-                parentObj.find('input[type=radio]').each(function() {
-                    this.checked = false;
-                });
-                parentObj.find('input[type=checkbox]').each(function() {
-                    this.checked = false;
-                });
-//                parentObj.find('input[type=text]').each(function() {
-//                    this.val("");
-//                });
-                parentObj.find('select').each(function() {
-                    this.selectedIndex =0;
-                });
+                for (var i = 0; i &lt; parentObj.length; i++){
+                        parentObj[i].find('input[type=radio]').each(function () {
+                            this.checked = false;
+                        });
+                        parentObj[i].find('input[type=checkbox]').each(function () {
+                        this.checked = false;
+                    });
+                        parentObj[i].find('select').each(function () {
+                        this.selectedIndex = 0;
+                    });
+                    }
+                    }
+                    screeningRadios.change(function() {
+                        showHideTabs();
+                    });
+                    iptClientWorkupRadios.change(function() {
+                        showHideIPTInitiationTab();
+                    });
+                       showHideIPTInitiationTab();
+        });   //End onReady
+function onWeightOrHeightChange() {
+    var display = '';
+    var weightKg = parseFloat(getValue('weight.value'));
+    var heightM = parseFloat(getValue('height.value')) / 100;
+    if (pAge &gt; 14) {
+        if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+            bmi = weightKg / (heightM * heightM);
+            if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                display = 'Abnormal value. Were height and weight entered correctly?';
             }
-            screeningRadios.change(function() {
-
-                showHideTabs();
-
-            });
-
-            iptClientWorkupRadios.change(function() {
-
-                showHideIPTInitiationTab();
-
-            });
-
-
-            showHideIPTInitiationTab();
-        });
-        //End on ready
-        //Clear hidden sections
-        clearHiddenSections = function(parentObj) {
-            parentObj.find('input[type=radio]').each(function() {
-                this.checked = false;
-            });
-            parentObj.find('input[type=checkbox]').each(function() {
-                this.checked = false;
-            });
-            parentObj.find('input[type=text]').each(function() {
-                this.val("");
-            });
-            parentObj.find('select').each(function() {
-                this.selectedIndex =0;
-            });
+            else {
+                display = bmi.toFixed(2);
+            }
         }
-        // Before submit equivalent to Step 4 validation
-        beforeSubmit.push(function() {
-            var pgender = "<lookup expression="patient.gender" />";
-            //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            //var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
-            var PATIENT_ON_ART = "false";
-            var personPresent =getValue('person-present.value');
-            var tca_date = getValue('returnVisitDate.value');
-            var tca_reason = getValue('returnVisitReason.value');
-            var encounterDate = getValue('encounter-date.value');
-            var fastTrackCareError = getValue('fast-track.value');
-            var standardCareError = getValue('standard.value');
-            var prophylaxis_Used = getValue('prophylaxis-used.value');
-            var ctxAdherence = getValue('ctx-adherence.value');
-            var ctxDispensed = getValue('ctx-dispensed.value');
-            var dapsoneAdherence = getValue('dapsone-adherence.value');
-            var dapsoneDispensed = getValue('dapsone-dispensed.value');
-            var arvAdherence = getValue('arv-adherence.value');
-            var cacxScreened = getValue('cacx-screening.value');
-            var stiScreened = getValue('screened-sti.value');
-            var stiPartnerNotification = getValue('sti-partnerNotification.value');
-            //Must have a Return Visit Date which should be greater than encounter date
-
-            if (prophylaxis_Used == false){
-                getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').show();
-                return false;
-            }
-            if (prophylaxis_Used == 105281 &amp;&amp; ctxAdherence == false){      //ctx
-                jq("#ctx-part").show();
-                getField('ctx-adherence.error').html('Please specify CTX adherence.').show();
-                return false;
-            }
-            if (prophylaxis_Used == 105281 &amp;&amp; ctxDispensed == false){      //ctx
-                jq("#ctx-part").show();
-                getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').show();
-                return false;
-            }
-            if (prophylaxis_Used == 74250 &amp;&amp; dapsoneAdherence == false){      //dapsone
-                jq("#dapsone-part").show();
-                getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').show();
-                return false;
-            }
-            if (prophylaxis_Used == 74250 &amp;&amp; dapsoneDispensed == false){      //dapsone
-                jq("#dapsone-part").show();
-                getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
-                return false;
-            }
-            if (PATIENT_ON_ART == 'true' &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false){
-                getField('arv-adherence.error').html('Please specify ARV adherence.').show();
-                return false;
-            }
-            //Cacx screening on over 18 years is mandatory
-            if (pgender == 'F') {
-                if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
-                    return false;
-                } else {
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
-                }
-            }
-            if (stiScreened == false &amp;&amp; personPresent == SELF ) {
-                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-                getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
-                return false;
-            }
-            if (stiScreened == 703 &amp;&amp; personPresent == SELF &amp;&amp; stiPartnerNotification == false) {
-                jq("#tbl-partner-notification").show();
-                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-                getField('sti-partnerNotification.error').html('Please specify partner notification status.').show();
-                return false;
-            }
-            if (tca_date =="") {
-                getField('returnVisitDate.error').html('Return visit date should not be empty').show();
-                return false;
-            }
-            if (tca_reason == "") {
-                getField('returnVisitReason.error').html('Please specify reason for return visit.').show();
-                return false;
-            }
-            if (tca_date &lt; encounterDate ){
-                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date').show();
-                return false;
-            }
-            if (tca_reason == "") {
-                getField('returnVisitReason.error').html('Please specify reason for return visit.').show();
-                return false;
-            }
-//            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
-//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-//                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
-//                return false;
-//            }
-//            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
-//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-//                getField('standard.error').html('Please specify patient differentiated care status.').show();
-//                return false;
-//            }
-            return true;
-
+        //set nutritional status and bmi
+        jq('#calculated-bmi').html(display);
+        if (bmi &lt; 16) {
+            jq("#nutritional-status input[value=163302]").prop("checked", true);
+        } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
+            jq("#nutritional-status input[value=163303]").prop("checked", true);
+        } else if (bmi &gt; 18.5 &amp;&amp; bmi &lt; 25) {
+            jq("#nutritional-status input[value=1115]").prop("checked", true);
+        } else if (bmi &gt; 25) {
+            jq("#nutritional-status input[value=114413]").prop("checked", true);
+        }
+    }
+}
+function onEncounterDateChange() {
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+        .done(function(data) {
+            var msg = data.duration ? data.duration : 'Not started';
+            jq('#calculated-duration-start-art').html(msg);
         });
+    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+        .done(function(data) {
+            var msg = data.duration ? (data.regimen ) : 'None';
+            jq('#calculated-duration-current-regimen').html(msg);
+        });
+}
+function displayRecentBmi() {
+    var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+    var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+    var bmi = '';
+    var recent_bmi ='';
+    if (pAge &gt; 14) {
+        if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+            bmi = weightKg / (heightM * heightM);
+            recent_bmi = bmi.toFixed(2);
+            jq('#recent-calculated-bmi').html(recent_bmi);
 
+            //set recent nutritional status from recent bmi
+            if (recent_bmi &lt; 16) {
+                jq("#nutritional-status input[value=163302]").prop("checked", true);
+            } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
+                jq("#nutritional-status input[value=163303]").prop("checked", true);
+            } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
+                jq("#nutritional-status input[value=1115]").prop("checked", true);
+            } else if (recent_bmi &gt; 25) {
+                jq("#nutritional-status input[value=114413]").prop("checked", true);
+            }
+        }
+    }
+}
+function onLmpChange() {
+    jq('#pregnancyOption :input').prop('disabled', false);
+}
+function patientLMPStatus(){
+    var val = getValue('hasLMP.value');
+    var ifPatientPregnant =  jq('#if-patient-pregnant');
+    var pregIntention = jq("#pregnancyIntention");
+    if(val == 1065){
+        jq('#if-patient-pregnant').show();
+        jq('#lmp-date :input').prop('disabled', false);
+    }
+    if(val == 1066){
+        jq('#if-patient-pregnant').hide();
+        jq('#pregnancyOptionValues').hide();
+        jq('#fp-details').hide();
+        jq("#wants-pregnancy").hide();
+        jq('#lmp-date :input').val('');
+        clearHiddenSections([ifPatientPregnant, pregIntention]);
+        jq('#lmp-date :input').prop('disabled', true);
+        getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
+    }
+    if(val == 1175){
+        jq('#if-patient-pregnant').hide();
+        jq('#pregnancyOptionValues').hide();
+        jq('#fp-details').hide();
+        jq("#wants-pregnancy").hide();
+        jq('#lmp-date :input').val('');
+        clearHiddenSections([ifPatientPregnant, pregIntention]);
+        jq('#lmp-date :input').prop('disabled', true);
+        getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
+    }
+}
+//Treatment supporter Validations
+function onPersonPresentChange() {
+    var popType = jq("#population-type");
+    var keyPop = jq("#key-population");
+    var nutStatus = jq("#nutritional-status");
+    var whoAdult = jq("#whoAdult");
+    var whoChild = jq("#whoChild");
+    var complaintsToday = jq("#complaints-today");
+    var onAntTb = jq("#on-anti-tb-drugs");
+    var onIPTDrugs = jq("#on-ipt");
+    var everOnIPTDrugs = jq("#ever-on-ipt");
+    var tbScreeningAnswers = jq("#screening-questions");
+    var workupAnswers = jq("#ipt-workup");
+    var iptStatus = jq("#ipt-result-status");
+    var tBtestsOrdered = jq("#tb-test-ordered");
+    var tBtestResults = jq("#tb-results");
+    var startantiTb = jq("#startAnti-tb");
+    var tbRegimen = jq("#tb-regimen");
+    var familypStatus = jq("#fpOptionValues");
+    var allergiesSelected = jq("#known-allergies");
+    var chronicIllnessSelected = jq("#chronic-illness");
+    var adverseReactionsSelected = jq("#adverse-reactions");
+    var adultVaccSelected = jq('#adult-vacc');
+    var childVaccSelected = jq('#child-vacc');
+    var otherVaccSelected = jq('#otherVacc');
+    var hasMenses = jq('#hasLMP');
+    var pregOption = jq('#pregnancyOption');
+    var preIntention = jq('#pregnancyIntention');
+    var generalExamSelected = jq('#general-exam-findings');
+    var systemsFindingsSelected = jq('#systems-review');
+    var skinFindingsSelected = jq('.skin-findings');
+    var eyeFindingsSelected = jq('.eye-findings');
+    var entFindingsSelected = jq('.ent-findings');
+    var chestFindingsSelected = jq('.chest-findings');
+    var cvsFindingsSelected = jq('.cvs-findings');
+    var abdomenFindingsSelected = jq('.abdomen-findings');
+    var cnsFindingsSelected = jq('.cns-findings');
+    var gusFindingsSelected = jq('.gus-findings');
+    if (getValue('person-present.value') == SELF) {
+        jq('.patient-details :input').prop('disabled', false);
+        jq('#greencard').smartWizard('enableFinish', false);
+        jq(".on-art").show();
+        jq('.showModal').show();
+        jq("#tbl-phdp").show();
+    } else {
+        complaintSelected();
+        knownAllergiesSelected();
+        chronicIllnessesSelected();
+        adverseReactionSelected();
+        jq(".on-art").hide();
+        jq('.showModal').hide();
+        jq("#tbl-phdp").hide();
+        jq('.patient-details :input').prop('disabled', true);
+        jq('#greencard').smartWizard('goToStep', 4);
+        jq('#greencard').smartWizard('enableFinish', true);
+        clearHiddenSections([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
+            workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
+            adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familypStatus, generalExamSelected, systemsFindingsSelected,
+            skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected]);
+        jq('#weight input').val('');
+        jq('#height input').val('');
+        jq('#muac input').val('');
+        jq('#calculated-bmi').html('');
+        jq('#other-vacc input').val('');
+        jq('#lmp-date input').val('');
+        jq('#diagnosis-type input').val('');
+        jq('#treatment-plan textarea').val('');
+        jq('#clinical-notes textarea').val('');
+        jq('.skin-notes textarea').val('');
+        jq('.eye-notes textarea').val('');
+        jq('.ent-notes textarea').val('');
+        jq('.chest-notes textarea').val('');
+        jq('.cvs-notes textarea').val('');
+        jq('.abdomen-notes textarea').val('');
+        jq('.cns-notes textarea').val('');
+        jq('.gus-notes textarea').val('');
+        jq('#temp input').val('');
+        jq('#pulse input').val('');
+        jq('#systolic input').val('');
+        jq('#diastolic input').val('');
+        jq('#resp input').val('');
+        jq('#oxygen input').val('');
+        jq('#tbrxdate input').val('');
+    }
+}
+function onVisitScheduledChange() {
+    var personPresent = getValue('person-present.value');
+    var visitScheduled = getValue('visit-scheduled.value');
+    if (visitScheduled != null &amp;&amp; personPresent == TS) {
+        jq('.patient-details :input').prop('disabled', true);
+        jq('#greencard').smartWizard('goToStep', 4);
+        jq('#greencard').smartWizard('enableFinish', true);
+    }
+}
+function onRecordIPTOutcome() {
+    jq("#tbl-ipt-outcome").toggle();
+}
+function onParityChange() {
+    var gravida = '';
+    var parityTerm = parseInt(getValue('parity-term.value'));
+    var parityAbortion = parseInt(getValue('parity-abortion.value'));
+    if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+        gravida = parityTerm + parityAbortion + 1;
+        getField('gravida.value').val(gravida);
+    }
+}
+var generalExamSelected = function(){
+    var val = jq(this).val();
+    var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
+    if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+        jq("#general-exam-findings input[type=checkbox]").prop("disabled",true);
+        jq(this).prop("disabled",false);
+    }else {
+        jq("#general-exam-findings input[type=checkbox]").prop("disabled",false);
+        jq("#general-exam-findings input[value=1107]").prop("disabled",true);
+    }
+    if(generalExamsChecked.length ==0){
+        jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+    }
+}
+var complaintSelected = function() {
+    var val = getValue('complaints-today.value');
+    var complaint = jq('.complaint select').val('');
+    var complaintDuration = jq('.complaint-time input').val('');
+    var complaintDate = jq('.complaint-date input').val('');
+    if (val == "false" || val == 1066){
+        jq("#tbl-complaints-today").hide();
+        clearHiddenSections([complaint, complaintDuration, complaintDate]);
+        getField('complaint-field.error').html('Please specify the complaints.').hide();
+    }else {
+        jq("#tbl-complaints-today").show();
+    }
+}
+var complaintDurationInput = function() {
+    var table = document.getElementById("tbl-complaints-today");
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        var val = jq(this).closest('tr').find(".complaint-time input").val();
+        var encounterDate = new Date(getValue('encounter-date.value'));
+        var formattedComplaintDate = moment(moment(encounterDate, 'YYYY-MM-DD').subtract(val, 'days').toDate()).format('YYYY-MM-DD');
+        if(val >0 ) {
+            jq(this).closest('tr').find(".complaint-date input").val(formattedComplaintDate);
+        }
+    }
+}
+var adverseReactionSelected = function() {
+    var val = getValue('adverse-reactions.value');
+    var medicineCausing= jq('.medicine-causing select').val('');
+    var reaction = jq('.reaction select').val('');
+    var severity = jq('.severity select').val('');
+    var onsetDate = jq('.adverse-events-onset-date input').val('');
+    var action = jq('.action-taken select').val('');
+    if (val == "false" || val == 1066){
+        jq("#tbl-adverse-reactions").hide();
+        clearHiddenSections([medicineCausing, reaction, severity, onsetDate, action]);
+        getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
+    }else {
+        jq("#tbl-adverse-reactions").show();
+    }
+}
+var knownAllergiesSelected = function() {
+    var val = getValue('known-allergies.value');
+    var allergy = jq('.allergen select').val('');
+    var reaction = jq('.reaction select').val('');
+    var severity = jq('.severity select').val('');
+    var date = jq('.allergy-date input').val('');
+    if (val == "false" || val == 1066){
+        jq("#tbl-known-allergies").hide();
+        clearHiddenSections([allergy, reaction, severity, date]);
+        getField('allergy-field.error').html('Please specify the allergy.').hide();
+    }else {
+        jq("#tbl-known-allergies").show();
+    }
+}
+var systemsReviewSelected = function() {
+    var val = jq(this).val();
+    var skinFindings = jq('.skin-findings');
+    var skinNotes = jq('.skin-notes textarea').val('');
+    var eyeFindings = jq('.eye-findings');
+    var eyeNotes = jq('.eye-notes textarea').val('');
+    var entFindings = jq('.ent-findings');
+    var entNotes = jq('.ent-notes textarea').val('');
+    var chestFindings = jq('.chest-findings');
+    var chestNotes = jq('.chest-notes textarea').val('');
+    var cvsFindings = jq('.cvs-findings');
+    var cvsNotes = jq('.cvs-notes textarea').val('');
+    var abdomenFindings = jq('.abdomen-findings');
+    var abdomenNotes = jq('.abdomen-notes textarea').val('');
+    var cnsFindings = jq('.cns-findings');
+    var cnsNotes = jq('.cns-notes textarea').val('');
+    var gusFindings = jq('.gus-findings');
+    var gusNotes = jq('.gus-notes textarea').val('');
+    if (val == 1115){
+        jq("#tbl-systems-review").hide();
+        clearHiddenSections([skinFindings, skinNotes, eyeFindings, eyeNotes, entFindings, entNotes, chestFindings, chestNotes, cvsFindings, cvsNotes, abdomenFindings, abdomenNotes, cnsFindings, cnsNotes, gusFindings, gusNotes]);
+    }else {
+        jq("#tbl-systems-review").show();
+    }
+}
+var chronicIllnessesSelected = function() {
+    var val = getValue('chronic-illness.value');
+    var illness = jq('.illness-chronic select').val('');
+    var onset = jq('.onset-date-chronic-illness input').val('');
+    var drug = jq('.drug-chronic-illness input').val('');
+    var dose = jq('.dose-chronic-illness input').val('');
+    var units = jq('.units-chronic-illness input').val('');
+    var frequency = jq('.frequency-chronic-illness select').val('');
+    var duration = jq('.duration-chronic-illness input').val('');
+    var durationUnits = jq('.duration-units-illness select').val('');
+    if (val == "false" || val == 1066){
+        jq("#tbl-chronic-illness").hide();
+        clearHiddenSections([illness, onset, drug, dose, units, frequency, duration, durationUnits]);
+        getField('chronic.error').html('Please specify the chronic illness.').hide();
+    }else {
+        jq("#tbl-chronic-illness").show();
+    }
+}
+var screenedStiSelected = function() {
+    var val = jq(this).val();
+    var partnerNotification = jq("#tbl-partner-notification");
+    if (val == 703){
+        jq("#tbl-partner-notification").show();
+
+    }else {
+        jq("#tbl-partner-notification").hide();
+        clearHiddenSections([partnerNotification]);
+    }
+}
+var onAntiTbDrugs = function(){
+    var val = jq(this).val();
+    var onIpt = jq('#on-ipt');
+    var actionTakenTab = jq('#action-taken');
+    var iptClientWorkupTab = jq('#ipt-client-workup');
+    var iptFollowup = jq('#ipt-followup');
+    var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+    var iptInitiationTab = jq('#ipt-initiation');
+    everOnIPTSelected = null;
+    patientCurrentlyOnIPT = null;
+    if(val == 1066) {
+        jq('#on-ipt input').prop("disabled", false);
+    }
+    if(val == 1065){
+        jq('#on-ipt input').prop("disabled", true);
+        jq('input[type=radio].on-ipt').prop("checked", false);
+        jq("#tb-screening-result").hide();
+        jq("#tb-screening-tab").hide();
+        jq("#tbl-ever-on-ipt").hide();
+        jq("#ipt-uptake").hide();
+        clearRadios([onIpt, actionTakenTab, iptClientWorkupTab, iptFollowup, tbScreeningQuestionsTab]);
+        actionTakenTab.hide();
+        iptClientWorkupTab.hide();
+        iptFollowup.hide();
+        tbScreeningQuestionsTab.hide();
+        iptInitiationTab.hide();
+    }
+}
+var onIPT = function(){
+    var val = jq(this).val();
+    patientCurrentlyOnIPT = val;
+    everOnIPTSelected = null;
+    var everOnIpt = jq("#tbl-ever-on-ipt");
+    var actionTakenTab = jq('#action-taken');
+    var iptClientWorkupTab = jq('#ipt-client-workup');
+    var iptFollowup = jq('#ipt-followup');
+    var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+    var iptInitiationTab = jq('#ipt-initiation');
+    var tbScreeningResult = jq("#tb-screening-result");
+    if(val == 1066) {
+        jq("#tbl-ever-on-ipt").show();
+        jq("#ipt-uptake").hide();
+        iptFollowup.hide();
+        actionTakenTab.hide();
+        tbScreeningQuestionsTab.hide();
+        tbScreeningResult.hide();
+        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult]);
+    } else {
+        jq("#tbl-ever-on-ipt").hide();
+        jq("#ipt-followup").show();
+        tbScreeningQuestionsTab.hide();
+        jq("#tb-screening-result").show();
+        iptClientWorkupTab.hide();
+        actionTakenTab.hide();
+        jq("#ipt-uptake").show();
+        iptInitiationTab.hide();
+        clearRadios([iptClientWorkupTab, tbScreeningQuestionsTab, actionTakenTab]);
+    }
+}
+var everOnIPT = function () {
+    var val = jq(this).val();
+    everOnIPTSelected = val;
+    var tbScreeningResultTab = jq("#tb-screening-result");
+    var tbScreeningTab = jq("#tb-screening-tab");
+    var iptClientWorkupTab = jq('#ipt-client-workup');
+    var actionTakenTab = jq('#action-taken');
+    var iptInitiationTab = jq('#ipt-initiation');
+    if(val == 1066) {
+        // show TB screening, TB results and IPT workup forms
+        tbScreeningTab.show();
+        tbScreeningResultTab.show();
+        iptClientWorkupTab.hide();
+        actionTakenTab.hide();
+        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab]);
+    } else {
+        // show TB screening and TB result forms
+        iptClientWorkupTab.hide();
+        tbScreeningTab.show();
+        tbScreeningResultTab.show();
+        actionTakenTab.hide();
+        iptInitiationTab.hide();
+        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab]);
+    }
+}
+var ageGroup = function () {
+    if (pAge &gt; 15) {
+        whoChild.style.display='none';
+    }
+    if (pAge &lt; 16) {
+        whoAdult.style.display='none';
+    }
+}
+var populationTypeSelected = function () {
+    var val = jq(this).val();
+    var keypop = jq('#key-population');
+    if (val == 164929 ){
+        jq("#key-population").show();
+    }
+    if(val == 164928){
+        jq("#key-population").hide();
+        clearHiddenSections([keypop]);
+    }
+}
+//Resulting TB status for Ordered test
+var testOrdered  = function () {
+    var val = jq(this).val();
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var geneXpert = getField("genexpert-action.value").val();
+    var referral = getValue("referral-action.value");
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var xray = getValue("chest-xray-action.value");
+    if(clinicalDiagnosis ==703) {   //TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){      //No signs
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //No signs with normal/negative Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB  with abnormal/positive Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &gt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Action Positive Sputum smear
+var sputumSmearAction  = function () {
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var geneXpert = getField("genexpert-action.value").val();
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var xray = getValue("chest-xray-action.value");
+    var referral = getValue("referral-action.value");
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(clinicalDiagnosis ==703) {      //TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){     //No signs
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //No signs with normal/negative Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB  with abnormal/positive Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Action Positive GeneXpert
+var geneXpertAction  = function () {
+    var geneXpert = getField("genexpert-action.value").val();
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var xray = getValue("chest-xray-action.value");
+    var referral = getValue("referral-action.value");
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(clinicalDiagnosis ==703) {     //TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){    //No signs
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //No signs with normal/negative Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB  with abnormal/positive Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Abnormal chest x ray
+var chestXrayAction = function () {
+    var xray = getValue("chest-xray-action.value");
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var geneXpert = getField("genexpert-action.value").val();
+    var referral = getValue("referral-action.value");
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(clinicalDiagnosis ==703) {    //TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){     //No signs
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //No signs with normal/negative Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB  with abnormal/positive Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){   //Presumed TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Action Referral
+var referralAction  = function () {
+    var referral = getValue("referral-action.value");
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var geneXpert = getField("genexpert-action.value").val();
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var xray = getValue("chest-xray-action.value");
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(clinicalDiagnosis ==703) {     //TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral !=1065 || sputumSmear !=703 || xray !=152526 || geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)){       //No signs
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //No signs with normal/negative Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==664) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==1115) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    //Presumed TB  with abnormal/positive Tests results
+    if((clinicalDiagnosis !=703) &amp;&amp; ((testOrderedChecked.length &gt; 0 &amp;&amp; sputumSmear ==703) || (testOrderedChecked.length &gt; 0 &amp;&amp; xray ==152526) || (testOrderedChecked.length &gt; 0 &amp;&amp; (geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)))){
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+    if((clinicalDiagnosis !=703) &amp;&amp; (testOrderedChecked.length &lt; 0 || referral ==1065 || sputumSmear ==703 || xray ==152526 || geneXpert ==162203 || geneXpert ==162204 || geneXpert ==164104)){        //Presumed TB
+        jq("#tb-result-status input[value=1660]").prop("checked", false);
+        jq("#tb-result-status input[value=142177]").prop("checked", true);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Action clinical diagnosis
+var clinicalDiagnosisAction  = function () {
+    var clinicalDiagnosis = getValue("clinical-diagnosis-action.value");
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var xray = getValue("chest-xray-action.value");
+    var referral = getValue("referral-action.value");
+    var geneXpert = getField("genexpert-action.value").val();
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(clinicalDiagnosis ==703){
+        jq("#tb-result-status input[value=1662]").prop("disabled", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+        jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+        jq("#tb-result-status.input[value=160737]").prop("disabled", true);
+        jq("#tbl-start-antiTb").show();
+        jq('#ipt-client-workup').hide();
+        jq('#ipt-initiation').hide();
+        jq('#ipt-result-status').hide();
+    }
+    if(clinicalDiagnosis ==664 ){
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq("#tbl-start-antiTb").hide();
+    }
+    if(testOrderedChecked.length ==0 &amp;&amp; clinicalDiagnosis !=703 &amp;&amp; referral !=1065 &amp;&amp; sputumSmear !=703 &amp;&amp; xray !=152526 &amp;&amp;(geneXpert !=162203 || geneXpert !=162204 || geneXpert !=164104)) {
+        jq("#tb-result-status input[value=1660]").prop("checked", true);
+        jq("#tb-result-status input[value=142177]").prop("checked", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", false);
+        jq('#ipt-client-workup').hide();
+    }
+}
+//Resulting TB status for Action start anti tb
+var startAntiTbAction  = function () {
+    var startAntiTb = getValue("start-anti-tb-action.value");
+    var sputumSmear = getValue("sputum-smear-action.value");
+    var xray = getValue("chest-xray-action.value");
+    var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    if(startAntiTb ==1065){
+        jq("#tb-result-status input[value=1662]").prop("disabled", false);
+        jq("#tb-result-status input[value=1662]").prop("checked", true);
+        jq("#tb-result-status.input[value=142177]").prop("disabled", true);
+        jq("#tb-result-status.input[value=1660]").prop("disabled", true);
+        jq("#tb-result-status.input[value=160737]").prop("disabled", true);
+        jq('#ipt-client-workup').hide();
+        jq('#ipt-initiation').hide();
+        jq('#ipt-result-status').hide();
+        //set TB RX date to todays date
+        var encounterDate = getValue('encounter-date.value');
+        var momentEncounterDate =moment(moment(encounterDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
+        getField('tbrxdate.value').val(momentEncounterDate);
+    }
+    if(startAntiTb ==1066 ){
+        getField('tbrxdate.value').val("");
+    }
+}
+//IPT EVENT SELECTED
+var iptEventSelected  = function () {
+    var iptEvent = getValue('ipt-event-type.value');
+    if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
+        jq("#reason-for-discontinuation").show();
+    }
+    else{
+        jq("#reason-for-discontinuation").hide();
+    }
+}
+//Prophylaxis selected
+var prophylaxisSelected  = function () {
+    var prophylaxisUsed = getValue('prophylaxis-used.value');
+    var ctxAdherence = jq('#ctx-adherence');
+    var ctxDispensed = jq('#ctx-dispensed');
+    var dapsoneAdherence = jq('#dapsone-adherence');
+    var dapsoneDispensed = jq('#dapsone-dispensed');
+    if(prophylaxisUsed == 105281){
+        jq("#ctx-part").show();
+        jq("#dapsone-part").hide();
+        clearHiddenSections([dapsoneAdherence, dapsoneDispensed]);
+    }
+    if(prophylaxisUsed == 74250){
+        jq("#dapsone-part").show();
+        jq("#ctx-part").hide();
+        clearHiddenSections([ctxAdherence,ctxDispensed]);
+    }
+    if(prophylaxisUsed == 1107){
+        jq("#dapsone-part").hide();
+        jq("#ctx-part").hide();
+        clearHiddenSections([ctxAdherence,ctxDispensed, dapsoneAdherence, dapsoneDispensed]);
+    }
+}
+//Morisky assessment
+var adherenceAssessment  = function () {
+    var val = jq(this).val();
+    const YES_CONCEPT_ID = 1065;
+    const NO_CONCEPT_ID = 1066;
+    var assessmentRadios = jq('#adherence-1').find('input[type=radio]');
+    var assessmentYesResponses = [];
+    var assessmentNoResponses = [];
+    //Fetch responses for the assessment questions
+    jq.each(assessmentRadios, function(){
+        //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+        if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+            assessmentYesResponses.push(this);
+        }
+        if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+            assessmentNoResponses.push(this);
+        }
+    });
+    //If no responses have been recorded then prompt since this assessment is mandatory
+    if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+        //Prompt to complete assessment
+    }else{
+        if(assessmentYesResponses.length &gt; 0) {
+            jq('#adherence-2').show();
+        }
+        if(assessmentYesResponses.length == 0) {
+            jq("#arv-adherence input[value=159405]").prop("checked", true);
+            jq('#adherence-2').hide();
+        }
+        if(assessmentYesResponses.length == 1 || assessmentYesResponses.length == 2 ) {
+            jq("#arv-adherence input[value=163794]").prop("checked", true);
+            jq('#adherence-2').show();
+        }
+        if(assessmentYesResponses.length == 3 || assessmentYesResponses.length == 4 ) {
+            jq("#arv-adherence input[value=159407]").prop("checked", true);
+            jq('#adherence-2').show();
+        }
+    }
+}
+var closeAdherenceAssessment  = function () {
+    var x = jq("#modalContents");
+    x.dialog('close');
+}
+clearHiddenSections = function(parentObj) {
+    for(var i=0; i &lt; parentObj.length; i++){
+        parentObj[i].find('input[type=radio]').each(function() {
+            this.checked = false;
+        });
+        parentObj[i].find('input[type=checkbox]').each(function() {
+            this.checked = false;
+        });
+        parentObj[i].find('input[type=text]').each(function() {
+            this.val("");
+        });
+        parentObj[i].find('select').each(function() {
+            this.selectedIndex =0;
+        });
+    }
+}
 //Smart wizard validations
        function onLeaveStepValidation (obj, context) {
             var stepNumFrom = context.fromStep;
@@ -1633,10 +1278,7 @@ Green Card follow-up visit form
                 return true;
             }
         }
-
-         //Step 1 validations
-        function step1Validation(){
-            pAge = parseInt('<lookup expression="patient.age"/>');
+        function step1Validation(){    //Step 1 validations
             var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
             var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
@@ -1682,12 +1324,8 @@ Green Card follow-up visit form
                 return true;
             }
         }
-        //Step 2 validations
-        function step2Validation(){
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            var pgender = "<lookup expression="patient.gender" />";
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            //var complaint = getValue('complaints-field.value');
+        function step2Validation(){     //Step 2 validations
+
             var personPresent =getValue('person-present.value');
             var complaint = getField('complaint-field.value').val();
             var complaintsToday = getValue('complaints-today.value');  //boolean
@@ -1715,8 +1353,7 @@ Green Card follow-up visit form
             const NO_CONCEPT_ID = 1066;
             var screeningYesResponses = [];
             var screeningNoResponses = [];
-            //Fetch responses for the screening questions
-            jq.each(screeningRadios, function(){
+            jq.each(screeningRadios, function(){    //Fetch responses for the screening questions
                 //Push any responses to the respective screeningYesResponses and screeningNoResponses array
                 const COUGH = 159799;
                 const CONTACT = 124068;
@@ -1727,13 +1364,11 @@ Green Card follow-up visit form
                 //Push any responses to the respective screeningYesResponses and screeningNoResponses array
                 if ((this.value == COUGH || this.value == CONTACT || this.value == FEVER || this.value == WEIGHTLOSS || this.value == SWEAT || this.value == LETHERGY )&amp;&amp; this.checked == true) {
                     screeningYesResponses.push(this);
-
                 }
                 if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
                     screeningNoResponses.push(this);
                 }
             });
-
             if (complaintsToday == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
@@ -1911,18 +1546,15 @@ Green Card follow-up visit form
                     getField('notOnfp-error.error').html('Please add at least one reason for not using family planning.').show();
                     return false;
                 }
-
                 jq('#greencard').smartWizard('showMessage',"");
                 return true;
              }
-
             else {
                 jq('#greencard').smartWizard('showMessage',"");
                 return true;
             }
         }
-        //Step 3 validations
-        function step3Validation(){
+        function step3Validation(){   //Step 3 validations
             var systemsReview = getValue('systems-review.value');    //boolean
             var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
             var personPresent =getValue('person-present.value');
@@ -1944,138 +1576,105 @@ Green Card follow-up visit form
                 jq('#greencard').smartWizard('showMessage',"");
                 return true;
             }
+        }  //Step 4 validations substituted with before submit
+beforeSubmit.push(function() {
+    //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+    var personPresent =getValue('person-present.value');
+    var tca_date = getValue('returnVisitDate.value');
+    var tca_reason = getValue('returnVisitReason.value');
+    var encounterDate = getValue('encounter-date.value');
+    var fastTrackCareError = getValue('fast-track.value');
+    var standardCareError = getValue('standard.value');
+    var prophylaxis_Used = getValue('prophylaxis-used.value');
+    var ctxAdherence = getValue('ctx-adherence.value');
+    var ctxDispensed = getValue('ctx-dispensed.value');
+    var dapsoneAdherence = getValue('dapsone-adherence.value');
+    var dapsoneDispensed = getValue('dapsone-dispensed.value');
+    var arvAdherence = getValue('arv-adherence.value');
+    var cacxScreened = getValue('cacx-screening.value');
+    var stiScreened = getValue('screened-sti.value');
+    var stiPartnerNotification = getValue('sti-partnerNotification.value');
+    if (prophylaxis_Used == false) {
+        getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').show();
+        return false;
+    }else{
+        getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').hide();
+    }
+    if (prophylaxis_Used == 105281 &amp;&amp; ctxAdherence == false) {      //ctx
+        jq("#ctx-part").show();
+        getField('ctx-adherence.error').html('Please specify CTX adherence.').show();
+        return false;
+    }else{
+        getField('ctx-adherence.error').html('Please specify CTX adherence.').hide();
+    }
+    if (prophylaxis_Used == 105281 &amp;&amp; ctxDispensed == false) {     //ctx
+        jq("#ctx-part").show();
+        getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').show();
+        return false;
+    }else{
+        getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').hide();
+    }
+    if (prophylaxis_Used == 74250 &amp;&amp; dapsoneAdherence == false) {      //dapsone
+        jq("#dapsone-part").show();
+        getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').show();
+        return false;
+    }else{
+        getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').hide();
+    }
+    if (prophylaxis_Used == 74250 &amp;&amp; dapsoneDispensed == false) {     //dapsone
+        jq("#dapsone-part").show();
+        getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
+        return false;
+    }else{
+        getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
+    }
+    if (PATIENT_ON_ART == "true" &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false) {
+        getField('arv-adherence.error').html('Please specify ARV adherence.').show();
+        return false;
+    }else{
+        getField('arv-adherence.error').html('Please specify ARV adherence.').hide();
+    }
+    if (pgender == 'F') {     //Cacx screening on over 18 years is mandatory
+        if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
+            getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
+            return false;
+        } else {
+            getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
         }
-        //Step 4 validations
-        function step4Validation(){
-            var pgender = "<lookup expression="patient.gender" />";
-            //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-           // var PATIENT_ON_ART = "<lookup expression="kenyaemr.currentInArt()" />";
-            var PATIENT_ON_ART = "false";
-            var personPresent =getValue('person-present.value');
-            var encounterDate = getValue('encounter-date.value');
-            var prophylaxis_Used = getValue('prophylaxis-used.value');
-            var ctxAdherence = getValue('ctx-adherence.value');
-            var ctxDispensed = getValue('ctx-dispensed.value');
-            var dapsoneAdherence = getValue('dapsone-adherence.value');
-            var dapsoneDispensed = getValue('dapsone-dispensed.value');
-            var arvAdherence = getValue('arv-adherence.value');
-            var cacxScreened = getValue('cacx-screening.value');
-            var stiScreened = getValue('screened-sti.value');
-            var stiPartnerNotification = getValue('sti-partnerNotification.value');
-            var tca_date = getValue('returnVisitDate.value');
-            var tca_reason = getValue('returnVisitReason.value');
-            var fastTrackCareError = getValue('fast-track.value');
-            var standardCareError = getValue('standard.value');
-
-            if (prophylaxis_Used == false) {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').show();
-                return false;
-            }else{
-                getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').hide();
-            }
-            if (prophylaxis_Used == 105281 &amp;&amp; ctxAdherence == false) {      //ctx
-                jq("#ctx-part").show();
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('ctx-adherence.error').html('Please specify CTX adherence.').show();
-                return false;
-            }else{
-                getField('ctx-adherence.error').html('Please specify CTX adherence.').hide();
-            }
-            if (prophylaxis_Used == 105281 &amp;&amp; ctxDispensed == false) {     //ctx
-                jq("#ctx-part").show();
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').show();
-                return false;
-            }else{
-                getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').hide();
-            }
-            if (prophylaxis_Used == 74250 &amp;&amp; dapsoneAdherence == false) {      //dapsone
-                jq("#dapsone-part").show();
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').show();
-                return false;
-            }else{
-                getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').hide();
-            }
-            if (prophylaxis_Used == 74250 &amp;&amp; dapsoneDispensed == false) {     //dapsone
-                jq("#dapsone-part").show();
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').show();
-                return false;
-            }else{
-                getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
-            }
-            if (PATIENT_ON_ART == 'true' &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false) {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('arv-adherence.error').html('Please specify ARV adherence.').show();
-                return false;
-            }else{
-                getField('arv-adherence.error').html('Please specify ARV adherence.').hide();
-            }
-            //Cacx screening on over 18 years is mandatory
-            if (pgender == 'F') {
-                if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
-                    jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
-                    return false;
-                } else {
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
-                }
-            }
-            if (stiScreened == false &amp;&amp; personPresent == SELF ) {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
-                return false;
-            }else{
-                getField('screened-sti.error').html('Please specify whether patient was screened for STI.').hide();
-            }
-            if (stiScreened == 703 &amp;&amp; personPresent == SELF &amp;&amp; stiPartnerNotification == false) {
-                jq("#tbl-partner-notification").show();
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('sti-partnerNotification.error').html('Please specify partner notification status.').show();
-                return false;
-            }else{
-                getField('sti-partnerNotification.error').html('Please specify partner notification status.').hide();
-            }
-            if (tca_date == "") {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('returnVisitDate.error').html('Please specify return visit date for patient.').show();
-                return false;
-            }else{
-                getField('returnVisitDate.error').html('Please specify return visit date for patient.').hide();
-            }
-            if (tca_date &lt; encounterDate ) {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
-                return false;
-            }else{
-                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
-            }
-            if (tca_reason == "") {
-                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-                getField('returnVisitReason.error').html('Please specify reason for return visit.').show();
-                return false;
-            }else{
-                getField('returnVisitReason.error').html('Please specify reason for return visit.').hide();
-            }
-//            if (PATIENT_STABLE == 'true' &amp;&amp; fastTrackCareError == "") {
-//                jq('#greencard').smartWizard('setError', {stepnum: 4, iserror: true});
-//                getField('fast-track.error').html('Please specify patient differentiated care status.').show();
-//                return false;
-//            }else{
-//                getField('fast-track.error').html('Please specify patient differentiated care status.').hide();
-//            }
-//            if (PATIENT_STABLE == 'false' &amp;&amp; standardCareError == "") {
-//                jq('#greencard').smartWizard('setError',{stepnum:4,iserror:true});
-//                getField('standard.error').html('Please specify patient differentiated care status.').show();
-//                return false;
-//            }
-//            else {
-                jq('#greencard').smartWizard('showMessage',"");
-                return true;
-            //}
-        }
+    }
+    if (stiScreened == false &amp;&amp; personPresent == SELF ) {
+        getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
+        return false;
+    }else{
+        getField('screened-sti.error').html('Please specify whether patient was screened for STI.').hide();
+    }
+    if (stiScreened == 703 &amp;&amp; personPresent == SELF &amp;&amp; stiPartnerNotification == false) {
+        jq("#tbl-partner-notification").show();
+        getField('sti-partnerNotification.error').html('Please specify partner notification status.').show();
+        return false;
+    }else{
+        getField('sti-partnerNotification.error').html('Please specify partner notification status.').hide();
+    }
+    if (tca_date == "") {
+        getField('returnVisitDate.error').html('Please specify return visit date for patient.').show();
+        return false;
+    }else{
+        getField('returnVisitDate.error').html('Please specify return visit date for patient.').hide();
+    }
+    if (tca_date &lt; encounterDate ) {
+        getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
+        return false;
+    }else{
+        getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
+    }
+    if (tca_reason == "") {
+        getField('returnVisitReason.error').html('Please specify reason for return visit.').show();
+        return false;
+    }else{
+        getField('returnVisitReason.error').html('Please specify reason for return visit.').hide();
+    }
+    return true;
+});
     </script>
     <div id="greencard" class="swMain">
         <ifMode mode="ENTER">
@@ -2454,7 +2053,6 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-
                 <!-- WHO staging -->
                 <fieldset class="patient-details">
                     <legend>WHO Staging</legend>
@@ -2486,13 +2084,11 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-
             </div>    <!--.step 1-->
             <!--.step 2-->
             <div id="step-2">
                 <h2 class="StepTitle">Presenting complaints</h2>
                 <!-- Additional History  -->
-                <!--Presenting complaints today -->
                 <fieldset class="patient-details">
                     <legend>Complaints and History of complaints</legend>
                     <div>
@@ -2599,7 +2195,6 @@ Green Card follow-up visit form
                                 <br/>
                             </td>
                             <td>
-                                <!--<span class="value"><recentObs conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>-->
                             </td>
                         </tr>
                     </table>
@@ -2640,12 +2235,9 @@ Green Card follow-up visit form
                                         <td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
                                     </tr>
                                </includeIf>
-
-
                             </obsgroup>
                         </table>
                     </fieldset>
-
                     <fieldset id="action-taken">
                         <legend>Indicate Action Taken</legend>
                         <table id="tb-test-ordered">
@@ -2702,7 +2294,6 @@ Green Card follow-up visit form
                                 <td colspan="2"><p> </p></td>
                             </tr>
                             <tr>
-
                                 <td colspan="3">
                                     <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
                                 </td>
@@ -2718,13 +2309,10 @@ Green Card follow-up visit form
                                           answerLabels="Yes,No"/>
                                     <hr />
                                 </td>
-
                             </tr>
                             <tr><p></p></tr>
-
                             <tr id="tbrxfield">
                                 <td width="50%" style="text-align: left"><obs  conceptId="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx date: " id="tbrxdate"/> </td>
-
                                 <td><obs conceptId="1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="TB Rx:" id="tb-regimen"
                                          answerConceptSetIds="160021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
                                 /></td>
@@ -2760,7 +2348,6 @@ Green Card follow-up visit form
                             </obsgroup>
                         </table>
                     </fieldset>
-
                     <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
                         <table>
                             <tr>
@@ -2771,11 +2358,9 @@ Green Card follow-up visit form
                             </tr>
                         </table>
                     </div>
-
                 </fieldset>
                 <fieldset id="ipt-followup">
                     <legend>IPT Followup</legend>
-
                     <table>
                         <tr>
                             <td>IPT Due Date</td>
@@ -2809,7 +2394,6 @@ Green Card follow-up visit form
                     <br />
                     <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
                     <table id="tbl-ipt-outcome">
-
                         <tr>
                             <td>Event:</td>
                             <td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=""  showDate="true"/></td>
@@ -2823,12 +2407,9 @@ Green Card follow-up visit form
                             <td><obs id="action-taken" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="45" rows="1" /></td>
                         </tr>
                     </table>
-
                 </fieldset>
-
                 <fieldset id="ipt-uptake">
                     <legend>IPT Uptake History</legend>
-
                     <table>
                         <tr>
                             <th>IPT Due Date</th>
@@ -2909,7 +2490,6 @@ Green Card follow-up visit form
                         <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
                         <span style="color:red;"><strong>*</strong></span>
                     </div>
-
                     <table id="tbl-known-allergies">
                         <tr>
                             <td colspan="2">Record any known allergies<br/>
@@ -2930,10 +2510,7 @@ Green Card follow-up visit form
                                                                               	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Beef,Caffeine,Chocolate,Dairy Food,Eggs,Fish,Milk Protein,Peanuts,Shellfish,Soy,Strawberries,Wheat,Adhesive Tape,Bee Stings,Dust,Latex,Mold,Pollen,Ragweed,Other"
                                                              style="dropdown" id="allergy-field"
-
-
                                                     />
-
                                                     </td>
                                                     <td><obs class="reaction" conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -2991,9 +2568,7 @@ Green Card follow-up visit form
                                                     style="dropdown" id="chronic"
                                             />
                                         </td>
-
                                         <td><obs class="onset-date-chronic-illness" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
-
                                         <td><obs class= "drug-chronic-illness" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
                                         <td><obs class = "dose-chronic-illness" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
                                         <td><obs class ="units-chronic-illness" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
@@ -3087,41 +2662,27 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-
                 <fieldset class="patient-details">
                     <legend>Vaccination(s) today</legend>
                     <includeIf velocityTest="$patient.age &lt; 16">
                         <table width="30%" id="child-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
-                                <!--<th style="color: #888" align="left">Recent</th>-->
-                                <!--<th style="color: #888" align="left">Count</th>-->
                             </tr>
-
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="BCG" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(886).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(886).size()"/> </td>-->
                             </tr>
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PV" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(82215).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>-->
                             </tr>
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Penta" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(1423).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(1423).size()"/> </td>-->
                             </tr>
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCV" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(162342).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(162342).size()"/> </td>-->
                             </tr>
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="36AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Measles" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(36).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(36).size()"/> </td>-->
                             </tr>
                         </table>
                     </includeIf>
@@ -3129,41 +2690,26 @@ Green Card follow-up visit form
                         <table width="30%" id="adult-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
-                                <!--<th style="color: #888" align="left">Recent</th>-->
-                                <!--<th style="color: #888" align="left">Count</th>-->
                             </tr>
-
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="782AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HBV" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(782).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(782).size()"/> </td>-->
                             </tr>
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5261AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Flu" style="checkbox" /></td>
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5261).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>-->
                             </tr>
-
                         </table>
                         <table >
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox" id="otherVacc"
                                 /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="other-vacc"  /></td>
-
-                                <!--<td> <lookup expression="fn.latestObs(1198).valueCoded().equals(5622).obsDateTime"/> </td>-->
-                                <!--<td> <lookup expression="fn.allObs(1198).valueCoded().equals(5622).size()"/> </td>-->
                             </tr>
                         </table>
                     </includeIf>
                 </fieldset>
-
-                <!--Sexual and Obstetric History-->
-
                 <!--Sexual and reproductive History validated for women over 10 years -->
                 <includeIf velocityTest="$patient.gender == 'F'">
                     <fieldset class="reproductive-part">
                         <legend>Sexual and Reproductive History</legend>
-                        <!--<table class="right-aligned-first" style="width: 100%;" border="0">-->
                         <table cellspacing="18" class="patient-details" >
                             <tr>
                                 <th  style="color: #888" >Current Status <span style="color:red;"><strong>*</strong></span></th>
@@ -3244,7 +2790,6 @@ Green Card follow-up visit form
                         </table>
                     </fieldset>
                 </includeIf>
-
                 <!--Family Planning-->
                 <fieldset id="fp-details" >
                     <legend>Family Planning Status</legend>
@@ -3332,7 +2877,6 @@ Green Card follow-up visit form
                                             </obsgroup>
                                         </table>
                                     </includeIf>
-
                                     <includeIf velocityTest="$patient.gender == 'M'">
                                         <table class="right-aligned-first" style="width: 100%;" border="0">
                                             <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
@@ -3350,7 +2894,6 @@ Green Card follow-up visit form
                                                              answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                     </td>
-
                                                 </tr>
                                             </obsgroup>
                                         </table>
@@ -3410,12 +2953,9 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
             </div>
-            <!--.step 2-->
-            <!--System Examination-->
-            <!--step 3-->
+            <!--.step 2  System Examination step 3 -->
             <div id="step-3">
                 <h2 class="StepTitle">Patient examination</h2>
-                <!--Physical Examination-->
                 <!--General Examination-->
                 <fieldset class="patient-details">
                     <legend>General Examination Findings</legend>
@@ -3428,30 +2968,24 @@ Green Card follow-up visit form
                                     <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oedema" style="checkbox" /><br />
                                     <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral thrush" style="checkbox" /><br />
                                     <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Pallor" style="checkbox" /><br />
-
                                 </div>
                             </td><td>
                             <div style="float: left;padding-right: 50px">
-
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="140125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Finger Clubbing" style="checkbox" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="126952AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph Node Axillary" style="checkbox" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cyanosis" style="checkbox" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="126939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lymph Nodes Inguinal" style="checkbox" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Wasting" style="checkbox" />
-
                             </div>
                         </td><td>
                             <div style="float: left;padding-right: 40px">
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dehydration" style="checkbox" /><br />
                                 <obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116334AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Lethargic" style="checkbox" id="genExams-error" /><br />
-                                <!--<obs conceptId="162737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Weight Changes" id="genExams-error" style="checkbox" /><br />-->
                             </div>
                         </td>
-
                         </tr>
                     </table>
                 </fieldset>
-
                 <fieldset class="patient-details">
                     <legend>System Examination</legend>
                     <table>
@@ -3485,7 +3019,6 @@ Green Card follow-up visit form
                                      answerLabels="Abscess,Swelling/Growth,Hair Loss,Itching,Kaposi Sarcoma,Skin eruptions/Rashes,Oral sores"
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="skin-notes" conceptId="160981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3513,7 +3046,6 @@ Green Card follow-up visit form
                                      answerLabels="Apnea,Hearing disorder,Dental caries,Erythema,Frequent colds,Gingival bleeding,Hairy cell leukoplakia,Hearing loss,Hoarseness,Kaposi Sarcoma,Masses,Nasal discharge,Nosebleed,Pain,Post nasal discharge,Sinus problems,Snoring,Sore thoat,Oral sores,Thrush,Tinnitus,Toothache,Ulcers,Vertigo"
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="ent-notes" conceptId="164939" rows="1" cols="50"
                             />
                             </td>
@@ -3527,7 +3059,6 @@ Green Card follow-up visit form
                                      answerLabels="Bronchial breathing,Crackles,Dullness,Reduced breathing,Respiratory distress,Wheezing"
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="chest-notes" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3541,7 +3072,6 @@ Green Card follow-up visit form
                                      answerLabels="Elevated blood pressure,Irregular heartbeat,Cardiac murmur,Cardiac rub"
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="cvs-notes" conceptId="163046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3555,7 +3085,6 @@ Green Card follow-up visit form
                                      answerLabels="Abdominal distension,Hepatomegaly,Abdominal mass,Splenomegaly,Abdominal tenderness"
                                      style="dropdowm "
                             /></td>
-
                             <td><obs class="abdomen-notes" conceptId="160948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3569,7 +3098,6 @@ Green Card follow-up visit form
                                      answerLabels="Altered sensations,Bulging fontenelle,Abnormal reflexes,Confusion,Limb weakness,Stiff neck,Kernicterus"
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="cns-notes" conceptId="160994AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3583,7 +3111,6 @@ Green Card follow-up visit form
                                      answerLabels="Bleeding,Rectal discharge,Urethral discharge,Vaginal discharge,Ulceration "
                                      style="dropdowm"
                             /></td>
-
                             <td><obs class="gus-notes" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="50"
                             />
                             </td>
@@ -3597,19 +3124,16 @@ Green Card follow-up visit form
                             <th align="left">Diagnosis</th>
                             <th align="left">Treatment Plan</th>
                         </tr>
-
                         <repeat>
                             <template>
                                 <obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                     <tr>
-
                                         <td>
                                             <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
                                         </td>
                                         <td>
                                             <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80" id="treatment-plan"/>
                                         </td>
-
                                     </tr>
                                 </obsgroup>
                             </template>
@@ -3621,10 +3145,10 @@ Green Card follow-up visit form
                         </repeat>
                     </table>
                 </fieldset>
-                <!--.step 3-->
+                <!--.step 3 Patient Management step 4 -->
             </div>
             <div id="step-4">
-                <h2 class="StepTitle">Patient management</h2>    <!--step 4-->
+                <h2 class="StepTitle">Patient management</h2>
                 <fieldset class="prophylaxis"  >
                     <legend>Prophylaxis</legend>
                     <table>
@@ -3643,7 +3167,6 @@ Green Card follow-up visit form
                     </table>
                 </fieldset>
                 <br />
-
                 <fieldset id="ctx-part"  >
                     <legend>Cotrimoxazole</legend>
                     <table>
@@ -3725,17 +3248,16 @@ Green Card follow-up visit form
                                     <!--Adherence Modal  -->
                                     <tr>
                                         <button class="showModal">Adherence Assessment*</button>
-                                        <!--<a href="#" class="showModal">Show Modal Box</a>-->
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
                                             <div id="adherence-1">
                                                 1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                            <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
                                                                                            <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
 
                                                 2. Are you careless at times about taking your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                             <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
                                                                                             <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
 
@@ -3754,18 +3276,15 @@ Green Card follow-up visit form
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-5" class="question-5" value="1065"/> Yes
                                                 <input type="radio" name="question-5" class="question-5" value="1066"/> No    <br/><br/>
-
                                                 2. When you feel like your symptoms are under control, <br/>  &#160;&#160; do you sometimes stop taking your medicine?
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-6" class="question-6" value="1065"/> Yes
                                                 <input type="radio" name="question-6" class="question-6" value="1066"/> No <br/><br/>
-
                                                 3.Taking medication every day is a real inconvenience for some people.<br/>  &#160;&#160; Do you feel under pressure about sticking to your treatment plan?
                                                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-7" class="question-7" value="1065"/> Yes
                                                 <input type="radio" name="question-7" class="question-7" value="1066"/> No <br/><br/>
-
                                                 4.How often do you have difficulty remembering to take all your medications?&#160;&#160;
                                                   <select name="question-8" class="question-8">
                                                       <option value="1066">Select</option>
@@ -3777,14 +3296,11 @@ Green Card follow-up visit form
                                                   </select>
                                                 <br/>
                                             </div>
-
                                             <div class="modal-footer">
                                                 <button type="button" id="btnCloseARVAssessment" style="float: right;" >Save</button>
                                             </div>
                                         </div>
-
-                                    </tr>
-                                    <!--.Modal   -->
+                                    </tr>      <!--.Modal   -->
                                     <tr>
                                         <td>Adherence</td>
                                         <td>
@@ -3801,7 +3317,6 @@ Green Card follow-up visit form
                         </tr>
                     </table>
                 </fieldset>
-
                 <fieldset class="patient-details">
                     <legend>PHDP Services</legend>
                     <table id = "tbl-phdp">
@@ -3811,7 +3326,6 @@ Green Card follow-up visit form
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Yes,No,Unkown,N/A"
                                      style="radio"
-
                             /></td>
                         </tr>
                         <tr>
@@ -3875,20 +3389,9 @@ Green Card follow-up visit form
                                      style="dropdown"  />
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
-
                         </tr><tr></tr>
                     </table>
                     <table>
-                        <!--<tr id="standard-care">-->
-                            <!--<td>Differentiated Care</td>-->
-                            <!--<td>-->
-                                <!--<obs conceptId="164947" id="standard"-->
-                                     <!--answerConceptIds="164942"-->
-                                     <!--style="dropdown"-->
-                                     <!--answerLabels="Standard Care"-->
-                                <!--/>-->
-                            <!--</td>-->
-                        <!--</tr>-->
                         <tr id="fast-track">
                             <td>Differentiated Care</td>
                             <td>
@@ -3903,12 +3406,9 @@ Green Card follow-up visit form
                 </fieldset>
                 <div class="ke-form-footer" style="display: none">
                     <submit/>
-                </div>
-                <!--.step 4-->
+                </div>    <!--.step 4-->
             </div>
         </div>
-
-
     </div>
 </htmlform>
 

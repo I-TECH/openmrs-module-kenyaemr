@@ -31,8 +31,9 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInIptProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation;
 
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -127,15 +128,28 @@ public class EmrVelocityFunctions {
 
 	}
 	/**
-	 * Checks whether the patient in TB program
+	 * Checks whether the patient in IPT program
 	 * @return true if patient is enrolled in TB program
 	 *
 	 * */
 
-	public Boolean patientInIPTProgram() {
+	public Boolean currentInIPT() {
 
-		CalculationResult patientEnrolledInIPTProgram = EmrCalculationUtils.evaluateForPatient(PatientInIptProgramCalculation.class, null,session.getPatient());
+		CalculationResult patientEnrolledInIPTProgram = EmrCalculationUtils.evaluateForPatient(OnIptProgramCalculation.class, null,session.getPatient());
 		return 	(Boolean) patientEnrolledInIPTProgram.getValue();
+
+
+	}
+	/**
+	 * Checks whether the patient in IPT program
+	 * @return true if patient is enrolled in TB program
+	 *
+	 * */
+
+	public String GreenCardVelocityCalculation() {
+
+		CalculationResult greenCardVelocity = EmrCalculationUtils.evaluateForPatient(GreenCardVelocityCalculation.class, null,session.getPatient());
+		return 	(String) greenCardVelocity.getValue();
 
 
 	}

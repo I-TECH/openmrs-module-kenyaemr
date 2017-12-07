@@ -18,14 +18,13 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInIptProgramCalculation;
 
 import java.util.Set;
 
 /**
- * Calculates whether patients are (alive and) in the TB program
+ * Calculates whether patients are (alive and) in the IPT program
  * Eligibility criteria include:
- * Is currently active in tb program
+ * Is currently active in IPT program
  *
  */
 public class PatientInTbProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
@@ -39,18 +38,12 @@ public class PatientInTbProgramCalculation extends AbstractPatientCalculation im
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 
-//        Set<Integer> currentInIPT = CalculationUtils.patientsThatPass(calculate(new PatientInIptProgramCalculation(), cohort, context));
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId: cohort){
 
             boolean tbPatient = false;
             boolean patientInTbProgram = false;
-
-//            if (currentInIPT.contains(ptId)) {
-//                patientInTbProgram = false;
-//                log.info("In IPT ==>");
-//            }
 
             if (inTbProgram.contains(ptId)) {
                 tbPatient = true;
@@ -63,7 +56,6 @@ public class PatientInTbProgramCalculation extends AbstractPatientCalculation im
         return ret;
         }
 
-   //log.info("In Tb program ==>"+patientInTbProgram);
     @Override
     public String getFlagMessage() {
         return "On TB";
