@@ -84,6 +84,10 @@ Green Card follow-up visit form
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+        console.log("PATIENT_HAS_BEEN_ON_ART==>"+PATIENT_HAS_BEEN_ON_ART);
+       console.log("PATIENT_ON_ART==>"+PATIENT_ON_ART);
+
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
 
@@ -206,14 +210,15 @@ Green Card follow-up visit form
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //On ART hide adherence assessment
-            if(PATIENT_ON_ART =="true") {
+            if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
                 jq('.showModal').show();
-            }else{
+            }
+            else{
                 jq('.on-art').hide();
                 jq('.showModal').hide();
             }
-            // Morisky ART adherence assessment Modal
+             // Morisky ART adherence assessment Modal
             jq(".showModal").click(function(e){
                 //Defaults
                 var adherenceResponses1=jq('#adherence-1');
@@ -589,7 +594,9 @@ function onPersonPresentChange() {
     var tBtestResults = jq("#tb-results");
     var startantiTb = jq("#startAnti-tb");
     var tbRegimen = jq("#tb-regimen");
-    var familypStatus = jq("#fpOptionValues");
+    var familyPlanning = jq("#fplanning");
+    var onfamilyPlanning = jq("#onFp");
+    var notOnfamilyPlanning = jq("#notOnFp");
     var allergiesSelected = jq("#known-allergies");
     var chronicIllnessSelected = jq("#chronic-illness");
     var adverseReactionsSelected = jq("#adverse-reactions");
@@ -609,12 +616,9 @@ function onPersonPresentChange() {
     var abdomenFindingsSelected = jq('.abdomen-findings');
     var cnsFindingsSelected = jq('.cns-findings');
     var gusFindingsSelected = jq('.gus-findings');
-    if (getValue('person-present.value') == SELF) {
+    if (getValue('person-present.value') == SELF ) {
         jq('.patient-details :input').prop('disabled', false);
         jq('#greencard').smartWizard('enableFinish', false);
-        jq(".on-art").show();
-        jq('.showModal').show();
-        jq("#tbl-phdp").show();
     } else {
         complaintSelected();
         knownAllergiesSelected();
@@ -628,7 +632,7 @@ function onPersonPresentChange() {
         jq('#greencard').smartWizard('enableFinish', true);
         clearHiddenSections([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
             workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
-            adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familypStatus, generalExamSelected, systemsFindingsSelected,
+            adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
             skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected]);
         jq('#weight input').val('');
         jq('#height input').val('');
@@ -654,7 +658,7 @@ function onPersonPresentChange() {
         jq('#resp input').val('');
         jq('#oxygen input').val('');
         jq('#tbrxdate input').val('');
-    }
+       }
 }
 function onVisitScheduledChange() {
     var personPresent = getValue('person-present.value');
@@ -1750,7 +1754,6 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                 </div>
-
                 <ifMode mode="EDIT">
                     <script type="text/javascript">
                         jq(function(){
@@ -2791,7 +2794,7 @@ beforeSubmit.push(function() {
                     </fieldset>
                 </includeIf>
                 <!--Family Planning-->
-                <fieldset id="fp-details" >
+                <fieldset id="fp-details" class="patient-details">
                     <legend>Family Planning Status</legend>
                     <table id="fpOptionValues">
                         <tr>
