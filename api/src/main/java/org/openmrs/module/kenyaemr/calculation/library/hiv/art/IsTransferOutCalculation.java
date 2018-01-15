@@ -1,6 +1,8 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Program;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -26,6 +28,7 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
+	protected static final Log log = LogFactory.getLog(TransferOutDateCalculation.class);
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
@@ -39,13 +42,11 @@ public class IsTransferOutCalculation extends AbstractPatientCalculation {
 		for (Integer ptId : cohort) {
 			boolean isTransferOut = false;
 			Date dateTo = EmrCalculationUtils.datetimeResultForPatient(transferOutDate, ptId);
-			if (dateTo != null) {
+			if (inHivProgram.containsKey(ptId) && dateTo != null) {
 				isTransferOut = true;
 			}
-			if(inHivProgram.containsKey(ptId)){
-				isTransferOut = false;
-			}
 			result.put(ptId, new BooleanResult(isTransferOut, this, context));
+//			log.info("Transfer out ==>"+isTransferOut);
 		}
 
 		return result;

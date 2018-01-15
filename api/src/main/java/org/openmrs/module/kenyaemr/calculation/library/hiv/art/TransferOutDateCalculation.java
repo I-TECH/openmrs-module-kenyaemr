@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -36,6 +38,7 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
+	protected static final Log log = LogFactory.getLog(TransferOutDateCalculation.class);
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
@@ -60,7 +63,9 @@ public class TransferOutDateCalculation extends AbstractPatientCalculation {
 			}
 
 			result.put(ptId, new SimpleResult(dateTo, this));
+			//log.info("Transfer out ==>"+dateTo);
 		}
+
 		return  result;
 	}
 }
