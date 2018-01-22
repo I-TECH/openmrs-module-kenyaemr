@@ -73,6 +73,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Concept arvs = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
             CalculationResultMap currentARVDrugOrders = activeDrugOrders(arvs, cohort, context);
 
+            // Get ART start date
+            CalculationResultMap allDrugOrders = allDrugOrders(arvs, cohort, context);
+            CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders, context);
 
             CalculationResultMap ret = new CalculationResultMap();
             StringBuilder sb = new StringBuilder();
@@ -80,12 +83,15 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                          //TB and ART patients
                 boolean patientInTBProgram = false;
                 boolean patientOnART = false;
+                boolean hasBeenOnART = false;
                         //IPT Calculation
                 Date iptStartObsDate = null;
                 Date iptStopObsDate = null;
+                Date currentDate =new Date();
                 boolean inIptProgram = false;
                 boolean currentInIPT = false;
                 Integer iptStartStopDiff = 0;
+                Integer artStartCurrDiff = 0;
 
                 //Patient with IPT start date and now less than complete date
                 Obs iptStartObs = EmrCalculationUtils.obsResultForPatient(iptStartMap, ptId);
@@ -93,10 +99,6 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
 
                 if (inTbProgram.contains(ptId)) {
                     patientInTBProgram = true;
-                }
-                ListResult patientDrugOrders = (ListResult) currentARVDrugOrders.get(ptId);
-                if (patientDrugOrders != null) {
-                    patientOnART = true;
                 }
                 if(iptStartObs != null && iptStopObs == null ) {
                     inIptProgram = true;
@@ -109,10 +111,23 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                         inIptProgram = true;
                     }
                 }
+                ListResult patientDrugOrders = (ListResult) currentARVDrugOrders.get(ptId);
+                if (patientDrugOrders != null) {
+                    patientOnART = true;
+                }
 
+                Date orderDate = EmrCalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
+                if (orderDate != null) {
+                    artStartCurrDiff = daysBetween(currentDate,orderDate);
+                    if (artStartCurrDiff > 7) {
+                        hasBeenOnART = true;
+                    }
+                }
                 sb.append("inIPT:").append(inIptProgram).append(",");
                 sb.append("inTB:").append(patientInTBProgram).append(",");
-                sb.append("onART:").append(patientOnART);
+                sb.append("onART:").append(patientOnART).append(",");
+                sb.append("hasBeenOnART:").append(hasBeenOnART);
+
                 ret.put(ptId, new SimpleResult(sb.toString(), this, context));
             }
             return ret;
@@ -122,5 +137,10 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         DateTime d2 = new DateTime(date2.getTime());
         return Minutes.minutesBetween(d1, d2).getMinutes();
 
+    }
+    private int daysBetween(Date date1, Date date2) {
+        DateTime d1 = new DateTime(date1.getTime());
+        DateTime d2 = new DateTime(date2.getTime());
+        return Math.abs(Days.daysBetween(d1, d2).getDays());
     }
 }
