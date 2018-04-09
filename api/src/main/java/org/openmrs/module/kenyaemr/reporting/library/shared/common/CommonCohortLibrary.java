@@ -177,7 +177,7 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
+	 * Patients who transferred out between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition transferredOut() {

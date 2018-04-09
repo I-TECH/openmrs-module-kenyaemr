@@ -13,25 +13,15 @@
 -->
 <htmlform>
 	<script type="text/javascript">
-		function viralLoadValidation() {
-            var vl = parseInt(getValue('vl.value'));
-            //console.log("vl "+vl);
-            if (vl > 0 ) {
-                jq('#vLoadResults :input').prop("disabled", false);
-                jq('#ldlResults :input').prop("disabled", true);
+        function viralLoadValidation(){
 
-            }else {
-              //  jq('#vLoadResults :input').prop("disabled", true);
-                jq('#ldlResults :input').prop("disabled", false);
-
-           }
-            if (getValue('ldl.value') == 1302) {
-                jq('#vLoadResults :input').prop("disabled", true);
-                jq('#ldlResults :input').prop("disabled", false);
-            }else {
-                jq('#vLoadResults :input').prop("disabled", false);
-                jq('#ldlResults :input').prop("disabled", true);
-         	}
+            if(getValue('ldl.value') == 1302){
+                jq('#vLoadResults :input').prop( "disabled", true );
+                jq('#viral-load-value input').val('');
+            }
+            if(getValue('ldl.value') != 1302){
+                jq('#vLoadResults :input').prop( "disabled", false );
+            }
         }
 		function getLatedtVlOrder(){
 
@@ -47,11 +37,9 @@
 		}
 
 		jq(function() {
-			getField('ldl.value').change(viralLoadValidation);
-            getField('vl.value').keyup(viralLoadValidation);
-			viralLoadValidation;
+            getField('ldl.value').change(viralLoadValidation);
+			viralLoadValidation();
 			getLatedtVlOrder();
-            jq('#vLoadResults :input').prop( "disabled", false );
 		});
 
 	</script>
@@ -120,7 +108,7 @@
 					<span id="lastVl"></span>
 				</td>
 				<td id="vLoadResults">
-					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="vl" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
 				</td>
 
 			</tr>

@@ -58,7 +58,6 @@ public class NeedsCd4TestCalculationTest extends BaseModuleContextSensitiveTest 
 		commonMetadata.install();
 		hivMetadata.install();
 	}
-
 	/**
 	 * @see NeedsCd4TestCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @verifies determine whether patients need a CD4
