@@ -15,8 +15,6 @@
 
 <div class="ke-panelbar" style="text-align: right">
 	<% if (visit) { %>
-	<button type="button" onclick="openPatientChart();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Patient Overview</button>
-	<button type="button" onclick="openPatientSummary();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Patient Summary</button>
 	<button type="button" onclick="openVisitSummary();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Visit Summary</button>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 			buttonConfig: [ label: "Check out of visit", iconProvider: "kenyaui", icon: "buttons/visit_end.png" ],
@@ -34,7 +32,6 @@
 			cancelLabel: ui.message("general.cancel")
 	]) %>
 	<% } else if (!patient.dead && !patient.voided) { %>
-	<button type="button" onclick="openPatientChart();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Patient Overview</button>
 	<button type="button" onclick="openPatientSummary();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Patient Summary</button>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 			buttonConfig: [ label: "Check in for visit", iconProvider: "kenyaui", icon: "buttons/registration.png" ],
