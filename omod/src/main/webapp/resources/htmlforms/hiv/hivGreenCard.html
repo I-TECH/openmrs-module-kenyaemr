@@ -86,7 +86,7 @@ Green Card follow-up visit form
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
         console.log("PATIENT_HAS_BEEN_ON_ART==>"+PATIENT_HAS_BEEN_ON_ART);
-       console.log("PATIENT_ON_ART==>"+PATIENT_ON_ART);
+        console.log("PATIENT_ON_ART==>"+PATIENT_ON_ART);
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -1632,7 +1632,7 @@ beforeSubmit.push(function() {
     }else{
         getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
     }
-    if (PATIENT_ON_ART == "true" &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false) {
+    if (PATIENT_ON_ART == "true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART == true &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false ) {
         getField('arv-adherence.error').html('Please specify ARV adherence.').show();
         return false;
     }else{
