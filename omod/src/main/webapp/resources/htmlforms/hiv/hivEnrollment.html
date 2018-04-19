@@ -357,6 +357,14 @@
             jq('#generate-hiv-id').hide();
             jq('#baseline-fieldset :input').prop('disabled', true);
 
+            //Pre - populations date and facility
+            var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+            if (date_confirmed_positive != null) {
+                setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                getField('confirmed-positive-date.value').prop("readonly", true);
+            }
+
+
             //Gender based validations  pregnancy and breastfeeding
             if (pgender == 'M') {
                 jq('#pregnant :input').prop('disabled', true);
