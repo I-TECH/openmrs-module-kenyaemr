@@ -44,13 +44,15 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		Concept IptStart = Context.getConceptService().getConcept(1265);
-		Concept IptStop = Context.getConceptService().getConcept(160433);
+		Concept IptCurrentQuestion = Context.getConceptService().getConcept(164949);
+		Concept IptStartQuestion = Context.getConceptService().getConcept(1265);
+		Concept IptStopQuestion = Context.getConceptService().getConcept(160433);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
 
-		CalculationResultMap iptStartMap = Calculations.lastObs(IptStart, cohort, context);
-		CalculationResultMap iptStopMap = Calculations.lastObs(IptStop, cohort, context);
+		CalculationResultMap iptCurrent = Calculations.lastObs(IptCurrentQuestion, cohort, context);
+		CalculationResultMap iptStarted = Calculations.lastObs(IptStartQuestion, cohort, context);
+		CalculationResultMap iptStopped = Calculations.lastObs(IptStopQuestion, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for(Integer ptId: cohort){
@@ -61,23 +63,26 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 			boolean currentInIPT = false;
 			Integer iptStartStopDiff = 0;
 
-
-			//Patient with IPT start date and now less than complete date
-			Obs iptStartObs = EmrCalculationUtils.obsResultForPatient(iptStartMap, ptId);
-			Obs iptStopObs = EmrCalculationUtils.obsResultForPatient(iptStopMap, ptId);
-
-			if(iptStartObs != null && iptStopObs == null ) {
+			Obs iptCurrentObs = EmrCalculationUtils.obsResultForPatient(iptCurrent, ptId);
+			Obs iptStartObs = EmrCalculationUtils.obsResultForPatient(iptStarted, ptId);
+			Obs iptStopObs = EmrCalculationUtils.obsResultForPatient(iptStopped, ptId);
+          //Currently on IPT
+			if (iptCurrentObs != null &&  iptStopObs == null && iptCurrentObs.getValueCoded().getConceptId().equals(1065)) {
 				inIptProgram = true;
 			}
-
-			if(iptStartObs != null && iptStopObs != null) {
+			//Started on IPT
+			if (iptStartObs != null &&  iptStopObs == null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
+				inIptProgram = true;
+			}
+			//Repeat on IPT
+			if(iptStartObs != null && iptStopObs != null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
 				iptStartObsDate = iptStartObs.getObsDatetime();
 				iptStopObsDate = iptStopObs.getObsDatetime();
 				iptStartStopDiff = minutesBetween(iptStopObsDate,iptStartObsDate);
 				if (iptStartStopDiff > 1) {
 					inIptProgram = true;
 				}
-			  }
+			}
 
 			if (inIptProgram)
 				currentInIPT = true;
