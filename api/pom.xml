@@ -3,11 +3,11 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>kenyaemr</artifactId>
-		<version>16.0</version>
+		<version>16.0.1-rc</version>
 	</parent>
 
 	<artifactId>kenyaemr-api</artifactId>
-    <version>16.0</version>
+    <version>16.0.1-rc</version>
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module API</name>
 	<description>API project for KenyaEMR Module</description>
