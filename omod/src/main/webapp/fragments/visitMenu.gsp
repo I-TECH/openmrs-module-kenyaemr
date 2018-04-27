@@ -32,7 +32,6 @@
 			cancelLabel: ui.message("general.cancel")
 	]) %>
 	<% } else if (!patient.dead && !patient.voided) { %>
-	<button type="button" onclick="openPatientSummary();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Patient Summary</button>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 			buttonConfig: [ label: "Check in for visit", iconProvider: "kenyaui", icon: "buttons/registration.png" ],
 			dialogConfig: [ heading: "Check In", width: 50, height: 30 ],
