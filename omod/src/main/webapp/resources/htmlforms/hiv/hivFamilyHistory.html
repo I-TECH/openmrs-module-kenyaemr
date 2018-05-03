@@ -68,11 +68,20 @@
                 var row = $(this).parent().parent().parent();
                 if (this.value == '1065') {
                     $(row).find('.in-care select').attr('disabled', false);
-                    $(row).find('.ccc-no input').attr('disabled', false);
                 } else {
                     $(row).find('.in-care select').val('');
                     $(row).find('.ccc-no input').val('');
                     $(row).find('.in-care select').attr('disabled', true);
+                    $(row).find('.ccc-no input').attr('disabled', true);
+                }
+            });
+
+            $(".in-care select").change(function () {
+                var row = $(this).parent().parent().parent();
+                if (this.value == '1065') {
+                    $(row).find('.ccc-no input').attr('disabled', false);
+                } else {
+                    $(row).find('.ccc-no input').val('');
                     $(row).find('.ccc-no input').attr('disabled', true);
                 }
             });
@@ -105,7 +114,7 @@
                 <th align="left">Name of Member</th>
                 <th align="left">Age</th>
                 <th align="left">Relation</th>
-                <th align="left">HIV Result</th>
+                <th align="left">HIV Status</th>
                 <th align="left">In Care?</th>
                 <th align="left">CCC Number</th>
             </tr>
