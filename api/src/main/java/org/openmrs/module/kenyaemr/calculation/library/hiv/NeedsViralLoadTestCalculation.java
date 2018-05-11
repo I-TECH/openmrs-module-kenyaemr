@@ -87,12 +87,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             // Newly initiated and more than 3 months without ldl,vl or orders
             if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
                 if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 90)) {
-                    log.info("Newly initiated on art ==>");
                     needsViralLoadTest = true;
                 }
                 // vl flag should be 3 months after last vl if unsuppressed --with both ldl and vl
                 if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() >= 1000 && (daysSince(lastViralLoadObs.getObsDatetime(), context) >= 90)) {
-                    log.info("Days unsuppressed since last vl_1 ==>"+daysSince(lastViralLoadObs.getObsDatetime(), context));
                     needsViralLoadTest = true;
 
                     if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 360)) {
@@ -101,21 +99,17 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 }
                 // vl flag should be 12 months after last vl if suppressed --with both ldl and vl
                 if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() < 1000 && (daysSince(lastViralLoadObs.getObsDatetime(), context) >= 360)) {
-                    log.info("Days suprressed since last vl_2 ==>"+daysSince(lastViralLoadObs.getObsDatetime(), context));
                     needsViralLoadTest = true;
 
                     if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 360)) {
-                        log.info("Days since last ldl_3 ==>"+daysSince(lastLdlObs.getObsDatetime(), context));
                         needsViralLoadTest = false;
                     }
                 }
                 // vl flag should be 12 months for clients with only ldl if suppressed
                 if(lastLdlObs != null && listObsViralLoads.size() == 0 && (daysSince(lastLdlObs.getObsDatetime(), context) < 360)) {
-                    log.info("Days since last ldl_4 ==>"+daysSince(lastLdlObs.getObsDatetime(), context));
                     needsViralLoadTest = false;
                 }
                 if(lastLdlObs != null && listObsViralLoads.size() == 0 && (daysSince(lastLdlObs.getObsDatetime(), context) >= 360)) {
-                    log.info("Days since last ldl_5 ==>"+daysSince(lastLdlObs.getObsDatetime(), context));
                     needsViralLoadTest = true;
                 }
 
@@ -125,12 +119,10 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
                     // vl flag should be 6 months after art start date if no previous vl
                     if(lastViralLoadObs == null && lastLdlObs == null && (context.getNow().after(whenVLWillBeDue))){
-                        log.info("Preg and newly initiated on art ==>");
                         needsViralLoadTest = true;
                     }
                     // vl flag should be 3 months after last vl if unsuppressed
                     if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() >= 1000 && (monthsBetween(lastViralLoadObs.getObsDatetime(), context.getNow()) >= 3)) {
-                        log.info("Preg and unsuppressed since last vl_1 ==>"+daysSince(lastViralLoadObs.getObsDatetime(), context));
                         needsViralLoadTest = true;
 
                         if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 180)) {
@@ -139,7 +131,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                     }
                     // vl flag should be 6 months after last vl if suppressed
                     if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() < 1000 && (monthsBetween(lastViralLoadObs.getObsDatetime(), context.getNow()) >= 6)) {
-                        log.info("pred Days suprressed since last vl_2 ==>"+daysSince(lastViralLoadObs.getObsDatetime(), context));
                         needsViralLoadTest = true;
 
                         if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 180)) {
@@ -149,7 +140,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
                     // vl flag should be 6 months after last vl if suppressed
                     if(lastViralLoadObs != null && listObsViralLoads.size() == 0 && daysSince(lastViralLoadObs.getObsDatetime(), context) >= 180) {
-                        log.info("Preg  Days suprressed since last vl_3 ==>"+daysSince(lastViralLoadObs.getObsDatetime(), context));
                         needsViralLoadTest = true;
                     }
                     if(lastViralLoadObs != null && listObsViralLoads.size() == 0 && daysSince(lastViralLoadObs.getObsDatetime(), context) < 180) {
@@ -159,8 +149,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
 
             }
-            log.info("Due for viral Load ==>"+needsViralLoadTest);
-            log.info("Pregnancy status ==>"+pregnantStatus);
             ret.put(ptId, new BooleanResult(needsViralLoadTest, this));
         }
         return  ret;
