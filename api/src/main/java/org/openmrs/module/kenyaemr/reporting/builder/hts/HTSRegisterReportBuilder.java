@@ -46,6 +46,7 @@ import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -88,7 +89,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.setName("HTSInformation");
         dsd.setDescription("Visit information");
 
-        DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
+        DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName} {middleName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
@@ -105,7 +106,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
         dsd.addColumn("Unique Patient Number", identifierDef, null);
 
-        dsd.addColumn("Visit Date", new VisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(DATE_FORMAT));
         // new columns
         dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
         dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
