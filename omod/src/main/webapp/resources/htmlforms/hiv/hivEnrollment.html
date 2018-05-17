@@ -25,339 +25,40 @@
         var RE_ENROLL=159833;
         var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
-
-        var ageGroup = function () {
-            pAge = parseInt('<lookup expression="patient.age"/>');
-            var adultLabelText = "Adult";
-            var childLabelText = "Child";
-            if (pAge &gt; 15) {
-                whoChild.style.display='none';
-                jq("#patient-age-group").text(adultLabelText);
-            }
-            if (pAge &lt; 16) {
-                whoAdult.style.display='none';
-                jq("#patient-age-group").text(childLabelText);
-            }
-        }
-
-        function onTransferStatusChange() {
-            var transferStatus = getValue('transfer-in-status.value');
-            var pgender = "<lookup expression="patient.gender" />";
-            var pAge = parseInt('<lookup expression="patient.age"/>');
-            //New patient
-            if (transferStatus== NO_CONCEPT_ID) {
-               // jq('#transfer-details :input').prop('disabled', true);
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#transfer-details').hide();
-                jq('#patient-history').show();
-                jq('#art-history').show();
-                jq('#baseline-fieldset').show();
-                jq('#baseline-fieldset :input').prop('disabled', false);
-                jq('#baseline-assessment1').show();
-                jq('#baseline-assessment2').show();
-                jq('#baseline-assessment3').show();
-                jq('#treatment-supporter').show();
-                //jq('#generate-hiv-id').show(); Deactivate generate upn
-                jq('#transit-patient').hide();
-                //Gender based validations  pregnancy and breastfeeding
-                if (pgender == 'M') {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                //Gender based Validations bmi and muac
-                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
-                    jq('.muac').show();
-                }
-
-//              clearHiddenSections(jq('#hiv-id'));
-                clearHiddenSections(jq('#transfer-details'));
-                clearHiddenSections(jq('#confirmed-positive-date'));
-                clearHiddenSections(jq('#facility-confirmed'));
-                clearHiddenSections(jq('#whoAdult'));
-                clearHiddenSections(jq('#whoChild'));
-                clearHiddenSections(jq('#art-status'));
-                clearHiddenSections(jq('#pmtctChecked'));
-                clearHiddenSections(jq('#pepChecked'));
-                clearHiddenSections(jq('#prepChecked'));
-                clearHiddenSections(jq('#haartChecked'));
-                clearHiddenSections(jq('#baseline-fieldset'));
-
-            }
-            //Transfer in
-            if (transferStatus== YES_CONCEPT_ID) {
-                jq('#transfer-details :input').prop('disabled', false);
-                jq('#hiv-id :input').prop('disabled', false);
-               // jq('#hiv-id :input').prop('readonly',true);
-                jq('#generate-hiv-id').hide();
-                jq('#transfer-details').show();
-                jq('#patient-history').show();
-                jq('#art-history').show();
-                jq('#baseline-fieldset').show();
-                jq('#baseline-fieldset :input').prop('disabled', false);
-                jq('#baseline-assessment1').show();
-                jq('#baseline-assessment2').show();
-                jq('#baseline-assessment3').show();
-                jq('#treatment-supporter').show();
-                jq('#transit-patient').hide();
-                //Gender based validations  pregnancy and breastfeeding
-                if (pgender == 'M') {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                    jq('#pregnant :input').prop('disabled', true);
-                    jq('#breastfeeding :input').prop('disabled', true);
-                }
-                //Gender based Validations bmi and muac
-                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
-                    jq('.muac').show();
-                }
-//                clearHiddenSections(jq('#hiv-id'));
-                clearHiddenSections(jq('#transfer-details'));
-                clearHiddenSections(jq('#confirmed-positive-date'));
-                clearHiddenSections(jq('#facility-confirmed'));
-                clearHiddenSections(jq('#whoAdult'));
-                clearHiddenSections(jq('#whoChild'));
-                clearHiddenSections(jq('#art-status'));
-                clearHiddenSections(jq('#pmtctChecked'));
-                clearHiddenSections(jq('#pepChecked'));
-                clearHiddenSections(jq('#prepChecked'));
-                clearHiddenSections(jq('#haartChecked'));
-                clearHiddenSections(jq('#baseline-fieldset'));
-
-            }
-        //Transit
-            if (transferStatus== TRANSIT) {
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#transit-patient').show();
-                jq('#transfer-details').hide();
-                clearHiddenSections(jq('#transfer-details'));
-                jq('#patient-history').hide();
-                jq('#art-history').hide();
-                jq('#baseline-fieldset').hide();
-                jq('#treatment-supporter-fieldset').hide();
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
-//              clearHiddenSections(jq('#hiv-id'));
-                clearHiddenSections(jq('#transfer-details'));
-                clearHiddenSections(jq('#confirmed-positive-date'));
-                clearHiddenSections(jq('#facility-confirmed'));
-                clearHiddenSections(jq('#whoAdult'));
-                clearHiddenSections(jq('#whoChild'));
-                clearHiddenSections(jq('#art-status'));
-                clearHiddenSections(jq('#pmtctChecked'));
-                clearHiddenSections(jq('#pepChecked'));
-                clearHiddenSections(jq('#prepChecked'));
-                clearHiddenSections(jq('#haartChecked'));
-                clearHiddenSections(jq('#baseline-fieldset'));
-
-            }
-            if (transferStatus == RE_ENROLL) {
-                jq('#hiv-id :input').prop('disabled', true);
-                jq('#transit-patient').hide();
-                jq('#transfer-details').hide();
-
-                //jq('#underage').hide();
-                //jq('#guardian-details').hide();
-                clearHiddenSections(jq('#transfer-details'));
-                jq('#patient-history').hide();
-                jq('#art-history').hide();
-                jq('#baseline-fieldset').hide();
-                jq('#treatment-supporter-fieldset').hide();
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
-//              clearHiddenSections(jq('#hiv-id'));
-                clearHiddenSections(jq('#transfer-details'));
-                clearHiddenSections(jq('#confirmed-positive-date'));
-                clearHiddenSections(jq('#facility-confirmed'));
-                clearHiddenSections(jq('#whoAdult'));
-                clearHiddenSections(jq('#whoChild'));
-                clearHiddenSections(jq('#art-status'));
-                clearHiddenSections(jq('#pmtctChecked'));
-                clearHiddenSections(jq('#pepChecked'));
-                clearHiddenSections(jq('#prepChecked'));
-                clearHiddenSections(jq('#haartChecked'));
-                clearHiddenSections(jq('#baseline-fieldset'));
-            }
-            if (transferStatus == false) {
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#transit-patient').hide();
-                jq('#transfer-details').hide();
-
-                //jq('#underage').hide();
-                //jq('#guardian-details').hide();
-                clearHiddenSections(jq('#transfer-details'));
-                jq('#patient-history').hide();
-                jq('#art-history').hide();
-                jq('#baseline-fieldset').hide();
-                jq('#treatment-supporter-fieldset').hide();
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
-//              clearHiddenSections(jq('#hiv-id'));
-                clearHiddenSections(jq('#transfer-details'));
-                clearHiddenSections(jq('#confirmed-positive-date'));
-                clearHiddenSections(jq('#facility-confirmed'));
-                clearHiddenSections(jq('#whoAdult'));
-                clearHiddenSections(jq('#whoChild'));
-                clearHiddenSections(jq('#art-status'));
-                clearHiddenSections(jq('#pmtctChecked'));
-                clearHiddenSections(jq('#pepChecked'));
-                clearHiddenSections(jq('#prepChecked'));
-                clearHiddenSections(jq('#haartChecked'));
-                clearHiddenSections(jq('#baseline-fieldset'));
-            }
-        }
-        function onArtStatusChange() {
-            if (getValue('art-status.value') == 'false') {
-                jq('#art-history :input').prop('disabled', true);
-
-            } else {
-                jq('#art-history :input').prop('disabled', false);
-               // jq('#pmtctRegimen :input').prop('disabled', true);
-               // jq('#pepRegimen :input').prop('disabled', true);
-            }
-        }
-
-        var onPregnancySelected = function() {
-            var val = jq(this).val();
-            if (val == 1066){
-                jq(".muac").hide();
-
-            }else {
-                jq(".muac").show();
-            }
-        }
-
-        function onUpnGenerateClick() {
-            kenyaui.openConfirmDialog({
-                heading: 'Generate UPN',
-                message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
-                okLabel: 'Continue',
-                okCallback: function() {
-                    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
-                        jq('#hiv-id input[type=text]').val(data.value);
-                        jq('#generate-hiv-id').hide();
-                    });
-                }
-            });
-        }
-
-        function onSubmitWithUpnField(upn) {
-            var isPresent = "";
-            jq.getJSON('/' + ctxPath +  '/kenyaemr/patient/patientUtils/patientExist.action',{ patientId: upn },function(data) {
-                if(data != null){
-                    isPresent = data;
-                }
-            });
-            return isPresent;
-        }
-        //Validate baseline bmi
-        function onWeightOrHeightChange() {
-            var display = '';
-            var weightKg = parseFloat(getValue('weight.value'));
-            var heightM = parseFloat(getValue('height.value')) / 100;
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                var bmi = weightKg / (heightM * heightM);
-                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
-                }
-                else {
-                    display = bmi.toFixed(2);
-                }
-            }
-
-            jQuery('#calculated-bmi').html(display);
-        }
-        function viralLoadValidation() {
-            var vl = parseInt(getValue('vl.value'));
-            //console.log("vl "+vl);
-            if (vl > 0 ) {
-                jq('#vl :input').prop("disabled", false);
-                jq('#ldl :input').prop("disabled", true);
-
-            }else {
-                //  jq('#vLoadResults :input').prop("disabled", true);
-                jq('#ldl :input').prop("disabled", false);
-
-            }
-            if (getValue('ldl.value') == 1302) {
-                jq('#vl :input').prop("disabled", true);
-                jq('#ldl :input').prop("disabled", false);
-            }else {
-                jq('#vl :input').prop("disabled", false);
-                jq('#ldl :input').prop("disabled", true);
-            }
-        }
-
-        clearHiddenSections = function(parentObj) {
-
-
-            parentObj.find('input[type=radio]').each(function() {
-                this.checked = false;
-
-            });
-
-            parentObj.find('input[type=checkbox]').each(function() {
-
-                this.checked = false;
-
-            });
-            parentObj.find('input[type=text]').each(function() {
-
-                jq(this).val("");
-
-            });
-            parentObj.find('select').each(function() {
-
-                this.selectedIndex =0;
-
-            });
-        }
-
         //On Ready
         jq(function() {
-            //Get age and gender for validation
+            var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
+            var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+            var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
+            var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
+            var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
             jq('#transfer-in-status input').change(onTransferStatusChange);
             jq('#art-status input').change(onArtStatusChange);
-            //Not all ART regimens have answers
-            //jq('#pmtctChecked input').click(onPmtctSelected);
-            //jq('#pepChecked input').click(onPepSelected);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             jq('#transit-patient').hide();
             jq('#art-history :input').prop('disabled', true);
-           // jq('#pmtctCheck :input').prop('checked', false);
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
-            //limit letters only in text field
             //vl and ldl validation
             getField('ldl.value').change(viralLoadValidation);
             getField('vl.value').keyup(viralLoadValidation);
             viralLoadValidation;
-
-			jQuery('#rsn').keypress(function(event) {
+            jQuery('#rsn').keypress(function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
                 //alert(code)
                 if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
                     event.preventDefault();
             });
             onTransferStatusChange();
-			//defaults
-            jq('#transfer-details :input').prop('disabled', true);
-            jq('#hiv-id :input').prop('disabled', true);
+            //defaults
             jq('#generate-hiv-id').hide();
-            jq('#baseline-fieldset :input').prop('disabled', true);
-
-            //Gender based validations  pregnancy and breastfeeding
+            //Gender based validations  pregnancy, breastfeeding bmi and muac
             if (pgender == 'M') {
                 jq('#pregnant :input').prop('disabled', true);
                 jq('#breastfeeding :input').prop('disabled', true);
@@ -366,19 +67,43 @@
                 jq('#pregnant :input').prop('disabled', true);
                 jq('#breastfeeding :input').prop('disabled', true);
             }
-             //Gender based Validations bmi and muac
             if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
                 jq('.muac').show();
             }
-            //Validate for enrollment
+            //UPN Validation
             var hasUPN = jq('#hiv-id input[type=text]').val();
             if(hasUPN == null)
-			{
+            {
                 jq("#transfer-in-status input[value=159833]").prop("disabled", true);
-			}
+            }
+            //Prepopulated fileds from the HTS forms
+            if (date_confirmed_positive != null) {
+                setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                getField('confirmed-positive-date.value').prop("readonly", true);
+            }
 
+            if (date_enrolled_in_care != null) {
+                setValue('confirmed-positive-date.value', moment(moment(date_enrolled_in_care, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                getField('confirmed-positive-date.value').prop("readonly", true);
+            }
+
+            if (art_start_date != null) {
+                setValue('confirmed-positive-date.value', moment(moment(art_start_date, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                getField('confirmed-positive-date.value').prop("readonly", true);
+            }
+            if (facility_confirmed != null) {
+                getField('facility-confirmed.value').val(facility_confirmed);
+            }
+            //console.log("Facility == >"+facility_confirmed);
+            //TODO: Consider validation fro pmtct
+            //Not all ART regimens have answers
+            //jq('#pmtctChecked input').click(onPmtctSelected);
+            //jq('#pepChecked input').click(onPepSelected);
+            // jq('#pmtctCheck :input').prop('checked', false);
+            // jq('#transfer-details :input').prop('disabled', true);
+            //jq('#hiv-id :input').prop('disabled', true);
+            //jq('#baseline-fieldset :input').prop('disabled', true);
         });
-
         //Before Submit
         beforeSubmit.push(function() {
             var birthDate = "<lookup expression="patient.birthdate" />";
@@ -409,14 +134,11 @@
                 getField('encounter-date.error').html('Enrollment date, should  be later than birth Date').show();
                 return false;
             }
-
             var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
             if (isBirthdateBeforeConfirmedPve) {
                 getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
                 return false;
             }
-
-
             var isEnrollmentDateBeforeConfirmedPve = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
             if (isEnrollmentDateBeforeConfirmedPve) {
                 getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
@@ -429,7 +151,6 @@
                     return false;
                 }
             }
-
             if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
                 var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
                 if (isARTStartDateBeforeFirstEnrolled) {
@@ -443,6 +164,220 @@
             }
             return true;
         });
+
+        var ageGroup = function () {
+            pAge = parseInt('<lookup expression="patient.age"/>');
+            var adultLabelText = "Adult";
+            var childLabelText = "Child";
+            if (pAge &gt; 15) {
+                whoChild.style.display='none';
+                jq("#patient-age-group").text(adultLabelText);
+            }
+            if (pAge &lt; 16) {
+                whoAdult.style.display='none';
+                jq("#patient-age-group").text(childLabelText);
+            }
+        }
+        function onTransferStatusChange() {
+            var transferStatus = getValue('transfer-in-status.value');
+            var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var transferDetails = jq('#transfer-details');
+            var whoAdult = jq('#whoAdult');
+            var whoChild = jq('#whoChild');
+            var artStatus = jq('#art-status');
+            var pmtctChecked = jq('#pmtctChecked');
+            var pepChecked = jq('#pepChecked');
+            var prepChecked = jq('#prepChecked');
+            var haartChecked = jq('#haartChecked');
+            var baselineFieldset = jq('#baseline-fieldset');
+            //New patient
+            if (transferStatus== NO_CONCEPT_ID) {
+               // jq('#transfer-details :input').prop('disabled', true);
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#transfer-details').hide();
+                jq('#patient-history').show();
+                jq('#art-history').show();
+                jq('#baseline-fieldset').show();
+                jq('#baseline-fieldset :input').prop('disabled', false);
+                jq('#baseline-assessment1').show();
+                jq('#baseline-assessment2').show();
+                jq('#baseline-assessment3').show();
+                jq('#treatment-supporter').show();
+                //jq('#generate-hiv-id').show(); Deactivate generate upn
+                jq('#transit-patient').hide();
+                //Gender based validations  pregnancy and breastfeeding
+                if (pgender == 'M') {
+                    jq('#pregnant :input').prop('disabled', true);
+                    jq('#breastfeeding :input').prop('disabled', true);
+                }
+                if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
+                    jq('#pregnant :input').prop('disabled', true);
+                    jq('#breastfeeding :input').prop('disabled', true);
+                }
+                //Gender based Validations bmi and muac
+                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
+                    jq('.muac').show();
+                }
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked]);
+            }
+            //Transfer in
+            if (transferStatus== YES_CONCEPT_ID) {
+                jq('#transfer-details :input').prop('disabled', false);
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
+                jq('#transfer-details').show();
+                jq('#patient-history').show();
+                jq('#art-history').show();
+                jq('#baseline-fieldset').show();
+                jq('#baseline-fieldset :input').prop('disabled', false);
+                jq('#baseline-assessment1').show();
+                jq('#baseline-assessment2').show();
+                jq('#baseline-assessment3').show();
+                jq('#treatment-supporter').show();
+                jq('#transit-patient').hide();
+                //Gender based validations  pregnancy, breastfeeding bmi and muac
+                if (pgender == 'M') {
+                    jq('#pregnant :input').prop('disabled', true);
+                    jq('#breastfeeding :input').prop('disabled', true);
+                }
+                if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
+                    jq('#pregnant :input').prop('disabled', true);
+                    jq('#breastfeeding :input').prop('disabled', true);
+                }
+                if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
+                    jq('.muac').show();
+                }
+               // clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,]);
+            }
+            if (transferStatus== TRANSIT) {
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#transit-patient').show();
+                jq('#transfer-details').hide();
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
+            }
+            if (transferStatus == RE_ENROLL) {
+                jq('#hiv-id :input').prop('disabled', true);
+                jq('#transit-patient').hide();
+                jq('#transfer-details').hide();
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+             }
+            if (transferStatus == false) {
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#transit-patient').hide();
+                jq('#transfer-details').hide();
+                jq('#patient-history').hide();
+                jq('#art-history').hide();
+                jq('#baseline-fieldset').hide();
+                jq('#treatment-supporter-fieldset').hide();
+                jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
+                clearHiddenSections([transferDatails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+             }
+        }
+        function onArtStatusChange() {
+            if (getValue('art-status.value') == 'false') {
+                jq('#art-history :input').prop('disabled', true);
+
+            } else {
+                jq('#art-history :input').prop('disabled', false);
+               // jq('#pmtctRegimen :input').prop('disabled', true);
+               // jq('#pepRegimen :input').prop('disabled', true);
+            }
+        }
+        var onPregnancySelected = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq(".muac").hide();
+
+            }else {
+                jq(".muac").show();
+            }
+        }
+        function onUpnGenerateClick() {
+            kenyaui.openConfirmDialog({
+                heading: 'Generate UPN',
+                message: 'This should only be used for new patients. If the patient already has a UPN, please enter that instead.',
+                okLabel: 'Continue',
+                okCallback: function() {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/nextHivUniquePatientNumber.action', function(data) {
+                        jq('#hiv-id input[type=text]').val(data.value);
+                        jq('#generate-hiv-id').hide();
+                    });
+                }
+            });
+        }
+        function onSubmitWithUpnField(upn) {
+            var isPresent = "";
+            jq.getJSON('/' + ctxPath +  '/kenyaemr/patient/patientUtils/patientExist.action',{ patientId: upn },function(data) {
+                if(data != null){
+                    isPresent = data;
+                }
+            });
+            return isPresent;
+        }
+        //Validate baseline bmi
+        function onWeightOrHeightChange() {
+            var display = '';
+            var weightKg = parseFloat(getValue('weight.value'));
+            var heightM = parseFloat(getValue('height.value')) / 100;
+            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                var bmi = weightKg / (heightM * heightM);
+                if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+                    display = 'Abnormal value. Were height and height entered correctly?';
+                }
+                else {
+                    display = bmi.toFixed(2);
+                }
+            }
+            jQuery('#calculated-bmi').html(display);
+        }
+        function viralLoadValidation() {
+            var vl = parseInt(getValue('vl.value'));
+            if (vl > 0 ) {
+                jq('#vl :input').prop("disabled", false);
+                jq('#ldl :input').prop("disabled", true);
+
+            }else {
+                jq('#ldl :input').prop("disabled", false);
+
+            }
+            if (getValue('ldl.value') == 1302) {
+                jq('#vl :input').prop("disabled", true);
+                jq('#ldl :input').prop("disabled", false);
+            }else {
+                jq('#vl :input').prop("disabled", false);
+                jq('#ldl :input').prop("disabled", true);
+            }
+        }   clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.value = "";
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+        }
+
 	</script>
 
 	<div class="ke-form-header">
@@ -496,166 +431,6 @@
 					</td>
 				</tr>
 				<tr>
-					<ifMode mode="EDIT">
-						<script type="text/javascript">
-                            jq(function(){
-                                var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
-                                var YES_CONCEPT_ID = 160563;
-                                var NO_CONCEPT_ID = 164144;
-                                var TRANSIT =164931;
-                                var RE_ENROLL=159833;
-                                var pgender = "<lookup expression="patient.gender" />";
-                                if(PATIENT_IS_ENROLLED_HIV) {
-                                    jq('#hiv-id :input').prop('readonly', true);
-                                    jq('#generate-hiv-id').hide();
-
-                                    jq('#transfer-details :input').prop('disabled', false);
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    jq('#baseline-fieldset :input').prop('disabled', false);
-                                    //Gender based validations  pregnancy and breastfeeding
-                                    if (pgender == 'M') {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    //Gender based Validations bmi and muac
-                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
-                                        jq('.muac').show();
-                                    }
-
-                                }
-                                var transferStatus = getValue('transfer-in-status.value');
-                                var pgender = "<lookup expression="patient.gender" />";
-                                var pAge = parseInt('<lookup expression="patient.age"/>');
-                                //Defaults on edit
-                                //New patient
-                                if (transferStatus== NO_CONCEPT_ID) {
-                                    // jq('#transfer-details :input').prop('disabled', true);
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    jq('#transfer-details').hide();
-                                    jq('#patient-history').show();
-                                    jq('#art-history').show();
-                                    jq('#baseline-fieldset').show();
-                                    jq('#baseline-fieldset :input').prop('disabled', false);
-                                    jq('#baseline-assessment1').show();
-                                    jq('#baseline-assessment2').show();
-                                    jq('#baseline-assessment3').show();
-                                    jq('#treatment-supporter').show();
-                                    //jq('#generate-hiv-id').show(); Deactivate generate upn
-                                    jq('#transit-patient').hide();
-                                    //Gender based validations  pregnancy and breastfeeding
-                                    if (pgender == 'M') {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    //Gender based Validations bmi and muac
-                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
-                                        jq('.muac').show();
-                                    }
-                                }
-                                //Transfer in
-                                if (transferStatus== YES_CONCEPT_ID) {
-                                    jq('#transfer-details :input').prop('disabled', false);
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    // jq('#hiv-id :input').prop('readonly',true);
-                                    jq('#generate-hiv-id').hide();
-                                    jq('#transfer-details').show();
-                                    jq('#patient-history').show();
-                                    jq('#art-history').show();
-                                    jq('#baseline-fieldset').show();
-                                    jq('#baseline-fieldset :input').prop('disabled', false);
-                                    jq('#baseline-assessment1').show();
-                                    jq('#baseline-assessment2').show();
-                                    jq('#baseline-assessment3').show();
-                                    jq('#treatment-supporter').show();
-                                    jq('#transit-patient').hide();
-                                    //Gender based validations  pregnancy and breastfeeding
-                                    if (pgender == 'M') {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    //Gender based Validations bmi and muac
-                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
-                                        jq('.muac').show();
-                                    }
-
-                                }
-                                //Transit
-                                if (transferStatus == TRANSIT) {
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    jq('#transit-patient').show();
-                                    jq('#transfer-details').hide();
-                                    clearHiddenSections(jq('#transfer-details'));
-                                    jq('#patient-history').hide();
-                                    jq('#art-history').hide();
-                                    jq('#baseline-fieldset').hide();
-                                    jq('#treatment-supporter-fieldset').hide();
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    jq('#generate-hiv-id').hide();
-
-                                }
-                                if (transferStatus == RE_ENROLL) {
-                                    jq('#hiv-id :input').prop('disabled', true);
-                                    jq('#transit-patient').hide();
-                                    jq('#transfer-details').hide();
-
-                                    //jq('#underage').hide();
-                                    //jq('#guardian-details').hide();
-                                    clearHiddenSections(jq('#transfer-details'));
-                                    jq('#patient-history').hide();
-                                    jq('#art-history').hide();
-                                    jq('#baseline-fieldset').hide();
-                                    jq('#treatment-supporter-fieldset').hide();
-                                    jq('#hiv-id :input').prop('disabled', false);
-                                    jq('#generate-hiv-id').hide();
-//              clearHiddenSections(jq('#hiv-id'));
-                                    clearHiddenSections(jq('#transfer-details'));
-                                    clearHiddenSections(jq('#confirmed-positive-date'));
-                                    clearHiddenSections(jq('#facility-confirmed'));
-                                    clearHiddenSections(jq('#whoAdult'));
-                                    clearHiddenSections(jq('#whoChild'));
-                                    clearHiddenSections(jq('#art-status'));
-                                    clearHiddenSections(jq('#pmtctChecked'));
-                                    clearHiddenSections(jq('#pepChecked'));
-                                    clearHiddenSections(jq('#prepChecked'));
-                                    clearHiddenSections(jq('#haartChecked'));
-                                    clearHiddenSections(jq('#baseline-fieldset'));
-                                }
-                                if (transferStatus == "") {
-                                    jq('#transfer-details :input').prop('disabled', true);
-                                    jq('#hiv-id :input').prop('disabled', true);
-                                    jq('#generate-hiv-id').hide();
-                                    //Gender based validations  pregnancy and breastfeeding
-                                    if (pgender == 'M') {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    if (pgender == 'F' &amp;&amp; pAge &lt; 10) {
-                                        jq('#pregnant :input').prop('disabled', true);
-                                        jq('#breastfeeding :input').prop('disabled', true);
-                                    }
-                                    //Gender based Validations bmi and muac
-                                    if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
-                                        jq('.muac').show();
-                                    }
-
-                                }
-
-                            });
-
-						</script>
-					</ifMode>
 					<td>Unique Patient Number (UPN)</td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
@@ -675,35 +450,6 @@
 				</tr>
 			</table>
 			<div id="transfer-details">
-				<ifMode mode="ENTER">
-					<script type="text/javascript">
-                        jq(function(){
-                            //var date_confirmed_positive = <lookup expression="#set( $last_enrollment_enc = $fn.latestEncounter('de78a6be-bfc5-4634-adc3-5f1a280455cc') ) #set ($lastObs = $fn.getObs($last_enrollment_enc, 160554).valueDateTime)" />;
-
-                            var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
-                            var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
-                            var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
-
-                            if (date_confirmed_positive != null) {
-								setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-								getField('confirmed-positive-date.value').prop("readonly", true);
-							}
-
-                            if (date_enrolled_in_care != null) {
-                                setValue('confirmed-positive-date.value', moment(moment(date_enrolled_in_care, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                                getField('confirmed-positive-date.value').prop("readonly", true);
-                            }
-
-                            if (art_start_date != null) {
-                                setValue('confirmed-positive-date.value', moment(moment(art_start_date, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                                getField('confirmed-positive-date.value').prop("readonly", true);
-                            }
-                            //var art_start_date_from_orders = "<lookup expression="fn.earliestObs(1085).getObsDatetime()"/>"; should get from orders
-
-                        });
-
-					</script>
-				</ifMode>
 				<table>
 					<tr>
 						<td>Transfer in date:</td>
@@ -711,7 +457,7 @@
 					</tr>
 					<tr>
 						<td>Transferred from facility:</td>
-						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  size="20"/></td>
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
@@ -724,7 +470,6 @@
 				</table>
 			</div>
 		</fieldset>
-
 		<fieldset id="patient-history" >
 			<legend>ART History</legend>
 
