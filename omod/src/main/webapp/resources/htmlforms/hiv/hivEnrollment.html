@@ -27,7 +27,7 @@
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         //On Ready
         jq(function() {
-            var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
+            //var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
             var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
@@ -72,9 +72,14 @@
             }
             //UPN Validation
             var hasUPN = jq('#hiv-id input[type=text]').val();
-            if(hasUPN == null)
+            //console.log("UPN==> "+hasUPN);
+            if(hasUPN == "")
             {
                 jq("#transfer-in-status input[value=159833]").prop("disabled", true);
+            }
+            if(hasUPN != "")
+            {
+                jq("#transfer-in-status input[value=164144]").prop("disabled", true);
             }
             //Prepopulated fileds from the HTS forms
             if (date_confirmed_positive != null) {
@@ -94,7 +99,6 @@
             if (facility_confirmed != null) {
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
-            //console.log("Facility == >"+facility_confirmed);
             //TODO: Consider validation fro pmtct
             //Not all ART regimens have answers
             //jq('#pmtctChecked input').click(onPmtctSelected);
@@ -284,7 +288,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                clearHiddenSections([transferDatails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
              }
         }
         function onArtStatusChange() {
