@@ -27,7 +27,7 @@
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         //On Ready
         jq(function() {
-            var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
+            //var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
             var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
@@ -72,9 +72,14 @@
             }
             //UPN Validation
             var hasUPN = jq('#hiv-id input[type=text]').val();
-            if(hasUPN == null)
+            //console.log("UPN==> "+hasUPN);
+            if(hasUPN == "")
             {
                 jq("#transfer-in-status input[value=159833]").prop("disabled", true);
+            }
+            if(hasUPN != "")
+            {
+                jq("#transfer-in-status input[value=164144]").prop("disabled", true);
             }
             //Prepopulated fileds from the HTS forms
             if (date_confirmed_positive != null) {
@@ -94,7 +99,6 @@
             if (facility_confirmed != null) {
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
-            //console.log("Facility == >"+facility_confirmed);
             //TODO: Consider validation fro pmtct
             //Not all ART regimens have answers
             //jq('#pmtctChecked input').click(onPmtctSelected);
@@ -125,8 +129,12 @@
                     return false;
                 }
             }
-            if (encounterDate =="") {
+            if (encounterDate =="" &amp;&amp; upn == "") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
+                return false;
+            }
+            if (encounterDate =="" &amp;&amp; upn != "" ) {
+                getField('encounter-date.error').html('Re-enrollment date should not be empty').show();
                 return false;
             }
             var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
@@ -206,6 +214,7 @@
                 jq('#treatment-supporter').show();
                 //jq('#generate-hiv-id').show(); Deactivate generate upn
                 jq('#transit-patient').hide();
+                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -236,6 +245,7 @@
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
                 jq('#transit-patient').hide();
+                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy, breastfeeding bmi and muac
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -260,6 +270,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
             }
             if (transferStatus == RE_ENROLL) {
@@ -272,6 +283,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq("#entry-point input[value=162050]").prop("checked", true);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
              }
             if (transferStatus == false) {
@@ -284,7 +296,8 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                clearHiddenSections([transferDatails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+                jq("#entry-point :input").prop("checked", false);
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
              }
         }
         function onArtStatusChange() {
@@ -384,14 +397,15 @@
 		<table style="width: 100%">
 			<tr>
 				<td>
-					<ifMode mode="ENTER">
+					<ifMode mode="EDIT">
 						<script type="text/javascript">
                             jq(function(){
                                 setValue("encounter-date.value", "");
                             });
 						</script>
+						Re-enrollment date: <encounterDate id="encounter-date" showTime="true" />
 					</ifMode>
-					Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+					   Enrollment date: <encounterDate id="encounter-date" showTime="true" />
 				</td>
 				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
@@ -402,23 +416,7 @@
 	<div class="ke-form-content">
 		<fieldset>
 			<legend>Patient Source</legend>
-
 			<table>
-				<tr>
-					<td>Entry point</td>
-					<td colspan="3">
-						<obs style="radio" answerSeparator=" "
-							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
-
-						/>
-					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</obsgroup></td>
-					</td>
-				</tr>
-				<tr></tr>
 				<tr>
 					<td>Patient Type</td>
 					<td>
@@ -428,6 +426,20 @@
 								answerLabels="New Patient,Transfer in,Transit,Re-enrollment(Re-activation)"
 								required="true"
 						/>
+					</td>
+				</tr>
+				<tr>
+					<td>Entry point</td>
+					<td colspan="3">
+						<obs id="entry-point" style="radio" answerSeparator=" "
+							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
+
+						/>
+					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</obsgroup></td>
 					</td>
 				</tr>
 				<tr>
