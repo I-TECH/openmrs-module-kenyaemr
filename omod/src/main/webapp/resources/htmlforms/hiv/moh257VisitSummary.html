@@ -251,6 +251,7 @@
             var childvaccselected = jq('#child-vacc');
             var phdpcondomsselected = jq('#phdp-condoms');
             var phdpdisclosureselected = jq('#phdp-disclosure');
+            var phdpsubstanceselected = jq('#phdp-substance-abuse');
             var phdptestingselected = jq('#phdp-testing');
             var phdpstiscreeningselected = jq('#phdp-sti-screening');
             var adherencearvselected = jq('#adherence-arv');
@@ -270,7 +271,7 @@
 
                 jq('.patient-details :input').prop('disabled', true);
                 clearHiddenSections([tbScreeningResults, nutStatus, whostage, fpType, fpStatus, maleFpStatus, allergiesselected, complaintsselected, adversereactionsselected,
-                 chronicillnessselected, generalexamselected, pregoptionsselected, adultvaccselected, childvaccselected, phdpcondomsselected, phdpdisclosureselected,
+                 chronicillnessselected, generalexamselected, pregoptionsselected, adultvaccselected, childvaccselected, phdpcondomsselected, phdpdisclosureselected,phdpsubstanceselected,
                 phdptestingselected, phdpstiscreeningselected, adherencearvselected, adherencectxselected, adherencedapsoneselected]);
                 jq('#weight input').val('');
                 jq('#height input').val('');
@@ -1432,7 +1433,7 @@
                             <td>Has the Client disclosed HIV status to their sexually active partner?</td>
                             <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unknown" id="phdp-disclosure"
+                                     answerLabels="Yes,No,Unknown" id="phdp-substance-abuse"
                                      style="radio"/>
                             </td>
                         </tr>

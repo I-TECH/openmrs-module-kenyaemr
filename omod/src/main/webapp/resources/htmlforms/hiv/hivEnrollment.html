@@ -129,8 +129,12 @@
                     return false;
                 }
             }
-            if (encounterDate =="") {
+            if (encounterDate =="" &amp;&amp; upn == "") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
+                return false;
+            }
+            if (encounterDate =="" &amp;&amp; upn != "" ) {
+                getField('encounter-date.error').html('Re-enrollment date should not be empty').show();
                 return false;
             }
             var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
@@ -276,6 +280,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq("#entry-point input[value=162050]").prop("checked", true);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
              }
             if (transferStatus == false) {
@@ -388,14 +393,15 @@
 		<table style="width: 100%">
 			<tr>
 				<td>
-					<ifMode mode="ENTER">
+					<ifMode mode="EDIT">
 						<script type="text/javascript">
                             jq(function(){
                                 setValue("encounter-date.value", "");
                             });
 						</script>
+						Re-enrollment date: <encounterDate id="encounter-date" showTime="true" />
 					</ifMode>
-					Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+					   Enrollment date: <encounterDate id="encounter-date" showTime="true" />
 				</td>
 				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
@@ -406,23 +412,7 @@
 	<div class="ke-form-content">
 		<fieldset>
 			<legend>Patient Source</legend>
-
 			<table>
-				<tr>
-					<td>Entry point</td>
-					<td colspan="3">
-						<obs style="radio" answerSeparator=" "
-							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
-
-						/>
-					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</obsgroup></td>
-					</td>
-				</tr>
-				<tr></tr>
 				<tr>
 					<td>Patient Type</td>
 					<td>
@@ -432,6 +422,20 @@
 								answerLabels="New Patient,Transfer in,Transit,Re-enrollment(Re-activation)"
 								required="true"
 						/>
+					</td>
+				</tr>
+				<tr>
+					<td>Entry point</td>
+					<td colspan="3">
+						<obs id="entry-point" style="radio" answerSeparator=" "
+							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
+
+						/>
+					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</obsgroup></td>
 					</td>
 				</tr>
 				<tr>
