@@ -214,6 +214,7 @@
                 jq('#treatment-supporter').show();
                 //jq('#generate-hiv-id').show(); Deactivate generate upn
                 jq('#transit-patient').hide();
+                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -244,6 +245,7 @@
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
                 jq('#transit-patient').hide();
+                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy, breastfeeding bmi and muac
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -268,6 +270,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
             }
             if (transferStatus == RE_ENROLL) {
@@ -293,6 +296,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
+                jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
              }
         }
