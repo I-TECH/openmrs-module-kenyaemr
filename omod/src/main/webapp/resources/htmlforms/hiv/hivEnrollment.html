@@ -28,11 +28,17 @@
         //On Ready
         jq(function() {
             //var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
-            var date_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+            var confirmed_positive = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+            var date_confirmed_positive = "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
+            var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getObsDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
-            var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
+            var facility_confirmed = "<lookup expression="fn.location(162724).getValueText()"/>";
             var pgender = "<lookup expression="patient.gender" />";
+
+           //var default_location ="<lookup expression="fn.location('GlobalProperty:kenyaemr.defaultLocation')" />";
+            //var default_location = "<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />";
+
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
@@ -81,10 +87,24 @@
             {
                 jq("#transfer-in-status input[value=164144]").prop("disabled", true);
             }
-            //Prepopulated fileds from the HTS forms
-            if (date_confirmed_positive != null) {
-                setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            //Prepopulated fileds from the Repeat test forms
+            console.log("confirmed_positive ==>"+confirmed_positive);
+            console.log("date added as confirmed_positive ==>"+date_added_as_confirmed_positive);
+			console.log("date_confirmed_positive ==>"+date_confirmed_positive);
+            console.log("date_enrolled_in_care ==>"+date_enrolled_in_care);
+            console.log("art_start_date ==>"+art_start_date);
+            console.log("facility_confirmed ==>"+facility_confirmed);
+           // console.log("default_location ==>"+default_location.getText());
+
+
+            if(date_added_as_confirmed_positive != "") {
+                setValue('confirmed-positive-date.value', moment(moment(date_added_as_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 getField('confirmed-positive-date.value').prop("readonly", true);
+            }else  if (confirmed_positive == 703) {
+				if (date_confirmed_positive != null) {
+					setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+					getField('confirmed-positive-date.value').prop("readonly", true);
+				}
             }
 
             if (date_enrolled_in_care != null) {
@@ -97,6 +117,7 @@
                 getField('confirmed-positive-date.value').prop("readonly", true);
             }
             if (facility_confirmed != null) {
+           // <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
             //TODO: Consider validation fro pmtct
@@ -398,14 +419,26 @@
 			<tr>
 				<td>
 					<ifMode mode="EDIT">
-						<script type="text/javascript">
-                            jq(function(){
-                                setValue("encounter-date.value", "");
-                            });
-						</script>
-						Re-enrollment date: <encounterDate id="encounter-date" showTime="true" />
+					<script type="text/javascript">
+                        jq(function(){
+                            setValue("encounter-date.value", "");
+                        });
+					</script>
+			        </ifMode>
+					<ifMode mode="EDIT">
+						    <includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == true">
+								Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+							</includeIf>
 					</ifMode>
-					   Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+					<ifMode mode="ENTER">
+						<includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == true">
+							Re-enrollment date: <encounterDate id="encounter-date" showTime="true" />
+						</includeIf>
+						<includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == false">
+							Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+						</includeIf>
+					</ifMode>
+
 				</td>
 				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
@@ -435,7 +468,6 @@
 							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
-
 						/>
 					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -876,7 +908,6 @@
 								</td>
 								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-
 							</tr>
 						</obsgroup>
 					</template>
