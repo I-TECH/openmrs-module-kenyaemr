@@ -35,9 +35,9 @@
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
             var facility_confirmed = "<lookup expression="fn.location(162724).getValueText()"/>";
             var pgender = "<lookup expression="patient.gender" />";
-
-           //var default_location ="<lookup expression="fn.location('GlobalProperty:kenyaemr.defaultLocation')" />";
-            //var default_location = "<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />";
+             //prepopulate facility
+            //  var default_location ="<lookup expression="fn.location(3282).name" />";
+          //   console.log("default_location ==>"+default_location);
 
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
@@ -87,24 +87,14 @@
             {
                 jq("#transfer-in-status input[value=164144]").prop("disabled", true);
             }
-            //Prepopulated fileds from the Repeat test forms
-            console.log("confirmed_positive ==>"+confirmed_positive);
-            console.log("date added as confirmed_positive ==>"+date_added_as_confirmed_positive);
-			console.log("date_confirmed_positive ==>"+date_confirmed_positive);
-            console.log("date_enrolled_in_care ==>"+date_enrolled_in_care);
-            console.log("art_start_date ==>"+art_start_date);
-            console.log("facility_confirmed ==>"+facility_confirmed);
-           // console.log("default_location ==>"+default_location.getText());
-
-
             if(date_added_as_confirmed_positive != "") {
                 setValue('confirmed-positive-date.value', moment(moment(date_added_as_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 getField('confirmed-positive-date.value').prop("readonly", true);
             }else  if (confirmed_positive == 703) {
-				if (date_confirmed_positive != null) {
-					setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-					getField('confirmed-positive-date.value').prop("readonly", true);
-				}
+                if (date_confirmed_positive != null) {
+                    setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                    getField('confirmed-positive-date.value').prop("readonly", true);
+                }
             }
 
             if (date_enrolled_in_care != null) {
@@ -117,7 +107,6 @@
                 getField('confirmed-positive-date.value').prop("readonly", true);
             }
             if (facility_confirmed != null) {
-           // <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
             //TODO: Consider validation fro pmtct
@@ -155,7 +144,7 @@
                 return false;
             }
             if (encounterDate =="" &amp;&amp; upn != "" ) {
-                getField('encounter-date.error').html('Re-enrollment date should not be empty').show();
+                getField('encounter-date.error').html('Enrollment date should not be empty').show();
                 return false;
             }
             var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
@@ -222,7 +211,7 @@
             var baselineFieldset = jq('#baseline-fieldset');
             //New patient
             if (transferStatus== NO_CONCEPT_ID) {
-               // jq('#transfer-details :input').prop('disabled', true);
+                // jq('#transfer-details :input').prop('disabled', true);
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#transfer-details').hide();
                 jq('#patient-history').show();
@@ -279,7 +268,7 @@
                 if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
                 }
-               // clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,]);
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,]);
             }
             if (transferStatus== TRANSIT) {
                 jq('#hiv-id :input').prop('disabled', false);
@@ -306,7 +295,7 @@
                 jq('#generate-hiv-id').hide();
                 jq("#entry-point input[value=162050]").prop("checked", true);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
-             }
+            }
             if (transferStatus == false) {
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#transit-patient').hide();
@@ -319,7 +308,7 @@
                 jq('#generate-hiv-id').hide();
                 jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
-             }
+            }
         }
         function onArtStatusChange() {
             if (getValue('art-status.value') == 'false') {
@@ -327,8 +316,8 @@
 
             } else {
                 jq('#art-history :input').prop('disabled', false);
-               // jq('#pmtctRegimen :input').prop('disabled', true);
-               // jq('#pepRegimen :input').prop('disabled', true);
+                // jq('#pmtctRegimen :input').prop('disabled', true);
+                // jq('#pepRegimen :input').prop('disabled', true);
             }
         }
         var onPregnancySelected = function() {
@@ -419,16 +408,17 @@
 			<tr>
 				<td>
 					<ifMode mode="EDIT">
-					<script type="text/javascript">
-                        jq(function(){
-                            setValue("encounter-date.value", "");
-                        });
-					</script>
-			        </ifMode>
+						<script type="text/javascript">
+                            jq(function(){
+                                jq("#transfer-in-status input[value=164144]").prop("disabled", false);
+                                setValue("encounter-date.value", "");
+                            });
+						</script>
+					</ifMode>
 					<ifMode mode="EDIT">
-						    <includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == true">
-								Enrollment date: <encounterDate id="encounter-date" showTime="true" />
-							</includeIf>
+						<includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == true">
+							Enrollment date: <encounterDate id="encounter-date" showTime="true" />
+						</includeIf>
 					</ifMode>
 					<ifMode mode="ENTER">
 						<includeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber() == true">
@@ -478,7 +468,7 @@
 					<td>Unique Patient Number (UPN)</td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
-							<input type="button" id="generate-hiv-id" value="Generate"/>
+						<input type="button" id="generate-hiv-id" value="Generate"/>
 					</td>
 				</tr>
 			</table>
@@ -527,7 +517,7 @@
 					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td>
 				</tr>
 				<tr>
-					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> * </td>
+					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> </td>
 					<td>
 						<div id="whoAdult">
 							<table>
@@ -765,21 +755,21 @@
 
 				</tr>
 
-						<tr class="bmi">
-							<td colspan="2"></td>
-							<td>BMI</td>
-							<td><span id="calculated-bmi" class="value"></span></td>
-						</tr>
+				<tr class="bmi">
+					<td colspan="2"></td>
+					<td>BMI</td>
+					<td><span id="calculated-bmi" class="value"></span></td>
+				</tr>
 
-			          <tr class="muac">
-									<td colspan="2"></td>
-									<td>MUAC</td>
-									<td>
-										<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-									</td>
-					</tr>
+				<tr class="muac">
+					<td colspan="2"></td>
+					<td>MUAC</td>
+					<td>
+						<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
 			</table>
-				<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
+			<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
 				<tr class="patient-details">
 					<td colspan="2"></td>
 					<td>CD4 Count</td>
@@ -810,7 +800,7 @@
 							 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                      162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							     answerLabels="AZT/3TC/DTG,
+							 answerLabels="AZT/3TC/DTG,
 								               TDF/3TC/DTG,
 								               ABC/3TC/DTG,
 								               TDF-3TC-EFV,
@@ -839,9 +829,9 @@
 			</table>
 		</fieldset>
 		<includeIf velocityTest="$patient.age &lt; 18">
-		<fieldset id ="underage">
-			<legend>Under 18 Years</legend>
-			<table id="underage-details" style="width: 70%;" border="0">
+			<fieldset id ="underage">
+				<legend>Under 18 Years</legend>
+				<table id="underage-details" style="width: 70%;" border="0">
 					<tr>
 						<td>In school :
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -856,66 +846,66 @@
 							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" required = "true" id="guardian-name"/>
 						</td>
 					</tr>
-			</table>
-			<table id="guardian-details" style="width: 50%;" border="0">
-				<tr>
-					<th align="left">Guardian Name</th>
-					<th align="left">Telephone Number</th>
-					<th align="left">Postal Addrress</th>
-				</tr>
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<tr>
-								<td>
-									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required = "true"/>
-								</td>
-								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+				</table>
+				<table id="guardian-details" style="width: 50%;" border="0">
+					<tr>
+						<th align="left">Guardian Name</th>
+						<th align="left">Telephone Number</th>
+						<th align="left">Postal Addrress</th>
+					</tr>
+					<repeat>
+						<template>
+							<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>
+										<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required = "true"/>
+									</td>
+									<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+									<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 
-							</tr>
-						</obsgroup>
-					</template>
-					<render n="1" concept="Guardian"/>
+								</tr>
+							</obsgroup>
+						</template>
+						<render n="1" concept="Guardian"/>
 
-				</repeat>
-			</table>
-		</fieldset>
+					</repeat>
+				</table>
+			</fieldset>
 		</includeIf>
 		<includeIf velocityTest="$patient.age &gt; 18">
-		<fieldset id="treatment-supporter-fieldset" >
-			<legend>Treatment Supporter</legend>
-			<table id="treatment-supporter" style="width: 70%;" border="0">
-				<tr>
-					<th align="left">Name</th>
-					<th align="left">Relationship</th>
-					<th align="left">Telephone Number</th>
-					<th align="left">Postal Addrress</th>
-				</tr>
-				<repeat>
-					<template>
-						<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<tr>
-								<td>
-									<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td>
-									<obs
-										id="treatment-supporter-relationship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
-										answerConceptIds="973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="Grandparent,Sibling,Guardian,Parent,Spouse,Partner,Other"
-								/>
-								</td>
-								<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-								<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-							</tr>
-						</obsgroup>
-					</template>
-					<render n="1" concept="Treatment Supporter"/>
-					<render n="2" concept="Treatment Supporter"/>
-			</repeat>
-			</table>
-		</fieldset>
+			<fieldset id="treatment-supporter-fieldset" >
+				<legend>Treatment Supporter</legend>
+				<table id="treatment-supporter" style="width: 70%;" border="0">
+					<tr>
+						<th align="left">Name</th>
+						<th align="left">Relationship</th>
+						<th align="left">Telephone Number</th>
+						<th align="left">Postal Addrress</th>
+					</tr>
+					<repeat>
+						<template>
+							<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>
+										<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									</td>
+									<td>
+										<obs
+												id="treatment-supporter-relationship" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
+												answerConceptIds="973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="Grandparent,Sibling,Guardian,Parent,Spouse,Partner,Other"
+										/>
+									</td>
+									<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+									<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+								</tr>
+							</obsgroup>
+						</template>
+						<render n="1" concept="Treatment Supporter"/>
+						<render n="2" concept="Treatment Supporter"/>
+					</repeat>
+				</table>
+			</fieldset>
 		</includeIf>
 		<enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 	</div>
