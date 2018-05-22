@@ -35,10 +35,6 @@
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
             var facility_confirmed = "<lookup expression="fn.location(162724).getValueText()"/>";
             var pgender = "<lookup expression="patient.gender" />";
-             //prepopulate facility
-            //  var default_location ="<lookup expression="fn.location(3282).name" />";
-          //   console.log("default_location ==>"+default_location);
-
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
             jq('.muac').hide();
@@ -48,6 +44,7 @@
             jq("#pregnant :input[type=radio]").change(onPregnancySelected);
             jq('#transit-patient').hide();
             jq('#art-history :input').prop('disabled', true);
+            jq('#default-location').click(defaultLocationChange);
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
@@ -118,6 +115,7 @@
             //jq('#hiv-id :input').prop('disabled', true);
             //jq('#baseline-fieldset :input').prop('disabled', true);
         });
+
         //Before Submit
         beforeSubmit.push(function() {
             var birthDate = "<lookup expression="patient.birthdate" />";
@@ -182,7 +180,16 @@
             }
             return true;
         });
-
+        //Ckeckbox to prepopulate default location
+        var defaultLocationChange = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('facility-confirmed.value').val(default_location);
+            }else{
+                getField('facility-confirmed.value').val("");
+            }
+        }
         var ageGroup = function () {
             pAge = parseInt('<lookup expression="patient.age"/>');
             var adultLabelText = "Adult";
@@ -238,7 +245,7 @@
                 if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
                 }
-                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked]);
+               clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked]);
             }
             //Transfer in
             if (transferStatus== YES_CONCEPT_ID) {
@@ -514,7 +521,7 @@
 				</tr>
 				<tr>
 					<td>Facility where confirmation done</td>
-					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td>
+					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
 				</tr>
 				<tr>
 					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> </td>

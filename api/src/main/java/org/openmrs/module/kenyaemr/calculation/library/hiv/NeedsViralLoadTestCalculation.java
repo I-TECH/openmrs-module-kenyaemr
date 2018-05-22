@@ -86,7 +86,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             Obs pregnantStatus = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
             // Newly initiated and more than 3 months without ldl,vl or orders
             if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
-                if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 90)) {
+                if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 180)) {
                     needsViralLoadTest = true;
                 }
                 // vl flag should be 3 months after last vl if unsuppressed --with both ldl and vl
