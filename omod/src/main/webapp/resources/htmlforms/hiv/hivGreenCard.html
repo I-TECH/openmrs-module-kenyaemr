@@ -154,7 +154,6 @@ Green Card follow-up visit form
             jq('#visit-scheduled input').click(onVisitScheduledChange);
             jq('#on-ipt input').prop("disabled", true);
             jq("#tbl-start-antiTb").hide();
-            jq("#ipt-uptake").hide();
             jq("#tb-screening-result").hide();
             //Sexual and reproductive setion
             jq("#hasLMP :input[type=radio]").change(patientLMPStatus);
@@ -338,7 +337,6 @@ Green Card follow-up visit form
                 jq("#tbl-ever-on-ipt").hide();
                 jq("#ipt-followup").show();
                 jq("#tb-screening-result").show();
-                jq("#ipt-uptake").show();
             }
             /*TB Screening form validation*/
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
@@ -489,7 +487,7 @@ function onWeightOrHeightChange() {
         }
         //set nutritional status and bmi
         jq('#calculated-bmi').html(display);
-        if (bmi &lt; 16) {
+        if (bmi &lt; 16 &amp;&amp; bmi &gt; 1) {
             jq("#nutritional-status input[value=163302]").prop("checked", true);
         } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
             jq("#nutritional-status input[value=163303]").prop("checked", true);
@@ -529,7 +527,7 @@ function displayRecentBmi() {
             jq('#recent-calculated-bmi').html(recent_bmi);
 
             //set recent nutritional status from recent bmi
-            if (recent_bmi &lt; 16) {
+            if (recent_bmi &lt; 16 &amp;&amp; recent_bmi &gt; 1) {
                 jq("#nutritional-status input[value=163302]").prop("checked", true);
             } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
                 jq("#nutritional-status input[value=163303]").prop("checked", true);
@@ -818,7 +816,6 @@ var onAntiTbDrugs = function(){
         jq("#tb-screening-result").hide();
         jq("#tb-screening-tab").hide();
         jq("#tbl-ever-on-ipt").hide();
-        jq("#ipt-uptake").hide();
         clearRadios([onIpt, actionTakenTab, iptClientWorkupTab, iptFollowup, tbScreeningQuestionsTab]);
         actionTakenTab.hide();
         iptClientWorkupTab.hide();
@@ -840,7 +837,6 @@ var onIPT = function(){
     var tbScreeningResult = jq("#tb-screening-result");
     if(val == 1066) {
         jq("#tbl-ever-on-ipt").show();
-        jq("#ipt-uptake").hide();
         iptFollowup.hide();
         actionTakenTab.hide();
         tbScreeningQuestionsTab.hide();
@@ -853,7 +849,6 @@ var onIPT = function(){
         jq("#tb-screening-result").show();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
-        jq("#ipt-uptake").show();
         iptInitiationTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningQuestionsTab, actionTakenTab]);
     }
@@ -2415,82 +2410,8 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                 </fieldset>
-                <fieldset id="ipt-uptake">
-                    <legend>IPT Uptake History</legend>
-                    <table>
-                        <tr>
-                            <th>IPT Due Date</th>
-                            <th>Date collected IPT</th>
-                            <th>Weight(Kg)</th>
-                            <th>Hepatotoxicity</th>
-                            <th>Peripheral Neuropathy</th>
-                            <th>Rash?</th>
-                            <th>Adherence Measurement</th>
-                        </tr>
-                        <lookup complexExpression="
-			#foreach($encounter in $fn.allEncounters('aadeafbe-a3b1-4c57-bc76-8461b778ebd6'))
-				&lt;tr&gt;
-				#set($iptDueDate='')
-				#set($iptCollectionDate='')
-				#set($weight='')
-				#set($hepatotoxicity='')
-				#set($peripheralneuropathy='')
-				#set($rash='')
-				#set($adherenceMeasurement='')
-
-				#foreach($obs in $encounter.obs)
-
-						#if ( $obs.concept==164073 )
-							#set($iptDueDate=($obs.getValueAsString(en)))
-						#end
-						#if ( $obs.concept==164074 )
-							#set($iptCollectionDate=$obs.getValueAsString(en))
-						#end
-						#if ( $obs.concept==5089 )
-							#set($weight=$obs.valueNumeric)
-						#end
-						#if ( $obs.concept==159098 )
-							#set($hepatotoxicity=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==118983 )
-							#set($peripheralneuropathy=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==512 )
-							#set($rash=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==164075 )
-							#set($adherenceMeasurement=$obs.valueCoded.name)
-						#end
-
-				#end
-
-				&lt;td&gt;
-					$iptDueDate
-				&lt;/td&gt;
-				&lt;td&gt;
-					$iptCollectionDate
-				&lt;/td&gt;
-				&lt;td&gt;
-					$weight
-				&lt;/td&gt;
-				&lt;td&gt;
-					$hepatotoxicity
-				&lt;/td&gt;
-				&lt;td&gt;
-					$peripheralneuropathy
-				&lt;/td&gt;
-				&lt;td&gt;
-					$rash
-				&lt;/td&gt;
-				&lt;td&gt;
-					$adherenceMeasurement
-				&lt;/td&gt;
-				&lt;/tr&gt;
-			#end"/>
-                    </table>
-                </fieldset>
-                <!-- Known allergies   -->
-                <fieldset class="patient-details">
+       <!-- Known allergies   -->
+        <fieldset class="patient-details">
                     <legend>Known Allergies</legend>
                     <div>
                         Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
