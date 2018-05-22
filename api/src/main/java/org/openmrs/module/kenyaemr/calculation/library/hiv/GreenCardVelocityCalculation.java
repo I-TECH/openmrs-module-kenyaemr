@@ -128,7 +128,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 Date orderDate = EmrCalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
                 if (orderDate != null) {
                     artStartCurrDiff = daysBetween(currentDate,orderDate);
-                    if (artStartCurrDiff > 7) {
+                    if (artStartCurrDiff > 3) {
                         hasBeenOnART = true;
                     }
                 }

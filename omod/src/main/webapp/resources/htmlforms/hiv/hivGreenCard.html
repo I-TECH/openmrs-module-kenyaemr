@@ -478,7 +478,7 @@ function onWeightOrHeightChange() {
     var weightKg = parseFloat(getValue('weight.value'));
     var heightM = parseFloat(getValue('height.value')) / 100;
     if (pAge &gt; 14) {
-        if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+        if (weightKg >0 &amp;&amp; heightM >0) {
             bmi = weightKg / (heightM * heightM);
             if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
                 display = 'Abnormal value. Were height and weight entered correctly?';
@@ -523,7 +523,7 @@ function displayRecentBmi() {
     var bmi = '';
     var recent_bmi ='';
     if (pAge &gt; 14) {
-        if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+        if (weightKg >0 &amp;&amp; heightM >0) {
             bmi = weightKg / (heightM * heightM);
             recent_bmi = bmi.toFixed(2);
             jq('#recent-calculated-bmi').html(recent_bmi);
@@ -1433,6 +1433,13 @@ clearHiddenSections = function(parentObj) {
             if (isTBRxDateBeforeEncounter) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('tbrxdate.error').html('TB RX date, should  be earlier than encounter Date').show();
+                return false;
+            }
+            var iptEventDate = jq('#ipt-event-type input[class=hasDatepicker]').val();
+            var isIPTEventDateBeforeEncounter = moment(moment(moment(new Date(), 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(iptEventDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isIPTEventDateBeforeEncounter) {
+                jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                getField('ipt-event-type.error').html('IPT outcome date, should  be in future').show();
                 return false;
             }
             if (knownAllergies == false &amp;&amp; personPresent == SELF) {
@@ -3178,8 +3185,8 @@ beforeSubmit.push(function() {
                                         <td>
                                             <obs
                                                     conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                    answerLabels="Good (G),Fair (F),Poor (P)"
+                                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerLabels="Good (G),Fair (F),Poor (P),Not applicable (N/A)"
                                                     style="radio" id="ctx-adherence"
                                             />
                                         </td>
@@ -3329,7 +3336,7 @@ beforeSubmit.push(function() {
                             /></td>
                         </tr>
                         <tr>
-                            <td>Does the client abuse substances?</td>
+                            <td>Has the client been screened for substance abuse?</td>
                             <td><obs conceptId="112603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Yes,No,Unkown,N/A"
