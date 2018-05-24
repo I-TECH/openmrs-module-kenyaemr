@@ -59,6 +59,11 @@
         var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
         var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
         var pAge = parseInt('<lookup expression="patient.age"/>');
+         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
+         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
+         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
     //Start on jq onready
   jq(function() {
             jq('#person-present input').click(onPersonPresentChange);
@@ -262,6 +267,14 @@
                 jq('#adherence-ctx').click(onCtxAdherenceClick);
                 jq('#adherence-dapsone').click(onDapAdherenceClick);
                 jq('.patient-details :input').prop('disabled', false);
+                //art validation
+                //On ART hide adherence assessment
+                if(PATIENT_ON_ART == "true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART == "true") {
+                    jq('#adherence-arv :input').prop('disabled', false);
+                }
+                if(PATIENT_HAS_BEEN_ON_ART == "false") {
+                    jq('#adherence-arv :input').prop('disabled', true);
+                }
 
             } else {
                 complaintSelected();
@@ -1123,8 +1136,8 @@
                                                              <td>
                                                                  <obs class="action-taken"
                                                                          conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                      answerLabels="CONTINUE REGIMEN,SWITCHED REGIMEN,CHANGED DOSE,SUBSTITUTED DRUG,NONE,STOP,OTHER"
                                                                       style="dropdown"/>
                                                              </td>
                                                          </tr>
@@ -1422,10 +1435,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Does the client abuse substances?</td>
+                            <td>Has the client been screened for substance abuse?</td>
                             <td><obs conceptId="112603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unknown" id="phdp-disclosure"
+                                     answerLabels="Yes,No,Unknown" id="phdp-substance-abuse"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1433,7 +1446,7 @@
                             <td>Has the Client disclosed HIV status to their sexually active partner?</td>
                             <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unknown" id="phdp-substance-abuse"
+                                     answerLabels="Yes,No,Unknown" id="phdp-disclosure"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1466,8 +1479,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Fair (F),Poor (P)" id="adherence-arv"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-arv"
                                         style="radio"  />
                                 <hr width="0" />
                             </td>
@@ -1477,8 +1490,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Fair(F),Poor (P)" id="adherence-ctx"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair(F),Poor (P),Not applicablee(N/A)" id="adherence-ctx"
                                         style="radio"
                                 />
                             </td>
@@ -1488,8 +1501,8 @@
                         <td> &#160;&#160;&#160;&#160;
                             <obs
                                     conceptId="164941"
-                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    answerLabels="Good (G),Fair (F),Poor (P)" id="adherence-dapsone"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-dapsone"
                                     style="radio"
                             />
                         </td>
