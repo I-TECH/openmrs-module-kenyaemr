@@ -40,8 +40,6 @@ public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		builder.addParameter("endDate", endDate);
 		builder.addParameter("startDate", startDate);
 
-		System.out.println("Evaluation Context========================= StartDate: " + startDate + ", -------------- End Date: " + endDate);
-
 		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
 		queryResult.getMemberIds().addAll(results);
 		return queryResult;
