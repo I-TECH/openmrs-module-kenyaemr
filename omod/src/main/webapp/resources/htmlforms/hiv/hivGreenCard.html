@@ -121,18 +121,7 @@ Green Card follow-up visit form
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             onEncounterDateChange();
-            jq('#fp-details').show();
-            var age = parseInt('<lookup expression="patient.age"/>');
-            if (age &lt; 11) {
-                jq('#fp-details').hide();
-                jq('.reproductive-part').hide();
-            }
-            //Gravida
-            if (pgender == 'F' &amp;&amp; age &gt; 10 ) {
-                getField('parity-term.value').change(onParityChange);
-                getField('parity-abortion.value').change(onParityChange);
-                jq('#fp-details').hide();
-            }
+
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
             //Defaults on ready
@@ -154,10 +143,23 @@ Green Card follow-up visit form
             jq('#visit-scheduled input').click(onVisitScheduledChange);
             jq('#on-ipt input').prop("disabled", true);
             jq("#tbl-start-antiTb").hide();
-            jq("#ipt-uptake").hide();
             jq("#tb-screening-result").hide();
             //Sexual and reproductive setion
+            // jq('#fp-details').show();
+            jq('#lmp-details').hide();
+            var age = parseInt('<lookup expression="patient.age"/>');
+            if (age &lt; 11) {
+                jq('#fp-details').hide();
+                jq('.reproductive-part').hide();
+            }
+            //Gravida
+            if (pgender == 'F' &amp;&amp; age &gt; 10 ) {
+                getField('parity-term.value').change(onParityChange);
+                getField('parity-abortion.value').change(onParityChange);
+                jq('#fp-details').hide();
+            }
             jq("#hasLMP :input[type=radio]").change(patientLMPStatus);
+            jq('#menopause').click(onMenopauseClick);
             jq('#lmp-date :input').prop('disabled', true);
             jq('#if-patient-pregnant').hide();
             jq('#pregnancyOptionValues').hide();
@@ -285,6 +287,7 @@ Green Card follow-up visit form
                                 }else{
                                     getField('patient-edd.value').val("");
                                 }
+
                             }
             });
             jq("#fplanning select ").change(function () {
@@ -320,8 +323,9 @@ Green Card follow-up visit form
                 jq('#fpOptionValues :input[type=checkbox]').prop('disabled', true);
                 jq('#fpOptionValues :input').prop('checked', false);
             });
-              /*On TB Drugs  */
-
+     //TB MODULE
+    // Defaults on load
+     /*On TB Drugs  */
             if (PATIENT_ON_TB == "true"){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
                 jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
@@ -337,9 +341,9 @@ Green Card follow-up visit form
                 jq(".ipt-patient").text("Currently on IPT");
                 jq("#tbl-ever-on-ipt").hide();
                 jq("#ipt-followup").show();
-                jq("#tb-screening-result").show();
-                jq("#ipt-uptake").show();
+                jq("#tb-screening-result").hide();
             }
+     // Screening
             /*TB Screening form validation*/
             var screeningRadios = jq('#screening-questions').find('input[type=radio]');
             var iptClientWorkupRadios = jq('#ipt-client-workup').find('input[type=radio]');
@@ -354,6 +358,8 @@ Green Card follow-up visit form
                 var iptClientWorkupTab = jq('#ipt-client-workup');
                 var iptFollowup = jq('#ipt-followup');
                 var tbScreeningQuestionsTab = jq("#tb-screening-tab");
+                var tbScreeningResults = jq("#tb-screening-result");
+                var tbScreeningResultsStatus = jq("#tb-result-status");
                 var everOnIPTRadio = everOnIPTSelected;
                 var showActionTakenTab = false;
                 var showIPTClientWorkupTab = false;
@@ -378,34 +384,47 @@ Green Card follow-up visit form
                     }
                 });
                 //If no responses have been recorded then show the ActionTaken and IPTClientWorkup tabs
-                if (screeningYesResponses.length == 0 &amp;&amp; screeningYesResponses.length == 0 ) {}
+                if (screeningYesResponses.length == 0 &amp;&amp; screeningYesResponses.length == 0 ) {
+                }
 
                if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-                        clearRadios([iptFollowup, iptClientWorkupTab, iptInitiationTab]);
+                        clearRadios([iptFollowup, iptClientWorkupTab, iptInitiationTab, tbScreeningResultsStatus]);
                     }
              if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-                        clearRadios([iptFollowup, actionTakenTab, iptClientWorkupTab, iptInitiationTab, tbRxdate, tbRegimen]);
+                        clearRadios([iptFollowup, actionTakenTab, iptClientWorkupTab, iptInitiationTab, tbRxdate, tbRegimen, tbScreeningResultsStatus]);
                     }
              if (everOnIPTRadio == NO_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if all screening No responses are checked: total radios / 2
                         actionTakenTab.hide();
                         iptClientWorkupTab.show();
+                        tbScreeningResults.show();
+                         jq("#tb-result-status input[value=1660]").prop("checked", true);
+                         jq('#tb-result-status input[type=radio]').attr("style", "pointer-events:none;");
                         iptFollowup.hide();
                         clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
                     }
+                if (everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if all screening No responses are checked: total radios / 2
+                    iptClientWorkupTab.hide();
+                    tbScreeningResults.show();
+                    jq("#tb-result-status input[value=1660]").prop("checked", true);
+                    jq('#tb-result-status input[type=radio]').attr("style", "pointer-events:none;");
+                    actionTakenTab.hide();
+                    iptInitiationTab.hide();
+                    clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
+                }
               if(everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
                         iptFollowup.hide();
                         iptInitiationTab.hide();
-                        clearRadios([iptClientWorkupTab, iptFollowup, iptInitiationTab]);
+                        clearRadios([iptClientWorkupTab, iptFollowup, iptInitiationTab, tbScreeningResultsStatus]);
                     }
                if(screeningYesResponses.length == 0) {
                         actionTakenTab.hide();
@@ -415,12 +434,12 @@ Green Card follow-up visit form
                         actionTakenTab.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
-                        clearRadios([iptClientWorkupTab]);
+                        clearRadios([iptClientWorkupTab, tbScreeningResultsStatus]);
                     }
                 if(screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         iptClientWorkupTab.hide();
-                        clearRadios([iptClientWorkupTab]);
+                        clearRadios([iptClientWorkupTab, tbScreeningResultsStatus]);
                     }
             };
             var showHideIPTInitiationTab = function() {
@@ -447,6 +466,7 @@ Green Card follow-up visit form
                   if (iptClientWorkupNoResponses.length == iptClientWorkupRadios.length / 2)  { // check if all No responses are checked: total radios / 2
                   iptInitiationTab.show();
                   jq('#ipt-result-status').show();
+                 jq("#tb-screening-result").show();
                   }else{
                   iptInitiationTab.hide();
                   clearRadios([iptInitiationTab]);
@@ -489,7 +509,7 @@ function onWeightOrHeightChange() {
         }
         //set nutritional status and bmi
         jq('#calculated-bmi').html(display);
-        if (bmi &lt; 16) {
+        if (bmi &lt; 16 &amp;&amp; bmi &gt; 1) {
             jq("#nutritional-status input[value=163302]").prop("checked", true);
         } else if (bmi &gt; 16 &amp;&amp; bmi &lt; 18.5) {
             jq("#nutritional-status input[value=163303]").prop("checked", true);
@@ -529,7 +549,7 @@ function displayRecentBmi() {
             jq('#recent-calculated-bmi').html(recent_bmi);
 
             //set recent nutritional status from recent bmi
-            if (recent_bmi &lt; 16) {
+            if (recent_bmi &lt; 16 &amp;&amp; recent_bmi &gt; 1) {
                 jq("#nutritional-status input[value=163302]").prop("checked", true);
             } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
                 jq("#nutritional-status input[value=163303]").prop("checked", true);
@@ -544,20 +564,37 @@ function displayRecentBmi() {
 function onLmpChange() {
     jq('#pregnancyOption :input').prop('disabled', false);
 }
+//Ckeckbox to remove pregnancy details
+function onMenopauseClick() {
+    var val = getValue('menopause.value');
+    if(val == 113928){
+        jq('#if-patient-pregnant').hide();
+        jq("#wants-pregnancy").hide();
+        jq('#fp-details').hide();
+        jq('#pregnancyOptionValues').hide();
+    }else{
+        jq('#if-patient-pregnant').show();
+    }
+}
 function patientLMPStatus(){
     var val = getValue('hasLMP.value');
     var ifPatientPregnant =  jq('#if-patient-pregnant');
     var pregIntention = jq("#pregnancyIntention");
+    var onfpMethodChecked = jq('#fplanning select').val('');
     if(val == 1065){
         jq('#if-patient-pregnant').show();
+        jq('#fp-details').hide();
+        jq('#lmp-details').show();
         jq('#lmp-date :input').prop('disabled', false);
+        clearHiddenSections([ifPatientPregnant, pregIntention, onfpMethodChecked]);
     }
     if(val == 1066){
         jq('#if-patient-pregnant').hide();
         jq('#pregnancyOptionValues').hide();
-        jq('#fp-details').hide();
+        jq('#fp-details').show();
         jq("#wants-pregnancy").hide();
         jq('#lmp-date :input').val('');
+        jq('#lmp-details').hide();
         clearHiddenSections([ifPatientPregnant, pregIntention]);
         jq('#lmp-date :input').prop('disabled', true);
         getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
@@ -566,9 +603,10 @@ function patientLMPStatus(){
         jq('#if-patient-pregnant').hide();
         jq('#pregnancyOptionValues').hide();
         jq('#fp-details').hide();
+        jq('#lmp-details').hide();
         jq("#wants-pregnancy").hide();
         jq('#lmp-date :input').val('');
-        clearHiddenSections([ifPatientPregnant, pregIntention]);
+        clearHiddenSections([ifPatientPregnant, pregIntention, onfpMethodChecked]);
         jq('#lmp-date :input').prop('disabled', true);
         getField('lmp-date.error').html('Please specify patient LMP Date.').hide();
     }
@@ -818,7 +856,6 @@ var onAntiTbDrugs = function(){
         jq("#tb-screening-result").hide();
         jq("#tb-screening-tab").hide();
         jq("#tbl-ever-on-ipt").hide();
-        jq("#ipt-uptake").hide();
         clearRadios([onIpt, actionTakenTab, iptClientWorkupTab, iptFollowup, tbScreeningQuestionsTab]);
         actionTakenTab.hide();
         iptClientWorkupTab.hide();
@@ -838,30 +875,31 @@ var onIPT = function(){
     var tbScreeningQuestionsTab = jq("#tb-screening-tab");
     var iptInitiationTab = jq('#ipt-initiation');
     var tbScreeningResult = jq("#tb-screening-result");
+    var tbScreeningResultsStatus = jq("#tb-result-status");
     if(val == 1066) {
         jq("#tbl-ever-on-ipt").show();
-        jq("#ipt-uptake").hide();
         iptFollowup.hide();
         actionTakenTab.hide();
         tbScreeningQuestionsTab.hide();
         tbScreeningResult.hide();
-        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult]);
-    } else {
+        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult, tbScreeningResultsStatus]);
+    }
+     if(val == 1065) {
         jq("#tbl-ever-on-ipt").hide();
         jq("#ipt-followup").show();
         tbScreeningQuestionsTab.hide();
-        jq("#tb-screening-result").show();
+        tbScreeningResult.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
-        jq("#ipt-uptake").show();
         iptInitiationTab.hide();
-        clearRadios([iptClientWorkupTab, tbScreeningQuestionsTab, actionTakenTab]);
+        clearRadios([iptClientWorkupTab, tbScreeningQuestionsTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
 var everOnIPT = function () {
     var val = jq(this).val();
     everOnIPTSelected = val;
-    var tbScreeningResultTab = jq("#tb-screening-result");
+    var tbScreeningResults = jq("#tb-screening-result");
+    var tbScreeningResultsStatus = jq("#tb-result-status");
     var tbScreeningTab = jq("#tb-screening-tab");
     var iptClientWorkupTab = jq('#ipt-client-workup');
     var actionTakenTab = jq('#action-taken');
@@ -869,18 +907,18 @@ var everOnIPT = function () {
     if(val == 1066) {
         // show TB screening, TB results and IPT workup forms
         tbScreeningTab.show();
-        tbScreeningResultTab.show();
+        tbScreeningResults.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
-        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab]);
-    } else {
+        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
+    }
+    if(val == 1065) {
         // show TB screening and TB result forms
         iptClientWorkupTab.hide();
         tbScreeningTab.show();
-        tbScreeningResultTab.show();
         actionTakenTab.hide();
         iptInitiationTab.hide();
-        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab]);
+        clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
 var ageGroup = function () {
@@ -1343,6 +1381,7 @@ clearHiddenSections = function(parentObj) {
             var encounterDate = getValue('encounter-date.value');
             var lmpDate = getValue('lmp-date.value');
             var tbrxDate = getValue('tbrxdate.value');
+            var menopause = getValue('menopause.value');
             var isPregnant = getValue('pregnancyOption.value');
             var pregnancyIntention = getValue('pregnancyIntention.value');
             var onfpMethodChecked = getField('fplanning.value').val();
@@ -1487,10 +1526,10 @@ clearHiddenSections = function(parentObj) {
             if(pgender == 'F'  &amp;&amp; personPresent == SELF &amp;&amp; pAge &gt; 10) {
                 if (patientHasLMP == false) {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                    getField('hasLMP.error').html('Please specify if patient has normal menses.').show();
+                    getField('hasLMP.error').html('Please specify if patient has ever had menses.').show();
                     return false;
                 }else{
-                    getField('hasLMP.error').html('Please specify if patient has normal menses.').hide();
+                    getField('hasLMP.error').html('Please specify if patient has ever had  menses.').hide();
                 }
                 if (patientHasLMP == 1065 &amp;&amp; lmpDate == false) {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
@@ -1506,12 +1545,20 @@ clearHiddenSections = function(parentObj) {
                 } else {
                     getField('lmp-date.error').html('LMP date cannot be later than encounter date.').hide();
                 }
-                if (patientHasLMP == 1065 &amp;&amp; isPregnant == false) {
+                if (patientHasLMP == 1065 &amp;&amp; isPregnant == false &amp;&amp; menopause != 113928) {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                     getField('pregnancyOption.error').html('Please specify if patient is pregnant.').show();
                     return false;
                 } else {
                     getField('pregnancyOption.error').html('Please specify if patient is pregnant.').hide();
+                }
+                if (patientHasLMP == 1066 &amp;&amp; onfpMethodChecked == false) {
+                    jq('#fp-details').show();
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('fplanning.error').html('Please specify if patient is using family planning methods.').show();
+                    return false;
+                } else {
+                    getField('fplanning.error').html('Please specify if patient is using family planning methods.').hide();
                 }
                 if (isPregnant == 1066 &amp;&amp; pregnancyIntention == false) {
                     jq("#wants-pregnancy").show();
@@ -1772,6 +1819,7 @@ beforeSubmit.push(function() {
                             var adverseReactions = getValue('adverse-reactions.value');   // boolean
                             var systemsReview = getValue('systems-review.value');   // non boolean
                             var hasLMP=getValue('hasLMP.value');
+                            var menopause = getValue('menopause.value');
                             var wantsPreg=getValue('pregnancyIntention.value');
                             var ctxAdherence = getValue('ctx-adherence.value');
                             var ctxDispensed = getValue('ctx-dispensed.value');
@@ -1837,6 +1885,13 @@ beforeSubmit.push(function() {
                                 jq('#wants-pregnancy').show();
                             }else{
                                 jq('#lmp-date :input').prop('disabled', true);
+                            }
+                            if(menopause == 113928){
+                                jq('#lmp-details').show();
+                                jq('#if-patient-pregnant').hide();
+                                jq('#wants-pregnancy').hide();
+                            }else{
+                                jq('#lmp-details').hide();
                             }
                            //if wants pregnancy show details
                             if (wantsPreg != false) {     //yes_no pregnancy
@@ -2296,19 +2351,6 @@ beforeSubmit.push(function() {
                                 <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                             </tr>
                         </table>
-                        <table id="tb-screening-result">
-                            <tr>
-                                <td colspan="2"><p> </p></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"> <p></p></td>
-                            </tr>
-                        </table>
                         <table id="tbl-start-antiTb">
                             <tr id="startAnti-tb">
                                 <td colspan="2">Start Anti-TBs:
@@ -2325,6 +2367,22 @@ beforeSubmit.push(function() {
                                 /></td>
                             </tr>
                         </table>
+                    </fieldset>
+                    <fieldset id="tb-screening-result">
+                        <legend>TB Results Status</legend>
+                    <table>
+                        <tr>
+                            <td colspan="2"><p> </p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <obs id="tb-result-status" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting TB Status:" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <p></p></td>
+                        </tr>
+                    </table>
                     </fieldset>
                     <fieldset id="ipt-client-workup">
                         <legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
@@ -2415,82 +2473,8 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                 </fieldset>
-                <fieldset id="ipt-uptake">
-                    <legend>IPT Uptake History</legend>
-                    <table>
-                        <tr>
-                            <th>IPT Due Date</th>
-                            <th>Date collected IPT</th>
-                            <th>Weight(Kg)</th>
-                            <th>Hepatotoxicity</th>
-                            <th>Peripheral Neuropathy</th>
-                            <th>Rash?</th>
-                            <th>Adherence Measurement</th>
-                        </tr>
-                        <lookup complexExpression="
-			#foreach($encounter in $fn.allEncounters('aadeafbe-a3b1-4c57-bc76-8461b778ebd6'))
-				&lt;tr&gt;
-				#set($iptDueDate='')
-				#set($iptCollectionDate='')
-				#set($weight='')
-				#set($hepatotoxicity='')
-				#set($peripheralneuropathy='')
-				#set($rash='')
-				#set($adherenceMeasurement='')
-
-				#foreach($obs in $encounter.obs)
-
-						#if ( $obs.concept==164073 )
-							#set($iptDueDate=($obs.getValueAsString(en)))
-						#end
-						#if ( $obs.concept==164074 )
-							#set($iptCollectionDate=$obs.getValueAsString(en))
-						#end
-						#if ( $obs.concept==5089 )
-							#set($weight=$obs.valueNumeric)
-						#end
-						#if ( $obs.concept==159098 )
-							#set($hepatotoxicity=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==118983 )
-							#set($peripheralneuropathy=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==512 )
-							#set($rash=$obs.valueCoded.name)
-						#end
-						#if ( $obs.concept==164075 )
-							#set($adherenceMeasurement=$obs.valueCoded.name)
-						#end
-
-				#end
-
-				&lt;td&gt;
-					$iptDueDate
-				&lt;/td&gt;
-				&lt;td&gt;
-					$iptCollectionDate
-				&lt;/td&gt;
-				&lt;td&gt;
-					$weight
-				&lt;/td&gt;
-				&lt;td&gt;
-					$hepatotoxicity
-				&lt;/td&gt;
-				&lt;td&gt;
-					$peripheralneuropathy
-				&lt;/td&gt;
-				&lt;td&gt;
-					$rash
-				&lt;/td&gt;
-				&lt;td&gt;
-					$adherenceMeasurement
-				&lt;/td&gt;
-				&lt;/tr&gt;
-			#end"/>
-                    </table>
-                </fieldset>
-                <!-- Known allergies   -->
-                <fieldset class="patient-details">
+       <!-- Known allergies   -->
+        <fieldset class="patient-details">
                     <legend>Known Allergies</legend>
                     <div>
                         Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -2650,8 +2634,8 @@ beforeSubmit.push(function() {
                                                     <td>
                                                         <obs class="action-taken"
                                                              conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                             answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="CONTINUE REGIMEN,SWITCHED REGIMEN,CHANGED DOSE,SUBSTITUTED DRUG,NONE,STOP,OTHER"
                                                              style="dropdown"
                                                         />
                                                     </td>
@@ -2717,26 +2701,36 @@ beforeSubmit.push(function() {
                 <includeIf velocityTest="$patient.gender == 'F'">
                     <fieldset class="reproductive-part">
                         <legend>Sexual and Reproductive History</legend>
-                        <table cellspacing="18" class="patient-details" >
-                            <tr>
-                                <th  style="color: #888" >Current Status <span style="color:red;"><strong>*</strong></span></th>
-                                <th  style="color: #888" >Date </th>
-                                <th  style="color: #888" >Recent </th>
-                            </tr>
+                        <table>
                             <tr>
                                 <td>
-                                    <obs labelText="Does patient normally have menses? &#160;&#160;&#160;&#160;" conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="hasLMP"
+                                    <obs labelText="Has patient ever had menses? &#160;&#160;&#160;&#160;" conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="hasLMP"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,No,N/A"
                                     />
                                 </td>
+                            </tr>
+                        </table>
+                        <table cellspacing="18" class="patient-details" id="lmp-details" >
+                            <tr>
+                                <th  style="color: #888" >Current Status <span style="color:red;"><strong>*</strong></span></th>
+                                <th  style="color: #888" >Date </th>
+                                <th  style="color: #888" >Recent </th>
+                                <th  style="color: #888" >Menopausal status </th>
+                            </tr>
+                            <tr>
                                 <td>
-                                    <obs id="lmp-date" labelText="Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                                    <strong>When was your LMP Date:  </strong>
+
+                                </td>
+                                <td>
+                                    <obs id="lmp-date" labelText="  &#160;"
                                          conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 </td>
                                 <td>
                                     <span class="value"><recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
+                                <td><obs conceptId="160596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="113928AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Menopause" id="menopause" style="checkbox" /></td>
                             </tr>
                         </table>
                         <table id="if-patient-pregnant">

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -167,6 +168,14 @@ public class EmrVelocityFunctions {
 	 * @param conceptIdentifier the concept identifier
 	 * @return the list of obs
 	 */
+	public String location() {
+		AdministrationService administrationService = org.openmrs.api.context.Context.getAdministrationService();
+		GlobalProperty globalProperty = administrationService.getGlobalPropertyObject("kenyaemr.defaultLocation");
+		if (globalProperty.getValue() != null) {
+			return ((Location) globalProperty.getValue()).getName();
+		}
+		return "Unknown Location";
+	}
 	public List<Obs> allObs(String conceptIdentifier) {
 		if (session.getPatient() == null)
 			return new ArrayList<Obs>();
