@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -15,6 +16,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,13 +30,19 @@ public class HTSConfirmationRegisterCohortDefinitionEvaluator implements Encount
 	EvaluationService evaluationService;
 
 	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
+
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 2 and voided = 0; ";
+
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 2 and voided = 0 AND date(visit_date) BETWEEN date(:startDate) AND date(:endDate); ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
 
 		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
 		queryResult.getMemberIds().addAll(results);

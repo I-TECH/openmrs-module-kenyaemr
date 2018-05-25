@@ -74,7 +74,7 @@ import java.util.List;
 @Component
 @Builds({"kenyaemr.hiv.report.htsLinkageRegister"})
 public class HTSLinkageRegisterReportBuilder extends AbstractReportBuilder {
-    public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String DATE_FORMAT = "yyyy/MM/dd";
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {

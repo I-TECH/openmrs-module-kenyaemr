@@ -42,6 +42,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDi
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDateDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -65,22 +66,28 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
 @Builds({"kenyaemr.hiv.report.htsConfirmationRegister"})
 public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder {
+    public static final String ENC_DATE_FORMAT = "yyyy/MM/dd";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-        return Arrays.asList();
+        return Arrays.asList(
+                new Parameter("startDate", "Start Date", Date.class),
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
+        );
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
         return Arrays.asList(
-                ReportUtils.map(datasetColumns(), "")
+                ReportUtils.map(datasetColumns(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -88,6 +95,11 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
         dsd.setName("HTSInformation");
         dsd.setDescription("Visit information");
+        dsd.addSortCriteria("Visit Date", SortCriteria.SortDirection.ASC);
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        String paramMapping = "startDate=${startDate},endDate=${endDate}";
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName} {middleName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
@@ -106,7 +118,7 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
         dsd.addColumn("Unique Patient Number", identifierDef, null);
 
-        dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
         dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
         dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
@@ -123,7 +135,11 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
-        dsd.addRowFilter(new HTSConfirmationRegisterCohortDefinition(), "");
+        HTSConfirmationRegisterCohortDefinition cd = new HTSConfirmationRegisterCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        dsd.addRowFilter(cd, paramMapping);
         return dsd;
 
     }
