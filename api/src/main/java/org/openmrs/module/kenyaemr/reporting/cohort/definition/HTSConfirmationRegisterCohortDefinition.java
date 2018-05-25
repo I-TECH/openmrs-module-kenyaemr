@@ -18,16 +18,27 @@ import java.util.Date;
 public class HTSConfirmationRegisterCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
 
     @ConfigurationProperty
-    private Date asOfDate;
+    private Date startDate;
+
+    @ConfigurationProperty
+    private Date endDate;
 
     public HTSConfirmationRegisterCohortDefinition() {
     }
 
-    public Date getAsOfDate() {
-        return asOfDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setAsOfDate(Date asOfDate) {
-        this.asOfDate = asOfDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

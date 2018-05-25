@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,10 +31,14 @@ public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 1 and voided = 0; ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 1 and voided = 0 and date(visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
 
 		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
 		queryResult.getMemberIds().addAll(results);
