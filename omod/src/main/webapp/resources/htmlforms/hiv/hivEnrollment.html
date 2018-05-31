@@ -33,7 +33,7 @@
             var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getObsDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
-            var facility_confirmed = "<lookup expression="fn.location(162724).getValueText()"/>";
+            var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
@@ -218,7 +218,7 @@
             var baselineFieldset = jq('#baseline-fieldset');
             //New patient
             if (transferStatus== NO_CONCEPT_ID) {
-                // jq('#transfer-details :input').prop('disabled', true);
+                var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#transfer-details').hide();
                 jq('#patient-history').show();
@@ -231,7 +231,6 @@
                 jq('#treatment-supporter').show();
                 //jq('#generate-hiv-id').show(); Deactivate generate upn
                 jq('#transit-patient').hide();
-                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -244,6 +243,9 @@
                 //Gender based Validations bmi and muac
                 if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
+                }
+                if (facility_confirmed != null) {
+                    getField('facility-confirmed.value').val(facility_confirmed);
                 }
                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked]);
             }
@@ -262,7 +264,6 @@
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter').show();
                 jq('#transit-patient').hide();
-                jq("#entry-point :input").prop("checked", false);
                 //Gender based validations  pregnancy, breastfeeding bmi and muac
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -287,7 +288,6 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
             }
             if (transferStatus == RE_ENROLL) {
@@ -300,7 +300,6 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                jq("#entry-point input[value=162050]").prop("checked", true);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
             }
             if (transferStatus == false) {
@@ -313,7 +312,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                jq("#entry-point :input").prop("checked", false);
+                //jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
             }
         }
@@ -418,7 +417,7 @@
 						<script type="text/javascript">
                             jq(function(){
                                 jq("#transfer-in-status input[value=164144]").prop("disabled", false);
-                                setValue("encounter-date.value", "");
+                               // setValue("encounter-date.value", "");
                             });
 						</script>
 					</ifMode>
@@ -530,6 +529,9 @@
 							<table>
 								<tr>
 									<td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+									<td>
+										<span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
 								</tr>
 							</table>
 						</div>
@@ -537,6 +539,9 @@
 							<table>
 								<tr>
 									<td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+									<td>
+										<span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
 								</tr>
 							</table>
 						</div>

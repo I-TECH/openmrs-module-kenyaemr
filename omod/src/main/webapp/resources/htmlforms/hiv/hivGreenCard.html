@@ -662,6 +662,8 @@ function onPersonPresentChange() {
         jq(".on-art").hide();
         jq('.showModal').hide();
         jq("#tbl-phdp").hide();
+        jq("#tbl-ctx-adherence").hide();
+        jq("#tbl-dap-adherence").hide();
         jq('.patient-details :input').prop('disabled', true);
         jq('#greencard').smartWizard('goToStep', 4);
         jq('#greencard').smartWizard('enableFinish', true);
@@ -1655,7 +1657,7 @@ beforeSubmit.push(function() {
     }else{
         getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').hide();
     }
-    if (prophylaxis_Used == 105281 &amp;&amp; ctxAdherence == false) {      //ctx
+    if (prophylaxis_Used == 105281 &amp;&amp; ctxAdherence == false &amp;&amp; personPresent == SELF) {      //ctx
         jq("#ctx-part").show();
         getField('ctx-adherence.error').html('Please specify CTX adherence.').show();
         return false;
@@ -1669,7 +1671,7 @@ beforeSubmit.push(function() {
     }else{
         getField('ctx-dispensed.error').html('Please specify if CTX was dispensed.').hide();
     }
-    if (prophylaxis_Used == 74250 &amp;&amp; dapsoneAdherence == false) {      //dapsone
+    if (prophylaxis_Used == 74250 &amp;&amp; dapsoneAdherence == false &amp;&amp; personPresent == SELF) {      //dapsone
         jq("#dapsone-part").show();
         getField('dapsone-adherence.error').html('Please specify Dapsone adherence.').show();
         return false;
@@ -2161,7 +2163,7 @@ beforeSubmit.push(function() {
                     <table cellspacing="5" id="tbl-complaints-today">
                         <tr>
                             <th style="color: #888">Complaint</th>
-                            <th style="color: #888; text-align: center">Duration</th>
+                            <th style="color: #888; text-align: center">Duration (Days)</th>
                             <th style="color: #888; text-align: center">Onset Date</th>
                         </tr>
                         <repeat>
@@ -2179,7 +2181,7 @@ beforeSubmit.push(function() {
                                                  style="dropdown" id="complaint-field"
                                             />
                                         </td>
-                                        <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration"  /></td>
+                                        <td><obs class="complaint-time" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="complaint-duration" size="10" /></td>
                                         <td>
                                             <obs class="complaint-date" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"/>
                                         </td>
@@ -2720,7 +2722,7 @@ beforeSubmit.push(function() {
                             </tr>
                             <tr>
                                 <td>
-                                    <strong>When was your LMP Date:  </strong>
+                                    <strong>When was your LMP Date:  <span style="color:red;">*</span></strong>
 
                                 </td>
                                 <td>
@@ -2736,10 +2738,11 @@ beforeSubmit.push(function() {
                         <table id="if-patient-pregnant">
                             <tr>
                                 <td>
+                                    <strong>Patient Pregnant?:  <span style="color:red;">*</span></strong>
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         labelText="Patient Pregnant?: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                                         labelText="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         style="radio" answerLabels="Yes,NO" id="pregnancyOption"/>
+                                         style="radio" answerLabels="Yes,NO" id="pregnancyOption" />
                                 </td>
                                 <td>
                                     <span class="value"><recentObs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
@@ -2747,8 +2750,9 @@ beforeSubmit.push(function() {
                             </tr>
                         </table>
                         <div id="wants-pregnancy">
+                            <strong>Wants to get pregnant in three months?   <span style="color:red;">*</span></strong>
                             <obs conceptId="164933"
-                                 labelText="Wants to get pregnant in three months? &#160;&#160;"
+                                 labelText="&#160;&#160;"
                                  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  style="radio" answerLabels="Yes,NO" id="pregnancyIntention" />
                         </div>
@@ -3174,7 +3178,7 @@ beforeSubmit.push(function() {
                         <tr>
                             <td>
                                 <table cellpadding="0" border="0" cellspacing="5">
-                                    <tr>
+                                    <tr id="tbl-ctx-adherence">
                                         <td>Adherence</td>
                                         <td>
                                             <obs
@@ -3207,7 +3211,7 @@ beforeSubmit.push(function() {
                         <tr>
                             <td>
                                 <table cellpadding="0" border="0" cellspacing="5">
-                                    <tr>
+                                    <tr id="tbl-dap-adherence">
                                         <td>Adherence</td>
                                         <td>
                                             <obs
@@ -3355,7 +3359,7 @@ beforeSubmit.push(function() {
                         </tr>
                         <includeIf velocityTest="$patient.gender == 'F' ">
                             <tr>
-                                <td>Has the client been screened for CaCx</td>
+                                <td>Has the client been screened for CaCx <span style="color:red;">*</span></td>
                                 <td><obs conceptId="164934"
                                          answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Positive,Negative,Not Done,N/A"
@@ -3364,7 +3368,7 @@ beforeSubmit.push(function() {
                             </tr>
                         </includeIf>
                         <tr >
-                            <td>Has the client been screened for STI (in this visit)?</td>
+                            <td>Has the client been screened for STI (in this visit)? <span style="color:red;">*</span></td>
                             <td><obs id="screened-sti"
                                      conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
