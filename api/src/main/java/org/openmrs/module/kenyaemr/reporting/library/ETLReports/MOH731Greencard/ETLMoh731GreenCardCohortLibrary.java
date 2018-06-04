@@ -762,7 +762,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     // number tested in the last 3 months
     public CohortDefinition htsNumberTestedPositiveInLastThreeMonths() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test t where test_type =1\n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test t where test_type in (1, 2) and voided = 0 \n" +
                 " and final_test_result ='Positive' and t.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositiveInLastThreeMonths");
