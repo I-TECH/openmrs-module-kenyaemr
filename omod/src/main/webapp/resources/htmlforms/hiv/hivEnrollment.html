@@ -33,7 +33,8 @@
             var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getObsDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
-            var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
+            var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";160533
+            var hasBeenOnARVs = "<lookup expression="fn.latestObs(160533).getValueCoded()"/>";
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             ageGroup();
@@ -82,6 +83,14 @@
             if(hasUPN != "")
             {
                 jq("#transfer-in-status input[value=164144]").prop("disabled", true);
+            }
+            if(hasBeenOnARVs == 1)
+            {
+                jq("#art-status input[value='true']").prop("checked", true);
+            }
+            if(hasBeenOnARVs == 2)
+            {
+                jq("#art-status input[value='true']").prop("checked", false);
             }
             if(date_added_as_confirmed_positive != "") {
                 setValue('confirmed-positive-date.value', moment(moment(date_added_as_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
