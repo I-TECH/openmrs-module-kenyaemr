@@ -159,6 +159,13 @@ Green Card follow-up visit form
                 jq('#fp-details').hide();
             }
             jq("#hasLMP :input[type=radio]").change(patientLMPStatus);
+            //Menopause
+            var recentMenopauseStatus = "<lookup expression="fn.latestObs(160596).getValueCoded()"/>";
+            if(recentMenopauseStatus == 113928){
+                jq("#menopause input").prop("checked", true);
+            }else{
+                jq("#menopause input").prop("checked", false);
+            }
             jq('#menopause').click(onMenopauseClick);
             jq('#lmp-date :input').prop('disabled', true);
             jq('#if-patient-pregnant').hide();
@@ -1383,6 +1390,7 @@ clearHiddenSections = function(parentObj) {
             var encounterDate = getValue('encounter-date.value');
             var lmpDate = getValue('lmp-date.value');
             var tbrxDate = getValue('tbrxdate.value');
+            var recentLMPPresent = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
             var menopause = getValue('menopause.value');
             var isPregnant = getValue('pregnancyOption.value');
             var pregnancyIntention = getValue('pregnancyIntention.value');
@@ -1533,7 +1541,7 @@ clearHiddenSections = function(parentObj) {
                 }else{
                     getField('hasLMP.error').html('Please specify if patient has ever had  menses.').hide();
                 }
-                if (patientHasLMP == 1065 &amp;&amp; lmpDate == false) {
+                if (patientHasLMP == 1065 &amp;&amp; lmpDate == false &amp;&amp; recentLMPPresent == "") {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                     getField('lmp-date.error').html('Please specify patient LMP Date.').show();
                     return false;
