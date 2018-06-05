@@ -58,7 +58,7 @@
                 if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
                     event.preventDefault();
             });
-            onTransferStatusChange();
+            //onTransferStatusChange();
             //defaults
             jq('#generate-hiv-id').hide();
             //Gender based validations  pregnancy, breastfeeding bmi and muac
@@ -75,7 +75,6 @@
             }
             //UPN Validation
             var hasUPN = jq('#hiv-id input[type=text]').val();
-            //console.log("UPN==> "+hasUPN);
             if(hasUPN == "")
             {
                 jq("#transfer-in-status input[value=159833]").prop("disabled", true);
@@ -122,6 +121,7 @@
             var encounterDate = getValue('encounter-date.value');
             var confirmedPveDate = getValue('confirmed-positive-date.value');
             var transferInDate = getValue('transfer-in-date.value');
+            var transferStatus = getValue('transfer-in-status.value');
             var firstEnrolledDate = getValue('first-enrolled-date.value');
             var artStartDate = getValue('art-start-date.value');
             var upn = jq('#hiv-id input[type=text]').val();
@@ -155,19 +155,23 @@
                 getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
                 return false;
             }
+
             var isEnrollmentDateBeforeConfirmedPve = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-            if (isEnrollmentDateBeforeConfirmedPve) {
-                getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
-                return false;
+            if(transferStatus == NO_CONCEPT_ID || transferStatus == YES_CONCEPT_ID) {
+                if (isEnrollmentDateBeforeConfirmedPve) {
+                    getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than HIV enrollment Date').show();
+                    return false;
+                }
             }
-            if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+
+            if(transferStatus== YES_CONCEPT_ID) {
                 var isTransferInBeforeFirstEnrolled = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
                 if (isTransferInBeforeFirstEnrolled) {
                     getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
                     return false;
                 }
             }
-            if(getValue('transfer-in-status.value') == YES_CONCEPT_ID) {
+            if(transferStatus == YES_CONCEPT_ID) {
                 var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
                 if (isARTStartDateBeforeFirstEnrolled) {
                     getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
@@ -208,6 +212,8 @@
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             var transferDetails = jq('#transfer-details');
+            var dateConfirmedPositive = jq('#confirmed-positive-date');
+            var facilityConfirmedPositive = jq('#facility-confirmed');
             var whoAdult = jq('#whoAdult');
             var whoChild = jq('#whoChild');
             var artStatus = jq('#art-status');
@@ -288,7 +294,7 @@
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
-                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
+                clearHiddenSections([transferDetails, dateConfirmedPositive, facilityConfirmedPositive, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
             }
             if (transferStatus == RE_ENROLL) {
                 jq('#hiv-id :input').prop('disabled', true);

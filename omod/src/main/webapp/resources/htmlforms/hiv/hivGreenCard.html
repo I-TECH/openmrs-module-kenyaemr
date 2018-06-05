@@ -1488,7 +1488,7 @@ clearHiddenSections = function(parentObj) {
             var isIPTEventDateBeforeEncounter = moment(moment(moment(new Date(), 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(iptEventDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
             if (isIPTEventDateBeforeEncounter) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                getField('ipt-event-type.error').html('IPT outcome date, should  be in future').show();
+                getField('ipt-event-type.error').html('IPT outcome date, should  not be in future').show();
                 return false;
             }
             if (knownAllergies == false &amp;&amp; personPresent == SELF) {
