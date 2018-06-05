@@ -73,7 +73,7 @@ public class NeedsViralLoadTestCalculationTest extends BaseModuleContextSensitiv
 
         // Put patient #8 on Stavudine
         Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
-        TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2015, 1, 1), null);
+        TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2014, 12, 1), null);
 
         //put patient #6 on art and give viral load that is one year ago
         TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2014, 1, 1), null);
