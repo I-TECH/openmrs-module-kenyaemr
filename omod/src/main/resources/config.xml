@@ -21,6 +21,8 @@
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
 		<require_module version="${groovyVersion}">org.openmrs.module.groovy</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
+		<!--<require_module version="${kenyaemrChartsVersion}">org.openmrs.module.kenyaemrCharts</require_module>
+		<require_module version="${kenyaemrHivTestingVersion}">org.openmrs.module.hivtestingservices</require_module>-->
 	</require_modules>
 
 	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>

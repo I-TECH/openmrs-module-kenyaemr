@@ -3,7 +3,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>kenyaemr</artifactId>
-    <version>16.0.1-rc</version>
+    <version>16.0.1</version>
     <packaging>pom</packaging>
     <name>KenyaEMR</name>
     <description>OpenMRS-based EMR for Kenya</description>
@@ -48,6 +48,8 @@
         <reportingVersion>0.9.8.1</reportingVersion>
         <serializationxstreamVersion>0.2.7</serializationxstreamVersion>
         <uiframeworkVersion>3.3.1</uiframeworkVersion>
+        <kenyaemrChartsVersion>1.0</kenyaemrChartsVersion>
+        <kenyaemrHivTestingVersion>1.0</kenyaemrHivTestingVersion>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
