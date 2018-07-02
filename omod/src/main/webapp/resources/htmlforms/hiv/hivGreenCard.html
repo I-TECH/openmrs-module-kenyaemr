@@ -85,6 +85,12 @@ Green Card follow-up visit form
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+
+        console.log("PATIENT_ON_IPT ==>"+PATIENT_ON_IPT);
+        console.log("PATIENT_ON_TB ==>"+PATIENT_ON_TB);
+
+
+
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
 
@@ -347,8 +353,9 @@ Green Card follow-up visit form
                 jq('#on-ipt input[type=radio]').attr("style", "pointer-events:none;");
                 jq(".ipt-patient").text("Currently on IPT");
                 jq("#tbl-ever-on-ipt").hide();
+                jq("#tb-screening-tab").show();
                 jq("#ipt-followup").show();
-                jq("#tb-screening-result").hide();
+                jq("#tb-screening-result").show();
             }
      // Screening
             /*TB Screening form validation*/
@@ -417,7 +424,25 @@ Green Card follow-up visit form
                         iptFollowup.hide();
                         clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
                     }
-                if (everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if all screening No responses are checked: total radios / 2
+                if (everOnIPTRadio == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient ever on ipt and all screening No responses are checked: total radios / 2
+                    iptClientWorkupTab.hide();
+                    tbScreeningResults.show();
+                    jq("#tb-result-status input[value=1660]").prop("checked", true);
+                    jq('#tb-result-status input[type=radio]').attr("style", "pointer-events:none;");
+                    actionTakenTab.hide();
+                    iptInitiationTab.hide();
+                    clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
+                }
+                if (patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on IPT all screening No responses are checked: total radios / 2
+                    iptClientWorkupTab.hide();
+                    tbScreeningResults.show();
+                    jq("#tb-result-status input[value=1660]").prop("checked", true);
+                    jq('#tb-result-status input[type=radio]').attr("style", "pointer-events:none;");
+                    actionTakenTab.hide();
+                    iptInitiationTab.hide();
+                    clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
+                }
+                if (PATIENT_ON_IPT == 'true' &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on IPT from velocity all screening No responses are checked: total radios / 2
                     iptClientWorkupTab.hide();
                     tbScreeningResults.show();
                     jq("#tb-result-status input[value=1660]").prop("checked", true);
@@ -439,6 +464,7 @@ Green Card follow-up visit form
                     }
                 if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
+                        tbScreeningResults.show();
                         iptFollowup.show();
                         iptClientWorkupTab.hide();
                         clearRadios([iptClientWorkupTab, tbScreeningResultsStatus]);
@@ -896,12 +922,12 @@ var onIPT = function(){
      if(val == 1065) {
         jq("#tbl-ever-on-ipt").hide();
         jq("#ipt-followup").show();
-        tbScreeningQuestionsTab.hide();
+        tbScreeningQuestionsTab.show();
         tbScreeningResult.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
         iptInitiationTab.hide();
-        clearRadios([iptClientWorkupTab, tbScreeningQuestionsTab, actionTakenTab, tbScreeningResultsStatus]);
+        clearRadios([iptClientWorkupTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
 var everOnIPT = function () {
@@ -1166,6 +1192,7 @@ var clinicalDiagnosisAction  = function () {
     var referral = getValue("referral-action.value");
     var geneXpert = getField("genexpert-action.value").val();
     var testOrderedChecked = jq("#tb-test-ordered input:checkbox:checked");
+    var iptFollowup = jq('#ipt-followup');
     if(clinicalDiagnosis ==703){
         jq("#tb-result-status input[value=1662]").prop("disabled", false);
         jq("#tb-result-status input[value=1662]").prop("checked", true);
@@ -1176,6 +1203,7 @@ var clinicalDiagnosisAction  = function () {
         jq('#ipt-client-workup').hide();
         jq('#ipt-initiation').hide();
         jq('#ipt-result-status').hide();
+        iptFollowup.hide();
     }
     if(clinicalDiagnosis ==664 ){
         jq("#tb-result-status input[value=1662]").prop("checked", false);
@@ -1923,11 +1951,10 @@ beforeSubmit.push(function() {
                             }
                             //TB screening show on edit
                             //if key pop show which type
-                            if (everOnIPT == 1066 ){
-                                jq("#tb-screening-tab").show();
-                            }else{
-                                jq("#tb-screening-tab").hide();
-                            }
+                           //Screening for all options
+                           jq("#tb-screening-tab").show();
+
+
                             jq.each(screeningRadios, function(){
                                 const YES_CONCEPT_ID = 1065;
                                 const NO_CONCEPT_ID = 1066

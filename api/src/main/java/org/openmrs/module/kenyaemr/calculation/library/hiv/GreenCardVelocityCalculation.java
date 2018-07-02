@@ -60,6 +60,12 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             //Check whether in tb program
             Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
             Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
+            //Check whether in tb greencard
+            Concept OnAntiTbQuestion = Context.getConceptService().getConcept(164948);
+            Concept StartAntiTbQuestion = Context.getConceptService().getConcept(162309);
+
+            CalculationResultMap tbCurrent = Calculations.lastObs(OnAntiTbQuestion, cohort, context);
+            CalculationResultMap tbStarted = Calculations.lastObs(StartAntiTbQuestion, cohort, context);
 
             //Check whether in ipt program
             Concept IptCurrentQuestion = Context.getConceptService().getConcept(164949);
@@ -89,30 +95,59 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                         //IPT Calculation
                 Date iptStartObsDate = null;
                 Date iptStopObsDate = null;
+                Date tbStartObsDate = null;
+                Date tbStopObsDate = null;
                 Date currentDate =new Date();
                 boolean inIptProgram = false;
                 boolean currentInIPT = false;
                 Integer iptStartStopDiff = 0;
+                Integer tbStartStopDiff = 0;
                 Integer artStartCurrDiff = 0;
+
+                //Patient with TB start date and now less than complete date
+                Obs tbCurrentObs = EmrCalculationUtils.obsResultForPatient(tbCurrent, ptId);
+                Obs tbStartObs = EmrCalculationUtils.obsResultForPatient(tbStarted, ptId);
 
                 //Patient with IPT start date and now less than complete date
                 Obs iptCurrentObs = EmrCalculationUtils.obsResultForPatient(iptCurrent, ptId);
                 Obs iptStartObs = EmrCalculationUtils.obsResultForPatient(iptStarted, ptId);
                 Obs iptStopObs = EmrCalculationUtils.obsResultForPatient(iptStopped, ptId);
 
+                //Enrolled in tb program
                 if (inTbProgram.contains(ptId)) {
                     patientInTBProgram = true;
                 }
+                //Currently on antiTb drugs
+                if (tbCurrentObs != null){
+
+                     if(tbCurrentObs.getValueCoded().getConceptId().equals(1065)){
+                        patientInTBProgram = true;
+                     }
+                     //Not currently on antiTb drugs
+                    if(tbStartObs == null && tbCurrentObs.getValueCoded().getConceptId().equals(1066)) {
+                        patientInTBProgram = false;
+                     }
+                   //Not currently on antiTb drugs
+                   if (tbStartObs != null && tbCurrentObs.getValueCoded().getConceptId().equals(1066) && tbStartObs.getValueCoded().getConceptId().equals(1066) ) {
+                        patientInTBProgram = false;
+                     }
+                     //Started on antiTb drugs
+                     if (tbStartObs != null && tbCurrentObs.getValueCoded().getConceptId().equals(1066) && tbStartObs.getValueCoded().getConceptId().equals(1065)  ) {
+                           patientInTBProgram = true;
+                      }
+                }
+
                 //Currently on IPT
-                if (iptCurrentObs != null &&  iptStopObs == null && iptCurrentObs.getValueCoded().getConceptId().equals(1065)) {
+                if (!patientInTBProgram && iptCurrentObs != null &&  iptStopObs == null && iptCurrentObs.getValueCoded().getConceptId().equals(1065)) {
+
                     inIptProgram = true;
                 }
                 //Started on IPT
-                if (iptStartObs != null &&  iptStopObs == null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
+                if (!patientInTBProgram  && iptStartObs != null &&  iptStopObs == null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
                     inIptProgram = true;
                 }
                 //Repeat on IPT
-                if(iptStartObs != null && iptStopObs != null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
+                if(!patientInTBProgram && iptStartObs != null && iptStopObs != null && iptStartObs.getValueCoded().getConceptId().equals(1065)) {
                     iptStartObsDate = iptStartObs.getObsDatetime();
                     iptStopObsDate = iptStopObs.getObsDatetime();
                     iptStartStopDiff = minutesBetween(iptStopObsDate,iptStartObsDate);
