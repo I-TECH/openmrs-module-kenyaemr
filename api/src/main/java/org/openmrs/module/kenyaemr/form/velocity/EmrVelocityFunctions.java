@@ -25,6 +25,7 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.htmlformentry.FormEntrySession;
+import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -126,6 +127,17 @@ public class EmrVelocityFunctions {
 		CalculationResult patientEnrolledInTbProgram = EmrCalculationUtils.evaluateForPatient(PatientInTbProgramCalculation.class, null,session.getPatient());
 		return 	(Boolean) patientEnrolledInTbProgram.getValue();
 
+	}
+	/**
+	 * Checks whether the patient is eligible to be enrolled in TB program
+	 * @return true if patient is eligible to be enrolled in TB program
+	 *
+	 * */
+
+	public Boolean patientDueForTbProgramEnrollment() {
+
+		CalculationResult patientEligibleForEnrollmentTbProgram = EmrCalculationUtils.evaluateForPatient(PatientDueForTbProgramEnrollmentCalculation.class, null,session.getPatient());
+		return 	(Boolean) patientEligibleForEnrollmentTbProgram.getValue();
 
 	}
 	/**
@@ -138,7 +150,6 @@ public class EmrVelocityFunctions {
 
 		CalculationResult patientEnrolledInIPTProgram = EmrCalculationUtils.evaluateForPatient(OnIptProgramCalculation.class, null,session.getPatient());
 		return 	(Boolean) patientEnrolledInIPTProgram.getValue();
-
 
 	}
 	/**

@@ -17,8 +17,26 @@
     <script type="text/javascript">
 
         jQuery(function () {
+            //linked status selected
+            jq('#contact-status select').change(linkStatusSelected);
+
 
         });
+        function linkStatusSelected() {
+            var linkStatusSelected = getField('contact-status.value').val();
+            if (linkStatusSelected == 1065 ){
+                jq("#linkage").show();
+            }
+            if (linkStatusSelected == 1066 ){
+                jq("#linkage").hide()
+                clearHiddenSections(jq('#facility'));
+                clearHiddenSections(jq('.upn'));
+                clearHiddenSections(jq('.hcw-handedto'));
+                clearHiddenSections(jq('.hcw-cadre'));
+                clearHiddenSections(jq('.linkage-date'));
+                clearHiddenSections(jq('.remarks'));
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
@@ -32,6 +50,21 @@
             }
             return true;
         });
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 
     </script>
 
@@ -70,13 +103,13 @@
                     </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset id="linkage">
             <legend>Linkage to care</legend>
             <table id="tbl-care-status">
                 <tr>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
-                    <td> &#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                            <obs id="facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC number:
                     <td>
@@ -92,6 +125,21 @@
                 <tr>
                     <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Cadre of health worker : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Other"
+                             style="dropdown"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Date preferred for linkage : </strong>&#160;&#160;&#160;&#160;
+                        <obs class="linkage-date" conceptId="163181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
                         />
                     </td>
                 </tr>

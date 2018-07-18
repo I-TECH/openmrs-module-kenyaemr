@@ -2211,6 +2211,8 @@
   <concept concept_id="160433" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_id="160433" name="Patient outcome status" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
 
-
-
+    <concept concept_id="162309" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+    <concept_name concept_id="162309" name="Anti tb start" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+      <concept concept_id="164948" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="164948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+      <concept_name concept_id="164948" name="Currently on Anti tb" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
 </dataset>
