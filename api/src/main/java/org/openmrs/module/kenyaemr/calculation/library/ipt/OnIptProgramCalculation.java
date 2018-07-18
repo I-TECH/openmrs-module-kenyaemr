@@ -48,7 +48,9 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 		Concept IptStartQuestion = Context.getConceptService().getConcept(1265);
 		Concept IptStopQuestion = Context.getConceptService().getConcept(160433);
 
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 		Set<Integer> alive = Filters.alive(cohort, context);
+		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 
 		CalculationResultMap iptCurrent = Calculations.lastObs(IptCurrentQuestion, cohort, context);
 		CalculationResultMap iptStarted = Calculations.lastObs(IptStartQuestion, cohort, context);
@@ -59,13 +61,21 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 
 			Date iptStartObsDate = null;
 			Date iptStopObsDate = null;
+			boolean tbPatient = false;
 			boolean inIptProgram = false;
 			boolean currentInIPT = false;
+			boolean patientInTbProgram = false;
 			Integer iptStartStopDiff = 0;
 
 			Obs iptCurrentObs = EmrCalculationUtils.obsResultForPatient(iptCurrent, ptId);
 			Obs iptStartObs = EmrCalculationUtils.obsResultForPatient(iptStarted, ptId);
 			Obs iptStopObs = EmrCalculationUtils.obsResultForPatient(iptStopped, ptId);
+
+			//Eligibility not for patients already in tb program
+			if (inTbProgram.contains(ptId)) {
+				patientInTbProgram = true;
+			}
+
           //Currently on IPT
 			if (iptCurrentObs != null &&  iptStopObs == null && iptCurrentObs.getValueCoded().getConceptId().equals(1065)) {
 				inIptProgram = true;
@@ -84,7 +94,7 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 				}
 			}
 
-			if (inIptProgram)
+			if (!patientInTbProgram && inIptProgram)
 				currentInIPT = true;
 
 			ret.put(ptId, new BooleanResult(currentInIPT, this));

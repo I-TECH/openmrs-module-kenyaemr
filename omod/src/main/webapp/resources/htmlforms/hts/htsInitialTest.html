@@ -19,12 +19,19 @@
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
+            var pripop = jq('#priority-population');
             if (val == 164929 ){
                 jq("#key-population").show();
+                jq("#priority-population").hide();
+            }
+            if (val == 138643 ){
+                jq("#priority-population").show();
+                jq("#key-population").hide();
             }
             if(val == 164928){
                 jq("#key-population").hide();
                 clearHiddenSections(keypop);
+                clearHiddenSections(pripop);
             }
         }
         var hasDisabilitySelected = function () {
@@ -234,7 +241,9 @@
         $(document).ready(function () {
             //pop type
             jq("#key-population").hide();
+            jq("#priority-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
+            jq('input[type=radio].priority-population').prop("checked", false);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
@@ -489,6 +498,16 @@
                                     jq("#expiry-date2 input").prop("disabled", false);
                                     getField('hiv-final-result.value').val(1138);
                                 }
+
+                                var popTypeSelected = getField("population-type.value");
+                                if (popTypeSelected == 164929 ){
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                                }
+                                if (popTypeSelected == 138643 ){
+                                    jq("#priority-population").show();
+                                    jq("#key-population").hide();
+                                }
                             });
                         </script>
                     </ifMode>
@@ -507,8 +526,8 @@
             <div>
                 Population type : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                 <obs conceptId="164930"
-                     answerConceptIds="164928,164929"
-                     answerLabels="General Population,Key Population" id="population-type"
+                     answerConceptIds="164928,164929,138643"
+                     answerLabels="General Population,Key Population,Priority Population" id="population-type"
                      style="radio" />
             </div>
             <table id="key-population">
@@ -526,6 +545,24 @@
                         </includeIf>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Other" style="checkbox" id="other" /><br/>
+                    </td>
+                </tr>
+            </table>
+            <table id="priority-population">
+                <tr>
+                    <td>
+                           <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159674AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Fisher folk" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Truck driver" style="checkbox" /><br/>
+                        <includeIf velocityTest="$patient.gender == 'F'">
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Adolescent and young girls" style="checkbox" id="adyg" /><br/>
+                        </includeIf>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Prisoner" style="checkbox" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Not applicable" style="checkbox" id="other" /><br/>
                     </td>
                 </tr>
             </table>
