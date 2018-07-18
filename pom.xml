@@ -178,6 +178,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>hivtestingservices-api</artifactId>
+            <version>${kenyaemrHivTestingVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- End OpenMRS modules -->
 
         <!-- Begin OpenMRS core -->
