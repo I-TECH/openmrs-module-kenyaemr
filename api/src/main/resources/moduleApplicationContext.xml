@@ -60,7 +60,7 @@
 		<constructor-arg value="kenyaemr.facilityDashboard" />
 		<constructor-arg value="Facility Dashboard" />
 		<constructor-arg value="kenyaemr/facilityDashboard/facilityDashboardHome.page" />
-		<constructor-arg value="kenyaui:apps/reports.png" />
+		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
 		<constructor-arg value="510" />
 	</bean>
 
