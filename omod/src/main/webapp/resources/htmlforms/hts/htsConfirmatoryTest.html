@@ -47,8 +47,6 @@
                 getField('hts-entry-point.value').prop("selectedIndex", 10);
             }else if (val == 164954 || val == 164955){
                 getField('hts-entry-point.value').prop("selectedIndex", 8);
-            }else{
-                getField('hts-entry-point.value').prop("selectedIndex", 0);
             }
         }
         var prevTestSelected = function () {
@@ -242,6 +240,45 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability').hide();
+
+            //pre-populate from HIV Initial
+            var prev_disability = "<lookup expression="fn.latestObs(164951).getValueCoded()"/>";
+            var prev_disabilityType = "<lookup expression="fn.latestObs(162558).getValueCoded()"/>";
+            var prev_populationType = "<lookup expression="fn.latestObs(164930).getValueCoded()"/>";
+            var prev_keyPopulationType = "<lookup expression="fn.latestObs(160581).getValueCoded()"/>";
+            var prev_EverTested = "<lookup expression="fn.latestObs(164401).getValueCoded()"/>";
+            //Prepopulated fileds from the HTS forms
+//            console.log("Disability ==>"+prev_disability);
+//            console.log("Disability Type ==>"+prev_disabilityType);
+//            console.log("Population Type ==>"+prev_populationType);
+//            console.log("Key Pop Type ==>"+prev_keyPopulationType);
+
+            if (prev_disability == 1065) {
+                jq("#has-disability input[value=1065]").prop("checked", true);
+                jq('#disability').show();
+            }
+            if (prev_disabilityType != "" || prev_disabilityType != null) {
+                jq("#disability input[type=checkbox][value=" + prev_disabilityType+ "]").prop("checked",true);
+            }
+            if (prev_disability == 1066) {
+                jq("#has-disability input[value=1066]").prop("checked", true);
+                jq('#disability').hide();
+            }
+            if (prev_populationType == 164929) {
+                jq("#population-type input[value=164929]").prop("checked", true);
+                jq('#key-population').show();
+            }
+            if (prev_populationType == 164928) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (prev_keyPopulationType != "" || prev_keyPopulationType != null) {
+                jq("#key-population input[type=checkbox][value=" + prev_keyPopulationType+ "]").prop("checked",true);
+            }
+            if (prev_EverTested == 1065) {
+                jq("#ever-tested input[value=1065]").prop("checked", true);
+            }
+
             //ever tested
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
@@ -253,8 +290,6 @@
                 getField('hts-entry-point.value').prop("selectedIndex", 10);
             }else if (htsStrategySelected == 164954 || htsStrategySelected == 164955){
                 getField('hts-entry-point.value').prop("selectedIndex", 8);
-            }else{
-                getField('hts-entry-point.value').prop("selectedIndex", 0);
             }
 
             //Consent validation

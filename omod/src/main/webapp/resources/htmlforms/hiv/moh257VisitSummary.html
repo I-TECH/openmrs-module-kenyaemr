@@ -59,6 +59,11 @@
         var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
         var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
         var pAge = parseInt('<lookup expression="patient.age"/>');
+         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
+         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
+         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
     //Start on jq onready
   jq(function() {
             jq('#person-present input').click(onPersonPresentChange);
@@ -109,6 +114,7 @@
             onWeightOrHeightChange();
             onEncounterDateChange();
             viralLoadValidation();
+            onPersonPresentChange();
             //Differentiated care
 //            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
 //            if(PATIENT_STABLE =="true") {
@@ -162,9 +168,78 @@
                 jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
                 setPregDateField(initialPregOption);
             }
+      //prophylaxis validation
+          jq('#dispense-ctx').click(onCtxDispenseClick);
+          jq('#dispense-dap').click(onDapDispenseClick);
         });
         //End on ready
-   function onPersonPresentChange() {
+ function onCtxDispenseClick() {
+     var dispensectxselected = getValue('dispense-ctx.value');
+     var dispensedapsoneselected = getValue('dispense-dap.value');
+     var ctx = jq("#dispense-ctx");
+     var dap = jq("#dispense-dap");
+     clearHiddenSections([dap]);
+     if(dispensectxselected == 1065) {
+         jq("#dispense-dap input[value=1065]").prop("checked", false);
+         jq('#dispense-dap :input').prop('disabled', true);
+         jq('#adherence-dapsone :input').prop('disabled', true);
+         jq('#adherence-dapsone :input').prop('checked', false);
+     }
+     if(dispensectxselected != 1065) {
+         jq("#dispense-dap input[value=1065]").prop("checked", false);
+         jq('#dispense-dap :input').prop('disabled', false);
+         jq('#adherence-dapsone :input').prop('disabled', false);
+     }
+ }
+ function onDapDispenseClick() {
+     var dispensedapsoneselected = getValue('dispense-dap.value');
+     var dispensectxselected = getValue('dispense-ctx.value');
+     var ctx = jq("#dispense-ctx");
+     var dap = jq("#dispense-dap");
+     clearHiddenSections([ctx]);
+     if(dispensedapsoneselected == 1065) {
+         jq("#dispense-ctx input[value=1065]").prop("checked", false);
+         jq('#dispense-ctx :input').prop('disabled', true);
+         jq('#adherence-ctx :input').prop('disabled', true);
+         jq('#adherence-ctx :input').prop('checked', false);
+     }
+     if(dispensedapsoneselected != 1065) {
+         jq("#dispense-ctx input[value=1065]").prop("checked", false);
+         jq('#dispense-ctx :input').prop('disabled', false);
+         jq('#adherence-ctx :input').prop('disabled', false);
+     }
+ }
+ function onCtxAdherenceClick() {
+     var adherencectxselected = getValue('adherence-ctx.value');
+     var adherencedapsoneselected = getValue('adherence-dapsone.value');
+     var ctx = jq("#adherence-ctx");
+     var dap = jq("#adherence-dapsone");
+     clearHiddenSections([dap]);
+     if(adherencectxselected != null) {
+         jq('#adherence-dapsone :input').prop("checked", false);
+         jq('#adherence-dapsone :input').prop('disabled', true);
+     }
+     if(adherencectxselected == null) {
+         jq('#adherence-dapsone :input').prop("checked", false);
+         jq('#dispense-dapsone :input').prop('disabled', false);
+     }
+ }
+ function onDapAdherenceClick() {
+     var adherencedapsoneselected = getValue('adherence-dapsone.value');
+     var adherencectxselected = getValue('adherence-ctx.value');
+     var ctx = jq("#adherence-ctx");
+     var dap = jq("#adherence-dapsone");
+     clearHiddenSections([ctx]);
+     if(adherencedapsoneselected != null) {
+         jq('#adherence-ctx :input').prop("checked", false);
+         jq('#adherence-ctx :input').prop('disabled', true);
+     }
+     if(adherencedapsoneselected == null) {
+         jq('#adherence-ctx input').prop("checked", false);
+         jq('#adherence-ctx :input').prop('disabled', false);
+     }
+ }
+ function onPersonPresentChange() {
             var tbScreeningResults = jq("#tb-screening");
             var nutStatus = jq("#nutritional-status");
             var whostage = jq("#whostage");
@@ -181,13 +256,26 @@
             var childvaccselected = jq('#child-vacc');
             var phdpcondomsselected = jq('#phdp-condoms');
             var phdpdisclosureselected = jq('#phdp-disclosure');
+            var phdpsubstanceselected = jq('#phdp-substance-abuse');
             var phdptestingselected = jq('#phdp-testing');
             var phdpstiscreeningselected = jq('#phdp-sti-screening');
             var adherencearvselected = jq('#adherence-arv');
             var adherencectxselected = jq('#adherence-ctx');
             var adherencedapsoneselected = jq('#adherence-dapsone');
             if (getValue('person-present.value') == SELF) {
+                //adherence assessment validation
+                jq('#adherence-ctx').click(onCtxAdherenceClick);
+                jq('#adherence-dapsone').click(onDapAdherenceClick);
                 jq('.patient-details :input').prop('disabled', false);
+                //art validation
+                //On ART hide adherence assessment
+                if(PATIENT_ON_ART == "true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART == "true") {
+                    jq('#adherence-arv :input').prop('disabled', false);
+                }
+                if(PATIENT_HAS_BEEN_ON_ART == "false") {
+                    jq('#adherence-arv :input').prop('disabled', true);
+                }
+
             } else {
                 complaintSelected();
                 knownAllergiesSelected();
@@ -196,7 +284,7 @@
 
                 jq('.patient-details :input').prop('disabled', true);
                 clearHiddenSections([tbScreeningResults, nutStatus, whostage, fpType, fpStatus, maleFpStatus, allergiesselected, complaintsselected, adversereactionsselected,
-                 chronicillnessselected, generalexamselected, pregoptionsselected, adultvaccselected, childvaccselected, phdpcondomsselected, phdpdisclosureselected,
+                 chronicillnessselected, generalexamselected, pregoptionsselected, adultvaccselected, childvaccselected, phdpcondomsselected, phdpdisclosureselected,phdpsubstanceselected,
                 phdptestingselected, phdpstiscreeningselected, adherencearvselected, adherencectxselected, adherencedapsoneselected]);
                 jq('#weight input').val('');
                 jq('#height input').val('');
@@ -906,7 +994,7 @@
                              </div>
                          </th>
                          <td>(r)</td>
-                         <td colspan="2">
+                         <td>
                              <table id="tbl-complaints-today">
                                  <tr>
                                      <th style="color: #888">Complaint</th>
@@ -944,6 +1032,10 @@
                                  </repeat>
                              </table>
                              <hr width="0" />
+                         </td>
+                         <td>  <strong>Clinical Notes</strong><br/>
+                             <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="60" id="clinical-notes"/>
+                                       <span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                          </td>
                      </tr>
                      <tr class="patient-details" id="general-exam-findings">
@@ -1044,8 +1136,8 @@
                                                              <td>
                                                                  <obs class="action-taken"
                                                                          conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                      answerLabels="CONTINUE REGIMEN,SWITCHED REGIMEN,CHANGED DOSE,SUBSTITUTED DRUG,NONE,STOP,OTHER"
                                                                       style="dropdown"/>
                                                              </td>
                                                          </tr>
@@ -1219,7 +1311,7 @@
                                         conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerLabels="Yes,No,Not applicable (N/A)"
-                                        style="radio"
+                                        style="radio" id="dispense-ctx"
                                 />
                             </td>
                         </tr>
@@ -1230,7 +1322,7 @@
                                         conceptId="164940"
                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerLabels="Yes,No,Not applicable (N/A)"
-                                        style="radio"
+                                        style="radio" id="dispense-dap"
                                 />
                             </td>
                         </tr>
@@ -1258,7 +1350,7 @@
                 <th colspan="3">Treatment Plan</th>
                 <td>(ac)</td>
                 <td colspan="2">
-                    <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80" id="treatment-plan"/>
+                    <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80" id="treatment-plan"/>
                 </td>
             </tr>
             <tr class="patient-details" >
@@ -1338,7 +1430,15 @@
                             <td>Has the client been given condoms this visit?</td>
                             <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown" id="phdp-condoms"
+                                     answerLabels="Yes,No,Unknown" id="phdp-condoms"
+                                     style="radio"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Has the client been screened for substance abuse?</td>
+                            <td><obs conceptId="112603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Yes,No,Unknown" id="phdp-substance-abuse"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1346,7 +1446,7 @@
                             <td>Has the Client disclosed HIV status to their sexually active partner?</td>
                             <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown" id="phdp-disclosure"
+                                     answerLabels="Yes,No,Unknown" id="phdp-disclosure"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1354,7 +1454,7 @@
                             <td>Has the client's partner received on-site HIV testing?</td>
                             <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown" id="phdp-testing"
+                                     answerLabels="Yes,No,Unknown" id="phdp-testing"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1362,7 +1462,7 @@
                             <td>Has the client been screened for STI (in this visit)?</td>
                             <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown" id="phdp-sti-screening"
+                                     answerLabels="Yes,No,Unknown" id="phdp-sti-screening"
                                      style="radio" />
                             </td>
                         </tr>
@@ -1379,8 +1479,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Fair (F),Poor (P)" id="adherence-arv"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-arv"
                                         style="radio"  />
                                 <hr width="0" />
                             </td>
@@ -1390,8 +1490,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Fair(F),Poor (P)" id="adherence-ctx"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair(F),Poor (P),Not applicablee(N/A)" id="adherence-ctx"
                                         style="radio"
                                 />
                             </td>
@@ -1401,8 +1501,8 @@
                         <td> &#160;&#160;&#160;&#160;
                             <obs
                                     conceptId="164941"
-                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    answerLabels="Good (G),Fair (F),Poor (P)" id="adherence-dapsone"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-dapsone"
                                     style="radio"
                             />
                         </td>
