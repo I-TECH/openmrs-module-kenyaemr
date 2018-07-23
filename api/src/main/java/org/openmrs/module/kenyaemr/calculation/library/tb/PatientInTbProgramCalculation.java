@@ -22,9 +22,9 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import java.util.Set;
 
 /**
- * Calculates whether patients are (alive and) in the IPT program
+ * Calculates whether patients are (alive and) in the TB program
  * Eligibility criteria include:
- * Is currently active in IPT program
+ * Is currently active in TB program
  *
  */
 public class PatientInTbProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
