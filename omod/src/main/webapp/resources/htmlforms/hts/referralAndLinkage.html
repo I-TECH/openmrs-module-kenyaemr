@@ -17,9 +17,18 @@
     <script type="text/javascript">
 
         jQuery(function () {
+            var contacted_linked = "<lookup expression="fn.latestObs(159811).getValueCoded()"/>";
             //linked status selected
             jq('#contact-status select').change(linkStatusSelected);
-
+            jq("#linkage").hide();
+            //Auto populate if previously contacted
+            if (contacted_linked == 1065) {
+                jq("#linkage").show();
+            }else{
+                jq("#linkage").hide()
+            }
+            //Default location
+            jq('#default-location').click(defaultLocationChange);
 
         });
         function linkStatusSelected() {
@@ -34,7 +43,19 @@
                 clearHiddenSections(jq('.hcw-handedto'));
                 clearHiddenSections(jq('.hcw-cadre'));
                 clearHiddenSections(jq('.linkage-date'));
+                clearHiddenSections(jq('.art-date'));
                 clearHiddenSections(jq('.remarks'));
+            }
+        }
+        //Ckeckbox to prepopulate default location
+        var defaultLocationChange = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('facility.value').val(default_location);
+            }else{
+                getField('facility.value').val("");
+                clearHiddenSections(jq('#default-location'));
             }
         }
         //Before Submit
@@ -110,10 +131,9 @@
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
                     <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                             <obs id="facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
+                    </td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC number:
                     <td>
-                        <!--<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false" /></span>-->
                     <obs class="upn" conceptId="162053" size="20"
                     />
                 </td>
@@ -138,8 +158,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><strong>Date preferred for linkage : </strong>&#160;&#160;&#160;&#160;
-                        <obs class="linkage-date" conceptId="163181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                    <td><strong>Date enrolled : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                        />
+                    </td>
+                </tr> <tr>
+                    <td><strong>ART start date : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
                         />
                     </td>
                 </tr>
