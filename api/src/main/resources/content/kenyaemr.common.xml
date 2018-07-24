@@ -47,6 +47,7 @@
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
+				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
 			</set>
 		</property>
@@ -417,6 +418,18 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:hts/hts_linkage_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="bfe89782-8ef6-11e8-9eb6-529269fb1459" />
+		<property name="name" value="Clients not Linked to Care" />
+		<property name="description" value="HIV Positive Clients not Linked to Care" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_clients_not_linked_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
 
