@@ -17,8 +17,47 @@
     <script type="text/javascript">
 
         jQuery(function () {
+            var contacted_linked = "<lookup expression="fn.latestObs(159811).getValueCoded()"/>";
+            //linked status selected
+            jq('#contact-status select').change(linkStatusSelected);
+            jq("#linkage").hide();
+            //Auto populate if previously contacted
+            if (contacted_linked == 1065) {
+                jq("#linkage").show();
+            }else{
+                jq("#linkage").hide()
+            }
+            //Default location
+            jq('#default-location').click(defaultLocationChange);
 
         });
+        function linkStatusSelected() {
+            var linkStatusSelected = getField('contact-status.value').val();
+            if (linkStatusSelected == 1065 ){
+                jq("#linkage").show();
+            }
+            if (linkStatusSelected == 1066 ){
+                jq("#linkage").hide()
+                clearHiddenSections(jq('#facility'));
+                clearHiddenSections(jq('.upn'));
+                clearHiddenSections(jq('.hcw-handedto'));
+                clearHiddenSections(jq('.hcw-cadre'));
+                clearHiddenSections(jq('.linkage-date'));
+                clearHiddenSections(jq('.art-date'));
+                clearHiddenSections(jq('.remarks'));
+            }
+        }
+        //Ckeckbox to prepopulate default location
+        var defaultLocationChange = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('facility.value').val(default_location);
+            }else{
+                getField('facility.value').val("");
+                clearHiddenSections(jq('#default-location'));
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
@@ -32,6 +71,21 @@
             }
             return true;
         });
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 
     </script>
 
@@ -70,17 +124,16 @@
                     </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset id="linkage">
             <legend>Linkage to care</legend>
             <table id="tbl-care-status">
                 <tr>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
-                    <td> &#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                            <obs id="facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC number:
                     <td>
-                        <!--<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false" /></span>-->
                     <obs class="upn" conceptId="162053" size="20"
                     />
                 </td>
@@ -92,6 +145,26 @@
                 <tr>
                     <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Cadre of health worker : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Employee,Other"
+                             style="dropdown"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Date enrolled : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
+                        />
+                    </td>
+                </tr> <tr>
+                    <td><strong>ART start date : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
                         />
                     </td>
                 </tr>
