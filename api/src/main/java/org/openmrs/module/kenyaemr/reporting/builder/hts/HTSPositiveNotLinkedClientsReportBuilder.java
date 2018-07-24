@@ -23,6 +23,9 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsTestedPositiveNotLinkedCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDaysSinceConfirmedPositiveDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSPatientDateTestedPositiveDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -77,8 +80,11 @@ public class HTSPositiveNotLinkedClientsReportBuilder extends AbstractHybridRepo
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        /*dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
-        dsd.addColumn("Contact Type", new HTSTracingContactTypeDataDefinition(), null);
+        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), "");
+        dsd.addColumn("Date Tested", new HTSPatientDateTestedPositiveDataDefinition(), "");
+        dsd.addColumn("Duration since confirmed Positive", new HTSDaysSinceConfirmedPositiveDataDefinition(), "");
+
+       /* dsd.addColumn("Contact Type", new HTSTracingContactTypeDataDefinition(), null);
         dsd.addColumn("Contact Status", new HTSTracingContactStatusDataDefinition(), null);*/
 
 
