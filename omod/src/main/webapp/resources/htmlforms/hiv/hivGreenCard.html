@@ -93,8 +93,6 @@ Green Card follow-up visit form
 //        console.log("PATIENT_ON_ART ==>"+PATIENT_ON_ART);
 //        console.log("PATIENT_HAS_BEEN_ON_ART ==>"+PATIENT_HAS_BEEN_ON_ART);
 
-
-
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
 
@@ -228,6 +226,13 @@ Green Card follow-up visit form
             jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            //Satbility assessment
+            jq("#stability").change(stabilitySelected);       //boolean
+            jq("#tbl-standard").show();
+            jq("#tbl-fast-track").hide();
+            jq('#standard select').prop('disabled', true);
+            jq('#fast-track select').prop('disabled', true);
+
             //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
@@ -691,9 +696,13 @@ function onPersonPresentChange() {
     var abdomenFindingsSelected = jq('.abdomen-findings');
     var cnsFindingsSelected = jq('.cns-findings');
     var gusFindingsSelected = jq('.gus-findings');
+    var stabilityAssessment = jq(".stability-details");
     if (getValue('person-present.value') == SELF ) {
         jq('.patient-details :input').prop('disabled', false);
         jq('#greencard').smartWizard('enableFinish', false);
+        jq(".stability-details").show();
+        jq("#refill-label").show();
+        jq("#refill-date").show();
     } else {
         complaintSelected();
         knownAllergiesSelected();
@@ -704,13 +713,16 @@ function onPersonPresentChange() {
         jq("#tbl-phdp").hide();
         jq("#tbl-ctx-adherence").hide();
         jq("#tbl-dap-adherence").hide();
+        jq(".stability-details").hide();
+        jq("#refill-label").hide();
+        jq("#refill-date").hide();
         jq('.patient-details :input').prop('disabled', true);
         jq('#greencard').smartWizard('goToStep', 4);
         jq('#greencard').smartWizard('enableFinish', true);
         clearHiddenSections([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
             workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
             adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
-            skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected]);
+            skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected, stabilityAssessment]);
         jq('#weight input').val('');
         jq('#height input').val('');
         jq('#muac input').val('');
@@ -1488,6 +1500,38 @@ var closeAdherenceAssessment  = function () {
     var x = jq("#modalContents");
     x.dialog('close');
 }
+//stability selected
+var stabilitySelected = function() {
+    var val = getValue('stability.value');
+    var tca_reason = getValue('returnVisitReason.value');
+    if (val == "false" || val == 1066){
+        jq("#tbl-standard").show();
+        jq("#tbl-fast-track").hide();
+        jq("#refill-label").hide();
+        jq("#refill-date").hide();
+        jq('#standard select').prop('disabled', false);
+        jq('#fast-track select').prop('disabled', true);
+    }else {
+        jq("#tbl-fast-track").show();
+        jq("#tbl-standard").hide();
+        jq("#refill-label").show();
+        jq("#refill-date").show();
+        jq('#fast-track select').prop('disabled', false);
+        jq('#standard select').prop('disabled', true);
+    }
+    if (val == 1065 &amp;&amp; tca_reason =="Refill" ){
+        jq("#refill-label").show();
+        jq("#refill-date").show();
+        jq('#refill-label input').prop('disabled', false);
+        jq('#refill-date input').prop('disabled', false);
+    }else {
+        jq("#refill-label").hide();
+        jq("#refill-date").hide();
+        jq('#refill-label input').prop('disabled', true);
+        jq('#refill-date input').prop('disabled', true);
+    }
+}
+
 clearHiddenSections = function(parentObj) {
     for(var i=0; i &lt; parentObj.length; i++){
         parentObj[i].find('input[type=radio]').each(function() {
@@ -1850,6 +1894,7 @@ beforeSubmit.push(function() {
     var encounterDate = getValue('encounter-date.value');
     var fastTrackCareError = getValue('fast-track.value');
     var standardCareError = getValue('standard.value');
+    var stabilityStatus= getValue('stability.value');
     var prophylaxis_Used = getValue('prophylaxis-used.value');
     var ctxAdherence = getValue('ctx-adherence.value');
     var ctxDispensed = getValue('ctx-dispensed.value');
@@ -1919,6 +1964,12 @@ beforeSubmit.push(function() {
         return false;
     }else{
         getField('sti-partnerNotification.error').html('Please specify partner notification status.').hide();
+    }
+    if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
+        getField('stability.error').html('Please specify stability status.').show();
+        return false;
+    }else{
+        getField('stability.error').html('Please specify stability status.').hide();
     }
     if (tca_date == "") {
         getField('returnVisitDate.error').html('Please specify return visit date for patient.').show();
@@ -2043,7 +2094,35 @@ beforeSubmit.push(function() {
                             var tbRxdate = jq('#tbrxfield');
                             var screeningYesResponses = [];
                             var screeningNoResponses = [];
-
+                            //Stability assessment
+                            var stabilityStatus = getValue('stability.value');
+                            var tca_reason = getValue('returnVisitReason.value');
+                            if (stabilityStatus == "false" || val == 1066){
+                                jq("#tbl-standard").show();
+                                jq("#tbl-fast-track").hide();
+                                jq("#refill-label").hide();
+                                jq("#refill-date").hide();
+                                jq('#standard select').prop('disabled', false);
+                                jq('#fast-track select').prop('disabled', true);
+                            }else {
+                                jq("#tbl-fast-track").show();
+                                jq("#tbl-standard").hide();
+                                jq("#refill-label").show();
+                                jq("#refill-date").show();
+                                jq('#fast-track select').prop('disabled', false);
+                                jq('#standard select').prop('disabled', true);
+                            }
+                            if (stabilityStatus == 1065 &amp;&amp; tca_reason =="Refill" ){
+                                jq("#refill-label").show();
+                                jq("#refill-date").show();
+                                jq('#refill-label input').prop('disabled', false);
+                                jq('#refill-date input').prop('disabled', false);
+                            }else {
+                                jq("#refill-label").hide();
+                                jq("#refill-date").hide();
+                                jq('#refill-label input').prop('disabled', true);
+                                jq('#refill-date input').prop('disabled', true);
+                            }
                             jq('#currently-onIpt :input').prop('disabled', false);
                             jq("#tbl-ever-on-ipt").show();
                             jq('#ever-taken-ipt :input').prop('disabled', false);
@@ -3597,7 +3676,23 @@ beforeSubmit.push(function() {
                                      style="radio" /></td>
                         </tr>
                     </table>
-                </fieldset >
+                </fieldset>
+                <!--Stability Assessment -->
+                <fieldset class="stability-details">
+                    <legend>Stability assessment</legend>
+                    <table>
+                        <tr>
+                            <td>
+                                Is the patient stable?  &#160;&#160;&#160;&#160;
+                            </td>
+                            <td><obs
+                                    conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+                                    id="stability"/>
+                                <span style="color:red;"><strong>*</strong></span>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
                 <fieldset class="tca-part">
                     <legend>Return Visit</legend>
                     <table>
@@ -3611,17 +3706,29 @@ beforeSubmit.push(function() {
                                      answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
                                      style="dropdown"  />
                                 <span style="color:red;"><strong>*</strong></span>
-                            </td>
+                            </td><td>&#160;&#160;&#160;&#160;</td>
+                            <td id="refill-label">Refill Date:&#160;&#160;</td>
+                            <td id="refill-date"><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="refillVisitDate" /></td>
                         </tr><tr></tr>
                     </table>
                     <table>
-                        <tr id="fast-track">
+                        <tr id="tbl-fast-track">
                             <td>Differentiated Care</td>
                             <td>
                                 <obs conceptId="164947" id="fast-track"
                                      answerConceptIds="164942,164943,164944,164945,164946"
                                      style="dropdown"
                                      answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
+                                />
+                            </td>
+                        </tr>
+                        <tr id="tbl-standard">
+                            <td>Differentiated Care</td>
+                            <td>
+                                <obs conceptId="164947" id="standard"
+                                     answerConceptIds="164942"
+                                     style="dropdown"
+                                     answerLabels="Standard Care"
                                 />
                             </td>
                         </tr>
