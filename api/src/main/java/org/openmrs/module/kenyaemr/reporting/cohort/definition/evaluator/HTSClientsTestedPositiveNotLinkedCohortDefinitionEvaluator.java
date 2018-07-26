@@ -40,12 +40,21 @@ public class HTSClientsTestedPositiveNotLinkedCohortDefinitionEvaluator implemen
 			return null;
 
 		Cohort newCohort = new Cohort();
-		String qry=" SELECT tested from (\n" +
-				"SELECT t.patient_id tested, l.patient_id linked\n" +
+		String qry=" SELECT clientTested from (\n" +
+				"SELECT t.patient_id clientTested, l.patient_id hasLinkageRecord, l.tracing_status, p.patient_id enrolledInHiv\n" +
 				"from kenyaemr_etl.etl_hts_test t\n" +
-				"left join kenyaemr_etl.etl_hts_referral_and_linkage l on l.patient_id=t.patient_id and l.voided=0 and l.tracing_status = 'Contacted but not linked'\n" +
+				"left join patient_program p on p.patient_id = t.patient_id and p.voided=0 and p.program_id not in (select program_id from program where uuid='dfdc6d40-2f2f-463d-ba90-cc97350441a8')\n" +
+				"left join \n" +
+				"(select l.patient_id, mid(max(concat(l.visit_date, l.tracing_status)), 11) tracing_status  \n" +
+				"from kenyaemr_etl.etl_hts_referral_and_linkage l \n" +
+				"where l.voided=0\n" +
+				"group by l.patient_id\n" +
+				") l on l.patient_id=t.patient_id\n" +
 				"where t.final_test_result = 'Positive' and t.voided = 0 and t.test_type=2 and datediff(curdate(), t.visit_date) div 365.25 < 1\n" +
-				") t where linked is null;";
+				") a \n" +
+				"where (hasLinkageRecord is null and enrolledInHiv is null) \n" +
+				"or (tracing_status = 'Contacted but not linked' and enrolledInHiv is null) \n" +
+				"or (tracing_status is null and enrolledInHiv is null);";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
