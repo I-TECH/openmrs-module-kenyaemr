@@ -226,13 +226,16 @@ Green Card follow-up visit form
             jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
-            //Satbility assessment
+            //Stability assessment
             jq("#stability").change(stabilitySelected);       //boolean
+            jq("#returnVisitReason select").change(returnReasonSelected);       //non boolean
             jq("#tbl-standard").show();
             jq("#tbl-fast-track").hide();
+            jq("#refill-label").hide();
+            jq("#refill-date").hide();
             jq('#standard select').prop('disabled', true);
             jq('#fast-track select').prop('disabled', true);
-
+            var tca_reason = getValue('returnVisitReason.value');
             //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
@@ -701,8 +704,6 @@ function onPersonPresentChange() {
         jq('.patient-details :input').prop('disabled', false);
         jq('#greencard').smartWizard('enableFinish', false);
         jq(".stability-details").show();
-        jq("#refill-label").show();
-        jq("#refill-date").show();
     } else {
         complaintSelected();
         knownAllergiesSelected();
@@ -1502,24 +1503,28 @@ var closeAdherenceAssessment  = function () {
 }
 //stability selected
 var stabilitySelected = function() {
-    var val = getValue('stability.value');
-    var tca_reason = getValue('returnVisitReason.value');
-    if (val == "false" || val == 1066){
+    var stabilityStatus = getValue('stability.value');
+    var tca_reason = getField('returnVisitReason.value').val();
+    var refillDate = jq("#refill-date").hide();
+    if (stabilityStatus == "false" || stabilityStatus == 1066){
         jq("#tbl-standard").show();
         jq("#tbl-fast-track").hide();
         jq("#refill-label").hide();
         jq("#refill-date").hide();
         jq('#standard select').prop('disabled', false);
         jq('#fast-track select').prop('disabled', true);
+        clearHiddenSections([refillDate]);
     }else {
         jq("#tbl-fast-track").show();
         jq("#tbl-standard").hide();
-        jq("#refill-label").show();
-        jq("#refill-date").show();
         jq('#fast-track select').prop('disabled', false);
         jq('#standard select').prop('disabled', true);
     }
-    if (val == 1065 &amp;&amp; tca_reason =="Refill" ){
+}
+var returnReasonSelected = function() {
+    var stabilityStatus = getValue('stability.value');
+    var tca_reason = getField('returnVisitReason.value').val();
+    if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521){
         jq("#refill-label").show();
         jq("#refill-date").show();
         jq('#refill-label input').prop('disabled', false);
@@ -2096,23 +2101,19 @@ beforeSubmit.push(function() {
                             var screeningNoResponses = [];
                             //Stability assessment
                             var stabilityStatus = getValue('stability.value');
-                            var tca_reason = getValue('returnVisitReason.value');
-                            if (stabilityStatus == "false" || val == 1066){
+                            var tca_reason = getField('returnVisitReason.value').val();
+                            if (stabilityStatus == "false" || stabilityStatus == 1066){
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
-                                jq("#refill-label").hide();
-                                jq("#refill-date").hide();
                                 jq('#standard select').prop('disabled', false);
                                 jq('#fast-track select').prop('disabled', true);
                             }else {
                                 jq("#tbl-fast-track").show();
                                 jq("#tbl-standard").hide();
-                                jq("#refill-label").show();
-                                jq("#refill-date").show();
                                 jq('#fast-track select').prop('disabled', false);
                                 jq('#standard select').prop('disabled', true);
                             }
-                            if (stabilityStatus == 1065 &amp;&amp; tca_reason =="Refill" ){
+                            if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521 ){
                                 jq("#refill-label").show();
                                 jq("#refill-date").show();
                                 jq('#refill-label input').prop('disabled', false);
