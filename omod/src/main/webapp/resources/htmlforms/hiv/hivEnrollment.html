@@ -392,20 +392,28 @@
             var vl = parseInt(getValue('vl.value'));
             if (vl > 0 ) {
                 jq('#vl :input').prop("disabled", false);
+                jq('#vl-date :input').prop("disabled", false);
                 jq('#ldl :input').prop("disabled", true);
+                jq('#ldl-date :input').prop("disabled", true);
 
             }else {
                 jq('#ldl :input').prop("disabled", false);
+                jq('#ldl-date :input').prop("disabled", false);
 
             }
             if (getValue('ldl.value') == 1302) {
                 jq('#vl :input').prop("disabled", true);
+                jq('#vl-date :input').prop("disabled", true);
                 jq('#ldl :input').prop("disabled", false);
+                jq('#ldl-date :input').prop("disabled", false);
             }else {
                 jq('#vl :input').prop("disabled", false);
+                jq('#vl-date :input').prop("disabled", false);
                 jq('#ldl :input').prop("disabled", true);
+                jq('#ldl-date :input').prop("disabled", true);
             }
-        }   clearHiddenSections = function(parentObj) {
+        }
+        clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
                 parentObj[i].find('input[type=radio]').each(function() {
                     this.checked = false;
@@ -717,8 +725,80 @@
 		<fieldset id="baseline-fieldset">
 			<legend>Baseline assessment</legend>
 
-			<table id="baseline-assessment1" cellspacing="10" style="float:left; ">
+			<table id="baseline-assessment3" cellspacing="10" style="float: left">
+				<tr>
+					<th>Labs</th>
+					<th align="left">Results</th>
+					<th align="left">Date</th>
+				</tr>
+				<tr class="patient-details">
+					<td>CD4 Count</td>
+					<td>
+						<obs id="cd4-count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						cells/uL
+					</td>
+					<td>
+						<obs id="cd4-date" conceptId="159376AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 
+					</td>
+				</tr>
+				<tr class="patient-details">
+					<td>HIV Viral Load</td>
+					<td>
+						<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						copies/ml
+					</td>
+					<td>
+						<obs id="vl-date" conceptId="163281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr class="patient-details">
+					<td>HIV Viral Load(LDL)</td>
+					<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" /></td>
+					<td>
+						<obs id="ldl-date" conceptId="163281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					</td>
+				</tr>
+				<tr class="patient-details">
+					<td>Regimen</td>
+					<td>
+						<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="AZT/3TC/DTG,
+								               TDF/3TC/DTG,
+								               ABC/3TC/DTG,
+								               TDF-3TC-EFV,
+								               D4T/3TC/NVP,
+											   AZT/3TC/EFV,
+											   D4T/3TC/EFV,
+											   3TC/NVP/AZT,
+											   EDF/3TC/EFV,
+											   EFV/FTC/TDF,
+											   3TC/LPV/TDF/r,
+											   ABC/3TC/AZT,
+										       ABC/NVP/3TC,
+											   3TC/ABC/LPV/r,
+							                   3TC/NVP/TDF,
+                                               3TC/NVP/AZT,
+                                               3TC/AZT/LPV/r,
+                                               AZT-3TC-ATV/r,
+                                               TDF-3TC-ATV/r,
+                                               3TC/D4T/LPV/r,
+                                               3TC/ABC/EFV,
+                                               ABC/LPV/R/TDF,
+                                               ABC/DDI/LPV/r"
+						/>
+					</td>
+				</tr>
+			</table>
+			<table id="baseline-assessment1" cellspacing="10" style="display: inline-block">
+				<tr>
+					<th>    </th>
+					<th align="left"> </th>
+					<th align="left"> </th>
+				</tr>
 				<tr>
 					<td>HBV Infected</td>
 					<td>
@@ -761,7 +841,7 @@
 					</td>
 				</tr>
 			</table>
-			<table id="baseline-assessment2" cellspacing="10" style="float: left;">
+			<table id="baseline-assessment2" cellspacing="10" style="display: inline-block">
 				<tr class="patient-details">
 					<td colspan="2"></td>
 					<td>Weight</td>
@@ -793,64 +873,6 @@
 					<td>MUAC</td>
 					<td>
 						<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-					</td>
-				</tr>
-			</table>
-			<table id="baseline-assessment3" cellspacing="10" style="display: inline-block">
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>CD4 Count</td>
-					<td>
-						<obs id="cd4-count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-						cells/uL
-					</td>
-				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>HIV Viral Load</td>
-					<td>
-						<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-						copies/ml
-					</td>
-
-				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>HIV Viral Load(LDL)</td>
-					<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" /></td>
-				</tr>
-				<tr class="patient-details">
-					<td colspan="2"></td>
-					<td>Regimen</td>
-					<td>
-						<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="AZT/3TC/DTG,
-								               TDF/3TC/DTG,
-								               ABC/3TC/DTG,
-								               TDF-3TC-EFV,
-								               D4T/3TC/NVP,
-											   AZT/3TC/EFV,
-											   D4T/3TC/EFV,
-											   3TC/NVP/AZT,
-											   EDF/3TC/EFV,
-											   EFV/FTC/TDF,
-											   3TC/LPV/TDF/r,
-											   ABC/3TC/AZT,
-										       ABC/NVP/3TC,
-											   3TC/ABC/LPV/r,
-							                   3TC/NVP/TDF,
-                                               3TC/NVP/AZT,
-                                               3TC/AZT/LPV/r,
-                                               AZT-3TC-ATV/r,
-                                               TDF-3TC-ATV/r,
-                                               3TC/D4T/LPV/r,
-                                               3TC/ABC/EFV,
-                                               ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r"
-						/>
 					</td>
 				</tr>
 			</table>
