@@ -119,10 +119,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
 		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
-		install(form("HTS Form", "Form for HTS testing services ", _EncounterType.HTS, "1", _Form.HTS_INITIAL_TEST));
-		install(form("HIV Retest Form", "Form for HTS retest Services", _EncounterType.HTS, "1", _Form.HTS_CONFIRMATORY_TEST));
-		install(form("Referral and Linkage", "Form for referrals and linkages", _EncounterType.HTS, "1", _Form.REFERRAL_AND_LINKAGE));
-		install(form("HIV Contact Listing Form", "Lists all contacts for a patient", _EncounterType.HTS, "1", _Form.CONTACT_LISTING));
+		install(form("HTS Initial Form", "Form for HTS testing services ", _EncounterType.HTS, "1", _Form.HTS_INITIAL_TEST));
+		install(form("HTS Retest Form", "Form for HTS retest Services", _EncounterType.HTS, "1", _Form.HTS_CONFIRMATORY_TEST));
+		install(form("Referral and Linkage Form", "Form for referrals and linkages", _EncounterType.HTS, "1", _Form.REFERRAL_AND_LINKAGE));
+		install(form("Contact Listing Form", "Lists all contacts for a patient", _EncounterType.HTS, "1", _Form.CONTACT_LISTING));
 		install(form("Registration Form", "Initial data collection for a patient/client, not specific to any program", _EncounterType.REGISTRATION, "1", _Form.BASIC_REGISTRATION));
 
 
