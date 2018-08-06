@@ -187,8 +187,6 @@ public class StablePatientsCalculation extends AbstractPatientCalculation implem
 
 
         Integer StabilityQuestion = 1855;
-        Integer True = 1;
-        Integer False = 0;
 
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Set<Integer> alive = Filters.alive(cohort, context);
@@ -206,28 +204,20 @@ public class StablePatientsCalculation extends AbstractPatientCalculation implem
             Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid("a0034eee-1940-4e35-847f-97537a35d05e"));   //last greencard followup form
             if (lastFollowUpEncounter != null) {
                 for (Obs obs : lastFollowUpEncounter.getObs()) {
-                    if (obs.getConcept().getConceptId().equals(StabilityQuestion) ) {
-                        log.info("Get valuecoded ==>" +obs.getValueCoded().getConceptId());
-                        log.info("Get value boolen ==>" +obs.getValueBoolean());
+                    if (obs.getConcept().getConceptId().equals(StabilityQuestion) && (obs.getValueBoolean().equals(true) || obs.getValueCoded().getConceptId().equals(1))) {
                         reportedStable = true;
-
-
                     }
                 }
-                log.info("Patient is reported stable ==> "+reportedStable);
             }
             if (!ltfu.contains(ptId)) {
                 patientActive = true;
-                log.info("Patient is active ==> "+patientActive);
             }
             if (inHivProgram.contains(ptId)) {
                 patientInHivProgram = true;
-                log.info("Patient is in HIV program ==> "+patientInHivProgram);
             }
 
             if (patientInHivProgram && patientActive && reportedStable){
                 stable = true;
-                log.info("Patient is stable ==> "+stable);
               }
         ret.put(ptId, new BooleanResult(stable, this));
         }
