@@ -5,8 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Program;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -20,6 +22,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;
@@ -42,13 +45,17 @@ import java.util.Set;
  *
  * Adds "Stable" flag on patient's dashboard
  */
-public class StablePatientsCalculation extends AbstractPatientCalculation {
+public class StablePatientsCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+    static ConceptService conceptService = Context.getConceptService();
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
+        /* Commented this autocalculated section untill we get more input  */
+        /* Instead we use the stability concept input below on the greencard form    */
+        /*
         Concept latestHeight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
         Concept latestWeight = Dictionary.getConcept(Dictionary.HEIGHT_CM);
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
@@ -172,15 +179,62 @@ public class StablePatientsCalculation extends AbstractPatientCalculation {
             ret.put(ptId, new BooleanResult(stable, this));
         }
         return ret;
-    }
-    private int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Math.abs(Days.daysBetween(d1, d2).getDays());
-    }
 
-//    @Override
-//    public String getFlagMessage() {
-//        return "Stable";
-//    }
+        */
+
+      /*This is the stability determination using the stability concept for a client from the previous visit */
+
+
+
+        Integer StabilityQuestion = 1855;
+        Integer True = 1;
+        Integer False = 0;
+
+        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        Set<Integer> alive = Filters.alive(cohort, context);
+        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+        Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+
+        CalculationResultMap ret = new CalculationResultMap();
+        for (Integer ptId : cohort) {
+
+            boolean stable = false;
+            boolean reportedStable = false;
+            boolean patientActive = false;
+            boolean patientInHivProgram = false;
+
+            Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid("a0034eee-1940-4e35-847f-97537a35d05e"));   //last greencard followup form
+            if (lastFollowUpEncounter != null) {
+                for (Obs obs : lastFollowUpEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(StabilityQuestion) ) {
+                        log.info("Get valuecoded ==>" +obs.getValueCoded().getConceptId());
+                        log.info("Get value boolen ==>" +obs.getValueBoolean());
+                        reportedStable = true;
+
+
+                    }
+                }
+                log.info("Patient is reported stable ==> "+reportedStable);
+            }
+            if (!ltfu.contains(ptId)) {
+                patientActive = true;
+                log.info("Patient is active ==> "+patientActive);
+            }
+            if (inHivProgram.contains(ptId)) {
+                patientInHivProgram = true;
+                log.info("Patient is in HIV program ==> "+patientInHivProgram);
+            }
+
+            if (patientInHivProgram && patientActive && reportedStable){
+                stable = true;
+                log.info("Patient is stable ==> "+stable);
+              }
+        ret.put(ptId, new BooleanResult(stable, this));
+        }
+        return ret;
+    }
+        @Override
+    public String getFlagMessage() {
+        return "Stable";
+    }
 }
