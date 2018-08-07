@@ -44,7 +44,7 @@ public class StoppedARTCalculation extends AbstractPatientCalculation {
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : patientsWhoStoppedART) {
-			 boolean stopped = false;
+			boolean stopped = false;
 			if(!(patientsOnARTCurrently.contains(ptId))) {
 
 				CalculationResult latestDateResult = latestDrugStopDates.get(ptId);
@@ -66,8 +66,8 @@ public class StoppedARTCalculation extends AbstractPatientCalculation {
 
 			if (result != null) {
 				for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-					if(((DrugOrder) r.getValue()).getDiscontinued()) {
-						Date candidate = ((DrugOrder) r.getValue()).getDiscontinuedDate();
+					if(((DrugOrder) r.getValue()).getDateStopped() != null) {
+						Date candidate = ((DrugOrder) r.getValue()).getDateStopped();
 						latest = CoreUtils.latest(latest, candidate);
 					}
 				}

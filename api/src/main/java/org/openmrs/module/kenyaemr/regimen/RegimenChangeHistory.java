@@ -25,9 +25,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Patient;
+import org.openmrs.*;
+import org.openmrs.api.OrderContext;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -50,11 +49,28 @@ public class RegimenChangeHistory {
 	 */
 	public static RegimenChangeHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
-		@SuppressWarnings("deprecation")
-		List<DrugOrder> allDrugOrders = Context.getOrderService().getDrugOrdersByPatient(patient);
-		return new RegimenChangeHistory(relevantGenerics, allDrugOrders);
+		CareSetting outpatient = Context.getOrderService().getCareSettingByName("OUTPATIENT");//CareSetting.CareSettingType.OUTPATIENT;
+
+		OrderType drugOrderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+
+		List<Order> allDrugOrders = Context.getOrderService().getOrders(patient, outpatient, drugOrderType, false);
+		List<DrugOrder> drugOrdersOnly = new ArrayList<DrugOrder>();
+		// TODO optimize code further
+		OrderType orderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+		for (Order o: allDrugOrders) {
+			/*boolean isDrugOrderAndHasADrug = DrugOrder.class.isAssignableFrom(getActualType(order))
+					&& ((DrugOrder) o).getDrug() != null;*/
+
+			DrugOrder order = null;
+			if (o.getOrderType().equals(orderType)) {
+				order = (DrugOrder) o;
+				drugOrdersOnly.add(order);
+			}
+
+		}
+		return new RegimenChangeHistory(relevantGenerics, drugOrdersOnly);
 	}
-	
+
 	/**
 	 * Constructs a regimen order history
 	 * @param relevantDrugs
@@ -69,9 +85,9 @@ public class RegimenChangeHistory {
 		// Collect changes for each individual drug orders
 		List<DrugOrderChange> tempChanges = new ArrayList<DrugOrderChange>();
 		for (DrugOrder o : relevantDrugOrders) {
-			tempChanges.add(new DrugOrderChange(ChangeType.START, o, o.getStartDate()));
-			if (o.getDiscontinuedDate() != null) {
-				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getDiscontinuedDate()));
+			tempChanges.add(new DrugOrderChange(ChangeType.START, o, o.getDateActivated()));
+			if (o.getDateStopped() != null) {
+				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getDateStopped()));
 			} else if (o.getAutoExpireDate() != null) {
 				tempChanges.add(new DrugOrderChange(ChangeType.END, o, o.getAutoExpireDate()));
 			}
@@ -102,12 +118,13 @@ public class RegimenChangeHistory {
 				} else { // ChangeType.END
 					DrugOrder o = rc.getDrugOrder();
 					runningOrders.remove(o);
-					if (o.getDiscontinuedReason() != null) {
+					// reason discontinued is no longer part of model
+					/*if (o.getDiscontinuedReason() != null) {
 						changeReasons.add(o.getDiscontinuedReason());
 					}
 					if (o.getDiscontinuedReasonNonCoded() != null) {
 						changeReasonsNonCoded.add(o.getDiscontinuedReasonNonCoded());
-					}
+					}*/
 				}
 			}
 
@@ -142,19 +159,20 @@ public class RegimenChangeHistory {
 		// Un-discontinue the regimen that may have been stopped
 		if (lastChange.getStopped() != null) {
 			for (DrugOrder order : lastChange.getStopped().getDrugOrders()) {
-				order.setDiscontinued(false);
-				order.setDiscontinuedDate(null);
-				order.setDiscontinuedBy(null);
-				order.setDiscontinuedReason(null);
-				order.setDiscontinuedReasonNonCoded(null);
-				Context.getOrderService().saveOrder(order);
+				order.setAction(Order.Action.NEW); //order.setDiscontinued(false);
+				//order.setDiscontinuedDate(null);
+				//order.setDiscontinuedBy(null);
+				//order.setDiscontinuedReason(null);
+				//order.setDiscontinuedReasonNonCoded(null);
+
+				Context.getOrderService().saveOrder(order, null);
 			}
 		}
 
 		// Remove last change from history
 		changes.remove(lastChange);
 	}
-	
+
 	/**
 	 * @return the changes
 	 */
@@ -177,7 +195,7 @@ public class RegimenChangeHistory {
 	public RegimenChange getLastChangeBeforeNow() {
 		return getLastChangeBeforeDate(new Date());
 	}
-	
+
 	/**
 	 * Gets the last regimen change before the given date
 	 * @return the regimen change

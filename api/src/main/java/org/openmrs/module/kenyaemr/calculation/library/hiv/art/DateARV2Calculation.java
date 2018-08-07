@@ -43,13 +43,13 @@ public class DateARV2Calculation extends AbstractPatientCalculation {
 			SimpleResult currentArvResult = (SimpleResult) currentArvs.get(ptId);
 			if (currentArvResult != null && patientsOnSecondLine.contains(ptId)) {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
-					Set<DrugOrder> drugs = currentRegimen.getDrugOrders();
-					for (DrugOrder o : drugs) {
-						if (o.getStartDate() != null) {
-							secondLineStartDate = o.getStartDate();
-							break;
-						}
+				Set<DrugOrder> drugs = currentRegimen.getDrugOrders();
+				for (DrugOrder o : drugs) {
+					if (o.getDateActivated() != null) {
+						secondLineStartDate = o.getDateActivated();
+						break;
 					}
+				}
 			}
 			result.put(ptId, new SimpleResult(secondLineStartDate, this));
 		}

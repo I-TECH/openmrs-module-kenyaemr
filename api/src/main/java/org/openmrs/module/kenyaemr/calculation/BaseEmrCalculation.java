@@ -95,7 +95,7 @@ public abstract class BaseEmrCalculation extends AbstractPatientCalculation {
 
 				for (SimpleResult r : (List<SimpleResult>) allOrders.getValue()) {
 					DrugOrder order = (DrugOrder) r.getValue();
-					if (order.getStartDate().equals(earliestStartDate)) {
+					if (order.getDateActivated().equals(earliestStartDate)) {
 						earliestOrders.add(new SimpleResult(order, null));
 					}
 				}
@@ -121,7 +121,7 @@ public abstract class BaseEmrCalculation extends AbstractPatientCalculation {
 
 			if (result != null) {
 				for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-					Date candidate = ((DrugOrder) r.getValue()).getStartDate();
+					Date candidate = ((DrugOrder) r.getValue()).getDateActivated();
 					earliest = CoreUtils.earliest(earliest, candidate);
 				}
 			}

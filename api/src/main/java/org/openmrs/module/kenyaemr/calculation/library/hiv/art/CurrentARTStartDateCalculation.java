@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.DrugOrder;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -46,7 +44,6 @@ public class CurrentARTStartDateCalculation extends AbstractPatientCalculation {
 	 * @param context         the {@link PatientCalculationContext} to use while performing the evaluation
 	 * @return a {@link CalculationResultMap}
 	 */
-	protected static final Log log = LogFactory.getLog(CurrentARTStartDateCalculation.class);
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
@@ -59,17 +56,14 @@ public class CurrentARTStartDateCalculation extends AbstractPatientCalculation {
 				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
 				Set<DrugOrder> drugs = currentRegimen.getDrugOrders();
 				for (DrugOrder o : drugs) {
-					if (o.getStartDate() != null) {
-						currentStartDate = o.getStartDate();
+					if (o.getDateActivated() != null) {
+						currentStartDate = o.getDateActivated();
 						break;
 					}
 				}
 			}
 			ret.put(ptId, new SimpleResult(currentStartDate, this));
-
 		}
-
 		return ret;
 	}
-
 }
