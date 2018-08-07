@@ -39,7 +39,19 @@
   <concept concept_id="161248" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="161248AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept concept_id="1874" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 
+  <!--adding dosage frequencies-->
 
+  <concept concept_id="160858" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="160862" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="160863" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="160864" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="160865" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="160866" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <!--adding dosage units-->
+  <concept concept_id="161553" retired="false" datatype_id="4" class_id="20" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="161553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="161554" retired="false" datatype_id="4" class_id="20" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="161554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="162263" retired="false" datatype_id="4" class_id="20" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="162263AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept concept_id="1513" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="1513AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 
 
   <!-- concept answers-->
