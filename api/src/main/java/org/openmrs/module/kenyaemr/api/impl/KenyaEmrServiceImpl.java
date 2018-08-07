@@ -113,15 +113,15 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public Location getDefaultLocation() {
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 
 			GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DEFAULT_LOCATION);
 			return gp != null ? ((Location) gp.getValue()) : null;
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 		}
 	}
 	
@@ -131,13 +131,13 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public String getDefaultLocationMflCode() {
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_LOCATION_ATTRIBUTE_TYPES);
 
 			Location location = getDefaultLocation();
 			return (location != null) ? new Facility(location).getMflCode() : null;
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_LOCATION_ATTRIBUTE_TYPES);
 		}
 	}
 
