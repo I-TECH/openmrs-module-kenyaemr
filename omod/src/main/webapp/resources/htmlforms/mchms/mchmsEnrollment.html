@@ -31,7 +31,6 @@
 		padding: 10px;
 	}
 </style>
-
 <script type="text/javascript">
 
 	var NOT_HIV_TESTED_ID = 1402;
@@ -57,13 +56,16 @@
 
 	function onLmpChange() {
 		var display = 'EDD could not be calculated!';
+		var displayGes = 'Gestation could not be calculated!';
 		var lmpValue = getValue('lmp.value');
 		if (lmpValue) {
 			var lmp = Date.parse(getValue('lmp.value'));
 			var edd = lmp;
 			display = calculateEdd(new Date(lmp));
+            displayGes = calculateGestation(new Date(lmp))
 		}
 		$j('#calculated-edd').html(display);
+		$j('#calculated-gestation').html(displayGes);
 	}
 
 	function daysInMonth(month, year) {
@@ -104,7 +106,13 @@
 		return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' +
 				eddYear;
 	}
+    function calculateGestation(lmp) {
+        var today = new Date();
 
+        var timeDiff = Math.abs(lmp.getTime() - today.getTime());
+        return Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
+
+    }
 	function validateRequiredFields() {
 		var gravida = getValue('gravida.value');
 		var parityTerm = getValue('parity-term.value');
@@ -234,11 +242,19 @@
 				<td>
 					<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/>
 				</td>
+				<td>Gestation  in weeks:</td>
+				<td>
+					<span id="calculated-gestation" class="value"></span>
+				</td>
 			</tr>
 			<tr>
 				<td>Gravida:</td>
 				<td>
 					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+				</td>
+				<td>EDD (Calculated from L.M.P):</td>
+				<td>
+					<span id="calculated-edd" class="value"></span>
 				</td>
 			</tr>
 			<tr>
@@ -249,24 +265,6 @@
 					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
 						 id="parity-abortion"/>
 				</td>
-			</tr>
-			<tr>
-				<td>L.M.P:</td>
-				<td>
-					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
-				</td>
-				<td>
-					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-					Estimated
-				</td>
-			</tr>
-			<tr>
-				<td>EDD (Calculated from L.M.P):</td>
-				<td>
-					<span id="calculated-edd" class="value"></span>
-				</td>
-			</tr>
-			<tr>
 				<td>EDD (Ultrasound):</td>
 				<td>
 					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
@@ -274,63 +272,26 @@
 				</td>
 			</tr>
 			<tr>
+				<td width="250">Age at Menarche:</td>
+				<td>
+					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/>
+				</td>
 				<td width="250">Blood Group/Rhesus:</td>
 				<td>
 					<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 				</td>
 			</tr>
-		</table>
-	</td>
-	<td valign="top">
-		<legend>Maternal/Antenatal Profile</legend>
-		<table align="center" width="100%" class="tb1">
 			<tr>
-				<td>Serology:</td>
+				<td>L.M.P:</td>
 				<td>
-					<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+
+					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+					Estimated
 				</td>
-			</tr>
-			<tr>
 				<td>TB Screening:</td>
 				<td>
 					<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-				</td>
-			</tr>
-			<tr>
-				<td>BS for MPS:</td>
-				<td>
-					<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-				</td>
-			</tr>
-			<tr>
-				<td>HIV Status:</td>
-				<td>
-					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-						 id="patient-hiv-status"
-						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
-					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
-				</td>
-			</tr>
-			<tr>
-				<td width="250">HIV Test Date:</td>
-				<td>
-					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-				</td>
-			</tr>
-			<tr>
-				<td>Partner HIV Status:</td>
-				<td>
-					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-						 id="partner-hiv-status"
-						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HIV Positive,HIV Negative,Unknown"/>
-				</td>
-			</tr>
-			<tr id="partner-hiv-date">
-				<td width="250">Partner HIV Test Date:</td>
-				<td>
-					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
 				</td>
 			</tr>
 		</table>
@@ -338,16 +299,67 @@
 </tr>
 <tr>
 	<td colspan="2">
-		<legend>Urinalysis</legend>
+		<legend>Laboratory investigations</legend>
 		<table align="center" width="100%" class="tb1">
 			<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<tr>
 					<td>
 						<table>
+
+							<tr>
+								<td>HIV Status:</td>
+								<td>
+									<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+										 id="patient-hiv-status"
+										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
+									<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+								</td>
+								<td>Serology:</td>
+								<td>
+									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td width="250">HIV Test Date:</td>
+								<td>
+									<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</td>
+								<td>BS for MPS:</td>
+								<td>
+									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Partner HIV Status:</td>
+								<td>
+									<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+										 id="partner-hiv-status"
+										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+								</td>
+							</tr>
+							<tr id="partner-hiv-date">
+								<td width="250">Partner HIV Test Date:</td>
+								<td>
+									<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
+								</td>
+							</tr>
+						</table>
+			         <table>
+						 <br/>
+							<legend><strong>Urinalysis</strong></legend>
+							 <hr />
 							<tr>
 								<td>Urine Microscopy</td>
 								<td>
 									<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+								</td>
+								<td>Urine Leukocyte Esterase Test</td>
+								<td>
+									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
 								</td>
 							</tr>
 							<tr>
@@ -358,48 +370,6 @@
 										 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
 									mg/dL
 								</td>
-							</tr>
-							<tr>
-								<td>Glucose Measurement (Qualitative)</td>
-								<td>
-									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine pH</td>
-								<td>
-									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Specific Gravity</td>
-								<td>
-									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Nitrite Test</td>
-								<td>
-									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Leukocyte Esterase Test</td>
-								<td>
-									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
 								<td>Urinary Ketone</td>
 								<td>
 									<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -409,6 +379,12 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Glucose Measurement (Qualitative)</td>
+								<td>
+									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+								</td>
 								<td>Urine Bile Salt Test</td>
 								<td>
 									<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -418,6 +394,10 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Urine pH</td>
+								<td>
+									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+								</td>
 								<td>Urine Bile Pigment Test</td>
 								<td>
 									<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -426,25 +406,35 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Urine Specific Gravity</td>
+								<td>
+									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+								</td>
 								<td>Urine Color</td>
 								<td>
 									<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
 							<tr>
+								<td>Urine Nitrite Test</td>
+								<td>
+									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+								</td>
 								<td>Urine Turbidity</td>
 								<td>
 									<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
-							<tr>
-								<td>Urine Dipstick for Blood</td>
-								<td>
-									<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
+						 <tr>
+							 <td>Urine Dipstick for Blood</td>
+							 <td>
+								 <obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							 </td>
+						 </tr>
 						</table>
 					</td>
 				</tr>
