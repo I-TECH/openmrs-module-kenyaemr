@@ -18,8 +18,10 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.ContentManager;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -158,7 +160,7 @@ public class RegimenManager implements ContentManager {
 
 						if (componentDrugRef.equals(orderDrugRef)) {
 
-							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
+							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getQuantityUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {
 								regimenHasComponent = true;
 								break;
 							}
@@ -227,7 +229,7 @@ public class RegimenManager implements ContentManager {
 				String groupCode = groupElement.getAttribute("code");
 				String groupName = groupElement.getAttribute("name");
 
-			   	RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
+				RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
 				categoryGroups.add(group);
 
 				// Parse all regimen definitions for this group
@@ -240,12 +242,13 @@ public class RegimenManager implements ContentManager {
 
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
+					ConceptService conceptService = Context.getConceptService();
 					for (int p = 0; p < componentNodes.getLength(); p++) {
 						Element componentElement = (Element)componentNodes.item(p);
 						String drugCode = componentElement.getAttribute("drugCode");
 						Double dose = componentElement.hasAttribute("dose") ? Double.parseDouble(componentElement.getAttribute("dose")) : null;
-						String units = componentElement.hasAttribute("units") ? componentElement.getAttribute("units") : null;
-						String frequency = componentElement.hasAttribute("frequency") ? componentElement.getAttribute("frequency") : null;
+						Concept units = componentElement.hasAttribute("units") ? conceptService.getConcept(componentElement.getAttribute("units")) : null;
+						Concept frequency = componentElement.hasAttribute("frequency") ? conceptService.getConcept(componentElement.getAttribute("frequency")) : null;
 
 						DrugReference drug = categoryDrugs.get(drugCode);
 						if (drug == null)

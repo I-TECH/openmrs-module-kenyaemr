@@ -67,10 +67,10 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		drug4 = Dictionary.getConcept(Dictionary.DAPSONE); // Dapsone
 
 		order1 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug1, t0, t2);
-		order1.setDiscontinuedReasonNonCoded("Because I felt like it");
+		//order1.setDiscontinuedReasonNonCoded("Because I felt like it");
 
 		order2 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug2, t1, t3);
-		order2.setDiscontinuedReasonNonCoded("Died");
+		//order2.setDiscontinuedReasonNonCoded("Died");
 
 		order3 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug3, t2, null);
 
@@ -144,10 +144,10 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		EmrTestUtils.assertRegimenContainsDrugOrders(changes.get(2).getStarted(), order2, order3);
 
 		// But drug2 doesn't discontinue now
-		Assert.assertFalse(order2.getDiscontinued());
-		Assert.assertNull(order2.getDiscontinuedDate());
-		Assert.assertNull(order2.getDiscontinuedBy());
-		Assert.assertNull(order2.getDiscontinuedReason());
-		Assert.assertNull(order2.getDiscontinuedReasonNonCoded());
+		//Assert.assertFalse(order2.getDiscontinued());
+		Assert.assertNull(order2.getDateStopped());
+		//Assert.assertNull(order2.getDiscontinuedBy());
+		//Assert.assertNull(order2.getDiscontinuedReason());
+		//Assert.assertNull(order2.getDiscontinuedReasonNonCoded());
 	}
 }

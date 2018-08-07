@@ -15,12 +15,15 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import javax.naming.Context;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -37,7 +40,7 @@ public class StringToRegimenConverter implements Converter<String, Regimen> {
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-    public Regimen convert(String source) {
+	public Regimen convert(String source) {
 		String[] tokens = source.split("\\|", -1);
 		Queue<String> tokenQueue = new LinkedList<String>(Arrays.asList(tokens));
 
@@ -49,14 +52,15 @@ public class StringToRegimenConverter implements Converter<String, Regimen> {
 			String units = tokenQueue.remove().trim();
 			String frequency = tokenQueue.remove().trim();
 
+			ConceptService conceptService = org.openmrs.api.context.Context.getConceptService();
 			DrugReference drugRef = StringUtils.isNotEmpty(drugRefStr) ? drugReferenceConverter.convert(drugRefStr) : null;
 			Double dose = StringUtils.isNotEmpty(doseStr) ? Double.parseDouble(doseStr) : null;
-			units = StringUtils.isNotEmpty(units) ? units : null;
-			frequency = StringUtils.isNotEmpty(frequency) ? frequency : null;
+			Concept funits = StringUtils.isNotEmpty(units) ? conceptService.getConcept(units) : null;
+			Concept ffrequency = StringUtils.isNotEmpty(frequency) ? conceptService.getConcept(frequency) : null;
 
-			regimen.getComponents().add(new RegimenComponent(drugRef, dose, units, frequency));
+			regimen.getComponents().add(new RegimenComponent(drugRef, dose, funits, ffrequency));
 		}
 
 		return regimen;
-    }
+	}
 }

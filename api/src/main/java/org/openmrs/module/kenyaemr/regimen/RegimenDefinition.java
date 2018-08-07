@@ -15,6 +15,7 @@
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openmrs.Concept;
 
 /**
  * Represents predefined regimen with a name and group
@@ -58,7 +59,7 @@ public class RegimenDefinition extends Regimen {
 	 * @param units the component units
 	 * @param frequency the component frequency
 	 */
-	public void addComponent(DrugReference drugRef, Double dose, String units, String frequency) {
+	public void addComponent(DrugReference drugRef, Double dose, Concept units, Concept frequency) {
 		components.add(new RegimenComponent(drugRef, dose, units, frequency));
 	}
 

@@ -66,8 +66,8 @@ public class StoppedARTDateCalculation extends AbstractPatientCalculation {
 
             if (result != null) {
                 for (SimpleResult r : (List<SimpleResult>) result.getValue()) {
-                    if(((DrugOrder) r.getValue()).getDiscontinued()) {
-                        Date candidate = ((DrugOrder) r.getValue()).getDiscontinuedDate();
+                    if(((DrugOrder) r.getValue()).getDateStopped() != null) {
+                        Date candidate = ((DrugOrder) r.getValue()).getDateStopped();
                         latest = CoreUtils.latest(latest, candidate);
                     }
                 }

@@ -14,14 +14,11 @@
 
 package org.openmrs.module.kenyaemr.fragment.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
@@ -33,8 +30,8 @@ import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.regimen.RegimenValidator;
-import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -46,6 +43,9 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Various actions for regimen related functions
@@ -108,11 +108,11 @@ public class RegimenUtilFragmentController {
 		private String category;
 
 		private RegimenChangeType changeType;
-		
+
 		private Date changeDate;
 
 		private Concept changeReason;
-		
+
 		private String changeReasonNonCoded;
 
 		private Regimen regimen;
@@ -177,7 +177,7 @@ public class RegimenUtilFragmentController {
 				}
 			}
 		}
-		
+
 		/**
 		 * Applies this regimen change
 		 */
@@ -190,7 +190,7 @@ public class RegimenUtilFragmentController {
 			if (baseline == null) {
 				for (RegimenComponent component : regimen.getComponents()) {
 					DrugOrder o = component.toDrugOrder(patient, changeDate);
-					Context.getOrderService().saveOrder(o);
+					Context.getOrderService().saveOrder(o, null);
 				}
 			}
 			else {
@@ -212,23 +212,24 @@ public class RegimenUtilFragmentController {
 				OrderService os = Context.getOrderService();
 
 				for (DrugOrder o : toStop) {
-					o.setDiscontinued(true);
-					o.setDiscontinuedDate(changeDate);
-					o.setDiscontinuedBy(Context.getAuthenticatedUser());
-					o.setDiscontinuedReason(changeReason);
-					o.setDiscontinuedReasonNonCoded(changeReasonNonCoded);
-					os.saveOrder(o);
+					//o.setDiscontinued(true);
+					o.setDateChanged(changeDate);
+					o.setAction(Order.Action.DISCONTINUE);
+					//o.setDiscontinuedBy(Context.getAuthenticatedUser());
+					//o.setDiscontinuedReason(changeReason);
+					//o.setDiscontinuedReasonNonCoded(changeReasonNonCoded);
+					os.saveOrder(o, null);
 				}
 
 				for (DrugOrder o : toStart) {
 					o.setPatient(patient);
-					o.setStartDate(changeDate);
+					o.setDateActivated(changeDate);
 					o.setOrderType(os.getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
-					os.saveOrder(o);
+					os.saveOrder(o, null);
 				}
 			}
 		}
-		
+
 		/**
 		 * Gets the patient
 		 * @return the patient
@@ -236,7 +237,7 @@ public class RegimenUtilFragmentController {
 		public Patient getPatient() {
 			return patient;
 		}
-		
+
 		/**
 		 * Sets the patient
 		 * @param patient the patient
@@ -284,7 +285,7 @@ public class RegimenUtilFragmentController {
 		public Date getChangeDate() {
 			return changeDate;
 		}
-		
+
 		/**
 		 * Set the change date
 		 * @param changeDate the change date
@@ -292,7 +293,7 @@ public class RegimenUtilFragmentController {
 		public void setChangeDate(Date changeDate) {
 			this.changeDate = changeDate;
 		}
-		
+
 		/**
 		 * Gets the change reason
 		 * @return the change reason
@@ -300,7 +301,7 @@ public class RegimenUtilFragmentController {
 		public Concept getChangeReason() {
 			return changeReason;
 		}
-		
+
 		/**
 		 * Sets the change reason
 		 * @param changeReason the change reason
@@ -357,7 +358,8 @@ public class RegimenUtilFragmentController {
 
 		boolean anyDoseChanges = false;
 		for (DrugOrder o : sameGeneric) {
-			if (o.getDose().equals(component.getDose()) && o.getUnits().equals(component.getUnits()) && OpenmrsUtil.nullSafeEquals(o.getFrequency(), component.getFrequency())) {
+			//TODO relook at this
+			if (o.getDose().equals(component.getDose()) && o.getQuantityUnits().equals(component.getUnits()) && OpenmrsUtil.nullSafeEquals(o.getFrequency().getConcept(), component.getFrequency())) {
 				noChanges.add(o);
 			} else {
 				toChangeDose.add(o);

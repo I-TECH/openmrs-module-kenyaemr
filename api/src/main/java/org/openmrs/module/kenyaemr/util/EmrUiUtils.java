@@ -104,7 +104,8 @@ public class EmrUiUtils {
 				boolean hasDecimals = Math.floor(o.getDose()) != o.getDose();
 				String dose = hasDecimals ? ui.format(o.getDose()) : ui.format(o.getDose().intValue());
 
-				sb.append(" " + dose + o.getUnits());
+				//sb.append(" " + dose + o.getUnits());
+				sb.append(" " + dose + o.getDoseUnits().getShortNameInLocale(CoreConstants.LOCALE).getName());
 			}
 			if (o.getFrequency() != null) {
 				sb.append(" " + o.getFrequency());
@@ -166,11 +167,11 @@ public class EmrUiUtils {
 			boolean current = OpenmrsUtil.compare(startDate, now) <= 0 && (endDate == null || OpenmrsUtil.compare(endDate, now) > 0);
 
 			ret.add(SimpleObject.create(
-				"startDate", kenyaUi.formatDate(startDate),
-				"endDate", kenyaUi.formatDate(endDate),
-				"regimen", simpleRegimen(regimen, ui),
-				"changeReasons", changeReasons,
-				"current", current
+					"startDate", kenyaUi.formatDate(startDate),
+					"endDate", kenyaUi.formatDate(endDate),
+					"regimen", simpleRegimen(regimen, ui),
+					"changeReasons", changeReasons,
+					"current", current
 			));
 		}
 
@@ -185,7 +186,15 @@ public class EmrUiUtils {
 	 */
 	public List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
 		return SimpleObject.fromCollection(definitions, ui,
+				"name", "group.code", "components.drugRef", "components.dose"
+		);
+	}
+
+	/*
+	* public List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
+		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
 	}
+	* */
 }

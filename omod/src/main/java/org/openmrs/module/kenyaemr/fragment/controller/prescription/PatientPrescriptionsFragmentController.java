@@ -15,6 +15,8 @@
 package org.openmrs.module.kenyaemr.fragment.controller.prescription;
 
 import org.openmrs.DrugOrder;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.ui.framework.annotation.FragmentParam;
@@ -30,11 +32,23 @@ public class PatientPrescriptionsFragmentController {
 
 	public void controller(@FragmentParam("patient") Patient patient, FragmentModel model) {
 
-		List<DrugOrder> allOrders = Context.getOrderService().getDrugOrdersByPatient(patient);
+		List<Order> allOrders = Context.getOrderService().getAllOrdersByPatient(patient);
+		List<DrugOrder> allDrugOrders = new ArrayList<DrugOrder>();
+		// TODO optimize code further
+		String DRUG_ORDER_TYPE_UUID = "131168f4-15f5-102d-96e4-000c29c2a5d7";
+		OrderType orderType = Context.getOrderService().getOrderTypeByUuid(DRUG_ORDER_TYPE_UUID);
+		for (Order o: allOrders) {
+			DrugOrder order = null;
+			if (o.getOrderType().equals(orderType)) {
+				order = (DrugOrder) o;
+				allDrugOrders.add(order);
+			}
+
+		}
 		List<DrugOrder> currentAndFutureOrders = new ArrayList<DrugOrder>();
 		List<DrugOrder> completedOrders = new ArrayList<DrugOrder>();
 
-		for (DrugOrder order : allOrders) {
+		for (DrugOrder order : allDrugOrders) {
 			if (order.isCurrent() || order.isFuture()) {
 				currentAndFutureOrders.add(order);
 			} else {
