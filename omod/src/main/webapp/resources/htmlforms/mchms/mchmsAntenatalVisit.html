@@ -43,12 +43,19 @@
 
 	jq(function () {
 		jq('#arv-status input').click(onArvStatusChange);
+		jq('#counselled input').click(onANCCounselChange);
 		onArvStatusChange();
+        onANCCounselChange();
 		getField('arv-status.value').change(onArvStatusChange);
+		getField('counselled.value').change(onANCCounselChange);
 
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
+        //vl and ldl validation
+        getField('ldl.value').change(viralLoadValidation);
+        getField('vl.value').keyup(viralLoadValidation);
+        viralLoadValidation;
 	});
 
 	beforeSubmit.push(function () {
@@ -62,15 +69,23 @@
 	});
 
 	function onArvStatusChange() {
-		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else {
-			jq('#arv-medication').hide();
-		}
-	}
-
+        if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
+            jq('#arv-medication').show();
+        } else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
+            jq('#arv-medication').show();
+        } else {
+            jq('#arv-medication').hide();
+        }
+    }
+    function onANCCounselChange() {
+        var subjectCounselled = jq('.anc-counsel select').val('');
+        if (getValue('counselled.value') == 1065) {
+            jq('#anc-counselling').show();
+        }else{
+            jq('#anc-counselling').hide();
+            clearRadios([subjectCounselled]);
+        }
+    }
 	function clearArvMeds() {
 		jq('.arv-med').each(function () {
 			var elementId = jq(this).attr('id');
@@ -119,6 +134,35 @@
 		}
 		return true;
 	}
+    function viralLoadValidation() {
+        var vl = parseInt(getValue('vl.value'));
+        if (vl > 0 ) {
+            jq('#vl :input').prop("disabled", false);
+            jq('#ldl :input').prop("disabled", true);
+        }else {
+            jq('#ldl :input').prop("disabled", false);
+        }
+        if (getValue('ldl.value') == 1302) {
+            jq('#vl :input').prop("disabled", true);
+            jq('#ldl :input').prop("disabled", false);
+        }else {
+            jq('#vl :input').prop("disabled", false);
+            jq('#ldl :input').prop("disabled", true);
+        }
+    }
+    clearRadios = function(parentObj) {
+        for (var i = 0; i &lt; parentObj.length; i++){
+            parentObj[i].find('input[type=radio]').each(function () {
+                this.checked = false;
+            });
+            parentObj[i].find('input[type=checkbox]').each(function () {
+                this.checked = false;
+            });
+            parentObj[i].find('select').each(function () {
+                this.selectedIndex = 0;
+            });
+        }
+    }
 
 </script>
 
@@ -261,9 +305,10 @@
 					<legend>Other Observations</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
-							<td>H.b.:</td>
+							<td>Breast examination done:</td>
 							<td>
-								<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="163590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 						<tr>
@@ -327,128 +372,169 @@
 						<td>
 							<obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true"/>
 						</td>
+						<tr class="patient-details">
+							<td>HIV Viral Load</td>
+							<td>
+								<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								copies/ml
+							</td>
+							<td>HIV Viral Load(LDL)</td>
+							<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" />
+							</td>
+						</tr>
 					</table>
 				</td>
 			</tr>
 		</table>
 	</td>
 </tr>
-<tr>
-	<td colspan="2">
-		<legend>Urinalysis</legend>
-		<table align="center" width="100%" class="tb1">
-			<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-				<tr>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Microscopy</td>
-								<td>
-									<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urinary Albumin</td>
-								<td>
-									<obs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Glucose Measurement (Qualitative)</td>
-								<td>
-									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine pH</td>
-								<td>
-									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Specific Gravity</td>
-								<td>
-									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Nitrite Test</td>
-								<td>
-									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Leukocyte Esterase Test</td>
-								<td>
-									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urinary Ketone</td>
-								<td>
-									<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Bile Salt Test</td>
-								<td>
-									<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Bile Pigment Test</td>
-								<td>
-									<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Color</td>
-								<td>
-									<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Turbidity</td>
-								<td>
-									<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Dipstick for Blood</td>
-								<td>
-									<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</obsgroup>
-		</table>
-	</td>
-</tr>
+	<tr>
+		<td colspan="2">
+			<legend>Laboratory investigations</legend>
+			<table align="center" width="100%" class="tb1">
+				<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+					<tr>
+						<td>
+							<table>
+
+								<tr>
+									<td>HIV Status:</td>
+									<td>
+										<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+											 id="patient-hiv-status"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
+										<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+									</td>
+									<td>Syphilis test :</td>
+									<td>
+										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+								<tr>
+									<td width="250">HIV Test Date:</td>
+									<td>
+										<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+									</td>
+									<td>BS for MPS:</td>
+									<td>
+										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+								<tr>
+									<td>Partner HIV Status:</td>
+									<td>
+										<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+											 id="partner-hiv-status"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+									</td>
+
+								</tr>
+								<tr id="partner-hiv-date">
+									<td width="250">Partner HIV Test Date:</td>
+									<td>
+										<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
+									</td>
+
+								</tr>
+							</table>
+							<table>
+								<br/>
+								<legend><strong>Urinalysis</strong></legend>
+								<hr />
+								<tr>
+									<td>Urine Microscopy</td>
+									<td>
+										<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+									</td>
+									<td>Urine Leukocyte Esterase Test</td>
+									<td>
+										<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+									</td>
+								</tr>
+								<tr>
+									<td>Urinary Albumin</td>
+									<td>
+										<obs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
+										mg/dL
+									</td>
+									<td>Urinary Ketone</td>
+									<td>
+										<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
+										mg/dL
+									</td>
+								</tr>
+								<tr>
+									<td>Glucose Measurement (Qualitative)</td>
+									<td>
+										<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+									</td>
+									<td>Urine Bile Salt Test</td>
+									<td>
+										<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
+										mg/dL
+									</td>
+								</tr>
+								<tr>
+									<td>Urine pH</td>
+									<td>
+										<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+									</td>
+									<td>Urine Bile Pigment Test</td>
+									<td>
+										<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Specific Gravity</td>
+									<td>
+										<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+									</td>
+									<td>Urine Color</td>
+									<td>
+										<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Nitrite Test</td>
+									<td>
+										<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+									</td>
+									<td>Urine Turbidity</td>
+									<td>
+										<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Dipstick for Blood</td>
+									<td>
+										<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</obsgroup>
+			</table>
+		</td>
+	</tr>
 <tr>
 	<td colspan="2">
 		<fieldset>
@@ -526,6 +612,52 @@
 		</fieldset>
 	</td>
 </tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Client education</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Has the client received ANC counselling: &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="1912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 id="counselled"
+								 style="radio"
+								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No"/>
+						</td><td><td><recentObs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<table id="anc-counselling" align="center" width="100%" class="tb1">
+								<tr>
+									<td style="background-color: #B3C2F0; color: #000000;">Subject</td>
+								</tr>
+								<repeat>
+									<template>
+										<obsgroup groupingConceptId="161048AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<tr>
+												<td>
+													<obs id="subject" class="anc-counsel"
+														 conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="161006AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Birth plans,Danger signs,Family planning,HIV,Supplimental feeding,Breast care,Infant feeding,Insectiside treated nets"/>
+												</td>
+
+											</tr>
+										</obsgroup>
+									</template>
+									<render counselId="1"/>
+									<render counselId="2"/>
+									<render counselId="3"/>
+								</repeat>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
 <tr>
 	<td colspan="2">
 		<legend>Clinical Notes</legend>
