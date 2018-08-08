@@ -44,6 +44,9 @@
 	jq(function () {
 		jq('#arv-status input').click(onArvStatusChange);
 		jq('#counselled input').click(onANCCounselChange);
+        jq('.syphilis-treated').hide();
+        jq('#syphilis-test-results select').change(onSyphilisResultChange);
+
 		onArvStatusChange();
         onANCCounselChange();
 		getField('arv-status.value').change(onArvStatusChange);
@@ -84,6 +87,16 @@
         }else{
             jq('#anc-counselling').hide();
             clearRadios([subjectCounselled]);
+        }
+    }
+    function onSyphilisResultChange() {
+        var syphilisResult = jq('#syphilis-test-results select').val();
+        var syphilisTreated = jq('.syphilisTreated');
+        if (syphilisResult == 1228) {
+            jq('.syphilis-treated').show();
+        }else{
+            jq('.syphilis-treated').hide();
+            clearRadios([syphilisTreated]);
         }
     }
 	function clearArvMeds() {
@@ -408,18 +421,31 @@
 									</td>
 									<td>Syphilis test :</td>
 									<td>
-										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 id="syphilis-test-results"
+											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Non Reactive,Reactive,Not Tested,Poor Sample quality"/>
 									</td>
 								</tr>
-								<tr>
+                             <tr>
 									<td width="250">HIV Test Date:</td>
 									<td>
 										<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 									</td>
-									<td>BS for MPS:</td>
-									<td>
-										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-									</td>
+                                  <td>
+								          <table class="syphilis-treated">
+											  <tr>
+											   <td width="250">Has the client been treated for syphilis? </td>
+												<td>
+												<obs conceptId="160733AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												style="radio"
+													 class="syphilisTreated"
+												answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="Yes,No"/>
+												</td>
+											  </tr>
+										  </table>
+							     </td>
 								</tr>
 								<tr>
 									<td>Partner HIV Status:</td>
@@ -428,6 +454,10 @@
 											 id="partner-hiv-status"
 											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+									</td>
+									<td>BS for MPS:</td>
+									<td>
+										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 									</td>
 
 								</tr>
