@@ -16,8 +16,10 @@ package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
+import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -104,16 +106,25 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void findDefinitions_shouldFindDefinitionsForRegimen() {
 		// Create regimen that matches the regimen2 definition exactly
+		OrderFrequency of = new OrderFrequency();
+		of.setConcept(Context.getConceptService().getConcept(160862));
+		Context.getOrderService().saveOrderFrequency(of);
+
+		OrderFrequency ofBD = new OrderFrequency();
+		ofBD.setConcept(Context.getConceptService().getConcept(160858));
+		Context.getOrderService().saveOrderFrequency(ofBD);
+
 		DrugOrder lamivudine = new DrugOrder();
 		lamivudine.setConcept(Context.getConceptService().getConcept(78643));
 		lamivudine.setDose(150d);
-		/*lamivudine.setUnits("mg");
-		lamivudine.setFrequency("BD");*/
+		lamivudine.setDoseUnits(Context.getConceptService().getConcept(161553));
+		lamivudine.setFrequency(ofBD);
+
 		DrugOrder stavudine = new DrugOrder();
 		stavudine.setConcept(Context.getConceptService().getConcept(84309));
 		stavudine.setDose(30d);
-		/*stavudine.setUnits("mg");
-		stavudine.setFrequency("OD");*/
+		stavudine.setDoseUnits(Context.getConceptService().getConcept(161553));
+		stavudine.setFrequency(of);
 		RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(lamivudine, stavudine)));
 
 		// Test exact match

@@ -28,7 +28,7 @@
     </modules>
 
     <properties>
-        <openMRSVersion>1.11.7</openMRSVersion>
+        <openMRSVersion>1.11.6</openMRSVersion>
         <cielVersion>20150123</cielVersion>
 
         <!-- Dependency modules -->
@@ -38,7 +38,7 @@
         <htmlformentryVersion>2.4</htmlformentryVersion>
         <htmlwidgetsVersion>1.6.6</htmlwidgetsVersion>
         <idgenVersion>2.6</idgenVersion>
-        <kenyacoreVersion>2.4</kenyacoreVersion>
+        <kenyacoreVersion>2.4.1-SNAPSHOT</kenyacoreVersion>
         <kenyadqVersion>1.2</kenyadqVersion>
         <kenyauiVersion>2.0.6</kenyauiVersion>
         <logicVersion>0.5.2</logicVersion>
