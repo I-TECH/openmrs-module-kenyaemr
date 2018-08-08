@@ -16,8 +16,10 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -33,6 +35,7 @@ import static org.hamcrest.Matchers.*;
 /**
  * Tests for {@link OnArtCalculation}
  */
+
 public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
@@ -48,19 +51,26 @@ public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
+		/**
+		 * encounter#3,4,5 for patient 7
+		 * encounter#6 for patient 2
+		 *
+		 */
 		// Put patient #7 on Dapsone
 		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
+		Encounter enc1 = Context.getEncounterService().getEncounter(3);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null, enc1);
 
 		// Put patient #8 on Stavudine
 		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-		
-		List<Integer> cohort = Arrays.asList(6, 7, 8);
+		Encounter enc2 = Context.getEncounterService().getEncounter(6);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(2), stavudine, TestUtils.date(2011, 1, 1), null, enc2);
+
+		List<Integer> cohort = Arrays.asList(2, 7, 8);
 
 		CalculationResultMap resultMap = new OnArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertThat((Boolean) resultMap.get(6).getValue(), is(false)); // isn't on any drugs
+		Assert.assertThat((Boolean) resultMap.get(8).getValue(), is(false)); // isn't on any drugs
 		Assert.assertThat((Boolean) resultMap.get(7).getValue(), is(false)); // isn't on any ARTs
-		Assert.assertThat((Boolean) resultMap.get(8).getValue(), is(true)); // is taking D4T
+		Assert.assertThat((Boolean) resultMap.get(2).getValue(), is(true)); // is taking D4T
 	}
 }

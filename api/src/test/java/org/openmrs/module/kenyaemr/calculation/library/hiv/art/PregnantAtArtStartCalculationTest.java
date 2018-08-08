@@ -16,8 +16,11 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -31,6 +34,7 @@ import java.util.List;
 /**
  * Tests for {@link PregnantAtArtStartCalculation}
  */
+
 public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
@@ -56,13 +60,29 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		TestUtils.getPatient(2).setGender("F");
 		TestUtils.getPatient(6).setGender("F");
 
+		EncounterType scheduled = Context.getEncounterService().getEncounterType(1);
+		EncounterType emergency = Context.getEncounterService().getEncounterType(2);
+
+		Encounter scheduledEncounter = new Encounter();
+		scheduledEncounter.setPatient(TestUtils.getPatient(8));
+		scheduledEncounter.setEncounterType(scheduled);
+		scheduledEncounter.setEncounterDatetime(TestUtils.date(2012, 1, 1));
+		scheduledEncounter = Context.getEncounterService().saveEncounter(scheduledEncounter);
+
+		Encounter scheduledEncounter1 = new Encounter();
+		scheduledEncounter1.setPatient(TestUtils.getPatient(6));
+		scheduledEncounter1.setEncounterType(scheduled);
+		scheduledEncounter1.setEncounterDatetime(TestUtils.date(2012, 1, 1));
+		scheduledEncounter1 = Context.getEncounterService().saveEncounter(scheduledEncounter1);
+
+
 		// Give patient #2 a YES status on same day as ART start. This patient has a drug order in standardTestDataset.xml
 		// which is determining their ART start date
 		TestUtils.saveObs(TestUtils.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));
 
 		// Give patient #6 a YES status week before ART start
 		TestUtils.saveObs(TestUtils.getPatient(6), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 1, 8), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 1, 8), null, scheduledEncounter1);
 
 		// Give patient #7 a YES but a newer NO status before ART start
 		TestUtils.saveObs(TestUtils.getPatient(7), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
@@ -72,8 +92,8 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		// Give patient #8 a YES status week before ART start and a newer NO status after ART start
 		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, yes, TestUtils.date(2012, 1, 1));
 		TestUtils.saveObs(TestUtils.getPatient(8), pregnancyStatus, no, TestUtils.date(2012, 1, 15));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 8), null);
-		
+		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 8), null, scheduledEncounter);
+
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = new PregnantAtArtStartCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
