@@ -16,24 +16,13 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Provider;
-import org.openmrs.User;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Miscellaneous utility methods
@@ -185,4 +174,34 @@ public class EmrUtils {
 				);
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
+
+	/**
+	 *
+	 * @param patient
+	 * @param careSetting
+	 * @return
+	 */
+	public static List<DrugOrder> drugOrdersFromOrders(Patient patient, CareSetting careSetting) {
+
+		OrderType drugOrderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+		List<Order> allDrugOrders = null;
+		if (careSetting == null) {
+			allDrugOrders = Context.getOrderService().getAllOrdersByPatient(patient);
+		} else {
+			allDrugOrders = Context.getOrderService().getOrders(patient, careSetting, drugOrderType, false);
+		}
+
+		List<DrugOrder> drugOrdersOnly = new ArrayList<DrugOrder>();
+		for (Order o:allDrugOrders) {
+			DrugOrder order = null;
+			if (o.getOrderType().equals(drugOrderType)) {
+				order = (DrugOrder)o;
+				drugOrdersOnly.add(order);
+			}
+
+		}
+		return drugOrdersOnly;
+	}
+
+
 }

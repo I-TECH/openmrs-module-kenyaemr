@@ -14,15 +14,6 @@
 
 package org.openmrs.module.kenyaemr.regimen;
 
-import org.openmrs.CareSetting;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
-import org.openmrs.util.OpenmrsUtil;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,6 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.openmrs.*;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Regimen change history of a patient. Use for ARVs
@@ -53,25 +49,9 @@ public class RegimenChangeHistory {
 	 */
 	public static RegimenChangeHistory forPatient(Patient patient, Concept medSet) {
 		Set<Concept> relevantGenerics = new HashSet<Concept>(medSet.getSetMembers());
-		CareSetting outpatient = Context.getOrderService().getCareSettingByName("OUTPATIENT");//CareSetting.CareSettingType.OUTPATIENT;
+		CareSetting outpatient = Context.getOrderService().getCareSettingByName("OUTPATIENT");
+		List<DrugOrder> drugOrdersOnly = EmrUtils.drugOrdersFromOrders(patient, outpatient);
 
-		OrderType drugOrderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
-
-		List<Order> allDrugOrders = Context.getOrderService().getOrders(patient, outpatient, drugOrderType, false);
-		List<DrugOrder> drugOrdersOnly = new ArrayList<DrugOrder>();
-		// TODO optimize code further
-		OrderType orderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
-		for (Order o: allDrugOrders) {
-			/*boolean isDrugOrderAndHasADrug = DrugOrder.class.isAssignableFrom(getActualType(order))
-					&& ((DrugOrder) o).getDrug() != null;*/
-
-			DrugOrder order = null;
-			if (o.getOrderType().equals(orderType)) {
-				order = (DrugOrder) o;
-				drugOrdersOnly.add(order);
-			}
-
-		}
 		return new RegimenChangeHistory(relevantGenerics, drugOrdersOnly);
 	}
 
@@ -122,7 +102,7 @@ public class RegimenChangeHistory {
 				} else { // ChangeType.END
 					DrugOrder o = rc.getDrugOrder();
 					runningOrders.remove(o);
-					// reason discontinued is no longer part of model
+
 					/*if (o.getDiscontinuedReason() != null) {
 						changeReasons.add(o.getDiscontinuedReason());
 					}
@@ -168,6 +148,7 @@ public class RegimenChangeHistory {
 				//order.setDiscontinuedBy(null);
 				//order.setDiscontinuedReason(null);
 				//order.setDiscontinuedReasonNonCoded(null);
+
 
 				Context.getOrderService().saveOrder(order, null);
 			}
