@@ -80,26 +80,6 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		orderContext.setCareSetting(outpatient);
 		orderContext.setOrderType(drugOrderType);
 
-
-		//
-		/*Order order = new DrugOrder();
-		Encounter encounter = new Encounter();
-		order.setConcept(Context.getConceptService().getConcept(88));
-		order.setOrderer(Context.getProviderService().getProvider(1));
-		Patient patient = Context.getPatientService().getPatient(2);
-		encounter.setPatient(patient);
-		order.setPatient(patient);
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 1);
-		order.setDateActivated(cal.getTime());
-		order.setAutoExpireDate(new Date());
-		order.setCareSetting(new CareSetting());
-		order.setEncounter(encounter);
-		order.setUrgency(Order.Urgency.ROUTINE);
-		order.setAction(Order.Action.NEW);
-		order.setOrderType(Context.getOrderService().getOrderTypeByName("Drug order"));*/
-
-		//
 		return (DrugOrder) Context.getOrderService().saveOrder(order, orderContext);
 	}
 

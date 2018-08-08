@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -82,12 +83,16 @@ public class MchmsFirstVisitDateCalculationTest extends BaseModuleContextSensiti
 			EncounterType encounterType = null;
 			if (i ==7) {
 				encounterType = enrollmentEncounterType;
+				Obs[] whoStagingAndCd4Obss = {TestUtils.saveObs(patient, cd4CountConcept, 500.00, enrollmentDate),
+						TestUtils.saveObs(patient, whoStageConcept, Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT), enrollmentDate)};
+				TestUtils.saveEncounter(patient, encounterType, enrollmentDate, whoStagingAndCd4Obss);
 			} else if (i == 8) {
 				encounterType = consultationEncounterType;
+				Obs[] whoStagingAndCd4Obss = {TestUtils.saveObs(patient, cd4CountConcept, 500.00, enrollmentDate),
+						TestUtils.saveObs(patient, whoStageConcept, Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT), enrollmentDate)};
+				TestUtils.saveEncounter(patient, encounterType, enrollmentDate, whoStagingAndCd4Obss);
 			}
-			Obs[] whoStagingAndCd4Obss = {TestUtils.saveObs(patient, cd4CountConcept, 500.00, enrollmentDate),
-					TestUtils.saveObs(patient, whoStageConcept, Dictionary.getConcept(Dictionary.WHO_STAGE_1_ADULT), enrollmentDate)};
-			TestUtils.saveEncounter(patient, encounterType, enrollmentDate, whoStagingAndCd4Obss);
+
 		}
 
 		Context.flushSession();
