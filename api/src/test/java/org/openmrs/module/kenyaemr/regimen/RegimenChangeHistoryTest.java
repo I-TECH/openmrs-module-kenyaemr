@@ -103,9 +103,11 @@ public class RegimenChangeHistoryTest extends BaseModuleContextSensitiveTest {
 		drug4 = Dictionary.getConcept(Dictionary.DAPSONE); // Dapsone
 
 		order1 = saveDrugOrder(TestUtils.getPatient(7), drug1, t0, t2);
+		order1.setAction(Order.Action.DISCONTINUE);
 		//order1.setDiscontinuedReasonNonCoded("Because I felt like it");
 
 		order2 = saveDrugOrder(TestUtils.getPatient(7), drug2, t1, t3);
+		order2.setAction(Order.Action.DISCONTINUE);
 		//order2.setDiscontinuedReasonNonCoded("Died");
 
 		order3 = saveDrugOrder(TestUtils.getPatient(7), drug3, t2, null);

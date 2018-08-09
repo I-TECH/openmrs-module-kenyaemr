@@ -16,6 +16,7 @@ package org.openmrs.module.kenyaemr.converter;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -70,7 +71,7 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen3.getComponents().get(0).getDose());
 		Assert.assertEquals("mg", regimen3.getComponents().get(0).getUnits());
-		Assert.assertNull(regimen3.getComponents().get(0).getFrequency());
+		Assert.assertEquals("", regimen3.getComponents().get(0).getFrequency());
 
 		// Test blank component properties
 		Regimen regimen4 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA| |mg| ");
@@ -79,6 +80,6 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(new Integer(84309), regimen4.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen4.getComponents().get(0).getDose());
 		Assert.assertEquals("mg", regimen4.getComponents().get(0).getUnits());
-		Assert.assertNull(regimen4.getComponents().get(0).getFrequency());
+		Assert.assertEquals("", regimen4.getComponents().get(0).getFrequency());
 	}
 }

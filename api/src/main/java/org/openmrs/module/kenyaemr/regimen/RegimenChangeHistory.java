@@ -102,13 +102,6 @@ public class RegimenChangeHistory {
 				} else { // ChangeType.END
 					DrugOrder o = rc.getDrugOrder();
 					runningOrders.remove(o);
-
-					/*if (o.getDiscontinuedReason() != null) {
-						changeReasons.add(o.getDiscontinuedReason());
-					}
-					if (o.getDiscontinuedReasonNonCoded() != null) {
-						changeReasonsNonCoded.add(o.getDiscontinuedReasonNonCoded());
-					}*/
 				}
 			}
 

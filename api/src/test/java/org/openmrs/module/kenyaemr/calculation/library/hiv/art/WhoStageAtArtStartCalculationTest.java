@@ -57,7 +57,6 @@ public class WhoStageAtArtStartCalculationTest extends BaseModuleContextSensitiv
 		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
 
 		EncounterType scheduled = Context.getEncounterService().getEncounterType(1);
-		EncounterType emergency = Context.getEncounterService().getEncounterType(2);
 
 		Encounter scheduledEncounter = new Encounter();
 		scheduledEncounter.setPatient(TestUtils.getPatient(8));
@@ -74,6 +73,7 @@ public class WhoStageAtArtStartCalculationTest extends BaseModuleContextSensitiv
 
 
 		// Give patient #2 WHO Stage 1 on same day as ART start. This patient has a drug order in standardTestDataset.xml
+		// drug orders in standartTestDataset have no patients associated
 		// which is determining their ART start date
 		TestUtils.saveObs(TestUtils.getPatient(2), whoStage, whoStage1Adults, TestUtils.date(2007, 12, 25));
 
@@ -95,10 +95,10 @@ public class WhoStageAtArtStartCalculationTest extends BaseModuleContextSensitiv
 
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = Context.getService(PatientCalculationService.class).evaluate(ptIds, new WhoStageAtArtStartCalculation());
-		//Assert.assertEquals(1, resultMap.get(2).getValue());
-		//Assert.assertEquals(1, resultMap.get(6).getValue());
+		Assert.assertNull(resultMap.get(2)); //patient 2 has no drug order
+		Assert.assertEquals(1, resultMap.get(6).getValue());
 		Assert.assertNull(resultMap.get(7)); //has unknown/null latest WHO Stage
-		//Assert.assertEquals(1, resultMap.get(8).getValue());
+		Assert.assertEquals(1, resultMap.get(8).getValue());
 		Assert.assertNull(resultMap.get(999)); //has no recorded WHO stage
 	}
 }

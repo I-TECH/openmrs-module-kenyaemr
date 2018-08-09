@@ -72,6 +72,6 @@ public class CurrentArtRegimenCalculationTest extends BaseModuleContextSensitive
 		Assert.assertNull(resultMap.get(7)); // isn't on any ARTs
 
 		RegimenOrder pat2Res = (RegimenOrder)resultMap.get(2).getValue();
-		Assert.assertEquals(1, pat2Res.getDrugOrders().size());
+		Assert.assertEquals(3, pat2Res.getDrugOrders().size());
 	}
 }

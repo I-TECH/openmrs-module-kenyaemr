@@ -65,15 +65,15 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 		TestUtils.saveDrugOrder(TestUtils.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null, scheduledEncounter1);
 
 		// Put patient #7 on AZT, then 3TC, then EFV
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), null);
 
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
 		Assert.assertNull(resultMap.get(6)); // isn't on any ART drugs
-		//Assert.assertEquals(TestUtils.date(2010, 1, 1), resultMap.get(7).getValue());
+		Assert.assertEquals(TestUtils.date(2010, 1, 1), resultMap.get(7).getValue());
 		Assert.assertNull(resultMap.get(8)); // isn't on any drugs
 	}
 }

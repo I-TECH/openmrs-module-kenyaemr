@@ -34,7 +34,6 @@ import java.util.List;
 /**
  * Tests for {@link PregnantAtArtStartCalculation}
  */
-
 public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
@@ -77,6 +76,7 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 
 
 		// Give patient #2 a YES status on same day as ART start. This patient has a drug order in standardTestDataset.xml
+		// the patient does not have orders in the current standardtestdataset
 		// which is determining their ART start date
 		TestUtils.saveObs(TestUtils.getPatient(2), pregnancyStatus, yes, TestUtils.date(2007, 12, 25));
 
@@ -96,7 +96,7 @@ public class PregnantAtArtStartCalculationTest extends BaseModuleContextSensitiv
 
 		List<Integer> ptIds = Arrays.asList(2, 6, 7, 8, 999);
 		CalculationResultMap resultMap = new PregnantAtArtStartCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(2).getValue());
+		Assert.assertFalse((Boolean) resultMap.get(2).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(6).getValue());
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue());
 		Assert.assertTrue((Boolean) resultMap.get(8).getValue());
