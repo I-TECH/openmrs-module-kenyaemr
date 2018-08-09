@@ -34,14 +34,21 @@
 	.arv-med {
 	}
 </style>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
 
 	var ARV_CONCEPT_ID = 1148;
 	var HAART_CONCEPT_ID = 1149;
 	var NA_CONCEPT_ID = 1175;
+    var NOT_HIV_TESTED_ID = 1402;
+    var NEGATIVE = 664;
+    var UNKNOWN = 1067;
+    var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
 
+//Start on ready
 	jq(function () {
+
 		jq('#arv-status input').click(onArvStatusChange);
 		jq('#counselled input').click(onANCCounselChange);
         jq('.syphilis-treated').hide();
@@ -59,7 +66,92 @@
         getField('ldl.value').change(viralLoadValidation);
         getField('vl.value').keyup(viralLoadValidation);
         viralLoadValidation;
+
+        // HIV Test validation
+        jq("#hiv-test2").hide();
+        jq('#hiv-final-result select').attr("style", "pointer-events:none;");
+        jq("#hiv-test1-result select").change(firstTestSelected);
+        jq("#hiv-test2-result select").change(secondTestSelected);
+        //test kit expiry
+        jq("#expiry-date input").change(expiryDateSelected);
+		//Validation for if already hiv positive
+        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
+            jq('#tbl-hiv-test').hide();
+        }else{
+            jq('#tbl-hiv-test').show();
+        }
+        //Recent HIV tests
+        if(PATIENT_IS_REPORTED_HIV == 703){
+            jq('#hiv-status:text').val('Positive');
+		}else if(PATIENT_IS_REPORTED_HIV == 664){
+            jq('#hiv-status:text').val('Negative');
+		}else{
+            jq('#hiv-status:text').val('Not available');
+		}
+
+        //skip pattern
+        //First test
+        var firstTest = getField("hiv-test1-result.value").val();
+        //Negative
+        if(firstTest ==664) {
+
+            jq("#hiv-test2-result select").prop("disabled", true);
+            jq(".kit-name2 select").prop("disabled", true);
+            jq(".lot-number2 input").prop("disabled", true);
+            jq("#expiry-date2 input").prop("disabled", true);
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(firstTest ==703){
+
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+        }
+        //Invalid
+        if(firstTest ==163611){
+
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+        }
+        //Final test
+        var secondTest = getField("hiv-test2-result.value").val();
+        //Negative
+        if(secondTest ==664) {
+            jq(".kit-name2 select").prop("disabled", true);
+            jq(".lot-number2 input").prop("disabled", true);
+            jq("#expiry-date2 input").prop("disabled", true);
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(secondTest ==703){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(703);
+            jq('#ccc-no input').prop("disabled", false);
+        }
+        //Invalid
+        if(secondTest ==163611){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Invalid
+        if(secondTest ==1175){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
 	});
+//End on ready
 
 	beforeSubmit.push(function () {
 		if (validateOtherFields()) {
@@ -81,12 +173,12 @@
         }
     }
     function onANCCounselChange() {
-        var subjectCounselled = jq('.anc-counsel select').val('');
+        var subjectCounselled = jq('#subject select').val('');
         if (getValue('counselled.value') == 1065) {
             jq('#anc-counselling').show();
         }else{
             jq('#anc-counselling').hide();
-            clearRadios([subjectCounselled]);
+            getField('subject.value').val("");
         }
     }
     function onSyphilisResultChange() {
@@ -96,7 +188,7 @@
             jq('.syphilis-treated').show();
         }else{
             jq('.syphilis-treated').hide();
-            clearRadios([syphilisTreated]);
+           clearHiddenSections(jq('.syphilisTreated'));
         }
     }
 	function clearArvMeds() {
@@ -163,19 +255,111 @@
             jq('#ldl :input').prop("disabled", true);
         }
     }
-    clearRadios = function(parentObj) {
-        for (var i = 0; i &lt; parentObj.length; i++){
-            parentObj[i].find('input[type=radio]').each(function () {
-                this.checked = false;
-            });
-            parentObj[i].find('input[type=checkbox]').each(function () {
-                this.checked = false;
-            });
-            parentObj[i].find('select').each(function () {
-                this.selectedIndex = 0;
-            });
+
+    //First and second test validation
+    var firstTestSelected  = function () {
+        var firstTest = getField("hiv-test1-result.value").val();
+        //Negative
+        if(firstTest ==664) {
+            jq("#hiv-test2").hide();
+
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
+            clearHiddenSections(jq('.kit-name2'));
+            clearHiddenSections(jq('.lot-number2'));
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(firstTest ==703){
+            jq("#hiv-test2").show();
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
+        }
+        //Invalid
+        if(firstTest ==163611){
+            jq("#hiv-test2").show();
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq("kit-name2 select").prop("disabled", false);
+            jq("lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
         }
     }
+    var secondTestSelected  = function () {
+        var secondTest = getField("hiv-test2-result.value").val();
+        //Negative
+        if(secondTest ==664) {
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            getField('hiv-final-result.value').val(1138);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(secondTest ==703){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(703);
+            jq('#ccc-no input').prop("disabled", false);
+        }
+        //Invalid
+        if(secondTest ==163611){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Invalid
+        if(secondTest ==1175){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+    }
+
+    var expiryDateSelected  = function () {
+        var encounterDate = getValue('encounter-date.value');
+        var testKitExpiryDate = getValue('expiry-date.value');
+        var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+        if (isTestKitExpiryBeforeEncounterDate) {
+            getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+        }
+    }
+
+    //Clear hidden sections
+    clearHiddenSections = function(parentObj) {
+        parentObj.find('input[type=radio]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=checkbox]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=text]').each(function() {
+            jq(this).val("");
+        });
+        parentObj.find('select').each(function() {
+            this.selectedIndex =0;
+        });
+    }
+
 
 </script>
 
@@ -205,6 +389,25 @@
 		</div>
 	</td>
 </tr>
+	<tr>
+		<td>
+			<legend>Visit details: </legend>
+			<table align="top" width="100%" class="tb1">
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td width="250">ANC Visit Number</td>
+								<td>
+									<obs conceptId="1590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 <tr>
 	<td>
 		<legend>Vitals</legend>
@@ -371,33 +574,6 @@
 					</table>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<legend>ART Eligibility Assessment (If applicable)</legend>
-					<table align="center" width="100%" class="tb1">
-						<td>WHO Staging:</td>
-						<td>
-							<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
-						</td>
-						<td>CD4:</td>
-						<td>
-							<obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true"/>
-						</td>
-						<tr class="patient-details">
-							<td>HIV Viral Load</td>
-							<td>
-								<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								copies/ml
-							</td>
-							<td>HIV Viral Load(LDL)</td>
-							<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" />
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
 		</table>
 	</td>
 </tr>
@@ -405,74 +581,112 @@
 		<td colspan="2">
 			<legend>Laboratory investigations</legend>
 			<table align="center" width="100%" class="tb1">
-				<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 					<tr>
 						<td>
-							<table>
-
+							<table id="tbl-hiv-test">
+								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									<tr>
+										<td colspan="6">
+											<br/>
+											<strong>HIV Testing</strong>
+											<hr />
+										</td>
+									</tr>
 								<tr>
-									<td>HIV Status:</td>
-									<td>
-										<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-											 id="patient-hiv-status"
-											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
-										<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+									<td>HIV Test 1 Results:
+										<obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
 									</td>
-									<td>Syphilis test :</td>
-									<td>
-										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 id="syphilis-test-results"
-											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabels="Non Reactive,Reactive,Not Tested,Poor Sample quality"/>
+									<td>&#160;&#160;&#160;&#160; Kit Name
+										<obs class="kit-name"
+											 id="kit-name-1"
+											 conceptId="164962"
+											 answerConceptIds="164960,164961"
+											 style="dropdown" answerLabels="Determine,First Response"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Lot Number
+										<obs
+												class="lot-number"
+												id="lot-number-1"
+												conceptId="164964"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Expiry Date
+										<obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+										/>
 									</td>
 								</tr>
-                             <tr>
-									<td width="250">HIV Test Date:</td>
-									<td>
-										<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+								</obsgroup>
+								 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								  <tr id="hiv-test2">
+
+									<td>HIV Test 2 Results:
+										<obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="Positive,Negative,N/A"/>
 									</td>
-                                  <td>
-								          <table class="syphilis-treated">
-											  <tr>
-											   <td width="250">Has the client been treated for syphilis? </td>
+									<td>&#160;&#160;&#160;&#160; Kit Name
+										<obs class="kit-name2"
+											 id="kit-name-2"
+											 conceptId="164962"
+											 answerConceptIds="164960,164961"
+											 style="dropdown" answerLabels="Determine,First Response"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Lot Number
+										<obs class="lot-number2"
+											 id="lot-number-2"
+											 conceptId="164964"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Expiry Date
+										<obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+										/>
+									</td>
+								  </tr>
+			             	</obsgroup>
+								<tr>
+									<td>Final Results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+										<obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Positive,Negative,Inconclusive"/>
+									</td>
+									<td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
+										<obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="YES,NO"/>
+									</td>
+									<td>
+										<table border="1">
+											<tr>
 												<td>
-												<obs conceptId="160733AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												style="radio"
-													 class="syphilisTreated"
-												answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												answerLabels="Yes,No"/>
+													<u>
+														Other HIV Test Recorded Recently
+													</u>
+													<br/>
+													<br/>
+													Date:
+													<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+													<br/>
+													Final results:
+												 <input type="text" name="hiv-status" id="hiv-status" readonly="True" />
+													<br/>
 												</td>
-											  </tr>
-										  </table>
-							     </td>
-								</tr>
-								<tr>
-									<td>Partner HIV Status:</td>
-									<td>
-										<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-											 id="partner-hiv-status"
-											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+											</tr>
+										</table>
 									</td>
-									<td>BS for MPS:</td>
-									<td>
-										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-									</td>
-
-								</tr>
-								<tr id="partner-hiv-date">
-									<td width="250">Partner HIV Test Date:</td>
-									<td>
-										<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
-									</td>
-
 								</tr>
 							</table>
 							<table>
 								<br/>
 								<legend><strong>Urinalysis</strong></legend>
 								<hr />
+								<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
 									<td>Urine Microscopy</td>
 									<td>
@@ -558,14 +772,93 @@
 											 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
 									</td>
 								</tr>
+								</obsgroup>
+								<tr>
+									<br/>
+									<td>
+										<strong><U>Other tests</U></strong>
+
+									</td>
+								</tr>
+								<tr>
+									<td>Syphilis test :</td>
+									<td>
+										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 id="syphilis-test-results"
+											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Non Reactive,Reactive,Not Tested,Poor Sample quality"/>
+									</td>
+									<td>
+										<table class="syphilis-treated">
+											<tr>
+												<td width="250">Has the client been treated for syphilis? </td>
+												<td>
+													<obs conceptId="160733AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 style="radio"
+														 class="syphilisTreated"
+														 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Yes,No"/>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>BS for MPS:</td>
+									<td>
+										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									</td>
+								</tr>
 							</table>
 						</td>
 					</tr>
-				</obsgroup>
+
 			</table>
 		</td>
 	</tr>
-<tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Client monitoring</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>
+							<table align="center" width="100%" class="tb1">
+								<td>WHO Staging:</td>
+								<td>
+									<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
+								</td>
+								<td>CD4:</td>
+								<td>
+									<obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true"/>
+								</td>
+								<tr>
+									<td>HIV Viral load sample taken?</td>
+									<td>
+										<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
+										<span id="lastVl"></span>
+									</td>
+								</tr>
+								<tr class="patient-details">
+									<td>HIV Viral Load</td>
+									<td>
+										<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										copies/ml
+									</td>
+									<td>HIV Viral Load(LDL)</td>
+									<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" />
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+   <tr>
 	<td colspan="2">
 		<fieldset>
 			<legend>ARV Medication</legend>
@@ -641,8 +934,8 @@
 			</table>
 		</fieldset>
 	</td>
-</tr>
-	<tr>
+   </tr>
+   <tr>
 		<td colspan="2">
 			<fieldset>
 				<legend>Client education</legend>
