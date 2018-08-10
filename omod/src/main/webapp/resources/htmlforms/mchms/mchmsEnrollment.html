@@ -45,6 +45,8 @@
 		getField('lmp.value').change(onLmpChange);
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
+		//First ANC visit date validation
+        jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});
 
 	beforeSubmit.push(function () {
@@ -67,6 +69,15 @@
 		$j('#calculated-edd').html(display);
 		$j('#calculated-gestation').html(displayGes);
 	}
+    //Ckeckbox to prepopulate default today as first anc visit date
+    var defaultFirstAncDateChange = function () {
+        var encDate = getValue('encounter-date.value');
+        if (jq(this).is(':checked')){
+            getField('first-anc-date.value').val(encDate);
+        }else{
+            getField('first-anc-date.value').val("");
+        }
+    }
 
 	function daysInMonth(month, year) {
 		var dim = 31;
@@ -292,6 +303,12 @@
 				<td>TB Screening:</td>
 				<td>
 					<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+				</td>
+			</tr>
+			<tr>
+				<td width="250">Date of first ANC visit:</td>
+				<td>
+					<obs id="first-anc-date" conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
 				</td>
 			</tr>
 		</table>

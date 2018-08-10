@@ -45,28 +45,30 @@
     var UNKNOWN = 1067;
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
+    var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
+    var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
+
 
 //Start on ready
 	jq(function () {
-
-		jq('#arv-status input').click(onArvStatusChange);
+        jq('#anc-counselling').hide();
 		jq('#counselled input').click(onANCCounselChange);
         jq('.syphilis-treated').hide();
         jq('#syphilis-test-results select').change(onSyphilisResultChange);
-
-		onArvStatusChange();
-        onANCCounselChange();
-		getField('arv-status.value').change(onArvStatusChange);
+        jq('#partner-tested select').change(onPartnerTestedChange);
+        jq('#cacx-screening select').change(onCacxResultChange);
+        jq('#chronic-illness').change(onCacxResultChange);
 		getField('counselled.value').change(onANCCounselChange);
-
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
-        //vl and ldl validation
-        getField('ldl.value').change(viralLoadValidation);
-        getField('vl.value').keyup(viralLoadValidation);
-        viralLoadValidation;
-
+		//Chronic illness validation
+        jq("#tbl-chronic-illness").hide();
+        jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+        //chronicIllnessesSelected();
+       //Cacx screening method  cacx-screening-method
+        jq('#cacx-screening-method').hide();
         // HIV Test validation
         jq("#hiv-test2").hide();
         jq('#hiv-final-result select').attr("style", "pointer-events:none;");
@@ -80,7 +82,7 @@
         }else{
             jq('#tbl-hiv-test').show();
         }
-        //Recent HIV tests
+
         if(PATIENT_IS_REPORTED_HIV == 703){
             jq('#hiv-status:text').val('Positive');
 		}else if(PATIENT_IS_REPORTED_HIV == 664){
@@ -88,7 +90,27 @@
 		}else{
             jq('#hiv-status:text').val('Not available');
 		}
+        //Validation of recent HIV tests between vl and ldl
+		if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE != "") {
+            //Latest VL or LDl
+            var isLatestVlBeforeLatestLDl = moment(moment(moment(LATEST_VIRAL_LOAD_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(LATEST_LDL_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isLatestVlBeforeLatestLDl) {
+                jq('#vl-date:text').val(LATEST_LDL_DATE);
+                jq('#vl-value:text').val('LDL');
+            } else {
+                jq('#vl-date:text').val(LATEST_VIRAL_LOAD_DATE);
+                jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
+            }
+        }else if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE == ""){
+            jq('#vl-date:text').val(LATEST_VIRAL_LOAD_DATE);
+            jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
 
+		}else if(LATEST_LDL_DATE != "" &amp;&amp; LATEST_VIRAL_LOAD_DATE == ""){
+            jq('#vl-date:text').val(LATEST_LDL_DATE);
+            jq('#vl-value:text').val('LDL');
+		}
+       //Partner testing
+        jq('#partner-hiv-status select').prop("disabled", true);
         //skip pattern
         //First test
         var firstTest = getField("hiv-test1-result.value").val();
@@ -163,13 +185,29 @@
 		return false;
 	});
 
-	function onArvStatusChange() {
-        if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
-            jq('#arv-medication').show();
-        } else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
-            jq('#arv-medication').show();
-        } else {
-            jq('#arv-medication').hide();
+    function onCacxResultChange() {
+        if (getValue('cacx-screening.value') == 1118 || getValue('cacx-screening.value') == 1175) {
+            jq('#cacx-screening-method').hide();
+            clearHiddenSections(jq('#screening-cacx-method'));
+        }else{
+            jq('#cacx-screening-method').show();
+        }
+    }
+    var chronicIllnessesSelected = function() {
+        var val = getValue('chronic-illness.value');
+        if (val == "false" || val == 1066){
+            jq("#tbl-chronic-illness").hide();
+            getField('illness-chronic.value').val("");
+            getField('onset-date-chronic-illness.value').val("");
+            getField('drug-chronic-illness.value').val("");
+            getField('dose-chronic-illness.value').val("");
+            getField('units-chronic-illness.value').val("");
+            getField('frequency-chronic-illness.value').val("");
+            getField('duration-chronic-illness.value').val("");
+            getField('duration-units-illness.value').val("");
+            getField('illness-chronic.error').html('Please specify the chronic illness.').hide();
+        }else {
+            jq("#tbl-chronic-illness").show();
         }
     }
     function onANCCounselChange() {
@@ -189,6 +227,15 @@
         }else{
             jq('.syphilis-treated').hide();
            clearHiddenSections(jq('.syphilisTreated'));
+        }
+    }
+    function onPartnerTestedChange() {
+        var partnerTested = jq('#partner-tested select').val();
+        if (partnerTested == 1065) {
+            jq('#partner-hiv-status select').prop("disabled", false);
+        }else{
+            jq('#partner-hiv-status select').prop("disabled", true);
+            getField('partner-hiv-status.value').val("");
         }
     }
 	function clearArvMeds() {
@@ -239,23 +286,6 @@
 		}
 		return true;
 	}
-    function viralLoadValidation() {
-        var vl = parseInt(getValue('vl.value'));
-        if (vl > 0 ) {
-            jq('#vl :input').prop("disabled", false);
-            jq('#ldl :input').prop("disabled", true);
-        }else {
-            jq('#ldl :input').prop("disabled", false);
-        }
-        if (getValue('ldl.value') == 1302) {
-            jq('#vl :input').prop("disabled", true);
-            jq('#ldl :input').prop("disabled", false);
-        }else {
-            jq('#vl :input').prop("disabled", false);
-            jq('#ldl :input').prop("disabled", true);
-        }
-    }
-
     //First and second test validation
     var firstTestSelected  = function () {
         var firstTest = getField("hiv-test1-result.value").val();
@@ -830,27 +860,173 @@
 										 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
 								</td>
-								<td>CD4:</td>
-								<td>
-									<obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true"/>
-								</td>
+								<tr>
+									<td>TB Screening Results: </td>
+									<td>
+										<obs
+												conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="NO signs,TB presumed,No signs and started on INH,TB Rx,Not done (ND)"
+												style="dropdown"
+												id="tb-screening"/>
+
+									</td>
+								</tr>
 								<tr>
 									<td>HIV Viral load sample taken?</td>
 									<td>
 										<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
 										<span id="lastVl"></span>
 									</td>
-								</tr>
-								<tr class="patient-details">
-									<td>HIV Viral Load</td>
 									<td>
-										<obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-										copies/ml
-									</td>
-									<td>HIV Viral Load(LDL)</td>
-									<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" />
+										<table border="1">
+											<tr>
+												<td>
+													<u>
+														Other VL Results Recorded Recently
+													</u>
+													<br/>
+													<br/>
+													Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+													<input type="text" name="vl-date" id="vl-date" readonly="True" />
+													<br/>
+													Final results:
+													<input type="text" name="vl-value" id="vl-value" readonly="True" />
+													<br/>
+												</td>
+											</tr>
+										</table>
 									</td>
 								</tr>
+								<tr>
+									<td>Has the client been screened for CaCx ? <span style="color:red;">*</span></td>
+									<td><obs conceptId="164934"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Presumed,Confirmed,Not Done,N/A"
+											 style="dropdown"
+											 id="cacx-screening" />
+									</td>
+								</tr>
+								<tr id="cacx-screening-method">
+									<td>CaCx screening method? <span style="color:red;">*</span></td>
+									<td><obs conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Pap Smear,VIA,Other"
+											 style="radio"
+											 id="screening-cacx-method"
+											 />
+									</td>
+								</tr>
+					</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>ART and Prophylaxis</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Prophylaxis given during this visit?</td>
+						<td><obs
+								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Cotrimoxazole,Dapsone,None"
+								style="radio" id="prophylaxis-used"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+					<tr>
+					<td>AZT for the baby dispensed?</td>
+					<td>
+						<obs class ="azt-prescribed"
+							 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes,No,N/A"
+							 style="radio" id="azt-dispensed" />
+					</td>
+					</tr>
+					<tr>
+						<td>NVP for the baby dispensed?</td>
+						<td>
+							<obs class ="nvp-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="nvp-dispensed" />
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Other conditions</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Does the client have other illnesses?
+						 <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  style="radio" answerLabels="Yes,No"
+						/><td><recentObs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+						</td>
+						<td></td><td></td>
+					</tr>
+					<tr id="tbl-chronic-illness">
+						<td colspan="6">
+							<table>
+								<tr>
+									<th style="color: #888">Illness</th>
+									<th style="color: #888; text-align: center">Onset Date</th>
+									<th style="color: #888">Drug</th>
+									<th style="color: #888; text-align: center">Dose</th>
+									<th style="color: #888; text-align: center">Units</th>
+									<th style="color: #888; text-align: center">Frequency</th>
+									<th style="color: #888; text-align: center">Duration</th>
+									<th style="color: #888; text-align: center">Duration units</th>
+								</tr>
+								<repeat>
+									<template>
+										<obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<tr>
+												<td>
+													<obs
+															conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="illness-chronic"
+															answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
+															style="dropdown"
+													/>
+												</td>
+												<td><obs id="onset-date-chronic-illness" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+												<td><obs id= "drug-chronic-illness" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+												<td><obs id = "dose-chronic-illness" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+												<td><obs id ="units-chronic-illness" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+												<td>
+													<obs id="frequency-chronic-illness"
+														 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+													/>
+												</td>
+												<td><obs id="duration-chronic-illness" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+												<td>
+													<obs id="duration-units-illness"
+														 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Hours,Days,Weeks,Months" />
+												</td>
+											</tr>
+										</obsgroup>
+									</template>
+									<render n="1" concept="ChronicIllness"/>
+									<render n="2" concept="ChronicIllness"/>
+									<render n="3" concept="ChronicIllness"/>
+								</repeat>
 							</table>
 						</td>
 					</tr>
@@ -858,83 +1034,25 @@
 			</fieldset>
 		</td>
 	</tr>
-   <tr>
-	<td colspan="2">
-		<fieldset>
-			<legend>ARV Medication</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td>Mother On:</td>
-					<td colspan="5">
-						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 id="arv-status"
-							 style="radio"
-							 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="ARV Prophylaxis,HAART,NA"/>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="6">
-						<table id="arv-medication" align="center" width="100%" class="tb1">
-							<tr>
-								<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
-							</tr>
-							<repeat>
-								<template>
-									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-										<tr>
-											<td>
-												<obs id="drug" class="arv-med"
-													 conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose-" class="arv-med"
-													 conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose-units" class="arv-med"
-													 conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 size="5"/>
-											</td>
-											<td>
-												<obs id="frequency"
-													 class="arv-med"
-													 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-														/>
-											</td>
-											<td>
-												<obs id="duration" class="arv-med"
-													 conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="duration-units"
-													 class="arv-med"
-													 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Hours,Days,Weeks,Months"/>
-											</td>
-										</tr>
-									</obsgroup>
-								</template>
-								<render medId="1"/>
-								<render medId="2"/>
-								<render medId="3"/>
-							</repeat>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</td>
-   </tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Antenatal exercises </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Has the client undergone antenatal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 id="physical-exercises"
+								 style="radio"
+								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No"/>
+						</td><td><td><recentObs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
    <tr>
 		<td colspan="2">
 			<fieldset>
@@ -981,7 +1099,72 @@
 			</fieldset>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Partner testing</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Has the client's partner been tested for HIV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No"/>
+						</td>
+						<td>Partner HIV Status:</td>
+						<td>
+							<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 id="partner-hiv-status"
+								 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
 <tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Referrals </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Referred from? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
+						<td>Referred to? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Next Appointment </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Next appointment date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+						<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
 	<td colspan="2">
 		<legend>Clinical Notes</legend>
 		<table align="center" width="100%" class="tb1">
