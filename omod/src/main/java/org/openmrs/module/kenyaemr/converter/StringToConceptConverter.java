@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 /**
  * Converts String to DrugReference
  */
-@Component
+@Component("kenyaemrConceptConverter")
 public class StringToConceptConverter implements Converter<String, Concept> {
 
 	/**

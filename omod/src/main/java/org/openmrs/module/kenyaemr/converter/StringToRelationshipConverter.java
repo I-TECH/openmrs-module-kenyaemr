@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /**
  * Convert from {@link String} to {@link org.openmrs.Relationship}, interpreting it as a Relationship.id
  */
-@Component
+@Component("kenyaemrRelationshipConverter")
 public class StringToRelationshipConverter implements Converter<String, Relationship> {
 
 	/**

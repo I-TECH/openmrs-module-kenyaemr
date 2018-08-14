@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 /**
  * Convert from {@link String} to {@link Role}, interpreting it as a Role.role
  */
-@Component
+@Component("kenyaemrRoleConverter")
 public class StringToRoleConverter implements Converter<String, Role> {
 
 	/**

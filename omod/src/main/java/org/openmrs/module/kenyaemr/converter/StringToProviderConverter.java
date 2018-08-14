@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 /**
  * Convert from {@link String} to {@link Provider}, interpreting it as a Provider.providerId
  */
-@Component
+@Component("kenyaemrProviderConverter")
 public class StringToProviderConverter implements Converter<String, Provider> {
 
 	/**

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 /**
  * Convert from {@link String} to {@link Visit}, interpreting it as a Visit.id
  */
-@Component
+@Component("kenyaemrVisitConverter")
 public class StringToVisitConverter implements Converter<String, Visit>{
 
 	/**
