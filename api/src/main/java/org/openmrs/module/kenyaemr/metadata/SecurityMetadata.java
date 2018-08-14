@@ -41,6 +41,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 	public static final class _Privilege {
 		public static final String VIEW_LEGACY_INTERFACE = "Emr: View Legacy Interface";
+		public static final String MANAGE_DRUG_ORDERS = "Emr: orderentryui.drugOrders";
 	}
 
 	public static final class _Role {
@@ -82,6 +83,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 		// Add custom privileges
 		install(privilege(_Privilege.VIEW_LEGACY_INTERFACE, "Can view legacy web interface"));
+		install(privilege(_Privilege.MANAGE_DRUG_ORDERS, "Can view and edit drug orders"));
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
 		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
@@ -127,7 +129,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
 						app(DqConstants.APP_DATAMANAGER),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
 
@@ -141,7 +144,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
 
