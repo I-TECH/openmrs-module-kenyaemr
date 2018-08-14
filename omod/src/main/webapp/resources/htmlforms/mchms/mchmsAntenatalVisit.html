@@ -48,6 +48,7 @@
     var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
     var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
     var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
+    var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
 
 
 //Start on ready
@@ -76,13 +77,24 @@
         jq("#hiv-test2-result select").change(secondTestSelected);
         //test kit expiry
         jq("#expiry-date input").change(expiryDateSelected);
-		//Validation for if already hiv positive
+		//Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-hiv-test').hide();
+            jq('#art-and-prophylaxis').show();
+            jq('#who-staging').show();
+            jq('#vl-sample').show();
         }else{
             jq('#tbl-hiv-test').show();
+            jq('#art-and-prophylaxis').hide();
+            jq('#who-staging').hide();
+            jq('#vl-sample').hide();
         }
+        if(PATIENT_IS_REPORTED_HIV == 703 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+            jq('#tbl-haart-given').show();
+        }else{
+            jq('#tbl-haart-given').hide();
 
+        }
         if(PATIENT_IS_REPORTED_HIV == 703){
             jq('#hiv-status:text').val('Positive');
 		}else if(PATIENT_IS_REPORTED_HIV == 664){
@@ -90,6 +102,12 @@
 		}else{
             jq('#hiv-status:text').val('Not available');
 		}
+
+        if(HAART_START_DATE !="" || HAART_START_DATE != "false"){
+            getField('haart-start-date.value').val(HAART_START_DATE);
+        }else{
+            getField('haart-start-date.value').val("");
+        }
         //Validation of recent HIV tests between vl and ldl
 		if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE != "") {
             //Latest VL or LDl
@@ -853,13 +871,14 @@
 				<table align="center" width="100%" class="tb1">
 					<tr>
 						<td>
-							<table align="center" width="100%" class="tb1">
+								<tr id="who-staging">
 								<td>WHO Staging:</td>
 								<td>
 									<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
 								</td>
+								</tr>
 								<tr>
 									<td>TB Screening Results: </td>
 									<td>
@@ -872,7 +891,7 @@
 
 									</td>
 								</tr>
-								<tr>
+								<tr id="vl-sample">
 									<td>HIV Viral load sample taken?</td>
 									<td>
 										<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
@@ -917,14 +936,13 @@
 											 />
 									</td>
 								</tr>
-					</table>
 						</td>
 					</tr>
 				</table>
 			</fieldset>
 		</td>
 	</tr>
-	<tr>
+	<tr id="art-and-prophylaxis">
 		<td colspan="2">
 			<fieldset>
 				<legend>ART and Prophylaxis</legend>
@@ -939,15 +957,27 @@
 							<span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
+					<tr id="tbl-haart-given">
+						<td>HAART given to mother during this visit?</td>
+						<td><obs
+								conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+							     id="haart-given"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+						<td>HAART start date : </td>
+						<td><obs id="haart-start-date"
+								 conceptId="163784AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						</td>
+					</tr>
 					<tr>
 					<td>AZT for the baby dispensed?</td>
-					<td>
-						<obs class ="azt-prescribed"
-							 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Yes,No,N/A"
-							 style="radio" id="azt-dispensed" />
-					</td>
+						<td>
+							<obs class ="azt-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="azt-dispensed" />
+						</td>
 					</tr>
 					<tr>
 						<td>NVP for the baby dispensed?</td>
