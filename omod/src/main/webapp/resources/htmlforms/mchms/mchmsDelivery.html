@@ -308,11 +308,11 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
 							</td>
 						</tr>
 						<tr>
-							<td width="250">Gestation at birth (in weeks):</td>
+							<td>Gestation at birth (in weeks):</td>
 							<td>
 								<obs conceptId="1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td width="250">Duration of Labor (Hours):</td>
+							<td>Duration of Labor (Hours):</td>
 							<td>
 								<obs conceptId="159616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
@@ -366,20 +366,13 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
 							</td>
 						</tr>
 						<tr>
-							<td>Apgar Score (1 min):</td>
-							<td>
+							<td>Apgar Score (1 min):
 								<obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
-							<td width="250">Apgar Score (5 min):</td>
-							<td colspan="5">
+							<td>Apgar Score (5 min):
 								<obs conceptId="159604AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
-							<td>Apgar Score (10 min):</td>
-							<td>
+							<td>Apgar Score (10 min):
 								<obs conceptId="159605AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
@@ -399,18 +392,11 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
 							<td>
 								<obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									/>
-							</td>
-							<td>Cadre :</td>
-							<td>
+								</td>  <td>
+							Cadre :
+
 								<obs conceptId="1573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Discharge date :</td>
-							<td>
-								<obs conceptId="1641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime ="False"
-								/>
 							</td>
 						</tr>
 						<tr>
@@ -461,45 +447,6 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
 										answerConceptIds="155871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Yes,No,N/A"
 										style="dropdown" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6">
-								<br/>
-								<strong>Discharge</strong>
-								<hr />
-							</td>
-						</tr>
-						<tr>
-							<td>Counselled on infant feeding ?</td>
-							<td>
-								<obs conceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								/>
-							</td>
-							<td>Vitamin A for mother dispensed?</td>
-							<td>
-								<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								/>
-							</td>
-						</tr>
-						<tr>
-							<td>Discharge date :</td>
-							<td>
-								<obs conceptId="1641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime ="False"
-								/>
-							</td>
-							<td>Birth notification number :</td>
-							<td>
-								<obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								/>
-							</td>
-						</tr>
-						<tr>
-							<td>Status of the baby: </td>
-							<td valign="top">
-								<obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="Alive,Dead"/>
 							</td>
 						</tr>
 					</table>
@@ -700,6 +647,77 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
 				</td>
 			</tr>
 			<tr>
+				<td colspan="2">
+					<fieldset>
+						<legend>Discharge and referral </legend>
+						<table align="center" width="100%" class="tb1">
+							<tr>
+								<td colspan="6">
+									<br/>
+									<strong>Discharge</strong>
+									<hr />
+								</td>
+							</tr>
+							<tr>
+								<td>Counselled on infant feeding ?</td>
+								<td>
+									<obs conceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									/>
+								</td>
+								<td>Vitamin A for mother dispensed?</td>
+								<td>
+									<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									/>
+								</td>
+							</tr>
+							<tr>
+								<td>Status of the baby: </td>
+								<td valign="top">
+									<obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Alive,Dead"/>
+								</td>
+								<td>Birth notification number :</td>
+								<td>
+									<obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									/>
+								</td>
+							</tr>
+							<tr>
+								<td>Discharge date :</td>
+								<td>
+									<obs conceptId="1641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime ="False"
+									/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">
+									<br/>
+									<strong><U>Referral</U></strong>
+
+								</td>
+							</tr>
+							<tr>
+								<td>Referred from? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+									<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 style="dropdown"
+										 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Another Health Facility,Community Unit,N/A"/>
+								</td>
+								<td>Referred to? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+									<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 style="dropdown"
+										 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Another Health Facility,Community Unit,N/A"/>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+	    <tr>
 			<td colspan="2">
 				<legend>Clinical Notes</legend>
 				<table align="center" width="100%" class="tb1">
