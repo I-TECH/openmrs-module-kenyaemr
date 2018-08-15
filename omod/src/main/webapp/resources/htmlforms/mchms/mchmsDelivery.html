@@ -12,8 +12,7 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
-
-	<style type="text/css">
+<style type="text/css">
 		table.tb {
 			background-color: #B3C2F0;
 			border: 1px solid black;
@@ -30,8 +29,8 @@
 			border: 0;
 			padding: 10px;
 		}
-	</style>
-	<script type="text/javascript">
+</style>
+<script type="text/javascript">
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
         var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
@@ -64,7 +63,6 @@
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
             }
-
             if(PATIENT_IS_REPORTED_HIV == 703){
                 jq('#hiv-status:text').val('Positive');
             }else if(PATIENT_IS_REPORTED_HIV == 664){
@@ -72,7 +70,6 @@
             }else{
                 jq('#hiv-status:text').val('Not available');
             }
-console.log("HAART_START_DATE ==> "+HAART_START_DATE);
             if(HAART_START_DATE !=""){
                 getField('haart-start-date.value').val(HAART_START_DATE);
                 jq('#tbl-haart-given-anc').hide();
@@ -84,7 +81,6 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
                 jq('#tbl-haart-given-mat').show();
                 jq('#patient-on-haart').hide();
             }
-
             //skip pattern
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
@@ -268,9 +264,8 @@ console.log("HAART_START_DATE ==> "+HAART_START_DATE);
                 this.selectedIndex =0;
             });
         }
-	</script>
-            }
-	<div class="ke-form-header">
+</script>
+<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
 				<td>Date:
