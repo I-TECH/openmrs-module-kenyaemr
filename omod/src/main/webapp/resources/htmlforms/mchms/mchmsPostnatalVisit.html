@@ -39,18 +39,18 @@
 	var NA_CONCEPT_ID = 1175;
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
     //On ready start
     jq(function () {
-        jq('#arv-status input').click(onArvStatusChange);
-        onArvStatusChange();
-        getField('arv-status.value').change(onArvStatusChange);
+        var strtext = "";
         getField('weight.value').change(onWeightOrHeightChange);
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
         //Cacx screening method  cacx-screening-method
         jq('#cacx-screening-method').hide();
         jq('#cacx-screening select').change(onCacxResultChange);
-
+        //On HAART validation
+        jq('#patient-on-haart').hide();
         //partner testing
         jq('#partner-hiv-status select').prop("disabled", true);
         jq('#partner-tested select').change(onPartnerTestedChange);
@@ -61,6 +61,8 @@
         jq("#hiv-test2-result select").change(secondTestSelected);
         //test kit expiry
         jq("#expiry-date input").change(expiryDateSelected);
+        //Family planning validation
+        jq('#tbl-family-planning').hide();
         //Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-hiv-test').hide();
@@ -80,7 +82,41 @@
         }else{
             jq('#hiv-status:text').val('Not available');
         }
-        //skip pattern
+        if(HAART_START_DATE !=""){
+            getField('haart-start-date.value').val(HAART_START_DATE);
+            jq('#tbl-haart-given-anc').hide();
+            jq('#tbl-haart-given-mat').hide();
+            jq('#patient-on-haart').show();
+        }else{
+            getField('haart-start-date.value').val("");
+            jq('#tbl-haart-given-anc').show();
+            jq('#tbl-haart-given-mat').show();
+            jq('#patient-on-haart').hide();
+        }
+        //FP skip pattern
+        jq("#fplanning select ").change(function () {
+            jq("#fplanning select option:selected").each(function () {
+                strtext += jq(this).val();
+            });
+            if (strtext == "") {
+                jq('#onFp :input').prop('checked', false);
+                jq('#onFp :input').prop('disabled', true);
+                jq('#tbl-family-planning').hide();
+
+            }
+            if (strtext == "965") {       //on family planning
+
+                jq('#onFp :input').prop('disabled', false);
+                jq('#tbl-family-planning').show();
+            }
+            if (strtext == "160652") {
+                jq('#onFp :input').prop('checked', false);
+                jq('#onFp :input').prop('disabled', true);
+                jq('#tbl-family-planning').hide();
+            }
+            strtext = "";
+        });
+        //HIV test skip pattern
         //First test
         var firstTest = getField("hiv-test1-result.value").val();
         //Negative
@@ -143,15 +179,6 @@
         }
     });
     //on ready end
-	function onArvStatusChange() {
-		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else {
-			jq('#arv-medication').hide();
-		}
-	}
 
 	function clearArvMeds() {
 		jq('.arv-med').each(function () {
@@ -738,95 +765,94 @@
 			</fieldset>
 		</td>
 	</tr>
-<tr>
-	<td>
-		<fieldset>
-			<legend>ARV Medication</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td>Mother On:</td>
-					<td colspan="5">
-						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 id="arv-status"
-							 style="radio"
-							 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="ARV Prophylaxis,HAART,NA"/>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="6">
-						<table id="arv-medication" align="center" width="100%" class="tb1">
-							<tr>
-								<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
-							</tr>
-							<repeat>
-								<template>
-									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-										<tr>
-											<td>
-												<obs id="drug" class="arv-med"
-													 conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose" class="arv-med"
-													 conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose-units" class="arv-med"
-													 conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 size="5"/>
-											</td>
-											<td>
-												<obs id="frequency"
-													 class="arv-med"
-													 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-														/>
-											</td>
-											<td>
-												<obs id="duration" class="arv-med"
-													 conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="duration-units"
-													 class="arv-med"
-													 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Hours,Days,Weeks,Months"/>
-											</td>
-										</tr>
-									</obsgroup>
-								</template>
-								<render medId="1"/>
-								<render medId="2"/>
-								<render medId="3"/>
-							</repeat>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</td>
-</tr>
+	<tr id="art-and-prophylaxis">
+		<td colspan="2">
+			<fieldset>
+				<legend>ART and Prophylaxis</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Prophylaxis given during this visit?</td>
+						<td><obs
+								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Cotrimoxazole,Dapsone,None"
+								style="radio" id="prophylaxis-used"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div id="patient-on-haart" class="ke-warning">HAART already started</div>
+						</td>
+					</tr>
+					<tr id="tbl-haart-given-anc">
+						<td>HAART given to mother at ANC?</td>
+						<td><obs
+								conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+								id="haart-given-anc"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+					<tr id="tbl-haart-given-mat">
+						<td>HAART given to mother during delivery?</td>
+						<td><obs
+								conceptId="159595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+								id="haart-given-mat"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+						<td>HAART start date : </td>
+						<td><obs id="haart-start-date"
+								 conceptId="163784AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						</td>
+					</tr>
+					<tr>
+						<td>AZT for the baby dispensed?</td>
+						<td>
+							<obs class ="azt-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="azt-dispensed" />
+						</td>
+					</tr>
+					<tr>
+						<td>NVP for the baby dispensed?</td>
+						<td>
+							<obs class ="nvp-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="nvp-dispensed" />
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="2">
 			<fieldset>
 				<legend>Client monitoring</legend>
 				<table align="center" width="100%" class="tb1">
 					<tr>
-				<td>
+						<td>Maternal condition</td>
+						<td>
+							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="10"/>
+						</td>
+					</tr>
+					<tr>
+						<td>Haematinics</td><td>
+
+						<obs conceptId="161004AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="dropdown" answerLabels="Yes,No"  />
+					    </td>
+					</tr>
 					<tr>
 						<td>Has the client been screened for fistula? <span style="color:red;">*</span></td>
 						<td><obs conceptId="159921AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Yes,No"
+								 answerConceptIds="1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,49AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127847AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Not done,None,Vesicovaginal Fistula,Rectovaginal fistula,N/A"
 								 style="dropdown"
 								 id="fistula-screening"
 								  />
@@ -853,12 +879,13 @@
 					</tr>
 					<tr>
 						<td>On modern FP Method (less than or equals to 6 weeks)?</td><td>
-						<obs conceptId="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 style="yes_no" answerLabels="Yes,No"/>
+						<obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fplanning"
+							 answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 style="dropdown"
+							 answerLabels="Yes,No"/>
 					</td>
 					</tr>
-					<tr>
-					<tr>
+					<tr id="tbl-family-planning">
 						<td colspan="2">
 							<div id="onFp">
 								If on modern FP Method specify which method(s)
@@ -954,8 +981,30 @@
 							</div>
 						</td>
 					</tr>
-					</tr>
-					</td>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Referrals </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Referred from? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
+						<td>Referred to? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
 					</tr>
 				</table>
 			</fieldset>
