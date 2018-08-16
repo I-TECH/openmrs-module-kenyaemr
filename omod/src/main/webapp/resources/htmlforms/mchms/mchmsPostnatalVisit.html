@@ -351,7 +351,7 @@
 </div>
 
 <div class="ke-form-content">
-<table align="center" border="0" class="tb" cellspacing="10">
+<table align="center" border="0" class="tb" cellspacing="8">
 <tr>
 	<td colspan="2">
 		<div class="ke-form-instructions">
@@ -362,13 +362,13 @@
 </tr>
 <tr>
 		<td>
-			<legend>Visit details: </legend>
+			<legend>Visit details </legend>
 			<table align="top" width="100%" class="tb1">
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td width="250">PNC Register Number</td>
+								<td >PNC Register Number</td>
 								<td>
 									<obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
@@ -385,7 +385,7 @@
 </tr>
 	<tr>
 		<td>
-			<legend>Maternity history: </legend>
+			<legend>Maternity history </legend>
 			<table align="top" width="100%" class="tb1">
 				<tr>
 					<td>
@@ -535,11 +535,11 @@
 										answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Good, Fair, Poor"/>
 							</td>
-							<td>Pallor:</td>
+							<td width="200">Pallor:</td>
 							<td>
 								<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
+							</td><td width="200"></td>
 						</tr>
 						<tr>
 							<td>Breast:</td>
@@ -560,10 +560,10 @@
 							<td>
 								<obs conceptId="162128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td width="200">Haemoglobin:</td>
+							<td>Haemoglobin:</td>
 							<td>
 								<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
-							</td>
+							</td><td></td>
 						</tr>
 						<tr>
 							<td>Involution of Uterus:</td>
@@ -602,8 +602,6 @@
 									 answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Good, Fair, Poor"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Baby's Feeding Method</td>
 							<td>
 								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -621,8 +619,6 @@
 							<td>
 								<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Counseling on Family Planning</td>
 							<td>
 								<obs conceptId="1382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
@@ -742,7 +738,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6">
+						<td>
 							<strong><U>Partner Testing</U></strong>
 						</td>
 					</tr>
@@ -752,9 +748,9 @@
 							<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerLabels="Yes,No"/>
-						</td>
-						<td>Partner HIV Status:</td>
-						<td>
+							&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+						Partner HIV Status:
+							&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 id="partner-hiv-status"
 								 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -837,11 +833,11 @@
 					<tr>
 						<td>Maternal condition</td>
 						<td>
-							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="10"/>
-						</td>
+							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+						</td><td colspan="2"></td>
 					</tr>
 					<tr>
-						<td>Haematinics</td><td>
+						<td>Iron supplementation (Haematinics):</td><td>
 
 						<obs conceptId="161004AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -849,7 +845,7 @@
 					    </td>
 					</tr>
 					<tr>
-						<td>Has the client been screened for fistula? <span style="color:red;">*</span></td>
+						<td>Fistula screening: <span style="color:red;">*</span></td>
 						<td><obs conceptId="159921AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,49AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127847AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerLabels="Not done,None,Vesicovaginal Fistula,Rectovaginal fistula,N/A"
@@ -859,7 +855,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Has the client been screened for CaCx ? <span style="color:red;">*</span></td>
+						<td>CaCx screening: <span style="color:red;">*</span></td>
 						<td><obs conceptId="164934"
 								 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerLabels="Normal,Presumed,Confirmed,Not Done,N/A"
@@ -1016,7 +1012,7 @@
 		<table align="center" width="100%" class="tb1">
 			<tr>
 				<td>
-					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="130"
+					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
 						 style="textarea"/>
 				</td>
 			</tr>

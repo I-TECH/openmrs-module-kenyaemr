@@ -31,12 +31,14 @@
 		padding: 10px;
 	}
 </style>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
 
 	var NOT_HIV_TESTED_ID = 1402;
 	var NEGATIVE = 664;
 	var UNKNOWN = 1067;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 
 	jq(function () {
 		onLmpChange();
@@ -46,6 +48,9 @@
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
 		//First ANC visit date validation
+		if(ANC_START_DATE !="" || ANC_START_DATE != null){
+            getField('first-anc-date.value').val(ANC_START_DATE);
+		}
         jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});
 
@@ -71,9 +76,13 @@
 	}
     //Ckeckbox to prepopulate default today as first anc visit date
     var defaultFirstAncDateChange = function () {
+        val = jq(this).val();
         var encDate = getValue('encounter-date.value');
+        var formattedEncounterDate =moment(moment(encDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
         if (jq(this).is(':checked')){
-            getField('first-anc-date.value').val(encDate);
+            getField('first-anc-date.value').val(formattedEncounterDate);
+            setDatetimeValue('first-anc-date.value',formattedEncounterDate);
+
         }else{
             getField('first-anc-date.value').val("");
         }
@@ -251,7 +260,7 @@
 			<tr>
 				<td width="250">ANC No:</td>
 				<td>
-					<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/>
+					<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
 				</td>
 				<td>Gestation  in weeks:</td>
 				<td>
@@ -308,7 +317,7 @@
 			<tr>
 				<td width="250">Date of first ANC visit:</td>
 				<td>
-					<obs id="first-anc-date" conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
+					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <span style="color:red;"><strong>*</strong></span> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
 				</td>
 			</tr>
 		</table>

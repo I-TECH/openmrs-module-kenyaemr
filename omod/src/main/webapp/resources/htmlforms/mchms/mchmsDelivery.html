@@ -317,8 +317,6 @@
 							<td>
 								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Date and time of Delivery:</td>
 							<td>
 								<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="true"/>
@@ -359,19 +357,6 @@
 							<td>
 							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="32"/>
 							</td>
-						</tr>
-						<tr>
-							<td>Apgar Score (1 min):
-								<obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-							<td>Apgar Score (5 min):
-								<obs conceptId="159604AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-							<td>Apgar Score (10 min):
-								<obs conceptId="159605AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
 							<td>Resuscitation Done:</td>
 							<td><obs conceptId="162131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
@@ -418,8 +403,6 @@
 							<td valign="top">
 								<obs conceptId="159917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Initiated BF in less than 1 hour:</td>
 							<td><obs conceptId="164819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
@@ -433,15 +416,24 @@
 									answerLabels="Yes,No,N/A"
 									style="dropdown" />
 						</td>
-					</tr>
-						<tr>
-							<td>Birth with deformity ?</td>
+						<td>Birth with deformity ?</td>
 							<td>
 								<obs
 										conceptId="164122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerConceptIds="155871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Yes,No,N/A"
 										style="dropdown" />
+							</td>
+						</tr>
+						<tr>
+							<td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
+								<obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>Apgar Score (5 min):&#160;&#160;&#160;&#160;&#160;
+								<obs conceptId="159604AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+							<td>Apgar Score (10 min):&#160;&#160;&#160;&#160;&#160;
+								<obs conceptId="159605AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 					</table>
@@ -564,9 +556,9 @@
 									<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerLabels="Yes,No"/>
-								</td>
-								<td>Partner HIV Status:</td>
-								<td>
+									&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+								Partner HIV Status:
+									&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 									<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 id="partner-hiv-status"
 										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -686,7 +678,7 @@
 								</td>
 								<td>Maternal condition</td>
 								<td>
-									<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="10"/>
+									<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="10"/>
 								</td>
 							</tr>
 							<tr>
@@ -722,7 +714,7 @@
 				<table align="center" width="100%" class="tb1">
 					<tr>
 						<td>
-							<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="150"
+							<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
 								 style="textarea"/>
 						</td>
 					</tr>

@@ -49,7 +49,7 @@
     var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
     var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
     var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
-
+    var ANC_NUMBER = "<lookup expression="fn.latestObs(161655).valueNumeric"/>";
 
 //Start on ready
 	jq(function () {
@@ -64,6 +64,8 @@
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
+		//Prepopulate anc number
+        jq('#anc-number:text').val(Math.round(ANC_NUMBER));
 		//Chronic illness validation
         jq("#tbl-chronic-illness").hide();
         jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
@@ -439,15 +441,19 @@
 </tr>
 	<tr>
 		<td>
-			<legend>Visit details: </legend>
+			<legend>Visit details </legend>
 			<table align="top" width="100%" class="tb1">
 				<tr>
 					<td>
 						<table>
 							<tr>
-								<td width="250">ANC Visit Number</td>
+								<td width="250">ANC Visit Number:</td>
 								<td>
 									<obs conceptId="1590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td width="250">ANC Clinic Number:</td>
+								<td>
+									<input type="text" name="anc-number" id="anc-number" readonly="True" />
 								</td>
 							</tr>
 						</table>
@@ -456,126 +462,119 @@
 			</table>
 		</td>
 	</tr>
-<tr>
-	<td>
-		<legend>Vitals</legend>
-		<table align="top" width="100%" class="tb1">
-			<tr>
-				<td>
-					<table>
-						<tr>
-							<td width="250">Temperature</td>
-							<td>
-								<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Pulse Rate</td>
-							<td>
-								<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>B.P.</td>
-							<td>
-								<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								/
-								<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								mmHg
-							</td>
-						</tr>
-						<tr>
-							<td>Respiratory Rate</td>
-							<td>
-								<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Oxygen Saturation</td>
-							<td>
-								<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Weight</td>
-							<td>
-								<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Height</td>
-							<td>
-								<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
-							</td>
-						</tr>
-						<tr>
-							<td>BMI</td>
-							<td><span id="calculated-bmi" class="value"></span></td>
-						</tr>
-						<tr>
-							<td>MUAC</td>
-							<td>
-								<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table border="1">
-						<tr>
-							<td>
-								<u>
-									Other Vitals Recorded Recently
-								</u>
-								<br/>
-								<br/>
-								Temperature:
-								<lookup expression="fn.latestObs(5088).valueNumeric"/>
-								<br/>
-								Pulse:
-								<lookup expression="fn.latestObs(5087).valueNumeric"/>
-								<br/>
-								B.P.:
-								<lookup expression="fn.latestObs(5085).valueNumeric"/>
-								/
-								<lookup expression="fn.latestObs(5086).valueNumeric"/>
-								<br/>
-								Respiratory Rate:
-								<lookup expression="fn.latestObs(5242).valueNumeric"/>
-								<br/>
-								Oxygen Saturation:
-								<lookup expression="fn.latestObs(5092).valueNumeric"/>
-								<br/>
-								Weight:
-								<lookup expression="fn.latestObs(5089).valueNumeric"/>
-								<br/>
-								Height:
-								<lookup expression="fn.latestObs(5090).valueNumeric"/>
-								<br/>
-								MUAC:
-								<lookup expression="fn.latestObs(1343).valueNumeric"/>
-								<br/>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
-	<td valign="top">
+	<tr>
+		<td>
+			<legend>Vitals</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td>Temperature</td>
+								<td colspan="2">
+									<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>Pulse Rate</td>
+								<td>
+									<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">B.P.</td>
+								<td>
+									<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									/
+									<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									mmHg
+								</td>
+								<td>Respiratory Rate</td>
+								<td>
+									<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">Oxygen Saturation</td>
+								<td>
+									<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+
+								<td>MUAC</td>
+								<td>
+									<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">Height</td>
+								<td>
+									<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
+								</td>
+								<td>Weight</td>
+								<td>
+									<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">BMI</td>
+								<td><span id="calculated-bmi" class="value"></span></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table border="1">
+							<tr>
+								<td>
+									<u>
+										Other Vitals Recorded Recently
+									</u>
+									<br/>
+									<br/>
+									Temperature:
+									<lookup expression="fn.latestObs(5088).valueNumeric"/>
+									<br/>
+									Pulse:
+									<lookup expression="fn.latestObs(5087).valueNumeric"/>
+									<br/>
+									B.P.:
+									<lookup expression="fn.latestObs(5085).valueNumeric"/>
+									/
+									<lookup expression="fn.latestObs(5086).valueNumeric"/>
+									<br/>
+									Respiratory Rate:
+									<lookup expression="fn.latestObs(5242).valueNumeric"/>
+									<br/>
+									Oxygen Saturation:
+									<lookup expression="fn.latestObs(5092).valueNumeric"/>
+									<br/>
+									Weight:
+									<lookup expression="fn.latestObs(5089).valueNumeric"/>
+									<br/>
+									Height:
+									<lookup expression="fn.latestObs(5090).valueNumeric"/>
+									<br/>
+									MUAC:
+									<lookup expression="fn.latestObs(1343).valueNumeric"/>
+									<br/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+	  <td valign="top">
 		<table>
 			<tr>
 				<td>
 					<legend>Other Observations</legend>
-					<table align="center" width="100%" class="tb1">
+					<table align="top" width="146%" class="tb1">
 						<tr>
 							<td>Breast examination done:</td>
 							<td>
 								<obs conceptId="163590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Pallor:</td>
 							<td>
 								<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -587,8 +586,6 @@
 							<td>
 								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Fundal Height (Weeks):</td>
 							<td>
 								<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fundal"/>
@@ -600,8 +597,6 @@
 								<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Lie:</td>
 							<td>
 								<obs conceptId="162089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -612,8 +607,6 @@
 							<td>
 								<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Foetal Movement:</td>
 							<td>
 								<obs conceptId="162107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -625,21 +618,17 @@
 		</table>
 	</td>
 </tr>
-	<tr>
+<tr>
 		<td colspan="2">
 			<legend>Laboratory investigations</legend>
 			<table align="center" width="100%" class="tb1">
 					<tr>
 						<td>
+							<br/>
+							<strong>HIV Testing</strong>
+							<hr />
 							<table id="tbl-hiv-test">
 								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-									<tr>
-										<td colspan="6">
-											<br/>
-											<strong>HIV Testing</strong>
-											<hr />
-										</td>
-									</tr>
 								<tr>
 									<td>HIV Test 1 Results:
 										<obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -727,6 +716,26 @@
 												</td>
 											</tr>
 										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong><U>Partner Testing</U></strong>
+									</td>
+								</tr>
+								<tr>
+									<td>Has the client's partner been tested for HIV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+										<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Yes,No"/>
+									</td>
+									<td>Partner HIV Status:</td>
+									<td>
+										<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 id="partner-hiv-status"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="HIV Positive,HIV Negative,Unknown"/>
 									</td>
 								</tr>
 							</table>
@@ -870,15 +879,15 @@
 				<legend>Client monitoring</legend>
 				<table align="center" width="100%" class="tb1">
 					<tr>
-						<td>
-								<tr id="who-staging">
-								<td>WHO Staging:</td>
-								<td>
-									<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
-								</td>
-								</tr>
+								<td>Has the client undergone antenatal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+									<obs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="physical-exercises"
+										 style="radio"
+										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Yes,No"/>
+								</td><td><td><recentObs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
+						</tr>
 								<tr>
 									<td>TB Screening Results: </td>
 									<td>
@@ -891,33 +900,7 @@
 
 									</td>
 								</tr>
-								<tr id="vl-sample">
-									<td>HIV Viral load sample taken?</td>
-									<td>
-										<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
-										<span id="lastVl"></span>
-									</td>
-									<td>
-										<table border="1">
-											<tr>
-												<td>
-													<u>
-														Other VL Results Recorded Recently
-													</u>
-													<br/>
-													<br/>
-													Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-													<input type="text" name="vl-date" id="vl-date" readonly="True" />
-													<br/>
-													Final results:
-													<input type="text" name="vl-value" id="vl-value" readonly="True" />
-													<br/>
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								<tr>
+						       <tr>
 									<td>Has the client been screened for CaCx ? <span style="color:red;">*</span></td>
 									<td><obs conceptId="164934"
 											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -925,8 +908,8 @@
 											 style="dropdown"
 											 id="cacx-screening" />
 									</td>
-								</tr>
-								<tr id="cacx-screening-method">
+						</tr>
+						<tr id="cacx-screening-method">
 									<td>CaCx screening method? <span style="color:red;">*</span></td>
 									<td><obs conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerConceptIds="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -936,6 +919,39 @@
 											 />
 									</td>
 								</tr>
+					<!--hiv-centric-->
+					<tr id="who-staging">
+						<td>WHO Staging:</td>
+						<td>
+							<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
+						</td>
+					</tr>
+					<tr id="vl-sample">
+						<td>HIV Viral load sample taken?</td>
+						<td>
+							<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
+							<span id="lastVl"></span>
+						</td>
+						<td>
+							<table border="1">
+								<tr>
+									<td>
+										<u>
+											Other VL Results Recorded Recently
+										</u>
+										<br/>
+										<br/>
+										Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+										<input type="text" name="vl-date" id="vl-date" readonly="True" />
+										<br/>
+										Final results:
+										<input type="text" name="vl-value" id="vl-value" readonly="True" />
+										<br/>
+									</td>
+								</tr>
+							</table>
 						</td>
 					</tr>
 				</table>
@@ -1064,25 +1080,6 @@
 			</fieldset>
 		</td>
 	</tr>
-	<tr>
-		<td colspan="2">
-			<fieldset>
-				<legend>Antenatal exercises </legend>
-				<table align="center" width="100%" class="tb1">
-					<tr>
-						<td>Has the client undergone antenatal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-
-							<obs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 id="physical-exercises"
-								 style="radio"
-								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Yes,No"/>
-						</td><td><td><recentObs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
-					</tr>
-				</table>
-			</fieldset>
-		</td>
-	</tr>
    <tr>
 		<td colspan="2">
 			<fieldset>
@@ -1128,31 +1125,7 @@
 				</table>
 			</fieldset>
 		</td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<fieldset>
-				<legend>Partner testing</legend>
-				<table align="center" width="100%" class="tb1">
-					<tr>
-						<td>Has the client's partner been tested for HIV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-
-							<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Yes,No"/>
-						</td>
-						<td>Partner HIV Status:</td>
-						<td>
-							<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 id="partner-hiv-status"
-								 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="HIV Positive,HIV Negative,Unknown"/>
-						</td>
-					</tr>
-				</table>
-			</fieldset>
-		</td>
-	</tr>
+   </tr>
 <tr>
 	<tr>
 		<td colspan="2">
@@ -1200,7 +1173,7 @@
 		<table align="center" width="100%" class="tb1">
 			<tr>
 				<td>
-					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="150"
+					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
 						 style="textarea"/>
 				</td>
 			</tr>
