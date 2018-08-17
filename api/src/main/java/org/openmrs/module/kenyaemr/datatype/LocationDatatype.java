@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  * Custom datatype for {@link org.openmrs.Location}.
  * (This should be moved to the OpenMRS core.)  
  */
-@Component
+@Component("kenyaemrLocationDatatype")
 public class LocationDatatype extends SerializingCustomDatatype<Location> {
 	
 	/**
