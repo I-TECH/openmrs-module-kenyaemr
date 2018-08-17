@@ -31,7 +31,7 @@
 		padding: 10px;
 	}
 </style>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
 
 	var ARV_CONCEPT_ID = 1148;
@@ -40,6 +40,9 @@
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
     var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
+    var DATE_OF_DELIVERY = "<lookup expression="fn.latestObs(5599).getValueDatetime()"/>";
+    var PLACE_OF_DELIVERY = "<lookup expression="fn.latestObs(1572).getValueCoded()"/>";
+    var MODE_OF_DELIVERY = "<lookup expression="fn.latestObs(5630).getValueCoded()"/>";
     //On ready start
     jq(function () {
         var strtext = "";
@@ -92,6 +95,22 @@
             jq('#tbl-haart-given-anc').show();
             jq('#tbl-haart-given-mat').show();
             jq('#patient-on-haart').hide();
+        }
+        //Maternal history prepopulation
+        if(DATE_OF_DELIVERY !=""){
+            getField('delivery-date.value').val(DATE_OF_DELIVERY);
+        }else{
+            getField('delivery-date.value').val("");
+        }
+        if(PLACE_OF_DELIVERY !=""){
+            getField('delivery-place.value').val(PLACE_OF_DELIVERY);
+        }else{
+            getField('delivery-place.value').val("");
+        }
+        if(MODE_OF_DELIVERY !=""){
+            getField('delivery-mode.value').val(MODE_OF_DELIVERY);
+        }else{
+            getField('delivery-mode.value').val("");
         }
         //FP skip pattern
         jq("#fplanning select ").change(function () {
@@ -303,7 +322,9 @@
         var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
         if (isTestKitExpiryBeforeEncounterDate) {
             getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
-        }
+        }else{
+            getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
+		}
     }
     //Clear hidden sections
     clearHiddenSections = function(parentObj) {
@@ -393,17 +414,17 @@
 							<tr>
 								<td>Date of delivery:</td>
 								<td>
-									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false"/>
+									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-date" allowTime="false"/>
 								</td>
 								<td>Mode of Delivery:</td>
 								<td>
-									<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-mode"/>
 								</td>
 							</tr>
 							<tr>
 								<td>Place of delivery:</td>
 								<td>
-									<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   id="delivery-place"
 										 answerConceptIds="1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerLabels="Home,Facility,Born Before Arrival"/>
 								</td>
@@ -581,13 +602,13 @@
 								<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 							</td>
 						</tr>
-						<tr>
-							<td>Mother's HIV Status
-							</td>
-							<td>
-								<obs conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
-							</td>
-						</tr>
+						<!--<tr>-->
+							<!--<td>Mother's HIV Status-->
+							<!--</td>-->
+							<!--<td>-->
+								<!--<obs conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>-->
+							<!--</td>-->
+						<!--</tr>-->
 						<tr>
 							<td colspan="6">
 								<br/>

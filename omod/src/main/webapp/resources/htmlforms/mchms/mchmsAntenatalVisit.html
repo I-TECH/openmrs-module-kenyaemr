@@ -391,6 +391,8 @@
         var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
         if (isTestKitExpiryBeforeEncounterDate) {
             getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+        }else{
+            getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
         }
     }
 

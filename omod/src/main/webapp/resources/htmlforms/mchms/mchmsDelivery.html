@@ -30,6 +30,7 @@
 			padding: 10px;
 		}
 </style>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
@@ -247,6 +248,8 @@
             var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
             if (isTestKitExpiryBeforeEncounterDate) {
                 getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+            }else{
+                getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
             }
         }
         //Clear hidden sections
@@ -364,7 +367,9 @@
 						<tr>
 							<td>Place of Delivery:</td>
 							<td>
-								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Home,Facility,Born Before Arrival"/>
 							</td>
 						</tr>
 						<tr>
