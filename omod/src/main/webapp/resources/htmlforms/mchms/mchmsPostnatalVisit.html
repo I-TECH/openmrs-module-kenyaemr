@@ -389,11 +389,13 @@
 					<td>
 						<table>
 							<tr>
-								<td >PNC Register Number</td>
+								<td >PNC Register Number:
+								</td>
 								<td>
 									<obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									<i>(yyyy-mm-xxxx)</i>
 								</td>
-								<td>PNC Visit Number</td>
+								<td>PNC Visit Number:</td>
 								<td>
 									<obs conceptId="159893AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
@@ -552,7 +554,7 @@
 						<tr>
 							<td width="200">General Condition:</td>
 							<td>
-								<obs conceptId="160085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								<obs conceptId="1856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Good, Fair, Poor"/>
 							</td>
@@ -560,7 +562,8 @@
 							<td>
 								<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td><td width="200"></td>
+								<span class="value"><recentObs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+							</td><td width="200"> </td>
 						</tr>
 						<tr>
 							<td>Breast:</td>
@@ -579,7 +582,10 @@
 						<tr>
 							<td>C/S Scar:</td>
 							<td>
-								<obs conceptId="162128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="162128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="162129AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145776AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Wound intact and healing,Caesarean Wound Disruption,Infection of obstetric surgical wound,Surgical wound healed,Not Applicable"
+								/>
 							</td>
 							<td>Haemoglobin:</td>
 							<td>
@@ -602,13 +608,6 @@
 								<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 							</td>
 						</tr>
-						<!--<tr>-->
-							<!--<td>Mother's HIV Status-->
-							<!--</td>-->
-							<!--<td>-->
-								<!--<obs conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>-->
-							<!--</td>-->
-						<!--</tr>-->
 						<tr>
 							<td colspan="6">
 								<br/>
@@ -854,7 +853,7 @@
 					<tr>
 						<td>Maternal condition</td>
 						<td>
-							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<obs conceptId="160085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 						</td><td colspan="2"></td>
 					</tr>
 					<tr>
@@ -868,8 +867,8 @@
 					<tr>
 						<td>Fistula screening: <span style="color:red;">*</span></td>
 						<td><obs conceptId="159921AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,49AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127847AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Not done,None,Vesicovaginal Fistula,Rectovaginal fistula,N/A"
+								 answerConceptIds="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,49AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127847AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="None,Vesicovaginal Fistula,Rectovaginal fistula,Not done"
 								 style="dropdown"
 								 id="fistula-screening"
 								  />

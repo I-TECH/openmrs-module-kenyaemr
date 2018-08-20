@@ -36,11 +36,17 @@
 
 	var NOT_HIV_TESTED_ID = 1402;
 	var NEGATIVE = 664;
+    var HIV_POSITIVE = 703;
 	var UNKNOWN = 1067;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
-
+	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+//Start on ready
 	jq(function () {
+	    //Gravida validations
+        getField('parity-term.value').change(onParityChange);
+        getField('parity-abortion.value').change(onParityChange);
+        jq('#gravida input[type=text]').attr("style", "pointer-events:none;");
 		onLmpChange();
 		onPatientHivStatusChange();
 		onPartnerHivStatusChange()
@@ -48,22 +54,32 @@
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
 		//First ANC visit date validation
-		if(ANC_START_DATE !="" || ANC_START_DATE != null){
+        if(ANC_START_DATE !="" || ANC_START_DATE != null){
             getField('first-anc-date.value').val(ANC_START_DATE);
-		}
+        }
+        //Prepopulate HIV positive if already enrolled
+        if(PATIENT_IS_ENROLLED_HIV){
+            getField('patient-hiv-status.value').val(HIV_POSITIVE);
+            getField('patient-hiv-test-date.value').val(HIV_TEST_DATE);
+            jq('#patient-hiv-test-date input').prop('disabled', false);
+        }
         jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});
-
-	beforeSubmit.push(function () {
-		if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
-			return true;
-		}
-		return false;
-	});
-
+	//End on ready
+    function onParityChange() {
+        var gravida = '';
+        var parityTerm = parseInt(getValue('parity-term.value'));
+        var parityAbortion = parseInt(getValue('parity-abortion.value'));
+        if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+            gravida = parityTerm + parityAbortion + 1;
+            getField('gravida.value').val(gravida);
+        }
+    }
 	function onLmpChange() {
-		var display = 'EDD could not be calculated!';
-		var displayGes = 'Gestation could not be calculated!';
+//		var display = 'EDD could not be calculated!';
+//		var displayGes = 'Gestation could not be calculated!';
+        var display = '-';
+		var displayGes = '-';
 		var lmpValue = getValue('lmp.value');
 		if (lmpValue) {
 			var lmp = Date.parse(getValue('lmp.value'));
@@ -224,7 +240,12 @@
 			jq('#partner-hiv-test-date input').prop('disabled', false);
 		}
 	}
-
+    beforeSubmit.push(function () {
+        if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
+            return true;
+        }
+        return false;
+    });
 </script>
 
 <div class="ke-form-header">
@@ -268,16 +289,6 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Gravida:</td>
-				<td>
-					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
-				</td>
-				<td>EDD (Calculated from L.M.P):</td>
-				<td>
-					<span id="calculated-edd" class="value"></span>
-				</td>
-			</tr>
-			<tr>
 				<td>Parity:</td>
 				<td>
 					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
@@ -285,6 +296,17 @@
 					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
 						 id="parity-abortion"/>
 				</td>
+				<td>EDD (Calculated from L.M.P):</td>
+				<td>
+					<span id="calculated-edd" class="value"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>Gravida:</td>
+				<td>
+					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+				</td>
+
 				<td>EDD (Ultrasound):</td>
 				<td>
 					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
@@ -309,15 +331,19 @@
 					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
 					Estimated
 				</td>
-				<td>TB Screening:</td>
+				<td>TB Screening results:</td>
 				<td>
-					<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs id="tb-result-status"
+						 conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 style="dropdown"
+						 answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
 				</td>
 			</tr>
 			<tr>
 				<td width="250">Date of first ANC visit:</td>
 				<td>
-					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <span style="color:red;"><strong>*</strong></span> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
+					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
 				</td>
 			</tr>
 		</table>
@@ -341,19 +367,9 @@
 										 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
 									<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 								</td>
-								<td>Serology:</td>
-								<td>
-									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-							</tr>
-							<tr>
 								<td width="250">HIV Test Date:</td>
 								<td>
 									<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-								<td>BS for MPS:</td>
-								<td>
-									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
 							<tr>
@@ -364,11 +380,19 @@
 										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerLabels="HIV Positive,HIV Negative,Unknown"/>
 								</td>
-							</tr>
-							<tr id="partner-hiv-date">
 								<td width="250">Partner HIV Test Date:</td>
 								<td>
 									<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Serology:</td>
+								<td>
+									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>BS for MPS:</td>
+								<td>
+									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
 						</table>

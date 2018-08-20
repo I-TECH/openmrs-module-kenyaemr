@@ -73,6 +73,7 @@
        //Cacx screening method  cacx-screening-method
         jq('#cacx-screening-method').hide();
         // HIV Test validation
+        jq('#tbl-known-positive').hide();
         jq("#hiv-test2").hide();
         jq('#hiv-final-result select').attr("style", "pointer-events:none;");
         jq("#hiv-test1-result select").change(firstTestSelected);
@@ -81,11 +82,14 @@
         jq("#expiry-date input").change(expiryDateSelected);
 		//Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
+            jq('#tbl-known-positive').show();
+            jq('#hiv-known-positive:text').val('Positive');
             jq('#tbl-hiv-test').hide();
             jq('#art-and-prophylaxis').show();
             jq('#who-staging').show();
             jq('#vl-sample').show();
         }else{
+            jq('#tbl-known-positive').hide();
             jq('#tbl-hiv-test').show();
             jq('#art-and-prophylaxis').hide();
             jq('#who-staging').hide();
@@ -526,7 +530,7 @@
 							<tr>
 								<td>
 									<u>
-										Other Vitals Recorded Recently
+										Vitals Recorded Recently
 									</u>
 									<br/>
 									<br/>
@@ -565,12 +569,9 @@
 		</td>
 	</tr>
 	<tr>
-	  <td valign="top">
-		<table>
-			<tr>
-				<td>
-					<legend>Other Observations</legend>
-					<table align="top" width="146%" class="tb1">
+		<td colspan="2">
+				<legend>Other Observations</legend>
+					<table  align="center" width="100%" class="tb1">
 						<tr>
 							<td>Breast examination done:</td>
 							<td>
@@ -615,10 +616,7 @@
 							</td>
 						</tr>
 					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
+		</td>
 </tr>
 <tr>
 		<td colspan="2">
@@ -629,6 +627,22 @@
 							<br/>
 							<strong>HIV Testing</strong>
 							<hr />
+							<table id="tbl-known-positive" border="1">
+								<tr>
+									<td>
+										<u>
+											HIV Test Recorded Recently
+										</u>
+										<br/>
+										<br/>Final results:
+										<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Date:
+										<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+										<br/>
+									</td>
+								</tr>
+							</table>
 							<table id="tbl-hiv-test">
 								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
@@ -705,7 +719,7 @@
 											<tr>
 												<td>
 													<u>
-														Other HIV Test Recorded Recently
+														HIV Test Recorded Recently
 													</u>
 													<br/>
 													<br/>
@@ -941,7 +955,7 @@
 								<tr>
 									<td>
 										<u>
-											Other VL Results Recorded Recently
+											VL Results Recorded Recently
 										</u>
 										<br/>
 										<br/>
