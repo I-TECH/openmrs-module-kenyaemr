@@ -13,9 +13,10 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.mchms.form.completion"/>
 		<property name="patientForms">
 			<set>
-				<ref bean="kenyaemr.mchms.form.infantFeeding"/>
+				<!--<ref bean="kenyaemr.mchms.form.infantFeeding"/>-->
 				<ref bean="kenyaemr.mchms.form.preventiveServices"/>
 				<ref bean="kenyaemr.mchms.form.delivery"/>
+				<ref bean="kenyaemr.mchms.form.discharge"/>
 			</set>
 		</property>
 		<property name="visitForms">
@@ -121,21 +122,35 @@
 		<property name="htmlform" value="kenyaemr:mchms/mchmsDelivery.html"/>
 		<property name="order" value="2"/>
 	</bean>
+	<!--Commented infant feeding as the questions are already covered in discharge form-->
+	<!--&lt;!&ndash; MCHMS Infant Feeding &ndash;&gt; -->
+	<!--<bean id="kenyaemr.mchms.form.infantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">-->
+		<!--<property name="targetUuid" value="f4d763bb-8428-476c-be8a-73c705bbc347"/>-->
+		<!--<property name="apps">-->
+			<!--<set>-->
+				<!--<ref bean="kenyaemr.app.clinician"/>-->
+				<!--<ref bean="kenyaemr.app.chart"/>-->
+			<!--</set>-->
+		<!--</property>-->
+		<!--<property name="icon" value="kenyaui:forms/generic.png"/>-->
+		<!--<property name="htmlform" value="kenyaemr:mchms/mchmsInfantFeeding.html"/>-->
+		<!--<property name="order" value="3"/>-->
+	<!--</bean>-->
 
-	<!-- MCHMS Infant Feeding -->
-	<bean id="kenyaemr.mchms.form.infantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="f4d763bb-8428-476c-be8a-73c705bbc347"/>
+	<!-- MCHMS Discharge -->
+	<bean id="kenyaemr.mchms.form.discharge" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="af273344-a5f9-11e8-98d0-529269fb1459"/>
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.clinician"/>
 				<ref bean="kenyaemr.app.chart"/>
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.EligibleForMchmsDischargeCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png"/>
-		<property name="htmlform" value="kenyaemr:mchms/mchmsInfantFeeding.html"/>
-		<property name="order" value="3"/>
+		<property name="htmlform" value="kenyaemr:mchms/mchmsDischarge.html"/>
+		<property name="order" value="4"/>
 	</bean>
-
 	<!-- MCHMS Completion -->
 	<bean id="kenyaemr.mchms.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="25935b9f-68ad-4e0c-9663-d2cacda82bbf"/>
