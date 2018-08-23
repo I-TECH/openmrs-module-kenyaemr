@@ -38,8 +38,9 @@ import java.util.*;
 /**
  * Determines whether a mother is eligible for discharge -- should access the discharge form
  * Criteria:
- * 1. Should be mchms enrolled
- * 2.Should atleast have a delivery from  dated greater than active enrollment
+ * 1.client is alive
+ * 2.Should be mchms enrolled
+ * 3.Should atleast have a delivery from  dated greater than active enrollment
  */
 public class EligibleForMchmsDischargeCalculation extends AbstractPatientCalculation {
 	protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);

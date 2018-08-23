@@ -151,8 +151,9 @@
     //on ready end
         function onOutcomeChange() {
             if (getValue('maternal-outcome.value') == 160432) {
+                //TODO: Need to consider validation when mother dies at delivery
                 jq('#tr-maternal-death-audited').show();
-            }else{
+            }else{     //Alive
                 jq('#tr-maternal-death-audited').hide();
                 getField('maternal-death-audited.value').val("");
             }
@@ -255,6 +256,25 @@
                 getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
             }
         }
+        function validateOtherFields() {
+
+            var gestation = getValue('gestation.value');
+
+            if (gestation != null) {
+                var gestationValue = parseFloat(gestation);
+                if (gestationValue &lt; 20.0 || gestationValue &gt; 43.0) {
+                    getField('gestation.error').html('Gestation must be between 20 and 43 weeks.').show();
+                    return false;
+                }
+            }
+            return true;
+        }
+        beforeSubmit.push(function () {
+            if (validateOtherFields()) {
+                return true;
+            }
+            return false;
+        });
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -311,7 +331,7 @@
 						<tr>
 							<td>Gestation at birth (in weeks):</td>
 							<td>
-								<obs conceptId="1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="gestation"/>
 							</td>
 							<td>Duration of Labor (Hours):</td>
 							<td>
@@ -598,17 +618,16 @@
 					<fieldset>
 						<legend>ART and Prophylaxis</legend>
 						<table align="center" width="100%" class="tb1">
-							<tr>
+							<tr id="tr-prophylaxis-given">
 								<td>Prophylaxis given during this visit?</td>
 								<td><obs
 										conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Cotrimoxazole,Dapsone,None"
 										style="radio" id="prophylaxis-used"/>
-									<span style="color:red;"><strong>*</strong></span>
 								</td>
 							</tr>
-							<tr>
+							<tr id="tr-patient-on-haart">
 								<td>
 									<div id="patient-on-haart" class="ke-warning">HAART already started</div>
 								</td>
@@ -618,7 +637,6 @@
 								<td><obs
 										conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
 										id="haart-given-anc"/>
-									<span style="color:red;"><strong>*</strong></span>
 								</td>
 							</tr>
 							<tr id="tbl-haart-given-mat">
@@ -626,7 +644,6 @@
 								<td><obs
 										conceptId="159595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
 										id="haart-given-mat"/>
-									<span style="color:red;"><strong>*</strong></span>
 								</td>
 								<td>HAART start date : </td>
 								<td><obs id="haart-start-date"
