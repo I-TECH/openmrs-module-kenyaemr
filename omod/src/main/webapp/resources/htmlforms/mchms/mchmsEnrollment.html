@@ -60,8 +60,9 @@
         }
         //Prepopulate HIV positive if already enrolled
         if(PATIENT_IS_ENROLLED_HIV){
+            var formattedTestDate =moment(moment(HIV_TEST_DATE,'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
             getField('patient-hiv-status.value').val(HIV_POSITIVE);
-            getField('patient-hiv-test-date.value').val(HIV_TEST_DATE);
+            getField('patient-hiv-test-date.value').val(formattedTestDate);
             jq('#patient-hiv-test-date input').prop('disabled', false);
         }
         jq('#first-anc-today').click(defaultFirstAncDateChange);
@@ -161,14 +162,13 @@
 		}
 
 		var hivStatus = getValue('patient-hiv-status.value');
-		if (hivStatus != NOT_HIV_TESTED_ID) {
+		if (hivStatus != NOT_HIV_TESTED_ID || hivStatus != "") {
 			var hivTestDate = getValue('patient-hiv-test-date.value');
-			if (hivTestDate == "") {
+			if (hivTestDate == "" &amp;&amp; HIV_TEST_DATE == "") {
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
 		}
-
 		var partnerHivStatus = getValue('partner-hiv-status.value');
 		if (partnerHivStatus != UNKNOWN) {
 			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
@@ -232,7 +232,6 @@
 		} else {
 			jq('#patient-hiv-test-date input').prop('disabled', false);
 		}
-
 		var isMismatch = ((patientHivStatus == NOT_HIV_TESTED_ID || patientHivStatus == NEGATIVE) &amp;&amp; PATIENT_IS_ENROLLED_HIV);
 		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
 	}
