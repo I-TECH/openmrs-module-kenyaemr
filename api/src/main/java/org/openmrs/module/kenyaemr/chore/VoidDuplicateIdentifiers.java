@@ -30,10 +30,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Prior to 13.3.1, the EditPatientFragmentController let users double submit causing duplicate patient records, often
- * with duplicate identifiers
+ * regimens.xml contains regimen groups that can be used to aid order groups. This chore populates order sets from regimens.xml
  */
-@Component("kenyaemr.chore.voidDuplicateIdentifiers")
+@Component("kenyaemr.chore.populateOrderSets")
 public class VoidDuplicateIdentifiers extends AbstractChore {
 
 	@Autowired
