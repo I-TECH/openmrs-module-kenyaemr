@@ -198,6 +198,21 @@
                 </includeIf>
             </table>
         </fieldset>
+        <includeIf velocityTest="$patient.age &lt; 2">
+        <fieldset>
+            <legend>Baby feeding</legend>
+
+            <table>
+                <tr>
+                    <td>Baby's Feeding Method : </td>
+                    <td>
+                        <obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        </includeIf>
     </div>
 
     <div class="ke-form-footer">

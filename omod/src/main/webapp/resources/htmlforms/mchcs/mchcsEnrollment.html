@@ -97,6 +97,7 @@
 				}
 				else if (getValue('onART.value') == YES_CONCEPT_ID) {
 					jq('#mother-on-art-at-enrollment :input').prop('disabled', false);
+					jq('#mother-on-art-at-enrollment1 :input').prop('disabled', false);
 
 				}
 				else {
@@ -116,14 +117,60 @@
 					jq('#reasonsForSpecialCare :input').prop('disabled', true);
 				}
 			}
+            //Determine if mother is alive
+            function motherIsAlive() {
+                jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothersLiveStatus.action',{ patientId: patientId },function(data) {
+                    var motherName;
+                    for (var p in data) {
+                        motherName = data[p].name;
+                    }
+                    if(motherName != null){
+                        jq(".mother-alive input[value=true]").prop("checked", true);
+                    } else{
+                        jq(".mother-alive input[value=true]").prop("checked", false);
+                    }
+                });
+            }
+            //Include Mothers Details
+			//CCC Number
+            function includeMothersCccNumber() {
+                var cccNumber;
+                jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getMothersUniquePatientNumber.action', {patientId: patientId}, function (data) {
+                    if (data != null) {
+                        cccNumber = data;
+                        getField('mothers-ccc.value').val(cccNumber);
+                    } else {
+                        getField('mothers-ccc.value').val("");
+                    }
+                });
+            }
+            //On ART
+            function includeMotherCurrentlyARTRegimen() {
+                var encounterDate = getValue('encounter-date.value');
+                jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/currentMothersArvRegimen.action', { patientId: patientId, now: encounterDate })
+                    .done(function(data) {
+                        var msg = data.duration ? (data.regimen ) : 'None';
+
+						if(msg != 'None'){
+							jq("#onART input[value=1065]").prop("checked", true);
+                            jq('#current-mothers-regimen').html(msg);
+						}else{
+							jq("#onART input[value=1066]").prop("checked", true);
+						}
+                    });
+            }
 
 			function includeMothersNames() {
 				jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getMothers.action',{ patientId: patientId },function(data) {
-					var motherName;
-					for ( var p in data){
-						motherName = data[p].name;
-					}
-					jq('#mother-name-list').html(motherName);
+                        var registered_location = "<lookup expression="kenyaemr.location()" />";
+                        var motherName;
+                        for (var p in data) {
+                            motherName = data[p].name;
+                        }
+                        jq('#mother-name-list').html(motherName);
+                    if(motherName != null) {
+                        getField('facility-registered.value').val(registered_location);
+                    }
 				});
 			}
 			function includeFathersNames() {
@@ -135,14 +182,20 @@
 					jq('#father-name-list').html(fatherName);
 				});
 			}
-
+            function includeGuardiansNames() {
+                jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getGuardians.action',{ patientId: patientId },function(data) {
+                    var guardianName;
+                    for ( var p in data){
+                        guardianName = data[p].name;
+                    }
+                    jq('#guardian-name-list').html(guardianName);
+                });
+            }
 			function heiInfants() {
 
 				if (getValue('hiv-exposed-child.value') == '') {
 					jq('#arv-prophylaxis :input').prop('disabled', true);
-					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
-					jq('#mother-art-details :input').prop('disabled', true);
 					jq('#hei-id :input').prop('disabled', true);
 					jq('#spd :input').prop('disabled', true);
 				}
@@ -151,16 +204,12 @@
                     jq('#hei-id :input').prop('disabled', false);
                     jq('#spd :input').prop('disabled', false);
 					jq('#arv-prophylaxis :input').prop('disabled', false);
-					jq('#mother-drugs :input').prop('disabled', false);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', false);
-					jq('#mother-art-details :input').prop('disabled', false);
 				}
 
 				if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
 					jq('#arv-prophylaxis :input').prop('disabled', true);
-					jq('#mother-drugs :input').prop('disabled', true);
 					jq('#on-art-at-enrollment-of-infant :input').prop('disabled', true);
-					jq('#mother-art-details :input').prop('disabled', true);
 					jq('#hei-id :input').prop('disabled', true);
 					jq('#spd :input').prop('disabled', true);
 				}
@@ -178,14 +227,19 @@
 			jq('#tbcontact input').click(tbContactInHouseHold);
 			pmtctDrugsForMother();
 			jq('#pmtctDrugsReceived input').click(pmtctDrugsForMother);
-			//onARTatEnrollment();
+			onARTatEnrollment();
 			jq('#onART input').change(onARTatEnrollment);
 
 			jq('#specialCare input').change(needSpecialCare);
 			//including the mother details
+            motherIsAlive();
+            includeMothersCccNumber();
+            includeMotherCurrentlyARTRegimen();
 			includeMothersNames();
 			//include the father details if any
 			includeFathersNames();
+           //include the guardian details if any
+            includeGuardiansNames();
 			//disable arv prophylaxis when a child is NOT exposed and enable whenever they are exposed
 			 heiInfants();
 			 jq('#hiv-exposed-child input').click(heiInfants);
@@ -220,7 +274,7 @@
 			<tbody>
 				<tr>
 					<td colspan="3" style="background-color: #696969; color: #ffffff; text-align:center;">
-						Mch Child Enrolment Form</td>
+						Mch Child Enrollment Form</td>
 				</tr>
 
 				<tr>
@@ -238,7 +292,7 @@
 						<table>
 							<tr>
 								<td>Date first seen</td>
-								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"/></td>
+								<td><obs conceptId="162140AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" /></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -256,10 +310,10 @@
 							  <td>Birth Order in Family (1,2,3) </td>
 							  <td><obs conceptId="163460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 							  <td>Birth type: </td>
-						      <td><obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="radio" answerSeparator="&lt;br/&gt;"/></td>
+						      <td><obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="dropdown"/></td>
 						      <td>Place of delivery</td>
 						      <td>							  
-							  	<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="radio"/>							  </td>
+							  	<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="dropdown"/>							  </td>
 						  </tr>
 							<tr>
 							  <td>Mode of Delivery  </td>
@@ -333,8 +387,8 @@
                     </tr>
                     <tr>
                       <td>Guardian's Name </td>
-                      <td></td>
-                      <td></td>
+						<td><div id="guardian-name-list" class="value">						</div></td>
+	<td></td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -380,7 +434,7 @@
 				<tr>
 				  <td>Exposure History </td>
 				  <td colspan="2">HIV Exposed Child?
-				    <obs conceptId="5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unkwon" id="hiv-exposed-child" style="radio" /><br />
+				    <obs conceptId="5303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No,Unknown" id="hiv-exposed-child" style="radio" /><br />
 						<div id="child-status-required" class="error"></div></td>
 			  </tr>
 				<tr>
@@ -483,8 +537,9 @@
                     </tr>
                     <tr>
                       <td>Mother Alive? </td>
-                      <td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/></td>
-
+                      <td><obs conceptId="160429AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  class="mother-alive" style="yes_no"/></td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160; Facility registered: </td>
+					 <td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-registered"/></td>
                     </tr>
                     <tr>
 
@@ -495,7 +550,7 @@
                       <td>Mother On ART at Enrollment of Infant	</td>
                       <td id="on-art-at-enrollment-of-infant"><obs conceptId="162055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="onART"  />	</td>
 
-						<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;If yes, select regimen</td>
+						<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;If yes, select regimen &#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
 						<td id="mother-on-art-at-enrollment">
 							<obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -519,23 +574,12 @@
                                                3TC/D4T/LPV/r,
                                                3TC/ABC/EFV,
                                                ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r" />
+                                               ABC/DDI/LPV/r"
+							id="current-mothers-regimen"
+							/>
 						</td>
-						<td id="mother-on-art-at-enrollment1">Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="15"/></td>
+						<td id="mother-on-art-at-enrollment1"> &#160;&#160;&#160;&#160;&#160;&#160;&#160;Parent's CCC No. <obs conceptId="162053AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="mothers-ccc" size="15"/></td>
 					  </tr>
-					  <tr>
-						  <td>Mother received Drugs for PMTCT?  </td>
-						  <td id="mother-drugs"><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" id="pmtctDrugsReceived"/></td>
-						<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-							Select the combination
-					 </td>
-					 <td>
-					 							<div id="mother-art-details">
-							<obs conceptId="1086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Sd NVP Only,AZT+NVP+3TC,HAART,None" style="radio"/>
-						</div>					  
-					 </td>
-                    </tr>
                   </table></td>
 			  </tr>
 				

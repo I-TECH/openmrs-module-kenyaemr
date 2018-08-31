@@ -141,4 +141,22 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 		Assert.assertThat(fathers, arrayWithSize(1));
 		Assert.assertThat(fathers[0], hasEntry("id", (Object) (6)));
 	}
+	/**
+	 * @see PatientUtilsFragmentController#getGuardians(org.openmrs.Patient, org.openmrs.ui.framework.UiUtils)
+	 *
+	@Test
+	public void getGuardians_shouldReturnAllGuardiansOfPatient() {
+		Patient guardian = TestUtils.getPatient(6); // male in standardTestDataset.xml
+		Patient child = TestUtils.getPatient(2);
+
+		// Save guardian-child relationship between patient #2 and #7
+		TestUtils.saveRelationship(guardian, Context.getPersonService().getRelationshipType(2), child);
+
+		SimpleObject[] guardians = controller.getGuardians(child, ui);
+
+		// Check patient #6 is returned as sole guardian
+		Assert.assertThat(guardian, arrayWithSize(1));
+		Assert.assertThat(guardians[0], hasEntry("id", (Object) (6)));
+	}
+	*/
 }

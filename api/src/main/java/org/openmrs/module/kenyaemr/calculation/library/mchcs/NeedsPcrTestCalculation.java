@@ -14,6 +14,8 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -43,7 +45,7 @@ import java.util.Set;
  * Determines whether a child at 6 week and above has had PCR test
  */
 public class NeedsPcrTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-
+	protected static final Log log = LogFactory.getLog(NeedsPcrTestCalculation.class);
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
@@ -82,13 +84,14 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs pcrTestObs =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
-				Obs pcrTestObsQual =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
+				Obs pcrTestObsQual =  EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
 
 				//get birth date of this patient
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6 && getAgeInMonts(person.getBirthdate(), context.getNow()) <= 9) {
+				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6 && getAgeInMonths(person.getBirthdate(), context.getNow()) <= 12) {
 					needsPcr = true;
+
 				}
 
 			}
@@ -104,7 +107,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 		return Weeks.weeksBetween(d1, d2).getWeeks();
 	}
 
-	Integer getAgeInMonts(Date birtDate, Date context) {
+	Integer getAgeInMonths(Date birtDate, Date context) {
 		DateTime d1 = new DateTime(birtDate.getTime());
 		DateTime d2 = new DateTime(context.getTime());
 		return Months.monthsBetween(d1, d2).getMonths();

@@ -14,11 +14,12 @@
 
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Program;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.openmrs.*;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -33,6 +34,7 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +42,7 @@ import java.util.Set;
  * Determines whether a child has been exited from care and No pcr confirmatory test is done
  */
 public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-
+	protected static final Log log = LogFactory.getLog(NeedsPcrTestCalculation.class);
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
@@ -71,6 +73,7 @@ public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalcu
 		CalculationResultMap lastPcrStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TEXT_CONTEXT_STATUS), cohort, context);
 
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
+		Concept hivPositive = Dictionary.getConcept(Dictionary.POSITIVE);
 		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 
 		//get an encounter type for HEI completion
@@ -91,15 +94,21 @@ public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalcu
 			Obs pcrTestConfirmObs =  EmrCalculationUtils.obsResultForPatient(lastPcrStatus, ptId);
 
 			if ( inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
-				if (lastMchcsHeiCompletion != null) {
-					if (pcrObs == null || pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory){
+				//get birth date of this patient
+				Person person = Context.getPersonService().getPerson(ptId);
+					//if (pcrObs == null || pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory){
+					if (pcrObs != null && pcrObs.getValueCoded().equals(hivPositive) && (pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory) && getAgeInMonths(person.getBirthdate(), context.getNow()) <= 18){
 						notTakenConfirmatoryPcrTest = true;
 					}
-				}
 			}
 
 			ret.put(ptId, new BooleanResult(notTakenConfirmatoryPcrTest, this, context));
 		}
 		return ret;
+	}
+	Integer getAgeInMonths(Date birtDate, Date context) {
+		DateTime d1 = new DateTime(birtDate.getTime());
+		DateTime d2 = new DateTime(context.getTime());
+		return Months.monthsBetween(d1, d2).getMonths();
 	}
 }
