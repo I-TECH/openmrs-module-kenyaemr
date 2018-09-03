@@ -14,9 +14,9 @@
 
 package org.openmrs.module.kenyaemr.orderset;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.OrderType;
@@ -29,7 +29,6 @@ import org.openmrs.module.kenyaemr.regimen.RegimenConfiguration;
 import org.openmrs.module.kenyaemr.regimen.RegimenConversionUtil;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -225,6 +224,16 @@ public class OrderSetManager implements ContentManager {
 		}
 	}
 
+	public String getDrugCodeByDrugReferenceValue(Map<String, DrugReference> categoryDrugs , DrugReference drugReference) {
+
+		for (Map.Entry<String, DrugReference> entry : categoryDrugs.entrySet()) {
+			if (drugReference.getConcept().equals(entry.getValue().getConcept())) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
 	public void populateOrderSets() {
 
 
@@ -253,18 +262,17 @@ public class OrderSetManager implements ContentManager {
 						setMember.setName(component.getDrugRef().getConcept().getName().getName());
 						setMember.setOrderType(Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID));
 
-						StringBuilder orderTemplate = new StringBuilder();
-						orderTemplate.append(component.getDrugRef().getConcept().getName().getName());
-						if (component.getDose() != null) {
+						Map<String, DrugReference> categoryDrugs = drugs.get(key);
 
-							orderTemplate.append(",").append(component.getDose()).append(",");
-						}
+						String drugReference = getDrugCodeByDrugReferenceValue(categoryDrugs, component.getDrugRef());
+						ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
+						drugMemberObject.put("name", drugReference);
+						drugMemberObject.put("dose",  component.getDose() != null ? String.valueOf(component.getDose()) : "");
+						drugMemberObject.put("dose_unit", component.getUnits() != null ? RegimenConversionUtil.getDoseUnitStringFromConceptId(component.getUnits().getConceptId()) : "");
+						drugMemberObject.put("frequency", component.getFrequency() != null ? RegimenConversionUtil.getFrequencyStringFromConceptId(component.getFrequency().getConceptId()) : "");
+						drugMemberObject.put("drug_id", "");
 
-						if (component.getUnits() != null) {
-							orderTemplate.append(RegimenConversionUtil.getDoseUnitStringFromConceptId(component.getUnits().getConceptId())).append(",");
-
-						}
-						setMember.setOrderTemplate(orderTemplate.toString());
+						setMember.setOrderTemplate(drugMemberObject.toString());
 
 
 						//'TDF,300,mg,3,15,111177BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
@@ -275,6 +283,14 @@ public class OrderSetManager implements ContentManager {
 						 * 3 - order frequency id
 						 * 15 - drug id
 						 * 111177BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB - concept uuid for quantity units
+						 *
+						 *{
+						 "short_name":"TDF",
+						 "dose":"300",
+						 "dose_unit":"mg",
+						 "frequency_id":"3",
+						 "drug_id":"15"
+						 }
 						 */
 
 						orderSet.addOrderSetMember(setMember);
