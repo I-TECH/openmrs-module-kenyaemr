@@ -29,11 +29,11 @@ public class HTSProviderDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = " select e.encounter_id, concat_ws(' ', pn.family_name, pn.given_name) as creator \n" +
-                " from  \n" +
-                "  encounter e  \n" +
-                "  inner join users u on u.user_id = e.creator\n" +
-                " inner join person_name pn on u.person_id = pn.person_id ;";
+        String qry = " select e.encounter_id, concat_ws(' ', pn.family_name, pn.given_name, pn.middle_name) as creator \n" +
+                "from encounter e\n" +
+                "inner join encounter_provider ep on ep.encounter_id=e.encounter_id \n" +
+                "inner join provider p on ep.provider_id = p.provider_id \n" +
+                "inner join person_name pn on pn.person_id = p.person_id ;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
