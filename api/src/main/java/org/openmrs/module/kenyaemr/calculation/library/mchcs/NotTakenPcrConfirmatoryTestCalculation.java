@@ -74,32 +74,26 @@ public class NotTakenPcrConfirmatoryTestCalculation extends AbstractPatientCalcu
 
 		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		Concept hivPositive = Dictionary.getConcept(Dictionary.POSITIVE);
-		Concept pcrCornfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
-
-		//get an encounter type for HEI completion
-		EncounterType hei_completion_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_HEI_COMPLETION);
-		//load all patient last encounters of HEI completion encounter type
-		CalculationResultMap lastEncounters = Calculations.lastEncounter(hei_completion_encounterType,cohort,context);
-
+		Concept pcrConfirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
 			boolean notTakenConfirmatoryPcrTest = false;
 
-			Encounter lastMchcsHeiCompletion = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
-
 			Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 			Obs pcrObs = EmrCalculationUtils.obsResultForPatient(lastPcrTest, ptId);
 			Obs pcrTestConfirmObs =  EmrCalculationUtils.obsResultForPatient(lastPcrStatus, ptId);
 
 			if ( inMchcsProgram.contains(ptId) && hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
-				//get birth date of this patient
-				Person person = Context.getPersonService().getPerson(ptId);
-					//if (pcrObs == null || pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory){
-					if (pcrObs != null && pcrObs.getValueCoded().equals(hivPositive) && (pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrCornfirmatory) && getAgeInMonths(person.getBirthdate(), context.getNow()) <= 18){
+
+				if (pcrObs != null && pcrObs.getValueCoded().equals(hivPositive) && (pcrTestConfirmObs == null || pcrTestConfirmObs.getValueCoded() != pcrConfirmatory)) {
+					//get birth date of this patient over 18's are not eligible for antibody tests
+					Person person = Context.getPersonService().getPerson(ptId);
+					if (getAgeInMonths(person.getBirthdate(), context.getNow()) <= 18) {
 						notTakenConfirmatoryPcrTest = true;
 					}
+				}
 			}
 
 			ret.put(ptId, new BooleanResult(notTakenConfirmatoryPcrTest, this, context));
