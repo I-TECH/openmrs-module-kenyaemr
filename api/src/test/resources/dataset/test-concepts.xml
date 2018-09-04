@@ -1,3 +1,14 @@
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <dataset>
   <!--Adding details missing for 1.11.x-->
   <concept_class concept_class_id="22" name="Radiology/Imaging Procedure" description="A radiology or imaging test or procedure." creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="8caa332c-efe4-4025-8b18-3398328e1323"/>
