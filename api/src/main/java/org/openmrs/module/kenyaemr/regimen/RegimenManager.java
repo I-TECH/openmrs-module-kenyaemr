@@ -155,7 +155,7 @@ public class RegimenManager implements ContentManager {
 
 						if (componentDrugRef.equals(orderDrugRef)) {
 
-							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getQuantityUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {
+							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getDoseUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {
 								regimenHasComponent = true;
 								break;
 							}
