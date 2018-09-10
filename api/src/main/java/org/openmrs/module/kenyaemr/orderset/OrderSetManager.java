@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.orderset;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.OrderType;
@@ -231,12 +232,31 @@ public class OrderSetManager implements ContentManager {
 
 	public void populateOrderSets() {
 
+		ConceptService conceptService = Context.getConceptService();
 
 		for (Map.Entry<String, List<RegimenDefinitionGroup>> entry : regimenGroups.entrySet()) {
 			String key = entry.getKey();
 			System.out.println("Key: " + key);
 			if (key.equals("TB"))
 				continue;
+
+			// save drug entries
+
+			for(Map.Entry<String, DrugReference> drugReferenceEntry : drugs.get(key).entrySet()) {
+				DrugReference drugEntry = drugReferenceEntry.getValue();
+
+				String drugName = getDrugCodeByDrugReferenceValue(drugs.get(key), drugEntry);
+				// skip if drug is already added to the database
+				if (conceptService.getDrugs(String.valueOf(drugEntry.getConcept().getConceptId())).size() > 0) {
+					continue;
+				}
+
+				Drug conceptDrug = new Drug();
+				conceptDrug.setName(drugName);
+				conceptDrug.setConcept(drugEntry.getConcept());
+				conceptService.saveDrug(conceptDrug);
+			}
+
 
 			for (RegimenDefinitionGroup regimenGrp : entry.getValue()) {
 				String grpCode = regimenGrp.getCode();
@@ -259,6 +279,8 @@ public class OrderSetManager implements ContentManager {
 
 						Map<String, DrugReference> categoryDrugs = drugs.get(key);
 
+						// add drug entry
+
 						String drugReference = getDrugCodeByDrugReferenceValue(categoryDrugs, component.getDrugRef());
 						ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
 						drugMemberObject.put("name", drugReference);
@@ -268,26 +290,6 @@ public class OrderSetManager implements ContentManager {
 						drugMemberObject.put("drug_id", "");
 
 						setMember.setOrderTemplate(drugMemberObject.toString());
-
-
-						//'TDF,300,mg,3,15,111177BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-						/**
-						 * TDF - drug reference
-						 * 300 - dosage
-						 * mg - dosage unit
-						 * 3 - order frequency id
-						 * 15 - drug id
-						 * 111177BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB - concept uuid for quantity units
-						 *
-						 *{
-						 "short_name":"TDF",
-						 "dose":"300",
-						 "dose_unit":"mg",
-						 "frequency_id":"3",
-						 "drug_id":"15"
-						 }
-						 */
-
 						orderSet.addOrderSetMember(setMember);
 
 					}

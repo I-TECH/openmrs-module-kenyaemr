@@ -1,9 +1,19 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -45,6 +55,14 @@ public class RegimenJsonGenerator {
         for(OrderFrequency frequency : frequencies) {
             if(frequency.getConcept().equals(frequencyConcept))
                 return frequency.getOrderFrequencyId();
+        }
+        return null;
+    }
+
+    private Integer getDrugIdFromConcept(Concept concept) {
+        List<Drug> drugs =  Context.getConceptService().getDrugs(String.valueOf(concept.getConceptId()));
+        if (drugs != null && drugs.size() > 0) {
+            return drugs.get(0).getDrugId();
         }
         return null;
     }
@@ -141,7 +159,7 @@ public class RegimenJsonGenerator {
                         drugMemberObject.put("units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "");
                         drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
                         drugMemberObject.put("frequency", orderFrequencyId != null ? String.valueOf(orderFrequencyId) : "");
-                        drugMemberObject.put("drug_id", "");
+                        drugMemberObject.put("drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : "");
                         regimenComponentsArray.add(drugMemberObject);
                         regimenDefinition.addComponent(drug, dose, units, frequency);
                     }
