@@ -68,7 +68,6 @@
                 //include the guardian details if any
                 includeGuardiansNames();
                 //disable arv prophylaxis when a child is NOT exposed and enable whenever they are exposed
-                heiInfants();
                 jq('#hiv-exposed-child input').click(heiInfants);
 
                 beforeSubmit.push(function() {
@@ -197,12 +196,10 @@
                     }
                     //Prepopulate hei exposure status
                     if (!cccNumber) {
-
+                        heiInfants()
                     } else {
                         jq("#hiv-exposed-child input[value=822]").prop("checked", true);
-                        jq('#hei-identifiers').show();
-                        jq('#arv-prophylaxis').show();
-                        jq('#mother-arv-prophylaxis').show();
+                        heiInfants()
                     }
                 });
             }
