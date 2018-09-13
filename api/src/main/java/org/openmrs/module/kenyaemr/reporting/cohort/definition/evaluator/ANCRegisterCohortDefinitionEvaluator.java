@@ -3,7 +3,7 @@ package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ANCRegisterCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -18,10 +18,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Evaluator for patients for HTS Register
+ * Evaluator for patients for ANC Register
  */
-@Handler(supports = {HTSRegisterCohortDefinition.class})
-public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
+@Handler(supports = {ANCRegisterCohortDefinition.class})
+public class ANCRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -31,7 +31,7 @@ public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 1 and voided = 0 and date(visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_mch_antenatal_visit where date(visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

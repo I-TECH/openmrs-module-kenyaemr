@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * First ANC Visit Column
+ * NVP Dispensed Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCBreastExamDoneDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCNVPDispensedDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCBreastExamDoneDataDefinition() {
+    public ANCNVPDispensedDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCBreastExamDoneDataDefinition(String name) {
+    public ANCNVPDispensedDataDefinition(String name) {
         super(name);
     }
 

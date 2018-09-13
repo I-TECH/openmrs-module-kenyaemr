@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- *ANC Exercises Column
+ *ANC Partner Tested for HIV Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCExercisesDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCPartnerTestedForHivDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCExercisesDataDefinition() {
+    public ANCPartnerTestedForHivDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCExercisesDataDefinition(String name) {
+    public ANCPartnerTestedForHivDataDefinition(String name) {
         super(name);
     }
 

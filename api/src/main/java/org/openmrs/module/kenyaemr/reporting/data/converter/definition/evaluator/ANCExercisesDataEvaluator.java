@@ -1,8 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCExcercisesDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCOtherIllnessesDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCExercisesDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates  Data Definition to Other Illnesses
+ * Evaluates  Data Definition to ANC Exercises
  */
-@Handler(supports=ANCExcercisesDataDefinition.class, order=50)
-public class ANCExcercisesDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCExercisesDataDefinition.class, order=50)
+public class ANCExercisesDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;

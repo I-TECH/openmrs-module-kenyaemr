@@ -1,7 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBreastExamDoneDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCCaCxScreeningResultsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCTBScreeningResultsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Data Definition to produce TB screning results
+ * Evaluates Data Definition to produce CaCx screning results
  */
-@Handler(supports=ANCTBScreeningResultsDataDefinition.class, order=50)
-public class ANCTBScreeningResultsDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCCaCxScreeningResultsDataDefinition.class, order=50)
+public class ANCCaCxScreeningResultsDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCTBScreeningResultsDataEvaluator implements EncounterDataEvaluato
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "(case v.breast_exam_done when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as breast_exam\n" +
+                "(case v.cacx_screening when 703 then \"POSITIVE\" when 664 then \"NEGATIVE\" when 159393 then \"Presumed\" when 1118 then \"Not Done\" when 1175 then \"N/A\" else \"\" end) as cacx_screening\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

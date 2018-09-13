@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Partner HIV Status
+ * Facility referred from column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCPartnerHIVStatusDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCFacilityReferredFromDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCPartnerHIVStatusDataDefinition() {
+    public ANCFacilityReferredFromDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCPartnerHIVStatusDataDefinition(String name) {
+    public ANCFacilityReferredFromDataDefinition(String name) {
         super(name);
     }
 

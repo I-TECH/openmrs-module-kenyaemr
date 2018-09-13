@@ -2,7 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBreastExamDoneDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FirstANCVisitDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCTBScreeningResultsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a Visit Number Data Definition to produce a Visit Number
+ * Evaluates Data Definition to produce TB screning results
  */
-@Handler(supports=ANCBreastExamDoneDataDefinition.class, order=50)
-public class ANCBreastExamDoneDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCTBScreeningResultsDataDefinition.class, order=50)
+public class ANCTBScreeningResultsDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;

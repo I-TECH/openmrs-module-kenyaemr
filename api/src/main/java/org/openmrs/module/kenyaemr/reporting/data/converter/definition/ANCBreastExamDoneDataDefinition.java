@@ -9,21 +9,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * First ANC Visit Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class FirstANCVisitDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCBreastExamDoneDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public FirstANCVisitDataDefinition() {
+    public ANCBreastExamDoneDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public FirstANCVisitDataDefinition(String name) {
+    public ANCBreastExamDoneDataDefinition(String name) {
         super(name);
     }
 

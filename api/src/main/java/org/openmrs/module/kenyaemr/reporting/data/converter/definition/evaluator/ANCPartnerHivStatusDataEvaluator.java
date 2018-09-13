@@ -1,7 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVDRLDoneDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCPartnerHIVStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVDRLResultsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Definition if tested for syphilis test results
+ * Evaluates Partner HIV status
  */
-@Handler(supports=ANCVDRLResultsDataDefinition.class, order=50)
-public class ANCVDRLResultsDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCPartnerHIVStatusDataDefinition.class, order=50)
+public class ANCPartnerHivStatusDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,9 +28,9 @@ public class ANCVDRLResultsDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "(case v.syphilis_test_status when 1229 then \"Negative\" when 1228 then \"Positive\" when 1304 then \"N/A\" when 1402 then \"N/A\" else \"N/A\" end) as syphilis_test_results\n" +
+                "v.partner_hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY e.encounter_id";
+                "GROUP BY v.encounter_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

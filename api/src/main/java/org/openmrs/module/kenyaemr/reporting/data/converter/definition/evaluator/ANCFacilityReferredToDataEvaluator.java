@@ -2,7 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCFacilityReferredFromDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCPartnerHIVStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCFacilityReferredToDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Facility Referred from
+ * Evaluates ANC Clinical notes
  */
-@Handler(supports=ANCFacilityReferredFromDataDefinition.class, order=50)
-public class ANCFacilityReferredFromDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCFacilityReferredToDataDefinition.class, order=50)
+public class ANCFacilityReferredToDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCFacilityReferredFromDataEvaluator implements EncounterDataEvalua
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "(case v.referred_from when 1537 then \"Another Healthfacility\" when 163488 then \"Community Unit\" when 1175 then \"N/A\" else \"\" end) as referred_from\n" +
+                "(case v.referred_to when 1537 then \"Another Healthfacility\" when 163488 then \"Community Unit\" when 1175 then \"N/A\" else \"\" end) as referred_to\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

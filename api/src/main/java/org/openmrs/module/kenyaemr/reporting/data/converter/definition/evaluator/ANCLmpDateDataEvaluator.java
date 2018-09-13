@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCLmpDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVisitNumberDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -16,8 +17,8 @@ import java.util.Map;
 /**
  * Evaluates a ANC Visit Number
  */
-@Handler(supports=ANCVisitNumberDataDefinition.class, order=50)
-public class ANCVisitNumberDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCLmpDateDataDefinition.class, order=50)
+public class ANCLmpDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,7 +28,7 @@ public class ANCVisitNumberDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "v.anc_visit_number\n" +
+                "e.lmp\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id ";
 

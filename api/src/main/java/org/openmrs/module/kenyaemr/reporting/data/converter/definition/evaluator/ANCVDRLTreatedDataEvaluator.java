@@ -1,8 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBreastExamDoneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVDRLDoneDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVDRLTreatedDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Definition if tested for syphilis
+ * Evaluates Definition if treated for syphilis
  */
-@Handler(supports=ANCVDRLDoneDataDefinition.class, order=50)
-public class ANCVDRLDoneDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCVDRLTreatedDataDefinition.class, order=50)
+public class ANCVDRLTreatedDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;

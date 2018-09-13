@@ -1,7 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVisitNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBreastExamDoneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FirstANCVisitDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * Evaluates a Visit Number Data Definition to produce a Visit Number
  */
-@Handler(supports=FirstANCVisitDataDefinition.class, order=50)
-public class FirstANCVisitDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCBreastExamDoneDataDefinition.class, order=50)
+public class ANCBreastExamDoneDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,8 +27,8 @@ public class FirstANCVisitDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.encounter_id,\n" +
-                "  (case v.anc_visit_number when 1 then \"Yes\" else \"No\" end) as first_visit\n" +
+                "v.encounter_id,\n" +
+                "(case v.breast_exam_done when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as breast_exam\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

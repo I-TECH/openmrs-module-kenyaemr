@@ -11,21 +11,21 @@ import java.util.Date;
  * ANC Gravida Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCLmpDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCEDDUltrasoundDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCLmpDateDataDefinition() {
+    public ANCEDDUltrasoundDateDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCLmpDateDataDefinition(String name) {
+    public ANCEDDUltrasoundDateDataDefinition(String name) {
         super(name);
     }
 

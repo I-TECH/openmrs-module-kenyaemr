@@ -1,7 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCHeightDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCHaemoglobinDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCWeightDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates ANC Number of visits
+ * ANC Haemoglobin column
  */
-@Handler(supports=ANCWeightDataDefinition.class, order=50)
-public class ANCWeightDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCHaemoglobinDataDefinition.class, order=50)
+public class ANCHaemoglobinDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,9 +28,9 @@ public class ANCWeightDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "v.weight\n" +
+                "v.hemoglobin\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id; ";
+                "GROUP BY v.encounter_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -2,7 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBreastExamDoneDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FirstANCVisitDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCNVPDispensedDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a Visit Number Data Definition to produce a Visit Number
+ * Evaluates  Data Definition to NVP dispensed
  */
-@Handler(supports=ANCBreastExamDoneDataDefinition.class, order=50)
-public class ANCBreastExamDoneDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCNVPDispensedDataDefinition.class, order=50)
+public class ANCNVPDispensedDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCBreastExamDoneDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "(case v.breast_exam_done when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as breast_exam\n" +
+                "(case v.nvp_dispensed when 80586 then \"Yes\" when 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as nvp_dispensed\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

@@ -2,7 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCLmpDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVisitNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCNextAppointmentDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a ANC Visit Number
+ * Evaluates ANC Next Appointment Date
  */
-@Handler(supports=ANCLmpDateDataDefinition.class, order=50)
-public class ANCLmpDateDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCNextAppointmentDateDataDefinition.class, order=50)
+public class ANCNextAppointmentDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,9 +28,9 @@ public class ANCLmpDateDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "e.lmp\n" +
+                "v.next_appointment_date\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id ";
+                "GROUP BY v.encounter_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

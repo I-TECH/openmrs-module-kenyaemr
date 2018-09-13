@@ -28,7 +28,7 @@ public class ANCOtherIllnessesDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "(case v.nvp_dispensed when 80586 then \"Yes\" when 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as nvp_dispensed\n" +
+                "(case v.has_other_illnes  when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as has_other_illnes\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * TB screening Column
+ * CaCx screening Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCTBScreeningResultsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCCaCxScreeningResultsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCTBScreeningResultsDataDefinition() {
+    public ANCCaCxScreeningResultsDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCTBScreeningResultsDataDefinition(String name) {
+    public ANCCaCxScreeningResultsDataDefinition(String name) {
         super(name);
     }
 

@@ -1,8 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCEDDUltrasoundDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCLmpDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVisitNumberDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * Evaluates a ANC Visit Number
  */
-@Handler(supports=ANCLmpDateDataDefinition.class, order=50)
-public class ANCLmpDateDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCEDDUltrasoundDateDataDefinition.class, order=50)
+public class ANCEDDUltrasoundDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCLmpDateDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "e.lmp\n" +
+                "e.edd_ultrasound\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id ";
 

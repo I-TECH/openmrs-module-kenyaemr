@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Facility referred from column
+ * ANC Clinical Notes
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCFacilityReferredFromDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCFacilityReferredToDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCFacilityReferredFromDataDefinition() {
+    public ANCFacilityReferredToDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCFacilityReferredFromDataDefinition(String name) {
+    public ANCFacilityReferredToDataDefinition(String name) {
         super(name);
     }
 

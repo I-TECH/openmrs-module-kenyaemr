@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Syphilis results
+ * Partner HIV Status
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCVDRLResultsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCPartnerHIVStatusDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCVDRLResultsDataDefinition() {
+    public ANCPartnerHIVStatusDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCVDRLResultsDataDefinition(String name) {
+    public ANCPartnerHIVStatusDataDefinition(String name) {
         super(name);
     }
 

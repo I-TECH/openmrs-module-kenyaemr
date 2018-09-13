@@ -1,7 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCNumberOfVisitsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCGravidaDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCParityDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a Visit Number Data Definition to produce a Visit Number
+ * Evaluates a ANC enrollment Data Definition to produce a Gravida
  */
-@Handler(supports=ANCParityDataDefinition.class, order=50)
-public class ANCParityDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCGravidaDataDefinition.class, order=50)
+public class ANCGravidaDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCParityDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "e.parity\n" +
+                "e.gravida\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id";
 

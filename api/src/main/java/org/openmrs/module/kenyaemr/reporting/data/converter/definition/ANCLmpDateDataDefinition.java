@@ -5,25 +5,27 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+import java.util.Date;
+
 /**
  * ANC Gravida Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCGravidaDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCLmpDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCGravidaDataDefinition() {
+    public ANCLmpDateDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCGravidaDataDefinition(String name) {
+    public ANCLmpDateDataDefinition(String name) {
         super(name);
     }
 
@@ -33,6 +35,6 @@ public class ANCGravidaDataDefinition extends BaseDataDefinition implements Enco
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Integer.class;
+        return Date.class;
     }
 }

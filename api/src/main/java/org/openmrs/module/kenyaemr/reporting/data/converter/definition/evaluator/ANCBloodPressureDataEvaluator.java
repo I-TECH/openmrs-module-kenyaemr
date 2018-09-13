@@ -1,8 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCBloodPressureDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCHeightDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCNumberOfVisitsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * Evaluates ANC Number of visits
  */
-@Handler(supports=ANCHeightDataDefinition.class, order=50)
-public class ANCHeightDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCBloodPressureDataDefinition.class, order=50)
+public class ANCBloodPressureDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -28,7 +28,7 @@ public class ANCHeightDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "v.encounter_id,\n" +
-                "v.height\n" +
+                "concat(v.systolic_bp, \"/\" ,v.diastolic_bp) as blood_pressure\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id ";
 

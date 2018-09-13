@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Visit ID Column
+ * First ANC Visit Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCVisitNumberDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class FirstANCVisitDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCVisitNumberDataDefinition() {
+    public FirstANCVisitDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCVisitNumberDataDefinition(String name) {
+    public FirstANCVisitDataDefinition(String name) {
         super(name);
     }
 
@@ -33,6 +33,6 @@ public class ANCVisitNumberDataDefinition extends BaseDataDefinition implements 
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Integer.class;
+        return Double.class;
     }
 }

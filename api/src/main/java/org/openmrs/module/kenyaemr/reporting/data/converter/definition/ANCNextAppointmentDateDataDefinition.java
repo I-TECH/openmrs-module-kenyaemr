@@ -8,24 +8,24 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * ANC Gravida Column
+ * ANC Next Appointment Date Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCLmpDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCNextAppointmentDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCLmpDateDataDefinition() {
+    public ANCNextAppointmentDateDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCLmpDateDataDefinition(String name) {
+    public ANCNextAppointmentDateDataDefinition(String name) {
         super(name);
     }
 

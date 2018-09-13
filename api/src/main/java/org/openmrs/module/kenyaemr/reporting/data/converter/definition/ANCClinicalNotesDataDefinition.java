@@ -9,21 +9,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  *Other Illnesses Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCOtherIllnessesDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCClinicalNotesDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCOtherIllnessesDataDefinition() {
+    public ANCClinicalNotesDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCOtherIllnessesDataDefinition(String name) {
+    public ANCClinicalNotesDataDefinition(String name) {
         super(name);
     }
 

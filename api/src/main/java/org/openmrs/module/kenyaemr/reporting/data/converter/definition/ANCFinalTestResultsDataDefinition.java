@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * First ANC Visit Column
+ * Final Test Results
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCVDRLDoneDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCFinalTestResultsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCVDRLDoneDataDefinition() {
+    public ANCFinalTestResultsDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCVDRLDoneDataDefinition(String name) {
+    public ANCFinalTestResultsDataDefinition(String name) {
         super(name);
     }
 

@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * NVP Dispensed Column
+ *Other Illnesses Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCNVPDispensedDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCOtherIllnessesDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCNVPDispensedDataDefinition() {
+    public ANCOtherIllnessesDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCNVPDispensedDataDefinition(String name) {
+    public ANCOtherIllnessesDataDefinition(String name) {
         super(name);
     }
 

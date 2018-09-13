@@ -9,21 +9,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * ANC Parity Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCHeightDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCBloodPressureDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCHeightDataDefinition() {
+    public ANCBloodPressureDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCHeightDataDefinition(String name) {
+    public ANCBloodPressureDataDefinition(String name) {
         super(name);
     }
 
