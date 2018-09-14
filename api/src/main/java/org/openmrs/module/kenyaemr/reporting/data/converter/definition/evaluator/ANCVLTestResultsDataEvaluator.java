@@ -1,7 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCWHOStageDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCDewormedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVLTestResultsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a WHO stage
+ * Evaluates ANC VL Test results
  */
-@Handler(supports = ANCWHOStageDataDefinition.class, order = 50)
-public class ANCWHOStageDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= ANCVLTestResultsDataDefinition.class, order=50)
+public class ANCVLTestResultsDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -26,10 +27,12 @@ public class ANCWHOStageDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "v.encounter_id,\n" +
-                "(case v.who_stage when 1204 then \"WHO stage1\" when 1205 then \"WHO stage2\" when 1206 then \"WHO stage3\" when 1207 then \"WHO stage4\" else \"\" end) as who_stage\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id";
+                "  v.encounter_id,\n" +
+                "  (case l.test_result when 1302 then \"LDL\"  else l.test_result end) as viral_load\n" +
+                "from  kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  left join\n" +
+                "  kenyaemr_etl.etl_laboratory_extract l ON\n" +
+                "   v.visit_date = l.visit_date GROUP BY v.encounter_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
