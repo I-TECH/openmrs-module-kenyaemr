@@ -102,6 +102,13 @@
 				</a>
 			</li>
 
+			<li class="float-left">
+				<a href="${ ui.pageLink("orderentryui", "labOrders", [patient: currentPatient]) }" class="float-left">
+					<i class="icon-remove float-left"></i>
+					Lab Orders
+				</a>
+			</li>
+
 		</ul>
 
 
