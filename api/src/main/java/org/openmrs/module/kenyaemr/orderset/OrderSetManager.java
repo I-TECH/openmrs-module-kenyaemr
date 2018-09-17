@@ -81,7 +81,9 @@ public class OrderSetManager implements ContentManager {
 				InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
 
 				loadDefinitionsFromXML(stream);
-				populateOrderSets();
+				String choreExecuted = Context.getAdministrationService().getGlobalProperty("kenyaemr.chore.populateOrderSetChore.done");
+				if (choreExecuted == null || !choreExecuted.equals("true"))
+					populateOrderSets();
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
