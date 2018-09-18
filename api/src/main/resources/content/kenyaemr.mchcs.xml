@@ -31,6 +31,7 @@
 				<ref bean="kenyaemr.mchcs.report.notPcrConfirmatoryTested" />
 				<ref bean="kenyaemr.mchcs.report.infantNotOnCTX" />
 				<ref bean="kenyaemr.mchcs.report.infantWithoutPcp" />
+				<ref bean="kenyaemr.mchcs.report.HEIRegister" />
 				<!--<ref bean="kenyaemr.mchcs.report.moh710" />
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
@@ -216,5 +217,18 @@
 		<property name="description" value="CWC Defaulter Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:cwc_defaulter.xls" />
+	</bean>
+
+	<!-- anc register-->
+	<bean id="kenyaemr.mchms.report.HEIRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="449b8578-b834-11e8-96f8-529269fb1459" />
+		<property name="name" value="HEI Register" />
+		<property name="description" value="Register for HEI services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
 </beans>
