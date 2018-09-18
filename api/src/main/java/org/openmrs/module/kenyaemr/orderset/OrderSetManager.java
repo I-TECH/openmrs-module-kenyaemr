@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.kenyaemr.orderset;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.GlobalProperty;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.OrderType;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.ContentManager;
@@ -74,6 +74,7 @@ public class OrderSetManager implements ContentManager {
 		masterSetConcepts.clear();
 		drugs.clear();
 		regimenGroups.clear();
+		AdministrationService adminService = Context.getAdministrationService();
 
 		for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
 			try {
@@ -81,9 +82,15 @@ public class OrderSetManager implements ContentManager {
 				InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
 
 				loadDefinitionsFromXML(stream);
-				String choreExecuted = Context.getAdministrationService().getGlobalProperty("kenyaemr.chore.populateOrderSetChore.done");
-				if (choreExecuted == null || !choreExecuted.equals("true"))
+				String choreExecuted = adminService.getGlobalProperty("kenyaemr.populateOrderSetFromRegimensFile");
+				if (null == choreExecuted || !choreExecuted.equals("true")) {
 					populateOrderSets();
+					GlobalProperty choreProperty = new GlobalProperty();
+					choreProperty.setProperty("kenyaemr.populateOrderSetFromRegimensFile");
+					choreProperty.setDescription("Populates order set and order set members from regimens.xml file");
+					choreProperty.setPropertyValue("true");
+					adminService.saveGlobalProperty(choreProperty);
+				}
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
@@ -238,12 +245,7 @@ public class OrderSetManager implements ContentManager {
 
 		for (Map.Entry<String, List<RegimenDefinitionGroup>> entry : regimenGroups.entrySet()) {
 			String key = entry.getKey();
-			System.out.println("Key: " + key);
-			if (key.equals("TB"))
-				continue;
-
 			// save drug entries
-
 			for(Map.Entry<String, DrugReference> drugReferenceEntry : drugs.get(key).entrySet()) {
 				DrugReference drugEntry = drugReferenceEntry.getValue();
 
@@ -261,8 +263,7 @@ public class OrderSetManager implements ContentManager {
 
 
 			for (RegimenDefinitionGroup regimenGrp : entry.getValue()) {
-				String grpCode = regimenGrp.getCode();
-				String grpName = regimenGrp.getName();
+				String grpName = regimenGrp.getName(); // i.e ARV, TB etc
 				List<RegimenDefinition> regimenDefinitions = regimenGrp.getRegimens();
 
 				for (RegimenDefinition def : regimenDefinitions ) { // handles regimen group
@@ -272,32 +273,18 @@ public class OrderSetManager implements ContentManager {
 					orderSet.setOperator(OrderSet.Operator.ANY);
 					orderSet.setDescription(grpName);
 					orderSet.setCreator(Context.getUserService().getUser(1));
-
+					List<OrderSetMember> setMembers = new ArrayList<OrderSetMember>();
 					for (RegimenComponent component : def.getComponents()) { // handles regimen components
 						OrderSetMember setMember = new OrderSetMember();
 						setMember.setConcept(component.getDrugRef().getConcept());
 						setMember.setName(component.getDrugRef().getConcept().getName().getName());
 						setMember.setOrderType(Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID));
-
-						Map<String, DrugReference> categoryDrugs = drugs.get(key);
-
-						// add drug entry
-
-						String drugReference = getDrugCodeByDrugReferenceValue(categoryDrugs, component.getDrugRef());
-						ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
-						drugMemberObject.put("name", drugReference);
-						drugMemberObject.put("dose",  component.getDose() != null ? String.valueOf(component.getDose()) : "");
-						drugMemberObject.put("dose_unit", component.getUnits() != null ? RegimenConversionUtil.getDoseUnitStringFromConceptId(component.getUnits().getConceptId()) : "");
-						drugMemberObject.put("frequency", component.getFrequency() != null ? RegimenConversionUtil.getFrequencyStringFromConceptId(component.getFrequency().getConceptId()) : "");
-						drugMemberObject.put("drug_id", "");
-
-						setMember.setOrderTemplate(drugMemberObject.toString());
-						orderSet.addOrderSetMember(setMember);
-
+						setMember.setOrderSet(orderSet);
+						setMembers.add(setMember);
 					}
 
+					orderSet.setOrderSetMembers(setMembers);
 					Context.getOrderSetService().saveOrderSet(orderSet);
-
 				}
 
 			}

@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * regimens.xml contains regimen groups that can be used to aid order groups. This chore populates order sets from regimens.xml
  */
-@Component("kenyaemr.chore.populateOrderSets")
+@Component("kenyaemr.chore.voidDuplicateIdentifiers")
 public class VoidDuplicateIdentifiers extends AbstractChore {
 
 	@Autowired
