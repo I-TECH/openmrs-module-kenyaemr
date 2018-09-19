@@ -31,7 +31,7 @@ public class ANCRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_mch_antenatal_visit where date(visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_mch_antenatal_visit where date(visit_date) BETWEEN date(:startDate) AND date(:endDate)  ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
