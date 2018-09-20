@@ -52,18 +52,18 @@ public class RegimenJsonGenerator {
         return "";
     }
 
-    private Integer getFrequencyIdFromConcept(List<OrderFrequency> frequencies, Concept frequencyConcept) {
+    private String getFrequencyUuIdFromConcept(List<OrderFrequency> frequencies, Concept frequencyConcept) {
         for(OrderFrequency frequency : frequencies) {
             if(frequency.getConcept().equals(frequencyConcept))
-                return frequency.getOrderFrequencyId();
+                return frequency.getUuid();
         }
         return null;
     }
 
-    private String getDrugUuIdFromConcept(Concept concept) {
+    private Integer getDrugIdFromConcept(Concept concept) {
         List<Drug> drugs =  Context.getConceptService().getDrugs(String.valueOf(concept.getConceptId()));
         if (drugs != null && drugs.size() > 0) {
-            return drugs.get(0).getUuid();
+            return drugs.get(0).getDrugId();
         }
         return null;
     }
@@ -150,9 +150,9 @@ public class RegimenJsonGenerator {
                         Concept units = componentElement.hasAttribute("units") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromDoseUnitString(componentElement.getAttribute("units"))) : null;
                         Concept frequency = componentElement.hasAttribute("frequency") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromFrequencyString(componentElement.getAttribute("frequency"))) : null;
 
-                        Integer orderFrequencyId = null;
+                        String orderFrequencyUuId = null;
                         if (frequency != null)
-                            orderFrequencyId = getFrequencyIdFromConcept(frequencyList, frequency);
+                            orderFrequencyUuId = getFrequencyUuIdFromConcept(frequencyList, frequency);
                         DrugReference drug = categoryDrugs.get(drugCode);
 
                         if (drug == null)
@@ -162,8 +162,8 @@ public class RegimenJsonGenerator {
                         drugMemberObject.put("dose",  componentElement.getAttribute("dose") != null ? componentElement.getAttribute("dose"): "");
                         drugMemberObject.put("units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "");
                         drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
-                        drugMemberObject.put("frequency", orderFrequencyId != null ? String.valueOf(orderFrequencyId) : "");
-                        drugMemberObject.put("drug_id", getDrugUuIdFromConcept(drug.getConcept()) != null ? getDrugUuIdFromConcept(drug.getConcept()) : "");
+                        drugMemberObject.put("frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "");
+                        drugMemberObject.put("drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : "");
                         regimenComponentsArray.add(drugMemberObject);
                         regimenDefinition.addComponent(drug, dose, units, frequency);
                     }
