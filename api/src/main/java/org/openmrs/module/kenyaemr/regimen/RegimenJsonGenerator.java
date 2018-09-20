@@ -15,6 +15,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.OrderFrequency;
+import org.openmrs.OrderSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.w3c.dom.Document;
@@ -59,16 +60,19 @@ public class RegimenJsonGenerator {
         return null;
     }
 
-    private Integer getDrugIdFromConcept(Concept concept) {
+    private String getDrugUuIdFromConcept(Concept concept) {
         List<Drug> drugs =  Context.getConceptService().getDrugs(String.valueOf(concept.getConceptId()));
         if (drugs != null && drugs.size() > 0) {
-            return drugs.get(0).getDrugId();
+            return drugs.get(0).getUuid();
         }
         return null;
     }
 
     public ObjectNode loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
 
+        // get order sets
+        List<OrderSet> orderSetList = getOrderSets();
+        System.out.println("Ordersets: " + orderSetList);
         ObjectNode regimenJson = JsonNodeFactory.instance.objectNode();
         ArrayNode regimenArray = JsonNodeFactory.instance.arrayNode();
         // get orderFrequency ids
@@ -159,7 +163,7 @@ public class RegimenJsonGenerator {
                         drugMemberObject.put("units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "");
                         drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
                         drugMemberObject.put("frequency", orderFrequencyId != null ? String.valueOf(orderFrequencyId) : "");
-                        drugMemberObject.put("drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : "");
+                        drugMemberObject.put("drug_id", getDrugUuIdFromConcept(drug.getConcept()) != null ? getDrugUuIdFromConcept(drug.getConcept()) : "");
                         regimenComponentsArray.add(drugMemberObject);
                         regimenDefinition.addComponent(drug, dose, units, frequency);
                     }
@@ -167,6 +171,10 @@ public class RegimenJsonGenerator {
                     group.addRegimen(regimenDefinition);
                     regimen.put("name", name);
                     regimen.put("components", regimenComponentsArray);
+                    regimen.put("orderSetId", getOrdersetIdFromList(name, orderSetList));
+                    // add order set id
+
+
                     regimenGroupArray.add(regimen);
                 }
 
@@ -184,6 +192,21 @@ public class RegimenJsonGenerator {
 
         regimenJson.put("programs", regimenArray);
         return regimenJson;
+    }
+
+    private Integer getOrdersetIdFromList(String ordersetname, List<OrderSet> orderSets) {
+
+        if (ordersetname == null || ordersetname.equals("") || orderSets == null || orderSets.size() == 0)
+            return null;
+        for (OrderSet set : orderSets) {
+            if (set.getName() != null && ordersetname.trim().equals(set.getName().trim()))
+                return set.getOrderSetId();
+        }
+        return null;
+    }
+
+    private List<OrderSet> getOrderSets() {
+        return Context.getOrderSetService().getOrderSets(false);
     }
 
 }
