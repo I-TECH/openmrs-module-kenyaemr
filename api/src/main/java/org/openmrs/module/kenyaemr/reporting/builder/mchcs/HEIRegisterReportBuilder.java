@@ -101,7 +101,7 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 
 		// new columns
