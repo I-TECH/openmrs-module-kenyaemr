@@ -37,28 +37,30 @@ import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.common.report.heiReport"})
+@Builds({"kenyaemr.mchcs.report.heiRegister"})
 public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = new HEIRegisterCohortDefinition();
-        cd.setName("HEI Patients");
-		return ReportUtils.map(cd, "");
+		return allPatientsCohort();
 	}
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
         CohortDefinition cd = new HEIRegisterCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("HEI All Patients");
-        return ReportUtils.map(cd, "");
+        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
     @Override
@@ -66,17 +68,30 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 
         PatientDataSetDefinition allPatients = heiDataSetDefinition();
         allPatients.addRowFilter(allPatientsCohort());
+		//allPatients.addRowFilter(buildCohort(descriptor));
         DataSetDefinition allPatientsDSD = allPatients;
 
 
         return Arrays.asList(
-                ReportUtils.map(allPatientsDSD, "")
+                ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
         );
     }
+
+	@Override
+	protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class),
+				new Parameter("dateBasedReporting", "", String.class)
+		);
+	}
 
 	protected PatientDataSetDefinition heiDataSetDefinition() {
 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("HEI Data set definition");
+		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
@@ -157,10 +172,6 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Age at Disbanding pair", new HEIAgeAtDisbandingPairMonth24DataDefinition(),"");
 		dsd.addColumn("HEI CCC Number", new HEILinkageToCareCCCNoDataDefinition(),"");
 		dsd.addColumn("Comments", new HEICommentsDataDefinition(),"");
-
-
-
-
 
 		return dsd;
 	}

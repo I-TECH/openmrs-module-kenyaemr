@@ -30,7 +30,7 @@ public class HEIPCRConfirmatoryTestTypeDataEvaluator implements PersonDataEvalua
                 "  f.patient_id,\n" +
                 "  (case f.dna_pcr_contextual_status when 162081 then \"Repeat\" when 162083 then \"Final test (end of pediatric window)\" when 162082 then \"Confirmation\" when 162080 then \"Initial\" else \"\" end) as third_dna_pcr_type\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          d.patient_id = f.patient_id\n" +
                 "WHERE f.dna_pcr_result = 703\n" +
                 "GROUP BY patient_id";

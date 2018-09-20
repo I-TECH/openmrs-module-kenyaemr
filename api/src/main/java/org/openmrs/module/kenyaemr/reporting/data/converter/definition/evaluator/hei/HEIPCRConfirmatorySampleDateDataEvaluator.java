@@ -30,7 +30,7 @@ public class HEIPCRConfirmatorySampleDateDataEvaluator implements PersonDataEval
                 "  f.patient_id,\n" +
                 "  f.dna_pcr_sample_date as twelve_months_sample_taken_date\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          f.patient_id = d.patient_id\n" +
                 "WHERE f.dna_pcr_result = 703\n" +
                 "GROUP BY f.patient_id;";

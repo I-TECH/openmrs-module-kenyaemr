@@ -30,7 +30,7 @@ public class HEIFeedingOptions6_8WeeksDataEvaluator implements PersonDataEvaluat
                 "  f.patient_id,\n" +
                 "  (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end) as infant_feeding_six_weeks\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "INNER JOIN etl_patient_demographics d ON\n" +
+                "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 6 AND 8\n" +
                 "GROUP BY patient_id";

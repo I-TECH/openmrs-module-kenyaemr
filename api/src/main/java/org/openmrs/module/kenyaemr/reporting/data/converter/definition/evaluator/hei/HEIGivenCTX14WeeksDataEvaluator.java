@@ -30,7 +30,7 @@ public class HEIGivenCTX14WeeksDataEvaluator implements PersonDataEvaluator {
                 "  f.patient_id,\n" +
                 "  (case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as ctx_given_fourteen_weeks\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =14\n" +
                 "GROUP BY patient_id";

@@ -30,7 +30,7 @@ public class HEIHIVStatusOfPairMonth24DataEvaluator implements PersonDataEvaluat
                 "  c.patient_id,\n" +
                 "  mid(max(concat(visit_date, (case when c.disc_patient IS NOT NULL then \"INACTIVE\" else \"ACTIVE\" end))),11) as HIV_outcome\n" +
                 "from kenyaemr_etl.etl_current_in_care c\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "   d.patient_id = c.patient_id\n" +
                 "WHERE round(DATEDIFF(c.visit_date,d.DOB)/7) = 96\n" +
                 "GROUP BY patient_id";

@@ -30,7 +30,7 @@ public class HEIFirstPCRResultsCollectionDateDataEvaluator implements PersonData
                 "  f.patient_id,\n" +
                 "  f.dna_pcr_results_date as first_results_collection_date\n" +
                 "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "INNER JOIN etl_patient_demographics d ON\n" +
+                "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "f.patient_id = d.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 0 AND 6\n" +
                 "GROUP BY f.patient_id";

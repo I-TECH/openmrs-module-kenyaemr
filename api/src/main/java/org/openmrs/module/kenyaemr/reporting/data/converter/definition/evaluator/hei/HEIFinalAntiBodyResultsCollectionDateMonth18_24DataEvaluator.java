@@ -30,7 +30,7 @@ public class HEIFinalAntiBodyResultsCollectionDateMonth18_24DataEvaluator implem
                 "  f.patient_id,\n" +
                 "  f.final_antibody_result_date as 24_months_results_collection_date\n" +
                 "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "  f.patient_id = d.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
                 "GROUP BY f.patient_id";

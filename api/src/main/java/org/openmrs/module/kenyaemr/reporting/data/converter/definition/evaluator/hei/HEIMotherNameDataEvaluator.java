@@ -32,7 +32,7 @@ public class HEIMotherNameDataEvaluator implements PersonDataEvaluator {
                 "  d.middle_name,\" \",\n" +
                 "  d.family_name) as mothers_name\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "  INNER JOIN etl_hei_enrollment e\n" +
+                "  INNER JOIN kenyaemr_etl.etl_hei_enrollment e\n" +
                 "  ON d.unique_patient_no = e.parent_ccc_number\n" +
                 "GROUP BY e.patient_id";
 

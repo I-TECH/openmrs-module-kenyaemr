@@ -1,8 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.hei;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIPCRResultsStatusMonth12DataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEISerialNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIIdDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEILinkageToCareCCCNoDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a PersonDataDefinition
+ * Evaluates a Linkage to care DataDefinition
  */
-@Handler(supports= HEIPCRResultsStatusMonth12DataDefinition.class, order=50)
-public class HEIPCRResultsStatusMonth12DataEvaluator implements PersonDataEvaluator {
+@Handler(supports= HEILinkageToCareCCCNoDataDefinition.class, order=50)
+public class HEILinkageToCareCCCNoDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,13 +27,10 @@ public class HEIPCRResultsStatusMonth12DataEvaluator implements PersonDataEvalua
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  (case dna_pcr_result when 1138 then \"INDETERMINATE\" when 664 then \"NEGATIVE\" when 703 then \"POSITIVE\" when 1304 then \"POOR SAMPLE QUALITY\" else \"\" end) as dna_pcr_result\n" +
-                "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "  f.patient_id = d.patient_id\n" +
-                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =48\n" +
-                "GROUP BY f.patient_id";
+                "  patient_id,\n" +
+                "  unique_patient_no\n" +
+                "from kenyaemr_etl.etl_patient_demographics\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

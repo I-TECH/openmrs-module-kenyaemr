@@ -36,7 +36,7 @@ public class HEIHIVStatusMonth24DataEvaluator implements PersonDataEvaluator {
                 "       when final_antibody_result = 703 and infant_feeding = \"\" then \"Infected_Breastfed Uknown (UBFu)\" else \"\" end))),11) as HIV_status_24_months\n" +
                 "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
                 "\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "  f.patient_id = d.patient_id\n" +
                 "WHERE  round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
                 "GROUP BY f.patient_id";

@@ -30,7 +30,7 @@ public class HEIAgeAtDisbandingPairMonth24DataEvaluator implements PersonDataEva
                 "  c.patient_id,\n" +
                 "  round(DATEDIFF(c.visit_date,d.DOB)/30) as age_at_disbandment\n" +
                 "from kenyaemr_etl.etl_current_in_care c\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "  d.patient_id = c.patient_id\n" +
                 "WHERE disc_patient IS NOT NULL\n" +
                 " GROUP BY patient_id";

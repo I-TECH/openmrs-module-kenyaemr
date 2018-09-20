@@ -30,7 +30,7 @@ public class HEIPCRTestTypeDataEvaluator implements PersonDataEvaluator {
                 "  f.patient_id,\n" +
                 "  (case dna_pcr_contextual_status when 162081 then \"Repeat\" when 162083 then \"Final test (end of pediatric window)\" when 162082 then \"Confirmation\" when 162080 then \"Initial\" else \"\" end) as first_dna_pcr_type\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "    d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 0 AND 6\n" +
                 "GROUP BY patient_id";

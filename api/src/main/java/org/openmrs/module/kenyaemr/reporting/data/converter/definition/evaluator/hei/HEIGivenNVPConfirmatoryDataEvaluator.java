@@ -30,7 +30,7 @@ public class HEIGivenNVPConfirmatoryDataEvaluator implements PersonDataEvaluator
                 "  f.patient_id,\n" +
                 "  (case f.nvp_given when 80586 then \"Yes\" else \"No\" end) as nvp_given_twelve_months\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          d.patient_id = f.patient_id\n" +
                 "WHERE f.dna_pcr_result = 703\n" +
                 "GROUP BY patient_id";

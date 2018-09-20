@@ -30,7 +30,7 @@ public class HEIMotherPhoneDataEvaluator implements PersonDataEvaluator {
                 "  e.patient_id,\n" +
                 "  d.phone_number as mothers_telephone\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "  INNER JOIN etl_hei_enrollment e\n" +
+                "  INNER JOIN kenyaemr_etl.etl_hei_enrollment e\n" +
                 "    ON d.unique_patient_no = e.parent_ccc_number\n" +
                 "GROUP BY e.patient_id";
 

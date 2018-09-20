@@ -30,7 +30,7 @@ public class HEIFinalAntiBodyResultDataEvaluator implements PersonDataEvaluator 
                 "  f.patient_id,\n" +
                 "   mid(max(concat(visit_date, (case final_antibody_result when 664 then \"NEGATIVE\" when 703 then \"POSITIVE\" when 1304 then \"POOR SAMPLE QUALITY\" else \"\" end))),11) as final_antibody_result\n" +
                 "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN etl_patient_demographics d ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "  f.patient_id = d.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
                 "GROUP BY f.patient_id";

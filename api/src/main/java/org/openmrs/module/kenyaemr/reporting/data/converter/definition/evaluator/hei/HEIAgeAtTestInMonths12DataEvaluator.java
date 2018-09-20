@@ -30,7 +30,7 @@ public class HEIAgeAtTestInMonths12DataEvaluator implements PersonDataEvaluator 
                 "  d.patient_id,\n" +
                 "  round(DATEDIFF(f.visit_date,d.DOB)/30) as age_at_test_twelve_months\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "  INNER JOIN etl_hei_follow_up_visit f ON\n" +
+                "  INNER JOIN kenyaemr_etl.etl_hei_follow_up_visit f ON\n" +
                 "  d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =48\n" +
                 "GROUP BY patient_id";
