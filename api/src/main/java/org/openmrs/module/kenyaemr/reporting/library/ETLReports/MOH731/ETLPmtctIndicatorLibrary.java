@@ -44,9 +44,9 @@ public class ETLPmtctIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator testedForHivInMchmsAntenatal() {
+    public CohortIndicator firstANCVisitMchmsAntenatal() {
         return cohortIndicator(null,
-                map(pmtctCohortLibrary.testedForHivInMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}")
+                map(pmtctCohortLibrary.firstANCVisitMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 

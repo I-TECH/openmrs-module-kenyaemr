@@ -129,7 +129,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-        dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-01", "First ANC Visit", ReportUtils.map(pmtctIndicators.firstANCVisitMchmsAntenatal(), indParams), "");
         dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsDelivery(), indParams), "");
         dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(pmtctIndicators.testedForHivInMchmsPostnatal(), indParams), "");
         dsd.addColumn("HV02-04", "Testing for HIV (Total (Sum HV02-01 to HV02-03))", ReportUtils.map(pmtctIndicators.testedForHivInMchms(), indParams), "");

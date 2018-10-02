@@ -178,7 +178,7 @@ public class ETLPmtctCohortLibrary {
         return cd;
     }
 
-    public CohortDefinition testedForHivInMchmsAntenatal(){
+    public CohortDefinition firstANCVisitMchmsAntenatal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="  select distinct anc.patient_id " +
                 "    from kenyaemr_etl.etl_mch_enrollment e " +
@@ -186,9 +186,9 @@ public class ETLPmtctCohortLibrary {
                 "left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=e.patient_id\n" +
                 "left outer join kenyaemr_etl.etl_mch_postnatal_visit panc on panc.patient_id=e.patient_id\n" +
                 "where date(hiv_test_date) between date(:startDate) and date(:endDate) and \n" +
-                "(anc.patient_id is not null);";
+                "(anc.patient_id is not null)";
 
-        cd.setName("Tested For Hiv Antenatal");
+        cd.setName("First ANC Visit");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
