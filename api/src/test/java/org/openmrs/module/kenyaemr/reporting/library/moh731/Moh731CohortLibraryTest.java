@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.reporting.library.moh731;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
@@ -105,15 +106,21 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram,PERIOD_END);
 
 		// Start patient #6 this month and give them a visit in the reporting period + 2 months
-		TestUtils.saveDrugOrder(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 6, 10), null);
+		Encounter encounter = TestUtils.saveEncounter(TestUtils.getPatient(6), hivConsult, TestUtils.date(2012, 6, 10));
+
+		TestUtils.saveDrugOrderWithFreeTestInstructions(TestUtils.getPatient(6), stavudine, TestUtils.date(2012, 6, 10), encounter);
 		TestUtils.saveEncounter(TestUtils.getPatient(6), hivConsult, TestUtils.date(2012, 6, 20));
 
 		// Start patient #7 in previous month and give them a visit in the reporting period + 2 months
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, TestUtils.date(2012, 5, 10), null);
+		Encounter encounter1 = TestUtils.saveEncounter(TestUtils.getPatient(7), hivConsult, TestUtils.date(2012, 5, 10));
+
+		TestUtils.saveDrugOrderWithFreeTestInstructions(TestUtils.getPatient(7), stavudine, TestUtils.date(2012, 5, 10), encounter1);
 		TestUtils.saveEncounter(TestUtils.getPatient(7), hivConsult, TestUtils.date(2012, 6, 20));
 
 		// Start patient #8 and give them visit outside of reporting period + 2 month window
-		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 10), null);
+		Encounter encounter2 = TestUtils.saveEncounter(TestUtils.getPatient(8), hivConsult, TestUtils.date(2012, 1, 10));
+
+		TestUtils.saveDrugOrderWithFreeTestInstructions(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 10), encounter2);
 		TestUtils.saveEncounter(TestUtils.getPatient(8), hivConsult, TestUtils.date(2012, 1, 20));
 
 		CohortDefinition cd = moh731Cohorts.revisitsArt();
