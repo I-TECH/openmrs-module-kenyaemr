@@ -12,6 +12,81 @@ import java.util.Date;
  */
 @Component
 public class ETLPmtctCohortLibrary {
+    //Updated:
+    //First ANC visit  HV02-01
+    public CohortDefinition firstANCVisitMchmsAntenatal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =" select distinct v.patient_id,v.visit_date\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "where anc_visit_number = 1 and date(v.visit_date) between date(@startDate) and date(@endDate)";
+
+        cd.setName("First ANC Visit");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested For Hiv Antenatal");
+
+        return cd;
+    }
+
+    // Delivery for HIV Positive mothers HV02-02
+    public CohortDefinition testedHivPositiveInMchmsDelivery(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=e.patient_id\n" +
+                "left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=e.patient_id\n" +
+                "where (date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "(ld.final_test_result=\"Positive\" or hiv_status = 703 or v.final_test_result =\"Positive\") ;";
+
+        cd.setName("Tested Hiv Positive at Delivery");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Hiv Positive at Delivery");
+
+        return cd;
+    }
+    // Known Positive at 1st ANC HV02-03
+    public CohortDefinition knownPositiveAtFirstANC(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =" select distinct e.patient_id\n" +
+                "                    from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                     where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "                (e.patient_id is not null) and hiv_status=703";
+
+        cd.setName("Known Positive at First ANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Known Positive at First ANC");
+
+        return cd;
+    }
+//    Initial test at ANC  HV02-04
+    public CohortDefinition initialHIVTestInMchmsAntenatal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="  select distinct v.patient_id\n" +
+                "                   from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "                   where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "                   v.patient_id is not null and v.final_test_result is not null ;";
+
+        cd.setName("Initial HIV Test at ANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial HIV Test at ANC");
+
+        return cd;
+    }
+
+
+
+
+
+
+
+
 
     public CohortDefinition testedForHivInMchmsTotal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -178,7 +253,7 @@ public class ETLPmtctCohortLibrary {
         return cd;
     }
 
-    public CohortDefinition firstANCVisitMchmsAntenatal(){
+    public CohortDefinition testedForHivInMchmsAntenatal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="  select distinct anc.patient_id " +
                 "    from kenyaemr_etl.etl_mch_enrollment e " +
@@ -186,9 +261,9 @@ public class ETLPmtctCohortLibrary {
                 "left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=e.patient_id\n" +
                 "left outer join kenyaemr_etl.etl_mch_postnatal_visit panc on panc.patient_id=e.patient_id\n" +
                 "where date(hiv_test_date) between date(:startDate) and date(:endDate) and \n" +
-                "(anc.patient_id is not null)";
+                "(anc.patient_id is not null);";
 
-        cd.setName("First ANC Visit");
+        cd.setName("Tested For Hiv Antenatal");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -271,24 +346,6 @@ public class ETLPmtctCohortLibrary {
         return cd;
     }
 
-    public CohortDefinition testedHivPositiveInMchmsDelivery(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="  select distinct ld.patient_id " +
-                "    from kenyaemr_etl.etl_mch_enrollment e " +
-                " left outer join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id=e.patient_id\n" +
-                "left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=e.patient_id\n" +
-                "left outer join kenyaemr_etl.etl_mch_postnatal_visit panc on panc.patient_id=e.patient_id\n" +
-                "where date(hiv_test_date) between date(:startDate) and date(:endDate) and \n" +
-                "(ld.patient_id is not null and anc.patient_id is null) and hiv_status=703;";
-
-        cd.setName("Tested Hiv Hive at Delivery");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Hiv Positive at Delivery");
-
-        return cd;
-    }
 
     public CohortDefinition testedHivPositiveInMchmsPostnatal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
