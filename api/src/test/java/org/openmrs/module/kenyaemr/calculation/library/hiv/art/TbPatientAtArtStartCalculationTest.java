@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -64,11 +65,14 @@ public class TbPatientAtArtStartCalculationTest extends BaseModuleContextSensiti
 
 		// Discontinue patient #6 before ART start
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2012, 1, 1), TestUtils.date(2012, 1, 3));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, TestUtils.date(2012, 1, 8), null);
+		Concept doseUnitConcept = Context.getConceptService().getConcept(51);
+		Encounter e = Context.getEncounterService().getEncounter(3);
+
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, doseUnitConcept, TestUtils.date(2012, 1, 8), null, e);
 
 		// Enroll patient #7 a week before ART start
 		TestUtils.enrollInProgram(TestUtils.getPatient(7), tbProgram, TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, TestUtils.date(2012, 1, 8), null);
+		//TestUtils.saveDrugOrder(TestUtils.getPatient(7), stavudine, doseUnitConcept, TestUtils.date(2012, 1, 8),null, e);
 		
 		List<Integer> ptIds = Arrays.asList(2, 6, 7);
 		CalculationResultMap resultMap = new TbPatientAtArtStartCalculation().evaluate(ptIds, null, Context.getService(PatientCalculationService.class).createCalculationContext());

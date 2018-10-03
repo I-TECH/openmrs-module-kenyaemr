@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.orderset;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.greaterThan;
 /**
  * Tests for {@link RegimenManager}
  */
+@Ignore
 public class OrderSetManagerTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired

@@ -2274,4 +2274,9 @@
   <concept concept_id="5032" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="5032AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_id="5032" name="HIV STAGING - COCCIDIODOMYCOSIS, DISSEMINATED" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2132" voided="0" voided_by="1" uuid="2132BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
   <concept_name concept_id="5032" name="COCCIDIODOMYCOSIS, DISSEMINATED" locale="en" creator="1" date_created="2010-04-25 17:22:53.0" concept_name_id="105590" voided="0" voided_by="1" void_reason="" uuid="105590BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
+  <concept concept_id="162309" retired="0" datatype_id="4" class_id="9" is_set="0" creator="1" date_created="2005-01-12 00:00:00.0" version="" changed_by="1" date_changed="2013-12-03 18:56:55.0" retired_by="1" uuid="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="162309" name="Anti-tuberculosis treatment started this visit" locale="en" creator="1" date_created="2005-02-18 12:54:52.0" concept_name_id="17624" voided="0" voided_by="1" void_reason="" uuid="162309BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" locale_preferred="false"/>
+  <concept concept_id="164948" retired="0" datatype_id="4" class_id="9" is_set="0" creator="1" date_created="2005-01-12 00:00:00.0" version="" changed_by="1" date_changed="2013-12-03 18:56:55.0" retired_by="1" uuid="89264964-919b-4f39-816e-c0554b55df51"/>
+  <concept_name concept_id="164948" name="Patient currently on Tuberculosis treatment" locale="en" creator="1" date_created="2005-02-18 12:54:52.0" concept_name_id="17625" voided="0" voided_by="1" void_reason="" uuid="1a29cdd8-c70a-11e8-a8d5-f2801f1b9fd1" locale_preferred="false"/>
+
 </dataset>
