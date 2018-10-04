@@ -47,6 +47,7 @@
 
     <properties>
         <openMRSVersion>1.12.0</openMRSVersion>
+        <openMRSMinorVersion>1.12</openMRSMinorVersion>
         <cielVersion>20150123</cielVersion>
 
         <!-- Dependency modules -->

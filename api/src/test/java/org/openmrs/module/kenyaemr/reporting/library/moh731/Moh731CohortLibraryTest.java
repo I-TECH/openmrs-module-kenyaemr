@@ -16,6 +16,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -26,6 +27,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -119,7 +121,10 @@ public class Moh731CohortLibraryTest extends BaseModuleContextSensitiveTest {
 
 		// Start patient #8 and give them visit outside of reporting period + 2 month window
 		Encounter encounter2 = TestUtils.saveEncounter(TestUtils.getPatient(8), hivConsult, TestUtils.date(2012, 1, 10));
-
+		/*boolean result = ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.8") > -1;
+		int res = ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, "1.8");
+		String openmrsVersion = OpenmrsConstants.OPENMRS_VERSION_SHORT;
+		*/
 		TestUtils.saveDrugOrderWithFreeTestInstructions(TestUtils.getPatient(8), stavudine, TestUtils.date(2012, 1, 10), encounter2);
 		TestUtils.saveEncounter(TestUtils.getPatient(8), hivConsult, TestUtils.date(2012, 1, 20));
 
