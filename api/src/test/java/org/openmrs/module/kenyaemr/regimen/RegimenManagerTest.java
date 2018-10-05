@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
@@ -71,13 +72,13 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("regimen1", regimen1.getName());
 		Assert.assertEquals(new Integer(86663), regimen1.getComponents().get(0).getDrugRef().getConcept().getConceptId()); // zidovudine
 		Assert.assertEquals(300d, regimen1.getComponents().get(0).getDose(), 0d);
-		Assert.assertEquals("mg", regimen1.getComponents().get(0).getUnits());
-		Assert.assertEquals("OD", regimen1.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen1.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160862), regimen1.getComponents().get(0).getFrequency().getConceptId()); // OD equivalent
 
 		Assert.assertEquals(new Integer(78643), regimen1.getComponents().get(1).getDrugRef().getConcept().getConceptId()); // lamivudine
 		Assert.assertEquals(150d, regimen1.getComponents().get(1).getDose(), 0d);
-		Assert.assertEquals("mg", regimen1.getComponents().get(1).getUnits());
-		Assert.assertEquals("BD", regimen1.getComponents().get(1).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen1.getComponents().get(1).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160858), regimen1.getComponents().get(1).getFrequency().getConceptId());
 
 		Assert.assertEquals("regimen2", regimen2.getName());
 
@@ -91,7 +92,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen3.getComponents().get(0).getDose());
-		Assert.assertEquals("tab", regimen3.getComponents().get(0).getUnits());
+		Assert.assertEquals(new Integer(51), regimen3.getComponents().get(0).getUnits().getConceptId()); // 51 corresponds to tabs in test-concepts
 		Assert.assertNull(regimen3.getComponents().get(0).getFrequency());
 	}
 

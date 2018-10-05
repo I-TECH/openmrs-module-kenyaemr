@@ -53,7 +53,9 @@
   <!--adding dosage frequencies-->
 
   <concept concept_id="160858" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="160858" name="BD" locale="en" creator="1" date_created="2008-08-15 15:27:51.0" concept_name_id="17627" voided="0" voided_by="1" void_reason="" uuid="721c381e-c895-11e8-a8d5-f2801f1b9fd1" locale_preferred="false"/>
   <concept concept_id="160862" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="160862" name="OD" locale="en" creator="1" date_created="2008-08-15 15:27:51.0" concept_name_id="17628" voided="0" voided_by="1" void_reason="" uuid="721c3ab2-c895-11e8-a8d5-f2801f1b9fd1" locale_preferred="false"/>
   <concept concept_id="160863" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept concept_id="160864" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept concept_id="160865" retired="false" datatype_id="4" class_id="19" is_set="false" creator="1" date_created="2008-08-15 15:27:51.0" version="" uuid="160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
