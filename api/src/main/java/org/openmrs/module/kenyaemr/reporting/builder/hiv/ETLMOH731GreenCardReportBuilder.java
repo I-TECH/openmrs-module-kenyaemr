@@ -134,11 +134,71 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-03", "Known Positive at 1st ANC (Antenatal)", ReportUtils.map(pmtctIndicators.knownPositiveAtFirstANC(), indParams), "");
         dsd.addColumn("HV02-04", "Initial test at ANC (Antenatal)", ReportUtils.map(pmtctIndicators.initialHIVTestInMchmsAntenatal(), indParams), "");
 
+//Updates
+        dsd.addColumn("HV02-01", "First ANC Visit", ReportUtils.map(pmtctIndicators.firstANCVisitMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-02", "Delivery from HIV+ Mothers(Labor and Delivery)", ReportUtils.map(pmtctIndicators.deliveryFromHIVPositiveMothers(), indParams), "");
+        dsd.addColumn("HV02-03", "Known Positive at 1st ANC (Antenatal)", ReportUtils.map(pmtctIndicators.knownPositiveAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-04", "Initial test at ANC (Antenatal)", ReportUtils.map(pmtctIndicators.initialHIVTestInMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-05", "Initial Test at Labor and Delivery", ReportUtils.map(pmtctIndicators.testedForHivInMchmsDelivery(), indParams), "");
+        dsd.addColumn("HV02-06", "Initial Test at PNC <=6 Weeks)", ReportUtils.map(pmtctIndicators.initialTestAtPNCUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-07", "Known HIV Status Total)", ReportUtils.map(pmtctIndicators.testedForHivInMchms(), indParams), "");
+        dsd.addColumn("HV02-08", "PNC Retest within 6 weeks)", ReportUtils.map(pmtctIndicators.pncRetestUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-09", "PNC Testing between 7 weeks - 6 months)", ReportUtils.map(pmtctIndicators.pncTestBtwn6WeeksAnd6Months(), indParams), "");
+        dsd.addColumn("HV02-10", "HIV positive Before First ANC)", ReportUtils.map(pmtctIndicators.knownHivPositiveAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-11", "HIV positive results ANC", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-12", "HIV positive results (Labor and Delivery)", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
+        dsd.addColumn("HV02-13", "HIV positive results <=6 weeks)", ReportUtils.map(pmtctIndicators.testedHivPositiveInANCWithin6Weeks(), indParams), "");
+        dsd.addColumn("HV02-14", "Total HIV positive Mothers)", ReportUtils.map(pmtctIndicators.totalHivPositiveInMchms(), indParams), "");
+        dsd.addColumn("HV02-15", "PNC >6 weeks and <=6 months", ReportUtils.map(pmtctIndicators.pncHIVPositiveBetween7weeksAnd6Months(), indParams), "");
+        dsd.addColumn("HV02-16", "On HAART at 1st ANC", ReportUtils.map(pmtctIndicators.onHAARTAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-17", "Start HAART during ANC", ReportUtils.map(pmtctIndicators.startHAARTANC(), indParams), "");
+        dsd.addColumn("HV02-18", "Start HAART During Labour and Delivery", ReportUtils.map(pmtctIndicators.startedHAARTLabourAndDelivery(), indParams), "");
+        dsd.addColumn("HV02-19", "Started HAART upto 6 weeks", ReportUtils.map(pmtctIndicators.startedHAARTPNCUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-20", "Total Maternal HAART", ReportUtils.map(pmtctIndicators.totalMaternalHAART(), indParams), "");
+        dsd.addColumn("HV02-21", "Started HAART from 7 weeks to 6 months", ReportUtils.map(pmtctIndicators.onHAARTFrom7WeeksTo6Months(), indParams), "");
+        dsd.addColumn("HV02-22", "On HAART Upto 12 months", ReportUtils.map(pmtctIndicators.onHAARTUpto12Months(), indParams), "");
+        dsd.addColumn("HV02-23", "Net Cohort at 12 months", ReportUtils.map(pmtctIndicators.netCohortAt12Months(), indParams), "");
+        dsd.addColumn("HV02-24", "Syphilis screened at 1st ANC", ReportUtils.map(pmtctIndicators.syphilisScreenedAt1stANC(), indParams), "");
+        dsd.addColumn("HV02-25", "Syphilis screened Positive", ReportUtils.map(pmtctIndicators.syphilisScreenedPositive(), indParams), "");
+        dsd.addColumn("HV02-26", "Syphilis Treated", ReportUtils.map(pmtctIndicators.syphilisTreated(), indParams), "");
+        dsd.addColumn("HV02-27", "HIV+ on Modern FP at 6 weeks", ReportUtils.map(pmtctIndicators.HIVPositiveOnModernFPUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-28", "HIV+ PNC visits at 6 weeks", ReportUtils.map(pmtctIndicators.HIVPositivePNCVisitsAt6Weeks(), indParams), "");
+        dsd.addColumn("HV02-29", "Known HIV+ 1st Contact", ReportUtils.map(pmtctIndicators.knownHIVPositive1stContact(), indParams), "");
+        dsd.addColumn("HV02-30", "Initial Test at ANC Male", ReportUtils.map(pmtctIndicators.initialTestAtANCForMale(), indParams), "");
+        dsd.addColumn("HV02-31", "Initial Test at PNC Male", ReportUtils.map(pmtctIndicators.initialTestAtPNCForMale(), indParams), "");
+        dsd.addColumn("HV02-32", "Total Known status Male", ReportUtils.map(pmtctIndicators.totalKnownHIVStatusMale(), indParams), "");
+        /*Adolescents (10-19 years) Testing results*/
+        dsd.addColumn("HV02-33", "1st ANC KP Adolescent (10-19)", ReportUtils.map(pmtctIndicators.firstANCKPAdolescents(), indParams), "");
+        dsd.addColumn("HV02-34", "HIV Positive Adolescents", ReportUtils.map(pmtctIndicators.adolescentsHIVPositive(), indParams), "");
+        dsd.addColumn("HV02-35", "Adolescents started on HAART", ReportUtils.map(pmtctIndicators.adolescentsStartedOnHAART(), indParams), "");
+        /*Infant HIV Exposure status at Penta 1*/
+        dsd.addColumn("HV02-36", "Known Exposure at Penta 1", ReportUtils.map(pmtctIndicators.knownExposureAtPenta1(), indParams), "");
+        dsd.addColumn("HV02-37", "Total due for Penta 1", ReportUtils.map(pmtctIndicators.totalDueForPenta1(), indParams), "");
+        /*Infant ARV Prophylaxis*/
+        dsd.addColumn("HV02-38", "Infant ARV Prophylaxis at ANC", ReportUtils.map(pmtctIndicators.infantArvProphylaxisANC(), indParams), "");
+        dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(pmtctIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");
+        dsd.addColumn("HV02-40", "Infant ARV Prophylaxis <8 weeks PNC", ReportUtils.map(pmtctIndicators.infantArvProphylaxisPNCLessThan8Weeks(), indParams), "");
+        dsd.addColumn("HV02-41", "Total ARV Prophylaxis", ReportUtils.map(pmtctIndicators.totalARVProphylaxis(), indParams), "");
+        dsd.addColumn("HV02-42", "HEI CTS/DDS Start <2 months", ReportUtils.map(pmtctIndicators.heiDDSCTXStartLessThan2Months(), indParams), "");
+        dsd.addColumn("HV02-43", "Initial PCR <8 weeks", ReportUtils.map(pmtctIndicators.initialPCRLessThan8Weeks(), indParams), "");
+        dsd.addColumn("HV02-44", "Initial PCR >8 weeks to 12 months", ReportUtils.map(pmtctIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
+        dsd.addColumn("HV02-45", "Total Initial PCR Test <12 months", ReportUtils.map(pmtctIndicators.totalInitialPCRTestLessThan12Months(), indParams), "");
+        dsd.addColumn("HV02-46", "Infected in 24 months", ReportUtils.map(pmtctIndicators.infectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-47", "Uninfected in 24 months", ReportUtils.map(pmtctIndicators.uninfectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-48", "Unknown Outcomes in 24 months", ReportUtils.map(pmtctIndicators.unknownOutcomesIn24Months(), indParams), "");
+        dsd.addColumn("HV02-49", "Net Cohort HEI in 24 months", ReportUtils.map(pmtctIndicators.netCohortHeiIn24Months(), indParams), "");
+        dsd.addColumn("HV02-50", "Mother-baby pairs in 24 months", ReportUtils.map(pmtctIndicators.motherBabyPairsIn24Months(), indParams), "");
+        dsd.addColumn("HV02-51", "Pair net cohort in 24 months", ReportUtils.map(pmtctIndicators.pairNetCohortIn24Months(), indParams), "");
+        dsd.addColumn("HV02-52", "Exclusive Breastfeeding at 6 months", ReportUtils.map(pmtctIndicators.exclusiveBFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-53", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(pmtctIndicators.exclusiveRFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-54", "Mixed Feeding at 6 months", ReportUtils.map(pmtctIndicators.mixedFeedingAt6Months(), indParams), "");
+        dsd.addColumn("HV02-55", "Breast Feeding at 12 months", ReportUtils.map(pmtctIndicators.breastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-56", "Not Breast Feeding at 12 months", ReportUtils.map(pmtctIndicators.notBreastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-57", "Breast Feeding at 18 months", ReportUtils.map(pmtctIndicators.breastFeedingAt18Months(), indParams), "");
+        dsd.addColumn("HV02-58", "Not Breast Feeding at 18 months", ReportUtils.map(pmtctIndicators.notBreastFeedingAt18Months(), indParams), "");
 
-
-
-
-/* to be commented  */
+   //End updates
+/* to be commented
         dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsAntenatal(), indParams), "");
         dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsDelivery(), indParams), "");
         dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(pmtctIndicators.testedForHivInMchmsPostnatal(), indParams), "");
@@ -187,7 +247,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(pmtctIndicators.totalBreastFeedingMotherOnTreatment(), indParams), "");
 
         // TO DO 2.9 Infant ARV Prophylaxis(at first contact only)
-
+*/
         return dsd;
     }
 
