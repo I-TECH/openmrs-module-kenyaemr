@@ -113,13 +113,13 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		DrugOrder lamivudine = new DrugOrder();
 		lamivudine.setConcept(Context.getConceptService().getConcept(78643));
 		lamivudine.setDose(150d);
-		lamivudine.setDoseUnits(Context.getConceptService().getConcept(161553));
+		lamivudine.setDoseUnits(Context.getConceptService().getConcept(50));
 		lamivudine.setFrequency(ofBD);
 
 		DrugOrder stavudine = new DrugOrder();
 		stavudine.setConcept(Context.getConceptService().getConcept(84309));
 		stavudine.setDose(30d);
-		stavudine.setDoseUnits(Context.getConceptService().getConcept(161553));
+		stavudine.setDoseUnits(Context.getConceptService().getConcept(50));
 		stavudine.setFrequency(of);
 		RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(lamivudine, stavudine)));
 
