@@ -162,7 +162,9 @@
 		}
 
 		var hivStatus = getValue('patient-hiv-status.value');
-		if (hivStatus != NOT_HIV_TESTED_ID ) {
+		if (hivStatus == NOT_HIV_TESTED_ID || hivStatus == "") {
+
+        }else{
 			var hivTestDate = getValue('patient-hiv-test-date.value');
 			if (hivTestDate == "" &amp;&amp; HIV_TEST_DATE == "") {
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
@@ -170,7 +172,9 @@
 			}
 		}
 		var partnerHivStatus = getValue('partner-hiv-status.value');
-		if (partnerHivStatus != UNKNOWN) {
+		if (partnerHivStatus == UNKNOWN || partnerHivStatus == "" ) {
+
+        }else{
 			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
 			if (partnerHivTestDate == "") {
 				getField('partner-hiv-test-date.error').html('Specify the date when the partner was tested for HIV.').show();
@@ -226,7 +230,7 @@
 	function onPatientHivStatusChange() {
 		var patientHivStatus = getValue('patient-hiv-status.value');
 
-		if (patientHivStatus == NOT_HIV_TESTED_ID) {
+		if (patientHivStatus == '' || patientHivStatus == NOT_HIV_TESTED_ID) {
 			jq('#patient-hiv-test-date input').prop('disabled', true);
 			setValue('patient-hiv-test-date.value', null);
 		} else {
