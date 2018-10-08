@@ -43,8 +43,8 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(1, regimen1.getComponents().size());
 		Assert.assertEquals(new Integer(84309), regimen1.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertEquals(new Double(300.0), regimen1.getComponents().get(0).getDose());
-		Assert.assertEquals("mg", regimen1.getComponents().get(0).getUnits());
-		Assert.assertEquals("OD", regimen1.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen1.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160862), regimen1.getComponents().get(0).getFrequency().getConceptId()); // OD equivalent
 
 		// Test multiple component regimen
 		Regimen regimen2 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA|300|mg|OD|D$97810e6b-cfcf-44fa-b63c-5d3e12cbe8d7|150|ml|BD");
@@ -52,12 +52,13 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(2, regimen2.getComponents().size());
 		Assert.assertEquals(new Integer(84309), regimen2.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertEquals(new Double(300.0), regimen2.getComponents().get(0).getDose());
-		Assert.assertEquals("mg", regimen2.getComponents().get(0).getUnits());
-		Assert.assertEquals("OD", regimen2.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen2.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160862), regimen2.getComponents().get(0).getFrequency().getConceptId()); // OD equivalent
+
 		Assert.assertEquals(new Integer(200004), regimen2.getComponents().get(1).getDrugRef().getDrug().getDrugId());
 		Assert.assertEquals(new Double(150.0), regimen2.getComponents().get(1).getDose());
-		Assert.assertEquals("ml", regimen2.getComponents().get(1).getUnits());
-		Assert.assertEquals("BD", regimen2.getComponents().get(1).getFrequency());
+		Assert.assertEquals(new Integer(160858), regimen2.getComponents().get(1).getFrequency().getConceptId()); // OD equivalent
+
 
 		// Test empty component properties
 		Regimen regimen3 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA||mg|");
@@ -65,8 +66,8 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(1, regimen3.getComponents().size());
 		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen3.getComponents().get(0).getDose());
-		Assert.assertEquals("mg", regimen3.getComponents().get(0).getUnits());
-		Assert.assertEquals("", regimen3.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen3.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertNull(regimen3.getComponents().get(0).getFrequency());
 
 		// Test blank component properties
 		Regimen regimen4 = converter.convert("C$84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA| |mg| ");
@@ -74,7 +75,7 @@ public class StringToRegimenConverterTest extends BaseModuleWebContextSensitiveT
 		Assert.assertEquals(1, regimen4.getComponents().size());
 		Assert.assertEquals(new Integer(84309), regimen4.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen4.getComponents().get(0).getDose());
-		Assert.assertEquals("mg", regimen4.getComponents().get(0).getUnits());
-		Assert.assertEquals("", regimen4.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen4.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertNull(regimen4.getComponents().get(0).getFrequency());
 	}
 }

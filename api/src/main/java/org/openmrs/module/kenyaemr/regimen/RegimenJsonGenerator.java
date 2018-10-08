@@ -18,6 +18,7 @@ import org.openmrs.OrderFrequency;
 import org.openmrs.OrderSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -72,7 +73,6 @@ public class RegimenJsonGenerator {
 
         // get order sets
         List<OrderSet> orderSetList = getOrderSets();
-        System.out.println("Ordersets: " + orderSetList);
         ObjectNode regimenJson = JsonNodeFactory.instance.objectNode();
         ArrayNode regimenArray = JsonNodeFactory.instance.arrayNode();
         // get orderFrequency ids

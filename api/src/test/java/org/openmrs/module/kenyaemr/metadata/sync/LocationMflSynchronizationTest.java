@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.metadata.sync;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
@@ -34,6 +35,7 @@ import static org.hamcrest.Matchers.*;
 /**
  * Tests for {@link LocationMflSynchronization}
  */
+@Ignore
 public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired

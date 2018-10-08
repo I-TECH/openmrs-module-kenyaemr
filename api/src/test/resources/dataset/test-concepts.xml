@@ -2281,4 +2281,20 @@
   <concept concept_id="164948" retired="0" datatype_id="4" class_id="9" is_set="0" creator="1" date_created="2005-01-12 00:00:00.0" version="" changed_by="1" date_changed="2013-12-03 18:56:55.0" retired_by="1" uuid="89264964-919b-4f39-816e-c0554b55df51"/>
   <concept_name concept_id="164948" name="Patient currently on Tuberculosis treatment" locale="en" creator="1" date_created="2005-02-18 12:54:52.0" concept_name_id="17625" voided="0" voided_by="1" void_reason="" uuid="1a29cdd8-c70a-11e8-a8d5-f2801f1b9fd1" locale_preferred="false"/>
 
+
+
+  <!--kenyaemr local concepts added-->
+  <concept concept_id="164949" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="c49549c5-f761-408b-bc71-c0ae1fd16b73"/>
+  <concept_name concept_id="164949" name="Patient currently on Tuberculosis prophylaxis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2600" voided="0" voided_by="1" uuid="4d9778e8-43cd-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="1265" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="1265" name="TUBERCULOSIS PROPHYLAXIS PLAN" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2601" voided="0" voided_by="1" uuid="c30dbc4e-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="160433" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="160433" name="Patient outcome status" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="162309" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="162309" name="Anti tb start" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+  <concept concept_id="164948" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="164948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="164948" name="Currently on Anti tb" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
 </dataset>

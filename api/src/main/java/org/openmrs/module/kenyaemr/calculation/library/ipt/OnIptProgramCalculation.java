@@ -85,7 +85,7 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 				patientInTbProgram = true;
 			}
 
-          //Currently on IPT
+			//Currently on IPT
 			if (iptCurrentObs != null &&  iptStopObs == null && iptCurrentObs.getValueCoded().getConceptId().equals(1065)) {
 				inIptProgram = true;
 			}

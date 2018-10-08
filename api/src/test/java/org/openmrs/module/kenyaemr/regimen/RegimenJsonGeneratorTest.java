@@ -11,12 +11,14 @@ package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
  * Tests for {@link RegimenManager}
  */
+@Ignore
 public class RegimenJsonGeneratorTest extends BaseModuleContextSensitiveTest {
 
 
