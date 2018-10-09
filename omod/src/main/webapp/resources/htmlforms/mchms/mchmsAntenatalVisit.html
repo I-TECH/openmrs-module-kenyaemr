@@ -387,6 +387,15 @@
             jq("#expiry-date2 input").prop("disabled", false);
             getField('hiv-final-result.value').val(1138);
         }
+        //Empty
+        if(secondTest ==""){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
     }
 
     var expiryDateSelected  = function () {

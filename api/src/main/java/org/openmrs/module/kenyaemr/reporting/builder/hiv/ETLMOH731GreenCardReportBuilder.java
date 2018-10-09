@@ -6,6 +6,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
@@ -31,10 +32,12 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     private CommonDimensionLibrary commonDimensions;
 
     @Autowired
-    private ETLPmtctIndicatorLibrary pmtctIndicators;
+    private ETLMoh731GreenCardIndicatorLibrary pmtctIndicators;
 
     @Autowired
     private ETLMoh731GreenCardIndicatorLibrary hivIndicators;
+    @Autowired
+    private ETLPmtctCohortLibrary pmtctCohortLibrary;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
