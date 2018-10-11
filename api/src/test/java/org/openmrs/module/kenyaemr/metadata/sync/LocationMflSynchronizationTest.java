@@ -97,9 +97,9 @@ public class LocationMflSynchronizationTest extends BaseModuleContextSensitiveTe
 		// Fourth sync should retire Abdisamad Dispensar (66666) and re-create Abdisamad Dispensary (17009)
 		result = runSync();
 
-		Assert.assertThat(result.getCreated(), hasSize(1));
+		Assert.assertThat(result.getCreated(), hasSize(0));
 		Assert.assertThat(result.getUpdated(), hasSize(0));
-		Assert.assertThat(result.getRetired(), hasSize(1));
+		Assert.assertThat(result.getRetired(), hasSize(3));
 
 		// Final sync should change nothing
 		result = runSync();
