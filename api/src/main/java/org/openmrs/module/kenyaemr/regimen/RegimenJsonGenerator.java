@@ -9,15 +9,23 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Drug;
+import org.openmrs.DrugOrder;
 import org.openmrs.OrderFrequency;
 import org.openmrs.OrderSet;
+import org.openmrs.OrderSetMember;
+import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,9 +38,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RegimenJsonGenerator {
 
@@ -207,6 +218,94 @@ public class RegimenJsonGenerator {
 
     private List<OrderSet> getOrderSets() {
         return Context.getOrderSetService().getOrderSets(false);
+    }
+
+    public String getCurrentRegimens(Patient patient) {
+
+        ArrayNode patientRegimens = JsonNodeFactory.instance.arrayNode();
+        ObjectNode regimens = JsonNodeFactory.instance.objectNode();
+
+        for (Concept concept : Arrays.asList(Context.getConceptService().getConcept(1085), Context.getConceptService().getConcept(160021))) {
+            RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, concept);
+            RegimenChange lastChange = history.getLastChange();
+            Set<DrugOrder> lastOrders = lastChange.getStopped().getDrugOrders();
+
+            ArrayNode regimenOrder = JsonNodeFactory.instance.arrayNode();
+            ObjectNode currentRegimenObject = JsonNodeFactory.instance.objectNode();
+
+            OrderSet orderSet = getOrderSetFromMembers(lastOrders);
+            currentRegimenObject.put("program", concept.getConceptId() == 1085? "HIV" : "TB");
+            currentRegimenObject.put("name", orderSet.getName());
+            currentRegimenObject.put("regimenstatus", "stopped");
+
+            for (DrugOrder order : lastOrders) {
+                String drugCode = formatConceptNameShort(order.getConcept());
+                Double dose = order.getDose();
+                Concept units = order.getDoseUnits();
+                Concept frequency = order.getFrequency().getConcept();
+
+                List<OrderFrequency> frequencyList = Context.getOrderService().getOrderFrequencies(false);
+                String orderFrequencyUuId = null;
+                if (frequency != null)
+                    orderFrequencyUuId = getFrequencyUuIdFromConcept(frequencyList, frequency);
+
+                ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
+                drugMemberObject.put("name", drugCode);
+                drugMemberObject.put("dose", dose != null ? String.valueOf(dose) : "");
+                drugMemberObject.put("units", units != null ? units.getUuid() : "");
+                drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
+                drugMemberObject.put("frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "");
+                drugMemberObject.put("drug_id", getDrugIdFromConcept(order.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(order.getConcept())) : "");
+                regimenOrder.add(drugMemberObject);
+            }
+            currentRegimenObject.put("components", regimenOrder);
+            patientRegimens.add(currentRegimenObject);
+        }
+        regimens.put("patientregimens", patientRegimens);
+
+
+        return regimens.toString();
+    }
+
+    private OrderSet getOrderSetFromMembers(Set<DrugOrder> orders) {
+        List<OrderSet> orderSets = Context.getOrderSetService().getOrderSets(false);
+        for (OrderSet set : orderSets) {
+            if (set.getOrderSetMembers().size() != orders.size())
+                continue;
+            if (extractDrugOrderConceptIds(orders).containsAll(extractOrdersetMembersConceptIds(set.getUnRetiredOrderSetMembers()))) {
+                return set;
+            }
+        }
+        return null;
+    }
+
+    private Set<Integer> extractOrdersetMembersConceptIds(List<OrderSetMember> setMembers) {
+        Set<Integer> concepts = new HashSet<Integer>();
+        for (OrderSetMember member : setMembers) {
+            concepts.add(member.getConcept().getConceptId());
+        }
+        return concepts;
+    }
+
+    private Set<Integer> extractDrugOrderConceptIds(Set<DrugOrder> orders) {
+        Set<Integer> concepts = new HashSet<Integer>();
+        for (DrugOrder member : orders) {
+            concepts.add(member.getConcept().getConceptId());
+        }
+        return concepts;
+    }
+
+    public String formatConceptNameShort(Concept concept) {
+        if (concept == null) {
+            return "Empty";
+        }
+
+            ConceptName cn = concept.getPreferredName(CoreConstants.LOCALE);
+            if (cn == null) {
+                cn = concept.getName(CoreConstants.LOCALE);
+            }
+
+        return cn.getName();
     }
 
 }
