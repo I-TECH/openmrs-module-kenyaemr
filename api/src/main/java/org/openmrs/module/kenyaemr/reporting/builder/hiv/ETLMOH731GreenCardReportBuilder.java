@@ -156,7 +156,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         //dsd.addColumn("HV02-20", "Total Maternal HAART", ReportUtils.map(moh731GreenCardIndicators.totalMaternalHAART(), indParams), "");
         dsd.addColumn("HV02-21", "Started HAART from 7 weeks to 6 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTFrom7WeeksTo6Months(), indParams), "");
         dsd.addColumn("HV02-22", "On HAART Upto 12 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTUpto12Months(), indParams), "");
-       // dsd.addColumn("HV02-23", "Net Cohort at 12 months", ReportUtils.map(moh731GreenCardIndicators.netCohortAt12Months(), indParams), "");
+        dsd.addColumn("HV02-23", "Net Cohort at 12 months", ReportUtils.map(moh731GreenCardIndicators.netCohortAt12Months(), indParams), "");
         dsd.addColumn("HV02-24", "Syphilis screened at 1st ANC", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedAt1stANC(), indParams), "");
         dsd.addColumn("HV02-25", "Syphilis screened Positive", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedPositive(), indParams), "");
         dsd.addColumn("HV02-26", "Syphilis Treated", ReportUtils.map(moh731GreenCardIndicators.syphilisTreated(), indParams), "");
@@ -171,8 +171,8 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-34", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), "");
         dsd.addColumn("HV02-35", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), "");
         /*Infant HIV Exposure status at Penta 1*/
-       // dsd.addColumn("HV02-36", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
-       // dsd.addColumn("HV02-37", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
+        dsd.addColumn("HV02-36", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
+        dsd.addColumn("HV02-37", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
         /*Infant ARV Prophylaxis*/
         dsd.addColumn("HV02-38", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), "");
         dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");

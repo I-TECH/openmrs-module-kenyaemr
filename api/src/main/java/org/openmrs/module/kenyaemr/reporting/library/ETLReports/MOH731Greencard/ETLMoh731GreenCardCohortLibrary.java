@@ -1490,10 +1490,16 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     //Net Cohort_12 months	HV02-23
-/*    public CohortDefinition netCohortAt12Months(){
+    public CohortDefinition netCohortAt12Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  ";";
+        String sqlQuery =  "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= e.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= e.patient_id\n" +
+                "where date(v.visit_date) between \"2017-08-01\" and \"2018-10-10\"\n" +
+                "      and round(DATEDIFF(ld.visit_date,\"2018-10-12\")/7) <= 12;";
 
         cd.setName("netCohortAt12Months");
         cd.setQuery(sqlQuery);
@@ -1502,7 +1508,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.setDescription("Net Cohort at 12 months");
 
         return cd;
-    }*/
+    }
 
     //Syphilis Screened 1st ANC	 HV02-24
 
@@ -1734,10 +1740,15 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     //Known Exposure at Penta 1	HV02-36
-  /*  public CohortDefinition knownExposureAtPenta1(){
+ public CohortDefinition knownExposureAtPenta1(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  ";";
+        String sqlQuery =  "select distinct he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
+                "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"\n" +
+                "      and he.child_exposed != 1067 AND\n" +
+                "      hi.PCV_10_1 IS NOT NULL ;";
 
         cd.setName("knownExposureAtPenta1");
         cd.setQuery(sqlQuery);
@@ -1746,13 +1757,17 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.setDescription("Known HIV Exposure at Penta 1");
 
         return cd;
-    }*/
+    }
 
     //Total due for Penta 1	HV02-37
     public CohortDefinition totalDueForPenta1(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  ";";
+        String sqlQuery =  "select distinct he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
+                "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"   AND\n" +
+                "      hi.PCV_10_1 IS NOT NULL ;";
 
         cd.setName("totalDueForPenta1");
         cd.setQuery(sqlQuery);
@@ -1794,9 +1809,9 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
                 "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "      and (ld.nvp_dispensed = 160123 or ld.azt_dispensed = 160123) and\n" +
+                "      and (ld.baby_nvp_dispensed = 160123 or ld.baby_azt_dispensed = 160123) and\n" +
                 "      (p.nvp_dispensed != 160123 or p.azt_dispensed != 160123) and\n" +
-                "      (v.baby_nvp_dispensed != 160123 or v.baby_azt_dispensed != 160123);";
+                "      (v.nvp_dispensed != 160123 or v.azt_dispensed != 160123);";
 
         cd.setName("infantArvProphylaxisLabourAndDelivery");
         cd.setQuery(sqlQuery);

@@ -423,7 +423,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * Net cohort_12 months HV02-23
      *
      * @return the indicator
-     *
+     */
     public CohortIndicator netCohortAt12Months() {
         return cohortIndicator("Net cohort at 12 months",
                 map(moh731Cohorts.netCohortAt12Months(), "startDate=${startDate},endDate=${endDate}")
@@ -579,7 +579,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * Known exposure at penta 1 HV02-36
      *
      * @return the indicator
-     *
+     */
     public CohortIndicator knownExposureAtPenta1() {
         return cohortIndicator("knownExposureAtPenta1",
                 map(moh731Cohorts.knownExposureAtPenta1(), "startDate=${startDate},endDate=${endDate}")
