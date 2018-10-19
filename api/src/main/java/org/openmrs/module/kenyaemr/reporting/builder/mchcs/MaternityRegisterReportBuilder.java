@@ -48,7 +48,7 @@ import java.util.List;
 import static org.openmrs.module.kenyaemr.reporting.builder.mchms.ANCRegisterReportBuilder.ENC_DATE_FORMAT;
 
 @Component
-@Builds({"kenyaemr.mchcs.report.heiRegister"})
+@Builds({"kenyaemr.mchcs.report.maternityRegister"})
 public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
@@ -109,11 +109,11 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		// new columns
 		dsd.addColumn("Admission Number", new MaternityAdmissionNumberDataDefinition(),"");
 		dsd.addColumn("Date of Admission", new MaternityAdmissionDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
-		dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
-		dsd.addColumn("Parity", new ANCParityDataDefinition(),"");
-		dsd.addColumn("Gravida", new ANCGravidaDataDefinition(),"");
-		dsd.addColumn("LMP", new ANCLmpDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
-		dsd.addColumn("Ultra Sound", new ANCEDDUltrasoundDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
+		dsd.addColumn("Number of ANC Visits", new MaternityNumberOfANCVisitsDataDefinition(),"");
+		dsd.addColumn("Parity", new MaternityANCParityDataDefinition(),"");
+		dsd.addColumn("Gravida", new MaternityGravidaDataDefinition(),"");
+		dsd.addColumn("LMP", new MaternityLMPDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
+		dsd.addColumn("Ultra Sound", new MaternityEDDUltrasoundDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
 		dsd.addColumn("Diagnosis", new MaternityDiagnosisDataDefinition(),"");
 		dsd.addColumn("Duration of Labour", new MaternityDurationOfLabourDataDefinition(),"");
 		dsd.addColumn("Delivery Date", new MaternityDeliveryDateDataDefinition(),"",new DateConverter(ENC_DATE_FORMAT));
@@ -132,10 +132,10 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("TEO Given at Birth", new MaternityTEOGivenAtBirthDataDefinition(),"");
 		dsd.addColumn("Baby with deformity", new MaternityBabyWithDeformityDataDefinition(),"");
 		dsd.addColumn("APGAR Score", new MaternityApgarScoreDataDefinition(),"");
-		dsd.addColumn("VDRL/RPR Results", new ANCVDRLResultsDataDefinition(),"");
+		dsd.addColumn("VDRL/RPR Results", new MaternityVDRLRPRResultsDataDefinition(),"");
 		dsd.addColumn("HIV Status at ANC", new MaternityHIVStatusAtANCDataDefinition(),"");
-		dsd.addColumn("HIV Test One", new HIVTestOneDataDefinition(),"");
-		dsd.addColumn("HIV Test Two", new HIVTestTwoDataDefinition(),"");
+		dsd.addColumn("HIV Test One", new MaternityHIVTestOneDataDefinition(),"");
+		dsd.addColumn("HIV Test Two", new MaternityHIVTestTwoDataDefinition(),"");
 		dsd.addColumn("HIV Final Results", new MaternityHIVFinalResultsDataDefinition(),"");
 		dsd.addColumn("ARV Prophylaxis Issued from ANC", new MaternityARVProphylaxisIssuedFromANCDataDefinition(),"");
 		dsd.addColumn("ARV Prophylaxis Issued at Maternity", new MaternityARVProphylaxisIssuedAtMaternityDataDefinition(),"");
