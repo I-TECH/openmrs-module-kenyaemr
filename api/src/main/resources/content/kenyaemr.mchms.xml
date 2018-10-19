@@ -224,4 +224,17 @@
 		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
+
+	<!-- PNC register-->
+	<bean id="kenyaemr.mchms.report.pncRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="1a8cb68e-d39c-11e8-a8d5-f2801f1b9fd1" />
+		<property name="name" value="PNC Register" />
+		<property name="description" value="Register for PNC Services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+	</bean>
 </beans>
