@@ -129,6 +129,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("WHO Stage", new ANCWHOStageDataDefinition(),"");
         dsd.addColumn("Haemoglobin", new ANCHaemoglobinDataDefinition(),"");
         dsd.addColumn("Prophylaxis Given", new ANCProphylaxisGivenDataDefinition(),"");
+        dsd.addColumn("NVP Dispensed", new ANCNVPDispensedDataDefinition(),"");
         dsd.addColumn("AZT Dispensed", new ANCAZTDispensedDataDefinition(),"");
         dsd.addColumn("Dewormed", new ANCDewormedDataDefinition(),"");
         dsd.addColumn("VL Test Results", new ANCVLTestResultsDataDefinition(),"");

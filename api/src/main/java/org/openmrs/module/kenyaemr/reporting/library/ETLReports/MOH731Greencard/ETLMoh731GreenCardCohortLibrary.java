@@ -1404,11 +1404,11 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition totalStartedHAARTAtLabourAndDelivery(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct d.patient_id\n" +
-                "from kenyaemr_etl.etl_mchs_delivery d\n" +
-                "where date(d.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "and d.haart_given_at_delivery is not null;";
-
+        String sqlQuery =  "select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and d.date_started >= ld.visit_date;";
 
         cd.setName("totalStartedHAARTAtLabourAndDelivery");
         cd.setQuery(sqlQuery);
@@ -1748,7 +1748,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
                 "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"\n" +
                 "      and he.child_exposed != 1067 AND\n" +
-                "      hi.PCV_10_1 IS NOT NULL ;";
+                "      hi.PCV_10 IS NOT NULL ;";
 
         cd.setName("knownExposureAtPenta1");
         cd.setQuery(sqlQuery);
@@ -1767,7 +1767,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_hei_enrollment he\n" +
                 "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
                 "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"   AND\n" +
-                "      hi.PCV_10_1 IS NOT NULL ;";
+                "      hi.PCV_10 IS NOT NULL ;";
 
         cd.setName("totalDueForPenta1");
         cd.setQuery(sqlQuery);
@@ -1787,8 +1787,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=v.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=v.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "      and (v.nvp_dispensed = 160123 or v.azt_dispensed = 160123) and\n" +
-                "      (p.nvp_dispensed != 160123 or p.azt_dispensed != 160123) and\n" +
+                "      and (v.baby_nvp_dispensed = 160123 or v.baby_azt_dispensed = 160123) and\n" +
+                "      (p.baby_nvp_dispensed != 160123 or p.baby_azt_dispensed != 160123) and\n" +
                 "      (ld.baby_nvp_dispensed != 160123 or ld.baby_azt_dispensed != 160123);";
 
         cd.setName("infantArvProphylaxisANC");
@@ -1810,8 +1810,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
                 "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "      and (ld.baby_nvp_dispensed = 160123 or ld.baby_azt_dispensed = 160123) and\n" +
-                "      (p.nvp_dispensed != 160123 or p.azt_dispensed != 160123) and\n" +
-                "      (v.nvp_dispensed != 160123 or v.azt_dispensed != 160123);";
+                "      (p.baby_nvp_dispensed != 160123 or p.baby_azt_dispensed != 160123) and\n" +
+                "      (v.baby_nvp_dispensed != 160123 or v.baby_azt_dispensed != 160123);";
 
         cd.setName("infantArvProphylaxisLabourAndDelivery");
         cd.setQuery(sqlQuery);
@@ -1831,8 +1831,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "                  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "               where date(p.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "                and (p.nvp_dispensed = 160123 or p.azt_dispensed = 160123) and\n" +
-                "                      (v.nvp_dispensed != 160123 or v.azt_dispensed != 160123) and\n" +
+                "                and (p.baby_nvp_dispensed = 160123 or p.baby_azt_dispensed = 160123) and\n" +
+                "                      (v.baby_nvp_dispensed != 160123 or v.baby_azt_dispensed != 160123) and\n" +
                 "                      (ld.baby_nvp_dispensed != 160123 or ld.baby_azt_dispensed != 160123)\n" +
                 "                and round(DATEDIFF(ld.visit_date,DATE(:endDate))/7) <=8;";
 
@@ -1916,7 +1916,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //Initial PCR Test <12 mths Total	HV02-45 162080
+    //Initial PCR Test <12 mths Total	HV02-45
     public CohortDefinition totalInitialPCRTestLessThan12Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();

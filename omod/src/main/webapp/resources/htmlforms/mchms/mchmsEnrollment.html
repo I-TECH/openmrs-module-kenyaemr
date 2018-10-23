@@ -60,10 +60,12 @@
         }
         //Prepopulate HIV positive if already enrolled
         if(PATIENT_IS_ENROLLED_HIV){
-            var formattedTestDate =moment(moment(HIV_TEST_DATE,'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
-            getField('patient-hiv-status.value').val(HIV_POSITIVE);
-            getField('patient-hiv-test-date.value').val(formattedTestDate);
+            if(HIV_TEST_DATE != "") {
+                var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                getField('patient-hiv-test-date.value').val(formattedTestDate);
+            }
             jq('#patient-hiv-test-date input').prop('disabled', false);
+            getField('patient-hiv-status.value').val(HIV_POSITIVE);
         }
         jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});

@@ -340,10 +340,11 @@ public class ETLPmtctCohortLibrary {
     public CohortDefinition totalStartedHAARTAtLabourAndDelivery(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct d.patient_id \n"+
-                "       from kenyaemr_etl.etl_mch_delivery d \n"+
-                "                where date(d.visit_date) between date(:startDate) and date(:endDate)  \n" +
-                "                and d.haart_given_at_delivery is not null;";
+        String sqlQuery =  "select distinct ld.patient_id\\n\" +\n" +
+                "                \"from kenyaemr_etl.etl_mchs_delivery ld\\n\" +\n" +
+                "                \"  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\\n\" +\n" +
+                "                \"where date(ld.visit_date) between date(:startDate) and date(:endDate)\\n\" +\n" +
+                "                \"      and d.date_started >= ld.visit_date;";
 
 
         cd.setName("totalStartedHAARTAtLabourAndDelivery");

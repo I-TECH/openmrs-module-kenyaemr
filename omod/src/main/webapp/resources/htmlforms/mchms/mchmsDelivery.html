@@ -34,14 +34,12 @@
 <script type="text/javascript">
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
-        var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
+        //var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
 		//On ready start
         jq(document).ready(function () {
             //On delivery outcome change
             jq('#maternal-outcome select').change(onOutcomeChange);
             jq('#tr-maternal-death-audited').hide();
-            //On HAART validation
-            jq('#patient-on-haart').hide();
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
             jq('#partner-tested select').change(onPartnerTestedChange);
@@ -73,17 +71,6 @@
                 jq('#hiv-status:text').val('Negative');
             }else{
                 jq('#hiv-status:text').val('Not available');
-            }
-            if(HAART_START_DATE !=""){
-                getField('haart-start-date.value').val(HAART_START_DATE);
-                jq('#tbl-haart-given-anc').hide();
-                jq('#tbl-haart-given-mat').hide();
-                jq('#patient-on-haart').show();
-            }else{
-                getField('haart-start-date.value').val("");
-                jq('#tbl-haart-given-anc').show();
-                jq('#tbl-haart-given-mat').show();
-                jq('#patient-on-haart').hide();
             }
             //skip pattern
             //First test
@@ -625,29 +612,6 @@
 										answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Cotrimoxazole,Dapsone,None"
 										style="radio" id="prophylaxis-used"/>
-								</td>
-							</tr>
-							<tr id="tr-patient-on-haart">
-								<td>
-									<div id="patient-on-haart" class="ke-warning">HAART already started</div>
-								</td>
-							</tr>
-							<tr id="tbl-haart-given-anc">
-								<td>HAART given to mother at ANC?</td>
-								<td><obs
-										conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
-										id="haart-given-anc"/>
-								</td>
-							</tr>
-							<tr id="tbl-haart-given-mat">
-								<td>HAART given to mother during delivery?</td>
-								<td><obs
-										conceptId="159595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
-										id="haart-given-mat"/>
-								</td>
-								<td>HAART start date : </td>
-								<td><obs id="haart-start-date"
-										 conceptId="163784AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 								</td>
 							</tr>
 							<tr>
