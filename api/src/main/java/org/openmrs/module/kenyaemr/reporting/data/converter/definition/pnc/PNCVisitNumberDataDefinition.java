@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * PNC pulse Column
+ * PNC visit number Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCPulseDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCVisitNumberDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCPulseDataDefinition() {
+    public PNCVisitNumberDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCPulseDataDefinition(String name) {
+    public PNCVisitNumberDataDefinition(String name) {
         super(name);
     }
 

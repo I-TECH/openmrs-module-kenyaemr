@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * PNC pulse Column
+ * PNC NVP and AZT for baby >6 weeks Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCPulseDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCNVPAndAZTForBabyGreaterThan6WeeksDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCPulseDataDefinition() {
+    public PNCNVPAndAZTForBabyGreaterThan6WeeksDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCPulseDataDefinition(String name) {
+    public PNCNVPAndAZTForBabyGreaterThan6WeeksDataDefinition(String name) {
         super(name);
     }
 

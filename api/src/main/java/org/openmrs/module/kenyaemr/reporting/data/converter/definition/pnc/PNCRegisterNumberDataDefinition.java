@@ -6,7 +6,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * PNC register number Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class PNCRegisterNumberDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {

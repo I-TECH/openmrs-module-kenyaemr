@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * PNC Modern FP <=6 weeks Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCPPHDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCModernFPWithin6WeeksDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCPPHDataDefinition() {
+    public PNCModernFPWithin6WeeksDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCPPHDataDefinition(String name) {
+    public PNCModernFPWithin6WeeksDataDefinition(String name) {
         super(name);
     }
 

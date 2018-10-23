@@ -36,6 +36,7 @@
 				<ref bean="kenyaemr.mchms.report.notOnArt"/>
 				<ref bean="kenyaemr.mchms.report.knownPartnerHivStatus"/>
 				<ref bean="kenyaemr.mchms.report.ancRegister"/>
+				<ref bean="kenyaemr.mchms.report.pncRegister"/>
 			</set>
 		</property>
 		<property name="fragments">

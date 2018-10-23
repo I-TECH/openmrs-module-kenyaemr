@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * PNC pulse Column
+ * Fistula screening Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCPulseDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCFistulaScreeningDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCPulseDataDefinition() {
+    public PNCFistulaScreeningDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCPulseDataDefinition(String name) {
+    public PNCFistulaScreeningDataDefinition(String name) {
         super(name);
     }
 

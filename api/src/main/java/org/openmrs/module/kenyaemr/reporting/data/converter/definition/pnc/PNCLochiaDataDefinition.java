@@ -6,7 +6,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * PNC Lochia Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class PNCLochiaDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {

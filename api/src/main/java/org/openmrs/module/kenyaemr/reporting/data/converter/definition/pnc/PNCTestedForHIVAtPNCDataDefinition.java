@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * PNC Tested for HIV at PNC
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCBreastDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCTestedForHIVAtPNCDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCBreastDataDefinition() {
+    public PNCTestedForHIVAtPNCDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCBreastDataDefinition(String name) {
+    public PNCTestedForHIVAtPNCDataDefinition(String name) {
         super(name);
     }
 

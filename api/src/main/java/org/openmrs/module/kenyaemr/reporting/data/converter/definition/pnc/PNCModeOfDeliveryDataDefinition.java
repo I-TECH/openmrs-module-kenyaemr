@@ -6,7 +6,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * PNC Mode of delivery Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class PNCModeOfDeliveryDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {

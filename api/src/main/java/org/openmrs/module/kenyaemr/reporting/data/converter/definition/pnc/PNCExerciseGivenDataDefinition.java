@@ -6,24 +6,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * ANC Parity Column
+ * Exercise given Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCUterusDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCExerciseGivenDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCUterusDataDefinition() {
+    public PNCExerciseGivenDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCUterusDataDefinition(String name) {
+    public PNCExerciseGivenDataDefinition(String name) {
         super(name);
     }
 

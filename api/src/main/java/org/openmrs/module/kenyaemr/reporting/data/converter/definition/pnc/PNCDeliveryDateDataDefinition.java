@@ -8,7 +8,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * ANC Next Appointment Date Column
+ * PNC delivery Date Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class PNCDeliveryDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {

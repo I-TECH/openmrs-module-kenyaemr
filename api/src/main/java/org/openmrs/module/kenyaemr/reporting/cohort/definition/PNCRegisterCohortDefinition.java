@@ -11,7 +11,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import java.util.Date;
 
 /**
- * HTS Register cohort definition
+ * PNC Register cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PNCRegisterCohortDefinition")
