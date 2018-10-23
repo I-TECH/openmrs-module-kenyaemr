@@ -25,7 +25,10 @@ public class PNCFistulaScreeningDataEvaluator implements EncounterDataEvaluator 
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "       (case v.fistula_screening when 1107 then \"None\" when 49 then \"VVF\" when 127847 then \"RVF\" when 1118 then \"Not done\" else \"\" end) as \"Fistula Screening\"\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

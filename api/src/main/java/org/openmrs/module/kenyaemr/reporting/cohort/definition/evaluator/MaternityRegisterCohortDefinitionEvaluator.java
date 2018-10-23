@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Evaluator for patients for ANC Register
+ * Evaluator for patients for Maternity Register
  */
 @Handler(supports = {MaternityRegisterCohortDefinition.class})
 public class MaternityRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {

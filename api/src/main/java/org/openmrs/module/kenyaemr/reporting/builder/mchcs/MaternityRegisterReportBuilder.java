@@ -22,6 +22,7 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -58,7 +59,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	}
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
-        CohortDefinition cd = new HEIRegisterCohortDefinition();
+        CohortDefinition cd = new MaternityRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("Maternity All Clients");
