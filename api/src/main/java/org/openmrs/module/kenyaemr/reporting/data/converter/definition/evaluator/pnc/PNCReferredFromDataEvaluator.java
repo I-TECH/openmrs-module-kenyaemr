@@ -26,7 +26,12 @@ public class PNCReferredFromDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "(case v.referred_from when 1537 then \"Another Health Facility\" when 163488 then \"Community Unit\"\n" +
+                "when 1175 then \"N/A\" else \"\" end) as referred_from\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
+                "on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

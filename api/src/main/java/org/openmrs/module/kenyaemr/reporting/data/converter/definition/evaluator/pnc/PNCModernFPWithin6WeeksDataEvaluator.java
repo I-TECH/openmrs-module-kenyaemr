@@ -26,7 +26,13 @@ public class PNCModernFPWithin6WeeksDataEvaluator implements EncounterDataEvalua
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "       (case v.family_planning_method when 160570 then \"Yes\" when 780 then \"Yes\" when 5279 then \"Yes\" when 1359 then \"Yes\"\n" +
+                "        when 5275 then \"Yes\" when 136163 then \"Yes\" when 5278 then \"Yes\" when 5277 then \"Yes\"\n" +
+                "        when 1472 then \"Yes\" when 190 then \"Yes\" when 1489 then \"Yes\" when 162332 then \"No\" else \"\" end) as Modern_FP_Within_6Weeks\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "       join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = v.patient_id\n" +
+                "where timestampdiff(week,d.date_of_delivery,date(v.visit_date))<=6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -26,7 +26,12 @@ public class PNCNVPAndAZTForBabyWithin6WeeksDataEvaluator implements EncounterDa
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "       (case v.azt_dispensed when (v.azt_dispensed = 160123 or v.nvp_dispensed = 80586) then \"Yes\" when (v.azt_dispensed=1066 or v.nvp_dispensed = 1066) then \"No\"\n" +
+                "                             when (v.azt_dispensed = 1175 or v.nvp_dispensed = 1175) then \"N/A\" else \"\" end) as azt_nvp_dispensed\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "       join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = v.patient_id\n" +
+                "where timestampdiff(week,d.date_of_delivery,date(v.visit_date))>6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

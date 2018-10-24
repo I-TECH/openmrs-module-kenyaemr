@@ -26,7 +26,12 @@ public class PNCTestTwoResultsDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "(case v.test_2_result  when 664 then \"Negative\" when 703 then \"Positive\"\n" +
+                "when 163611 then \"Invalid\" else \"NA\" end) as Test_two_results\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
+                "on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

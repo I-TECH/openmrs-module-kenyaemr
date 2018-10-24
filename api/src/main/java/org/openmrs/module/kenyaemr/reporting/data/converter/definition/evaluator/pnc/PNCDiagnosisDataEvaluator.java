@@ -27,7 +27,7 @@ public class PNCDiagnosisDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.general_condition when 1855 then \"In good health\" when 162133 then \"Patient condition fair/satisfactory\" when 162132 then \"Patient condition poor\" else \"\" end) as Diagnosis\n" +
+                " (case v.general_condition when 1855 then \"In good health\" when 162133 then \"Patient condition fair/satisfactory\" when 162132 then \"Patient condition poor\" else \"\" end) as Diagnosis\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id;";
 

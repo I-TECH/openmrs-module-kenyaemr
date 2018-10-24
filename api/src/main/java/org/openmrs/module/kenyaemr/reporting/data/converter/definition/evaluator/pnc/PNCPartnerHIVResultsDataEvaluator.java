@@ -26,7 +26,11 @@ public class PNCPartnerHIVResultsDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "(case v.partner_hiv_status when v.partner_hiv_status = 664 then \"Negative\" when v.partner_hiv_status = 703 then \"Positive\" when v.partner_hiv_status = 1067 then \"Unknown\" else \"NA\" end) as partner_hiv_status\n" +
+                " from kenyaemr_etl.etl_mch_postnatal_visit v,kenyaemr_etl.etl_mch_enrollment e\n" +
+                "where v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

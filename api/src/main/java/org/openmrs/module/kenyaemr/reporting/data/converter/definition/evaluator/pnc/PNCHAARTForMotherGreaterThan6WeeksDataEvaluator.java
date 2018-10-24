@@ -26,7 +26,12 @@ public class PNCHAARTForMotherGreaterThan6WeeksDataEvaluator implements Encounte
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "       v.haart_start_date as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
+                "from etl_mch_postnatal_visit v\n" +
+                "       JOIN kenyaemr_etl.etl_drug_event de ON v.patient_id = de.patient_id\n" +
+                "       join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = v.patient_id\n" +
+                "where de.date_started < v.haart_start_date and timestampdiff(week,d.date_of_delivery,date(v.visit_date))>6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

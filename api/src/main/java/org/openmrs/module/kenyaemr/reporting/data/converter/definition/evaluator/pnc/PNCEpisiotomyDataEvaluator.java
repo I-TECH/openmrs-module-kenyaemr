@@ -27,7 +27,7 @@ public class PNCEpisiotomyDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.episiotomy when 159842 then \"Repaired\" when 159843 then \"Healed\" when 159841 then \"Gaping\" when 113919 then \"Infected\" else \"NA\" end) as Episiotomy\n" +
+                " (case v.episiotomy when 159842 then \"Repaired\" when 159843 then \"Healed\" when 159841 then \"Gaping\" when 113919 then \"Infected\" else \"NA\" end) as Episiotomy\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id;";
 

@@ -26,7 +26,10 @@ public class PNCInfectionsDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "(case v.condition_of_baby when 1855 then \"No\" when 162132 then \"Yes\" else \"\" end) as Infections\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
