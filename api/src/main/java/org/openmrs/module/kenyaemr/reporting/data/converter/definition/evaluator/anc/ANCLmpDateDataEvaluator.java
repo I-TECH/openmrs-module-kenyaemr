@@ -1,8 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCLmpDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ANCVisitNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCLmpDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
