@@ -26,13 +26,11 @@ public class PNCTestedForHIVAtPNCDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "       (case  when (test_1_result is not null and test_2_result is null and v.final_test_result is null)\n" +
-                "                  then \"Initial\" when (test_1_result is not null and test_2_result is not null ) then \"Repeat\"\n" +
-                "           when (test_1_result is null and test_2_result is null and final_test_result is null) then \"Not Done\" else \"NA\" end) as Tested_for_hiv_at_pnc\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;\n";
+        String qry = "select pn.encounter_id,\n" +
+                "  (case pn.final_test_result when \"\" then \"Not done\" else \"Initial\" end) as Tested_for_hiv_at_pnc\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pn inner join kenyaemr_etl.etl_mch_enrollment e\n" +
+                "        on pn.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY pn.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

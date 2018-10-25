@@ -136,8 +136,8 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Remarks", new PNCRemarksDataDefinition(),"");
         dsd.addColumn("Temperature", new PNCTemperatureDataDefinition(),"");
         dsd.addColumn("Tested HIV at PNC", new PNCTestedForHIVAtPNCDataDefinition(),"");
-        dsd.addColumn("Test 1 Results", new PNCTestOneResultsDataDefinition(),"");
-        dsd.addColumn("Test 2 Results", new PNCTestTwoResultsDataDefinition(),"");
+       // dsd.addColumn("Test 1 Results", new PNCTestOneResultsDataDefinition(),"");
+       // dsd.addColumn("Test 2 Results", new PNCTestTwoResultsDataDefinition(),"");
         dsd.addColumn("Uterus Examination", new PNCUterusExaminationDataDefinition(),"");
 
         PNCRegisterCohortDefinition cd = new PNCRegisterCohortDefinition();
