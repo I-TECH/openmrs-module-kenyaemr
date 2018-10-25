@@ -26,7 +26,11 @@ public class MaternityBabySexDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case baby_sex when 1534 then \"Male Gender\" when 1535 then \"Female gender\" else \"\" end) as baby_sex\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

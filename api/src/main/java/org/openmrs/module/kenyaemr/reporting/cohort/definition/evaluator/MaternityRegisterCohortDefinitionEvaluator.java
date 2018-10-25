@@ -2,37 +2,47 @@ package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ANCRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
-import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
-import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for patients for ANC Register
+ * Evaluator for Maternity
  */
 @Handler(supports = {MaternityRegisterCohortDefinition.class})
-public class MaternityRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
+public class MaternityRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
 	EvaluationService evaluationService;
 
-	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
-		context = ObjectUtil.nvl(context, new EvaluationContext());
-		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
+    @Override
+    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_mchs_delivery where date(visit_date) BETWEEN date(:startDate) AND date(:endDate)";
+		MaternityRegisterCohortDefinition definition = (MaternityRegisterCohortDefinition) cohortDefinition;
+
+        if (definition == null)
+            return null;
+
+		Cohort newCohort = new Cohort();
+
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+
+        String qry = "SELECT patient_id from kenyaemr_etl.etl_mchs_delivery where date(visit_date) BETWEEN date(:startDate) AND date(:endDate)";
+
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
@@ -41,9 +51,14 @@ public class MaternityRegisterCohortDefinitionEvaluator implements EncounterQuer
 		builder.addParameter("endDate", endDate);
 		builder.addParameter("startDate", startDate);
 
-		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
-		queryResult.getMemberIds().addAll(results);
-		return queryResult;
-	}
+		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
+		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
+
+
+//		queryResult.getMemberIds().addAll(results);
+//		return queryResult;
+
+        return new EvaluatedCohort(newCohort, definition, context);
+    }
 
 }

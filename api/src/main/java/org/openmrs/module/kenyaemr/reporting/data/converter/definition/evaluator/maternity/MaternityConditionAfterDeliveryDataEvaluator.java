@@ -26,7 +26,11 @@ public class MaternityConditionAfterDeliveryDataEvaluator implements PersonDataE
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case condition_of_mother when 160429 then \"Alive\" when 134612 then \"Dead\" else \"\" end) as condition_of_mother\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

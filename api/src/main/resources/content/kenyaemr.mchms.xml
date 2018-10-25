@@ -36,6 +36,7 @@
 				<ref bean="kenyaemr.mchms.report.notOnArt"/>
 				<ref bean="kenyaemr.mchms.report.knownPartnerHivStatus"/>
 				<ref bean="kenyaemr.mchms.report.ancRegister"/>
+				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -217,6 +218,19 @@
 		<property name="targetUuid" value="4914591e-b72f-11e8-96f8-529269fb1459" />
 		<property name="name" value="ANC Register" />
 		<property name="description" value="Register for ANC Services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+	</bean>
+
+	<!-- Maternity register-->
+	<bean id="kenyaemr.mchcs.report.maternityRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="14a78d80-d1e3-11e8-a8d5-f2801f1b9fd1" />
+		<property name="name" value="Maternity Register" />
+		<property name="description" value="Maternity Register" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />

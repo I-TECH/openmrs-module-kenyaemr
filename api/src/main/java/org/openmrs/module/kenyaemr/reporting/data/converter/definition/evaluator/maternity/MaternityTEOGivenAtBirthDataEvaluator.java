@@ -26,7 +26,11 @@ public class MaternityTEOGivenAtBirthDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case teo_given when 1 then \"Yes\" when 0 then \" \" else \"\" end) as teo_given\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

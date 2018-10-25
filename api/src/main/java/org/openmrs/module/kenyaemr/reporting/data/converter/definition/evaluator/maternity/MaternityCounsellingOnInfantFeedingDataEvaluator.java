@@ -26,7 +26,11 @@ public class MaternityCounsellingOnInfantFeedingDataEvaluator implements PersonD
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case counseling_on_infant_feeding when 161651 then \"Counseling about infant feeding practices\" else \"\" end) as counseling_on_infant_feeding\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -26,7 +26,11 @@ public class MaternityPartnerTestedForHIVDataEvaluator implements PersonDataEval
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case partner_hiv_tested when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as partner_hiv_tested\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -26,7 +26,11 @@ public class MaternityPlacentaCompleteDataEvaluator implements PersonDataEvaluat
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case placenta_complete when 163455 then \"Complete placenta at delivery\" when 163456 then \"Incomplete placenta at delivery\" else \"\" end) as placenta_complete\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

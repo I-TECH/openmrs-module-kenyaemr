@@ -26,7 +26,14 @@ public class MaternityBabyConditionDataEvaluator implements PersonDataEvaluator 
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case baby_condition when 135436 then \"Macerated Stillbirth\" when 159916 then \"Fresh stillbirth\" when 151849 then \"Liveborn, Unspecified Whether Single, Twin, or Multiple \"\n" +
+                "   when 125872 then \"STILLBIRTH\" when 126127 then \"Spontaneous abortion\"\n" +
+                "   when 164815 then \"Live birth, died before arrival at facility\"\n" +
+                "   when 164816 then \"Live birth, died after arrival or delivery in facility\" else \"\" end) as baby_condition\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -32,7 +32,6 @@
 				<ref bean="kenyaemr.mchcs.report.infantNotOnCTX" />
 				<ref bean="kenyaemr.mchcs.report.infantWithoutPcp" />
 				<ref bean="kenyaemr.mchcs.report.heiRegister" />
-				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
 				<!--<ref bean="kenyaemr.mchcs.report.moh710" />
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
@@ -233,16 +232,4 @@
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
 	</bean>
 
-	<!-- Maternity register-->
-	<bean id="kenyaemr.mchcs.report.maternityRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="14a78d80-d1e3-11e8-a8d5-f2801f1b9fd1" />
-		<property name="name" value="Maternity Register" />
-		<property name="description" value="Maternity Register" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set></property>
-		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
-	</bean>
 </beans>

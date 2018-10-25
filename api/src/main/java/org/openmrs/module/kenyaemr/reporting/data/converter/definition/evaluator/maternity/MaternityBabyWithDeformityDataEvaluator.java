@@ -26,7 +26,11 @@ public class MaternityBabyWithDeformityDataEvaluator implements PersonDataEvalua
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select\n" +
+                "  patient_id,\n" +
+                "  (case birth_with_deformity when 155871 then \"Yes\" when 1066 then \"No\"  when 1175 then \"Not applicable\" else \"\" end) as birth_with_deformity\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
