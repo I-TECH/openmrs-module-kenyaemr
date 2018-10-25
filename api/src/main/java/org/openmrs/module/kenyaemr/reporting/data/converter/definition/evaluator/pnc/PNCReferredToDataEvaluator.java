@@ -2,6 +2,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCReferredFromDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCReferredToDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * PNC referred to column
  */
-@Handler(supports= PNCReferredFromDataDefinition.class, order=50)
+@Handler(supports= PNCReferredToDataDefinition.class, order=50)
 public class PNCReferredToDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired

@@ -29,7 +29,7 @@ public class PNCHIVResultsGreaterThan6WeeksDataEvaluator implements EncounterDat
         String qry = "select v.encounter_id,\n" +
                 "       (case v.final_test_result when 703 then \"Positive\" when 664 then \"Negative\"\n" +
                 "                                 when 1138 then \"Unknown\" else \"NA\" end) as HIV_Results_in_pnc_Within_6Weeks\n" +
-                "from etl_mch_postnatal_visit v\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "       join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = v.patient_id\n" +
                 "where timestampdiff(week,d.date_of_delivery,date(v.visit_date))>6";
 

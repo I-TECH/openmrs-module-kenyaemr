@@ -26,10 +26,10 @@ public class PNCAdmissionNumberDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id, e.visit_id as admission_number\n" +
+        String qry = "select v.encounter_id, e.anc_number as admission_number\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v,kenyaemr_etl.etl_mch_enrollment e\n" +
                 "where v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "GROUP BY v.encounter_id;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
