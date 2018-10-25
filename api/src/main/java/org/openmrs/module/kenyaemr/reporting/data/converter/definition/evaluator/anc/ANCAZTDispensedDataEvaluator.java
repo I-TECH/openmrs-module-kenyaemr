@@ -1,7 +1,7 @@
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCAdmissionNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCAZTDispensedDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * PNC Admission Number column
+ * ANC AZT Dispensed column
  */
-@Handler(supports= PNCAdmissionNumberDataDefinition.class, order=50)
-public class PNCAdmissionNumberDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= ANCAZTDispensedDataDefinition.class, order=50)
+public class ANCAZTDispensedDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -25,10 +25,11 @@ public class PNCAdmissionNumberDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id, e.anc_number as admission_number\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v,kenyaemr_etl.etl_mch_enrollment e\n" +
-                "where v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;\n";
+        String qry = "select\n" +
+                "v.encounter_id,  \n" +
+                "v.azt_dispensed\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
