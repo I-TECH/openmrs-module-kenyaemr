@@ -1180,7 +1180,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "      round(DATEDIFF(ld.visit_date,:endDate)/7) <=6 and\n" +
+                "      round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6 and\n" +
                 "      e.hiv_status =1402 and\n" +
                 "      v.final_test_result is null and\n" +
                 "      ld.final_test_result is null and\n" +
@@ -1217,7 +1217,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "       left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=pnc.patient_id\n" +
                 "where date(pnc.visit_date) between (:startDate) and (:endDate) and\n" +
                 "      pnc.final_test_result is not null and anc.final_test_result =664 and ld.final_test_result = 664\n" +
-                "  and round(DATEDIFF(:endDate,ld.visit_date)/7) between 1 and 6;";
+                "  and round(DATEDIFF(:endDate,ld.date_of_delivery)/7) between 1 and 6;";
 
         cd.setName("pncRetestUpto6Weeks");
         cd.setQuery(sqlQuery);
@@ -1236,7 +1236,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "    left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=pnc.patient_id\n" +
                 "    where date(pnc.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "    pnc.patient_id is not null and anc.patient_id =664 and ld.patient_id=664 and\n" +
-                "    round(DATEDIFF(:endDate,ld.visit_date))/7 between 6 and 24;";
+                "    round(DATEDIFF(:endDate,ld.date_of_delivery))/7 between 6 and 24;";
 
         cd.setName("pncTest6WeeksUpto6Months");
         cd.setQuery(sqlQuery);
@@ -1312,7 +1312,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "      round(DATEDIFF(p.visit_date,:endDate)/7) <=6 and\n" +
+                "      round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6 and\n" +
                 "      (e.hiv_status !=703) and\n" +
                 "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
                 "      (ld.final_test_result is null or ld.final_test_result !=\"Positive\") and\n" +
@@ -1575,7 +1575,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "(ld.final_test_result=\"Positive\" or e.hiv_status = 703 or p.final_test_result =\"Positive\") and\n" +
-                "(round(DATEDIFF(p.visit_date,:endDate)/7) <=6) and\n" +
+                "(round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6) and\n" +
                 "p.family_planning_status=965;";
 
         cd.setName("HIVPositiveOnModernFPUpto6Weeks");
@@ -1598,7 +1598,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      (ld.final_test_result=\"Positive\" or e.hiv_status = 703 or v.final_test_result =\"Positive\") and\n" +
-                "      (round(DATEDIFF(ld.visit_date,:endDate)/7) <=6);";
+                "      (round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6);";
 
         cd.setName("HIVPositivePNCVisitsAt6Weeks");
         cd.setQuery(sqlQuery);
