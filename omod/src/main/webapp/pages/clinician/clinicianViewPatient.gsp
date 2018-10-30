@@ -32,7 +32,6 @@
 				<td width="15%" valign="top" style="padding-left: 5px">
 					${ ui.includeFragment("kenyaemr", "providerAction/providerActions") }
 				</td>
-				${ ui.includeFragment("kenyaemr", "prescription/regimenJsonGenerator", [ patient: currentPatient]) }
 			</tr>
 		</table>
 	<!--</div>-->

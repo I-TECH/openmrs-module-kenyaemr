@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
@@ -24,9 +23,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
-import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.util.OpenmrsUtil;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -267,7 +263,7 @@ public class RegimenJsonGenerator {
         return regimens.toString();
     }
 
-    private OrderSet getOrderSetFromMembers(Set<DrugOrder> orders) {
+    public static OrderSet getOrderSetFromMembers(Set<DrugOrder> orders) {
         List<OrderSet> orderSets = Context.getOrderSetService().getOrderSets(false);
         for (OrderSet set : orderSets) {
             if (set.getOrderSetMembers().size() != orders.size())
@@ -279,7 +275,7 @@ public class RegimenJsonGenerator {
         return null;
     }
 
-    private Set<Integer> extractOrdersetMembersConceptIds(List<OrderSetMember> setMembers) {
+    public static Set<Integer> extractOrdersetMembersConceptIds(List<OrderSetMember> setMembers) {
         Set<Integer> concepts = new HashSet<Integer>();
         for (OrderSetMember member : setMembers) {
             concepts.add(member.getConcept().getConceptId());
@@ -287,7 +283,7 @@ public class RegimenJsonGenerator {
         return concepts;
     }
 
-    private Set<Integer> extractDrugOrderConceptIds(Set<DrugOrder> orders) {
+    public static Set<Integer> extractDrugOrderConceptIds(Set<DrugOrder> orders) {
         Set<Integer> concepts = new HashSet<Integer>();
         for (DrugOrder member : orders) {
             concepts.add(member.getConcept().getConceptId());
