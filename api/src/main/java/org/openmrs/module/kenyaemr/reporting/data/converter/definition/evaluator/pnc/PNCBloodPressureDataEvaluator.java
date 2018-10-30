@@ -1,8 +1,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCTestTwoResultsDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCUterusExaminationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCBloodPressureDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCPulseDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * PNC uterus examination column
+ * PNC pulse column
  */
-@Handler(supports= PNCUterusExaminationDataDefinition.class, order=50)
-public class PNCUterusExaminationDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= PNCBloodPressureDataDefinition.class, order=50)
+public class PNCBloodPressureDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,8 +27,7 @@ public class PNCUterusExaminationDataEvaluator implements EncounterDataEvaluator
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "v.uterus_examination\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "       concat_ws('/',v.systolic_bp,v.diastolic_bp) as Blood_pressure from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -27,9 +27,12 @@ public class PNCInfectionsDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "(case v.condition_of_baby when 1855 then \"No\" when 162132 then \"Yes\" else \"\" end) as Infections\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "       concat_ws('\\r\\n',(case v.condition_of_baby when 1855 then \"No\" when 162132 then \"Yes\" else \"\" end),\n" +
+                "                 (case v.baby_feeding_method when 5526 then \"Yes\"\n" +
+                "                                    when 1595 then \"No\"\n" +
+                "                                 when 6046 then \"Yes\"\n" +
+                "                                 else \"\" end)) as Infections\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

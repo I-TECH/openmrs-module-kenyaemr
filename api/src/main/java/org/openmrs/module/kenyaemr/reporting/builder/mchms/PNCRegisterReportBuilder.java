@@ -90,8 +90,8 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
-        dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-        dsd.addColumn("Age", new AgeDataDefinition(), "");
+       // dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        //dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
         dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
@@ -100,6 +100,7 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
         dsd.addColumn("Visit Number", new PNCVisitNumberDataDefinition(),"");
+        dsd.addColumn("Date of Birth", new PNCDateOfBirthAndAgeDataDefinition(),"");
         dsd.addColumn("Admission Number", new PNCAdmissionNumberDataDefinition(),"");
         dsd.addColumn("Breast Examination", new PNCBreastExaminationDataDefinition(),"");
         dsd.addColumn("Breast Feeding", new PNCBreastFeedingDataDefinition(),"");
@@ -130,6 +131,7 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("PPH Examination", new PNCPPHExaminationDataDefinition(),"");
         dsd.addColumn("Prior Known HIV Status", new PNCPriorKnownStatusDataDefinition(),"");
         dsd.addColumn("Pulse", new PNCPulseDataDefinition(),"");
+        dsd.addColumn("Blood Pressure", new PNCBloodPressureDataDefinition(),"");
         dsd.addColumn("Referred From", new PNCReferredFromDataDefinition(),"");
         dsd.addColumn("Referred To", new PNCReferredToDataDefinition(),"");
         dsd.addColumn("Register Number", new PNCRegisterNumberDataDefinition(),"");

@@ -28,9 +28,7 @@ public class PNCTestedForHIVAtPNCDataEvaluator implements EncounterDataEvaluator
 
         String qry = "select pn.encounter_id,\n" +
                 "  (case pn.final_test_result when \"\" then \"Not done\" else \"Initial\" end) as Tested_for_hiv_at_pnc\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit pn inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                "        on pn.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY pn.encounter_id;";
+                "from kenyaemr_etl.etl_mch_postnatal_visit pn;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

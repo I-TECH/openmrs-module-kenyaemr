@@ -28,8 +28,7 @@ public class PNCPallorExaminationDataEvaluator implements EncounterDataEvaluator
 
         String qry = "select v.encounter_id,\n" +
                 "(case v.pallor when 1065 then \"Yes\" when 1066 then \"No\" else \"NA\" end) as pallor\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
