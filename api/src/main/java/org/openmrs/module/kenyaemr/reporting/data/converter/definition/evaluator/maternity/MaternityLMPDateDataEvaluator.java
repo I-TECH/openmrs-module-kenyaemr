@@ -29,8 +29,7 @@ public class MaternityLMPDateDataEvaluator implements PersonDataEvaluator {
         String qry = "select\n" +
                 "  patient_id,\n" +
                 " lmp\n" +
-                "from kenyaemr_etl.etl_mch_enrollment\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

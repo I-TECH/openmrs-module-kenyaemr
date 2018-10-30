@@ -29,8 +29,7 @@ public class MaternityBloodLossDataEvaluator implements PersonDataEvaluator {
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case blood_loss when 1499 then \"Moderate\" when 1107 then \"None\" when 1498 then \"Mild\" when 1500 then \"Severe\" else \"\" end) as blood_loss\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

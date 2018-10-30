@@ -29,8 +29,7 @@ public class MaternityTEOGivenAtBirthDataEvaluator implements PersonDataEvaluato
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case teo_given when 1 then \"Yes\" when 0 then \" \" else \"\" end) as teo_given\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

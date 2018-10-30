@@ -29,8 +29,7 @@ public class MaternityGestationAtBirthDataEvaluator implements PersonDataEvaluat
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  duration_of_pregnancy\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

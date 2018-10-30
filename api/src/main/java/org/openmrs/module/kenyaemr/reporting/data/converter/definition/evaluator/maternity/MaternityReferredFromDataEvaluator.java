@@ -29,8 +29,7 @@ public class MaternityReferredFromDataEvaluator implements PersonDataEvaluator {
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case referred_from when 1537 then \"Another Health Facility\" when 163488 then \"Community Unit\" when 1175 then \"N/A\" else \"\" end) as referred_from\n" +
-                "from kenyaemr_etl.etl_mchs_discharge\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_discharge;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

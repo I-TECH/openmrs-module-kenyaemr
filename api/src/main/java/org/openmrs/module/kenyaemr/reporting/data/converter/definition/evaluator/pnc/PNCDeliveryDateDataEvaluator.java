@@ -26,7 +26,6 @@ public class PNCDeliveryDateDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "      select v.encounter_id,\n" +
                 "       d.date_of_delivery\n" +
                 "from  kenyaemr_etl.etl_mchs_delivery d,kenyaemr_etl.etl_mch_postnatal_visit v, kenyaemr_etl.etl_mch_enrollment e\n" +
                 "     where v.patient_id = d.patient_id\n" +

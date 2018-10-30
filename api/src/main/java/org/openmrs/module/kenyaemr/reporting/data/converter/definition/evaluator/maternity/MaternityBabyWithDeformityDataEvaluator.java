@@ -29,8 +29,7 @@ public class MaternityBabyWithDeformityDataEvaluator implements PersonDataEvalua
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case birth_with_deformity when 155871 then \"Yes\" when 1066 then \"No\"  when 1175 then \"Not applicable\" else \"\" end) as birth_with_deformity\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

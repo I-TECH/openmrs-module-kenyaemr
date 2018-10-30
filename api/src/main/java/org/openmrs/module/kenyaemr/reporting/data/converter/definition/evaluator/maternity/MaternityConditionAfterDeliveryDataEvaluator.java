@@ -29,8 +29,7 @@ public class MaternityConditionAfterDeliveryDataEvaluator implements PersonDataE
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case condition_of_mother when 160429 then \"Alive\" when 134612 then \"Dead\" else \"\" end) as condition_of_mother\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

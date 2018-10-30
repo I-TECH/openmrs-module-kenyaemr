@@ -29,8 +29,7 @@ public class MaternityPartnerHIVTestResultsDataEvaluator implements PersonDataEv
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case partner_hiv_status when 664 then \"HIV Negative\" when 703 then \"HIV Positive\" when 1067 then \"Unknown\" else \"\" end) as partner_hiv_status\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
