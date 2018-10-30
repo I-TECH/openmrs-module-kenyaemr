@@ -28,8 +28,7 @@ public class ANCAZTDispensedDataEvaluator implements EncounterDataEvaluator {
         String qry = "select\n" +
                 "    v.encounter_id,\n" +
                 "  (case v.baby_azt_dispensed when 160123 then \"Yes\" when 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as baby_azt_dispensed\n" +
-                "    from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "    GROUP BY v.encounter_id";
+                "    from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

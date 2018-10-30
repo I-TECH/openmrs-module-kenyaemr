@@ -26,7 +26,9 @@ public class MaternityHIVTestTwoDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "";
+        String qry = "select v.encounter_id,\n" +
+                "  CONCAT_WS ('\\n',v.test_2_kit_name,'____________',v.test_2_kit_lot_no,'____________',v.test_2_kit_expiry,'____________',v.test_2_result) as Test_two_results\n" +
+                "from kenyaemr_etl.etl_mchs_delivery v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

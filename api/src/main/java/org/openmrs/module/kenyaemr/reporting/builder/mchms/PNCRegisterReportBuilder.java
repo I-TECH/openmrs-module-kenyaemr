@@ -142,6 +142,7 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
 
         PNCRegisterCohortDefinition cd = new PNCRegisterCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         dsd.addRowFilter(cd, paramMapping);

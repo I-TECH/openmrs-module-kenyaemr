@@ -31,7 +31,7 @@ public class ANCVLTestResultsDataEvaluator implements EncounterDataEvaluator {
                 "from  kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  left join\n" +
                 "  kenyaemr_etl.etl_laboratory_extract l ON\n" +
-                "   v.visit_date = l.visit_date GROUP BY v.encounter_id";
+                "   v.visit_date = l.visit_date ;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

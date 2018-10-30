@@ -134,8 +134,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("APGAR Score", new MaternityApgarScoreDataDefinition(),"");
 		dsd.addColumn("VDRL/RPR Results", new MaternityVDRLRPRResultsDataDefinition(),"");
 		dsd.addColumn("HIV Status at ANC", new MaternityHIVStatusAtANCDataDefinition(),"");
-		//dsd.addColumn("HIV Test One", new MaternityHIVTestOneDataDefinition(),"");
-		//dsd.addColumn("HIV Test Two", new MaternityHIVTestTwoDataDefinition(),"");
+		dsd.addColumn("HIV Test One", new MaternityHIVTestOneDataDefinition(),"");
+		dsd.addColumn("HIV Test Two", new MaternityHIVTestTwoDataDefinition(),"");
 		dsd.addColumn("HIV Final Results", new MaternityHIVFinalResultsDataDefinition(),"");
 		dsd.addColumn("ARV Prophylaxis Issued from ANC", new MaternityARVProphylaxisIssuedFromANCDataDefinition(),"");
 		dsd.addColumn("ARV Prophylaxis Issued at Maternity", new MaternityARVProphylaxisIssuedAtMaternityDataDefinition(),"");

@@ -28,8 +28,7 @@ public class FirstANCVisitDataEvaluator implements EncounterDataEvaluator {
         String qry = "select\n" +
                 "  v.encounter_id,\n" +
                 "  (case v.anc_visit_number when 1 then \"Yes\" else \"No\" end) as first_visit\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

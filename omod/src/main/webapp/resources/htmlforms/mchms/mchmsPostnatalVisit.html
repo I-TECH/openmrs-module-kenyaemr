@@ -43,6 +43,8 @@
     var DATE_OF_DELIVERY = "<lookup expression="fn.latestObs(5599).getValueDatetime()"/>";
     var PLACE_OF_DELIVERY = "<lookup expression="fn.latestObs(1572).getValueCoded()"/>";
     var MODE_OF_DELIVERY = "<lookup expression="fn.latestObs(5630).getValueCoded()"/>";
+    var ANC_COUNSELLED_ON_INFANT_FEEDING = "<lookup expression="fn.latestObs(159853).getValueCoded()"/>";
+    var DIS_COUNSELLED_ON_INFANT_FEEDING = "<lookup expression="fn.latestObs(161651).getValueCoded()"/>";
     //On ready start
     jq(function () {
         var strtext = "";
@@ -60,6 +62,7 @@
         jq('#hiv-final-result select').attr("style", "pointer-events:none;");
         jq("#hiv-test1-result select").change(firstTestSelected);
         jq("#hiv-test2-result select").change(secondTestSelected);
+        jq('#tbl-known-positive').hide();
         //test kit expiry
         jq("#expiry-date input").change(expiryDateSelected);
         //Family planning validation
@@ -70,11 +73,14 @@
             jq('#art-and-prophylaxis').show();
             jq('#who-staging').show();
             jq('#vl-sample').show();
+            jq('#tbl-known-positive').show();
+            jq('#hiv-known-positive:text').val('Positive');
         }else{
             jq('#tbl-hiv-test').show();
             jq('#art-and-prophylaxis').hide();
             jq('#who-staging').hide();
             jq('#vl-sample').hide();
+            jq('#tbl-known-positive').hide();
         }
         if(PATIENT_IS_REPORTED_HIV == 703){
             jq('#hiv-status:text').val('Positive');
@@ -183,6 +189,13 @@
             jq(".lot-number2 input").prop("disabled", false);
             jq("#expiry-date2 input").prop("disabled", false);
             getField('hiv-final-result.value').val(1138);
+        }
+
+        //Prepopulate infant feeding option if available
+        if(ANC_COUNSELLED_ON_INFANT_FEEDING == 161651 || DIS_COUNSELLED_ON_INFANT_FEEDING == 1065){
+            getField('infant-feeding.value').prop("selectedIndex", 1);
+        }else{
+            getField('infant-feeding.value').prop("selectedIndex", 0);
         }
     });
     //on ready end
@@ -404,7 +417,7 @@
 							<tr>
 								<td>Date of delivery:</td>
 								<td>
-									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-date" allowTime="false"/>
+									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-date" allowTime="false" allowFutureDates="false" required = "true"/>
 								</td>
 								<td>Mode of Delivery:</td>
 								<td>
@@ -621,13 +634,19 @@
 							<td>
 								<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
+							<td>Counselled on infant feeding?</td>
+							<td>
+								<obs conceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="infant-feeding"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 style="dropdown" answerLabels="YES,NO"/>
+							</td>
 						</tr>
 						<tr>
 							<td>Baby Immunization Started</td>
 							<td>
 								<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-							<td>Counseling on Family Planning</td>
+							<td>Counseling on Family Planning?</td>
 							<td>
 								<obs conceptId="1382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
 							</td>
@@ -646,6 +665,25 @@
 				<table align="center" width="100%" class="tb1">
 					<tr>
 						<td>
+							<br/>
+							<strong>HIV Testing</strong>
+							<hr />
+							<table id="tbl-known-positive" border="1">
+								<tr>
+									<td>
+										<u>
+											HIV Test Recorded Recently
+										</u>
+										<br/>
+										<br/>Final results:
+										<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Date:
+										<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+										<br/>
+									</td>
+								</tr>
+							</table>
 							<table id="tbl-hiv-test">
 								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 									<tr>
@@ -813,7 +851,7 @@
 				<legend>Client monitoring</legend>
 				<table align="center" width="100%" class="tb1">
 					<tr>
-						<td>Has the client undergone antenatal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;  </td>
+						<td>Has the client undergone post natal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;  </td>
                             <td>
 							<obs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 id="physical-exercises"

@@ -28,8 +28,7 @@ public class ANCCaCxScreeningResultsDataEvaluator implements EncounterDataEvalua
         String qry = "select\n" +
                 "v.encounter_id,\n" +
                 "(case v.cacx_screening when 703 then \"POSITIVE\" when 664 then \"NEGATIVE\" when 159393 then \"Presumed\" when 1118 then \"Not Done\" when 1175 then \"N/A\" else \"\" end) as cacx_screening\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

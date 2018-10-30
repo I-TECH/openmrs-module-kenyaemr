@@ -228,8 +228,8 @@
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
-		<property name="template" value="kenyaemr:hts/hts_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:7,dataset:HTSInformation" />
+		<property name="template" value="kenyaemr:pmtct/hei_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:8,dataset:HEIRegister" />
 	</bean>
 
 </beans>

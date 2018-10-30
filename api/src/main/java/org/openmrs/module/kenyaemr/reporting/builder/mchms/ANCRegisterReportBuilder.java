@@ -106,6 +106,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Gravida", new ANCGravidaDataDefinition(),"");
         dsd.addColumn("Height", new ANCHeightDataDefinition(),"");
         dsd.addColumn("LMP", new ANCLmpDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
+        dsd.addColumn("Gestation", new ANCGestationDataDefinition(),"");
         dsd.addColumn("Ultra Sound", new ANCEDDUltrasoundDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Weight", new ANCWeightDataDefinition(),"");
         dsd.addColumn("Blood Pressure", new ANCBloodPressureDataDefinition(),"");
@@ -114,6 +115,9 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("VDRL Done", new ANCVDRLDoneDataDefinition(),"");
         dsd.addColumn("VDRL Results", new ANCVDRLResultsDataDefinition(),"");
         dsd.addColumn("VDRL Treated", new ANCVDRLTreatedDataDefinition(),"");
+        dsd.addColumn("HIV Status before First ANC", new ANCHIVStatusBeforeFirstANCDataDefinition(),"");
+        dsd.addColumn("HIV Test One", new ANCHIVTestOneDataDefinition(),"");
+        dsd.addColumn("HIV Test Two", new ANCHIVTestTwoDataDefinition(),"");
         dsd.addColumn("HIV Test Results", new ANCFinalTestResultsDataDefinition(),"");
         dsd.addColumn("WHO Stage", new ANCWHOStageDataDefinition(),"");
         dsd.addColumn("NVP Dispensed", new ANCNVPDispensedDataDefinition(),"");

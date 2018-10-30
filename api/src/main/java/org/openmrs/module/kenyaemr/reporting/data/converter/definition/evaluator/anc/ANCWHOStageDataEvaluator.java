@@ -28,8 +28,7 @@ public class ANCWHOStageDataEvaluator implements EncounterDataEvaluator {
         String qry = "select\n" +
                 "v.encounter_id,\n" +
                 "(case v.who_stage when 1204 then \"WHO stage1\" when 1205 then \"WHO stage2\" when 1206 then \"WHO stage3\" when 1207 then \"WHO stage4\" else \"\" end) as who_stage\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

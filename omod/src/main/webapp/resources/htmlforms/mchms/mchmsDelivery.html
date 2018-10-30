@@ -137,7 +137,7 @@
         });
     //on ready end
         function onOutcomeChange() {
-            if (getValue('maternal-outcome.value') == 160432) {
+            if (getValue('maternal-outcome.value') == 134612) {
                 //TODO: Need to consider validation when mother dies at delivery
                 jq('#tr-maternal-death-audited').show();
             }else{     //Alive
@@ -332,7 +332,7 @@
 							</td>
 							<td>Date and time of Delivery:</td>
 							<td>
-								<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="true"/>
+								<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="true" required = "true"/>
 							</td>
 						</tr>
 						<tr>

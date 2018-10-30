@@ -28,9 +28,9 @@ public class HEIEntryPointDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  (case referral_source when 160537 then \"Paediatric\" when 160542 then \"OPD\" when 160456 then \"Maternity\" when 162050 then \"CCC\"  when 160538 then \"MCH/PMTCT\" when 5622 then \"Other\" else \"\" end) as referral_source\n" +
+                "  (case referral_source when 5485 then \"1\" when 160542 then \"2\" when 160456 then \"3\" when 162050 then \"4\"  when 160538 then \"5\" when 5622 then \"6\" else \"\" end) as referral_source\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id";
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

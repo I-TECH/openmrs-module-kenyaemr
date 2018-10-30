@@ -42,7 +42,10 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		//EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT patient_id from kenyaemr_etl.etl_hei_enrollment where date(visit_date) BETWEEN date(:startDate) AND date(:endDate)  ";
+		String qry = "SELECT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
+				"    inner join kenyaemr_etl.etl_hei_enrollment he\n" +
+				"    on he.patient_id = hf.patient_id where he.visit_date <= hf.visit_date\n" +
+				"                                          and date(hf.visit_date) between \"2017-08-01\" and \"2018-10-10\";";
 
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();

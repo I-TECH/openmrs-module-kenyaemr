@@ -28,8 +28,7 @@ public class ANCVDRLResultsDataEvaluator implements EncounterDataEvaluator {
         String qry = "select\n" +
                 "v.encounter_id,\n" +
                 "(case v.syphilis_test_status when 1229 then \"Negative\" when 1228 then \"Positive\" when 1304 then \"N/A\" when 1402 then \"N/A\" else \"N/A\" end) as syphilis_test_results\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY e.encounter_id";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

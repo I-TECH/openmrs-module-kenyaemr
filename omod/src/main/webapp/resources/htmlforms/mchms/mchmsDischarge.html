@@ -37,7 +37,6 @@
         //On ready start
         jq(document).ready(function () {
             //Prepopulate infant feeding option if available
-
             if(ANC_COUNSELLED_ON_INFANT_FEEDING == 161651 || DIS_COUNSELLED_ON_INFANT_FEEDING == 1065){
                 getField('infant-feeding.value').prop("selectedIndex", 1);
                }else{
