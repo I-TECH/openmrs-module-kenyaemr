@@ -27,10 +27,10 @@ public class HEIGivenNVPCTXMonth18_24DataEvaluator implements PersonDataEvaluato
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select  f.patient_id,\n" +
-                "  CONCAT( case f.nvp_given when 80586 then \"Yes\" else \"No\" end,'____________', case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as givenCTXorNVP_18_24_months\n" +
+                "  concat_ws('\\r\\n', case f.nvp_given when 80586 then \"Yes\" else \"No\" end, case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as givenCTXorNVP\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "                                                       d.patient_id = f.patient_id\n" +
+                "      d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
                 "GROUP BY patient_id;";
 

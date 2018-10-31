@@ -27,9 +27,9 @@ public class HEIMotherFacilityAndCCCNumberDataEvaluator implements PersonDataEva
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select  patient_id,\n" +
-                "  CONCAT( health_facility_name,'____________', parent_ccc_number) as mothersFacilityAndCCC\n" +
-                "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "  concat_ws('\\r\\n',health_facility_name,parent_ccc_number) as mothersFacilityAndCCC\n" +
+                "                from kenyaemr_etl.etl_hei_enrollment\n" +
+                "                GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

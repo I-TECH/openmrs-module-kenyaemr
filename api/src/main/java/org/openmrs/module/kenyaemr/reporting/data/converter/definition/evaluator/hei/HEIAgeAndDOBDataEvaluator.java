@@ -27,10 +27,10 @@ public class HEIAgeAndDOBDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select hf.patient_id,\n" +
-                "   concat_ws('____________',d.DOB,timestampdiff(year,d.DOB,hf.visit_date)) as DOB\n" +
-                "from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
-                "  inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "    on hf.patient_id = d.patient_id;";
+                "                concat_ws('\\r\\n',d.DOB,(timestampdiff(year,d.DOB,hf.visit_date))) as DOB\n" +
+                "                from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
+                "                  inner join kenyaemr_etl.etl_patient_demographics d\n" +
+                "                    on hf.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
