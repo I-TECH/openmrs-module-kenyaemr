@@ -26,8 +26,10 @@ public class ANCCaCxScreeningResultsDataEvaluator implements EncounterDataEvalua
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "v.encounter_id,\n" +
-                "(case v.cacx_screening when 703 then \"POSITIVE\" when 664 then \"NEGATIVE\" when 159393 then \"Presumed\" when 1118 then \"Not Done\" when 1175 then \"N/A\" else \"\" end) as cacx_screening\n" +
+                "       v.encounter_id,\n" +
+                "  CONCAT_WS('\\r\\n',(case v.cacx_screening_method when 885 then \"Papanicolaou Smear\" when 162816 then \"Colposcopy of cervix with acetic acid\" when 5622 then \"Other\" else \"\" end),\n" +
+                "            (case v.cacx_screening when 703 then \"POSITIVE\" when 664 then \"NEGATIVE\" when 159393 then \"Presumed\" when 1118 then \"Not Done\" when 1175 then \"N/A\" else \"\" end)\n" +
+                "       ) as Caxc_done_results\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

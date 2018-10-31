@@ -28,8 +28,9 @@ public class MaternityOtherDeliveryComplicationsDataEvaluator implements PersonD
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  other_delivery_complications\n" +
-                "from kenyaemr_etl.etl_mchs_delivery;";
+                "  (case delivery_complications when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as delivery_complications\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

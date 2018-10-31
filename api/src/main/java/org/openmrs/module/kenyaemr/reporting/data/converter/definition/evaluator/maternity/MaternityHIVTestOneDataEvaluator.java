@@ -27,7 +27,7 @@ public class MaternityHIVTestOneDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "  CONCAT_WS ('\\n',v.test_1_kit_name,'____________',v.test_1_kit_lot_no,'____________',v.test_1_kit_expiry,'____________',v.test_1_result) as Test_one_results\n" +
+                "  CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,v.test_1_result) as Test_one_results\n" +
                 "from kenyaemr_etl.etl_mchs_delivery v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

@@ -26,7 +26,7 @@ public class ANCHIVTestTwoDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "  CONCAT_WS ('\\n',v.test_2_kit_name,'____________',v.test_2_kit_lot_no,'____________',v.test_2_kit_expiry,'____________',v.test_2_result) as Test_two_results\n" +
+                "  CONCAT_WS ('\\r\\n',v.test_2_kit_name,v.test_2_kit_lot_no,v.test_2_kit_expiry,v.test_2_result) as Test_two_results\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

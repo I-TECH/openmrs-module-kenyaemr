@@ -27,7 +27,7 @@ public class PNCTestOneResultsDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       CONCAT_WS ('\\n',v.test_1_kit_name,'____________',v.test_1_kit_lot_no,'____________',v.test_1_kit_expiry,'____________',(case v.test_1_result  when 664 then \"Negative\" when 703 then \"Positive\"\n" +
+                "       CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,(case v.test_1_result  when 664 then \"Negative\" when 703 then \"Positive\"\n" +
                 "       when 163611 then \"Invalid\" else \"NA\" end)) as Test_one_results\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
