@@ -29,8 +29,7 @@ public class MaternityDischargeDateDataEvaluator implements PersonDataEvaluator 
         String qry = "select\n" +
                 "  patient_id,\n" +
                 " discharge_date\n" +
-                "from kenyaemr_etl.etl_mchs_discharge\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_discharge;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -28,8 +28,7 @@ public class MaternityDischargeStatusOfBabyDataEvaluator implements PersonDataEv
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case baby_status when 163016 then \"Alive\" when 160432 then \"Dead\" else \"\" end) as baby_status\n" +
-                "from kenyaemr_etl.etl_mchs_discharge\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_discharge;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

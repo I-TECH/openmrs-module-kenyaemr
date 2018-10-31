@@ -27,12 +27,12 @@ public class PNCPriorKnownStatusDataEvaluator implements EncounterDataEvaluator 
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                " (case v.mother_hiv_status when v.mother_hiv_status=1067 then \"Unknown\"\n" +
-                " when v.mother_hiv_status=664 then \"NEGATIVE\" when e.hiv_status=703\n" +
-                " then \"Known Positive\" when (e.hiv_status!=703 and v.mother_hiv_status = 703) then \"Positive\"\n" +
-                "  else \"\" end) as mother_hiv_status\n" +
+                "       (case v.mother_hiv_status when v.mother_hiv_status=1067 then \"Unknown\"\n" +
+                "                                 when v.mother_hiv_status=664 then \"NEGATIVE\" when e.hiv_status=703\n" +
+                "                  then \"Known Positive\" when (e.hiv_status!=703 and v.mother_hiv_status = 703) then \"Positive\"\n" +
+                "                                 else \"\" end) as mother_hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                " on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "         on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
                 "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

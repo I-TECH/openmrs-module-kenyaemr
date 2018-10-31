@@ -27,9 +27,8 @@ public class PNCCervicalCancerScreeningMethodDataEvaluator implements EncounterD
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.breast when 885 then \"PAPANICOLAOU SMEAR\" when 162816 then \"Colposcopy of cervix with acetic acid\" when 5622 then \"Other\" else \"\" end) as \"Caxc Screening method\"\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;\n";
+                "       (case v.breast when 885 then \"Papanicolaou Smear\" when 162816 then \"Colposcopy of cervix with acetic acid\" when 5622 then \"Other\" else \"\" end) as \"Caxc Screening method\"\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

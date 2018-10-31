@@ -26,10 +26,9 @@ public class MaternityARVProphylaxisIssuedAtMaternityDataEvaluator implements Pe
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  patient_id,\n" +
-                "  (case prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE / TRIMETHOPRIM\" when 74250 then \"DAPSONE\"  when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "       patient_id,\n" +
+                "       (case prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE / TRIMETHOPRIM\" when 74250 then \"DAPSONE\"  when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

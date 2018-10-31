@@ -26,10 +26,9 @@ public class MaternityAdmissionNumberDataEvaluator implements PersonDataEvaluato
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  patient_id,\n" +
-                "  anc_number\n" +
-                "from kenyaemr_etl.etl_mch_enrollment\n" +
-                "GROUP BY patient_id;";
+                "       patient_id,\n" +
+                "       anc_number\n" +
+                "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -29,8 +29,7 @@ public class MaternityBabyNotificationNumberDataEvaluator implements PersonDataE
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  birth_notification_number\n" +
-                "from kenyaemr_etl.etl_mchs_discharge\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_discharge;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

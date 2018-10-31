@@ -27,9 +27,8 @@ public class PNCCervicalCancerScreeningResultsDataEvaluator implements Encounter
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "  (case v.cacx_screening when 664 then \"Normal\" when 159393 then \"Suspected\" when 703 then \"Confirmed\" when 1175 then \"NA\" WHEN 1118 then \"NA\" else \"\" end) as \"Caxc Screening results\"\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "  (case v.cacx_screening when 664 then \"Normal\" when 159393 then \"Suspected\" when 703 then \"Confirmed\" when 1175 then \"NA\" WHEN 1118 then \"Not Done\" else \"\" end) as \"Caxc Screening results\"\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

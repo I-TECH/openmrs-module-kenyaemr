@@ -28,9 +28,7 @@ public class PNCTemperatureDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select v.encounter_id,\n" +
                 "v.temperature\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                "on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;\n";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

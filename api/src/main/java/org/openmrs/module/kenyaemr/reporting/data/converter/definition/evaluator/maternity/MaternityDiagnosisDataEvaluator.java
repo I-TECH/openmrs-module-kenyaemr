@@ -29,8 +29,7 @@ public class MaternityDiagnosisDataEvaluator implements PersonDataEvaluator {
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  other_delivery_complications\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -29,8 +29,7 @@ public class MaternityEDDUltrasoundDateDataEvaluator implements PersonDataEvalua
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  edd_ultrasound\n" +
-                "from kenyaemr_etl.etl_mch_enrollment\n" +
-                "GROUP BY patient_id;";
+                "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

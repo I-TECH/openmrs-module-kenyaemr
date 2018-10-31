@@ -32,7 +32,7 @@ public class PNCRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_mch_postnatal_visit where date(visit_date) BETWEEN date(:startDate) AND date(:endDate)  ";
+		String qry = "SELECT pv.encounter_id from kenyaemr_etl.etl_mch_postnatal_visit pv inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = pv.patient_id where e.date_of_discontinuation is null and e.visit_date <= pv.visit_date and date(pv.visit_date) BETWEEN date(:startDate) AND date(:endDate);";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

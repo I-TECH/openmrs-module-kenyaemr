@@ -26,9 +26,9 @@ public class PNCDeliveryDateDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       v.delivery_date\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "       d.date_of_delivery\n" +
+                "from  kenyaemr_etl.etl_mchs_delivery d,kenyaemr_etl.etl_mch_postnatal_visit v, kenyaemr_etl.etl_mch_enrollment e\n" +
+                "     where v.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

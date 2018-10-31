@@ -27,11 +27,10 @@ public class MaternityARVProphylaxisToBabyAtMaternityDataEvaluator implements Pe
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  patient_id,\n" +
-                "  (case when etl_mchs_delivery.baby_azt_dispensed = 160123 then \"Yes\" when etl_mchs_delivery.baby_azt_dispensed  = 1066 then \"No\" \n" +
-                "  when  etl_mchs_delivery.baby_nvp_dispensed = 80586 then \"Yes\" when etl_mchs_delivery.baby_nvp_dispensed = 80586 = 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as baby_prophlyaxis_given\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+                "       patient_id,\n" +
+                "       (case when etl_mchs_delivery.baby_azt_dispensed = 160123 then \"Yes\" when etl_mchs_delivery.baby_azt_dispensed  = 1066 then \"No\"\n" +
+                "             when  etl_mchs_delivery.baby_nvp_dispensed = 80586 then \"Yes\" when etl_mchs_delivery.baby_nvp_dispensed = 80586 = 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as baby_prophlyaxis_given\n" +
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -15,11 +15,13 @@
 package org.openmrs.module.kenyaemr.reporting.builder.mchms;
 
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
@@ -61,7 +63,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         CohortDefinition cd = new MaternityRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("Maternity All Clients");
+        cd.setName("Maternity Register Cohort");
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
@@ -90,7 +92,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
 	protected PatientDataSetDefinition maternityDataSetDefinition() {
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition("HEI Data set definition");
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition("maternityAllClients");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -100,11 +102,15 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+		PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Unique Patient No", identifierDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+		dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), "");
+		dsd.addColumn("Age", new AgeDataDefinition(), "");
 
 		// new columns
 		dsd.addColumn("Admission Number", new MaternityAdmissionNumberDataDefinition(),"");
@@ -119,6 +125,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Delivery Date", new MaternityDeliveryDateDataDefinition(),"",new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Delivery Time", new MaternityDeliveryTimeDataDefinition(),"");
 		dsd.addColumn("Gestation at Birth in weeks", new MaternityGestationAtBirthDataDefinition(),"");
+		dsd.addColumn("Mode of Delivery", new MaternityDeliveryModeDataDefinition(),"");
 		dsd.addColumn("Blood Loss", new MaternityBloodLossDataDefinition(),"");
 		dsd.addColumn("Placenta Complete", new MaternityPlacentaCompleteDataDefinition(),"");
 		dsd.addColumn("Blood loss", new MaternityBloodLossDataDefinition(),"");
