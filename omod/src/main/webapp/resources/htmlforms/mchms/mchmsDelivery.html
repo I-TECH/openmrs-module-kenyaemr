@@ -40,6 +40,15 @@
             //On delivery outcome change
             jq('#maternal-outcome select').change(onOutcomeChange);
             jq('#tr-maternal-death-audited').hide();
+            //Delivery complications
+            jq('#delivery-complications select').change(complicationsChange);
+            var motherComplications = jq('#delivery-complications select').val();
+            if (motherComplications == 1065) {
+                jq("#explain-complications textarea").prop("disabled", false);
+            }else{
+                jq("#explain-complications textarea").prop("disabled", true);
+                getField('explain-complications.value').val("");
+            }
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
             jq('#partner-tested select').change(onPartnerTestedChange);
@@ -136,6 +145,16 @@
 
         });
     //on ready end
+        function complicationsChange() {
+            var motherComplications = jq('#delivery-complications select').val();
+            if (motherComplications == 1065) {
+                jq("#explain-complications textarea").prop("disabled", false);
+            }else{
+                jq("#explain-complications textarea").prop("disabled", true);
+                getField('explain-complications.value').val("");
+            }
+        }
+
         function onOutcomeChange() {
             if (getValue('maternal-outcome.value') == 134612) {
                 //TODO: Need to consider validation when mother dies at delivery
@@ -366,15 +385,22 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Other delivery complications </td>
+							<td>Delivery complications ? </td>
 							<td>
-							<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="32"/>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Yes,No"  id="delivery-complications"
+								/>
 							</td>
 							<td>Resuscitation Done:</td>
 							<td><obs conceptId="162131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 						</tr>
 						<tr>
+							<td>Explain delivery complications </td>
+							<td>
+								<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="5" id="explain-complications"/>
+							</td>
 							<td>Place of Delivery:</td>
 							<td>
 								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -638,6 +664,22 @@
 					</fieldset>
 				</td>
 		</tr>
+			<tr>
+				<td colspan="2">
+					<fieldset>
+						<legend>Next Appointment </legend>
+						<table align="center" width="100%" class="tb1">
+							<tr>
+								<td>Next appointment date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+									<span style="color:red;"><strong>*</strong></span>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
 	    <tr>
 			<td colspan="2">
 				<legend>Clinical Notes</legend>
