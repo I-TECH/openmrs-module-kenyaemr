@@ -26,9 +26,12 @@ public class PNCTestedForHIVAtPNCDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select pn.encounter_id,\n" +
-                "  (case pn.final_test_result when \"\" then \"Not done\" else \"Initial\" end) as Tested_for_hiv_at_pnc\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit pn;";
+        String qry = "select\n" +
+                "       max(v.encounter_id),\n" +
+                "       (case (SELECT count(encounter_id)  FROM kenyaemr_etl.etl_mch_postnatal_visit WHERE\n" +
+                "           encounter_id != (SELECT MAX(v1.encounter_id) FROM kenyaemr_etl.etl_mch_postnatal_visit v1)\n" +
+                "           and  final_test_result = \"Negative\")  when 0 then \"Initial\" else \"Retest\" end)\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -26,14 +26,12 @@ public class ANCHIVTestTypeDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select av.encounter_id,(case t.final_test_result when  (t.final_test_result = 703 or t.final_test_result = 664\n" +
-                "                                                      or  t.final_test_result = 1138)\n" +
-                "and av.final_test_result is not null then \"Retest\" when (t.final_test_result is null\n" +
-                "                                              and av.final_test_result is not null) then \"Initial\"\n" +
-                "                                              when (t.final_test_result is null and av.final_test_result is null)\n" +
-                "                                              then \"Not Done\" else \"Not done\" end) as Hiv_Test_Type\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit av inner join kenyaemr_etl.etl_hts_test t\n" +
-                "on t.patient_id = av.patient_id;";
+        String qry = "select\n" +
+                "       max(v.encounter_id),\n" +
+                "       (case (SELECT count(encounter_id)  FROM kenyaemr_etl.etl_mch_antenatal_visit WHERE\n" +
+                "           encounter_id != (SELECT MAX(v1.encounter_id) FROM kenyaemr_etl.etl_mch_antenatal_visit v1)\n" +
+                "            and  final_test_result = \"Negative\")  when 0 then \"Initial\" else \"Retest\" end)\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
