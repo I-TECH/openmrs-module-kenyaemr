@@ -236,7 +236,7 @@
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
-		<property name="template" value="kenyaemr:pmtct/maternity_register_template.xls" />
+		<property name="template" value="kenyaemr:pmtct/Maternity_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:12,dataset:maternityAllClients" />
 	</bean>
 	<!-- PNC register-->
