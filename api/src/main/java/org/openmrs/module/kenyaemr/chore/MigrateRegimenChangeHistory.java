@@ -13,20 +13,15 @@ import org.openmrs.Concept;
 import org.openmrs.OrderSet;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.FormService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenJsonGenerator;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,12 +30,7 @@ import java.util.List;
  */
 @Component("kenyaemr.chore.migrateRegimenChangeHistory")
 public class MigrateRegimenChangeHistory extends AbstractChore {
-
-	@Autowired
-	private EncounterService encounterService;
-
-	@Autowired
-	private FormService formService;
+	
 	/**
 	 * @see AbstractChore#perform(PrintWriter)
 	 */
@@ -49,51 +39,74 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 	public void perform(PrintWriter out) {
 
 		ConceptService conceptService = Context.getConceptService();
-		Concept ARVRegimenConcept = conceptService.getConcept(1205);
+		Concept ARVRegimenConcept = conceptService.getConcept(1085);
 		Concept TBRegimenConcept = conceptService.getConcept(160021);
-		List<Concept> regimenConcepts = Arrays.asList(ARVRegimenConcept, TBRegimenConcept);
 
+		int tbRegimenConceptId = 160021;
+		int arvRegimenConceptId = 1085;
 
-		List<Patient> allPatients = Context.getPatientService().getAllPatients();
+		List<Patient> allPatients = Context.getPatientService().getAllPatients(false);
 
 
 		/*for (Patient patient : allPatients) {
-			for (Concept masterSet : regimenConcepts) {
-				RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
-				List<RegimenChange> changes = history.getChanges();
-				System.out.println("Processing patient: " + patient.getPatientId());
-				System.out.println("Processing patient changes: " + changes.size());
+			RegimenChangeHistory tbRegimenHistory = RegimenChangeHistory.forPatient(patient, TBRegimenConcept);
+			RegimenChangeHistory hivRegimenHistory = RegimenChangeHistory.forPatient(patient, ARVRegimenConcept);
 
-				for (RegimenChange change : changes) {
-					RegimenOrder regimen = change.getStarted();
-					Date startDate = change.getDate();
-					OrderSet regimenOrderset = RegimenJsonGenerator.getOrderSetFromMembers(regimen.getDrugOrders());
-					*//*if (regimenOrderset != null) {
-						String ordersetName = regimenOrderset.getName();
-						Integer ordersetID = regimenOrderset.getOrderSetId();
+			List<RegimenChange> tbRegimenChanges = tbRegimenHistory.getChanges();
+			List<RegimenChange> arvRegimenChanges = hivRegimenHistory.getChanges();
 
-						Date endDate = null;
-						List<String> changeReasons = new ArrayList<String>();
+			System.out.println("Processing patient: " + patient.getPatientId() + ", " +
+					"TB Rg changes: " + tbRegimenChanges.size() + ", ARV rg changes: " + arvRegimenChanges.size());
 
+			if (tbRegimenChanges.size() < 1 && arvRegimenChanges.size() < 1) { continue;}
 
+			if (tbRegimenChanges.size() > 0) {
+				//processRegimenChanges(patient, tbRegimenConceptId, tbRegimenChanges);
+			}
 
-						*//**//*if (change.getChangeReasons() != null) {
-							for (Concept c : change.getChangeReasons()) {
-								changeReasons.add(ui.format(c));
-							}
-						}
-						if (change.getChangeReasonsNonCoded() != null) {
-							changeReasons.addAll(change.getChangeReasonsNonCoded());
-						}*//**//*
-
-					}*//*
-				}
+			if (arvRegimenChanges.size() > 0) {
+				//processRegimenChanges(patient, arvRegimenConceptId, arvRegimenChanges);
 
 			}
 
 		}*/
+		out.println("Completed migration for drug regimen history");
 
-		out.println("Matching found "+" observations");
+	}
 
+	private void processRegimenChanges(Patient patient, int masterSet, List<RegimenChange> changes) {
+		for (RegimenChange change : changes) {
+            RegimenOrder regimen = change.getStarted();
+            if (regimen != null) {
+				Date startDate = change.getDate();
+				OrderSet regimenOrderset = RegimenJsonGenerator.getOrderSetFromMembers(regimen.getDrugOrders());
+				if (regimenOrderset != null) {
+					String ordersetName = regimenOrderset.getName();
+					Integer ordersetID = regimenOrderset.getOrderSetId();
+
+					Date endDate = null;
+					List<String> changeReasons = new ArrayList<String>();
+
+					/*DrugRegimenHistory changeEvent = new DrugRegimenHistory();
+					changeEvent.setPatient(patient);
+					changeEvent.setOrderSetId(ordersetID);
+					changeEvent.setRegimenName(ordersetName);
+					changeEvent.setDateStarted(startDate);
+					changeEvent.setProgram(masterSet == 1085 ? "HIV" : "TB");*/
+					//historyService.saveDrugRegimenHistory(changeEvent);
+
+                /*if (change.getChangeReasons() != null) {
+                    for (Concept c : change.getChangeReasons()) {
+                        changeReasons.add(ui.format(c));
+                    }
+                }
+                if (change.getChangeReasonsNonCoded() != null) {
+                    changeReasons.addAll(change.getChangeReasonsNonCoded());
+                }*/
+
+				}
+            }
+
+        }
 	}
 }

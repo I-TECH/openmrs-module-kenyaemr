@@ -19,8 +19,8 @@
 	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
 	<author>${project.parent.organization.name}</author>
 	<description>${project.parent.description}</description>
-	<!--<require_version>${openMRSVersion}</require_version>-->
-	<require_version>1.11.3 - 1.11.*, 1.10.2 - 1.10.*, 1.12.*</require_version>
+	<require_version>${openMRSVersion}</require_version>
+	<!--<require_version>1.11.*, 1.10.2 - 1.10.*, 1.12.*</require_version>-->
 
 	<require_modules>
 		<require_module version="${appframeworkVersion}">org.openmrs.module.appframework</require_module>
@@ -33,12 +33,12 @@
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
 		<require_module version="${groovyVersion}">org.openmrs.module.groovy</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
-<!--
 		<require_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</require_module>
--->
-		<!--<require_module version="${kenyaemrChartsVersion}">org.openmrs.module.kenyaemrCharts</require_module>
-		<require_module version="${kenyaemrHivTestingVersion}">org.openmrs.module.hivtestingservices</require_module>-->
 	</require_modules>
+
+	<!--<aware_of_modules>
+		<aware_of_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</aware_of_module>
+	</aware_of_modules>-->
 
 	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
 
