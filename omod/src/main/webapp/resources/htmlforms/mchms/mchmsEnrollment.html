@@ -333,19 +333,6 @@
 				<td>
 					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="menarche-age" required="false"/>
 				</td>
-				<td width="250">Blood Group/Rhesus:</td>
-				<td>
-					<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-				</td>
-			</tr>
-			<tr>
-				<td>L.M.P:</td>
-				<td>
-					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
-
-					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-					Estimated
-				</td>
 				<td>TB Screening results:</td>
 				<td>
 					<obs id="tb-result-status"
@@ -356,6 +343,14 @@
 				</td>
 			</tr>
 			<tr>
+				<td>L.M.P:</td>
+				<td>
+					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+
+					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+					Estimated
+				</td>
+
 				<td width="250">Date of first ANC visit:</td>
 				<td>
 					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
@@ -401,13 +396,19 @@
 								</td>
 							</tr>
 							<tr>
-								<td>Serology:</td>
+								<td>Syphylis/Serology:</td>
 								<td>
 									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 								<td>BS for MPS:</td>
 								<td>
 									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td width="250">Blood Group/Rhesus:</td>
+								<td>
+									<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
 						</table>
