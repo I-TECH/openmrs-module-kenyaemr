@@ -27,7 +27,7 @@ public class PNCPartnerTestedHIVInPNCDataEvaluator implements EncounterDataEvalu
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "(case v.partner_hiv_tested when 1065 then \"Yes\" when 1066 then \"No\"  else \"NA\" end) as partner_tested_at_anc\n" +
+                "(case v.partner_hiv_tested when 1065 then \"Yes\" when 1066 then \"No\"  else \" \" end) as partner_tested_at_anc\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v ;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

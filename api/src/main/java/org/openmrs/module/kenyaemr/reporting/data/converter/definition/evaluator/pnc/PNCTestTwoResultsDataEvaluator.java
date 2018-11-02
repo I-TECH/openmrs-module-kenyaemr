@@ -27,8 +27,7 @@ public class PNCTestTwoResultsDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       CONCAT_WS ('\\r\\n',v.test_2_kit_name,v.test_2_kit_lot_no,v.test_2_kit_expiry,(case v.test_2_result  when 664 then \"Negative\" when 703 then \"Positive\"\n" +
-                "       when 163611 then \"Invalid\" else \"NA\" end)) as Test_one_results\n" +
+                "  CONCAT_WS ('\\r\\n',v.test_2_kit_name,v.test_2_kit_lot_no,v.test_2_kit_expiry,v.test_2_result) as Test_two_results\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
