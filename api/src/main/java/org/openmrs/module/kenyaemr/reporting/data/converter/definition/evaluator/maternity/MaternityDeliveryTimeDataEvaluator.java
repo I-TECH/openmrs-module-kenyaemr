@@ -28,7 +28,7 @@ public class MaternityDeliveryTimeDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  date_of_delivery\n" +
+                "  time(date_of_delivery)\n" +
                 "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
