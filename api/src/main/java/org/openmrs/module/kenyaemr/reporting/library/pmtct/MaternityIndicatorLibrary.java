@@ -15,7 +15,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.pmtct;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.maternity.*;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -59,7 +58,7 @@ public class MaternityIndicatorLibrary {
     }
 
     public CohortIndicator clientsDead() {
-        return cohortIndicator("Clients Dead", ReportUtils.<CohortDefinition>map(new MaternityDeadCohortDefinition(), ""));
+        return cohortIndicator("Clients Dead", ReportUtils.<CohortDefinition>map(new StartedHAARTAtMaternityCohortDefinition(), ""));
     }
 
     public CohortIndicator preTermBabies() {
@@ -102,7 +101,7 @@ public class MaternityIndicatorLibrary {
     }
 
     public CohortIndicator normalDeliveries() {
-        return cohortIndicator("Normal Deliveries", ReportUtils.<CohortDefinition>map(new normalDeliveriesCohortDefinition(), ""));
+        return cohortIndicator("Normal Deliveries", ReportUtils.<CohortDefinition>map(new NormalDeliveriesCohortDefinition(), ""));
     }
 
     public CohortIndicator caesareanSections() {

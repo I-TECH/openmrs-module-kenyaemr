@@ -1,6 +1,7 @@
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.maternity;
 
 import org.openmrs.Encounter;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
@@ -10,24 +11,12 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
 import java.util.Date;
 
-/**
- * HTS Register cohort definition
- */
-@Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.ANCRegisterCohortDefinition")
-public class StartedHAARTAtMaternityCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
+    /**
+     * Maternity Register cohort definition
+     */
 
-    @ConfigurationProperty
-    private Date asOfDate;
+    @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
+    @Localized("reporting.StartedHAARTAtMaternityCohortDefinition")
+    public class StartedHAARTAtMaternityCohortDefinition extends BaseCohortDefinition {
 
-    public StartedHAARTAtMaternityCohortDefinition() {
     }
-
-    public Date getAsOfDate() {
-        return asOfDate;
-    }
-
-    public void setAsOfDate(Date asOfDate) {
-        this.asOfDate = asOfDate;
-    }
-}

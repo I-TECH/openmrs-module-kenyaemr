@@ -4,12 +4,13 @@ import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
 /**
  * Maternity Register cohort definition
  */
 
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.InfantARVProphylaxisAtMaternityCohortDefinition")
-public class InfantARVProphylaxisAtMaternityCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.NoNormalDeliveriesCohortDefinition")
+public class NormalDeliveriesCohortDefinition extends BaseCohortDefinition {
 
 }

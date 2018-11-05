@@ -155,24 +155,5 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         return dsd;
 
     }
-    protected DataSetDefinition careAndTreatmentDataSet() {
-        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-        cohortDsd.setName("cohortIndicator");
-
-        String indParams = "";
-
-        cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
-        cohortDsd.addColumn("newOncare", "New on care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
-        cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
-        cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
-        cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");
-        cohortDsd.addColumn("screenedForTB", "Screened for TB", ReportUtils.map(rdqa.screenedForTB(), indParams), "");
-        cohortDsd.addColumn("knownPositives", "Total with known status", ReportUtils.map(rdqa.knownPositives(), indParams), "");
-        cohortDsd.addColumn("sampleFrame", "Total Patients", ReportUtils.map(rdqa.sampleFrame(), indParams), "");
-        cohortDsd.addColumn("sampleSize", "RDQA Patients", ReportUtils.map(rdqa.sampleSize(), indParams), "");
-
-        return cohortDsd;
-    }
-
 
 }

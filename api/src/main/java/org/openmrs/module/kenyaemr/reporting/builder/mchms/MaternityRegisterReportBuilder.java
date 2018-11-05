@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohort
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.*;
+import org.openmrs.module.kenyaemr.reporting.library.pmtct.MaternityIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -37,11 +38,13 @@ import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -53,6 +56,9 @@ import java.util.List;
 @Builds({"kenyaemr.mchcs.report.maternityRegister"})
 public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
+
+	@Autowired
+	MaternityIndicatorLibrary maternityIndicatorLibrary;
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
@@ -77,7 +83,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
 
         return Arrays.asList(
-                ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}"),
+				ReportUtils.map(maternityDataSet(), "")
         );
     }
 
@@ -161,5 +168,37 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Comments", new MaternityCommentsDataDefinition(),"");
 
 		return dsd;
+	}
+
+	protected DataSetDefinition maternityDataSet() {
+		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+		cohortDsd.setName("cohortIndicator");
+
+		String indParams = "";
+
+        cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
+        cohortDsd.addColumn("clientsWithPPH", "Clients With PPH", ReportUtils.map(maternityIndicatorLibrary.clientsWithPPH(), indParams), "");
+        cohortDsd.addColumn("clientsWithEclampsia", "Clients With Eclampsia", ReportUtils.map(maternityIndicatorLibrary.clientsWithEclampsia(), indParams), "");
+        cohortDsd.addColumn("clientsWithRapturedUterus", "Clients With Raptured Uterus", ReportUtils.map(maternityIndicatorLibrary.clientsWithRapturedUterus(), indParams), "");
+        cohortDsd.addColumn("clientsWithObstructedLabour", "Clients With Obstructed Labour", ReportUtils.map(maternityIndicatorLibrary.clientsWithObstructedLabour(), indParams), "");
+        cohortDsd.addColumn("clientsWithSepsis", "Clients With Sepsis", ReportUtils.map(maternityIndicatorLibrary.clientsWithSepsis(), indParams), "");
+        cohortDsd.addColumn("clientsAlive", "Clients Alive", ReportUtils.map(maternityIndicatorLibrary.clientsAlive(), indParams), "");
+        cohortDsd.addColumn("clientsDead", "Clients Dead", ReportUtils.map(maternityIndicatorLibrary.clientsDead(), indParams), "");
+        cohortDsd.addColumn("preTermBabies", "Pre-term Babies", ReportUtils.map(maternityIndicatorLibrary.preTermBabies(), indParams), "");
+        cohortDsd.addColumn("underWeightBabies", "Underweight Babies", ReportUtils.map(maternityIndicatorLibrary.underWeightBabies(), indParams), "");
+        cohortDsd.addColumn("liveBirths", "Live Births", ReportUtils.map(maternityIndicatorLibrary.liveBirths(), indParams), "");
+        cohortDsd.addColumn("stillBirths", "Still Births", ReportUtils.map(maternityIndicatorLibrary.stillBirths(), indParams), "");
+        cohortDsd.addColumn("initialTestAtMaternity", "Initial Test At Maternity", ReportUtils.map(maternityIndicatorLibrary.initialTestAtMaternity(), indParams), "");
+        cohortDsd.addColumn("positiveResultsAtMaternity", "HIV Positive Results at Maternity", ReportUtils.map(maternityIndicatorLibrary.positiveResultsAtMaternity(), indParams), "");
+        cohortDsd.addColumn("hivPositiveDeliveries", "HIV Positive Deliveries", ReportUtils.map(maternityIndicatorLibrary.hivPositiveDeliveries(), indParams), "");
+        cohortDsd.addColumn("adolescentsNewHivPositiveAtMaternity", "HIV Positive new Adolescents at Maternity", ReportUtils.map(maternityIndicatorLibrary.adolescentsNewHivPositiveAtMaternity(), indParams), "");
+        cohortDsd.addColumn("startedHAARTMaternity", "Started HAART at Maternity", ReportUtils.map(maternityIndicatorLibrary.startedHAARTMaternity(), indParams), "");
+        cohortDsd.addColumn("infantARVProphylaxisMaternity", "Given Infant ARV Prophylaxis Maternity", ReportUtils.map(maternityIndicatorLibrary.infantARVProphylaxisMaternity(), indParams), "");
+        cohortDsd.addColumn("normalDeliveries", "Normal Deliveries", ReportUtils.map(maternityIndicatorLibrary.normalDeliveries(), indParams), "");
+        cohortDsd.addColumn("caesareanSections", "Caesarean Sections", ReportUtils.map(maternityIndicatorLibrary.caesareanSections(), indParams), "");
+        cohortDsd.addColumn("breechDeliveries", "Breech Deliveries", ReportUtils.map(maternityIndicatorLibrary.breechDeliveries(), indParams), "");
+        cohortDsd.addColumn("assistedVaginalDeliveries", "Assisted Vaginal Deliveries", ReportUtils.map(maternityIndicatorLibrary.assistedVaginalDeliveries(), indParams), "");
+
+		return cohortDsd;
 	}
 }
