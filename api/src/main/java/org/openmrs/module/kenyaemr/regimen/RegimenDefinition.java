@@ -18,6 +18,7 @@ import org.openmrs.Concept;
 public class RegimenDefinition extends Regimen {
 
 	private String name;
+	private String conceptRef; // reference to concept for the regimen in CIEL dictionary
 
 	private RegimenDefinitionGroup group;
 
@@ -37,6 +38,18 @@ public class RegimenDefinition extends Regimen {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * gets the reference concept uuid
+	 * @return
+	 */
+	public String getConceptRef() {
+		return conceptRef;
+	}
+
+	public void setConceptRef(String conceptRef) {
+		this.conceptRef = conceptRef;
 	}
 
 	/**

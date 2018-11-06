@@ -9,8 +9,10 @@
  */
 package org.openmrs.module.kenyaemr.orderset;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.DrugOrder;
 import org.openmrs.GlobalProperty;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
@@ -25,6 +27,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenConfiguration;
 import org.openmrs.module.kenyaemr.regimen.RegimenConversionUtil;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -199,9 +202,11 @@ public class OrderSetManager implements ContentManager {
 				for (int r = 0; r < regimenNodes.getLength(); r++) {
 					Element regimenElement = (Element)regimenNodes.item(r);
 					String name = regimenElement.getAttribute("name");
+					String conceptRef = regimenElement.getAttribute("conceptRef");
 
 					RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
-
+					if (conceptRef != null)
+						regimenDefinition.setConceptRef(conceptRef);
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
 					ConceptService conceptService = Context.getConceptService();
@@ -290,5 +295,62 @@ public class OrderSetManager implements ContentManager {
 			}
 
 		}
+	}
+
+	/**
+	 * Finds definitions that match the given regimen
+	 * @param category the category, e.g. "ARV"
+	 * @param regimenOrder the regimen
+	 * @param exact whether matches must be exact (includes dose, units and frequency)
+	 * @return the definitions
+	 */
+	public List<RegimenDefinition> findDefinitions(String category, RegimenOrder regimenOrder, boolean exact) {
+		List<RegimenDefinitionGroup> groups = regimenGroups.get(category);
+		if (groups == null) {
+			throw new IllegalArgumentException("No such category: " + category);
+		}
+
+		List<RegimenDefinition> matches = new ArrayList<RegimenDefinition>();
+
+		for (RegimenDefinitionGroup group : groups) {
+			outer:
+			for (RegimenDefinition definition : group.getRegimens()) {
+				List<RegimenComponent> regimen = definition.getComponents();
+				Set<DrugOrder> orders = regimenOrder.getDrugOrders();
+
+				// Skip if regimen doesn't have same number of orders
+				if (regimen.size() != orders.size()) {
+					continue;
+				}
+
+				// Check each component has an equivalent drug order
+				for (RegimenComponent component : regimen) {
+
+					// Does regimen have a drug order for this component?
+					boolean regimenHasComponent = false;
+					for (DrugOrder order : orders) {
+						DrugReference componentDrugRef = component.getDrugRef();
+						DrugReference orderDrugRef = DrugReference.fromDrugOrder(order);
+
+						if (componentDrugRef.equals(orderDrugRef)) {
+
+							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getDoseUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {
+								regimenHasComponent = true;
+								break;
+							}
+						}
+					}
+
+					if (!regimenHasComponent) {
+						continue outer;
+					}
+				}
+
+				// Regimen has all components of the definition
+				matches.add(definition);
+			}
+		}
+
+		return matches;
 	}
 }
