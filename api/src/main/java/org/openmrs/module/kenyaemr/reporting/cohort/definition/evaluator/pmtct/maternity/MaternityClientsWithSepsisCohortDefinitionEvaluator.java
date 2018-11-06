@@ -12,6 +12,7 @@ import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -36,7 +37,8 @@ public class MaternityClientsWithSepsisCohortDefinitionEvaluator implements Coho
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
-        CohortDefinition cd = mohCohortLibrary.adolescentsStartedOnHAART();
+        String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.delivery_complications;";
+        SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 
         Calendar calendar = Calendar.getInstance();
         int thisMonth = calendar.get(calendar.MONTH);
@@ -49,10 +51,10 @@ public class MaternityClientsWithSepsisCohortDefinitionEvaluator implements Coho
         context.addParameterValue("endDate", endDate);
 
 
-        Cohort knownPositives = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+        Cohort clientsWithSepsis = Context.getService(CohortDefinitionService.class).evaluate(sqlCohortDefinition, context);
 
 
-        return new EvaluatedCohort(knownPositives, definition, context);
+        return new EvaluatedCohort(clientsWithSepsis, definition, context);
     }
 
 
