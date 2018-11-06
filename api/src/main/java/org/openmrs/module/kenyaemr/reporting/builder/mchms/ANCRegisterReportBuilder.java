@@ -25,6 +25,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ANCRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.*;
+import org.openmrs.module.kenyaemr.reporting.library.pmtct.ANCIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -43,6 +44,7 @@ import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinitio
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -54,6 +56,9 @@ import java.util.List;
 public class ANCRegisterReportBuilder extends AbstractReportBuilder {
     public static final String ENC_DATE_FORMAT = "yyyy/MM/dd";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+
+    @Autowired
+    private ANCIndicatorLibrary anc;
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
@@ -67,7 +72,8 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
         return Arrays.asList(
-                ReportUtils.map(datasetColumns(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(datasetColumns(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(ancRegisterAggregateDataSet(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -155,21 +161,39 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         return dsd;
 
     }
-    protected DataSetDefinition careAndTreatmentDataSet() {
+    protected DataSetDefinition ancRegisterAggregateDataSet() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.setName("cohortIndicator");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         String indParams = "";
 
-        cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
-        cohortDsd.addColumn("newOncare", "New on care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
-        cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
-        cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
-        cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");
-        cohortDsd.addColumn("screenedForTB", "Screened for TB", ReportUtils.map(rdqa.screenedForTB(), indParams), "");
-        cohortDsd.addColumn("knownPositives", "Total with known status", ReportUtils.map(rdqa.knownPositives(), indParams), "");
-        cohortDsd.addColumn("sampleFrame", "Total Patients", ReportUtils.map(rdqa.sampleFrame(), indParams), "");
-        cohortDsd.addColumn("sampleSize", "RDQA Patients", ReportUtils.map(rdqa.sampleSize(), indParams), "");
+        cohortDsd.addColumn("newClients", "New Clients", ReportUtils.map(anc.newClientsANC(), indParams), "");
+        cohortDsd.addColumn("revisits", "Revisit Clients", ReportUtils.map(anc.revisitsANC(), indParams), "");
+        cohortDsd.addColumn("fourthANC", "Fourth ANC visit", ReportUtils.map(anc.completed4AntenatalVisits(), indParams), "");
+        cohortDsd.addColumn("syphilisTested", "Syphilis Tested", ReportUtils.map(anc.testedSyphilisANC(), indParams), "");
+        cohortDsd.addColumn("syphilisPositive", "Syphilis Positive", ReportUtils.map(anc.positiveSyphilisANC(), indParams), "");
+        cohortDsd.addColumn("syphilisTreated", "Treated Syphilis", ReportUtils.map(anc.treatedSyphilisANC(), indParams), "");
+        cohortDsd.addColumn("knownPositives", "Known positive", ReportUtils.map(anc.knownPositivesFirstANC(), indParams), "");
+        cohortDsd.addColumn("initialTest", "Initial Test ANC", ReportUtils.map(anc.initialTestANC(), indParams), "");
+        cohortDsd.addColumn("positiveAtANC", "Tested Positive ANC", ReportUtils.map(anc.positiveTestANC(), indParams), "");
+        cohortDsd.addColumn("onARV", "On ARV at First ANC", ReportUtils.map(anc.onARVatFirstANC(), indParams), "");
+        cohortDsd.addColumn("startedHaart", "Started Haart at ANC", ReportUtils.map(anc.startedHAARTInANC(), indParams), "");
+        cohortDsd.addColumn("babyAZT", "AZT For Baby", ReportUtils.map(anc.aztBabyGivenAtANC(), indParams), "");
+        cohortDsd.addColumn("babyNVP", "NVP For Baby", ReportUtils.map(anc.nvpBabyGivenAtANC(), indParams), "");
+        cohortDsd.addColumn("screenedForTB", "Screened for TB", ReportUtils.map(anc.screenedForTBAtANC(), indParams), "");
+        cohortDsd.addColumn("screenedCaCxPap", "Screened CaCx PAP", ReportUtils.map(anc.screenedForCaCxPAPAtANC(), indParams), "");
+        cohortDsd.addColumn("screenedCaCxVIA", "Screened CaCx VIA", ReportUtils.map(anc.screenedForCaCxVIAAtANC(), indParams), "");
+        cohortDsd.addColumn("screenedCaCxVili", "Screened CaCx Vili", ReportUtils.map(anc.screenedForCaCxViliAtANC(), indParams), "");
+        cohortDsd.addColumn("givenIPT1", "Given IPT 1", ReportUtils.map(anc.givenIPT1AtANC(), indParams), "");
+        cohortDsd.addColumn("givenIPT2", "Given IPT 2", ReportUtils.map(anc.givenIPT2AtANC(), indParams), "");
+        cohortDsd.addColumn("givenITN", "Given ITN", ReportUtils.map(anc.givenITNAtANC(), indParams), "");
+        cohortDsd.addColumn("partnerTested", "Partner Tested", ReportUtils.map(anc.partnerTestedAtANC(), indParams), "");
+        cohortDsd.addColumn("partnerKnownPositive", "Partner Known Positive", ReportUtils.map(anc.partnerKnownPositiveAtANC(), indParams), "");
+        cohortDsd.addColumn("adolescentsKnownPositive", "Adolescents Known Positive", ReportUtils.map(anc.adolescentsKnownPositive_10_19_AtANC(), indParams), "");
+        cohortDsd.addColumn("adolescentsTestedPositive", "Adolescents Tested Positive", ReportUtils.map(anc.adolescentsTestedPositive_10_19_AtANC(), indParams), "");
+        cohortDsd.addColumn("adolescentsStartedHaartAnc", "Adolescents Started Haart ANC", ReportUtils.map(anc.adolescentsStartedHaart_10_19_AtANC(), indParams), "");
 
         return cohortDsd;
     }

@@ -118,7 +118,7 @@ public class ANCIndicatorLibrary {
     }
 
     public CohortIndicator adolescentsKnownPositive_10_19_AtANC() {
-        return cohortIndicator("Adolescents Known Positive 10 - 19 at ANC", ReportUtils.<CohortDefinition>map(new AdolescentsTestedPositive_10_19_AtANCCohortDefinition(), ""));
+        return cohortIndicator("Adolescents Known Positive 10 - 19 at ANC", ReportUtils.<CohortDefinition>map(new AdolescentsKnownPositive_10_19_AtANCCohortDefinition(), ""));
     }
 
     public CohortIndicator adolescentsTestedPositive_10_19_AtANC() {

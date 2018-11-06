@@ -1263,7 +1263,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }*/
-    //Known Positive at ANC HV02-11
+    //Tested HIV Positive at ANC HV02-11
     public CohortDefinition testedHivPositiveInMchmsAntenatal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select distinct v.patient_id\n" +
@@ -1282,7 +1282,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-//HIV Positive during Labour and Delivery HV02-12
+//Tested HIV Positive during Labour and Delivery HV02-12
 
     public CohortDefinition positiveHIVResultsAtLabourAndDelivery(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1510,7 +1510,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //Syphilis Screened 1st ANC	 HV02-24
+    //Syphilis Screened at ANC	 HV02-24
 
     public CohortDefinition syphilisScreenedAt1stANC(){
 
@@ -1746,9 +1746,9 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery =  "select distinct he.patient_id\n" +
                 "from kenyaemr_etl.etl_hei_enrollment he\n" +
                 "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
-                "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"\n" +
+                "where date(hi.visit_date) between (:startDate) and (:endDate)\n" +
                 "      and he.child_exposed != 1067 AND\n" +
-                "      hi.PCV_10 IS NOT NULL ;";
+                "      hi.PCV_10_1 = \"Yes\" ;";
 
         cd.setName("knownExposureAtPenta1");
         cd.setQuery(sqlQuery);
@@ -1764,10 +1764,10 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select distinct he.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment he\n" +
-                "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
-                "where date(hi.visit_date) between \"2018-08-01\" and \"2018-10-30\"   AND\n" +
-                "      hi.PCV_10 IS NOT NULL ;";
+                "                from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "                 inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
+                "                where date(hi.visit_date) between (:startDate) and (:endDate)\n" +
+                "                  and hi.PCV_10_1 = \"Yes\" ;";
 
         cd.setName("totalDueForPenta1");
         cd.setQuery(sqlQuery);
