@@ -12,21 +12,25 @@ package org.openmrs.module.kenyaemr.chore;
 import org.apache.commons.lang.ObjectUtils;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.GlobalProperty;
-import org.openmrs.OrderSet;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.api.AdministrationService;
+import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.FormService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
 import org.openmrs.module.kenyaemr.regimen.RegimenConfiguration;
 import org.openmrs.module.kenyaemr.regimen.RegimenConversionUtil;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
-import org.openmrs.module.kenyaemr.regimen.RegimenJsonGenerator;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
@@ -60,6 +64,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 	private Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
 
 	private Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
+
 	/**
 	 * @see AbstractChore#perform(PrintWriter)
 	 */
@@ -77,7 +82,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 		List<Patient> allPatients = Context.getPatientService().getAllPatients(false);
 		refresh();
 
-		/*for (Patient patient : allPatients) {
+		for (Patient patient : allPatients) {
 			RegimenChangeHistory tbRegimenHistory = RegimenChangeHistory.forPatient(patient, TBRegimenConcept);
 			RegimenChangeHistory hivRegimenHistory = RegimenChangeHistory.forPatient(patient, ARVRegimenConcept);
 
@@ -90,43 +95,101 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 			if (tbRegimenChanges.size() < 1 && arvRegimenChanges.size() < 1) { continue;}
 
 			if (tbRegimenChanges.size() > 0) {
-				//processRegimenChanges(patient, tbRegimenConceptId, tbRegimenChanges);
+				processRegimenChanges(patient, tbRegimenConceptId, tbRegimenChanges);
 			}
 
 			if (arvRegimenChanges.size() > 0) {
-				//processRegimenChanges(patient, arvRegimenConceptId, arvRegimenChanges);
+				processRegimenChanges(patient, arvRegimenConceptId, arvRegimenChanges);
 
 			}
 
-		}*/
+		}
 		out.println("Completed migration for drug regimen history");
 
 	}
 
-	private void processRegimenChanges(Patient patient, int masterSet, List<RegimenChange> changes) {
-		String program = masterSet == 1085 ? "HIV" : "TB";
+	private void processRegimenChanges(Person patient, int masterSet, List<RegimenChange> changes) {
+		FormService formService = Context.getFormService();
+		PatientService patientService = Context.getPatientService();
+		String program = masterSet == 1085 ? "ARV" : "TB";
+		ConceptService conceptService = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
+		String ARV_TREATMENT_PLAN_EVENT_CONCEPT = "1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String TB_TREATMENT_PLAN_CONCEPT = "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String CURRENT_DRUGS = "1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String START_DRUGS = "1256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String STOP_DRUGS = "1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String CHANGE_REGIMEN = "1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String REASON_PREVIOUS_REGIMEN_STOPPED_CODED = "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String REASON_PREVIOUS_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+
+
+
 		for (RegimenChange change : changes) {
-            RegimenOrder regimen = change.getStarted();
-            if (regimen != null) {
-				Date startDate = change.getDate();
-				String conceptRef;
-				List<RegimenDefinition> regimenDefinitions = findDefinitions(program,regimen,false);
-				if (regimenDefinitions != null && regimenDefinitions.size() > 0)
-					conceptRef = regimenDefinitions.get(0).getConceptRef();
+            RegimenOrder regimenStarted = change.getStarted();
+            RegimenOrder regimenStopped = change.getStopped();
+
+			Date startDate = change.getDate();
+			String conceptRef = null;
+			Encounter e = new Encounter();
+			e.setPatient(patientService.getPatient(patient.getPersonId()));
+			e.setEncounterDatetime(startDate);
+			e.setEncounterType(encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION));
+            e.setForm(formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR));
+			//if (regimenStarted != null) {
+
+
+				if (regimenStarted != null) {
+					List<RegimenDefinition> regimenDefinitions = findDefinitions(program,regimenStarted,false);
+					if (regimenDefinitions != null && regimenDefinitions.size() > 0) {
+						conceptRef = regimenDefinitions.get(0).getConceptRef();
+					}
+				}
+
+				// create event obs
+				Obs eventObs = new Obs();
+				eventObs.setConcept(conceptService.getConceptByUuid(masterSet == 1085 ? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT));
+				eventObs.setPerson(patient);
+				eventObs.setObsDatetime(startDate);
+				if (regimenStarted != null && regimenStarted.getDrugOrders().size() > 0
+						&& regimenStopped != null && regimenStopped.getDrugOrders().size() > 0) {
+					eventObs.setValueCoded(conceptService.getConceptByUuid(CHANGE_REGIMEN));
+				}
+
+				if (null == regimenStarted && regimenStopped != null && regimenStopped.getDrugOrders().size() > 0) {
+					eventObs.setValueCoded(conceptService.getConceptByUuid(STOP_DRUGS));
+				}
+
+				if (regimenStarted != null && regimenStarted.getDrugOrders().size() > 0
+						&& regimenStopped == null) {
+					eventObs.setValueCoded(conceptService.getConceptByUuid(START_DRUGS));
+				}
+				e.addObs(eventObs);
 
 				// create regimen obs
-
-
-				// create program obs
+			if (conceptRef != null && regimenStarted != null) {
+				Obs regimenObs = new Obs();
+				regimenObs.setConcept(conceptService.getConceptByUuid(CURRENT_DRUGS));
+				regimenObs.setPerson(patient);
+				regimenObs.setValueCoded(conceptService.getConceptByUuid(conceptRef));
+				regimenObs.setObsDatetime(startDate);
+				e.addObs(regimenObs);
+			}
+			encounterService.saveEncounter(e);
 
 				// create change reason concept
-
-
+				/*Obs changeReasonObs = new Obs();
+				changeReasonObs.setConcept(conceptService.getConceptByUuid(REASON_PREVIOUS_REGIMEN_STOPPED_CODED));
+				changeReasonObs.setPerson(patient);
+*/
 				// create change reason non-coded reason
+				/*Obs changeReasonNonCodedObs = new Obs();
+				changeReasonNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_PREVIOUS_REGIMEN_STOPPED_NON_CODED));
+				changeReasonNonCodedObs.setPerson(patient);*/
 
-
-				OrderSet regimenOrderset = RegimenJsonGenerator.getOrderSetFromMembers(regimen.getDrugOrders());
-				if (regimenOrderset != null) {
+				//OrderSet regimenOrderset = RegimenJsonGenerator.getOrderSetFromMembers(regimenStarted.getDrugOrders());
+				/*if (regimenOrderset != null) {
 					String ordersetName = regimenOrderset.getName();
 					Integer ordersetID = regimenOrderset.getOrderSetId();
 
@@ -134,25 +197,25 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
 					List<String> changeReasons = new ArrayList<String>();
 
-					/*DrugRegimenHistory changeEvent = new DrugRegimenHistory();
+					*//*DrugRegimenHistory changeEvent = new DrugRegimenHistory();
 					changeEvent.setPatient(patient);
 					changeEvent.setOrderSetId(ordersetID);
 					changeEvent.setRegimenName(ordersetName);
 					changeEvent.setDateStarted(startDate);
-					changeEvent.setProgram(masterSet == 1085 ? "HIV" : "TB");*/
+					changeEvent.setProgram(masterSet == 1085 ? "HIV" : "TB");*//*
 					//historyService.saveDrugRegimenHistory(changeEvent);
 
-                /*if (change.getChangeReasons() != null) {
+                *//*if (change.getChangeReasons() != null) {
                     for (Concept c : change.getChangeReasons()) {
                         changeReasons.add(ui.format(c));
                     }
                 }
                 if (change.getChangeReasonsNonCoded() != null) {
                     changeReasons.addAll(change.getChangeReasonsNonCoded());
-                }*/
+                }*//*
 
-				}
-            }
+				}*/
+           // }
 
         }
 	}
