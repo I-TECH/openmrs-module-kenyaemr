@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- *Evaluates a ANC enrollment Data Definition to produce a Parity
+ *Evaluates a ANC enrollment Data Definition to produce a KP
  */
 @Handler(supports=ANCHIVStatusBeforeFirstANCDataDefinition.class, order=50)
 public class ANCHIVStatusBeforeFirstANCDataEvaluator implements EncounterDataEvaluator {
@@ -27,11 +27,10 @@ public class ANCHIVStatusBeforeFirstANCDataEvaluator implements EncounterDataEva
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  e.encounter_id,\n" +
-                "  (case d.date_started when \"\" then \"No\" else \"Yes\" end) as on_arv_before_first_anc\n" +
+                "   e.encounter_id,\n" +
+                "  (case e.hiv_status when 664 then \"HIV Negative\" when 703 then \"HIV Positive\" when 1402 then \"Not Tested\" else \"\" end) as hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
-                "where d.date_started < e.visit_date;";
+                "GROUP BY e.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
