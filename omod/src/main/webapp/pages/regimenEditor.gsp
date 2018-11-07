@@ -125,7 +125,7 @@
 				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
-					action: "changeRegimen",
+					action: "createRegimenEventEncounter",
 					fields: [
 							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "CHANGE" ],
