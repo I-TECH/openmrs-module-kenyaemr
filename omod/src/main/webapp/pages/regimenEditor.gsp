@@ -71,7 +71,7 @@
 				<div class="ke-warning" style="margin-bottom: 5px">Editing of current regimen can be done by a KenyaEMR user with Manager permissions</div>
 			<% } %>
 
-			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
+			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: regimenFromObs ]) }
 
 			<br/>
 

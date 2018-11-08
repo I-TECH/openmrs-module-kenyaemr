@@ -1,7 +1,7 @@
 <%
 	config.require("history")
 
-	def simpleHistory = kenyaEmrUi.simpleRegimenHistory(config.history, ui)
+	def simpleHistory = config.history
 %>
 <table id="regimen-history" class="ke-table-vertical">
 	<thead>
@@ -20,7 +20,7 @@
 	  	<tr <%  if (change.current) { %>style="font-weight: bold"<% } %>>
 			<td>${ change.startDate }</td>
 			<td>${ change.endDate }</td>
-			<td style="text-align: left">${ change.regimen.shortDisplay }<br/><small>${ change.regimen.longDisplay }</small></td>
+			<td style="text-align: left">${ change.regimenShortDisplay }<br/><small>${ change.regimenShortDisplay }</small></td>
 			<td style="text-align: left">
 				<% if (change.changeReasons) { %>
 				${ change.changeReasons.join(",") }

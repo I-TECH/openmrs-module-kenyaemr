@@ -232,9 +232,12 @@ public class RegimenManager implements ContentManager {
 				for (int r = 0; r < regimenNodes.getLength(); r++) {
 					Element regimenElement = (Element)regimenNodes.item(r);
 					String name = regimenElement.getAttribute("name");
+					String conceptRef = regimenElement.getAttribute("conceptRef");
 
 					RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
 
+					if (conceptRef != null)
+						regimenDefinition.setConceptRef(conceptRef);
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
 					ConceptService conceptService = Context.getConceptService();
