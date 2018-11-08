@@ -1,4 +1,13 @@
-package org.openmrs.module.kenyaemr.reporting.library.ETLReports.Datim;
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+package org.openmrs.module.kenyaemr.reporting.library.ETLReports.DatimQ4;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -15,7 +24,7 @@ import java.util.Date;
  * Library of cohort definitions used specifically in Datim Reports
  */
 @Component
-public class ETLDatimCohortLibrary {
+public class ETLDatimQ4CohortLibrary {
      /**
      * Patients started on ART during the reporting period (last 3 months)
      * TX_New Datim indicator
@@ -337,6 +346,7 @@ public class ETLDatimCohortLibrary {
         return cd;
 
     }
+
     /*PMTCT*/
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
@@ -344,7 +354,7 @@ public class ETLDatimCohortLibrary {
                 "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTC_TST_Positive");
+        cd.setName("testPositiveResultsANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -358,7 +368,7 @@ public class ETLDatimCohortLibrary {
                 "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTC_TST_Negative");
+        cd.setName("testNegativeResultsANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -375,7 +385,7 @@ public class ETLDatimCohortLibrary {
                 "   or (v.anc_visit_number = 1 and v.final_test_result in (\"Negative\",\"Positive\"));";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_STA_Numerator");
+        cd.setName("knownHIVStatusAtANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -384,57 +394,56 @@ public class ETLDatimCohortLibrary {
 
     }
 
-    /*  public CohortDefinition knownHIVPositive() {
+    /*public CohortDefinition knownHIVPositive() {
 
-          String sqlQuery = "select e.patient_id\n" +
-                  "from kenyaemr_etl.etl_mch_enrollment e where e.hiv_status = 703;";
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e where e.hiv_status = 703;";
 
-          SqlCohortDefinition cd = new SqlCohortDefinition();
-          cd.setName("knownPositivesAtPMTCT");
-          cd.setQuery(sqlQuery);
-          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-          cd.setDescription("Clients with Known HIV positive status");
-          return cd;
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("knownPositivesAtPMTCT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with Known HIV positive status");
+        return cd;
 
-      }
+    }
 
-      public CohortDefinition newlyTestedHIVPositive() {
+    public CohortDefinition newlyTestedHIVPositive() {
 
-          String sqlQuery = "";
+        String sqlQuery = "";
 
-          SqlCohortDefinition cd = new SqlCohortDefinition();
-          cd.setName("newPositivesAtPMTCT");
-          cd.setQuery(sqlQuery);
-          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-          cd.setDescription("Clients newly tested HIV Positive");
-          return cd;
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("newPositivesAtPMTCT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients newly tested HIV Positive");
+        return cd;
 
-      }
+    }
 
-      public CohortDefinition newlyTestedHIVNegative() {
+    public CohortDefinition newlyTestedHIVNegative() {
 
-          String sqlQuery = "";
+        String sqlQuery = "";
 
-          SqlCohortDefinition cd = new SqlCohortDefinition();
-          cd.setName("newNegativesAtPMTCT");
-          cd.setQuery(sqlQuery);
-          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-          cd.setDescription("Clients newly tested HIV Negative");
-          return cd;
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("newNegativesAtPMTCT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients newly tested HIV Negative");
+        return cd;
 
-      }
-  */
+    }
+*/
     public CohortDefinition newANCClients() {
 
-        String sqlQuery = "select\n" +
-                "      distinct v.patient_id\n" +
+        String sqlQuery = "select distinct v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_STA_Denominator");
+        cd.setName("newANCClients");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -450,7 +459,7 @@ public class ETLDatimCohortLibrary {
                 "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=664 and timestampdiff(month,de.DOB,:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_EID_Negative");
+        cd.setName("infantVirologyNegativeResults12m");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -466,7 +475,7 @@ public class ETLDatimCohortLibrary {
                 "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=703 and timestampdiff(month,de.DOB,:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_EID_Positive");
+        cd.setName("infantVirologyPositiveResults12m");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -482,7 +491,7 @@ public class ETLDatimCohortLibrary {
                 "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result in (1138,1304) and timestampdiff(month,de.DOB,:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_EID_No_Results");
+        cd.setName("infantVirologyWithNoResults");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -491,7 +500,7 @@ public class ETLDatimCohortLibrary {
 
     }
 
-    public CohortDefinition alreadyOnARTAtBeginningOfPregnancy() {
+    public CohortDefinition alreadyOnARTAtBeginningOfPregnacy() {
 
         String sqlQuery = "select\n" +
                 "distinct e.patient_id\n" +
@@ -500,7 +509,7 @@ public class ETLDatimCohortLibrary {
                 "where d.date_started < e.visit_date;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_ART_Already");
+        cd.setName("alreadyOnARTBeforePregancy");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -519,7 +528,7 @@ public class ETLDatimCohortLibrary {
                 "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_ART_New");
+        cd.setName("newOnARTDuringPregnancy");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -527,6 +536,4 @@ public class ETLDatimCohortLibrary {
         return cd;
 
     }
-
-
 }

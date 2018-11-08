@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Component
 @Builds({"kenyaemr.etl.common.report.datim"})
-public class DatimGreenCardReportBuilder extends AbstractReportBuilder {
+public class DatimQ4ReportBuilder extends AbstractReportBuilder {
     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
