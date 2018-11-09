@@ -251,7 +251,7 @@ public class OrderSetManager implements ContentManager {
 		for (Map.Entry<String, List<RegimenDefinitionGroup>> entry : regimenGroups.entrySet()) {
 			String key = entry.getKey();
 			// save drug entries
-			for(Map.Entry<String, DrugReference> drugReferenceEntry : drugs.get(key).entrySet()) {
+			/*for(Map.Entry<String, DrugReference> drugReferenceEntry : drugs.get(key).entrySet()) {
 				DrugReference drugEntry = drugReferenceEntry.getValue();
 
 				String drugName = getDrugCodeByDrugReferenceValue(drugs.get(key), drugEntry);
@@ -264,7 +264,7 @@ public class OrderSetManager implements ContentManager {
 				conceptDrug.setName(drugName);
 				conceptDrug.setConcept(drugEntry.getConcept());
 				conceptService.saveDrug(conceptDrug);
-			}
+			}*/
 
 
 			for (RegimenDefinitionGroup regimenGrp : entry.getValue()) {
