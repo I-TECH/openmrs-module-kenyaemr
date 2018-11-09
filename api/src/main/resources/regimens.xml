@@ -37,12 +37,12 @@
 
 		<!-- Adult first line -->
 		<group code="adult-first" name="Adult (first line)" >
-			<regimen name="TDF/3TC/NVP" conceptRef="fcdbf8d7-fa00-4bbb-8185-11b3908e4eef">
+			<regimen name="3TC/NVP/TDF" conceptRef="162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="NVP" dose="200" units="mg" frequency="BD" />
 			</regimen>
-			<regimen name="TDF/3TC/EFV" conceptRef="bcdbea7f-0128-4ad5-8d9f-8ddb13efb89e">
+			<regimen name="TDF/3TC/EFV" conceptRef="164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<component drugCode="TDF" dose="300" units="mg" frequency="OD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
 				<component drugCode="EFV" dose="600" units="mg" frequency="OD" />
@@ -171,7 +171,7 @@
 				<component drugCode="3TC" units="tab" />
 				<component drugCode="ABC" units="tab" />
 			</regimen>
-			<regimen name="TDF / ABC / LPV/r"  conceptRef="162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+			<regimen name="TDF/ABC/LPV/r"  conceptRef="162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<component drugCode="TDF" units="tab" />
 				<component drugCode="ABC" units="tab" />
 				<component drugCode="LPV" units="tab" />
