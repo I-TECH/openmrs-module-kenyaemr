@@ -61,7 +61,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	MaternityIndicatorLibrary maternityIndicatorLibrary;
 
 	@Override
-	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
+	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {dsd.setName("maternityRegister");
 		return allPatientsCohort();
 	}
 
@@ -69,7 +69,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         CohortDefinition cd = new MaternityRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("Maternity Register Cohort");
+        cd.setName("maternityRegister");
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
