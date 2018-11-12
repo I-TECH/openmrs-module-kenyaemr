@@ -176,7 +176,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
 		String indParams = "";
 
-        cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
+		cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
         cohortDsd.addColumn("clientsWithPPH", "Clients With PPH", ReportUtils.map(maternityIndicatorLibrary.clientsWithPPH(), indParams), "");
         cohortDsd.addColumn("clientsWithEclampsia", "Clients With Eclampsia", ReportUtils.map(maternityIndicatorLibrary.clientsWithEclampsia(), indParams), "");
         cohortDsd.addColumn("clientsWithRapturedUterus", "Clients With Raptured Uterus", ReportUtils.map(maternityIndicatorLibrary.clientsWithRapturedUterus(), indParams), "");

@@ -38,7 +38,7 @@ public class MaternityAdolescentsNewHivPositiveCohortDefinitionEvaluator impleme
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        AdolescentsNewHIVPositiveAtMaternityCohortDefinition definition = (AdolescentsNewHIVPositiveAtMaternityCohortDefinition) cohortDefinition;
         String query = "select\n" +
                 "    distinct ld.patient_id\n" +
                 "from kenyaemr_etl.etl_mchs_delivery ld\n" +

@@ -36,7 +36,7 @@ public class MaternityHIVPositiveDeliveriesCohortDefinitionEvaluator implements 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        HivPositiveDeliveriesCohortDefinition definition = (HivPositiveDeliveriesCohortDefinition) cohortDefinition;
         CohortDefinition cd = moh731GreenCardCohortLibrary.deliveryFromHIVPositiveMothers();
 
         Calendar calendar = Calendar.getInstance();

@@ -33,7 +33,7 @@ public class MaternityAssistedVaginalDeliveriesCohortDefinitionEvaluator impleme
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        AssistedVaginalDeliveriesCohortDefinition definition = (AssistedVaginalDeliveriesCohortDefinition) cohortDefinition;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.mode_of_delivery in (118159,159260);";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 

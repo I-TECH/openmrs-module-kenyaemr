@@ -35,7 +35,7 @@ public class MaternityLiveBirthsCohortDefinitionEvaluator implements CohortDefin
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        LiveBirthsCohortDefinition definition = (LiveBirthsCohortDefinition) cohortDefinition;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.baby_condition in (151849,164815,164816);";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 

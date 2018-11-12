@@ -36,7 +36,7 @@ public class MaternityClientsWithSepsisCohortDefinitionEvaluator implements Coho
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        MaternityClientsWithSepsisCohortDefinition definition = (MaternityClientsWithSepsisCohortDefinition) cohortDefinition;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.delivery_complications;";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 

@@ -33,7 +33,7 @@ public class MaternityClientsWithPPHCohortDefinitionEvaluator implements CohortD
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        MaternityClientsWithPPHCohortDefinition definition = (MaternityClientsWithPPHCohortDefinition) cohortDefinition;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.delivery_complications;";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
         Calendar calendar = Calendar.getInstance();
