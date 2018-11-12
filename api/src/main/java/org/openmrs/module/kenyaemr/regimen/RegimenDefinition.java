@@ -19,6 +19,7 @@ public class RegimenDefinition extends Regimen {
 
 	private String name;
 	private String conceptRef; // reference to concept for the regimen in CIEL dictionary
+	private String orderSetRef; // reference to order set for the regimen
 
 	private RegimenDefinitionGroup group;
 
@@ -50,6 +51,14 @@ public class RegimenDefinition extends Regimen {
 
 	public void setConceptRef(String conceptRef) {
 		this.conceptRef = conceptRef;
+	}
+
+	public String getOrderSetRef() {
+		return orderSetRef;
+	}
+
+	public void setOrderSetRef(String orderSetRef) {
+		this.orderSetRef = orderSetRef;
 	}
 
 	/**

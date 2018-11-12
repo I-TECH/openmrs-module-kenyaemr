@@ -20,9 +20,9 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
  */
 public class RegimenJsonGeneratorFragmentController {
 
-	public void controller(/*@FragmentParam("patient") Patient patient, */FragmentModel model) {
+	public void controller(@FragmentParam("patient") Patient patient, FragmentModel model) {
 
-		model.put("regimenJson", new RegimenJsonGenerator().generateRegimenJsonFromRegimensConfigFile());
+		model.put("regimenJson", new RegimenJsonGenerator(patient).generateRegimenJsonFromRegimensConfigFile());
 		//System.out.println("Testing output: \n" + new RegimenJsonGenerator().getCurrentRegimens(patient));
 	}
 

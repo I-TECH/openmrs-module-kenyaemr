@@ -203,10 +203,15 @@ public class OrderSetManager implements ContentManager {
 					Element regimenElement = (Element)regimenNodes.item(r);
 					String name = regimenElement.getAttribute("name");
 					String conceptRef = regimenElement.getAttribute("conceptRef");
+					String orderSetRef = regimenElement.getAttribute("orderSetRef");
 
 					RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
 					if (conceptRef != null)
 						regimenDefinition.setConceptRef(conceptRef);
+
+					if (orderSetRef != null)
+						regimenDefinition.setOrderSetRef(orderSetRef);
+
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
 					ConceptService conceptService = Context.getConceptService();

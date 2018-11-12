@@ -13,6 +13,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
@@ -32,7 +34,8 @@ public class RegimenJsonGeneratorTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("dataset/test-concepts.xml");
 		executeDataSet("dataset/test-drugs.xml");
 
-		regimenJsonGenerator = new RegimenJsonGenerator();
+		Patient patient = Context.getPatientService().getPatient(10);
+		regimenJsonGenerator = new RegimenJsonGenerator(patient);
 	}
 
 	/**

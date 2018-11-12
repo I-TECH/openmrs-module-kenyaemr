@@ -7,22 +7,27 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
+
 package org.openmrs.module.kenyaemr.regimen;
 
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.Drug;
-import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Obs;
 import org.openmrs.OrderFrequency;
 import org.openmrs.OrderSet;
-import org.openmrs.OrderSetMember;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.FormService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.ui.framework.SimpleObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,13 +40,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class RegimenJsonGenerator {
+
+    Patient patient;
+
+    public RegimenJsonGenerator(Patient patient) {
+        this.patient = patient;
+    }
 
     public String generateRegimenJsonFromRegimensConfigFile() {
         for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
@@ -49,10 +61,9 @@ public class RegimenJsonGenerator {
                 ClassLoader loader = configuration.getClassLoader();
                 InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
 
-                return loadDefinitionsFromXML(stream).toString();
+                return loadDefinitionsFromXML(stream, patient).toString();
 
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
             }
@@ -61,27 +72,32 @@ public class RegimenJsonGenerator {
     }
 
     private String getFrequencyUuIdFromConcept(List<OrderFrequency> frequencies, Concept frequencyConcept) {
-        for(OrderFrequency frequency : frequencies) {
-            if(frequency.getConcept().equals(frequencyConcept))
+        for (OrderFrequency frequency : frequencies) {
+            if (frequency.getConcept().equals(frequencyConcept))
                 return frequency.getUuid();
         }
         return null;
     }
 
     private Integer getDrugIdFromConcept(Concept concept) {
-        List<Drug> drugs =  Context.getConceptService().getDrugs(String.valueOf(concept.getConceptId()));
+        List<Drug> drugs = Context.getConceptService().getDrugs(String.valueOf(concept.getConceptId()));
         if (drugs != null && drugs.size() > 0) {
             return drugs.get(0).getDrugId();
         }
         return null;
     }
 
-    public ObjectNode loadDefinitionsFromXML(InputStream stream) throws ParserConfigurationException, IOException, SAXException {
+    public ObjectNode loadDefinitionsFromXML(InputStream stream, Patient patient) throws ParserConfigurationException, IOException, SAXException {
+
+        // current patients current regimen
+        Map<String,Encounter> currentRegimens = getLastRegimenChangeEncounters(patient);
+        if (currentRegimens == null)
+            return null;
+
 
         // get order sets
-        List<OrderSet> orderSetList = getOrderSets();
+
         ObjectNode regimenJson = JsonNodeFactory.instance.objectNode();
-        ArrayNode regimenArray = JsonNodeFactory.instance.arrayNode();
         // get orderFrequency ids
         List<OrderFrequency> frequencyList = Context.getOrderService().getOrderFrequencies(false);
 
@@ -94,214 +110,252 @@ public class RegimenJsonGenerator {
 
         // Parse each category
         NodeList categoryNodes = root.getElementsByTagName("category");
-        for (int c = 0; c < categoryNodes.getLength(); c++) {
-            // extract regimens categories i.e. arv, tb
-            Element categoryElement = (Element)categoryNodes.item(c);
-            String categoryCode = categoryElement.getAttribute("code");
 
+        for (Map.Entry<String, Encounter> activeProgram : currentRegimens.entrySet()) {
+            String key = activeProgram.getKey();
+            Encounter enc = activeProgram.getValue();
+            String activeRegimenConceptRef = getRegimenConceptRefFromObsList(enc.getObs());
 
-            // extracts category drugs i.e. arv drugs
-            Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();
+            for (int c = 0; c < categoryNodes.getLength(); c++) {
+                // extract regimens categories i.e. arv, tb
+                Element categoryElement = (Element) categoryNodes.item(c);
+                String categoryCode = categoryElement.getAttribute("code");
 
-            // extracts category groups i.e. adult first line etc
-            List<RegimenDefinitionGroup> categoryGroups = new ArrayList<RegimenDefinitionGroup>();
+                // skip if not does not match current program code
+                if (!key.equals(categoryCode))
+                    continue;
 
-            // Parse all drug concepts for this category
-            NodeList drugNodes = categoryElement.getElementsByTagName("drug");
-            for (int d = 0; d < drugNodes.getLength(); d++) {
-                Element drugElement = (Element)drugNodes.item(d);
-                String drugCode = drugElement.getAttribute("code");
-                String drugConceptUuid = drugElement.hasAttribute("conceptUuid") ? drugElement.getAttribute("conceptUuid") : null;
-                String drugDrugUuid = drugElement.hasAttribute("drugUuid") ? drugElement.getAttribute("drugUuid") : null;
+                // extracts category drugs i.e. arv drugs
+                Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();
 
-                DrugReference drug = (drugDrugUuid != null) ? DrugReference.fromDrugUuid(drugDrugUuid) : DrugReference.fromConceptUuid(drugConceptUuid);
-                if (drug != null) {
-                    categoryDrugs.put(drugCode, drug);
+                // extracts category groups i.e. adult first line etc
+                List<RegimenDefinitionGroup> categoryGroups = new ArrayList<RegimenDefinitionGroup>();
+
+                // Parse all drug concepts for this category
+                NodeList drugNodes = categoryElement.getElementsByTagName("drug");
+                for (int d = 0; d < drugNodes.getLength(); d++) {
+                    Element drugElement = (Element) drugNodes.item(d);
+                    String drugCode = drugElement.getAttribute("code");
+                    String drugConceptUuid = drugElement.hasAttribute("conceptUuid") ? drugElement.getAttribute("conceptUuid") : null;
+                    String drugDrugUuid = drugElement.hasAttribute("drugUuid") ? drugElement.getAttribute("drugUuid") : null;
+
+                    DrugReference drug = (drugDrugUuid != null) ? DrugReference.fromDrugUuid(drugDrugUuid) : DrugReference.fromConceptUuid(drugConceptUuid);
+                    if (drug != null) {
+                        categoryDrugs.put(drugCode, drug);
+                    }
                 }
-            }
-
-            ObjectNode programRegimen = JsonNodeFactory.instance.objectNode();
-            ArrayNode programRegimenArray = JsonNodeFactory.instance.arrayNode();
-            // Parse all groups for this category
-            NodeList groupNodes = categoryElement.getElementsByTagName("group");
-            for (int g = 0; g < groupNodes.getLength(); g++) {
-                Element groupElement = (Element)groupNodes.item(g);
-                String groupCode = groupElement.getAttribute("code");
-                String groupName = groupElement.getAttribute("name");
-
-                RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
-                categoryGroups.add(group);
-
-                ObjectNode regimenGroup = JsonNodeFactory.instance.objectNode();
-                ArrayNode regimenGroupArray = JsonNodeFactory.instance.arrayNode();
 
 
-                // Parse all regimen definitions for this group
-                NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
-                for (int r = 0; r < regimenNodes.getLength(); r++) {
-                    Element regimenElement = (Element)regimenNodes.item(r);
-                    String name = regimenElement.getAttribute("name");
-                    ObjectNode regimen = JsonNodeFactory.instance.objectNode();
-                    RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
+                // Parse all groups for this category
+                NodeList groupNodes = categoryElement.getElementsByTagName("group");
+                for (int g = 0; g < groupNodes.getLength(); g++) {
+                    Element groupElement = (Element) groupNodes.item(g);
+                    String groupCode = groupElement.getAttribute("code");
+                    String groupName = groupElement.getAttribute("name");
 
-                    // Parse all components for this regimen
-                    NodeList componentNodes = regimenElement.getElementsByTagName("component");
-                    ConceptService conceptService = Context.getConceptService();
-                    ArrayNode regimenComponentsArray = JsonNodeFactory.instance.arrayNode();
-                    for (int p = 0; p < componentNodes.getLength(); p++) {
-                        Element componentElement = (Element)componentNodes.item(p);
-                        ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
+                    // Parse all regimen definitions for this group
+                    NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
+                    for (int r = 0; r < regimenNodes.getLength(); r++) {
+                        Element regimenElement = (Element) regimenNodes.item(r);
+                        String name = regimenElement.getAttribute("name");
+                        String conceptRef = regimenElement.getAttribute("conceptRef");
+                        String orderSetRef = regimenElement.getAttribute("orderSetRef");
+                        if (!conceptRef.equals(activeRegimenConceptRef))
+                            continue;
+                        CurrentRegimen cr = new CurrentRegimen(categoryCode, conceptRef, groupName, orderSetRef, name);
 
-                        String drugCode = componentElement.getAttribute("drugCode");
-                        Double dose = componentElement.hasAttribute("dose") ? Double.parseDouble(componentElement.getAttribute("dose")) : null;
-                        Concept units = componentElement.hasAttribute("units") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromDoseUnitString(componentElement.getAttribute("units"))) : null;
-                        Concept frequency = componentElement.hasAttribute("frequency") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromFrequencyString(componentElement.getAttribute("frequency"))) : null;
+                        // Parse all components for this regimen
+                        NodeList componentNodes = regimenElement.getElementsByTagName("component");
+                        ConceptService conceptService = Context.getConceptService();
+                        List<SimpleObject> componentList = new ArrayList<SimpleObject>();
+                        for (int p = 0; p < componentNodes.getLength(); p++) {
+                            Element componentElement = (Element) componentNodes.item(p);
 
-                        String orderFrequencyUuId = null;
-                        if (frequency != null)
-                            orderFrequencyUuId = getFrequencyUuIdFromConcept(frequencyList, frequency);
-                        DrugReference drug = categoryDrugs.get(drugCode);
+                            String drugCode = componentElement.getAttribute("drugCode");
+                            Double dose = componentElement.hasAttribute("dose") ? Double.parseDouble(componentElement.getAttribute("dose")) : null;
+                            Concept units = componentElement.hasAttribute("units") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromDoseUnitString(componentElement.getAttribute("units"))) : null;
+                            Concept frequency = componentElement.hasAttribute("frequency") ? conceptService.getConcept(RegimenConversionUtil.getConceptIdFromFrequencyString(componentElement.getAttribute("frequency"))) : null;
 
-                        if (drug == null)
-                            throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
+                            String orderFrequencyUuId = null;
+                            if (frequency != null)
+                                orderFrequencyUuId = getFrequencyUuIdFromConcept(frequencyList, frequency);
+                            DrugReference drug = categoryDrugs.get(drugCode);
 
-                        drugMemberObject.put("name", drugCode);
-                        drugMemberObject.put("dose",  componentElement.getAttribute("dose") != null ? componentElement.getAttribute("dose"): "");
-                        drugMemberObject.put("units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "");
-                        drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
-                        drugMemberObject.put("frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "");
-                        drugMemberObject.put("drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : "");
-                        regimenComponentsArray.add(drugMemberObject);
-                        regimenDefinition.addComponent(drug, dose, units, frequency);
+                            if (drug == null)
+                                throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
+
+
+                            // create simple object
+                            SimpleObject so = SimpleObject.create(
+                                    "name", drugCode,
+                                    "dose", componentElement.getAttribute("dose") != null ? componentElement.getAttribute("dose") : "",
+                                    "units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "",
+                                    "units_uuid", units != null ? units.getUuid() : "",
+                                    "frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "",
+                                    "drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : ""
+                            );
+                            componentList.add(so);
+                        }
+
+                        cr.setComponents(componentList);
+                        System.out.println("Regimen Name: " + cr.getName());
+                        System.out.println("Regimen Program: " + cr.getProgram());
+                        System.out.println("Regimen Group: " + cr.getRegimenGroup());
+                        System.out.println("Regimen ConceptRef: " + cr.getConceptRef());
+                        System.out.println("Regimen OrdersetRef: " + cr.getOrderSetRef());
+                        System.out.println("Regimen Components: " + cr.getComponents());
+
                     }
 
-                    group.addRegimen(regimenDefinition);
-                    regimen.put("name", name);
-                    regimen.put("components", regimenComponentsArray);
-                    regimen.put("orderSetId", getOrdersetIdFromList(name, orderSetList));
-                    // add order set id
-
-
-                    regimenGroupArray.add(regimen);
                 }
-
-                regimenGroup.put("name", groupName );
-                regimenGroup.put("regimens", regimenGroupArray);
-
-                programRegimenArray.add(regimenGroup);
-
             }
-
-            programRegimen.put("name", categoryCode);
-            programRegimen.put("regimen_lines", programRegimenArray);
-            regimenArray.add(programRegimen);
         }
-
-        regimenJson.put("programs", regimenArray);
         return regimenJson;
     }
 
-    private Integer getOrdersetIdFromList(String ordersetname, List<OrderSet> orderSets) {
+    private String getRegimenConceptRefFromObsList(Set<Obs> obsList) {
 
-        if (ordersetname == null || ordersetname.equals("") || orderSets == null || orderSets.size() == 0)
-            return null;
-        for (OrderSet set : orderSets) {
-            if (set.getName() != null && ordersetname.trim().equals(set.getName().trim()))
-                return set.getOrderSetId();
-        }
-        return null;
-    }
-
-    private List<OrderSet> getOrderSets() {
-        return Context.getOrderSetService().getOrderSets(false);
-    }
-
-    public String getCurrentRegimens(Patient patient) {
-
-        ArrayNode patientRegimens = JsonNodeFactory.instance.arrayNode();
-        ObjectNode regimens = JsonNodeFactory.instance.objectNode();
-
-        for (Concept concept : Arrays.asList(Context.getConceptService().getConcept(1085), Context.getConceptService().getConcept(160021))) {
-            RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, concept);
-            RegimenChange lastChange = history.getLastChange();
-            Set<DrugOrder> lastOrders = lastChange.getStopped().getDrugOrders();
-
-            ArrayNode regimenOrder = JsonNodeFactory.instance.arrayNode();
-            ObjectNode currentRegimenObject = JsonNodeFactory.instance.objectNode();
-
-            OrderSet orderSet = getOrderSetFromMembers(lastOrders);
-            currentRegimenObject.put("program", concept.getConceptId() == 1085? "HIV" : "TB");
-            currentRegimenObject.put("name", orderSet.getName());
-            currentRegimenObject.put("regimenstatus", "stopped");
-
-            for (DrugOrder order : lastOrders) {
-                String drugCode = formatConceptNameShort(order.getConcept());
-                Double dose = order.getDose();
-                Concept units = order.getDoseUnits();
-                Concept frequency = order.getFrequency().getConcept();
-
-                List<OrderFrequency> frequencyList = Context.getOrderService().getOrderFrequencies(false);
-                String orderFrequencyUuId = null;
-                if (frequency != null)
-                    orderFrequencyUuId = getFrequencyUuIdFromConcept(frequencyList, frequency);
-
-                ObjectNode drugMemberObject = JsonNodeFactory.instance.objectNode();
-                drugMemberObject.put("name", drugCode);
-                drugMemberObject.put("dose", dose != null ? String.valueOf(dose) : "");
-                drugMemberObject.put("units", units != null ? units.getUuid() : "");
-                drugMemberObject.put("units_uuid", units != null ? units.getUuid() : "");
-                drugMemberObject.put("frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "");
-                drugMemberObject.put("drug_id", getDrugIdFromConcept(order.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(order.getConcept())) : "");
-                regimenOrder.add(drugMemberObject);
-            }
-            currentRegimenObject.put("components", regimenOrder);
-            patientRegimens.add(currentRegimenObject);
-        }
-        regimens.put("patientregimens", patientRegimens);
-
-
-        return regimens.toString();
-    }
-
-    public static OrderSet getOrderSetFromMembers(Set<DrugOrder> orders) {
-        List<OrderSet> orderSets = Context.getOrderSetService().getOrderSets(false);
-        for (OrderSet set : orderSets) {
-            if (set.getOrderSetMembers().size() != orders.size())
-                continue;
-            if (extractDrugOrderConceptIds(orders).containsAll(extractOrdersetMembersConceptIds(set.getUnRetiredOrderSetMembers()))) {
-                return set;
+        String CURRENT_DRUGS = "1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        for (Obs obs : obsList) {
+            if (obs.getConcept().getUuid().equals(CURRENT_DRUGS)) {
+                return (obs.getValueCoded() != null) ? obs.getValueCoded().getUuid() : null;
             }
         }
         return null;
     }
+    private Map<String, Encounter> getLastRegimenChangeEncounters(Patient patient) {
 
-    public static Set<Integer> extractOrdersetMembersConceptIds(List<OrderSetMember> setMembers) {
-        Set<Integer> concepts = new HashSet<Integer>();
-        for (OrderSetMember member : setMembers) {
-            concepts.add(member.getConcept().getConceptId());
-        }
-        return concepts;
-    }
+        String ARV_TREATMENT_PLAN_EVENT_CONCEPT = "1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String TB_TREATMENT_PLAN_CONCEPT = "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        List<String> treatmentConcepts = Arrays.asList(
+                ARV_TREATMENT_PLAN_EVENT_CONCEPT,
+                TB_TREATMENT_PLAN_CONCEPT);
+        Map<String, Encounter> changeEncounters = new HashMap<String, Encounter>();
+        EncounterService encounterService = Context.getEncounterService();
+        FormService formService = Context.getFormService();
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
+        List<Encounter> encounters = EmrUtils.AllEncounters(patient, et, form);
+        List<Encounter> hivEncounters = new ArrayList<Encounter>();
+        List<Encounter> tbEncounters = new ArrayList<Encounter>();
 
-    public static Set<Integer> extractDrugOrderConceptIds(Set<DrugOrder> orders) {
-        Set<Integer> concepts = new HashSet<Integer>();
-        for (DrugOrder member : orders) {
-            concepts.add(member.getConcept().getConceptId());
-        }
-        return concepts;
-    }
-
-    public String formatConceptNameShort(Concept concept) {
-        if (concept == null) {
-            return "Empty";
-        }
-
-            ConceptName cn = concept.getPreferredName(CoreConstants.LOCALE);
-            if (cn == null) {
-                cn = concept.getName(CoreConstants.LOCALE);
+        for (String categoryConceptUuid : treatmentConcepts) {
+            if (encounters != null && encounters.size() > 0) {
+                for (Encounter e : encounters) {
+                    Set<Obs> obs = e.getObs();
+                    if (programEncounterMatching(obs, categoryConceptUuid)) {
+                        if (categoryConceptUuid.equals(ARV_TREATMENT_PLAN_EVENT_CONCEPT)) {
+                            hivEncounters.add(e);
+                        } else {
+                            tbEncounters.add(e);
+                        }
+                    }
+                }
             }
+        }
 
-        return cn.getName();
+
+        if (hivEncounters != null && hivEncounters.size() > 0) {
+            Collections.sort(hivEncounters, new Comparator<Encounter>() {
+                @Override
+                public int compare(Encounter u1, Encounter u2) {
+                    return u2.getEncounterDatetime().compareTo(u1.getEncounterDatetime());
+                }
+            });
+            changeEncounters.put("ARV", hivEncounters.get(0));
+        }
+        if (tbEncounters != null && tbEncounters.size() >0) {
+            Collections.sort(tbEncounters, new Comparator<Encounter>() {
+                @Override
+                public int compare(Encounter u1, Encounter u2) {
+                    return u2.getEncounterDatetime().compareTo(u1.getEncounterDatetime());
+                }
+            });
+            changeEncounters.put("TB", tbEncounters.get(0));
+        }
+
+        return changeEncounters;
     }
 
+    private boolean programEncounterMatching(Set<Obs> obs, String conceptUuidToMatch) {
+        for (Obs o : obs) {
+            if (o.getConcept().getUuid().equals(conceptUuidToMatch)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    class CurrentRegimen {
+        String program;
+        String conceptRef;
+        String name;
+        String regimenGroup;
+        String orderSetRef;
+        List<SimpleObject> components;
+
+        public CurrentRegimen(String program, String conceptRef, String regimenGroup, String orderSetUuid, String name) {
+            this.program = program;
+            this.conceptRef = conceptRef;
+            this.regimenGroup = regimenGroup;
+            this.orderSetRef = orderSetUuid;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getProgram() {
+            return program;
+        }
+
+        public void setProgram(String program) {
+            this.program = program;
+        }
+
+        public String getConceptRef() {
+            return conceptRef;
+        }
+
+        public void setConceptRef(String conceptRef) {
+            this.conceptRef = conceptRef;
+        }
+
+        public String getRegimenGroup() {
+            return regimenGroup;
+        }
+
+        public void setRegimenGroup(String regimenGroup) {
+            this.regimenGroup = regimenGroup;
+        }
+
+        public List<SimpleObject> getComponents() {
+            return components;
+        }
+
+        public void setComponents(List<SimpleObject> components) {
+            this.components = components;
+        }
+
+        public String getOrderSetRef() {
+            return orderSetRef;
+        }
+
+        public void setOrderSetRef(String orderSetRef) {
+            this.orderSetRef = orderSetRef;
+        }
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }
