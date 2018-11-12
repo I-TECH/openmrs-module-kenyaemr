@@ -76,7 +76,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 
-        PatientDataSetDefinition allPatients = maternityDataSetDefinition("Maternity Register Cohort");
+        PatientDataSetDefinition allPatients = maternityDataSetDefinition();
         allPatients.addRowFilter(allPatientsCohort());
 		//allPatients.addRowFilter(buildCohort(descriptor));
         DataSetDefinition allPatientsDSD = allPatients;
@@ -84,7 +84,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}"),
-				ReportUtils.map(maternityDataSet(), "startDate=${startDate},endDate=${endDate}")
+				ReportUtils.map(maternityDataSet(), "")
         );
     }
 
@@ -97,7 +97,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		);
 	}
 
-	protected PatientDataSetDefinition maternityDataSetDefinition(String dataSetName) {
+	protected PatientDataSetDefinition maternityDataSetDefinition() {
 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("maternityAllClients");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
