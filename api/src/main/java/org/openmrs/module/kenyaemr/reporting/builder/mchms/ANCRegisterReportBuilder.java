@@ -150,6 +150,8 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("TTT", new ANCTTTDataDefinition(),"");
         dsd.addColumn("Suppliment", new ANCSupplimentDataDefinition(),"");
         dsd.addColumn("ITN", new ANCITNDataDefinition(),"");
+        dsd.addColumn("Given HAART at ANC", new ANCHAARTGivenAtANCDataDefinition(),"");
+        dsd.addColumn("Given HAART before first ANC", new ANCHAARTGivenBeforeFirstANCDataDefinition(),"");
 
 
 
