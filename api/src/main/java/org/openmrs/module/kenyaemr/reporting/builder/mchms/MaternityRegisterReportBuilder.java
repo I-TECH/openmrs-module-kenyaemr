@@ -84,7 +84,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}"),
-				ReportUtils.map(maternityDataSet(), "")
+				ReportUtils.map(maternityDataSet(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
