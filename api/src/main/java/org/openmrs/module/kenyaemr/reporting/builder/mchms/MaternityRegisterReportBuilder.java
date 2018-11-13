@@ -171,7 +171,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	protected DataSetDefinition maternityDataSet() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
 		cohortDsd.setName("cohortIndicator");
-
+		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		String indParams = "";
 
 		cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
