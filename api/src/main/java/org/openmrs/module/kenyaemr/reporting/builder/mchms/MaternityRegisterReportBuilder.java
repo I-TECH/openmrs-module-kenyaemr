@@ -69,8 +69,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         CohortDefinition cd = new MaternityRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("maternityRegister");
-        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
+		return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
     @Override
@@ -102,7 +101,6 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("maternityAllClients");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
