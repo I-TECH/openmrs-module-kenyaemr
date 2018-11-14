@@ -10,6 +10,7 @@
 
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Concept;
@@ -19,11 +20,11 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.OrderFrequency;
-import org.openmrs.OrderSet;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
+import org.openmrs.api.OrderSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
@@ -87,17 +88,14 @@ public class RegimenJsonGenerator {
         return null;
     }
 
-    public ObjectNode loadDefinitionsFromXML(InputStream stream, Patient patient) throws ParserConfigurationException, IOException, SAXException {
+    public ArrayNode loadDefinitionsFromXML(InputStream stream, Patient patient) throws ParserConfigurationException, IOException, SAXException {
 
+        OrderSetService setService = Context.getOrderSetService();
         // current patients current regimen
         Map<String,Encounter> currentRegimens = getLastRegimenChangeEncounters(patient);
         if (currentRegimens == null)
             return null;
 
-
-        // get order sets
-
-        ObjectNode regimenJson = JsonNodeFactory.instance.objectNode();
         // get orderFrequency ids
         List<OrderFrequency> frequencyList = Context.getOrderService().getOrderFrequencies(false);
 
@@ -107,6 +105,7 @@ public class RegimenJsonGenerator {
         Document document = builder.parse(stream);
 
         Element root = document.getDocumentElement();
+        ArrayNode regimens = JsonNodeFactory.instance.arrayNode();
 
         // Parse each category
         NodeList categoryNodes = root.getElementsByTagName("category");
@@ -129,8 +128,6 @@ public class RegimenJsonGenerator {
                 Map<String, DrugReference> categoryDrugs = new HashMap<String, DrugReference>();
 
                 // extracts category groups i.e. adult first line etc
-                List<RegimenDefinitionGroup> categoryGroups = new ArrayList<RegimenDefinitionGroup>();
-
                 // Parse all drug concepts for this category
                 NodeList drugNodes = categoryElement.getElementsByTagName("drug");
                 for (int d = 0; d < drugNodes.getLength(); d++) {
@@ -167,7 +164,8 @@ public class RegimenJsonGenerator {
                         // Parse all components for this regimen
                         NodeList componentNodes = regimenElement.getElementsByTagName("component");
                         ConceptService conceptService = Context.getConceptService();
-                        List<SimpleObject> componentList = new ArrayList<SimpleObject>();
+                        ObjectNode regimenEntry = JsonNodeFactory.instance.objectNode();
+                        ArrayNode components = JsonNodeFactory.instance.arrayNode();
                         for (int p = 0; p < componentNodes.getLength(); p++) {
                             Element componentElement = (Element) componentNodes.item(p);
 
@@ -185,32 +183,31 @@ public class RegimenJsonGenerator {
                                 throw new RuntimeException("Regimen component references invalid drug: " + drugCode);
 
 
-                            // create simple object
-                            SimpleObject so = SimpleObject.create(
-                                    "name", drugCode,
-                                    "dose", componentElement.getAttribute("dose") != null ? componentElement.getAttribute("dose") : "",
-                                    "units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "",
-                                    "units_uuid", units != null ? units.getUuid() : "",
-                                    "frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "",
-                                    "drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : ""
-                            );
-                            componentList.add(so);
+                            ObjectNode regimenComponent = JsonNodeFactory.instance.objectNode();
+                            regimenComponent.put("name", drugCode);
+                            regimenComponent.put("dose", componentElement.getAttribute("dose") != null ? componentElement.getAttribute("dose") : "");
+                            regimenComponent.put("units", componentElement.getAttribute("units") != null ? componentElement.getAttribute("units") : "");
+                            regimenComponent.put("units_uuid", units != null ? units.getUuid() : "");
+                            regimenComponent.put("frequency", orderFrequencyUuId != null ? orderFrequencyUuId : "");
+                            regimenComponent.put("drug_id", getDrugIdFromConcept(drug.getConcept()) != null ? String.valueOf(getDrugIdFromConcept(drug.getConcept())) : "");
+
+                            components.add(regimenComponent);
                         }
 
-                        cr.setComponents(componentList);
-                        System.out.println("Regimen Name: " + cr.getName());
-                        System.out.println("Regimen Program: " + cr.getProgram());
-                        System.out.println("Regimen Group: " + cr.getRegimenGroup());
-                        System.out.println("Regimen ConceptRef: " + cr.getConceptRef());
-                        System.out.println("Regimen OrdersetRef: " + cr.getOrderSetRef());
-                        System.out.println("Regimen Components: " + cr.getComponents());
+                        regimenEntry.put("regimenName", cr.getName());
+                        regimenEntry.put("program", cr.getProgram());
+                        regimenEntry.put("groupCodeName", cr.getRegimenGroup());
+                        regimenEntry.put("conceptRef", cr.getConceptRef());
+                        regimenEntry.put("orderSetId", (cr.getOrderSetRef() != null && !"".equals(cr.getOrderSetRef())) ? String.valueOf(setService.getOrderSetByUuid(cr.getOrderSetRef()).getOrderSetId()): "");
+                        regimenEntry.put("orderSetComponents", components);
+                        regimens.add(regimenEntry);
 
                     }
 
                 }
             }
         }
-        return regimenJson;
+        return regimens;
     }
 
     private String getRegimenConceptRefFromObsList(Set<Obs> obsList) {
