@@ -184,4 +184,160 @@ public class ETLDatimQ4IndicatorLibrary {
     public CohortIndicator mothersNewOnARTDuringCurrentPregnancy() {
         return cohortIndicator("Mothers new on ART during current pregnancy", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newOnARTDuringPregnancy(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Number Tested Negative at PITC Inpatient Services
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCInpatientServices() {
+        return cohortIndicator("Tested Negative at PITC Inpatient Services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNegativeAtPITCInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Positive at PITC Inpatient Services
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCInpatientServices() {
+        return cohortIndicator("Tested Positive at PITC Inpatient Services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number Tested Positive at PITC Paediatric services
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCPaediatricServices() {
+        return cohortIndicator("Tested Positive at PITC Paediatric services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCPaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Negative at PITC Paediatric services
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCPaediatricServices() {
+        return cohortIndicator("Tested Negative at PITC Paediatric services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNegativeAtPITCPaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * PITC Malnutrition Clinics Negative
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCMalnutritionClinic() {
+        return cohortIndicator("Tested Negative at PITC Malnutrition Clinics", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNegativeAtPITCMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PITC Malnutrition Clinics Positive
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCMalnutritionClinic() {
+        return cohortIndicator("Tested Positive at PITC Malnutrition Clinics", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PITC TB Clinic Negative
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCTBClinic() {
+        return cohortIndicator("Tested Negative at PITC TB Clinic", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNegativeAtPITCTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PITC TB Clinic Positive
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCTBClinic() {
+        return cohortIndicator("Tested Positive at PITC TB Clinic", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Negative at PITC Other
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCOther() {
+        return cohortIndicator("Tested Negative at PITC Other", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNagativeAtPITCOther(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Positive at PITC Other
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCOther() {
+        return cohortIndicator("Tested Positive at PITC Other", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCOther(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Negative at PITC VCT
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCVCT() {
+        return cohortIndicator("Tested Negative at PITC VCT", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedNagativeAtPITCVCT(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Positive at PITC VCT
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCVCT() {
+        return cohortIndicator("Tested Positive at PITC VCT", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCVCT(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PITC Index Negative
+     * @return the indicator
+     */
+    public CohortIndicator indexTestedNegative() {
+        return cohortIndicator("PITC Index Negative", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indexTestedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PITC Index Positive
+     * @return the indicator
+     */
+    public CohortIndicator indexTestedPositive() {
+        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indextestedPositive(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * Number Newly Started ART While BreastFeeding
+     * @return the indicator
+     */
+    public CohortIndicator newlyStartedARTWhileBF() {
+        return cohortIndicator("Newly Started ART While Breastfeeding", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTWhileBreastFeeding(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number who Newly Started ART While Pregnant
+     * @return the indicator
+     */
+    public CohortIndicator newlyStartedARTWhilePregnant() {
+        return cohortIndicator("Newly Started ART While Pregnant", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTWhilePregnant(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Newly Started ART While Confirmed TB and / or TB Treated
+     * @return the indicator
+     */
+    public CohortIndicator newlyStartedARTWithTB() {
+        return cohortIndicator("Newly Started ART While Confirmed TB and / or TB Treated", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTWithTB(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * Disaggregated by Age / Sex
+     * @return the indicator
+     */
+    public CohortIndicator newlyStartedARTByAgeSex() {
+        return cohortIndicator("Newly Started ART While Confirmed TB and / or TB Treated", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTByAgeSex(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
 }
