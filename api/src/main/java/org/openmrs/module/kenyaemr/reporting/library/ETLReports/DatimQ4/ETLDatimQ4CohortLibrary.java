@@ -536,4 +536,356 @@ public class ETLDatimQ4CohortLibrary {
         return cd;
 
     }
+    /*PITC Inpatient Services Negative*/
+    public CohortDefinition testedNegativeAtPITCInpatientServices() {
+
+        String sqlQuery = "select distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "    and hts.patient_given_result =\"Yes\"\n" +
+                "    and hts.test_strategy=\"Provider Initiated Testing(PITC)\"\n" +
+                "    and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
+                "    and hts.voided =0";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Inpatient_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at PITC Inpatient Services");
+        return cd;
+
+    }
+
+    /*PITC Inpatient Services Positive*/
+    public CohortDefinition testedPositiveAtPITCInpatientServices() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"In Patient Department(IPD)\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Inpatient_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PITC Inpatient Services");
+        return cd;
+
+    }
+
+    /*PITC Paediatric services Positive*/
+    public CohortDefinition testedPositiveAtPITCPaediatricServices() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Paediatric_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PITC Paediatric Services");
+        return cd;
+
+    }
+
+    /*PITC Paediatric services Negative*/
+    public CohortDefinition testedNegativeAtPITCPaediatricServices() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Paediatric_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at PITC Paediatric Services");
+        return cd;
+
+    }
+
+    /*PITC Malnutrition Clinics Negative*/
+    public CohortDefinition testedNegativeAtPITCMalnutritionClinics() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Malnutrition_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at PITC Malnutrition Clinics");
+        return cd;
+
+    }
+
+    /*PITC Malnutrition Clinics Positive*/
+    public CohortDefinition testedPositiveAtPITCMalnutritionClinics() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Malnutrition_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PITC Malnutrition Clinics");
+        return cd;
+
+    }
+
+    /*PITC TB Clinic Negative*/
+    public CohortDefinition testedNegativeAtPITCTBClinic() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"TB\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_TB_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at TB Clinic");
+        return cd;
+
+    }
+
+    /*PITC TB Clinic Positive*/
+    public CohortDefinition testedPositiveAtPITCTBClinic() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"TB\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_TB_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at TB Clinic");
+        return cd;
+
+    }
+
+
+    /*Tested Negative at PITC Other*/
+    public CohortDefinition testedNagativeAtPITCOther() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Other\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Other_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at PITC Other");
+        return cd;
+
+    }
+
+    /*Tested Positive at PITC Other*/
+    public CohortDefinition testedPositiveAtPITCOther() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Other\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Other_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PITC Other");
+        return cd;
+
+    }
+
+    /*Tested Negative at PITC VCT*/
+    public CohortDefinition testedNagativeAtPITCVCT() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"VCT\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_VCT_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative at PITC VCT");
+        return cd;
+
+    }
+
+    /*Tested Positive at PITC VCT*/
+    public CohortDefinition testedPositiveAtPITCVCT() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"VCT\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_VCT_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PITC VCT");
+        return cd;
+
+    }
+
+    /*PITC Index Negative*/
+    public CohortDefinition indexTestedNegative() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Contact\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Index_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Index Tested Negative");
+        return cd;
+
+    }
+
+    /*PITC Index Positive*/
+    public CohortDefinition indextestedPositive() {
+
+        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point =\"Contact\"\n" +
+                "and hts.voided =0;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Index_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Index Tested Positive");
+        return cd;
+
+    }
+
+    /*Newly Started ART While Pregnant*/
+
+    public CohortDefinition newlyStartedARTWhilePregnant() {
+
+        String sqlQuery = "select  fup.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
+                "where date_started between date(:startDate) and date(:endDate)) started_art on\n" +
+                "started_art.patient_id = fup.patient_id\n" +
+                "where fup.pregnancy_status =1065\n" +
+                "and fup.visit_date between date(:startDate) and date(:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_New_Pregnant");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly Started ART While Pregnant");
+        return cd;
+
+    }
+
+    /*Newly Started ART While BreastFeeding - redo query*/
+
+    public CohortDefinition newlyStartedARTWhileBreastFeeding() {
+
+        String sqlQuery = "select  fup.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
+                "where date_started between date(:startDate) and date(:endDate)) started_art on\n" +
+                "started_art.patient_id = fup.patient_id\n" +
+                "where fup.pregnancy_status =1065\n" +
+                "and fup.visit_date between date(:startDate) and date(:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_New_BF");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly Started ART While BreastFeeding");
+        return cd;
+
+    }
+
+    /*Newly Started ART While Confirmed TB and / or TB Treated*/
+
+    public CohortDefinition newlyStartedARTWithTB() {
+
+        String sqlQuery = "select  fup.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
+                "where date_started between date(:startDate) and date(:endDate)) started_art on\n" +
+                "started_art.patient_id = fup.patient_id\n" +
+                "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id\n" +
+                "where fup.visit_date between date(:startDate) and date(:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_New_TB");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly Started ART While Confirmed TB and / or TB Treated");
+        return cd;
+
+    }
+
+    /*Disaggregated by Age / Sex*/
+
+    public CohortDefinition newlyStartedARTByAgeSex() {
+
+        String sqlQuery = "select  fup.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
+                "where date_started between date(:startDate) and date(:endDate)) started_art on\n" +
+                "started_art.patient_id = fup.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_New_TB");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly Started ART While Confirmed TB and / or TB Treated");
+        return cd;
+
+    }
 }
