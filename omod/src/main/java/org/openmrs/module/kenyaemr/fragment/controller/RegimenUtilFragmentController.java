@@ -56,7 +56,7 @@ public class RegimenUtilFragmentController {
 
 	public void createRegimenEventEncounter(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
 		ui.validate(command, command, null);
-
+		String conceptRef="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		ConceptService cs = Context.getConceptService();
 		EncounterService encounterService = Context.getEncounterService();
 		Encounter encounter = new Encounter();
@@ -66,7 +66,8 @@ public class RegimenUtilFragmentController {
 		encounter.setEncounterType(encounterType);
 		encounter.setEncounterDatetime(command.getChangeDate());
 		encounter.setDateCreated(date);
-		Concept con = cs.getConceptByUuid(command.getRegimenDetails());
+		// command.getRegimenDetails()
+		Concept con = cs.getConceptByUuid(conceptRef);
 
 		//create an obs for regimen
 		Obs o = new Obs();
@@ -133,9 +134,7 @@ public class RegimenUtilFragmentController {
 		}
 		encounter.addObs(category);
 
-
-		// System.out.println("this method has been called========================*****************"+encounter);
-		encounterService.saveEncounter(encounter);
+			encounterService.saveEncounter(encounter);
 
 	}
 
@@ -202,8 +201,6 @@ public class RegimenUtilFragmentController {
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
-			System.out.println("otherNonCoded==================target"+target);
-
 			require(errors, "patient");
 			require(errors, "category");
 			require(errors, "changeType");

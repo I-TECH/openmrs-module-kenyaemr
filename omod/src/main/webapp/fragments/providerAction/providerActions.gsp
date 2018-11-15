@@ -1,5 +1,8 @@
 <%
-	//ui.decorateWith("kenyaui", "panel", [ heading: "Provider Actions" ])
+	ui.includeCss("kenyaemrorderentry", "font-awesome.css")
+	ui.includeCss("kenyaemrorderentry", "font-awesome.min.css")
+	ui.includeCss("kenyaemrorderentry", "font-awesome.css.map")
+	ui.includeCss("kenyaemrorderentry", "fontawesome-webfont.svg")
 %>
 <style>
 .action-container {
@@ -62,49 +65,49 @@
 
 			<li class="float-left">
 				<a href="javascript:openPatientChart()"  class="float-left">
-					<i class="icon-check-in float-left"></i>
+					<i class="fa fa-check-circle fa-2x" style="margin-top: 7px"></i>
 					Patient Overview
 				</a>
 			</li>
 
 			<li class="float-left">
 				<a href="javascript:openPatientSummary()" class="float-left">
-					<i class="icon-plus float-left"></i>
+					<i class="fa fa-plus fa-2x" style="margin-top: 7px"></i>
 					Patient Summary
 				</a>
 			</li>
 
-			<li class="float-left">
+			<li class="float-left" style="margin-top: 7px">
 			<a href="${ ui.pageLink("kenyaemr", "registration/registrationSearch") }" class="float-left">
-					<i class="icon-search float-left"></i>
+					<i class="fa fa-search fa-2x"></i>
 					Patient Search/Registration
 				</a>
 			</li>
 
-			<li class="float-left">
+			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("kenyaemrpsmart", "kenyaemrpsmarthome", [patientId: currentPatient.patientId]) }" class="float-left">
-					<i class="icon-plus-sign-alt float-left"></i>
+					<i class="fa fa-plus-square fa-2x"></i>
 					P-Smart Data
 				</a>
 			</li>
 
-			<li class="float-left">
+			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("hivtestingservices", "patientContactList", [patientId: currentPatient.patientId]) }" class="float-left">
-					<i class="icon-remove float-left"></i>
+					<i class="fa fa-list-ul fa-2x"></i>
 					Patient Contact Listing
 				</a>
 			</li>
 
-			<li class="float-left">
+			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("kenyaemrorderentry", "drugOrders", [patient: currentPatient]) }" class="float-left">
-					<i class="icon-remove float-left"></i>
+					<i class="fa fa-medkit fa-2x"></i>
 					Drug Orders
 				</a>
 			</li>
 
-			<li class="float-left">
+			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("kenyaemrorderentry", "labOrders", [patient: currentPatient]) }" class="float-left">
-					<i class="icon-remove float-left"></i>
+					<i class="fa fa-medkit fa-2x"></i>
 					Lab Orders
 				</a>
 			</li>
@@ -112,5 +115,7 @@
 		</ul>
 
 
+
 	</div>
+
 </div>

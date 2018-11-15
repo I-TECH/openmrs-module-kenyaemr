@@ -66,6 +66,7 @@
 	<input type="hidden" id="${ config.id }" name="${ config.formFieldName }" />
 	<i>Use standard:</i> <select class="standard-regimen-select">
 		<option label="Select..." value="" />
+	<option value="">Select...</option>
 		<% regimenGroups.each { group -> %>
 			<optgroup label="${ group.name }">${ groupOptions(group) }</optgroup>
 		<% } %>
