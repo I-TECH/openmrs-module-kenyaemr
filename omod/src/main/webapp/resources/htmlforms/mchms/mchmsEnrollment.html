@@ -39,8 +39,13 @@
     var HIV_POSITIVE = 703;
 	var UNKNOWN = 1067;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+
 //Start on ready
 	jq(function () {
 	    //Gravida validations
@@ -51,6 +56,7 @@
         validateOtherFields();
 		onPatientHivStatusChange();
 		onPartnerHivStatusChange();
+        onEncounterDateChange();
 		getField('lmp.value').change(onLmpChange);
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
@@ -58,15 +64,28 @@
         if(ANC_START_DATE !="" || ANC_START_DATE != null){
             getField('first-anc-date.value').val(ANC_START_DATE);
         }
-        //Prepopulate HIV positive if already enrolled
-        if(PATIENT_IS_ENROLLED_HIV){
+        //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
+        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
             if(HIV_TEST_DATE != "") {
                 var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                 getField('patient-hiv-test-date.value').val(formattedTestDate);
             }
             jq('#patient-hiv-test-date input').prop('disabled', false);
             getField('patient-hiv-status.value').val(HIV_POSITIVE);
-        }
+            jq('#tbl-known-positive').show();
+            jq('#hiv-known-positive:text').val('Positive');
+
+            //Prepopulate if already on HAART
+            if(PATIENT_ON_ART =="true") {
+                jq('#on-art:text').val('Yes');
+            }else {
+                jq('#on-art:text').val('No');
+            }
+        }else{
+            jq('#tbl-known-positive').hide();
+		}
+
+
         jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});
 	//End on ready
@@ -164,7 +183,7 @@
 		}
 
 		var hivStatus = getValue('patient-hiv-status.value');
-		if (hivStatus == NOT_HIV_TESTED_ID || hivStatus == "") {
+		if (hivStatus == UNKNOWN || hivStatus == "") {
 
         }else{
 			var hivTestDate = getValue('patient-hiv-test-date.value');
@@ -232,13 +251,13 @@
 	function onPatientHivStatusChange() {
 		var patientHivStatus = getValue('patient-hiv-status.value');
 
-		if (patientHivStatus == '' || patientHivStatus == NOT_HIV_TESTED_ID) {
+		if (patientHivStatus == '' || patientHivStatus == UNKNOWN) {
 			jq('#patient-hiv-test-date input').prop('disabled', true);
 			setValue('patient-hiv-test-date.value', null);
 		} else {
 			jq('#patient-hiv-test-date input').prop('disabled', false);
 		}
-		var isMismatch = ((patientHivStatus == NOT_HIV_TESTED_ID || patientHivStatus == NEGATIVE) &amp;&amp; PATIENT_IS_ENROLLED_HIV);
+		var isMismatch = ((patientHivStatus == UNKNOWN || patientHivStatus == "") &amp;&amp; PATIENT_IS_ENROLLED_HIV);
 		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
 	}
 
@@ -255,6 +274,23 @@
 			jq('#partner-hiv-test-date input').prop('disabled', false);
 		}
 	}
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? data.duration : 'Not started';
+                jq('#calculated-duration-start-art').html(msg);
+            });
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? (data.regimen ) : 'None';
+                jq('#calculated-duration-current-regimen').html(msg);
+            });
+    }
     beforeSubmit.push(function () {
         if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
             return true;
@@ -298,7 +334,7 @@
 				<td>
 					<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
 				</td>
-				<td>Gestation  in weeks:</td>
+				<td>Gestation in weeks:</td>
 				<td>
 					<span id="calculated-gestation" class="value"></span>
 				</td>
@@ -356,6 +392,33 @@
 					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
 				</td>
 			</tr>
+			<tr>
+				<td>HIV Status before first ANC Visit:</td>
+				<td>
+					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="patient-hiv-status"
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Known Positive,Unknown"/>
+					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+				</td>
+				<td width="250">HIV Test Date:</td>
+				<td>
+					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+			</tr>
+			<tr>
+				<td>Partner HIV Status:</td>
+				<td>
+					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="partner-hiv-status"
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+				</td>
+				<td width="250">Partner HIV Test Date:</td>
+				<td>
+					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
+				</td>
+			</tr>
 		</table>
 	</td>
 </tr>
@@ -367,38 +430,13 @@
 				<tr>
 					<td>
 						<table>
-
 							<tr>
-								<td>HIV Status:</td>
+								<td>Syphilis serology:</td>
 								<td>
-									<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-										 id="patient-hiv-status"
-										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="HIV Positive,HIV Negative,Unknown/Not Tested"/>
-									<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
-								</td>
-								<td width="250">HIV Test Date:</td>
-								<td>
-									<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-								</td>
-							</tr>
-							<tr>
-								<td>Partner HIV Status:</td>
-								<td>
-									<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
-										 id="partner-hiv-status"
-										 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="HIV Positive,HIV Negative,Unknown"/>
-								</td>
-								<td width="250">Partner HIV Test Date:</td>
-								<td>
-									<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Syphylis/Serology:</td>
-								<td>
-									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="syphilis-test-results"
+										 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Non Reactive,Reactive,Requested,Not Tested,Poor Sample quality"/>
 								</td>
 								<td>BS for MPS:</td>
 								<td>
@@ -409,6 +447,28 @@
 								<td width="250">Blood Group/Rhesus:</td>
 								<td>
 									<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>
+								<table id="tbl-known-positive" border="1">
+										<td>
+											<u>
+												HIV Test Recorded Recently
+											</u>
+											<br/>
+											<br/>Final results:
+											<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Date:
+											<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+											<br/>
+											<br/>On HAART:
+											<input type="text" name="on-art" id="on-art" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Regimen:
+											<span id="calculated-duration-current-regimen" class="value"></span>
+											<br/>
+										</td>
+								</table>
 								</td>
 							</tr>
 						</table>

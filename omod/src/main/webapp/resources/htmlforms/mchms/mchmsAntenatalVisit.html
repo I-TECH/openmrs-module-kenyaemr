@@ -51,7 +51,9 @@
     var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
     var ANC_NUMBER = "<lookup expression="fn.latestObs(161655).valueNumeric"/>";
 
-//Start on ready
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+    //Start on ready
 	jq(function () {
         jq('#anc-counselling').hide();
 		jq('#counselled input').click(onANCCounselChange);
@@ -64,6 +66,7 @@
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
+        onEncounterDateChange();
 		//Prepopulate anc number
         jq('#anc-number:text').val(Math.round(ANC_NUMBER));
 		//Chronic illness validation
@@ -88,6 +91,12 @@
             jq('#art-and-prophylaxis').show();
             jq('#who-staging').show();
             jq('#vl-sample').show();
+            //Prepopulate if already on HAART
+            if(PATIENT_ON_ART =="true") {
+                jq('#on-art:text').val('Yes');
+            }else {
+                jq('#on-art:text').val('No');
+            }
         }else{
             jq('#tbl-known-positive').hide();
             jq('#tbl-hiv-test').show();
@@ -103,8 +112,6 @@
         }
         if(PATIENT_IS_REPORTED_HIV == 703){
             jq('#hiv-status:text').val('Positive');
-		}else if(PATIENT_IS_REPORTED_HIV == 664){
-            jq('#hiv-status:text').val('Negative');
 		}else{
             jq('#hiv-status:text').val('Not available');
 		}
@@ -408,7 +415,23 @@
             getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
         }
     }
-
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? data.duration : 'Not started';
+                jq('#calculated-duration-start-art').html(msg);
+            });
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? (data.regimen ) : 'None';
+                jq('#calculated-duration-current-regimen').html(msg);
+            });
+    }
     //Clear hidden sections
     clearHiddenSections = function(parentObj) {
         parentObj.find('input[type=radio]').each(function() {
@@ -519,7 +542,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2">Height</td>
+								<td colspan="2">Height:(cms)</td>
 								<td>
 									<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
 								</td>
@@ -594,7 +617,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Maturity:</td>
+							<td>Maturity in weeks:</td>
 							<td>
 								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
@@ -648,6 +671,12 @@
 										&#160;&#160;&#160;&#160;
 										Date:
 										<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+										<br/>
+										<br/>On HAART:
+										<input type="text" name="on-art" id="on-art" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Regimen:
+										<span id="calculated-duration-current-regimen" class="value"></span>
 										<br/>
 									</td>
 								</tr>
@@ -876,12 +905,12 @@
 									</td>
 								</tr>
 								<tr>
-									<td>Syphilis test :</td>
+									<td>Syphilis serology:</td>
 									<td>
 										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 id="syphilis-test-results"
-											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-											 answerLabels="Non Reactive,Reactive,Not Tested,Poor Sample quality"/>
+											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Non Reactive,Reactive,Requested,Not Tested,Poor Sample quality"/>
 										<span class="value"><recentObs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 									</td>
 									<td>
@@ -1010,7 +1039,7 @@
 				<legend>ART and Prophylaxis</legend>
 				<table align="center" width="100%" class="tb1">
 					<tr>
-						<td>Prophylaxis given during this visit?</td>
+						<td>Mother's prophylaxis given during this visit?</td>
 						<td><obs
 								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

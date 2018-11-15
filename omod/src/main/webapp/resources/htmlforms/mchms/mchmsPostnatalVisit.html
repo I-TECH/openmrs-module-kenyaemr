@@ -45,12 +45,45 @@
     var MODE_OF_DELIVERY = "<lookup expression="fn.latestObs(5630).getValueCoded()"/>";
     var ANC_COUNSELLED_ON_INFANT_FEEDING = "<lookup expression="fn.latestObs(159853).getValueCoded()"/>";
     var DIS_COUNSELLED_ON_INFANT_FEEDING = "<lookup expression="fn.latestObs(161651).getValueCoded()"/>";
+    var DELIVERY_OUTCOME_QUANTITATIVE = "<lookup expression="fn.latestObs(159949).getValueCoded()"/>";
+    var DELIVERY_OUTCOME_QUALITATIVE = "<lookup expression="fn.latestObs(159917).getValueCoded()"/>";
+
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
     //On ready start
     jq(function () {
         var strtext = "";
         getField('weight.value').change(onWeightOrHeightChange);
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
+        onEncounterDateChange();
+        //On delivery outcome change
+        jq('#single').show();
+        jq('#twins').hide();
+        jq('#triplets').hide();
+        if(DELIVERY_OUTCOME_QUANTITATIVE == 159913){
+            getField('delivery-outcome.value').prop("selectedIndex", 1);
+            jq('#single').show();
+            jq('#twins').hide();
+            jq('#triplets').hide();
+        }else if(DELIVERY_OUTCOME_QUANTITATIVE == 159914){
+            jq('#single').show();
+            jq('#twins').show();
+            jq('#triplets').hide();
+            getField('delivery-outcome.value').prop("selectedIndex", 2);
+        }else if(DELIVERY_OUTCOME_QUANTITATIVE == 159915){
+            jq('#single').show();
+            jq('#twins').show();
+            jq('#triplets').show();
+        getField('delivery-outcome.value').prop("selectedIndex", 3);
+        }else{
+            getField('delivery-outcome.value').prop("selectedIndex", 0);
+        }
+        jq('#delivery-outcome select').change(onDeliveryOutcomeChange);
+        jq('#baby-condition-single select').change(onSingleBabyConditionChange);
+        jq('#baby-condition-twins select').change(onTwinsBabyConditionChange);
+        jq('#baby-condition-triplets select').change(onTripletsBabyConditionChange);
+
         //Cacx screening method  cacx-screening-method
         jq('#cacx-screening-method').hide();
         jq('#cacx-screening select').change(onCacxResultChange);
@@ -75,8 +108,21 @@
             jq('#vl-sample').show();
             jq('#tbl-known-positive').show();
             jq('#hiv-known-positive:text').val('Positive');
+            //Prepopulate if already on HAART
+            if(PATIENT_ON_ART =="true") {
+                jq('#on-art:text').val('Yes');
+            }else {
+                jq('#on-art:text').val('No');
+            }
         }else{
+            var encounterDate = getValue('encounter-date.value');
             jq('#tbl-hiv-test').show();
+            console.log("Encounter date ==> "+DATE_OF_DELIVERY);
+            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+            var encounterDateFormatted = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var __duration = moment.duration(moment(encounterDateFormatted).diff(deliveryDateFormatted));
+            var testDurationWeeks = __duration.asWeeks().toFixed(0);
+            jq('#test-duration:text').val(testDurationWeeks);
             jq('#art-and-prophylaxis').hide();
             jq('#who-staging').hide();
             jq('#vl-sample').hide();
@@ -199,7 +245,57 @@
         }
     });
     //on ready end
+    function onDeliveryOutcomeChange() {
+        if (getValue('delivery-outcome.value') == 159913) {
+            jq('#single').show();
+            jq('#twins').hide();
+            jq('#triplets').hide();
+        }
+        if (getValue('delivery-outcome.value') == 159914) {
+            jq('#single').show();
+            jq('#twins').show();
+            jq('#triplets').hide();
+        }
+        if (getValue('delivery-outcome.value') == 159915) {
+            jq('#single').show();
+            jq('#twins').show();
+            jq('#triplets').show();
+        }
+    }
 
+    function onSingleBabyConditionChange() {
+        if (getValue('baby-condition-single.value') == 160034) {
+            jq('#feeding-method-single select').prop('disabled', true);
+            jq('#umbilical-cord-single select').prop('disabled', true);
+            jq('#immunization-single select').prop('disabled', true);
+        }else{
+            jq('#feeding-method-single select').prop('disabled', false);
+            jq('#umbilical-cord-single select').prop('disabled', false);
+            jq('#immunization-single select').prop('disabled', false);
+		}
+    }
+    function onTwinsBabyConditionChange() {
+        if (getValue('baby-condition-twins.value') == 160034) {
+            jq('#feeding-method-twins select').prop('disabled', true);
+            jq('#umbilical-cord-twins select').prop('disabled', true);
+            jq('#immunization-twins select').prop('disabled', true);
+        }else{
+            jq('#feeding-method-twins select').prop('disabled', false);
+            jq('#umbilical-cord-twins select').prop('disabled', false);
+            jq('#immunization-twins select').prop('disabled', false);
+        }
+    }
+    function onTripletsBabyConditionChange() {
+        if (getValue('baby-condition-triplets.value') == 160034) {
+            jq('#feeding-method-triplets select').prop('disabled', true);
+            jq('#umbilical-cord-triplets select').prop('disabled', true);
+            jq('#immunization-triplets select').prop('disabled', true);
+        }else{
+            jq('#feeding-method-triplets select').prop('disabled', false);
+            jq('#umbilical-cord-triplets select').prop('disabled', false);
+            jq('#immunization-triplets select').prop('disabled', false);
+        }
+    }
 	function clearArvMeds() {
 		jq('.arv-med').each(function () {
 			var elementId = jq(this).attr('id');
@@ -326,6 +422,23 @@
         }else{
             getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
 		}
+    }
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? data.duration : 'Not started';
+                jq('#calculated-duration-start-art').html(msg);
+            });
+        jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                var msg = data.duration ? (data.regimen ) : 'None';
+                jq('#calculated-duration-current-regimen').html(msg);
+            });
     }
     //Clear hidden sections
     clearHiddenSections = function(parentObj) {
@@ -606,45 +719,18 @@
 							</td>
 							<td>Lochia:</td>
 							<td>
-								<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
+								<obs conceptId="159844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="lochia"
+									 answerConceptIds="159721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159846AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159845AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 style="dropdown" answerLabels="Normal,Foul smelling,Excessive"/>
+
 							</td>
 						</tr>
 						<tr>
-							<td colspan="6">
-								<br/>
-								<strong>Baby's observations</strong>
-								<hr />
-							</td>
-						</tr>
-						<tr>
-							<td>Baby's Condition</td>
-							<td>
-								<obs conceptId="162134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="Good, Fair, Poor"/>
-							</td>
-							<td>Baby's Feeding Method</td>
-							<td>
-								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Umbilical Cord</td>
-							<td>
-								<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
 							<td>Counselled on infant feeding?</td>
 							<td>
 								<obs conceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="infant-feeding"
 									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 style="dropdown" answerLabels="YES,NO"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Baby Immunization Started</td>
-							<td>
-								<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 							<td>Counseling on Family Planning?</td>
 							<td>
@@ -653,11 +739,123 @@
 						</tr>
 					</table>
 				</td>
+				<tr>
+			    <td>
+					<br/>
+			            <strong>Baby(s) observations</strong>
+					<table align="center" width="100%" class="tb1" id="single">
+							<tr>
+								<td><strong>Delivery outcome : </strong></td>
+								<td>
+									<obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="delivery-outcome"
+										 answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Single,Twins,Triplets"/>
+								</td>
+							</tr>
+						<obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td colspan="6">
+									Baby 1:
+									<hr />
+								</td>
+							</tr>
+						<tr>
+							<td>Baby's Condition</td>
+							<td>
+								<obs conceptId="162134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="baby-condition-single"
+									 answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Good, Fair, Poor,Died"/>
+							</td>
+							<td>Baby's Feeding Method</td>
+							<td>
+								<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="feeding-method-single"
+									 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Umbilical Cord</td>
+							<td>
+								<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="umbilical-cord-single"/>
+							</td>
+							<td>Baby Immunization Started</td>
+							<td>
+								<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="immunization-single"/>
+							</td>
+
+						</tr>
+						</obsgroup>
+					</table>
+					<table align="center" width="100%" class="tb1" id="twins">
+						<obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td colspan="6">
+									Baby 2:
+									<hr />
+								</td>
+							</tr>
+							<tr>
+								<td>Baby's Condition</td>
+								<td>
+									<obs conceptId="162134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="baby-condition-twins"
+										 answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Good, Fair, Poor,Died"/>
+								</td>
+								<td>Baby's Feeding Method</td>
+								<td>
+									<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="feeding-method-twins"
+										 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Umbilical Cord</td>
+								<td>
+									<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="umbilical-cord-twins"/>
+								</td>
+								<td>Baby Immunization Started</td>
+								<td>
+									<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="immunization-twins"/>
+								</td>
+
+							</tr>
+						</obsgroup>
+					</table>
+					<table align="center" width="100%" class="tb1" id="triplets">
+						<obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td colspan="6">
+									Baby 3:
+									<hr />
+								</td>
+							</tr>
+							<tr>
+								<td>Baby's Condition</td>
+								<td>
+									<obs conceptId="162134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   id="baby-condition-triplets"
+										 answerConceptIds="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Good, Fair, Poor,Died"/>
+								</td>
+								<td>Baby's Feeding Method</td>
+								<td>
+									<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   id="feeding-method-triplets"
+										 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Umbilical Cord</td>
+								<td>
+									<obs conceptId="162121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="umbilical-cord-triplets"/>
+								</td>
+								<td>Baby Immunization Started</td>
+								<td>
+									<obs conceptId="162127AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="immunization-triplets"/>
+								</td>
+
+							</tr>
+						</obsgroup>
+					</table>
+				</td>
+				</tr>
 				<!-- here -->
-			</tr>
-		</table>
-	</td>
-</tr>
 	<tr>
 		<td colspan="2">
 			<fieldset>
@@ -680,6 +878,12 @@
 										&#160;&#160;&#160;&#160;
 										Date:
 										<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+										<br/>
+										<br/>On HAART:
+										<input type="text" name="on-art" id="on-art" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Regimen:
+										<span id="calculated-duration-current-regimen" class="value"></span>
 										<br/>
 									</td>
 								</tr>
@@ -775,6 +979,9 @@
 													Final results:
 													<input type="text" name="hiv-status" id="hiv-status" readonly="True" />
 													<br/>
+													<br/> Duration (weeks):&#160;&#160;
+													<input type="text" name="test-duration" id="test-duration" readonly="True" />
+													<br/>
 												</td>
 											</tr>
 										</table>
@@ -813,7 +1020,7 @@
 				<legend>ART and Prophylaxis</legend>
 				<table align="center" width="100%" class="tb1">
 					<tr>
-						<td>Prophylaxis given during this visit?</td>
+						<td>Mother's prophylaxis given during this visit?</td>
 						<td><obs
 								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1061,6 +1268,10 @@
 					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
 						 style="textarea"/>
 				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
 			</tr>
 		</table>
 	</td>

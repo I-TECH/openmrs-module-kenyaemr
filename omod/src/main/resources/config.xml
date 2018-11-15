@@ -31,6 +31,10 @@
 		<point>org.openmrs.api.EncounterService</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.EncounterServiceAdvice</class>
 	</advice>
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.MCHMSDeliveryFormProcessor</class>
+	</advice>
 
 	<messages>
 		<lang>en</lang>
