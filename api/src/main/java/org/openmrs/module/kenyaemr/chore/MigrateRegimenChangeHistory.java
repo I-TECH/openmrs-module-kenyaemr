@@ -177,46 +177,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 				e.addObs(regimenObs);
 			}
 			encounterService.saveEncounter(e);
-
-				// create change reason concept
-				/*Obs changeReasonObs = new Obs();
-				changeReasonObs.setConcept(conceptService.getConceptByUuid(REASON_PREVIOUS_REGIMEN_STOPPED_CODED));
-				changeReasonObs.setPerson(patient);
-*/
-				// create change reason non-coded reason
-				/*Obs changeReasonNonCodedObs = new Obs();
-				changeReasonNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_PREVIOUS_REGIMEN_STOPPED_NON_CODED));
-				changeReasonNonCodedObs.setPerson(patient);*/
-
-				//OrderSet regimenOrderset = RegimenJsonGenerator.getOrderSetFromMembers(regimenStarted.getDrugOrders());
-				/*if (regimenOrderset != null) {
-					String ordersetName = regimenOrderset.getName();
-					Integer ordersetID = regimenOrderset.getOrderSetId();
-
-					Date endDate = null;
-
-					List<String> changeReasons = new ArrayList<String>();
-
-					*//*DrugRegimenHistory changeEvent = new DrugRegimenHistory();
-					changeEvent.setPatient(patient);
-					changeEvent.setOrderSetId(ordersetID);
-					changeEvent.setRegimenName(ordersetName);
-					changeEvent.setDateStarted(startDate);
-					changeEvent.setProgram(masterSet == 1085 ? "HIV" : "TB");*//*
-					//historyService.saveDrugRegimenHistory(changeEvent);
-
-                *//*if (change.getChangeReasons() != null) {
-                    for (Concept c : change.getChangeReasons()) {
-                        changeReasons.add(ui.format(c));
-                    }
-                }
-                if (change.getChangeReasonsNonCoded() != null) {
-                    changeReasons.addAll(change.getChangeReasonsNonCoded());
-                }*//*
-
-				}*/
-           // }
-
         }
 	}
 
@@ -279,7 +239,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 				String drugConceptUuid = drugElement.hasAttribute("conceptUuid") ? drugElement.getAttribute("conceptUuid") : null;
 				String drugDrugUuid = drugElement.hasAttribute("drugUuid") ? drugElement.getAttribute("drugUuid") : null;
 
-				DrugReference drug = (drugDrugUuid != null) ? DrugReference.fromDrugUuid(drugDrugUuid) : DrugReference.fromConceptUuid(drugConceptUuid);
+				DrugReference drug = (drugConceptUuid != null) ? DrugReference.fromConceptUuid(drugConceptUuid) : DrugReference.fromDrugUuid(drugDrugUuid) ;
 				if (drug != null) {
 					categoryDrugs.put(drugCode, drug);
 				}
@@ -366,7 +326,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 					for (DrugOrder order : orders) {
 						DrugReference componentDrugRef = component.getDrugRef();
 						DrugReference orderDrugRef = DrugReference.fromDrugOrder(order);
-
 						if (componentDrugRef.equals(orderDrugRef)) {
 
 							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getDoseUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {

@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.fragment.controller.prescription;
 
 import org.openmrs.Patient;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.regimen.RegimenJsonGenerator;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -23,7 +22,7 @@ public class RegimenJsonGeneratorFragmentController {
 	public void controller(@FragmentParam("patient") Patient patient, FragmentModel model) {
 
 		model.put("regimenJson", new RegimenJsonGenerator(patient).generateRegimenJsonFromRegimensConfigFile());
-		//System.out.println("Testing output: \n" + new RegimenJsonGenerator().getCurrentRegimens(patient));
+		System.out.println("Testing output: \n" + new RegimenJsonGenerator(patient).generateRegimenJsonFromRegimensConfigFile().toString());
 	}
 
 }
