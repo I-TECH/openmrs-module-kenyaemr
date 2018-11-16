@@ -53,9 +53,10 @@
                 <ref bean="kenyaemr.common.report.rdqaReport" />
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
-				<ref bean="kenyaemr.common.report.clients.transferred.out" />
+				<ref bean="kenyaemr.common.report.clients.transferrgit add .
+				ed.out" />
 				<ref bean="kenyaemr.etl.common.report.datim"/>
-				<!--<ref bean="kenyaemr.etl.common.report.datimQ4"/>-->
+				<ref bean="kenyaemr.etl.common.report.datimQ4"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
@@ -400,7 +401,7 @@
 	</bean>
 
 	<!-- DatimQ4 report-->
-	<!--<bean id="kenyaemr.etl.common.report.datimQ4" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.etl.common.report.datimQ4" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d6e5dd4c-e3f5-11e8-9f32-f2801f1b9fd1" />
 		<property name="name" value="DATIM Q4 Report" />
 		<property name="description" value="DATIM Q4 Report" />
@@ -410,7 +411,6 @@
 			</set></property>
 		<property name="template" value="kenyaemr:DATIMQ4_TEMPLATE.xls" />
 	</bean>
--->
 	<bean id="kenyaemr.hiv.report.htsRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="c759e8da-d82d-41e3-88ee-c5e65ee6c9f6" />
 		<property name="name" value="HTS Register" />
