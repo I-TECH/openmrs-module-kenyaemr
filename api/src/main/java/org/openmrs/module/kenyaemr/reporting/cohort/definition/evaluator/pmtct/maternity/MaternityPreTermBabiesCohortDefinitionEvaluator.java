@@ -32,7 +32,7 @@ public class MaternityPreTermBabiesCohortDefinitionEvaluator implements CohortDe
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;    String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.birth_weight >2.5;";
+        PreTermBabiesCohortDefinition definition = (PreTermBabiesCohortDefinition) cohortDefinition;    String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.birth_weight >2.5;";
         String sql = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.duration_of_pregnancy < 37;";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 

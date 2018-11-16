@@ -61,7 +61,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	MaternityIndicatorLibrary maternityIndicatorLibrary;
 
 	@Override
-	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
+	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {dsd.setName("maternityRegister");
 		return allPatientsCohort();
 	}
 
@@ -69,8 +69,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         CohortDefinition cd = new MaternityRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("Maternity Register Cohort");
-        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
+		return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
     @Override
@@ -102,7 +101,6 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("maternityAllClients");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
@@ -173,10 +171,11 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	protected DataSetDefinition maternityDataSet() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
 		cohortDsd.setName("cohortIndicator");
-
+		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		String indParams = "";
 
-        cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
+		cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(maternityIndicatorLibrary.clientsWithAPH(), indParams), "");
         cohortDsd.addColumn("clientsWithPPH", "Clients With PPH", ReportUtils.map(maternityIndicatorLibrary.clientsWithPPH(), indParams), "");
         cohortDsd.addColumn("clientsWithEclampsia", "Clients With Eclampsia", ReportUtils.map(maternityIndicatorLibrary.clientsWithEclampsia(), indParams), "");
         cohortDsd.addColumn("clientsWithRapturedUterus", "Clients With Raptured Uterus", ReportUtils.map(maternityIndicatorLibrary.clientsWithRapturedUterus(), indParams), "");

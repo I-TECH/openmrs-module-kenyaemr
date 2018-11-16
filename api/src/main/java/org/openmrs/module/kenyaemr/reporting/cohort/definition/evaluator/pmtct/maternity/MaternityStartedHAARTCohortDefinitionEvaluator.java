@@ -35,7 +35,7 @@ public class MaternityStartedHAARTCohortDefinitionEvaluator implements CohortDef
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        StartedHAARTAtMaternityCohortDefinition definition = (StartedHAARTAtMaternityCohortDefinition) cohortDefinition;
         CohortDefinition cd = moh731GreenCardCohortLibrary.totalStartedHAARTAtLabourAndDelivery();
 
         Calendar calendar = Calendar.getInstance();

@@ -32,7 +32,7 @@ public class MaternityUnderweightBabiesCohortDefinitionEvaluator implements Coho
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        UnderWeightBabiesCohortDefinition definition = (UnderWeightBabiesCohortDefinition) cohortDefinition;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.birth_weight >2.5;";
         SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
 

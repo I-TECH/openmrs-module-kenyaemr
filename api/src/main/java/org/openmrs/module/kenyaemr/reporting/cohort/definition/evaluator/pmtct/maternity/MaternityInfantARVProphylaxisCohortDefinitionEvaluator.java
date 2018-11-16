@@ -35,7 +35,7 @@ public class MaternityInfantARVProphylaxisCohortDefinitionEvaluator implements C
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        MaternityClientsWithAPHCohortDefinition definition = (MaternityClientsWithAPHCohortDefinition) cohortDefinition;
+        InfantARVProphylaxisAtMaternityCohortDefinition definition = (InfantARVProphylaxisAtMaternityCohortDefinition) cohortDefinition;
         CohortDefinition cd = moh731GreenCardCohortLibrary.infantArvProphylaxisLabourAndDelivery();
 
         Calendar calendar = Calendar.getInstance();
