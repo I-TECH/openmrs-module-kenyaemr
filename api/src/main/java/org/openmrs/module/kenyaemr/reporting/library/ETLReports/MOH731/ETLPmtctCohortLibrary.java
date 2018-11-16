@@ -53,7 +53,7 @@ public class ETLPmtctCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select distinct e.patient_id\n" +
                 "                    from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "                     where date(visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "                     where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "                (e.patient_id is not null) and hiv_status=703;";
 
         cd.setName("Known Positive at First ANC");
@@ -72,8 +72,8 @@ public class ETLPmtctCohortLibrary {
                 "                     left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= v.patient_id\n" +
                 "                     left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
                 "                     left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
-                "                   where date(v.visit_date) between date(:startDate) and date(:endDate)) and\n" +
-                "                         e.hiv_status =1402 and\n" +
+                "                   where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "                         e.hiv_status !=703 and\n" +
                 "                         ld.final_test_result is null and\n" +
                 "                         p.final_test_result is null and\n" +
                 "                         v.final_test_result is not null ;";
@@ -94,8 +94,8 @@ public class ETLPmtctCohortLibrary {
                 "   left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
                 "   left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
                 "   left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
-                "where date(ld.visit_date) between date(:startDate) and date(:endDate)) and\n" +
-                "      e.hiv_status =1402 and\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      e.hiv_status !=703 and\n" +
                 "      v.final_test_result is null and\n" +
                 "      p.final_test_result is null and\n" +
                 "      ld.final_test_result is not null ;";
@@ -116,9 +116,9 @@ public class ETLPmtctCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
-                "where date(p.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      round(DATEDIFF(ld.visit_date,:endDate)/7) <=6 and\n" +
-                "      e.hiv_status =1402 and\n" +
+                "      e.hiv_status !=703 and\n" +
                 "      v.final_test_result is null and\n" +
                 "      ld.final_test_result is null and\n" +
                 "      p.final_test_result is not null ;";
@@ -205,7 +205,7 @@ public class ETLPmtctCohortLibrary {
         String sqlQuery =" select distinct v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=v.patient_id\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      e.hiv_status !=703 and\n" +
                 "      v.final_test_result =\"Positive\";";
 
@@ -226,7 +226,7 @@ public class ETLPmtctCohortLibrary {
                 "from kenyaemr_etl.etl_mchs_delivery ld\n" +
                 "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
-                "where date(ld.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      e.hiv_status !=703 and\n" +
                 "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
                 "      ld.final_test_result =\"Positive\";";
@@ -247,7 +247,7 @@ public class ETLPmtctCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
-                "where date(visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      round(DATEDIFF(p.visit_date,endDate)/7) <=6 and\n" +
                 "      e.hiv_status !=703 and\n" +
                 "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
@@ -285,7 +285,7 @@ public class ETLPmtctCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
-                "where date(visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      ((round(DATEDIFF(p.visit_date,endDate)/7) >=6) AND (round(DATEDIFF(ld.visit_date,endDate)/7) <=24)) and\n" +
                 "      (e.hiv_status !=703) and\n" +
                 "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
@@ -446,7 +446,7 @@ public class ETLPmtctCohortLibrary {
         String sqlQuery =  "select distinct v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
-                "where anc_visit_number = 1 and date(v.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where anc_visit_number = 1 and date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "v.syphilis_test_status is not null or v.syphilis_test_status !=1402;";
 
         cd.setName("syphilisScreenedAt1stANC");
@@ -465,7 +465,7 @@ public class ETLPmtctCohortLibrary {
         String sqlQuery =  "select distinct v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "        v.syphilis_test_status =1228;";
 
         cd.setName("syphilisScreenedPositive");
@@ -484,7 +484,7 @@ public class ETLPmtctCohortLibrary {
         String sqlQuery =  "select distinct v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      v.syphilis_treated_status =1065;";
 
         cd.setName("treatedForSyphilis");
@@ -505,7 +505,7 @@ public class ETLPmtctCohortLibrary {
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
-                "where date(visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      (ld.final_test_result=\"Positive\" or e.hiv_status = 703 or v.final_test_result =\"Positive\") and\n" +
                 "      (round(DATEDIFF(p.visit_date,endDate)/7) <=6) and\n" +
                 "      p.family_planning_status=965;";
@@ -528,7 +528,7 @@ public class ETLPmtctCohortLibrary {
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
-                "where date(p.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "  where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      (ld.final_test_result=\"Positive\" or e.hiv_status = 703 or v.final_test_result =\"Positive\") and\n" +
                 "      (round(DATEDIFF(ld.visit_date,\"2018-10-10\")/7) <=6);";
 

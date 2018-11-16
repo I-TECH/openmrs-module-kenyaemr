@@ -1136,7 +1136,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                     left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
                 "                     left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
                 "                   where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "                         e.hiv_status =1402 and\n" +
+                "                         e.hiv_status !=703 and\n" +
                 "                         ld.final_test_result is null and\n" +
                 "                         p.final_test_result is null and\n" +
                 "                         v.final_test_result is not null ;";
@@ -1157,8 +1157,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "   left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
                 "   left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
                 "   left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
-                "where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "      e.hiv_status =1402 and\n" +
+                "     where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      e.hiv_status !=703 and\n" +
                 "      v.final_test_result is null and\n" +
                 "      p.final_test_result is null and\n" +
                 "      ld.final_test_result is not null ;";
@@ -1181,7 +1181,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
                 "      round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6 and\n" +
-                "      e.hiv_status =1402 and\n" +
+                "      e.hiv_status !=703 and\n" +
                 "      v.final_test_result is null and\n" +
                 "      ld.final_test_result is null and\n" +
                 "      p.final_test_result is not null ;";

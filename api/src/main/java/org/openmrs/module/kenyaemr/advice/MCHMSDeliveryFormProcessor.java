@@ -126,7 +126,7 @@ public class MCHMSDeliveryFormProcessor implements AfterReturningAdvice {
 
     private Patient extractBabyRegistrationDetails (Set<Obs> obsList) {
         Integer babyName = 1586;
-        Integer sexConcept = 1587;
+         Integer sexConcept = 1587;
         Integer dobConcept = 5599;
 
         String patientName = null;
