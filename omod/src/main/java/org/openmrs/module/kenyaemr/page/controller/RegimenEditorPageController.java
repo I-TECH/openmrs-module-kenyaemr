@@ -168,7 +168,7 @@ public class RegimenEditorPageController {
 
 			if (obs.getConcept().getUuid().equals(CURRENT_DRUGS) ) {
 				regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "";
-				regimenShort = obs.getValueCoded() != null ? obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() : "";
+				regimenShort = obs.getValueCoded() != null && obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null ? obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() : null;
 				regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
 			}
 		}
@@ -176,7 +176,7 @@ public class RegimenEditorPageController {
 			return SimpleObject.create(
 					"startDate", startDate,
 					"endDate", "",
-					"regimenShortDisplay", regimenShort,
+					"regimenShortDisplay", regimenShort != null ? regimenShort : regimen,
 					"regimenLongDisplay", regimen,
 					"changeReasons", "",
 					"regimenUuid", regimenUuid,
