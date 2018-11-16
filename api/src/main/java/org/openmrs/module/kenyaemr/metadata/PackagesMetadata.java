@@ -23,6 +23,7 @@ public class PackagesMetadata extends AbstractMetadataBundle {
 	public static final class _Package {
 		public static final String DRUGS = "550a5db0-13be-486d-aec7-de05adac71e7";
 		public static final String MISC = "29177ba6-a634-42d5-9314-e12689856ff1";
+		public static final String ORDER_SET = "e7d8aef4-e977-11e8-9f32-f2801f1b9fd1";
 	}
 
 	/**
@@ -32,5 +33,6 @@ public class PackagesMetadata extends AbstractMetadataBundle {
 	public void install() {
 		install(packageFile("metadata/KenyaEMR_Drugs-3.zip", null, _Package.DRUGS));
 		install(packageFile("metadata/KenyaEMR_Misc-41.zip", null, _Package.MISC));
+		install(packageFile("metadata/Order_set_metadata-1.zip", null, _Package.ORDER_SET));
 	}
 }
