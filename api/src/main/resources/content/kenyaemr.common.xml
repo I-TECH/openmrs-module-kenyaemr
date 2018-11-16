@@ -53,8 +53,7 @@
                 <ref bean="kenyaemr.common.report.rdqaReport" />
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
-				<ref bean="kenyaemr.common.report.clients.transferrgit add .
-				ed.out" />
+				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.etl.common.report.datimQ4"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
