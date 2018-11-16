@@ -66,19 +66,14 @@
 	<input type="hidden" id="${ config.id }" name="${ config.formFieldName }" />
 	<i>Use standard:</i> <select class="standard-regimen-select">
 		<option label="Select..." value="" />
+	<option value="">Select...</option>
 		<% regimenGroups.each { group -> %>
 			<optgroup label="${ group.name }">${ groupOptions(group) }</optgroup>
 		<% } %>
 	</select><br />
 	<br />
 	<span id="${ config.id }-error" class="error" style="display: none"></span>
-	<% for (def c = 0; c < maxComponents; ++c) { %>
-	<div class="regimen-component">
-		Drug: <select class="regimen-component-drug"><option value="" />${ drugOptions }</select>
-		Dosage: <input class="regimen-component-dose" type="text" size="5" /><select class="regimen-component-units">${ unitsOptions }</select>
-		Frequency: <select class="regimen-component-frequency">${ frequencyOptions }</select>
-	</div>
-	<% } %>
+
 </div>
 
 <% if (config.parentFormId) { %>

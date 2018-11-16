@@ -11,26 +11,19 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.api.OrderService;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.regimen.Regimen;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
-import org.openmrs.module.kenyaemr.regimen.RegimenManager;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.regimen.RegimenValidator;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
@@ -56,8 +49,93 @@ public class RegimenUtilFragmentController {
 	 * @return the patient's current regimen
 	 */
 	public void changeRegimen(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
+
 		ui.validate(command, command, null);
 		command.apply();
+	}
+
+	public void createRegimenEventEncounter(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
+		ui.validate(command, command, null);
+		String conceptRef="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		ConceptService cs = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
+		Encounter encounter = new Encounter();
+		Date date = new Date();
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid("465a92f2-baf8-42e9-9612-53064be868e8");
+		encounter.setPatient(command.getPatient());
+		encounter.setEncounterType(encounterType);
+		encounter.setEncounterDatetime(command.getChangeDate());
+		encounter.setDateCreated(date);
+		// command.getRegimenDetails()
+		Concept con = cs.getConceptByUuid(conceptRef);
+
+		//create an obs for regimen
+		Obs o = new Obs();
+		o.setConcept(cs.getConcept(1193));
+		o.setDateCreated(new Date());
+		o.setCreator(Context.getAuthenticatedUser());
+		// o.setLocation(new Location(1));
+		o.setObsDatetime(command.getChangeDate());
+		o.setPerson(command.getPatient());
+		o.setValueCoded(con);
+		encounter.addObs(o);
+
+		//create  obs for Change reason coded
+		if(command.getChangeReason() !=null) {
+			Obs o2 = new Obs();
+			o2.setConcept(cs.getConcept(1252));
+			o2.setDateCreated(new Date());
+			o2.setCreator(Context.getAuthenticatedUser());
+			// o2.setLocation(new Location(1));
+			o2.setObsDatetime(command.getChangeDate());
+			o2.setValueCoded(command.getChangeReason());
+			o2.setPerson(command.getPatient());
+			encounter.addObs(o2);
+		}
+		//create  obs for Change reason Noncoded
+		if (!command.getChangeReasonNonCoded().isEmpty()) {
+			Obs o3 = new Obs();
+			o3.setConcept(cs.getConcept(5622));
+			o3.setDateCreated(new Date());
+			o3.setCreator(Context.getAuthenticatedUser());
+			// o3.setLocation(new Location(1));
+			o3.setObsDatetime(command.getChangeDate());
+			o3.setValueText(command.getChangeReasonNonCoded());
+			o3.setPerson(command.getPatient());
+			encounter.addObs(o3);
+		}
+
+		// create obs for plan TB/ARV 1268/1255
+
+		Obs category = new Obs();
+		category.setDateCreated(new Date());
+		category.setCreator(Context.getAuthenticatedUser());
+		// category.setLocation(new Location(1));
+		category.setObsDatetime(command.getChangeDate());
+		category.setPerson(command.getPatient());
+		if(command.getChangeType()==RegimenChangeType.CHANGE) {
+			category.setValueCoded(cs.getConcept(1259));
+		}
+
+		if(command.getChangeType()==RegimenChangeType.STOP) {
+			category.setValueCoded(cs.getConcept(1260));
+		}
+
+		if(command.getChangeType()==RegimenChangeType.START) {
+			category.setValueCoded(cs.getConcept(1256));
+		}
+
+		if(command.getCategory().equalsIgnoreCase("ARV") ) {
+			category.setConcept(cs.getConcept(1255));
+
+		}else if (command.getCategory().equalsIgnoreCase("TB")) {
+			category.setConcept(cs.getConcept(1268));
+
+		}
+		encounter.addObs(category);
+
+			encounterService.saveEncounter(encounter);
+
 	}
 
 	/**
@@ -112,6 +190,8 @@ public class RegimenUtilFragmentController {
 
 		private Regimen regimen;
 
+		private String regimenDetails;
+
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
 		}
@@ -133,6 +213,7 @@ public class RegimenUtilFragmentController {
 				if (changeReason != null) {
 					Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
 
+
 					if (changeReason.equals(otherNonCoded)) {
 						require(errors, "changeReasonNonCoded");
 					}
@@ -147,14 +228,14 @@ public class RegimenUtilFragmentController {
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
 
 				// Can't start if already started
-				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
+				/*if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
 
 				// Changes must be in order
 				if (lastChange != null && OpenmrsUtil.compare(changeDate, lastChange.getDate()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
-				}
+				}*/
 
 				// Don't allow future dates
 				if (OpenmrsUtil.compare(changeDate, new Date()) > 0) {
@@ -163,14 +244,14 @@ public class RegimenUtilFragmentController {
 			}
 
 			// Validate the regimen
-			if (changeType != RegimenChangeType.STOP) {
+			/*if (changeType != RegimenChangeType.STOP) {
 				try {
 					errors.pushNestedPath("regimen");
 					ValidationUtils.invokeValidator(new RegimenValidator(), regimen, errors);
 				} finally {
 					errors.popNestedPath();
 				}
-			}
+			}*/
 		}
 
 		/**
@@ -336,6 +417,21 @@ public class RegimenUtilFragmentController {
 		public void setRegimen(Regimen regimen) {
 			this.regimen = regimen;
 		}
+
+
+		public String getRegimenDetails() {
+			return regimenDetails;
+		}
+
+		/**
+		 * Sets the regimenDetails
+		 * @param regimenDetails the regimenDetails
+		 */
+		public void setRegimenDetails(String regimenDetails) {
+			this.regimenDetails = regimenDetails;
+		}
+
+
 	}
 
 	/**
