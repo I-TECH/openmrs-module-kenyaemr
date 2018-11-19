@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.apache.commons.logging.Log;
@@ -5,8 +14,10 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Program;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -20,6 +31,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;
@@ -45,10 +57,14 @@ import java.util.Set;
 public class StablePatientsCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+    static ConceptService conceptService = Context.getConceptService();
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
+        /* Commented this autocalculated section untill we get more input  */
+        /* Instead we use the stability concept input below on the greencard form    */
+        /*
         Concept latestHeight = Dictionary.getConcept(Dictionary.WEIGHT_KG);
         Concept latestWeight = Dictionary.getConcept(Dictionary.HEIGHT_CM);
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
@@ -172,14 +188,51 @@ public class StablePatientsCalculation extends AbstractPatientCalculation implem
             ret.put(ptId, new BooleanResult(stable, this));
         }
         return ret;
-    }
-    private int daysBetween(Date date1, Date date2) {
-        DateTime d1 = new DateTime(date1.getTime());
-        DateTime d2 = new DateTime(date2.getTime());
-        return Math.abs(Days.daysBetween(d1, d2).getDays());
-    }
 
-    @Override
+        */
+
+      /*This is the stability determination using the stability concept for a client from the previous visit */
+
+
+
+        Integer StabilityQuestion = 1855;
+
+        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        Set<Integer> alive = Filters.alive(cohort, context);
+        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+        Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+
+        CalculationResultMap ret = new CalculationResultMap();
+        for (Integer ptId : cohort) {
+
+            boolean stable = false;
+            boolean reportedStable = false;
+            boolean patientActive = false;
+            boolean patientInHivProgram = false;
+
+            Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid("a0034eee-1940-4e35-847f-97537a35d05e"));   //last greencard followup form
+            if (lastFollowUpEncounter != null) {
+                for (Obs obs : lastFollowUpEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(StabilityQuestion) && (obs.getValueBoolean().equals(true) || obs.getValueCoded().getConceptId().equals(1))) {
+                        reportedStable = true;
+                    }
+                }
+            }
+            if (!ltfu.contains(ptId)) {
+                patientActive = true;
+            }
+            if (inHivProgram.contains(ptId)) {
+                patientInHivProgram = true;
+            }
+
+            if (patientInHivProgram && patientActive && reportedStable){
+                stable = true;
+              }
+        ret.put(ptId, new BooleanResult(stable, this));
+        }
+        return ret;
+    }
+        @Override
     public String getFlagMessage() {
         return "Stable";
     }

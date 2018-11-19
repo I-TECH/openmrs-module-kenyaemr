@@ -71,7 +71,7 @@
 				<div class="ke-warning" style="margin-bottom: 5px">Editing of current regimen can be done by a KenyaEMR user with Manager permissions</div>
 			<% } %>
 
-			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: history ]) }
+			${ ui.includeFragment("kenyaemr", "regimenHistory", [ history: regimenFromObs ]) }
 
 			<br/>
 
@@ -102,7 +102,7 @@
 				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
-					action: "changeRegimen",
+					action: "createRegimenEventEncounter",
 					fields: [
 							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "START" ],
@@ -125,7 +125,7 @@
 				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
-					action: "changeRegimen",
+					action: "createRegimenEventEncounter",
 					fields: [
 							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "CHANGE" ],
@@ -147,7 +147,7 @@
 				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
-					action: "changeRegimen",
+					action: "createRegimenEventEncounter",
 					fields: [
 							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "STOP" ],
@@ -170,7 +170,7 @@
 				${ ui.includeFragment("kenyaui", "widget/form", [
 					fragmentProvider: "kenyaemr",
 					fragment: "regimenUtil",
-					action: "changeRegimen",
+					action: "createRegimenEventEncounter",
 					fields: [
 							[ hiddenInputName: "patient", value: currentPatient.id ],
 							[ hiddenInputName: "changeType", value: "RESTART" ],

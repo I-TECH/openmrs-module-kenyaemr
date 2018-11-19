@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
@@ -41,6 +36,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String FAMILY_AND_PARTNER_TESTING = "975ae894-7660-4224-b777-468c2e710a2a";
 		public static final String HIV_CONFIRMATION = "0c61819d-4f82-434e-b24d-aa8c82d49297";
 		public static final String DRUG_ORDER = "7df67b83-1b84-4fe2-b1b7-794b4e9bfcc3";
+		public static final String LAB_ORDER = "e1406e88-e9a9-11e8-9f32-f2801f1b9fd1";
 	}
 
 	public static final class _Form {
@@ -78,6 +74,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("Family and Partner Testing", "Family and Partner Testing", _EncounterType.FAMILY_AND_PARTNER_TESTING));
 		install(encounterType("HIV Confirmation", "HIV Confirmatory Encounter", _EncounterType.HIV_CONFIRMATION));
 		install(encounterType("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER));
+		install(encounterType("Lab Order", "Lab Order", _EncounterType.LAB_ORDER));
 
 
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));

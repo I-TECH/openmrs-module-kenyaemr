@@ -39,18 +39,23 @@
                 jq('#disability select').prop("disabled", false);
             }
         }
-
+        var strategySelected = function () {
+            var val = jq(this).val();
+            if (val == 159938 ){
+                getField('hts-entry-point.value').prop("selectedIndex", 9);
+            }else if (val == 159939 ){
+                getField('hts-entry-point.value').prop("selectedIndex", 10);
+            }else if (val == 164954 || val == 164955){
+                getField('hts-entry-point.value').prop("selectedIndex", 8);
+            }
+        }
         var prevTestSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
-                jq('#prev-test-location input').prop("disabled", false);
-                jq('#prev-test-date input').prop("disabled", false);
-
+                jq('#duration_months input').prop("disabled", false);
             }else{
-                jq('#prev-test-location input').prop("disabled", true);
-                jq('#prev-test-date input').prop("disabled", true);
-                clearHiddenSections(jq('#prev-test-location'));
-                clearHiddenSections(jq('#prev-test-date'));
+                jq('#duration_months input').prop("disabled", true);
+                clearHiddenSections(jq('#duration_months'));
             }
         }
         var consentSelected = function () {
@@ -235,8 +240,58 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#disability').hide();
+
+            //pre-populate from HIV Initial
+            var prev_disability = "<lookup expression="fn.latestObs(164951).getValueCoded()"/>";
+            var prev_disabilityType = "<lookup expression="fn.latestObs(162558).getValueCoded()"/>";
+            var prev_populationType = "<lookup expression="fn.latestObs(164930).getValueCoded()"/>";
+            var prev_keyPopulationType = "<lookup expression="fn.latestObs(160581).getValueCoded()"/>";
+            var prev_EverTested = "<lookup expression="fn.latestObs(164401).getValueCoded()"/>";
+            //Prepopulated fileds from the HTS forms
+//            console.log("Disability ==>"+prev_disability);
+//            console.log("Disability Type ==>"+prev_disabilityType);
+//            console.log("Population Type ==>"+prev_populationType);
+//            console.log("Key Pop Type ==>"+prev_keyPopulationType);
+
+            if (prev_disability == 1065) {
+                jq("#has-disability input[value=1065]").prop("checked", true);
+                jq('#disability').show();
+            }
+            if (prev_disabilityType != "" || prev_disabilityType != null) {
+                jq("#disability input[type=checkbox][value=" + prev_disabilityType+ "]").prop("checked",true);
+            }
+            if (prev_disability == 1066) {
+                jq("#has-disability input[value=1066]").prop("checked", true);
+                jq('#disability').hide();
+            }
+            if (prev_populationType == 164929) {
+                jq("#population-type input[value=164929]").prop("checked", true);
+                jq('#key-population').show();
+            }
+            if (prev_populationType == 164928) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (prev_keyPopulationType != "" || prev_keyPopulationType != null) {
+                jq("#key-population input[type=checkbox][value=" + prev_keyPopulationType+ "]").prop("checked",true);
+            }
+            if (prev_EverTested == 1065) {
+                jq("#ever-tested input[value=1065]").prop("checked", true);
+            }
+
             //ever tested
             jq('#ever-tested input').change(prevTestSelected);
+            //strategy selected
+            jq('.hts-strategy select').change(strategySelected);
+            var htsStrategySelected = getField('strategy.value').val();
+            if (htsStrategySelected == 159938 ){
+                getField('hts-entry-point.value').prop("selectedIndex", 9);
+            }else if (htsStrategySelected == 159939 ){
+                getField('hts-entry-point.value').prop("selectedIndex", 10);
+            }else if (htsStrategySelected == 164954 || htsStrategySelected == 164955){
+                getField('hts-entry-point.value').prop("selectedIndex", 8);
+            }
+
             //Consent validation
             jq('.consent input').change(consentSelected);
             //couple testing
@@ -326,7 +381,77 @@
             }
 
         });
-
+        //Before Submit
+        beforeSubmit.push(function() {
+            var hivTest1 = getField('hiv-test1-result.value').val();
+            var hivTest2 = getField('hiv-test2-result.value').val();
+            var kitName1 = getField('kit-name-1.value').val();
+            var kitName2 = getField('kit-name-2.value').val();
+            var lotNumber1 = getField('lot-number-1.value').val();
+            var lotNumber2 = getField('lot-number-2.value').val();
+            var expiryDate1 = getField('expiry-date.value').val();
+            var expiryDate2 = getField('expiry-date2.value').val();
+            var firstKit = getField("kit-name-1.value").val();
+            var secondKit = getField("kit-name-2.value").val();
+            if(firstKit ==164960 &amp;&amp; secondKit == 164960 || firstKit ==164961 &amp;&amp; secondKit == 164961 ) {
+                getField('kit-name-2.error').html('Cannot use same test kit for both tests.').show();
+                return false;
+            }
+            if (hivTest1 == false ) {      //check hiv test 1 results mandatory
+                getField('hiv-test1-result.error').html('Please specify HIV Test 1 results.').show();
+                return false;
+            }else{
+                getField('hiv-test1-result.error').html('Please specify HIV Test 1 results.').hide();
+            }
+            if (hivTest1 != false &amp;&amp; kitName1 == false ) {      //check hiv test 1 kitname mandatory
+                getField('kit-name-1.error').html('Please specify HIV Test 1 kit name.').show();
+                return false;
+            }else{
+                getField('kit-name-1.error').html('Please specify HIV Test 1 kit name.').hide();
+            }
+            if (hivTest1 != false &amp;&amp; lotNumber1 == false ) {      //check hiv test 1 lot number mandatory
+                getField('lot-number-1.error').html('Please specify HIV Test 1 lot number.').show();
+                return false;
+            }else{
+                getField('lot-number-1.error').html('Please specify HIV Test 1 lot number.').hide();
+            }
+            if (hivTest1 != false &amp;&amp; expiryDate1 == false ) {      //check hiv test 1 expiry mandatory
+                getField('expiry-date.error').html('Please specify HIV Test 1 expiry date.').show();
+                return false;
+            }else{
+                getField('expiry-date.error').html('Please specify HIV Test 1 expiry date.').hide();
+            }
+            if (hivTest1 == 703 &amp;&amp; hivTest2 == false ) {      //check hiv test 2 if 1 +ve mandatory
+                getField('hiv-test2-result.error').html('Please specify HIV Test 2 results.').show();
+                return false;
+            }else{
+                getField('hiv-test2-result.error').html('Please specify HIV Test 2 results.').hide();
+            }
+            if (hivTest2 != false &amp;&amp; kitName2 == false ) {      //check hiv test 2 kitname mandatory
+                getField('kit-name-2.error').html('Please specify HIV Test 2 kit name.').show();
+                return false;
+            }else{
+                getField('kit-name-2.error').html('Please specify HIV Test 2 kit name.').hide();
+            }
+            if (hivTest2 != false &amp;&amp; lotNumber2 == false ) {      //check hiv test 2 lot number mandatory
+                getField('lot-number-2.error').html('Please specify HIV Test 2 lot number.').show();
+                return false;
+            }else{
+                getField('lot-number-2.error').html('Please specify HIV Test 2 lot number.').hide();
+            }
+            if (hivTest2 != false &amp;&amp; expiryDate2== false ) {      //check hiv test 2 expiry mandatory
+                getField('expiry-date2.error').html('Please specify HIV Test 2 expiry date.').show();
+                return false;
+            }else{
+                getField('expiry-date2.error').html('Please specify HIV Test 2 expiry date.').hide();
+            }
+            if (hivTest2 != false &amp;&amp; kitName1 == kitName2 &amp;&amp; lotNumber1 == lotNumber2 ) {      //check if kitname1 == kitname 2, lot number should be different
+                getField('kit-name-2.error').html('Please use a different kit.').show();
+                return false;
+            }else{
+                getField('kit-name-2.error').html('Please use a different kit.').hide();
+            }
+        });
     </script>
 
     <div class="ke-form-header">
@@ -439,6 +564,8 @@
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
                         </includeIf>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Other" style="checkbox" id="other" /><br/>
                     </td>
                 </tr>
             </table>
@@ -483,15 +610,11 @@
                              style="radio" />
                         &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                     </td>
-                    <td> Date :
-                        <obs id="prev-test-date" conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"
+                    <td> Duration in months since the last test:
+                        <obs id="duration_months" conceptId="159813"
                         />
                         &#160;&#160;&#160;
                     </td>
-                    <td>Location :
-                        <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id = "prev-test-location" />
-                    </td>
-
                 </tr>
             </table>
             <table id="tbl-hiv-selftest">
@@ -512,9 +635,24 @@
                 <tr>
                     <td>Indicate HTS strategy used: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs class="hts-strategy"
+                             id="strategy"
                              conceptId="164956"
                              answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Provider Initiated Testing(PITC),Non Provider Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
+                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>HTS Entry Point</legend>
+            <table id="tbl-hts-entry-point">
+                <tr>
+                    <td>Indicate HTS entry point: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="hts-entry-point"
+                             conceptId="160540"
+                             answerConceptIds="5485,160542,162181,160552,160538,160541,162050,159940,159938,159939,5622"
+                             answerLabels="In Patient Department(IPD),Out Patient Department(OPD),Peadiatric Clinic,Nutrition Clinic,PMTCT,TB,CCC,VCT,Home Based Testing,Mobile Outreach,Other"
                         />
                     </td>
                 </tr>
@@ -550,6 +688,7 @@
                         </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name"
+                                 id="kit-name-1"
                                  conceptId="164962"
                                  answerConceptIds="164960,164961"
                                  style="dropdown" answerLabels="Determine,First Response"
@@ -557,8 +696,10 @@
 
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
-                            <obs class="lot-number"
-                                 conceptId="164964"
+                            <obs
+                                    class="lot-number"
+                                    id="lot-number-1"
+                                    conceptId="164964"
                             />
 
                         </td>
@@ -578,6 +719,7 @@
                         </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name2"
+                                 id="kit-name-2"
                                  conceptId="164962"
                                  answerConceptIds="164960,164961"
                                  style="dropdown" answerLabels="Determine,First Response"
@@ -586,6 +728,7 @@
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
                             <obs class="lot-number2"
+                                 id="lot-number-2"
                                  conceptId="164964"
                             />
 
@@ -624,8 +767,8 @@
             <table id="tbl-tb-screening">
                 <tr>
                     <td>Tb Screening results: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="No TB Signs,Presumed TB,TB Confirmed,Not Done,On TB Treatment" />
+                        <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="No TB Signs,Presumed TB,Not Done,On TB Treatment" />
                     </td>
                 </tr>
             </table>

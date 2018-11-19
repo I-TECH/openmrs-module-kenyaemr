@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <!--suppress SpringFacetInspection -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,7 +25,7 @@
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
-				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
+				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
 				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
@@ -80,7 +91,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivGreenCard.html" />
-		<property name="order" value="201010" />
+		<property name="order" value="200011" />
 	</bean>
 
 	<!-- Clinical Encounter - HIV Addendum -->
@@ -167,7 +178,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
-		<property name="order" value="201080" />
+		<property name="order" value="200014" />
 	</bean>
 
 	<!-- Clinical Encounter - Gene Xpert Form -->
@@ -181,7 +192,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
-		<property name="order" value="201090" />
+		<property name="order" value="201100" />
 	</bean>
 
 	<!-- Art Fast Track Form -->

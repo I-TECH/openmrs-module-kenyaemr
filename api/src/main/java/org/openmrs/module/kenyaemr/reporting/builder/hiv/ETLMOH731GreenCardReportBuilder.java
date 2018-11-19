@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
@@ -109,9 +118,9 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
         return Arrays.asList(
+                ReportUtils.map(hivTestingAndCouselingDatasetDefinition(), "startDate=${startDate},endDate=${endDate}"),
                 ReportUtils.map(pmtctDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(hivTestingAndCouselingDatasetDefinition(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -264,7 +273,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV01-15", "Tested Couples", ReportUtils.map(hivIndicators.htsNumberTestedAsCouple(), indParams),"");
         cohortDsd.addColumn("HV01-16", "Tested Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeyPopulation(), indParams),"");
 
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(hivIndicators.htsNumberTestedPositive(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
         cohortDsd.addColumn("HV01-27", "Negative Total", ReportUtils.map(hivIndicators.htsNumberTestedNegative(), indParams),"");
         cohortDsd.addColumn("HV01-28", "Discordant", ReportUtils.map(hivIndicators.htsNumberTestedDiscordant(), indParams),"");
         cohortDsd.addColumn("HV01-29", "Positive Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeypopPositive(), indParams),"");
