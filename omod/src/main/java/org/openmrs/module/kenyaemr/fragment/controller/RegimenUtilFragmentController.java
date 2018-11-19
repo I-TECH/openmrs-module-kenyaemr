@@ -15,7 +15,8 @@ import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
@@ -23,11 +24,9 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
-import org.openmrs.ui.framework.page.PageModel;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
@@ -56,18 +55,18 @@ public class RegimenUtilFragmentController {
 
 	public void createRegimenEventEncounter(@MethodParam("newRegimenChangeCommandObject") @BindParams RegimenChangeCommandObject command, UiUtils ui) {
 		ui.validate(command, command, null);
-		String conceptRef="1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		ConceptService cs = Context.getConceptService();
 		EncounterService encounterService = Context.getEncounterService();
 		Encounter encounter = new Encounter();
 		Date date = new Date();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid("465a92f2-baf8-42e9-9612-53064be868e8");
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+		Form regimenEditor = Context.getFormService().getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 		encounter.setPatient(command.getPatient());
 		encounter.setEncounterType(encounterType);
 		encounter.setEncounterDatetime(command.getChangeDate());
 		encounter.setDateCreated(date);
-		// command.getRegimenDetails()
-		Concept con = cs.getConceptByUuid(conceptRef);
+		encounter.setForm(regimenEditor);
+		Concept con = cs.getConceptByUuid(command.getRegimenConceptRef());
 
 		//create an obs for regimen
 		Obs o = new Obs();
@@ -134,7 +133,7 @@ public class RegimenUtilFragmentController {
 		}
 		encounter.addObs(category);
 
-			encounterService.saveEncounter(encounter);
+		encounterService.saveEncounter(encounter);
 
 	}
 
@@ -190,7 +189,7 @@ public class RegimenUtilFragmentController {
 
 		private Regimen regimen;
 
-		private String regimenDetails;
+		private String regimenConceptRef;
 
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
@@ -210,6 +209,7 @@ public class RegimenUtilFragmentController {
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
 				require(errors, "changeReason");
 
+
 				if (changeReason != null) {
 					Concept otherNonCoded = Dictionary.getConcept(Dictionary.OTHER_NON_CODED);
 
@@ -218,6 +218,9 @@ public class RegimenUtilFragmentController {
 						require(errors, "changeReasonNonCoded");
 					}
 				}
+			}
+			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE) {
+				require(errors, "regimenConceptRef");
 			}
 
 			if (category != null && changeDate != null) {
@@ -419,16 +422,16 @@ public class RegimenUtilFragmentController {
 		}
 
 
-		public String getRegimenDetails() {
-			return regimenDetails;
+		public String getRegimenConceptRef() {
+			return regimenConceptRef;
 		}
 
 		/**
-		 * Sets the regimenDetails
-		 * @param regimenDetails the regimenDetails
+		 * Sets the regimenConceptRef
+		 * @param regimenConceptRef the regimenConceptRef
 		 */
-		public void setRegimenDetails(String regimenDetails) {
-			this.regimenDetails = regimenDetails;
+		public void setRegimenConceptRef(String regimenConceptRef) {
+			this.regimenConceptRef = regimenConceptRef;
 		}
 
 

@@ -13,7 +13,7 @@
 	def refDefIndex = 0;
 
 	def groupOptions = {
-		it.regimens.collect( { reg -> """<option value="${ refDefIndex++ }">${ reg.name }</option>""" } ).join()
+		it.regimens.collect( { reg -> """<option value="${ reg.conceptRef }">${ reg.name }</option>""" } ).join()
 	}
 
 	def drugOptions = drugs.collect( { """<option value="${ it }">${ kenyaEmrUi.formatDrug(it, ui) }</option>""" } ).join()
@@ -64,7 +64,7 @@
 
 <div id="${ config.id }-container">
 	<input type="hidden" id="${ config.id }" name="${ config.formFieldName }" />
-	<i>Use standard:</i> <select class="standard-regimen-select">
+	<i>Use standard:</i> <select class="standard-regimen-select" name="regimenConceptRef">
 		<option label="Select..." value="" />
 	<option value="">Select...</option>
 		<% regimenGroups.each { group -> %>
