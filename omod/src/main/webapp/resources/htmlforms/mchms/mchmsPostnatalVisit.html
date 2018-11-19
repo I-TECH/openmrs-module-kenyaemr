@@ -122,7 +122,17 @@
             var encounterDateFormatted = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
             var __duration = moment.duration(moment(encounterDateFormatted).diff(deliveryDateFormatted));
             var testDurationWeeks = __duration.asWeeks().toFixed(0);
-            jq('#test-duration:text').val(testDurationWeeks);
+            var testDurationDays = __duration.asDays().toFixed(0);
+
+            if(!isNaN(testDurationWeeks) &amp;&amp; testDurationWeeks &gt; 1) {
+                jq('#test-duration:text').val(testDurationWeeks + " Week(s)");
+            }else if(!isNaN(testDurationDays) &amp;&amp; testDurationDays &lt; 7) {
+                jq('#test-duration:text').val(testDurationDays +" Day(s)");
+            }
+           else{
+                jq('#test-duration:text').val("Not available");
+            }
+
             jq('#art-and-prophylaxis').hide();
             jq('#who-staging').hide();
             jq('#vl-sample').hide();
@@ -979,7 +989,7 @@
 													Final results:
 													<input type="text" name="hiv-status" id="hiv-status" readonly="True" />
 													<br/>
-													<br/> Duration (weeks):&#160;&#160;
+													<br/> Duration since delivery:&#160;&#160;
 													<input type="text" name="test-duration" id="test-duration" readonly="True" />
 													<br/>
 												</td>
