@@ -28,7 +28,7 @@ public class HEIAgeAtTestInWeeksDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  d.patient_id,\n" +
-                "  round(DATEDIFF(min(f.dna_pcr_sample_date),d.DOB)/7) as age_in_weeks\n" +
+                "  TIMESTAMPDIFF(week,d.DOB,f.dna_pcr_sample_date) as age_in_weeks\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  INNER JOIN kenyaemr_etl.etl_hei_follow_up_visit f ON\n" +
                 "    d.patient_id = f.patient_id\n" +
