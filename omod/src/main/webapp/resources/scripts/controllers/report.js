@@ -103,6 +103,10 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 		kenyaui.openDynamicDialog({ heading: 'View Error', url: contentUrl, width: 90, height: 90 });
 	};
 
+    $scope.viewAdxData = function(requestId) {
+        ui.navigate('kenyaemr', 'reports/adxView', { appId: $scope.appId, request: requestId, returnUrl: location.href });
+    };
+
 	var defaultSuccessHandler = function(data) {
 		kenyaui.notifySuccess(data.message);
 		$scope.refresh(true);

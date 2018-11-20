@@ -13,7 +13,7 @@
 	def refDefIndex = 0;
 
 	def groupOptions = {
-		it.regimens.collect( { reg -> """<option value="${ refDefIndex++ }">${ reg.name }</option>""" } ).join()
+		it.regimens.collect( { reg -> """<option value="${ reg.conceptRef }">${ reg.name }</option>""" } ).join()
 	}
 
 	def drugOptions = drugs.collect( { """<option value="${ it }">${ kenyaEmrUi.formatDrug(it, ui) }</option>""" } ).join()
