@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jfree.data.time.Month;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
@@ -39,7 +41,7 @@ import java.util.Set;
  * Determines whether a child at 9 months and above has had antibody test
  */
 public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-
+	protected static final Log log = LogFactory.getLog(NeedsPcrTestCalculation.class);
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
@@ -67,6 +69,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
 		CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), cohort, context);
 
 		Concept hivExposedUnknown = Dictionary.getConcept(Dictionary.UNKNOWN);
+		Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
@@ -79,7 +82,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
 
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown)) && getAge(person.getBirthdate(), context.getNow()) <= 18 && rapidTest1 == null && getAge(person.getBirthdate(), context.getNow()) >= 9) {
+				if (hivStatusObs != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown) || hivStatusObs.getValueCoded().equals(hivExposed)) && getAge(person.getBirthdate(), context.getNow()) >= 18 && rapidTest1 == null) {
 					needsAntibody = true;
 				}
 			}

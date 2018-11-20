@@ -15,6 +15,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctCohortLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
@@ -40,10 +41,8 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     private CommonDimensionLibrary commonDimensions;
 
     @Autowired
-    private ETLPmtctIndicatorLibrary pmtctIndicators;
+    private ETLMoh731GreenCardIndicatorLibrary moh731GreenCardIndicators;
 
-    @Autowired
-    private ETLMoh731GreenCardIndicatorLibrary hivIndicators;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -137,55 +136,76 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
+        //New list
+        dsd.addColumn("HV02-01", "First ANC Visit", ReportUtils.map(moh731GreenCardIndicators.firstANCVisitMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-02", "Delivery from HIV+ Mothers(Labor and Delivery)", ReportUtils.map(moh731GreenCardIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
+        dsd.addColumn("HV02-03", "Known Positive at 1st ANC (Antenatal)", ReportUtils.map(moh731GreenCardIndicators.knownPositiveAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-04", "Initial test at ANC (Antenatal)", ReportUtils.map(moh731GreenCardIndicators.initialHIVTestInMchmsAntenatal(), indParams), "");
 
-        dsd.addColumn("HV02-01", "Testing for HIV (Antenatal)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsAntenatal(), indParams), "");
-        dsd.addColumn("HV02-02", "Testing for HIV (Labor and Delivery)", ReportUtils.map(pmtctIndicators.testedForHivInMchmsDelivery(), indParams), "");
-        dsd.addColumn("HV02-03", "Testing for HIV (Postnatal (within 72hrs))", ReportUtils.map(pmtctIndicators.testedForHivInMchmsPostnatal(), indParams), "");
-        dsd.addColumn("HV02-04", "Testing for HIV (Total (Sum HV02-01 to HV02-03))", ReportUtils.map(pmtctIndicators.testedForHivInMchms(), indParams), "");
+//Updates
+        dsd.addColumn("HV02-01", "First ANC Visit", ReportUtils.map(moh731GreenCardIndicators.firstANCVisitMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-02", "Delivery from HIV+ Mothers(Labor and Delivery)", ReportUtils.map(moh731GreenCardIndicators.deliveryFromHIVPositiveMothers(), indParams), "");
+        dsd.addColumn("HV02-03", "Known Positive at 1st ANC (Antenatal)", ReportUtils.map(moh731GreenCardIndicators.knownPositiveAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-04", "Initial test at ANC (Antenatal)", ReportUtils.map(moh731GreenCardIndicators.initialHIVTestInMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-05", "Initial Test at Labor and Delivery", ReportUtils.map(moh731GreenCardIndicators.testedForHivInMchmsDelivery(), indParams), "");
+        dsd.addColumn("HV02-06", "Initial Test at PNC <=6 Weeks)", ReportUtils.map(moh731GreenCardIndicators.initialTestAtPNCUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-07", "Known HIV Status Total)", ReportUtils.map(moh731GreenCardIndicators.testedForHivInMchms(), indParams), "");
+        dsd.addColumn("HV02-08", "PNC Retest within 6 weeks)", ReportUtils.map(moh731GreenCardIndicators.pncRetestUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-09", "PNC Testing between 7 weeks - 6 months)", ReportUtils.map(moh731GreenCardIndicators.pncTestBtwn6WeeksAnd6Months(), indParams), "");
+        dsd.addColumn("HV02-10", "HIV positive Before First ANC)", ReportUtils.map(moh731GreenCardIndicators.knownHivPositiveAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-11", "HIV positive results ANC", ReportUtils.map(moh731GreenCardIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
+        dsd.addColumn("HV02-12", "HIV positive results (Labor and Delivery)", ReportUtils.map(moh731GreenCardIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
+        dsd.addColumn("HV02-13", "HIV positive results <=6 weeks)", ReportUtils.map(moh731GreenCardIndicators.testedHivPositiveInANCWithin6Weeks(), indParams), "");
+        dsd.addColumn("HV02-14", "Total HIV positive Mothers)", ReportUtils.map(moh731GreenCardIndicators.totalHivPositiveInMchms(), indParams), "");
+        dsd.addColumn("HV02-15", "PNC >6 weeks and <=6 months", ReportUtils.map(moh731GreenCardIndicators.pncHIVPositiveBetween7weeksAnd6Months(), indParams), "");
+        dsd.addColumn("HV02-16", "On HAART at 1st ANC", ReportUtils.map(moh731GreenCardIndicators.onHAARTAtFirstANC(), indParams), "");
+        dsd.addColumn("HV02-17", "Start HAART during ANC", ReportUtils.map(moh731GreenCardIndicators.startHAARTANC(), indParams), "");
+        dsd.addColumn("HV02-18", "Start HAART During Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.startedHAARTLabourAndDelivery(), indParams), "");
+        dsd.addColumn("HV02-19", "Started HAART upto 6 weeks", ReportUtils.map(moh731GreenCardIndicators.startedHAARTPNCUpto6Weeks(), indParams), "");
+        //dsd.addColumn("HV02-20", "Total Maternal HAART", ReportUtils.map(moh731GreenCardIndicators.totalMaternalHAART(), indParams), "");
+        dsd.addColumn("HV02-21", "Started HAART from 7 weeks to 6 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTFrom7WeeksTo6Months(), indParams), "");
+        dsd.addColumn("HV02-22", "On HAART Upto 12 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTUpto12Months(), indParams), "");
+        dsd.addColumn("HV02-23", "Net Cohort at 12 months", ReportUtils.map(moh731GreenCardIndicators.netCohortAt12Months(), indParams), "");
+        dsd.addColumn("HV02-24", "Syphilis screened at 1st ANC", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedAt1stANC(), indParams), "");
+        dsd.addColumn("HV02-25", "Syphilis screened Positive", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedPositive(), indParams), "");
+        dsd.addColumn("HV02-26", "Syphilis Treated", ReportUtils.map(moh731GreenCardIndicators.syphilisTreated(), indParams), "");
+        dsd.addColumn("HV02-27", "HIV+ on Modern FP at 6 weeks", ReportUtils.map(moh731GreenCardIndicators.HIVPositiveOnModernFPUpto6Weeks(), indParams), "");
+        dsd.addColumn("HV02-28", "HIV+ PNC visits at 6 weeks", ReportUtils.map(moh731GreenCardIndicators.HIVPositivePNCVisitsAt6Weeks(), indParams), "");
+        dsd.addColumn("HV02-29", "Known HIV+ 1st Contact", ReportUtils.map(moh731GreenCardIndicators.knownHIVPositive1stContact(), indParams), "");
+        dsd.addColumn("HV02-30", "Initial Test at ANC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtANCForMale(), indParams), "");
+        dsd.addColumn("HV02-31", "Initial Test at PNC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtPNCForMale(), indParams), "");
+        //dsd.addColumn("HV02-32", "Total Known status Male", ReportUtils.map(moh731GreenCardIndicators.totalKnownHIVStatusMale(), indParams), "");
+        /*Adolescents (10-19 years) Testing results*/
+        dsd.addColumn("HV02-33", "1st ANC KP Adolescent (10-19)", ReportUtils.map(moh731GreenCardIndicators.firstANCKPAdolescents(), indParams), "");
+        dsd.addColumn("HV02-34", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), "");
+        dsd.addColumn("HV02-35", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), "");
+        /*Infant HIV Exposure status at Penta 1*/
+        dsd.addColumn("HV02-36", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
+        dsd.addColumn("HV02-37", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
+        /*Infant ARV Prophylaxis*/
+        dsd.addColumn("HV02-38", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), "");
+        dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");
+        dsd.addColumn("HV02-40", "Infant ARV Prophylaxis <8 weeks PNC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisPNCLessThan8Weeks(), indParams), "");
+        //dsd.addColumn("HV02-41", "Total ARV Prophylaxis", ReportUtils.map(moh731GreenCardIndicators.totalARVProphylaxis(), indParams), "");
+        dsd.addColumn("HV02-42", "HEI CTS/DDS Start <2 months", ReportUtils.map(moh731GreenCardIndicators.heiDDSCTXStartLessThan2Months(), indParams), "");
+        dsd.addColumn("HV02-43", "Initial PCR <8 weeks", ReportUtils.map(moh731GreenCardIndicators.initialPCRLessThan8Weeks(), indParams), "");
+        dsd.addColumn("HV02-44", "Initial PCR >8 weeks to 12 months", ReportUtils.map(moh731GreenCardIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
+        dsd.addColumn("HV02-45", "Total Initial PCR Test <12 months", ReportUtils.map(moh731GreenCardIndicators.totalInitialPCRTestLessThan12Months(), indParams), "");
+        dsd.addColumn("HV02-46", "Infected in 24 months", ReportUtils.map(moh731GreenCardIndicators.infectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-47", "Uninfected in 24 months", ReportUtils.map(moh731GreenCardIndicators.uninfectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-48", "Unknown Outcomes in 24 months", ReportUtils.map(moh731GreenCardIndicators.unknownOutcomesIn24Months(), indParams), "");
+        dsd.addColumn("HV02-49", "Net Cohort HEI in 24 months", ReportUtils.map(moh731GreenCardIndicators.netCohortHeiIn24Months(), indParams), "");
+        dsd.addColumn("HV02-50", "Mother-baby pairs in 24 months", ReportUtils.map(moh731GreenCardIndicators.motherBabyPairsIn24Months(), indParams), "");
+        dsd.addColumn("HV02-51", "Pair net cohort in 24 months", ReportUtils.map(moh731GreenCardIndicators.pairNetCohortIn24Months(), indParams), "");
+        dsd.addColumn("HV02-52", "Exclusive Breastfeeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveBFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-53", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveRFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-54", "Mixed Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.mixedFeedingAt6Months(), indParams), "");
+        dsd.addColumn("HV02-55", "Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-56", "Not Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-57", "Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt18Months(), indParams), "");
+        dsd.addColumn("HV02-58", "Not Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt18Months(), indParams), "");
 
-        dsd.addColumn("HV02-05", "HIV positive results (At entry into ANC)", ReportUtils.map(pmtctIndicators.testedHivPositiveBeforeMchms(), indParams), "");
-        dsd.addColumn("HV02-06", "HIV positive results (Antenatal)", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchmsAntenatal(), indParams), "");
-        dsd.addColumn("HV02-07", "HIV positive results (Labor and Delivery)", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchmsDelivery(), indParams), "");
-        dsd.addColumn("HV02-08", "HIV positive results (Postnatal (within 72hrs))", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchmsPostnatal(), indParams), "");
-        dsd.addColumn("HV02-09", "HIV positive results (Total (Sum HV02-05 to HV02-08))", ReportUtils.map(pmtctIndicators.testedHivPositiveInMchms(), indParams), "");
-
-        dsd.addColumn("HV02-10", "Total with known status (Total (HV02-04 to HV02-05))", ReportUtils.map(pmtctIndicators.testedForHivBeforeOrDuringMchms(), indParams), "");
-
-        dsd.addColumn("HV02-11", "Male partners tested - (ANC/L&D)", ReportUtils.map(pmtctIndicators.partnerTestedDuringAncOrDelivery(), indParams), "");
-
-        dsd.addColumn("HV02-12", "Discordant Couples", ReportUtils.map(pmtctIndicators.discordantCouples(), indParams), "");
-
-        dsd.addColumn("HV02-18", "Assessed for eligibility at 1st ANC - WHO Staging done", ReportUtils.map(pmtctIndicators.assessedForArtEligibilityWho(), indParams), "");
-        dsd.addColumn("HV02-19", "Assessed for eligibility at 1st ANC - CD4", ReportUtils.map(pmtctIndicators.assessedForArtEligibilityCd4(), indParams), "");
-        dsd.addColumn("HV02-20", "Assessed for Eligibility in ANC (Sum HV02-18 to HV02-19)", ReportUtils.map(pmtctIndicators.assessedForArtEligibilityTotal(), indParams), "");
-
-
-        dsd.addColumn("HV02-43", "PCR within 2 months", ReportUtils.map(pmtctIndicators.pcrWithInitialIn2Months(), indParams), ""); //< 8weeks
-        dsd.addColumn("HV02-44", "PCR from 3 to 8 months", ReportUtils.map(pmtctIndicators.pcrWithInitialBetween3And8MonthsOfAge(), indParams), ""); // 8 to 12 months
-        dsd.addColumn("HV02-26", "Serology antibody test(from 9 to 12 months)", ReportUtils.map(pmtctIndicators.serologyAntBodyTestBetween9And12Months(), indParams), "");
-        dsd.addColumn("HV02-27", "PCR from 9 to 12 months", ReportUtils.map(pmtctIndicators.pcrTestBetween9And12Months(), indParams), "");
-
-        dsd.addColumn("HV02-28", "Total HEI Tested by 12 months (Total (Sum HV02-24 to HV02-26))", ReportUtils.map(pmtctIndicators.totalHeiTestedBy12Months(), indParams), "");
-
-        dsd.addColumn("HV02-29", "Confirmed PCR Positive(Within 2 months)", ReportUtils.map(pmtctIndicators.pcrConfirmedPositive2Months(), indParams), "");
-        dsd.addColumn("HV02-30", "Confirmed PCR Positive(3-8 months)", ReportUtils.map(pmtctIndicators.pcrConfirmedPositiveBetween3To8Months(), indParams), "");
-        dsd.addColumn("HV02-31", "Confirmed PCR Positive(9-12 months)", ReportUtils.map(pmtctIndicators.pcrConfirmedPositiveBetween9To12Months(), indParams), "");
-
-        dsd.addColumn("HV02-32", "Total Confirmed Positive(Total (Sum HV2-29 to HV02-31))", ReportUtils.map(pmtctIndicators.pcrTotalConfirmedPositive(), indParams), "");
-
-        dsd.addColumn("HV02-52", "Exclusive Breastfeeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveBreastFeedingAtSixMonths(), indParams), "");
-        dsd.addColumn("HV02-53", "Exclusive Replacement Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.exclusiveReplacementFeedingAtSixMonths(), indParams), "");
-        dsd.addColumn("HV02-54", "Mixed Feeding(at 6 months)", ReportUtils.map(pmtctIndicators.mixedFeedingAtSixMonths(), indParams), "");
-
-        dsd.addColumn("HV02-36", "Total Exposed aged six Months( Total sum(HIV02-33 to HIV02-35))", ReportUtils.map(pmtctIndicators.totalExposedAgedSixMoths(), indParams), "");
-
-        dsd.addColumn("HV02-37", "Mother on ARV treatment and breastfeeding", ReportUtils.map(pmtctIndicators.motherOnTreatmentAndBreastFeeding(), indParams), "");
-        dsd.addColumn("HV02-38", "Mother on ARV treatment and Not breastfeeding", ReportUtils.map(pmtctIndicators.motherOnTreatmentAndNotBreastFeeding(), indParams), "");
-        dsd.addColumn("HV02-39", "Mother on ARV treatment if breastfeeding unknown", ReportUtils.map(pmtctIndicators.motherOnTreatmentAndNotBreastFeedingUnknown(), indParams), "");
-
-        dsd.addColumn("HV02-40", "Mother on ARV treatment (Total Sum(HIV02-37 to HIV02-39))", ReportUtils.map(pmtctIndicators.totalBreastFeedingMotherOnTreatment(), indParams), "");
-
-        // TO DO 2.9 Infant ARV Prophylaxis(at first contact only)
+        //End updates
 
         return dsd;
     }
@@ -206,46 +226,46 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-       /* cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2Months(), indParams), "");
-        cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(hivIndicators.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");*/
+       /* cohortDsd.addColumn("HV03-01", "HIV Exposed Infants (within 2 months)", ReportUtils.map(moh731GreenCardIndicators.hivExposedInfantsWithin2Months(), indParams), "");
+        cohortDsd.addColumn("HV03-02", "HIV Exposed Infants (Eligible for CTX at 2 months)", ReportUtils.map(moh731GreenCardIndicators.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), indParams), "");*/
 
 
         // 3.1 (Enrolled in Care)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(hivIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(moh731GreenCardIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011"));
         // 3.2 (Pre-ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(hivIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("013", "014", "015"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(moh731GreenCardIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("013", "014", "015"));
 
         // 3.3 (Starting ART)
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(hivIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(moh731GreenCardIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026"));
 
         // 3.4 (Currently on ART [All])
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(hivIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(moh731GreenCardIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038"));
 
         // 3.5 (Survival and Retention on ART at 12 months)
-        cohortDsd.addColumn("HV03-040", "ART Net Cohort at 12 months", ReportUtils.map(hivIndicators.art12MonthNetCohort(), indParams), "");
-        cohortDsd.addColumn("HV03-041", "On therapy at 12 months (Total) ", ReportUtils.map(hivIndicators.onTherapyAt12Months(), indParams), "");
+        cohortDsd.addColumn("HV03-040", "ART Net Cohort at 12 months", ReportUtils.map(moh731GreenCardIndicators.art12MonthNetCohort(), indParams), "");
+        cohortDsd.addColumn("HV03-041", "On therapy at 12 months (Total) ", ReportUtils.map(moh731GreenCardIndicators.onTherapyAt12Months(), indParams), "");
 
         // 3.6 on CTX/Dapsone
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(moh731GreenCardIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
 
         // 3.7 TB Screening and presumed TB
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(hivIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(moh731GreenCardIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
 
         // 3.8
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(hivIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
-        cohortDsd.addColumn("HV03-066", "Completed IPT 12 months", ReportUtils.map(hivIndicators.ipt12MonthsCohort(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(moh731GreenCardIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
+        cohortDsd.addColumn("HV03-066", "Completed IPT 12 months", ReportUtils.map(moh731GreenCardIndicators.ipt12MonthsCohort(), indParams),"");
         // 3.10
-        cohortDsd.addColumn("HV03-076", "TB new cases", ReportUtils.map(hivIndicators.tbEnrollment(), indParams),"");
-        cohortDsd.addColumn("HV03-077", "TB new cases, Known Positive", ReportUtils.map(hivIndicators.tbNewKnownPositive(), indParams),"");
-        cohortDsd.addColumn("HV03-078", "TB new cases, tested for HIV", ReportUtils.map(hivIndicators.tbTestedForHIV(), indParams),"");
-        cohortDsd.addColumn("HV03-080", "TB new cases, HIV positive", ReportUtils.map(hivIndicators.tbNewTestedHIVPositive(), indParams),"");
-        cohortDsd.addColumn("HV03-082", "TB already on HAART", ReportUtils.map(hivIndicators.tbNewAlreadyOnHAART(), indParams),"");
-        cohortDsd.addColumn("HV03-083", "TB new cases start HAART", ReportUtils.map(hivIndicators.tbNewStartingHAART(), indParams),"");
-        cohortDsd.addColumn("HV03-084", "TB total on HAART", ReportUtils.map(hivIndicators.tbTotalOnHAART(), indParams),"");
+        cohortDsd.addColumn("HV03-076", "TB new cases", ReportUtils.map(moh731GreenCardIndicators.tbEnrollment(), indParams),"");
+        cohortDsd.addColumn("HV03-077", "TB new cases, Known Positive", ReportUtils.map(moh731GreenCardIndicators.tbNewKnownPositive(), indParams),"");
+        cohortDsd.addColumn("HV03-078", "TB new cases, tested for HIV", ReportUtils.map(moh731GreenCardIndicators.tbTestedForHIV(), indParams),"");
+        cohortDsd.addColumn("HV03-080", "TB new cases, HIV positive", ReportUtils.map(moh731GreenCardIndicators.tbNewTestedHIVPositive(), indParams),"");
+        cohortDsd.addColumn("HV03-082", "TB already on HAART", ReportUtils.map(moh731GreenCardIndicators.tbNewAlreadyOnHAART(), indParams),"");
+        cohortDsd.addColumn("HV03-083", "TB new cases start HAART", ReportUtils.map(moh731GreenCardIndicators.tbNewStartingHAART(), indParams),"");
+        cohortDsd.addColumn("HV03-084", "TB total on HAART", ReportUtils.map(moh731GreenCardIndicators.tbTotalOnHAART(), indParams),"");
         // 3.12
-        cohortDsd.addColumn("HV03-087", "Screen Cacx new F18+", ReportUtils.map(hivIndicators.screenedforCaCx(), indParams),"");
-        cohortDsd.addColumn("HV03-088", "Clinical Visits (F18+)", ReportUtils.map(hivIndicators.hivCareVisitsTotal(), indParams),"");
-        cohortDsd.addColumn("HV03-089", "Modern contraceptive methods", ReportUtils.map(hivIndicators.modernContraceptivesProvided(), indParams), "");
+        cohortDsd.addColumn("HV03-087", "Screen Cacx new F18+", ReportUtils.map(moh731GreenCardIndicators.screenedforCaCx(), indParams),"");
+        cohortDsd.addColumn("HV03-088", "Clinical Visits (F18+)", ReportUtils.map(moh731GreenCardIndicators.hivCareVisitsTotal(), indParams),"");
+        cohortDsd.addColumn("HV03-089", "Modern contraceptive methods", ReportUtils.map(moh731GreenCardIndicators.modernContraceptivesProvided(), indParams), "");
         return cohortDsd;
 
     }
@@ -265,22 +285,22 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
         // 3.1 HIV testing and counseling
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(hivIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
-        cohortDsd.addColumn("HV01-11", "Tested Facility", ReportUtils.map(hivIndicators.htsNumberTestedAtFacility(), indParams),"");
-        cohortDsd.addColumn("HV01-12", "Tested Community", ReportUtils.map(hivIndicators.htsNumberTestedAtCommunity(), indParams),"");
-        cohortDsd.addColumn("HV01-13", "Tested New", ReportUtils.map(hivIndicators.htsNumberTestedNew(), indParams),"");
-        cohortDsd.addColumn("HV01-14", "Tested Repeat", ReportUtils.map(hivIndicators.htsNumberTestedRepeat(), indParams),"");
-        cohortDsd.addColumn("HV01-15", "Tested Couples", ReportUtils.map(hivIndicators.htsNumberTestedAsCouple(), indParams),"");
-        cohortDsd.addColumn("HV01-16", "Tested Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeyPopulation(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(moh731GreenCardIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+        cohortDsd.addColumn("HV01-11", "Tested Facility", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAtFacility(), indParams),"");
+        cohortDsd.addColumn("HV01-12", "Tested Community", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAtCommunity(), indParams),"");
+        cohortDsd.addColumn("HV01-13", "Tested New", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedNew(), indParams),"");
+        cohortDsd.addColumn("HV01-14", "Tested Repeat", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedRepeat(), indParams),"");
+        cohortDsd.addColumn("HV01-15", "Tested Couples", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAsCouple(), indParams),"");
+        cohortDsd.addColumn("HV01-16", "Tested Key Pop", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedKeyPopulation(), indParams),"");
 
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(hivIndicators.htsNumberTestedPositive(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
-        cohortDsd.addColumn("HV01-27", "Negative Total", ReportUtils.map(hivIndicators.htsNumberTestedNegative(), indParams),"");
-        cohortDsd.addColumn("HV01-28", "Discordant", ReportUtils.map(hivIndicators.htsNumberTestedDiscordant(), indParams),"");
-        cohortDsd.addColumn("HV01-29", "Positive Key Pop", ReportUtils.map(hivIndicators.htsNumberTestedKeypopPositive(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositive(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        cohortDsd.addColumn("HV01-27", "Negative Total", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedNegative(), indParams),"");
+        cohortDsd.addColumn("HV01-28", "Discordant", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedDiscordant(), indParams),"");
+        cohortDsd.addColumn("HV01-29", "Positive Key Pop", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedKeypopPositive(), indParams),"");
 
         // number linked
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(hivIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
-        cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(hivIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
+        cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),"");
 
 
         return cohortDsd;

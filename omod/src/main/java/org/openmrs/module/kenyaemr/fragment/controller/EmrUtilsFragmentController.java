@@ -109,7 +109,7 @@ public class EmrUtilsFragmentController {
 	}
 
 	/**
-	 * Gets the duration since patient started ART
+	 * Gets the current ARV regimen
 	 * @param patient the patient
 	 * @param now the current time reference
 	 * @return the regimen and duration

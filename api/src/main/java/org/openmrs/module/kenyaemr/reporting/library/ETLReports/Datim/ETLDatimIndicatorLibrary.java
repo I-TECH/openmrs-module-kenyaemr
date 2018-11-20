@@ -93,7 +93,98 @@ public class ETLDatimIndicatorLibrary {
     public CohortIndicator patientsWithViralLoadSuppression() {
         return cohortIndicator("Viral Suppression", ReportUtils.<CohortDefinition>map(datimCohorts.viralSuppressionInLast12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Number of patients tested Negative for HIV at ANC
+     * @return the indicator
+     */
+    public CohortIndicator patientsTestNegativeAtANC() {
+        return cohortIndicator("HIV Negative Results at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.patientHIVNegativeResultsATANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
+    /**
+     * Number of patients tested positive for HIV at ANC
+     * @return the indicator
+     */
+    public CohortIndicator patientsTestPositiveAtANC() {
+        return cohortIndicator("HIV Positive Results at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.patientHIVPositiveResultsAtANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of clients with known HIV status at ANC
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithKnownHIVStatusAtANC() {
+        return cohortIndicator("Clients with Known HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.knownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /*   *//**
+     * Number of clients with known Positive HIV status
+     * @return the indicator
+     *//*
+    public CohortIndicator clientsWithKnownPositiveHIVStatus() {
+        return cohortIndicator("Clients with Known HIV Positive Status", ReportUtils.<CohortDefinition>map(datimCohorts.knownHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    *//**
+     * Number of clients newly tested HIV Positive
+     * @return the indicator
+     *//*
+    public CohortIndicator clientsNewlyTestedHIVPositive() {
+        return cohortIndicator("Clients with Known HIV Positive Status", ReportUtils.<CohortDefinition>map(datimCohorts.newlyTestedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    *//**
+     * Number of clients newly tested HIV Negative
+     * @return the indicator
+     *//*
+    public CohortIndicator clientsNewlyTestedHIVNegative() {
+        return cohortIndicator("Clients with Known HIV Positive Status", ReportUtils.<CohortDefinition>map(datimCohorts.newlyTestedHIVNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
+
+    /**
+     * Number of clients newly enrolled for ANC
+     * @return the indicator
+     */
+    public CohortIndicator clientsNewlyEnrolledToANC() {
+        return cohortIndicator("Clients newly Enrolled For ANC", ReportUtils.<CohortDefinition>map(datimCohorts.newANCClients(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of Infants with a Negative virology test result
+     * @return the indicator
+     */
+    public CohortIndicator infantsTestedNegativeForVirology() {
+        return cohortIndicator("Infants tested negative for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyNegativeResults(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of Infants with a positive virology test result
+     * @return the indicator
+     */
+    public CohortIndicator infantVirologyWithNoResults() {
+        return cohortIndicator("Infants tested for Virology but no results", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyNoResults(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of Infants with a positive virology test result
+     * @return the indicator
+     */
+    public CohortIndicator infantsTestedPositiveForVirology() {
+        return cohortIndicator("Infants tested positive for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyPositiveResults(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of Mothers Already on ART at the start of current Pregnancy
+     * @return the indicator
+     */
+    public CohortIndicator mothersAlreadyOnARTAtStartOfCurrentPregnancy() {
+        return cohortIndicator("Mothers Already on ART at the start of current Pregnancy", ReportUtils.<CohortDefinition>map(datimCohorts.alreadyOnARTAtBeginningOfPregnancy(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of Mothers new on ART during current pregnancy
+     * @return the indicator
+     */
+    public CohortIndicator mothersNewOnARTDuringCurrentPregnancy() {
+        return cohortIndicator("Mothers new on ART during current pregnancy", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTDuringPregnancy(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
 
 }

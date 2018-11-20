@@ -24,6 +24,8 @@ import java.util.Date;
  * Library of cohort definitions used specifically in the MOH731 report based on ETL tables. It has incorporated green card components
  */
 @Component
+
+
 public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition hivEnrollment(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -740,7 +742,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     }
 
-     public CohortDefinition htsNumberTestedKeypopPositive() {
+    public CohortDefinition htsNumberTestedKeypopPositive() {
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
                 " and population_type ='Key Population' and final_test_result='Positive' and visit_date between :startDate and :endDate";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1081,5 +1083,1117 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
+
+    //Updated PMTCT
+    //First ANC visit  HV02-01
+    public CohortDefinition firstANCVisitMchmsAntenatal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =" select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "where anc_visit_number = 1 and date(v.visit_date)  between date(:startDate) and date(:endDate);";
+
+        cd.setName("First ANC Visit");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested For Hiv Antenatal");
+
+        return cd;
+    }
+
+    // Delivery for HIV Positive mothers HV02-02
+    public CohortDefinition deliveryFromHIVPositiveMothers(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "   left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= ld.patient_id\n" +
+                "   left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= ld.patient_id\n" +
+                "   where (date(ld.visit_date) between date(:startDate) and date(:endDate)) and\n" +
+                "   ld.final_test_result=\"Positive\" or hiv_status = 703 or v.final_test_result =\"Positive\" ;";
+
+        cd.setName("Delivery from HIV Positive Mothers");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Delivery from HIV Positive Mothers");
+
+        return cd;
+    }
+    // Known Positive at 1st ANC HV02-03
+    public CohortDefinition knownPositiveAtFirstANC(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct e.patient_id\n" +
+                "   from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "   where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "   (e.patient_id is not null) and hiv_status=703;";
+
+        cd.setName("Known Positive at First ANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Known Positive at First ANC");
+
+        return cd;
+    }
+    //    Initial test at ANC  HV02-04
+    public CohortDefinition initialHIVTestInMchmsAntenatal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct v.patient_id\n" +
+                "         from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "                     left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= v.patient_id\n" +
+                "                     left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
+                "                     left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
+                "                   where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "                         e.hiv_status !=703 and\n" +
+                "                         ld.final_test_result is null and\n" +
+                "                         p.final_test_result is null and\n" +
+                "                         v.final_test_result is not null ;";
+
+        cd.setName("Initial HIV Test at ANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial HIV Test at ANC");
+
+        return cd;
+    }
+    //    Initial test at Labour and Delivery  HV02-05
+    public CohortDefinition testedForHivInMchmsDelivery(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "   left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
+                "   left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
+                "   left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
+                "     where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      e.hiv_status !=703 and\n" +
+                "      v.final_test_result is null and\n" +
+                "      p.final_test_result is null and\n" +
+                "      ld.final_test_result is not null ;";
+
+        cd.setName("Initial Test at Labour and Delivery");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial Test at Labour and Delivery");
+
+        return cd;
+    }
+    //Initial Test at PNC <=6 Weeks HV02-06
+    public CohortDefinition initialTestAtPNCUpto6Weeks(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6 and\n" +
+                "      e.hiv_status !=703 and\n" +
+                "      v.final_test_result is null and\n" +
+                "      ld.final_test_result is null and\n" +
+                "      p.final_test_result is not null ;";
+
+        cd.setName("Initial Test at PNC <=6 Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial Test at PNC <=6 Weeks");
+
+        return cd;
+    }
+    //Known HIV Status Total HV02-07 --Computed
+    public CohortDefinition testedForHivInMchmsTotal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  " select distinct patient_id\n" +
+                "    from kenyaemr_etl.etl_mch_enrollment e\n " +
+                "    where e.hiv_test_date between date(:startDate) and date(:endDate) ;";
+        cd.setName("testedForHivInMchms");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mothers tested For Hiv In Mch Program");
+
+        return cd;
+    }
+    //Retesting PNC <=6 weeks HV02-08
+    public CohortDefinition pncRetestUpto6Weeks(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "       left outer join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id=pnc.patient_id\n" +
+                "       left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=pnc.patient_id\n" +
+                "where date(pnc.visit_date) between (:startDate) and (:endDate) and\n" +
+                "      pnc.final_test_result is not null and anc.final_test_result =664 and ld.final_test_result = 664\n" +
+                "  and round(DATEDIFF(:endDate,ld.date_of_delivery)/7) between 1 and 6;";
+
+        cd.setName("pncRetestUpto6Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PNC Retest within 6 weeks");
+
+        return cd;
+    }
+    //Tested PNC >6 weeks and <= 6 months HV02-09
+    public CohortDefinition pncTestBtwn6WeeksAnd6Months(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "       left outer join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id=pnc.patient_id\n" +
+                "    left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=pnc.patient_id\n" +
+                "    where date(pnc.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "    pnc.patient_id is not null and anc.patient_id =664 and ld.patient_id=664 and\n" +
+                "    round(DATEDIFF(:endDate,ld.date_of_delivery))/7 between 6 and 24;";
+
+        cd.setName("pncTest6WeeksUpto6Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PNC Test between 6 weeks and 6 Months");
+
+        return cd;
+    }
+    //Known Positive before 1st ANC HV02-10
+    /*public CohortDefinition knownPositiveAtFirstANC(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  " select distinct e.patient_id " +
+                "    from kenyaemr_etl.etl_mch_enrollment e " +
+                "    join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id=e.patient_id " +
+                "    where (e.visit_date between date(:startDate) and date(:endDate)) " +
+                "    and hiv_status=703 and e.visit_date>hiv_test_date;";
+
+        cd.setName("knownHIVPositiveBeforeFirstAnc");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Hiv Positive Before First ANC visit");
+
+        return cd;
+    }*/
+    //Tested HIV Positive at ANC HV02-11
+    public CohortDefinition testedHivPositiveInMchmsAntenatal(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "       left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=v.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "    (e.hiv_status !=703) and\n" +
+                "    v.final_test_result =\"POSITIVE\";";
+
+        cd.setName("Tested Hiv Postive at Antenatal");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Hiv Postive at Antenatal");
+
+        return cd;
+    }
+
+//Tested HIV Positive during Labour and Delivery HV02-12
+
+    public CohortDefinition positiveHIVResultsAtLabourAndDelivery(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      (e.hiv_status !=703) and\n" +
+                "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
+                "      ld.final_test_result =\"Positive\";";
+
+        cd.setName("HIV Positive results during Labour and Delivery");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive results during Labour and Delivery");
+
+        return cd;
+    }
+    // HIV positive results PNC <=6 weeks) HV02-13
+    public CohortDefinition testedHivPositiveInPNCWithin6Weeks(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "  left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6 and\n" +
+                "      (e.hiv_status !=703) and\n" +
+                "      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
+                "      (ld.final_test_result is null or ld.final_test_result !=\"Positive\") and\n" +
+                "      p.final_test_result =\"Positive\";";
+
+        cd.setName("testedHivPositiveInPNCWithin6Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PNC within 6 weeks");
+
+        return cd;
+    }
+    //Total HIV positive Mothers HV02-14
+    public CohortDefinition totalHivPositiveMothersInMchms(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  " select distinct patient_id\n " +
+                "    from kenyaemr_etl.etl_mch_enrollment e\n " +
+                "    where (hiv_status=703 and e.hiv_test_date between date(:startDate) and date(:endDate)) ;";
+
+        cd.setName("totalHivPositiveInMchms");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mothers tested Hiv Positive In Mch Program");
+
+        return cd;
+    }
+    //   PNC >6 weeks and <=6 months   HV02-15
+    public CohortDefinition totalHivPositivePNC6WeeksTo6monthsInMchms(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "            left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=p.patient_id\n" +
+                "            left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
+                "            left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "    (round(DATEDIFF(p.visit_date,:endDate)/7) between 6 and 24) and\n" +
+                "    (e.hiv_status !=703) and\n" +
+                "    (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
+                "    (ld.final_test_result is null or ld.final_test_result !=\"Positive\") and\n" +
+                "    p.final_test_result =\"Positive\";";
+
+        cd.setName("totalHivPositivePNC6WeeksTo6monthsInMchms");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mothers tested Hiv Positive in PNC Between 7 weeks and 6 months");
+
+        return cd;
+    }
+    //On HAART at 1st ANC  HV02-16
+    public CohortDefinition totalOnHAARTAtFirstANC(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+                "where date(e.visit_date) BETWEEN date(:startDate) and date(:endDate)\n" +
+                "and d.date_started < e.visit_date;\n";
+
+        cd.setName("totalOnHAARTAtFirstANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("On HAART At first ANC");
+
+        return cd;
+    }
+
+    //  Start HAART during ANC  HV02-17
+    public CohortDefinition startedHAARTAtANC(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct a.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit a\n" +
+                "       inner join kenyaemr_etl.etl_drug_event d on a.patient_id=d.patient_id\n" +
+                "where date(a.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and d.date_started >= a.visit_date;";
+
+        cd.setName("totalStartedOnHAARTAtANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Started HAART At ANC");
+
+        return cd;
+    }
+
+    //Start HAART During Labour and Delivery HV02-18
+    public CohortDefinition totalStartedHAARTAtLabourAndDelivery(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and d.date_started >= ld.visit_date;";
+
+        cd.setName("totalStartedHAARTAtLabourAndDelivery");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Started HAART At L&D");
+
+        return cd;
+    }
+
+    //Started HAART upto 6 weeks HV02-19
+    public CohortDefinition totalStartedHAARTAtPNCUpto6Weeks(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=pnc.patient_id\n" +
+                "where date(pnc.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and round(DATEDIFF(pnc.visit_date,d.date_started)/7) between 0 and 6;\n";
+
+        cd.setName("totalStartedHAARTAtPNCUpto6Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Started HAART At PNC within 6 weeks");
+
+        return cd;
+    }
+
+    //Total maternal HAART HV02-20
+    public CohortDefinition totalMaternalHAART(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  ";";
+
+        cd.setName("totalMaternalHAART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total maternal HAART");
+
+        return cd;
+    }
+    //Start HAART_PNC >6 wks to 6 mths	HV02-21
+    public CohortDefinition totalStartedOnHAARTBtw7WeeksAnd6Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=pnc.patient_id\n" +
+                "where date(pnc.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and round(DATEDIFF(pnc.visit_date,d.date_started)/7) between 7 and 24;";
+
+        cd.setName("totalStartedOnHAARTBtw7WeeksAnd6Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total started on HAART between 7 weeks and 6 months");
+
+        return cd;
+    }
+    //On maternal HAART_12 mths	HV02-22
+    public CohortDefinition onHAARTUpto12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=pnc.patient_id\n" +
+                "where date(pnc.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and round(DATEDIFF(pnc.visit_date,d.date_started)/7) >=48;";
+
+        cd.setName("onHAARTUpto12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total on HAART upto 12 months");
+
+        return cd;
+    }
+
+    //Net Cohort_12 months	HV02-23
+    public CohortDefinition netCohortAt12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= e.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= e.patient_id\n" +
+                "where date(v.visit_date) between \"2017-08-01\" and \"2018-10-10\"\n" +
+                "      and round(DATEDIFF(ld.visit_date,\"2018-10-12\")/7) <= 12;";
+
+        cd.setName("netCohortAt12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Net Cohort at 12 months");
+
+        return cd;
+    }
+
+    //Syphilis Screened at ANC	 HV02-24
+
+    public CohortDefinition syphilisScreenedAt1stANC(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "v.syphilis_test_status is not null or v.syphilis_test_status !=1402;";
+
+        cd.setName("syphilisScreenedAt1stANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Screened at First ANC");
+
+        return cd;
+    }
+
+    //Syphilis Screened Positive	HV02-25
+    public CohortDefinition syphilisScreenedPositive(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "v.syphilis_test_status =1228;";
+
+        cd.setName("syphilisScreenedPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Syphilis Screened Positive");
+
+        return cd;
+    }
+
+    //Syphilis Treated	HV02-26
+    public CohortDefinition treatedForSyphilis(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "v.syphilis_treated_status =1065;";
+
+        cd.setName("treatedForSyphilis");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Treated for Syphilis");
+
+        return cd;
+    }
+
+    //HIV+ On Modern FP at 6 weeks	HV02-27
+    public CohortDefinition HIVPositiveOnModernFPUpto6Weeks(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = p.patient_id\n" +
+                "inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "(ld.final_test_result=\"Positive\" or e.hiv_status = 703 or p.final_test_result =\"Positive\") and\n" +
+                "(round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6) and\n" +
+                "p.family_planning_status=965;";
+
+        cd.setName("HIVPositiveOnModernFPUpto6Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive on Modern FP at 6 weeks");
+
+        return cd;
+    }
+
+    //HIV+ PNC Visits at 6 weeks	HV02-28
+    public CohortDefinition HIVPositivePNCVisitsAt6Weeks(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "where date(p.visit_date) between date(:startDate) and date(:endDate) and\n" +
+                "      (ld.final_test_result=\"Positive\" or e.hiv_status = 703 or v.final_test_result =\"Positive\") and\n" +
+                "      (round(DATEDIFF(ld.date_of_delivery,:endDate)/7) <=6);";
+
+        cd.setName("HIVPositivePNCVisitsAt6Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive PNC Visits at 6 weeks");
+
+        return cd;
+    }
+
+    //Known Positive Status 1st Contact	HV02-29
+    public CohortDefinition knownHIVPositive1stContact(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct patient_id\n" +
+                "    from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "    where (e.partner_hiv_status=703 and  e.visit_date between date(:startDate) and date(:endDate))";
+
+        cd.setName("knownHIVPositive1stContact");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive at First Contact");
+
+        return cd;
+    }
+
+    //Initial test at ANC Male	HV02-30
+    public CohortDefinition initialTestAtANCForMale(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct anc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit anc\n" +
+                "where date(anc.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and anc.partner_hiv_tested =1065;";
+        cd.setName("initialTestAtANCForMale");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial Test at ANC for Males");
+
+        return cd;
+    }
+
+    //Initial test at PNC Male	HV02-31
+    public CohortDefinition initialTestAtPNCForMale(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =   "select distinct pnc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "where date(pnc.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and pnc.partner_hiv_tested =1065;";
+
+        cd.setName("initialTestAtPNCForMale");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial Test at PNC for Males");
+
+        return cd;
+    }
+    //Total Known Status Male	HV02-32
+  /*  public CohortDefinition totalKnownHIVStatusMale(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  ";";
+
+        cd.setName("totalKnownHIVStatusMale");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total males with known HIV Status");
+
+        return cd;
+    }*/
+
+    //1st ANC KP adolescents (10-19)	HV02-33
+    public CohortDefinition firstANCKPAdolescents(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "\n" +
+                "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "join  kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where e.hiv_status =703\n" +
+                "and date(e.visit_date) between (:startDate) and (:endDate)\n" +
+                "and  timestampdiff(year,d.dob,date(:endDate)) between 10 and 19;";
+
+        cd.setName("firstANCKPAdolescents");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("1st ANC KP Adolescents");
+
+        return cd;
+    }
+
+    //Positive result Adolescents_Total	HV02-34
+    public CohortDefinition adolescentsHIVPositive(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "left join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id = e.patient_id\n" +
+                "left join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id = e.patient_id\n" +
+                "left join kenyaemr_etl.etl_mch_postnatal_visit pnc on pnc.patient_id = e.patient_id\n" +
+                "where anc.final_test_result = 703\n" +
+                "or ld.final_test_result = 703\n" +
+                "or pnc.final_test_result = 703\n" +
+                "and date(anc.visit_date) between (:startDate) and (:endDate)\n" +
+                "and  timestampdiff(year,d.dob,date(:endDate)) between 10 and 19\n" +
+                "and (round(DATEDIFF(ld.visit_date,:endDate)/7) <=6);\n";
+
+        cd.setName("adolescentsHIVPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive Adolescents");
+
+        return cd;
+    }
+
+    //Started HAART adolescents_Total	HV02-35
+    public CohortDefinition adolescentsStartedOnHAART(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "join kenyaemr_etl.etl_drug_event d on d.patient_id = e.patient_id\n" +
+                "where d.date_started >= e.visit_date\n" +
+                "and date(e.visit_date) between (:startDate) and (:endDate);";
+
+        cd.setName("adolescentsStartedOnHAART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Adolescents started on HAART");
+
+        return cd;
+    }
+
+    //Known Exposure at Penta 1	HV02-36
+ public CohortDefinition knownExposureAtPenta1(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "  inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
+                "where date(hi.visit_date) between (:startDate) and (:endDate)\n" +
+                "      and he.child_exposed != 1067 AND\n" +
+                "      hi.PCV_10_1 = \"Yes\" ;";
+
+        cd.setName("knownExposureAtPenta1");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Known HIV Exposure at Penta 1");
+
+        return cd;
+    }
+
+    //Total due for Penta 1	HV02-37
+    public CohortDefinition totalDueForPenta1(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct he.patient_id\n" +
+                "                from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "                 inner join kenyaemr_etl.etl_hei_immunization hi on hi.patient_id=he.patient_id\n" +
+                "                where date(hi.visit_date) between (:startDate) and (:endDate)\n" +
+                "                  and hi.PCV_10_1 = \"Yes\" ;";
+
+        cd.setName("totalDueForPenta1");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total Infants due for Penta 1");
+
+        return cd;
+    }
+
+    //Infant ARV Prophylaxis ANC HV02-38
+    public CohortDefinition infantArvProphylaxisANC(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct p.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=v.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=v.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and (v.baby_nvp_dispensed = 160123 or v.baby_azt_dispensed = 160123) and\n" +
+                "      (p.baby_nvp_dispensed != 160123 or p.baby_azt_dispensed != 160123) and\n" +
+                "      (ld.baby_nvp_dispensed != 160123 or ld.baby_azt_dispensed != 160123);";
+
+        cd.setName("infantArvProphylaxisANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infant ARV Prophylaxis at ANC");
+
+        return cd;
+    }
+
+    //Infant ARV Prophylaxis L&D	HV02-39
+    public CohortDefinition infantArvProphylaxisLabourAndDelivery(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
+                "  left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and (ld.baby_nvp_dispensed = 160123 or ld.baby_azt_dispensed = 160123) and\n" +
+                "      (p.baby_nvp_dispensed != 160123 or p.baby_azt_dispensed != 160123) and\n" +
+                "      (v.baby_nvp_dispensed != 160123 or v.baby_azt_dispensed != 160123);";
+
+        cd.setName("infantArvProphylaxisLabourAndDelivery");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infant ARV Prophylaxis during Labour and Delivery");
+
+        return cd;
+    }
+
+    //Infant ARV Prophylaxis <8weeks PNC	HV02-40
+    public CohortDefinition infantArvProphylaxisPNCLessThan8Weeks(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct p.patient_id\n" +
+                "                from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "                  left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= p.patient_id\n" +
+                "                  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=p.patient_id\n" +
+                "               where date(p.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                and (p.baby_nvp_dispensed = 160123 or p.baby_azt_dispensed = 160123) and\n" +
+                "                      (v.baby_nvp_dispensed != 160123 or v.baby_azt_dispensed != 160123) and\n" +
+                "                      (ld.baby_nvp_dispensed != 160123 or ld.baby_azt_dispensed != 160123)\n" +
+                "                and round(DATEDIFF(ld.visit_date,DATE(:endDate))/7) <=8;";
+
+        cd.setName("infantArvProphylaxisPNCLessThan8Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infant ARV Prophylaxis PNC <8 weeks");
+
+        return cd;
+    }
+
+    //Total ARV Prophylaxis Total	HV02-41
+  /*  public CohortDefinition totalARVProphylaxis(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  ";";
+
+        cd.setName("totalARVProphylaxis");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total ARV Prophylaxis");
+
+        return cd;
+    }*/
+
+    //HEI CTX/DDS Start <2 months	HV02-42
+    public CohortDefinition heiDDSCTXStartLessThan2Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "SELECT distinct hv.patient_id FROM kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "where date(hv.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and hv.ctx_given = 105281\n" +
+                "and round(DATEDIFF(DATE(hv.visit_date),DATE(:endDate))/7) <=8;";
+
+        cd.setName("heiDDSCTSStartLessThan2Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HEI DDS/CTS Start <2 Months");
+
+        return cd;
+    }
+
+    //Initial PCR <8 weeks	HV02-43
+    public CohortDefinition initialPCRLessThan8Weeks(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id \n" +
+                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
+                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<=2; ";
+
+        cd.setName("initialPCRLessThan8Weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial PCR <8 weeks");
+
+        return cd;
+    }
+
+    //Initial PCR >8weeks - 12 months	HV02-44
+    public CohortDefinition initialPCROver8WeeksTo12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id \n" +
+                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
+                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate)) between 9 and 12; ";
+
+        cd.setName("initialPCROver8WeeksTo12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial PCR >8 weeks to 12 Months");
+
+        return cd;
+    }
+
+    //Initial PCR Test <12 mths Total	HV02-45
+    public CohortDefinition totalInitialPCRTestLessThan12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id \n" +
+                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
+                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<12; ";
+
+        cd.setName("totalInitialPCRTestLessThan12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total Initial PCR <12 Months");
+
+        return cd;
+    }
+
+    //Infected 24 months	HV02-46
+    public CohortDefinition totalInfected24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id \n" +
+                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "    where dna_pcr_result= 703 and dna_pcr_contextual_status=162082 and \n" +
+                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<=24; ";
+
+        cd.setName("totalInfected24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total infected in 24 Months");
+
+        return cd;
+    }
+
+    //Uninfected 24 months	HV02-47
+    public CohortDefinition totalUninfectedIn24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id \n" +
+                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "    where dna_pcr_result= 664 and dna_pcr_contextual_status=162082 and \n" +
+                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<=24; ";
+
+        cd.setName("totalUninfectedIn24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total uninfected in 24 Months");
+
+        return cd;
+    }
+
+    //Unknown Outcome 24 mths HV02-48
+    public CohortDefinition unknownOutcomesIn24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id\n" +
+                "where hv.dna_pcr_result= 1138 or hv.dna_pcr_result= 1304 and hv.dna_pcr_contextual_status=162082 and\n" +
+                "(hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<=24;";
+
+        cd.setName("unknownOutcomesIn24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total Unknown outcomes in 24 Months");
+
+        return cd;
+    }
+
+    //Net Cohort HEI 24 months	HV02-49
+    public CohortDefinition netCohortHeiIn24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                " join  kenyaemr_etl.etl_patient_demographics d on d.patient_id = he.patient_id\n" +
+                "where transfer_in = 1066\n" +
+                "and timestampdiff(month,d.dob,date(:endDate))>=24;";
+
+        cd.setName("netCohortHeiIn24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Net cohort HEI in 24 Months");
+
+        return cd;
+    }
+
+    //Mother-baby pairs 24 months	HV02-50
+    public CohortDefinition motherBabyPairsIn24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id=he.patient_id\n" +
+                "where he.infant_mother_link is not null and\n" +
+                "he.visit_date between date(:startDate) and date(:endDate) and timestampdiff(month,d.dob,date(:endDate))<=24;";
+
+        cd.setName("motherBabyPairsIn24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mother-baby pairs in 24 Months");
+
+        return cd;
+    }
+
+    //Pair net cohort 24 months	 HV02-51
+    public CohortDefinition pairNetCohortIn24Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select he.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "join  kenyaemr_etl.etl_patient_demographics d on d.patient_id = he.patient_id\n" +
+                "where  he.mother_alive=1 and transfer_in = 1066\n" +
+                "and timestampdiff(month,d.dob,date(:endDate))>=24;";
+
+        cd.setName("pairNetCohortIn24Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Pair net cohort in 24 Months");
+
+        return cd;
+    }
+
+    //EBF (at 6 months)	HV02-52
+    public CohortDefinition exclusiveBFAt6Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
+                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=5526 and\n" +
+                "date(hv.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("exclusiveBFAt6Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Exclusive Breastfeeding at 6 months");
+
+        return cd;
+    }
+
+    //ERF (at 6 months)	HV02-53
+    public CohortDefinition exclusiveRFAt6Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
+                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=1595 and\n" +
+                "date(hv.visit_date) between date(:startDate) and date(:endDate) ;";
+
+        cd.setName("exclusiveRFAt6Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Exclusive Replacement feeding at 6 months");
+
+        return cd;
+    }
+
+    //MF (at 6 months)	HV02-54
+    public CohortDefinition mixedFeedingAt6Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
+                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=6046 and\n" +
+                "date(hv.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("mixedFeedingAt6Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mixed feeding at 6 months");
+
+        return cd;
+    }
+
+    //BF (12 months)	HV02-55
+    public CohortDefinition breastFeedingAt12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where  e.mother_breastfeeding=1065 and \n" +
+                "timestampdiff(month,d.dob,date(:endDate))>=12 and\n" +
+                "date(e.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("breastFeedingAt12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Breast feeding at 12 months");
+
+        return cd;
+    }
+
+    //Not BF (12 months)	HV02-56
+    public CohortDefinition notBreastFeedingAt12Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where  e.mother_breastfeeding=1066 and \n" +
+                "timestampdiff(month,d.dob,date(:endDate))>=12 and\n" +
+                "date(e.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("notBreastFeedingAt12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Not Breast feeding at 12 months");
+
+        return cd;
+    }
+
+    //BF (18 months)	HV02-57
+    public CohortDefinition breastFeedingAt18Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where  e.mother_breastfeeding=1065 and \n" +
+                "timestampdiff(month,d.dob,date(:endDate))>=18 and\n" +
+                "date(e.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("breastFeedingAt18Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Breast feeding at 18 months");
+
+        return cd;
+    }
+
+    //Not BF (18 months)	HV02-58
+    public CohortDefinition notBreastFeedingAt18Months(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "Select distinct e.patient_id \n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where  e.mother_breastfeeding=1066 and \n" +
+                "timestampdiff(month,d.dob,date(:endDate))>=18 and\n" +
+                "date(e.visit_date) between date(:startDate) and date(:endDate);";
+
+        cd.setName("notBreastFeedingAt18Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Not Breastfeeding at 18 months");
+
+        return cd;
+    }
+
 
 }

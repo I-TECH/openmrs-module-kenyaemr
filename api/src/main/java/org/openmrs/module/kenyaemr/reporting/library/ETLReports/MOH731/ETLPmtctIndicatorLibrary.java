@@ -26,6 +26,54 @@ public class ETLPmtctIndicatorLibrary {
     private ETLPmtctCohortLibrary pmtctCohortLibrary;
 
     /**
+     * Number of patients who did First ANC visit during that period {@link org.openmrs.module.kenyaemr.PregnancyStage}
+     *First ANC visit  HV02-01
+     * @return the indicator
+     */
+    public CohortIndicator firstANCVisitMchmsAntenatal() {
+        return cohortIndicator(null,
+                map(pmtctCohortLibrary.firstANCVisitMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
+
+
+    /**
+     * Number of patients who tested for HIV in MCHMS during the DELIVERY {@link org.openmrs.module.kenyaemr.PregnancyStage}
+     *Delivery for HIV Positive mothers HV02-02
+     * @return the indicator
+     */
+    public CohortIndicator testedHivPositiveInMchmsDelivery() {
+        return cohortIndicator(null,
+                map(pmtctCohortLibrary.deliveryFromHIVPositiveMothers(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
+
+    /**
+     * Number of patients who are known positive at First ANC {@link org.openmrs.module.kenyaemr.PregnancyStage}
+     *Known Positive at 1st ANC HV02-03
+     * @return the indicator
+     */
+    public CohortIndicator knownPositiveAtFirstANC() {
+        return cohortIndicator(null,
+                map(pmtctCohortLibrary.knownPositiveAtFirstANC(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
+    /**
+     * Number of patients who tested for HIV in MCHMS during the ANTENATAL {@link org.openmrs.module.kenyaemr.PregnancyStage}
+     *Initial test at ANC  HV02-04
+     * @return the indicator
+     */
+    public CohortIndicator initialHIVTestInMchmsAntenatal() {
+        return cohortIndicator(null,
+                map(pmtctCohortLibrary.initialHIVTestInMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
+
+
+
+
+
+    /**
      * Number of patients who tested for HIV in MCHMS during any {@link org.openmrs.module.kenyaemr.PregnancyStage} before or after enrollment
      *
      * @return the indicator
@@ -35,8 +83,6 @@ public class ETLPmtctIndicatorLibrary {
                 map(pmtctCohortLibrary.mchKnownPositiveTotal(), "startDate=${startDate},endDate=${endDate}")
         );
     }
-
-
     /**
      * Number of patients who tested for HIV in MCHMS during any {@link org.openmrs.module.kenyaemr.PregnancyStage} after enrollment
      *
@@ -100,17 +146,6 @@ public class ETLPmtctIndicatorLibrary {
     public CohortIndicator testedHivPositiveInMchmsAntenatal() {
         return cohortIndicator(null,
                 map(pmtctCohortLibrary.testedHivPositiveInMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}")
-        );
-    }
-
-    /**
-     * Number of patients who tested for HIV in MCHMS during the DELIVERY {@link org.openmrs.module.kenyaemr.PregnancyStage}
-     *
-     * @return the indicator
-     */
-    public CohortIndicator testedHivPositiveInMchmsDelivery() {
-        return cohortIndicator(null,
-                map(pmtctCohortLibrary.testedHivPositiveInMchmsDelivery(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
