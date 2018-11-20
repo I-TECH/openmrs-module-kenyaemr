@@ -1,23 +1,21 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -51,14 +49,21 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 		Concept _3tc = Context.getConceptService().getConcept(78643);
 		Concept efv = Context.getConceptService().getConcept(75523);
 
+		EncounterType scheduled = Context.getEncounterService().getEncounterType(1);
+		Encounter scheduledEncounter1 = new Encounter();
+		scheduledEncounter1.setPatient(TestUtils.getPatient(6));
+		scheduledEncounter1.setEncounterType(scheduled);
+		scheduledEncounter1.setEncounterDatetime(TestUtils.date(2011, 1, 1));
+		scheduledEncounter1 = Context.getEncounterService().saveEncounter(scheduledEncounter1);
+
 		// Put patient #6 on Dapsone
-		TestUtils.saveDrugOrder(TestUtils.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null, scheduledEncounter1);
 
 		// Put patient #7 on AZT, then 3TC, then EFV
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), TestUtils.date(2011, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), TestUtils.date(2012, 1, 1));
-		
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), null);
+		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), null);
+
 		List<Integer> cohort = Arrays.asList(6, 7, 8);
 
 		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());

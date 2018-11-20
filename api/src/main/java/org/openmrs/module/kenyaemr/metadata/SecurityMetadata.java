@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
@@ -41,6 +36,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 	public static final class _Privilege {
 		public static final String VIEW_LEGACY_INTERFACE = "Emr: View Legacy Interface";
+		public static final String MANAGE_DRUG_ORDERS = "Emr: orderentryui.drugOrders";
 	}
 
 	public static final class _Role {
@@ -82,6 +78,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 		// Add custom privileges
 		install(privilege(_Privilege.VIEW_LEGACY_INTERFACE, "Can view legacy web interface"));
+		install(privilege(_Privilege.MANAGE_DRUG_ORDERS, "Can view and edit drug orders"));
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
 		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
@@ -127,7 +124,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
 						app(DqConstants.APP_DATAMANAGER),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
 
@@ -141,7 +139,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
 
