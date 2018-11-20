@@ -63,7 +63,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		//set the birthdate of #6 to be this year
-		TestUtils.getPatient(6).setBirthdate(TestUtils.date(2014, 1, 1));
+		TestUtils.getPatient(6).setBirthdate(TestUtils.date(2013, 6, 1));
 
 		// Enroll patients #6 and  #7 in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2015, 1, 1));
@@ -92,7 +92,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		context.setNow(TestUtils.date(2015, 6 ,1));
 
 		CalculationResultMap resultMap = new NeedsAntibodyTestCalculation().evaluate(ptIds, null, context);
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and is 9 months<= age >=18 months
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and  age >=18 months
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has antibody 1
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has antibody 2
 	}

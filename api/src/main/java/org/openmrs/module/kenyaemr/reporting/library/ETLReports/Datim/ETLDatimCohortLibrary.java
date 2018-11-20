@@ -346,5 +346,196 @@ public class ETLDatimCohortLibrary {
         return cd;
 
     }
+    /*PMTCT*/
+    public CohortDefinition patientHIVPositiveResultsAtANC() {
+
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\";";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Positive Results at ANC");
+        return cd;
+
+    }
+    public CohortDefinition patientHIVNegativeResultsATANC() {
+
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\";";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTC_TST_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Negative Results at ANC");
+        return cd;
+
+    }
+    public CohortDefinition knownStatusAtANC() {
+
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       left join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where (e.hiv_status = 703 or e.hiv_status =664)\n" +
+                "   or (v.anc_visit_number = 1 and v.final_test_result in (\"Negative\",\"Positive\"));";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_STA_Numerator");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with Known HIV status at ANC");
+        return cd;
+
+    }
+
+    /*  public CohortDefinition knownHIVPositive() {
+
+          String sqlQuery = "select e.patient_id\n" +
+                  "from kenyaemr_etl.etl_mch_enrollment e where e.hiv_status = 703;";
+
+          SqlCohortDefinition cd = new SqlCohortDefinition();
+          cd.setName("knownPositivesAtPMTCT");
+          cd.setQuery(sqlQuery);
+          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+          cd.setDescription("Clients with Known HIV positive status");
+          return cd;
+
+      }
+
+      public CohortDefinition newlyTestedHIVPositive() {
+
+          String sqlQuery = "";
+
+          SqlCohortDefinition cd = new SqlCohortDefinition();
+          cd.setName("newPositivesAtPMTCT");
+          cd.setQuery(sqlQuery);
+          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+          cd.setDescription("Clients newly tested HIV Positive");
+          return cd;
+
+      }
+
+      public CohortDefinition newlyTestedHIVNegative() {
+
+          String sqlQuery = "";
+
+          SqlCohortDefinition cd = new SqlCohortDefinition();
+          cd.setName("newNegativesAtPMTCT");
+          cd.setQuery(sqlQuery);
+          cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+          cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+          cd.setDescription("Clients newly tested HIV Negative");
+          return cd;
+
+      }
+  */
+    public CohortDefinition newANCClients() {
+
+        String sqlQuery = "select\n" +
+                "      distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_STA_Denominator");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients newly enrolled for ANC");
+        return cd;
+
+    }
+
+    public CohortDefinition infantVirologyNegativeResults() {
+
+        String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=664 and timestampdiff(month,de.DOB,:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_EID_Negative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with negative Virology test result");
+        return cd;
+
+    }
+
+    public CohortDefinition infantVirologyPositiveResults() {
+
+        String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=703 and timestampdiff(month,de.DOB,:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_EID_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with Positive Virology test result");
+        return cd;
+
+    }
+
+    public CohortDefinition infantVirologyNoResults() {
+
+        String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result in (1138,1304) and timestampdiff(month,de.DOB,:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_EID_No_Results");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with Positive Virology test result");
+        return cd;
+
+    }
+
+    public CohortDefinition alreadyOnARTAtBeginningOfPregnancy() {
+
+        String sqlQuery = "select\n" +
+                "distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+                "where d.date_started < e.visit_date;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_ART_Already");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mothers Already on ART at the start of current Pregnancy");
+        return cd;
+
+    }
+
+    public CohortDefinition newOnARTDuringPregnancy() {
+
+        String sqlQuery = "select\n" +
+                "       distinct e.patient_id\n" +
+                " from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mchs_delivery ld on d.patient_id= ld.patient_id\n" +
+                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_ART_New");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Mothers new on ART during current pregnancy");
+        return cd;
+
+    }
+
 
 }

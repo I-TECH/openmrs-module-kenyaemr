@@ -24,9 +24,10 @@
 		<property name="defaultCompletionForm" ref="kenyaemr.mchms.form.completion"/>
 		<property name="patientForms">
 			<set>
-				<ref bean="kenyaemr.mchms.form.infantFeeding"/>
+				<!--<ref bean="kenyaemr.mchms.form.infantFeeding"/>-->
 				<ref bean="kenyaemr.mchms.form.preventiveServices"/>
 				<ref bean="kenyaemr.mchms.form.delivery"/>
+				<ref bean="kenyaemr.mchms.form.discharge"/>
 			</set>
 		</property>
 		<property name="visitForms">
@@ -45,6 +46,9 @@
 				<ref bean="kenyaemr.mchms.report.onHaart"/>
 				<ref bean="kenyaemr.mchms.report.notOnArt"/>
 				<ref bean="kenyaemr.mchms.report.knownPartnerHivStatus"/>
+				<ref bean="kenyaemr.mchms.report.ancRegister"/>
+				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
+				<ref bean="kenyaemr.mchms.report.pncRegister"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -132,21 +136,35 @@
 		<property name="htmlform" value="kenyaemr:mchms/mchmsDelivery.html"/>
 		<property name="order" value="2"/>
 	</bean>
+	<!--Commented infant feeding as the questions are already covered in discharge form-->
+	<!--&lt;!&ndash; MCHMS Infant Feeding &ndash;&gt; -->
+	<!--<bean id="kenyaemr.mchms.form.infantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">-->
+		<!--<property name="targetUuid" value="f4d763bb-8428-476c-be8a-73c705bbc347"/>-->
+		<!--<property name="apps">-->
+			<!--<set>-->
+				<!--<ref bean="kenyaemr.app.clinician"/>-->
+				<!--<ref bean="kenyaemr.app.chart"/>-->
+			<!--</set>-->
+		<!--</property>-->
+		<!--<property name="icon" value="kenyaui:forms/generic.png"/>-->
+		<!--<property name="htmlform" value="kenyaemr:mchms/mchmsInfantFeeding.html"/>-->
+		<!--<property name="order" value="3"/>-->
+	<!--</bean>-->
 
-	<!-- MCHMS Infant Feeding -->
-	<bean id="kenyaemr.mchms.form.infantFeeding" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="f4d763bb-8428-476c-be8a-73c705bbc347"/>
+	<!-- MCHMS Discharge -->
+	<bean id="kenyaemr.mchms.form.discharge" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="af273344-a5f9-11e8-98d0-529269fb1459"/>
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.clinician"/>
 				<ref bean="kenyaemr.app.chart"/>
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.EligibleForMchmsDischargeCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png"/>
-		<property name="htmlform" value="kenyaemr:mchms/mchmsInfantFeeding.html"/>
-		<property name="order" value="3"/>
+		<property name="htmlform" value="kenyaemr:mchms/mchmsDischarge.html"/>
+		<property name="order" value="4"/>
 	</bean>
-
 	<!-- MCHMS Completion -->
 	<bean id="kenyaemr.mchms.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="25935b9f-68ad-4e0c-9663-d2cacda82bbf"/>
@@ -205,5 +223,43 @@
 		<property name="name" value="Patients whose partners' HIV status is unknown"/>
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.mchms.PartnerHivStatusUnknownCalculation"/>
 		<property name="apps"><set><ref bean="kenyaemr.app.reports"/></set></property>
+	</bean>
+
+	<!-- anc register-->
+	<bean id="kenyaemr.mchms.report.ancRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="4914591e-b72f-11e8-96f8-529269fb1459" />
+		<property name="name" value="ANC Register" />
+		<property name="description" value="Register for ANC Services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/ANC_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:11,dataset:ancRegister" />
+	</bean>
+
+	<!-- Maternity register-->
+	<bean id="kenyaemr.mchcs.report.maternityRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="14a78d80-d1e3-11e8-a8d5-f2801f1b9fd1" />
+		<property name="name" value="Maternity Register" />
+		<property name="description" value="Maternity Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/Maternity_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:12,dataset:maternityAllClients" />
+	</bean>
+	<!-- PNC register-->
+	<bean id="kenyaemr.mchms.report.pncRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="1a8cb68e-d39c-11e8-a8d5-f2801f1b9fd1" />
+		<property name="name" value="PNC Register" />
+		<property name="description" value="Register for PNC Services" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/PNC_Register_Template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:10,dataset:pncRegister" />
 	</bean>
 </beans>
