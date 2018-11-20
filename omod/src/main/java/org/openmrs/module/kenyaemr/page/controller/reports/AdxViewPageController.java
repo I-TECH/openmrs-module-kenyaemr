@@ -151,7 +151,7 @@ public class AdxViewPageController {
 		String mappingString = "[\n" +
 				"\t{\n" +
 				"\t    \"reportName\": \"DATIM Report\",\n" +
-				"\t    \"prefix\":\"Y18_\",\n" +
+				"\t    \"prefix\":\"\",\n" +
 				"\t    \"datasets\": [\n" +
 				"\t        {\n" +
 				"\t            \"name\": \"3\",\n" +
@@ -169,15 +169,15 @@ public class AdxViewPageController {
 				"\t    \"datasets\": [\n" +
 				"\t        {\n" +
 				"\t            \"name\": \"1\",\n" +
-				"\t            \"dhisName\": \"300\"\n" +
+				"\t            \"dhisName\": \"HTS\"\n" +
 				"\t        },\n" +
 				"\t        {\n" +
-				"\t            \"name\": \"1\",\n" +
-				"\t            \"dhisName\": \"300\"\n" +
+				"\t            \"name\": \"2\",\n" +
+				"\t            \"dhisName\": \"PMTCT\"\n" +
 				"\t        },\n" +
 				"\t        {\n" +
-				"\t            \"name\": \"1\",\n" +
-				"\t            \"dhisName\": \"300\"\n" +
+				"\t            \"name\": \"3\",\n" +
+				"\t            \"dhisName\": \"Vo4KDrUFwnA\"\n" +
 				"\t        }\n" +
 				"\t    ]\n" +
 				"\t}\n" +
