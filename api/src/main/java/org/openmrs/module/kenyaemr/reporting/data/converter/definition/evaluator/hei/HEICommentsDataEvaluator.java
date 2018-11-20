@@ -30,7 +30,7 @@ public class HEICommentsDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  comments\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit\n" +
-                "GROUP BY patient_id";
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
