@@ -104,7 +104,7 @@ kenyaemrApp.controller('ReportController', ['$scope', '$http', '$timeout', funct
 	};
 
     $scope.viewAdxData = function(requestId) {
-        ui.navigate('kenyaemr', 'reports/adxView', { appId: $scope.appId, request: requestId, returnUrl: location.href });
+        ui.navigate('kenyaemr', 'reports/adxViewHome', { appId: $scope.appId, request: requestId, returnUrl: location.href });
     };
 
 	var defaultSuccessHandler = function(data) {
