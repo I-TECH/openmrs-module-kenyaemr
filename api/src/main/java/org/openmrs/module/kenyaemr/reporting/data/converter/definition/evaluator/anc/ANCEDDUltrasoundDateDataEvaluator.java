@@ -27,8 +27,9 @@ public class ANCEDDUltrasoundDateDataEvaluator implements EncounterDataEvaluator
 
         String qry = "select\n" +
                 "  v.encounter_id,\n" +
-                "  e.edd_ultrasound\n" +
-                "  from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id ;";
+                "  DATE_ADD(e.lmp, INTERVAL 280 DAY)  as edd\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

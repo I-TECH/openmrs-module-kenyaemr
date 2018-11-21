@@ -49,8 +49,7 @@
     var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
     var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
     var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
-    var ANC_NUMBER = "<lookup expression="fn.latestObs(161655).valueNumeric"/>";
-
+    var ANC_NUMBER = "<lookup expression="fn.latestObs(163530).getValueText()"/>";
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
     //Start on ready
@@ -68,7 +67,7 @@
 		onWeightOrHeightChange();
         onEncounterDateChange();
 		//Prepopulate anc number
-        jq('#anc-number:text').val(Math.round(ANC_NUMBER));
+        jq('#anc-number:text').val(ANC_NUMBER);
 		//Chronic illness validation
         jq("#tbl-chronic-illness").hide();
         jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
@@ -485,13 +484,14 @@
 					<td>
 						<table>
 							<tr>
-								<td width="250">ANC Visit Number:</td>
+								<td> ANC Visit Number:</td>
 								<td>
 									<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
-								<td width="250">ANC Clinic Number:</td>
+								<td> ANC Clinic Number:</td>
 								<td>
 									<input type="text" name="anc-number" id="anc-number" readonly="True" />
+									<i>(xxxx/yy)</i>
 								</td>
 							</tr>
 						</table>
