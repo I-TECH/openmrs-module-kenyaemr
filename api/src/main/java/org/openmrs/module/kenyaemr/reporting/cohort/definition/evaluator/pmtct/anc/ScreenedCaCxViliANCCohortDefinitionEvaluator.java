@@ -8,7 +8,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.ScreenedCaCxViaANCCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.ScreenedCaCxViliANCCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.ScreenedTbANCCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,15 +24,12 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Evaluator for patients who screened for Cacx Vili in ANC
  */
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 @Handler(supports = {ScreenedCaCxViliANCCohortDefinition.class})
 public class ScreenedCaCxViliANCCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -41,7 +37,8 @@ public class ScreenedCaCxViliANCCohortDefinitionEvaluator implements CohortDefin
 	private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
 	private ETLMoh731GreenCardCohortLibrary moh731GreencardCohorts;
-
+	@Autowired
+	EvaluationService evaluationService;
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
@@ -50,28 +47,25 @@ public class ScreenedCaCxViliANCCohortDefinitionEvaluator implements CohortDefin
 		if (definition == null)
 			return null;
 
-		String qry = "select distinct v.patient_id\n" +
-				"from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-				"where date(v.visit_date)   between (:startDate) and (:endDate)\n" +
-				"      and v.cacx_screening_method =5622;";
+		String qry = "select distinct v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.cacx_screening_method =164977;";
 
-		SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(qry);
-		Calendar calendar = Calendar.getInstance();
-		int thisMonth = calendar.get(calendar.MONTH);
+		Cohort newCohort = new Cohort();
+		SqlQueryBuilder builder = new SqlQueryBuilder();
+		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
+		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
-		Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-		Date startDate = dateMap.get("startDate");
-		Date endDate = dateMap.get("endDate");
-
-		context.addParameterValue("startDate", startDate);
-		context.addParameterValue("endDate", endDate);
-
-		Cohort cacxVili = Context.getService(CohortDefinitionService.class).evaluate(sqlCohortDefinition, context);
+		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-		return new EvaluatedCohort(cacxVili, definition, context);
+		return new EvaluatedCohort(newCohort, definition, context);
 	}
+
 }
+
 
 
 
