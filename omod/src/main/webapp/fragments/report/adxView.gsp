@@ -1,6 +1,3 @@
-<%
-	ui.decorateWith("kenyaemr", "standardPage")
-%>
 <style>
 textarea {
 	border: 1px solid black;
