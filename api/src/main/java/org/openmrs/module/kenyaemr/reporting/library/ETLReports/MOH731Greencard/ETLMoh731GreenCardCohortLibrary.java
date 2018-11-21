@@ -1542,10 +1542,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition syphilisScreenedPositive(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "v.syphilis_test_status =1228;";
+        String sqlQuery =  "select distinct v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.syphilis_test_status =1228;";
 
         cd.setName("syphilisScreenedPositive");
         cd.setQuery(sqlQuery);
@@ -2194,6 +2191,5 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
-
 
 }

@@ -15,17 +15,16 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Evaluator for patients screened for syphilis for ANC Register
  */
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Evaluator for patients screened for Syphilis
@@ -36,28 +35,32 @@ public class TestedSyphilisANCCohortDefinitionEvaluator implements CohortDefinit
 	private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
 	private ETLMoh731GreenCardCohortLibrary moh731GreencardCohorts;
-
+	@Autowired
+	EvaluationService evaluationService;
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
 		TestedSyphilisANCCohortDefinition definition = (TestedSyphilisANCCohortDefinition) cohortDefinition;
-		CohortDefinition cd = moh731GreencardCohorts.syphilisScreenedAt1stANC();
+		if (definition == null)
+			return null;
 
-		Calendar calendar = Calendar.getInstance();
-		int thisMonth = calendar.get(calendar.MONTH);
+		String qry =  "select distinct v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.syphilis_test_status is not null or v.syphilis_test_status !=1402;";
 
-		Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-		Date startDate = dateMap.get("startDate");
-		Date endDate = dateMap.get("endDate");
+		Cohort newCohort = new Cohort();
+		SqlQueryBuilder builder = new SqlQueryBuilder();
+		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
+		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
-		context.addParameterValue("startDate", startDate);
-		context.addParameterValue("endDate", endDate);
-
-		Cohort screenedSyphilis = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-		return new EvaluatedCohort(screenedSyphilis, definition, context);
+		return new EvaluatedCohort(newCohort, definition, context);
 	}
+
 }
 
 
