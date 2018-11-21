@@ -69,16 +69,7 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 
         ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
 
-        ColumnParameters maleInfants = new ColumnParameters(null, "<1, Male", "gender=M|age=<1");
-        ColumnParameters femaleInfants = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
-
         ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
-
-        ColumnParameters m_1_to_4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
-        ColumnParameters f_1_to_4 = new ColumnParameters(null, "1-4, Female", "gender=F|age=1-4");
-
-        ColumnParameters m_5_to_9 = new ColumnParameters(null, "5-9, Male", "gender=M|age=5-9");
-        ColumnParameters f_5_to_9 = new ColumnParameters(null, "5-9, Female", "gender=F|age=5-9");
 
         ColumnParameters m_10_to_14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
         ColumnParameters f_10_to_14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
@@ -88,9 +79,6 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 
         ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
         ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
-
-        ColumnParameters m_25_to_49 = new ColumnParameters(null, "25-49, Male", "gender=M|age=25-49");
-        ColumnParameters f_25_to_49 = new ColumnParameters(null, "25-49, Female", "gender=F|age=25-49");
 
         // incorporating new age groups
         ColumnParameters m_25_to_29 = new ColumnParameters(null, "25-29, Male", "gender=M|age=25-29");
@@ -160,13 +148,13 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_Denominator", "Patients with VL in 12 months", ReportUtils.map(datimQ4Indicators.patientsWithVLResults(), endDateParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"));*/
 
         //4 HIV Negative at ANC
-        EmrReportingUtils.addRow(cohortDsd, "HTC_TST_Negative", "Clients tested HIV Negative at ANC", ReportUtils.map(datimQ4Indicators.patientsTestNegativeAtANC(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "HTC_TST_Negative", "Clients tested HIV Negative at ANC", ReportUtils.map(datimQ4Indicators.patientsTestNegativeAtANC(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //4 HIV Positive at ANC
-        EmrReportingUtils.addRow(cohortDsd, "HTC_TST_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "HTC_TST_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //Number of clients with known HIV status at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Numerator", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Numerator", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
       /*  //PMTCT Known Positives
         EmrReportingUtils.addRow(cohortDsd, "knownPositivesAtPMTCT", "Clients with Known Positive HIV status at PMTCT", ReportUtils.map(datimQ4Indicators.clientsWithKnownPositiveHIVStatus(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
@@ -178,16 +166,16 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "newNegativesAtPMTCT", "Clients newly Tested Negative at PMTCT", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 */
         //Newly enrolled to ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //Infants tested Negative for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Negative", "Infants tested Negative for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedNegativeForVirology(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, " ", "Infants tested Negative for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedNegativeForVirology(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //Infants tested Positive for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Positive", "Infants tested Positive for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedPositiveForVirology(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Positive", "Infants tested Positive for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedPositiveForVirology(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //Infant Virology with no results
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested Positive for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedForVirologyNoResult(), endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested for Virology with no results", ReportUtils.map(datimQ4Indicators.infantsTestedForVirologyNoResult(), indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //Mothers already on ART at start of current pregnancy
         cohortDsd.addColumn("PMTCT_ART_Already", "Number of Mothers Already on ART at the start of current Pregnancy", ReportUtils.map(datimQ4Indicators.mothersAlreadyOnARTAtStartOfCurrentPregnancy(), indParams), "");
@@ -196,13 +184,13 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("PMTCT_ART_New", "Mothers new on ART during current pregnancy", ReportUtils.map(datimQ4Indicators.mothersNewOnARTDuringCurrentPregnancy(), indParams), "");
 
         /*Tested Negative at PITC Inpatient Services*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Inpatient_Negative", "Tested Negative at PITC Inpatient Services", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCInpatientServices(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Inpatient_Negative", "Tested Negative at PITC Inpatient Services", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCInpatientServices(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Positive at PITC Inpatient Services*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Inpatient_Positive", "Tested Positive at PITC Inpatient Services", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCInpatientServices(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Inpatient_Positive", "Tested Positive at PITC Inpatient Services", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCInpatientServices(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Negative at PITC Paediatric services*/
-        cohortDsd.addColumn("HTC_TST_Paediatric_Negative", "Tested Negative at PITC Paediatric services", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCInpatientServices(), indParams), "");
+        cohortDsd.addColumn("HTC_TST_Paediatric_Negative", "Tested Negative at PITC Paediatric services", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCPaediatricServices(), indParams), "");
 
         /*Tested Positive at PITC Paediatric services*/
         cohortDsd.addColumn("HTC_TST_Paediatric_Positive", "Tested Positive at PITC Paediatric Services", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCPaediatricServices(), indParams), "");
@@ -214,28 +202,28 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HTC_TST_Malnutrition_Positive", "Tested Positive at PITC Malnutrition Clinic", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCMalnutritionClinic(), indParams), "");
 
         /*Tested Negative at PITC TB Clinic*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_TB_Negative", "Tested Negative at PITC TB Clinic", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCTBClinic(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_TB_Negative", "Tested Negative at PITC TB Clinic", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCTBClinic(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Positive at PITC TB Clinic*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_TB_Positive", "Tested Positive at PITC TB Clinic", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCTBClinic(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_TB_Positive", "Tested Positive at PITC TB Clinic", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCTBClinic(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Negative at PITC Other*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Other_Negative", "Tested Negative at PITC Other", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCOther(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Other_Negative", "Tested Negative at PITC Other", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCOther(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Positive at PITC Other*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Other_Positive", "Tested Positive at PITC Other", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCOther(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Other_Positive", "Tested Positive at PITC Other", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCOther(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Negative at PITC VCT*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_VCT_Negative", "Tested Negative at PITC VCT", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCVCT(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_VCT_Negative", "Tested Negative at PITC VCT", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCVCT(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Tested Positive at PITC VCT*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_VCT_Positive", "Tested Positive at PITC VCT", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCVCT(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_VCT_Positive", "Tested Positive at PITC VCT", ReportUtils.map(datimQ4Indicators.testedPositiveAtPITCVCT(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Index Tested Negative*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Index_Negative", "Index Tested Negative", ReportUtils.map(datimQ4Indicators.indexTestedNegative(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Index_Negative", "Index Tested Negative", ReportUtils.map(datimQ4Indicators.indexTestedNegative(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         /*Index Tested Positive*/
-        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Index_Positive", "Index Tested Positive", ReportUtils.map(datimQ4Indicators.indexTestedPositive(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd,"HTC_TST_Index_Positive", "Index Tested Positive", ReportUtils.map(datimQ4Indicators.indexTestedPositive(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         //TX_New
         /*Newly Started ART While Pregnant*/
@@ -248,7 +236,7 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_New_TB", "Newly Started ART with TB", ReportUtils.map(datimQ4Indicators.newlyStartedARTWithTB(), indParams), "");
 
         /*Disaggregated by Age / Sex*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_New_Sex_Age", "Newly Started ART Disaggregated by Age / Sex ", ReportUtils.map(datimQ4Indicators.newlyStartedARTByAgeSex(),endDateParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_New_Sex_Age", "Newly Started ART Disaggregated by Age / Sex ", ReportUtils.map(datimQ4Indicators.newlyStartedARTByAgeSex(),indParams), datimQ4AgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"));
 
         return cohortDsd;
 

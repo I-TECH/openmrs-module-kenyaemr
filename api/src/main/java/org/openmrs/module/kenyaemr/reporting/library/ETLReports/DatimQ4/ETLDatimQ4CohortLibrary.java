@@ -351,7 +351,8 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
         String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\";";
+                "           from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\" and v.visit_date between\n" +
+                "date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testPositiveResultsANC");
@@ -365,7 +366,8 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition patientHIVNegativeResultsATANC() {
 
         String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\";";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\"and v.visit_date between\n" +
+                "date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testNegativeResultsANC");
@@ -382,7 +384,8 @@ public class ETLDatimQ4CohortLibrary {
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "       left join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
                 "where (e.hiv_status = 703 or e.hiv_status =664)\n" +
-                "   or (v.anc_visit_number = 1 and v.final_test_result in (\"Negative\",\"Positive\"));";
+                "   or v.final_test_result in (\"Negative\",\"Positive\") and v.visit_date between\n" +
+                "    date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("knownHIVStatusAtANC");
@@ -440,7 +443,7 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition newANCClients() {
 
         String sqlQuery = "select distinct v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1;";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newANCClients");
@@ -456,7 +459,8 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
                 "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=664 and timestampdiff(month,de.DOB,:endDate);";
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=664 and hv.visit_date between\n" +
+                "date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("infantVirologyNegativeResults12m");
@@ -472,7 +476,9 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
                 "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=703 and timestampdiff(month,de.DOB,:endDate);";
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=703 and hv.visit_date and " +
+                "timestampdiff(month,de.DOB,:endDate)<12 and hv.visit_date between\n" +
+                "    date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("infantVirologyPositiveResults12m");
@@ -488,7 +494,8 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select distinct hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
                 "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result in (1138,1304) and timestampdiff(month,de.DOB,:endDate);";
+                "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result in (1138,1304) and timestampdiff(month,de.DOB,:endDate)<12 and hv.visit_date between\n" +
+                "    date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("infantVirologyWithNoResults");
@@ -506,7 +513,7 @@ public class ETLDatimQ4CohortLibrary {
                 "distinct e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
-                "where d.date_started < e.visit_date;";
+                "where d.date_started < e.visit_date and e.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("alreadyOnARTBeforePregancy");
@@ -525,7 +532,7 @@ public class ETLDatimQ4CohortLibrary {
                 " from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "       inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
                 "       inner join kenyaemr_etl.etl_mchs_delivery ld on d.patient_id= ld.patient_id\n" +
-                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
+                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date and e.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newOnARTDuringPregnancy");
@@ -543,7 +550,7 @@ public class ETLDatimQ4CohortLibrary {
                 "    and hts.patient_given_result =\"Yes\"\n" +
                 "    and hts.test_strategy=\"Provider Initiated Testing(PITC)\"\n" +
                 "    and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
-                "    and hts.voided =0";
+                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Inpatient_Negative");
@@ -562,7 +569,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"In Patient Department(IPD)\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Inpatient_Positive");
@@ -581,7 +588,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Paediatric_Positive");
@@ -600,7 +607,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Paediatric_Negative");
@@ -619,7 +626,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Malnutrition_Negative");
@@ -638,7 +645,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Malnutrition_Positive");
@@ -657,7 +664,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"TB\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_TB_Negative");
@@ -676,7 +683,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"TB\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_TB_Positive");
@@ -696,7 +703,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Other\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Other_Negative");
@@ -715,7 +722,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Other\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Other_Positive");
@@ -734,7 +741,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"VCT\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_VCT_Negative");
@@ -753,7 +760,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"VCT\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_VCT_Positive");
@@ -772,7 +779,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Contact\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Negative");
@@ -791,7 +798,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Contact\"\n" +
-                "and hts.voided =0;";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Positive");
@@ -831,10 +838,10 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select  fup.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
-                "where date_started between date(:startDate) and date(:endDate)) started_art on\n" +
-                "started_art.patient_id = fup.patient_id\n" +
-                "where fup.pregnancy_status =1065\n" +
+                "       join  kenyaemr_etl.etl_drug_event e\n" +
+                "             on  e.patient_id = fup.patient_id\n" +
+                "join  kenyaemr_etl.etl_mch_postnatal_visit pv on pv.patient_id = fup.patient_id\n" +
+                "where  pv.baby_feeding_method in (5526,6046)\n" +
                 "and fup.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
