@@ -41,6 +41,7 @@ public class EmrConstants {
 	public static final String GP_SUPPORT_PHONE_NUMBER = MODULE_ID + ".supportPhoneNumber";
 	public static final String GP_SUPPORT_EMAIL_ADDRESS = MODULE_ID + ".supportEmailAddress";
 	public static final String GP_EXTERNAL_HELP_URL = MODULE_ID + ".externalHelpUrl";
+	public static final String GP_DHIS2_DATASET_MAPPING = MODULE_ID + ".adxDatasetMapping";
 
 	/**
 	 * Default global property values

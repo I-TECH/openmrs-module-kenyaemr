@@ -11,6 +11,10 @@ package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -27,11 +31,13 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -221,6 +227,21 @@ public class EmrUtils {
 
 		}
 		return drugOrdersOnly;
+	}
+
+	public static ObjectNode getDatasetMappingForReport(String reportName, String mappingString) throws IOException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode conf = (ArrayNode) mapper.readTree(mappingString);
+
+		for (Iterator<JsonNode> it = conf.iterator(); it.hasNext(); ) {
+			ObjectNode node = (ObjectNode) it.next();
+			if (node.get("reportName").asText().equals(reportName)) {
+				return node;
+			}
+		}
+
+		return null;
 	}
 
 

@@ -9,16 +9,18 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -39,6 +41,7 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -63,8 +66,10 @@ import java.util.List;
 public class AdxViewFragmentController {
 
     private AdministrationService administrationService;
+    protected final Log log = LogFactory.getLog(getClass());
 
     private LocationService locationService;
+    public String SERVER_ADDRESS = "https://webhook.site/55ef839b-91ed-4a43-a6c3-2b8403c35794";
     DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -79,6 +84,7 @@ public class AdxViewFragmentController {
 
         ReportDefinition definition = reportRequest.getReportDefinition().getParameterizable();
         ReportDescriptor report = reportManager.getReportDescriptor(definition);
+        administrationService = Context.getAdministrationService();
 
         //CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
@@ -89,12 +95,15 @@ public class AdxViewFragmentController {
         Date reportStartDate = (Date) reportData.getContext().getParameterValue("startDate");
         Date reportEndDate = (Date) reportData.getContext().getParameterValue("endDate");
 
+        String serverAddress = administrationService.getGlobalProperty("ilServer.address");
         model.addAttribute("endDate", isoDateFormat.format(reportEndDate));
         model.addAttribute("startDate", isoDateFormat.format(reportStartDate));
         model.addAttribute("reportRequest", reportRequest);
         model.addAttribute("adx", render(reportData));
         model.addAttribute("reportName", definition.getName());
         model.addAttribute("returnUrl", returnUrl);
+        model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : SERVER_ADDRESS);
+        model.addAttribute("serverAddressLength", SERVER_ADDRESS.length());
     }
 
     public String render(ReportData reportData) throws IOException {
@@ -105,8 +114,10 @@ public class AdxViewFragmentController {
 		locationService = Context.getLocationService();
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
+        String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
+
         Location location = locationService.getLocation(locationId);
-        ObjectNode mappingDetails = gPDHISDatasetMapping(reportData.getDefinition().getName());
+        ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(reportData.getDefinition().getName(), mappingString);
 
         String mfl = "Unknown";
         String columnPrefix = mappingDetails.get("prefix").getTextValue();
@@ -165,8 +176,11 @@ public class AdxViewFragmentController {
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
+        String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
         Location location = locationService.getLocation(locationId);
-        ObjectNode mappingDetails = gPDHISDatasetMapping(reportData.getDefinition().getName());
+        ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(reportData.getDefinition().getName(), mappingString);
+        String serverAddress = administrationService.getGlobalProperty("ilServer.address");
+
 
         String mfl = "Unknown";
         String columnPrefix = mappingDetails.get("prefix").getTextValue();
@@ -227,20 +241,25 @@ public class AdxViewFragmentController {
         //transform the DOM Object to an XML File
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         DOMSource domSource = new DOMSource(document);
         ByteArrayOutputStream out= new ByteArrayOutputStream();
-        StreamResult printOut = new StreamResult(System.out);
         StreamResult inMemory = new StreamResult(out);
 
         //transformer.transform(domSource, printOut);
         transformer.transform(domSource, inMemory);
-        return postAdxToIL(out);
-       // return out;
+        if (serverAddress != null)
+            SERVER_ADDRESS = serverAddress;
+
+        return postAdxToIL(out, SERVER_ADDRESS);
 
     }
 
-    private SimpleObject postAdxToIL(ByteArrayOutputStream outStream) throws IOException {
-        URL url = new URL("https://webhook.site/6d64dae3-a0ff-4527-8d28-117567e76ec5");
+    private SimpleObject postAdxToIL(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
+
+        //System.out.println("Posting to server at: " + serverAddress);
+        URL url = new URL(serverAddress);
 
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
@@ -260,7 +279,6 @@ public class AdxViewFragmentController {
         //Get Response
         int responseCode = con.getResponseCode();
         String httpResponse = null;
-        System.out.println("POST Response Code :: " + responseCode);
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -273,61 +291,28 @@ public class AdxViewFragmentController {
             }
             in.close();
             httpResponse = response.toString();
-            // print result
-            System.out.println(response.toString());
-        } else {
-            System.out.println("POST request not worked");
+
         }
         return SimpleObject.create("statusCode", String.valueOf(responseCode), "statusMsg", httpResponse);
     }
 
 
-    private ObjectNode gPDHISDatasetMapping(String reportName) throws IOException {
-        String mappingString = "[\n" +
-                "\t{\n" +
-                "\t    \"reportName\": \"DATIM Report\",\n" +
-                "\t    \"prefix\":\"\",\n" +
-                "\t    \"datasets\": [\n" +
-                "\t        {\n" +
-                "\t            \"name\": \"3\",\n" +
-                "\t            \"dhisName\": \"datim2345\"\n" +
-                "\t        },\n" +
-                "\t        {\n" +
-                "\t            \"name\": \"1\",\n" +
-                "\t            \"dhisName\": \"300\"\n" +
-                "\t        }\n" +
-                "\t    ]\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t    \"reportName\": \"MOH 731 Report- Green Card\",\n" +
-                "\t    \"prefix\":\"Y18_\",\n" +
-                "\t    \"datasets\": [\n" +
-                "\t        {\n" +
-                "\t            \"name\": \"1\",\n" +
-                "\t            \"dhisName\": \"HTS\"\n" +
-                "\t        },\n" +
-                "\t        {\n" +
-                "\t            \"name\": \"2\",\n" +
-                "\t            \"dhisName\": \"PMTCT\"\n" +
-                "\t        },\n" +
-                "\t        {\n" +
-                "\t            \"name\": \"3\",\n" +
-                "\t            \"dhisName\": \"Vo4KDrUFwnA\"\n" +
-                "\t        }\n" +
-                "\t    ]\n" +
-                "\t}\n" +
-                "]";
+    public SimpleObject saveOrUpdateServerAddress(@RequestParam("newUrl") String newUrl) {
+        administrationService = Context.getAdministrationService();
+        GlobalProperty gp = administrationService.getGlobalPropertyObject("ilServer.address");
 
-        ObjectMapper mapper = new ObjectMapper();
-        ArrayNode conf = (ArrayNode) mapper.readTree(mappingString);
-
-        for (Iterator<JsonNode> it = conf.iterator(); it.hasNext(); ) {
-            ObjectNode node = (ObjectNode) it.next();
-            if (node.get("reportName").asText().equals(reportName)) {
-                return node;
-            }
-        }
-
-        return null;
+       try {
+           if (gp != null) {
+               gp.setPropertyValue(newUrl.trim());
+               administrationService.saveGlobalProperty(gp);
+           } else {
+               GlobalProperty globalProperty = new GlobalProperty();
+               globalProperty.setProperty("ilServer.address");
+               globalProperty.setPropertyValue(newUrl.trim());
+           }
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+        return SimpleObject.create("statusMgs", "Server address saved successfully");
     }
 }
