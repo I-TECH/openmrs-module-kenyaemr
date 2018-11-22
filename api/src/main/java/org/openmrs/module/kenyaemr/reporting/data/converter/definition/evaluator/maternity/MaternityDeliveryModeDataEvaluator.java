@@ -28,8 +28,9 @@ public class MaternityDeliveryModeDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  mode_of_delivery\n" +
-                "from kenyaemr_etl.etl_mchs_delivery;";
+                "  (case mode_of_delivery when 1170 then \"Normal delivery\" when 1171 then \"Cesarean section\" when 1172 then \"Breech delivery\" when 118159 then \"Assisted vaginal delivery\" else \"\" end) as mode_of_delivery\n" +
+                "from kenyaemr_etl.etl_mchs_delivery\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

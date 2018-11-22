@@ -26,11 +26,7 @@ public class MaternityOtherDeliveryComplicationsDataEvaluator implements PersonD
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  patient_id,\n" +
-                "  (case delivery_complications when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as delivery_complications\n" +
-                "from kenyaemr_etl.etl_mchs_delivery\n" +
-                "GROUP BY patient_id;";
+        String qry = "select distinct patient_id, other_delivery_complications from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
