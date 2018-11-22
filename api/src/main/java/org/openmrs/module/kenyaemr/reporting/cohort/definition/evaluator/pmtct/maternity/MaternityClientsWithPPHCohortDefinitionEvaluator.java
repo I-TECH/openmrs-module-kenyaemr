@@ -16,42 +16,43 @@ import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinition
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Evaluator for clients with PPH
  */
 @Handler(supports = {MaternityClientsWithPPHCohortDefinition.class})
 public class MaternityClientsWithPPHCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-
+    @Autowired
+    EvaluationService evaluationService;
     private final Log log = LogFactory.getLog(this.getClass());
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         MaternityClientsWithPPHCohortDefinition definition = (MaternityClientsWithPPHCohortDefinition) cohortDefinition;
-        String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.delivery_complications;";
-        SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
-        Calendar calendar = Calendar.getInstance();
-        int thisMonth = calendar.get(calendar.MONTH);
+        if (definition == null)
+            return null;
 
-        Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-        Date startDate = dateMap.get("startDate");
-        Date endDate = dateMap.get("endDate");
+        String query = "select distinct patient_id from kenyaemr_etl.etl_mchs_delivery  where coded_delivery_complications =230;";
 
-        context.addParameterValue("startDate", startDate);
-        context.addParameterValue("endDate", endDate);
+        Cohort newCohort = new Cohort();
+        SqlQueryBuilder builder = new SqlQueryBuilder();
+        builder.append(query);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        builder.addParameter("endDate", endDate);
+        builder.addParameter("startDate", startDate);
+        List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
+
+        newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-        Cohort clientsWithPPH = Context.getService(CohortDefinitionService.class).evaluate(sqlCohortDefinition, context);
-
-
-        return new EvaluatedCohort(clientsWithPPH, definition, context);
+        return new EvaluatedCohort(newCohort, definition, context);
     }
-
 
 }

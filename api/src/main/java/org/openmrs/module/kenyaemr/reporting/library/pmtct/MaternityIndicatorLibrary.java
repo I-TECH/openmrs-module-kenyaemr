@@ -58,7 +58,7 @@ public class MaternityIndicatorLibrary {
     }
 
     public CohortIndicator clientsDead() {
-        return cohortIndicator("Clients Dead", ReportUtils.<CohortDefinition>map(new StartedHAARTAtMaternityCohortDefinition(), ""));
+        return cohortIndicator("Clients Dead", ReportUtils.<CohortDefinition>map(new MaternityDeathsCohortDefinition(), ""));
     }
 
     public CohortIndicator preTermBabies() {
