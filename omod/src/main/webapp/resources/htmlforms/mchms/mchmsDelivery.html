@@ -90,24 +90,27 @@
                 jq('#art-and-prophylaxis').show();
                 jq('#who-staging').show();
                 jq('#vl-sample').show();
+                jq('#tbl-unknown-status').hide();
                 //Prepopulate if already on HAART
                 if(PATIENT_ON_ART =="true") {
                     jq('#on-art:text').val('Yes');
                 }else {
                     jq('#on-art:text').val('No');
                 }
-            }else{
+            }else if(PATIENT_IS_REPORTED_HIV == 664) {
                 jq('#tbl-hiv-test').show();
+                jq('#tbl-unknown-status').show();
+                jq('#hiv-status:text').val("Negative");
                 jq('#art-and-prophylaxis').hide();
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
-            }
-            if(PATIENT_IS_REPORTED_HIV == 703){
-                jq('#hiv-status:text').val('Positive');
-            }else if(PATIENT_IS_REPORTED_HIV == 664){
-                jq('#hiv-status:text').val('Negative');
             }else{
-                jq('#hiv-status:text').val('Not available');
+                jq('#tbl-hiv-test').show();
+                jq('#tbl-unknown-status').show();
+                jq('#hiv-status:text').val("Reported unknown");
+                jq('#art-and-prophylaxis').hide();
+                jq('#who-staging').hide();
+                jq('#vl-sample').hide();
             }
             //skip pattern
             //First test
@@ -889,18 +892,18 @@
 													 style="dropdown" answerLabels="YES,NO"/>
 											</td>
 											<td>
-												<table border="1">
+												<table border="1" id="tbl-unknown-status">
 													<tr>
 														<td>
 															<u>
-																Other HIV Test Recorded Recently
+																HIV Status Recorded Recently
 															</u>
 															<br/>
 															<br/>
 															Date:
 															<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
 															<br/>
-															Final results:
+															Status :
 															<input type="text" name="hiv-status" id="hiv-status" readonly="True" />
 															<br/>
 														</td>
