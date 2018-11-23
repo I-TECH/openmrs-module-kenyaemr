@@ -98,11 +98,11 @@ textarea {
         jq('#toggleAdxDiv').click(function() {
 
             jq("#adxMsg").toggle();
-            if(jq('#toggleAdxDiv').is(":visible")){
+            /*if(jq('#toggleAdxDiv').is(":visible")){
                 //jq('#toggleAdxDiv').text("Hide Message");
             }else {
                 //jq('#toggleAdxDiv').text("Preview Message");
-            }
+            }*/
 
 		});
 
