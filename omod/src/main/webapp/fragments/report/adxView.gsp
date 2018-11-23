@@ -11,15 +11,15 @@ textarea {
 	font-family: Monaco,Andale Mono,Courier New,monospace;
 }
 	.successText {
-		color: darkgreen;
+		color: dodgerblue;
 		font-weight: bold;
-		font-size: 16px;
+		font-size: 18px;
 		font-family: Monaco,Andale Mono,Courier New,monospace;
 	}
 
 	.errorText {
 		color: red;
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: bold;
 		font-family: Monaco,Andale Mono,Courier New,monospace;
 	}
@@ -84,12 +84,12 @@ textarea {
                     jq("#showStatus").hide();
                     jq("#msg").addClass("successText");
                     jq("#msg").text("Message successfully sent");
-                    jq("#post").prop("disabled", false);
+                    jq("#post").prop("disabled", true);
                 })
                 .error(function(xhr, status, err) {
                     jq("#showStatus").hide();
                     jq("#msg").addClass("errorText");
-                    jq("#msg").text("There was an error sending the message! Please try again later.");
+                    jq("#msg").text("There was an error sending the message! Please try again (" + xhr.responseText + ", "+ status +")");
                     jq("#post").prop("disabled", false);
                 })
 
