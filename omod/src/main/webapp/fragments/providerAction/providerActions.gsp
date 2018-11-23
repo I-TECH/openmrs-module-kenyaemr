@@ -80,7 +80,7 @@
 			<li class="float-left" style="margin-top: 7px">
 			<a href="${ ui.pageLink("kenyaemr", "registration/registrationSearch") }" class="float-left">
 					<i class="fa fa-search fa-2x"></i>
-					Patient Registration
+					Find/Create Patient
 				</a>
 			</li>
 

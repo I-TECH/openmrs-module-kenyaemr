@@ -17,7 +17,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LowDitactableViralLoadCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LowDetectableViralLoadCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -94,7 +94,7 @@ public class NeedsViralLoadTestReportBuilder extends CalculationReportBuilder {
                 return null ;
             }
         });
-        dsd.addColumn("LDL", new CalculationDataDefinition("LDL", new LowDitactableViralLoadCalculation()), "", new DataConverter() {
+        dsd.addColumn("LDL", new CalculationDataDefinition("LDL", new LowDetectableViralLoadCalculation()), "", new DataConverter() {
             @Override
             public Class<?> getInputDataType() {
                 return CalculationResult.class;
