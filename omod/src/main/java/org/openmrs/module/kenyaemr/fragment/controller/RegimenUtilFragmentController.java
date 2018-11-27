@@ -18,6 +18,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.*;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -57,6 +58,8 @@ public class RegimenUtilFragmentController {
 		ui.validate(command, command, null);
 		ConceptService cs = Context.getConceptService();
 		EncounterService encounterService = Context.getEncounterService();
+
+
 		Encounter encounter = new Encounter();
 		Date date = new Date();
 		EncounterType encounterType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
@@ -67,62 +70,56 @@ public class RegimenUtilFragmentController {
 		encounter.setDateCreated(date);
 		encounter.setForm(regimenEditor);
 		Concept con = cs.getConceptByUuid(command.getRegimenConceptRef());
+		Encounter enc = EmrUtils.lastEncounter(command.getPatient(),encounterType,regimenEditor);
+
+
+
 
 		//create an obs for regimen
 		Obs o = new Obs();
 		o.setConcept(cs.getConcept(1193));
 		o.setDateCreated(new Date());
 		o.setCreator(Context.getAuthenticatedUser());
-		// o.setLocation(new Location(1));
 		o.setObsDatetime(command.getChangeDate());
 		o.setPerson(command.getPatient());
 		o.setValueCoded(con);
 		encounter.addObs(o);
 
 		//create  obs for Change reason coded
-		if(command.getChangeReason() !=null) {
-			Obs o2 = new Obs();
-			o2.setConcept(cs.getConcept(1252));
-			o2.setDateCreated(new Date());
-			o2.setCreator(Context.getAuthenticatedUser());
-			// o2.setLocation(new Location(1));
-			o2.setObsDatetime(command.getChangeDate());
-			o2.setValueCoded(command.getChangeReason());
-			o2.setPerson(command.getPatient());
-			encounter.addObs(o2);
-		}
+		Obs o2 = new Obs();
+		o2.setConcept(cs.getConcept(1252));
+		o2.setDateCreated(new Date());
+		o2.setCreator(Context.getAuthenticatedUser());
+		o2.setObsDatetime(command.getChangeDate());
+		o2.setValueCoded(command.getChangeReason());
+		o2.setPerson(command.getPatient());
+
+
 		//create  obs for Change reason Noncoded
-		if (!command.getChangeReasonNonCoded().isEmpty()) {
-			Obs o3 = new Obs();
-			o3.setConcept(cs.getConcept(5622));
-			o3.setDateCreated(new Date());
-			o3.setCreator(Context.getAuthenticatedUser());
-			// o3.setLocation(new Location(1));
-			o3.setObsDatetime(command.getChangeDate());
-			o3.setValueText(command.getChangeReasonNonCoded());
-			o3.setPerson(command.getPatient());
-			encounter.addObs(o3);
-		}
+		Obs o3 = new Obs();
+		o3.setConcept(cs.getConcept(5622));
+		o3.setDateCreated(new Date());
+		o3.setCreator(Context.getAuthenticatedUser());
+		o3.setObsDatetime(command.getChangeDate());
+		o3.setValueText(command.getChangeReasonNonCoded());
+		o3.setPerson(command.getPatient());
+
+
+		// create obs for drug treatment stop date
+		Obs dateDrugStopped = new Obs();
+		dateDrugStopped.setConcept(cs.getConcept(1191));
+		dateDrugStopped.setDateCreated(new Date());
+		dateDrugStopped.setCreator(Context.getAuthenticatedUser());
+		dateDrugStopped.setObsDatetime(command.getChangeDate());
+		dateDrugStopped.setPerson(command.getPatient());
+		dateDrugStopped.setValueDatetime(command.getChangeDate());
 
 		// create obs for plan TB/ARV 1268/1255
-
 		Obs category = new Obs();
 		category.setDateCreated(new Date());
 		category.setCreator(Context.getAuthenticatedUser());
-		// category.setLocation(new Location(1));
 		category.setObsDatetime(command.getChangeDate());
 		category.setPerson(command.getPatient());
-		if(command.getChangeType()==RegimenChangeType.CHANGE) {
-			category.setValueCoded(cs.getConcept(1259));
-		}
-
-		if(command.getChangeType()==RegimenChangeType.STOP) {
-			category.setValueCoded(cs.getConcept(1260));
-		}
-
-		if(command.getChangeType()==RegimenChangeType.START) {
-			category.setValueCoded(cs.getConcept(1256));
-		}
 
 		if(command.getCategory().equalsIgnoreCase("ARV") ) {
 			category.setConcept(cs.getConcept(1255));
@@ -131,10 +128,49 @@ public class RegimenUtilFragmentController {
 			category.setConcept(cs.getConcept(1268));
 
 		}
-		encounter.addObs(category);
 
-		encounterService.saveEncounter(encounter);
+		if(command.getChangeType()==RegimenChangeType.CHANGE) {
+			category.setValueCoded(cs.getConcept(1259));
+			if (enc != null) {
+				enc.getEncounterId();
+				enc.addObs(dateDrugStopped);
+				if (!command.getChangeReasonNonCoded().isEmpty()) {
+					enc.addObs(o3);
+				}
+				if(command.getChangeReason() !=null) {
+					enc.addObs(o2);
+				}
+				encounterService.saveEncounter(enc);
+			}
+			encounter.addObs(category);
+			encounterService.saveEncounter(encounter);
 
+
+		}
+
+		if(command.getChangeType()==RegimenChangeType.STOP) {
+			category.setValueCoded(cs.getConcept(1260));
+			if (enc != null) {
+				enc.getEncounterId();
+				enc.addObs(dateDrugStopped);
+				if (!command.getChangeReasonNonCoded().isEmpty()) {
+					enc.addObs(o3);
+				}
+				if(command.getChangeReason() !=null) {
+					enc.addObs(o2);
+				}
+				enc.addObs(category);
+				encounterService.saveEncounter(enc);
+
+			}
+		}
+
+		if(command.getChangeType()==RegimenChangeType.START) {
+			category.setValueCoded(cs.getConcept(1256));
+			encounter.addObs(category);
+			encounterService.saveEncounter(encounter);
+
+		}
 	}
 
 	/**
@@ -219,6 +255,7 @@ public class RegimenUtilFragmentController {
 					}
 				}
 			}
+			
 			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE) {
 				require(errors, "regimenConceptRef");
 			}
@@ -231,14 +268,14 @@ public class RegimenUtilFragmentController {
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
 
 				// Can't start if already started
-				/*if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
+				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
 
 				// Changes must be in order
 				if (lastChange != null && OpenmrsUtil.compare(changeDate, lastChange.getDate()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
-				}*/
+				}
 
 				// Don't allow future dates
 				if (OpenmrsUtil.compare(changeDate, new Date()) > 0) {
