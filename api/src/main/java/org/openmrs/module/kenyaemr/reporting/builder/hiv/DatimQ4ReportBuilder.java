@@ -210,51 +210,34 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 
         /*TX_RET Number of mothers who are still alive and on treatment at 12 months after initiating ART*/
         cohortDsd.addColumn("TX_RET_PREGNANT", "Mothers pregnant and Still on ART upto 12 months since start", ReportUtils.map(datimQ4Indicators.alivePregnantOnARTLast12Months(), indParams), "");
-/*
 
         cohortDsd.addColumn("TX_RET_BREASTFEEDING", "Mothers breastfeeding and still on ART for 12 months since start", ReportUtils.map(datimQ4Indicators.aliveBfOnARTLast12Months(), indParams), "");
 
-        */
-/*12 months retention by Disaggregated by age/gender*//*
+        /*12 months retention by Disaggregated by age/gender*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnARTInLast12MonthsByAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALL", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnARTInLast12MonthsByAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
-
-        */
-/*TX_RET Denominator Started ART last 12 months and breastfeeding*//*
-
+        /*TX_RET Denominator Started ART last 12 months and breastfeeding*/
         cohortDsd.addColumn("TX_RET_BF", "Started ART within last 12 Months and Breastfeeding", ReportUtils.map(datimQ4Indicators.totalBFStartedARTLast12Months(), indParams), "");
 
-        */
-/*TX_RET Denominator Started ART last 12 months and pregnant*//*
-
+        /*TX_RET Denominator Started ART last 12 months and pregnant*/
         cohortDsd.addColumn("TX_RET_DENOMINATOR_PREGNANT", "Started ART with past 12 Months and pregnant", ReportUtils.map(datimQ4Indicators.totalPregnantStartedARTLast12Months(), indParams), "");
 
-        */
-/*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*//*
-
+        /*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*/
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_ART_ALL", "All started ART with last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.totalOnARTLast12MonthsByAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
-       */
-/*TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*//*
-
+       /*TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
         cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimQ4Indicators.onARTWithSuppressedRoutineVLLast12Months(), indParams), "");
 
-        */
-/*TX_PVLS (Targeted) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*//*
-
+        /*TX_PVLS (Targeted) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
         cohortDsd.addColumn("TX_PVLS_SUPP_TARGETED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Targeted Test", ReportUtils.map(datimQ4Indicators.onARTWithSuppressedTargetedVLLast12Months(), indParams), "");
 
-        */
-/*TX_PVLS (Undocumented) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*//*
-
+        /*TX_PVLS (Undocumented) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
         cohortDsd.addColumn("TX_PVLS_SUPP_UNDOCUMENTED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Undocumented Test", ReportUtils.map(datimQ4Indicators.onARTWithSuppressedUndocumentedVLLast12Months(), indParams), "");
 
-        */
-/*TX_PVLS Number of pregnant patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / Routine*//*
-
+        /*TX_PVLS Number of pregnant patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / Routine*/
          cohortDsd.addColumn("TX_PVLS_SUPP_PREGNANT_ROUTINE", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) pregnant routine", ReportUtils.map(datimQ4Indicators.pregnantOnARTWithSuppressedRoutineVLLast12Months(), indParams), "");
 
-        */
+
 /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / Targeted*//*
 
         cohortDsd.addColumn("TX_PVLS_SUPP_PREGNANT_TARGETED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Pregnant Targeted", ReportUtils.map(datimQ4Indicators.pregnantOnARTWithSuppressedTargetedVLLast12Months(), indParams), "");
