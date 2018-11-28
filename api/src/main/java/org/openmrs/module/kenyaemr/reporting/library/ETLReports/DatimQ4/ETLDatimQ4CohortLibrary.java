@@ -478,7 +478,7 @@ public class ETLDatimQ4CohortLibrary {
                 "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
                 "and hv.dna_pcr_sample_date is not null and hv.dna_pcr_result=703 and hv.visit_date and " +
                 "hv.visit_date between\n" +
-                "    date(:startDate) and date(:endDate);";
+                "date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("infantVirologyPositiveResults12m");
@@ -906,7 +906,7 @@ public class ETLDatimQ4CohortLibrary {
                 "where timestampdiff(month,de.dob,:startDate) >=24 and e.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("PMTCT_FO_HEI_COHORT");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -925,7 +925,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("PMTCT_FO_INFECTED_HEI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -944,7 +944,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("PMTCT_FO_UNINFECTED_HEI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -963,7 +963,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("PMTCT_FO_HEI_UNKNOWN_HIV_STATUS");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -982,7 +982,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1003,7 +1003,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_PREGNANT");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1012,7 +1012,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Alive, Breastfeeding and on ART for last 12 months*/
+    /*Alive, Breastfeeding and on ART for last 12 months*//*
     public CohortDefinition bfAliveOnARTLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
@@ -1026,7 +1026,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_BREASTFEEDING");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1035,7 +1035,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Alive on ART in last 12 months by Age / Sex*/
+    *//*Alive on ART in last 12 months by Age / Sex*//*
     public CohortDefinition aliveOnARTInLast12MonthsByAgeSex() {
 
         String sqlQuery = "select c.patient_id from kenyaemr_etl.etl_current_in_care c\n" +
@@ -1047,7 +1047,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by c.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_ALIVE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1056,7 +1056,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Total started ART in last 12 months and Breastfeeding*/
+    *//*Total started ART in last 12 months and Breastfeeding*//*
     public CohortDefinition breastfeedingAndstartedARTinLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
@@ -1067,7 +1067,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and v.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_BF");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1076,7 +1076,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Total started ART in last 12 months and Pregnant*/
+    *//*Total started ART in last 12 months and Pregnant*//*
     public CohortDefinition pregnantAndstartedARTinLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
@@ -1086,7 +1086,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and v.visit_date between date(:startDate) and date(:endDate) group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_DENOMINATOR_PREGNANT");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1095,7 +1095,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Total started ART in last 12 months by age / sex*/
+    *//*Total started ART in last 12 months by age / sex*//*
     public CohortDefinition totalOnARTLast12MonthsByAgeSex() {
 
         String sqlQuery = "select de.patient_id from kenyaemr_etl.etl_drug_event de\n" +
@@ -1104,7 +1104,7 @@ public class ETLDatimQ4CohortLibrary {
                 "and de.date_started between date(:startDate) and date(:endDate);\n";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_RET_ART_ALL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1113,7 +1113,8 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with Suppressed routine VL within last 12 Months*/
+    // FIXME: 28/11/2018 Lines 1116-1479 Queries require the urgency: Routine, Targeted or Undocumented
+    *//*Patients on ART with Suppressed routine VL within last 12 Months*//*
     public CohortDefinition onARTWithSuppressedRoutineVLLast12Months() {
 
         String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
@@ -1126,7 +1127,7 @@ public class ETLDatimQ4CohortLibrary {
                 "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_ROUTINE_ALL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1135,13 +1136,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with Suppressed targeted VL within last 12 Months*/
+    *//*Patients on ART with Suppressed targeted VL within last 12 Months*//*
     public CohortDefinition onARTWithSuppressedTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_TARGETED_ALL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1150,13 +1158,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with Suppressed undocumented VL within last 12 Months*/
+    *//*Patients on ART with Suppressed undocumented VL within last 12 Months*//*
     public CohortDefinition onARTWithSuppressedUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_UNDOCUMENTED_ALL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1165,13 +1180,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Suppressed Routine VL within last 12 Months*/
+    *//*Pregnant Women on ART with Suppressed Routine VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithSuppressedRoutineVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_PREGNANT_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1180,13 +1204,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Suppressed targeted VL within last 12 Months*/
+    *//*Pregnant Women on ART with Suppressed targeted VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithSuppressedTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_PREGNANT_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1195,13 +1228,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Suppressed undocumented VL within last 12 Months*/
+    *//*Pregnant Women on ART with Suppressed undocumented VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithSuppressedUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_PREGNANT_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1210,13 +1252,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding mother on ART with Suppressed Routine VL within last 12 Months*/
+    *//*Breastfeeding mother on ART with Suppressed Routine VL within last 12 Months*//*
     public CohortDefinition bfOnARTWithSuppressedRoutineVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_BF_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1225,13 +1277,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding mother on ART with Suppressed Targeted VL within last 12 Months*/
+    *//*Breastfeeding mother on ART with Suppressed Targeted VL within last 12 Months*//*
     public CohortDefinition bfOnARTWithSuppressedTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_BF_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1240,13 +1302,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding mother on ART with Suppressed undocumented VL within last 12 Months*/
+    *//*Breastfeeding mother on ART with Suppressed undocumented VL within last 12 Months*//*
     public CohortDefinition bfOnARTWithSuppressedUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_BF_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1255,43 +1327,64 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
+    *//*On Routine ART with Suppressed VL within last 12 Months by sex/age*//*
     public CohortDefinition onRoutineARTWithSuppressedVLLast12MonthsBySex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On Routine ART with Suppressed VL within last 12 Months by sex/age");
+        cd.setDescription("On ART with Suppressed Routine VL within last 12 Months by sex/age");
         return cd;
 
     }
 
-    /*On Targeted ART with Suppressed VL within last 12 Months by sex/age*/
+    *//*On ART with Suppressed Targeted VL within last 12 Months by sex/age*//*
     public CohortDefinition onTargetedARTWithSuppressedVLLast12MonthsBySex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On Targeted ART with Suppressed VL within last 12 Months by sex/age");
+        cd.setDescription("On ART with Suppressed Targeted VL within last 12 Months by sex/age");
         return cd;
 
     }
 
-    /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
+    *//*On ART with Suppressed undocumented VL within last 12 Months by sex/age*//*
     public CohortDefinition onARTWithSuppressedUndocumentedVLLast12MonthsBySex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856 and x.test_result <1000)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_SUPP_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1300,13 +1393,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
+    *//*On ART with Routine VL within last 12 Months*//*
     public CohortDefinition onARTWithRoutineVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1315,13 +1415,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
+    *//*On ART with Targeted VL within last 12 Months*//*
     public CohortDefinition onARTWithTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_DENOMINATOR_PVLS_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1330,13 +1437,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with undocumented VL within last 12 Months*/
+    *//*Patients on ART with undocumented VL within last 12 Months*//*
     public CohortDefinition totalOnARTWithUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.test_result =1302 and x.lab_test =1305)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1345,13 +1459,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Routine VL within last 12 Months*/
+    *//*Pregnant Women on ART with Routine VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithRoutineVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1360,13 +1483,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Targeted VL within last 12 Months*/
+    *//*Pregnant Women on ART with Targeted VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1375,13 +1507,22 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Undocumented VL within last 12 Months*/
+    *//*Pregnant Women on ART with Undocumented VL within last 12 Months*//*
     public CohortDefinition pregnantARTWithUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1390,13 +1531,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding Women on ART with Routine VL within last 12 Months*/
+    *//*Breastfeeding Women on ART with Routine VL within last 12 Months*//*
     public CohortDefinition breastfeedingOnARTWithRoutineVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "    and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_BF_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1405,13 +1556,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding Women on ART with Targeted VL within last 12 Months*/
+    *//*Breastfeeding Women on ART with Targeted VL within last 12 Months*//*
     public CohortDefinition breastfeedingOnARTWithTargetedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "    and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_BF_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1420,13 +1581,23 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Breastfeeding Women on ART with Undocumented VL within last 12 Months*/
+    *//*Breastfeeding Women on ART with Undocumented VL within last 12 Months*//*
     public CohortDefinition breastfeedingOnARTWithUndocumentedVLLast12Months() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "    and v.baby_feeding_method in (5526,6046)\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "        and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1435,13 +1606,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*On ART with Routine VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTWithRoutineVLLast12MonthsBySex() {
+    *//*On ART with Routine VL within last 12 Months by sex/age*//*
+    public CohortDefinition onARTWithRoutineVLLast12MonthsByAgeSex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_ROUTINE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1450,13 +1628,20 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with Targeted VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTWithTargetedVLLast12MonthsBySex() {
+    *//*Patients on ART with Targeted VL within last 12 Months by sex/age*//*
+    public CohortDefinition onARTWithTargetedVLLast12MonthsByAgeSex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_TARGETED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1465,18 +1650,25 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Patients on ART with undocumented VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTWithUndocumentedVLLast12MonthsBySex() {
+    *//*Patients on ART with undocumented VL within last 12 Months by sex/age*//*
+    public CohortDefinition onARTWithUndocumentedVLLast12MonthsByAgeSex() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where (x.lab_test =856)\n" +
+                "   or (x.lab_test =1305 and x.test_result =1302)\n" +
+                "        and timestampdiff(month ,e.date_started,:endDate)>=3\n" +
+                "        and timestampdiff(MONTH,x.visit_date,:endDate) <=12\n" +
+                "        and x.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by x.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("");
+        cd.setName("TX_PVLS_DENOMINATOR_UNDOCUMENTED");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Patients on ART with undocumented VL within last 12 Months by sex/age");
         return cd;
 
-    }
+    }*/
 }
