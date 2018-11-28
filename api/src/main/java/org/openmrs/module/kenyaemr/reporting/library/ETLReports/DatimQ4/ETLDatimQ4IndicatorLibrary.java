@@ -392,83 +392,83 @@ public class ETLDatimQ4IndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-   /* *//**
+    /**
      * TX_RET Number of breastfeeding mothers who are still alive and on treatment at 12 months after initiating ART
      * @return the indicator
-     *//*
+     */
     public CohortIndicator aliveBfOnARTLast12Months() {
         return cohortIndicator("Alive, Breastfeeding and on ART for last 12 months", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.bfAliveOnARTLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * TX_RET Number of adults and children who are still alive and on treatment at 12 months after initiating ART Disaggregated by age / sex
      * @return the indicator
-     *//*
+     */
     public CohortIndicator aliveOnARTInLast12MonthsByAgeSex() {
         return cohortIndicator("Alive on ART in last 12 months by Age / Sex", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.aliveOnARTInLast12MonthsByAgeSex(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * TX_RET Denominator Started ART last 12 months and breastfeeding includes dead, stopped, lost follow-up
      * @return the indicator
-     *//*
+     */
     public CohortIndicator totalBFStartedARTLast12Months() {
         return cohortIndicator("Total started ART in last 12 months and Breastfeeding", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.breastfeedingAndstartedARTinLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-    *//**
+    /**
      * TX_RET Denominator Started ART last 12 months and Pregnant includes dead, stopped, lost follow-up
      * @return the indicator
-     *//*
+     */
     public CohortIndicator totalPregnantStartedARTLast12Months() {
         return cohortIndicator("Total started ART in last 12 months and Pregnant", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.pregnantAndstartedARTinLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex includes dead, stopped, lost follow-up
      * @return the indicator
-     *//*
+     */
     public CohortIndicator totalOnARTLast12MonthsByAgeSex() {
         return cohortIndicator("Total on ART in last 12 months by Age / Sex", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.totalOnARTLast12MonthsByAgeSex(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-    *//**
+    /**
      * TX_PVLS Number of adults and pediatric patients on ART with suppressed Routine viral load results (<1,000 copies/ml) results within the past 12 months
      * @return the indicator
-     *//*
+     */
     public CohortIndicator onARTWithSuppressedRoutineVLLast12Months() {
         return cohortIndicator("Patients on ART with Suppressed routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTWithSuppressedRoutineVLLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * TX_PVLS Number of adults and pediatric patients on ART with suppressed Targeted viral load results (<1,000 copies/ml) results within the past 12 months
      * @return the indicator
-     *//*
+     */
     public CohortIndicator onARTWithSuppressedTargetedVLLast12Months() {
         return cohortIndicator("Patients on ART with Suppressed targeted VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTWithSuppressedTargetedVLLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-    *//**
+    /**
      * TX_PVLS Number of adults and pediatric patients on ART with suppressed undocumented viral load results (<1,000 copies/ml) results within the past 12 months
      * @return the indicator
-     *//*
+     */
     public CohortIndicator onARTWithSuppressedUndocumentedVLLast12Months() {
         return cohortIndicator("Patients on ART with Suppressed undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTWithSuppressedUndocumentedVLLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * TX_PVLS Number pregnant women on ART with suppressed Routine viral load results (<1,000 copies/ml) within the past 12 months.
-     *//*
+     */
     public CohortIndicator pregnantOnARTWithSuppressedRoutineVLLast12Months() {
         return cohortIndicator("Pregnant Women on ART with Suppressed Routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.pregnantOnARTWithSuppressedRoutineVLLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-    *//**
+    /**
      * TX_PVLS Number pregnant women on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months.
      *//*
     public CohortIndicator pregnantOnARTWithSuppressedTargetedVLLast12Months() {

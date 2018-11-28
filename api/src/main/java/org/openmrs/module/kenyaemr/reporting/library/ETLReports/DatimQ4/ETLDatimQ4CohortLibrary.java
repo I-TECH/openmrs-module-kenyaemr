@@ -1012,7 +1012,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    /*Alive, Breastfeeding and on ART for last 12 months*//*
+    /*Alive, Breastfeeding and on ART for last 12 months*/
     public CohortDefinition bfAliveOnARTLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
@@ -1035,7 +1035,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Alive on ART in last 12 months by Age / Sex*//*
+    /*Alive on ART in last 12 months by Age / Sex*/
     public CohortDefinition aliveOnARTInLast12MonthsByAgeSex() {
 
         String sqlQuery = "select c.patient_id from kenyaemr_etl.etl_current_in_care c\n" +
@@ -1056,7 +1056,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Total started ART in last 12 months and Breastfeeding*//*
+   /*Total started ART in last 12 months and Breastfeeding*/
     public CohortDefinition breastfeedingAndstartedARTinLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
@@ -1076,7 +1076,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Total started ART in last 12 months and Pregnant*//*
+    /*Total started ART in last 12 months and Pregnant*/
     public CohortDefinition pregnantAndstartedARTinLast12Months() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
@@ -1095,7 +1095,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Total started ART in last 12 months by age / sex*//*
+    /*Total started ART in last 12 months by age / sex*/
     public CohortDefinition totalOnARTLast12MonthsByAgeSex() {
 
         String sqlQuery = "select de.patient_id from kenyaemr_etl.etl_drug_event de\n" +
@@ -1114,7 +1114,7 @@ public class ETLDatimQ4CohortLibrary {
     }
 
     // FIXME: 28/11/2018 Lines 1116-1479 Queries require the urgency: Routine, Targeted or Undocumented
-    *//*Patients on ART with Suppressed routine VL within last 12 Months*//*
+    /*Patients on ART with Suppressed routine VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedRoutineVLLast12Months() {
 
         String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
@@ -1136,7 +1136,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Patients on ART with Suppressed targeted VL within last 12 Months*//*
+    /*Patients on ART with Suppressed targeted VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedTargetedVLLast12Months() {
 
         String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
@@ -1158,7 +1158,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Patients on ART with Suppressed undocumented VL within last 12 Months*//*
+    /*Patients on ART with Suppressed undocumented VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedUndocumentedVLLast12Months() {
 
         String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
@@ -1180,7 +1180,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-    *//*Pregnant Women on ART with Suppressed Routine VL within last 12 Months*//*
+    /*Pregnant Women on ART with Suppressed Routine VL within last 12 Months*/
     public CohortDefinition pregnantOnARTWithSuppressedRoutineVLLast12Months() {
 
         String sqlQuery = "select mid(max(concat(x.visit_date,x.patient_id )),11) from kenyaemr_etl.etl_laboratory_extract x\n" +
@@ -1203,7 +1203,7 @@ public class ETLDatimQ4CohortLibrary {
         return cd;
 
     }
-
+/*
     *//*Pregnant Women on ART with Suppressed targeted VL within last 12 Months*//*
     public CohortDefinition pregnantOnARTWithSuppressedTargetedVLLast12Months() {
 
