@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by codehub on 10/28/15.
  * This calculation returns the value of Viral load if Not detactable
  */
-public class LowDitactableViralLoadCalculation extends AbstractPatientCalculation {
+public class LowDetectableViralLoadCalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {

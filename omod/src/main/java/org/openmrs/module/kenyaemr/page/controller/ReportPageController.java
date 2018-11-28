@@ -9,11 +9,16 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
+import org.codehaus.jackson.node.ObjectNode;
+import org.openmrs.Location;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreUtils;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.IndicatorReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -39,6 +44,7 @@ import java.util.Map;
  */
 @SharedPage
 public class ReportPageController {
+	private AdministrationService admService;
 	
 	public void get(@RequestParam("reportUuid") String reportUuid,
 					@RequestParam(required = false, value = "startDate") Date startDate,
@@ -53,7 +59,7 @@ public class ReportPageController {
 
 		ReportDefinition definition = definitionService.getDefinitionByUuid(reportUuid);
 		ReportDescriptor report = reportManager.getReportDescriptor(definition);
-
+		admService = Context.getAdministrationService();
 		CoreUtils.checkAccess(report, kenyaUi.getCurrentApp(pageRequest));
 
 		boolean isIndicator = false;
@@ -67,12 +73,17 @@ public class ReportPageController {
 			excelRenderable = true;
 		}
 
+		String mappingString = admService.getGlobalProperty("kenyaemr.adxDatasetMapping");
+		ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), mappingString);
 		model.addAttribute("report", report);
 		model.addAttribute("definition", definition);
 		model.addAttribute("isIndicator", isIndicator);
+		model.addAttribute("adxConfigured", mappingDetails != null ? true : false);
 		model.addAttribute("excelRenderable", excelRenderable);
 		model.addAttribute("returnUrl", returnUrl);
 		model.addAttribute("period", definition.getName().replaceAll("[^0-9]", ""));
+
+
 
 
 		if (isIndicator) {

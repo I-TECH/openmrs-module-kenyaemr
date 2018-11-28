@@ -111,7 +111,7 @@ public class RegimenEditorPageController {
 			}
 			return history;
 		}
-		return null;
+		return new ArrayList<SimpleObject>();
 	}
 
 	public SimpleObject getLastRegimenFromObservations (Patient patient, String category) {

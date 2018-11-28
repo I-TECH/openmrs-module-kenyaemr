@@ -80,7 +80,7 @@
 			<li class="float-left" style="margin-top: 7px">
 			<a href="${ ui.pageLink("kenyaemr", "registration/registrationSearch") }" class="float-left">
 					<i class="fa fa-search fa-2x"></i>
-					Patient Search/Registration
+					Find/Create Patient
 				</a>
 			</li>
 
@@ -94,7 +94,7 @@
 			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("hivtestingservices", "patientContactList", [patientId: currentPatient.patientId]) }" class="float-left">
 					<i class="fa fa-list-ul fa-2x"></i>
-					Patient Contact Listing
+					Contact Listing
 				</a>
 			</li>
 
