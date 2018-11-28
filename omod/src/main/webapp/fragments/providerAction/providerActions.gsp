@@ -65,14 +65,14 @@
 
 			<li class="float-left">
 				<a href="javascript:openPatientChart()"  class="float-left">
-					<i class="fa fa-check-circle fa-2x" style="margin-top: 7px"></i>
+					<i class="fa fa-list-alt fa-2x" style="margin-top: 7px"></i>
 					Patient Overview
 				</a>
 			</li>
 
 			<li class="float-left">
 				<a href="javascript:openPatientSummary()" class="float-left">
-					<i class="fa fa-plus fa-2x" style="margin-top: 7px"></i>
+					<i class="fa fa-file-text-o fa-4x" style="margin-top: 7px"></i>
 					Patient Summary
 				</a>
 			</li>
@@ -107,7 +107,7 @@
 
 			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("kenyaemrorderentry", "labOrders", [patient: currentPatient]) }" class="float-left">
-					<i class="fa fa-medkit fa-2x"></i>
+					<i class="fa fa-flask fa-2x"></i>
 					Lab Orders
 				</a>
 			</li>
