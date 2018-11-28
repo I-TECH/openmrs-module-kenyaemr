@@ -159,12 +159,12 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 e.setForm(form);
 
 
-                if (regimenStarted != null) {
-                    List<RegimenDefinition> regimenDefinitions = findDefinitions(program, regimenStarted, false);
-                    if (regimenDefinitions != null && regimenDefinitions.size() > 0) {
-                        conceptRef = regimenDefinitions.get(0).getConceptRef();
-                    }
+
+                List<RegimenDefinition> regimenDefinitions = findDefinitions(program, regimenStarted, false);
+                if (regimenDefinitions != null && regimenDefinitions.size() > 0) {
+                    conceptRef = regimenDefinitions.get(0).getConceptRef();
                 }
+
 
                 // create event obs
                 Obs eventObs = new Obs();
@@ -242,14 +242,14 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 dateStoppedObs.setValueDatetime(dateStopped);
                 dateStoppedObs.setObsDatetime(dateStopped);
 
-                if (cChanges != null) {
+                if (cChanges != null && !cChanges.isEmpty()) {
                     Obs reasonStoppedCodedObs = new Obs();
                     reasonStoppedCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_CODED));
                     reasonStoppedCodedObs.setValueCoded(cChanges.get(0));
                     lastEncounter.addObs(reasonStoppedCodedObs);
                 }
 
-                if (ncChanges != null) {
+                if (ncChanges != null && !ncChanges.isEmpty()) {
                     Obs reasonStoppedNonCodedObs = new Obs();
                     reasonStoppedNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_NON_CODED));
                     reasonStoppedNonCodedObs.setValueText(ncChanges.get(0));
@@ -259,9 +259,12 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
             }
 
 
-            encounterService.saveEncounter(e);
-            if (lastEncounter != null)
+            if (e != null) {
+                encounterService.saveEncounter(e);
+            }
+            if (lastEncounter != null) {
                 encounterService.saveEncounter(lastEncounter);
+            }
         }
     }
 

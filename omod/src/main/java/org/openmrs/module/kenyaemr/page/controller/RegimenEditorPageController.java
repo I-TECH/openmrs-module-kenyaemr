@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -151,9 +152,8 @@ public class RegimenEditorPageController {
 	private SimpleObject buildRegimenChangeObject(Set<Obs> obsList, Encounter e) {
 
 		String CURRENT_DRUGS = "1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		String START_DRUGS = "1256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		String STOP_DRUGS = "1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		String CHANGE_REGIMEN = "1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String REASON_REGIMEN_STOPPED_CODED = "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 		String regimen = null;
@@ -161,7 +161,7 @@ public class RegimenEditorPageController {
 		String regimenUuid = null;
 		String endDate = null;
 		String startDate = e != null? DATE_FORMAT.format(e.getEncounterDatetime()) : "";
-		String changeReason = null;
+		Set<String> changeReason = new HashSet<String>();
 
 
 		for(Obs obs:obsList) {
@@ -170,6 +170,14 @@ public class RegimenEditorPageController {
 				regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "";
 				regimenShort = obs.getValueCoded() != null && obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null ? obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() : null;
 				regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
+			} else if (obs.getConcept().getUuid().equals(REASON_REGIMEN_STOPPED_CODED)) {
+				String reason = obs.getValueCoded() != null ?  obs.getValueCoded().getName().getName() : "";
+				if (reason != null)
+					changeReason.add(reason);
+			} else if (obs.getConcept().getUuid().equals(REASON_REGIMEN_STOPPED_NON_CODED)) {
+				String reason = obs.getValueText();
+				if (reason != null)
+					changeReason.add(reason);
 			}
 		}
 		if(regimen != null) {
@@ -178,7 +186,7 @@ public class RegimenEditorPageController {
 					"endDate", "",
 					"regimenShortDisplay", regimenShort != null ? regimenShort : regimen,
 					"regimenLongDisplay", regimen,
-					"changeReasons", "",
+					"changeReasons", changeReason,
 					"regimenUuid", regimenUuid,
 					"current",false
 
