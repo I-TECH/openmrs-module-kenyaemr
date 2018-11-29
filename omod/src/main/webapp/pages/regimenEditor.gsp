@@ -1,14 +1,15 @@
 <%
 	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient, layout: "sidebar" ])
 
-	def allowNew = !history.changes
-	def allowChange = history.changes && history.changes.last().started
-	def allowRestart = history.changes && !history.changes.last().started
-	def allowUndo = history.changes && history.changes.size() > 0
+	def allowNew = !regimenFromObs
+	def allowChange = regimenFromObs && lastEnc.startDate
+	def allowRestart = regimenFromObs && !lastEnc.startDate
+	def allowUndo = regimenFromObs && regimenFromObs.size() > 0
 	def isManager = isManager
 
+
 	def changeDateField = { label ->
-		[ label: label, formFieldName: "changeDate", class: java.util.Date, showTime: true, initialValue: null ]
+		[ label: label, formFieldName: "dateActivated", class: java.util.Date, showTime: true, initialValue: null ]
 	}
 
 	def regimenField = {

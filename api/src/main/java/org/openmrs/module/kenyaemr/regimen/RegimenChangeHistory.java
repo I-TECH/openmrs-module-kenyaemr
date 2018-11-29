@@ -96,6 +96,10 @@ public class RegimenChangeHistory {
 					runningOrders.add(rc.getDrugOrder());
 				} else { // ChangeType.END
 					DrugOrder o = rc.getDrugOrder();
+					if (o.getOrderReason() != null)
+						changeReasons.add(o.getOrderReason());
+					if (o.getOrderReasonNonCoded() != null)
+						changeReasonsNonCoded.add(o.getOrderReasonNonCoded());
 					runningOrders.remove(o);
 				}
 			}
