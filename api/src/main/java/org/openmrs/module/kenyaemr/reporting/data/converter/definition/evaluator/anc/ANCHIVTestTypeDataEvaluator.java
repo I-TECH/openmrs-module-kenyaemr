@@ -26,12 +26,12 @@ public class ANCHIVTestTypeDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select\n" +
-                "       max(v.encounter_id),\n" +
-                "       (case (SELECT count(encounter_id)  FROM kenyaemr_etl.etl_mch_antenatal_visit WHERE\n" +
-                "           encounter_id != (SELECT MAX(v1.encounter_id) FROM kenyaemr_etl.etl_mch_antenatal_visit v1)\n" +
-                "            and  final_test_result = \"Negative\")  when 0 then \"Initial\" else \"Retest\" end)\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
+        String qry = "SELECT\n" +
+                "  encounter_id,\n" +
+                "  case when COUNT(*) = 1 then \"Initial\" else \"Retest\" end as test_type\n" +
+                "FROM kenyaemr_etl.etl_mch_antenatal_visit\n" +
+                "  WHERE final_test_result !=\"\"\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

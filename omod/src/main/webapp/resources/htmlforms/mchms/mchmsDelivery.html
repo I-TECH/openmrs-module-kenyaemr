@@ -65,10 +65,11 @@
             jq('#delivery-complications select').change(complicationsChange);
             var motherComplications = jq('#delivery-complications select').val();
             if (motherComplications == 1065) {
-                jq("#explain-complications textarea").prop("disabled", false);
-            }else{
-                jq("#explain-complications textarea").prop("disabled", true);
-                getField('explain-complications.value').val("");
+                jq("#explain-complications").show();
+            }
+            if(motherComplications == 1066 || motherComplications == 1067){
+                jq("#explain-complications").hide();
+                getField('other-complications.value').val("");
             }
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
@@ -89,24 +90,27 @@
                 jq('#art-and-prophylaxis').show();
                 jq('#who-staging').show();
                 jq('#vl-sample').show();
+                jq('#tbl-unknown-status').hide();
                 //Prepopulate if already on HAART
                 if(PATIENT_ON_ART =="true") {
                     jq('#on-art:text').val('Yes');
                 }else {
                     jq('#on-art:text').val('No');
                 }
-            }else{
+            }else if(PATIENT_IS_REPORTED_HIV == 664) {
                 jq('#tbl-hiv-test').show();
+                jq('#tbl-unknown-status').show();
+                jq('#hiv-status:text').val("Negative");
                 jq('#art-and-prophylaxis').hide();
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
-            }
-            if(PATIENT_IS_REPORTED_HIV == 703){
-                jq('#hiv-status:text').val('Positive');
-            }else if(PATIENT_IS_REPORTED_HIV == 664){
-                jq('#hiv-status:text').val('Negative');
             }else{
-                jq('#hiv-status:text').val('Not available');
+                jq('#tbl-hiv-test').show();
+                jq('#tbl-unknown-status').show();
+                jq('#hiv-status:text').val("Reported unknown");
+                jq('#art-and-prophylaxis').hide();
+                jq('#who-staging').hide();
+                jq('#vl-sample').hide();
             }
             //skip pattern
             //First test
@@ -175,10 +179,12 @@
         function complicationsChange() {
             var motherComplications = jq('#delivery-complications select').val();
             if (motherComplications == 1065) {
-                jq("#explain-complications textarea").prop("disabled", false);
-            }else{
-                jq("#explain-complications textarea").prop("disabled", true);
-                getField('explain-complications.value').val("");
+                jq("#explain-complications").show();
+            }
+            if(motherComplications == 1066 || motherComplications == 1067){
+                jq("#explain-complications").hide();
+                clearHiddenSections(jq('#specific-complications'));
+                getField('other-complications.value').val("");
             }
         }
 
@@ -422,6 +428,25 @@
 			</tr>
 			<tr>
 				<td>
+					<legend>Visit details </legend>
+					<table align="top" width="100%" class="tb1">
+						<tr>
+							<td>
+								<table>
+									<tr>
+										<td> Admission Number:</td>
+										<td>
+											<obs conceptId="162054AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<legend>Delivery and baby observations</legend>
 					<table align="center" width="100%" class="tb1">
 						<tr>
@@ -444,7 +469,10 @@
 						<tr>
 							<td>Mode of Delivery:</td>
 							<td>
-								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Normal delivery,Cesarean section,Breech delivery,Assisted vaginal delivery"
+								/>
 							</td>
 							<td>Date and time of Delivery:</td>
 							<td>
@@ -472,6 +500,10 @@
 									 answerLabels="Alive,Dead"
 								/>
 							</td>
+							<td>Resuscitation Done:</td>
+							<td><obs conceptId="162131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							</td>
 						</tr>
 						<tr id="tr-maternal-death-audited">
 							<td>Maternal death audited? </td>
@@ -484,25 +516,30 @@
 						<tr>
 							<td>Delivery complications ? </td>
 							<td>
-								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="Yes,No"  id="delivery-complications"
+								<obs conceptId="120216AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Yes,No,Unknown"  id="delivery-complications"
 								/>
-							</td>
-							<td>Resuscitation Done:</td>
-							<td><obs conceptId="162131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-						</tr>
-						<tr>
-							<td>Explain delivery complications </td>
-							<td>
-								<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="30" id="explain-complications"/>
 							</td>
 							<td>Place of Delivery:</td>
 							<td>
 								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1601AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Home,Facility,Born Before Arrival"/>
+							</td>
+
+						</tr>
+						<tr id="explain-complications">
+							<td>Select delivery complications ? </td>
+							<td>
+								<obs conceptId="1576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="118744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115036AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,230AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Eclampsia,Ruptured Uterus,Obstructed Labor,APH,PPH,Puerperal sepsis,Unknown"    id="specific-complications"
+								/>
+							</td>
+							<td>Other delivery complications </td>
+							<td>
+								<obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="30" id="other-complications" />
 							</td>
 						</tr>
 						<tr>
@@ -855,18 +892,18 @@
 													 style="dropdown" answerLabels="YES,NO"/>
 											</td>
 											<td>
-												<table border="1">
+												<table border="1" id="tbl-unknown-status">
 													<tr>
 														<td>
 															<u>
-																Other HIV Test Recorded Recently
+																HIV Status Recorded Recently
 															</u>
 															<br/>
 															<br/>
 															Date:
 															<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
 															<br/>
-															Final results:
+															Status :
 															<input type="text" name="hiv-status" id="hiv-status" readonly="True" />
 															<br/>
 														</td>

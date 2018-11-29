@@ -25,10 +25,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Evaluator for patients who are adolescents known positive in ANC
@@ -40,30 +37,33 @@ public class AdolescentsKnownPositive_10_19AtANCCohortDefinitionEvaluator implem
 	private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
 	private ETLMoh731GreenCardCohortLibrary moh731GreencardCohorts;
-
+	@Autowired
+	EvaluationService evaluationService;
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
 		AdolescentsKnownPositive_10_19_AtANCCohortDefinition definition = (AdolescentsKnownPositive_10_19_AtANCCohortDefinition) cohortDefinition;
-		CohortDefinition cd = moh731GreencardCohorts.firstANCKPAdolescents();
+		if (definition == null)
+			return null;
 
-		Calendar calendar = Calendar.getInstance();
-		int thisMonth = calendar.get(calendar.MONTH);
+		String qry = "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+				"join  kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+				"where e.hiv_status =703 and  timestampdiff(year,d.DOB,e.visit_date) between 10 and 19;";
 
-		Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-		Date startDate = dateMap.get("startDate");
-		Date endDate = dateMap.get("endDate");
+		Cohort newCohort = new Cohort();
+		SqlQueryBuilder builder = new SqlQueryBuilder();
+		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
+		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
-		context.addParameterValue("startDate", startDate);
-		context.addParameterValue("endDate", endDate);
+		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-		Cohort adolescentsKnownPositiveANC = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-
-
-		return new EvaluatedCohort(adolescentsKnownPositiveANC, definition, context);
+		return new EvaluatedCohort(newCohort, definition, context);
 	}
+
 }
-
-
 

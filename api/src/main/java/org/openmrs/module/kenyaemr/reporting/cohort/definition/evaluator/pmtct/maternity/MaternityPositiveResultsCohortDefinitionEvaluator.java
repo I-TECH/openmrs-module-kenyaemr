@@ -16,18 +16,19 @@ import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinition
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Evaluator for clients with Positive HIV results at Maternity
  */
 @Handler(supports = {PositiveResultsAtMaternityCohortDefinition.class})
 public class MaternityPositiveResultsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-
+    @Autowired
+    EvaluationService evaluationService;
     private final Log log = LogFactory.getLog(this.getClass());
     @Autowired
     private ETLMoh731GreenCardCohortLibrary moh731GreenCardCohortLibrary;
@@ -37,24 +38,30 @@ public class MaternityPositiveResultsCohortDefinitionEvaluator implements Cohort
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         PositiveResultsAtMaternityCohortDefinition definition = (PositiveResultsAtMaternityCohortDefinition) cohortDefinition;
-        CohortDefinition cd = moh731GreenCardCohortLibrary.positiveHIVResultsAtLabourAndDelivery();
+        if (definition == null)
+            return null;
 
-        Calendar calendar = Calendar.getInstance();
-        int thisMonth = calendar.get(calendar.MONTH);
+        String sql = "select distinct ld.patient_id\n" +
+                "                from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "                 left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=ld.patient_id\n" +
+                "                 left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id=ld.patient_id\n" +
+                "                where e.hiv_status !=703 and\n" +
+                "                      (v.final_test_result is null or v.final_test_result !=\"Positive\") and\n" +
+                "                       ld.final_test_result =\"Positive\";";
+        Cohort newCohort = new Cohort();
+        SqlQueryBuilder builder = new SqlQueryBuilder();
+        builder.append(sql);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        builder.addParameter("endDate", endDate);
+        builder.addParameter("startDate", startDate);
+        List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
-        Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-        Date startDate = dateMap.get("startDate");
-        Date endDate = dateMap.get("endDate");
-
-        context.addParameterValue("startDate", startDate);
-        context.addParameterValue("endDate", endDate);
+        newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-        Cohort testedHIVPositiveAtMaternity = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-
-
-        return new EvaluatedCohort(testedHIVPositiveAtMaternity, definition, context);
+        return new EvaluatedCohort(newCohort, definition, context);
     }
 
-
 }
+

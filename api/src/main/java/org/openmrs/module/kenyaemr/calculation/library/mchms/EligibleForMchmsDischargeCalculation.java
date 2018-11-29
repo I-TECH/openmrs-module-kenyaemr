@@ -70,7 +70,8 @@ public class EligibleForMchmsDischargeCalculation extends AbstractPatientCalcula
 
 				Date enrollmentDate = ((PatientProgram) activePatientProgram.getValue()).getDateEnrolled();
 				Date deliveryDate = EmrCalculationUtils.datetimeObsResultForPatient(lastDeliveryDateObss, ptId);
-				if (deliveryDate != null && deliveryDate.after(enrollmentDate)) {
+				//if (deliveryDate != null && deliveryDate.after(enrollmentDate)) { check whether current delivery
+				if (deliveryDate != null) {
 					eligible = true;
 				}
 			}
