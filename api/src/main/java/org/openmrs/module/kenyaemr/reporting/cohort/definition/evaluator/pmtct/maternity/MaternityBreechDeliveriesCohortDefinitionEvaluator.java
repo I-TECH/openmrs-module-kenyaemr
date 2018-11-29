@@ -16,42 +16,42 @@ import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinition
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
+import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Evaluator for clients who had breech deliveries
  */
 @Handler(supports = {BreechDeliveriesCohortDefinition.class})
 public class MaternityBreechDeliveriesCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-
+    @Autowired
+    EvaluationService evaluationService;
     private final Log log = LogFactory.getLog(this.getClass());
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         BreechDeliveriesCohortDefinition definition = (BreechDeliveriesCohortDefinition) cohortDefinition;
+        if (definition == null)
+            return null;
         String query = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.mode_of_delivery =1172;";
-        SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition(query);
-        Calendar calendar = Calendar.getInstance();
-        int thisMonth = calendar.get(calendar.MONTH);
 
-        Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
-        Date startDate = dateMap.get("startDate");
-        Date endDate = dateMap.get("endDate");
+        Cohort newCohort = new Cohort();
+        SqlQueryBuilder builder = new SqlQueryBuilder();
+        builder.append(query);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        builder.addParameter("endDate", endDate);
+        builder.addParameter("startDate", startDate);
+        List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
-        context.addParameterValue("startDate", startDate);
-        context.addParameterValue("endDate", endDate);
-
-
-        Cohort breechDelivery = Context.getService(CohortDefinitionService.class).evaluate(sqlCohortDefinition, context);
+        newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
 
-        return new EvaluatedCohort(breechDelivery, definition, context);
+        return new EvaluatedCohort(newCohort, definition, context);
     }
-
 
 }

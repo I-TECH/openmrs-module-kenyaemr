@@ -114,7 +114,36 @@
             }else {
                 jq('#on-art:text').val('No');
             }
+        }else if(PATIENT_IS_REPORTED_HIV == 664) {
+            jq('#tbl-hiv-test').show();
+            jq('#tbl-unknown-status').show();
+            jq('#hiv-status:text').val("Negative");
+            jq('#art-and-prophylaxis').hide();
+            jq('#who-staging').hide();
+            jq('#vl-sample').hide();
+            var encounterDate = getValue('encounter-date.value');
+            jq('#tbl-hiv-test').show();
+            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+            var encounterDateFormatted = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var __duration = moment.duration(moment(encounterDateFormatted).diff(deliveryDateFormatted));
+            var testDurationWeeks = __duration.asWeeks().toFixed(0);
+            var testDurationDays = __duration.asDays().toFixed(0);
+
+            if(!isNaN(testDurationWeeks) &amp;&amp; testDurationWeeks &gt; 1) {
+                jq('#test-duration:text').val(testDurationWeeks + " Week(s)");
+            }else if(!isNaN(testDurationDays) &amp;&amp; testDurationDays &lt; 7) {
+                jq('#test-duration:text').val(testDurationDays +" Day(s)");
+            }
+            else{
+                jq('#test-duration:text').val("Not available");
+            }
         }else{
+            jq('#tbl-hiv-test').show();
+            jq('#tbl-unknown-status').show();
+            jq('#hiv-status:text').val("Reported unknown");
+            jq('#art-and-prophylaxis').hide();
+            jq('#who-staging').hide();
+            jq('#vl-sample').hide();
             var encounterDate = getValue('encounter-date.value');
             jq('#tbl-hiv-test').show();
             console.log("Encounter date ==> "+DATE_OF_DELIVERY);
@@ -129,24 +158,12 @@
             }else if(!isNaN(testDurationDays) &amp;&amp; testDurationDays &lt; 7) {
                 jq('#test-duration:text').val(testDurationDays +" Day(s)");
             }
-           else{
+            else{
                 jq('#test-duration:text').val("Not available");
             }
-
-            jq('#art-and-prophylaxis').hide();
-            jq('#who-staging').hide();
-            jq('#vl-sample').hide();
-            jq('#tbl-known-positive').hide();
-        }
-        if(PATIENT_IS_REPORTED_HIV == 703){
-            jq('#hiv-status:text').val('Positive');
-        }else if(PATIENT_IS_REPORTED_HIV == 664){
-            jq('#hiv-status:text').val('Negative');
-        }else{
-            jq('#hiv-status:text').val('Not available');
         }
 
-        //Maternal history prepopulation
+       //Maternal history prepopulation
         if(DATE_OF_DELIVERY !=""){
             getField('delivery-date.value').val(DATE_OF_DELIVERY);
         }else{
@@ -982,7 +999,7 @@
 											<tr>
 												<td>
 													<u>
-														Other HIV Test Recorded Recently
+														HIV Status Recorded Recently
 													</u>
 													<br/>
 													<br/>
@@ -1116,8 +1133,8 @@
 					<tr id="cacx-screening-method">
 						<td>CaCx screening method? <span style="color:red;">*</span></td>
 						<td><obs conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="Pap Smear,VIA,Other"
+								 answerConceptIds="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164977,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Pap Smear,VIA,VILI,Other"
 								 style="radio"
 								 id="screening-cacx-method"
 						/>
