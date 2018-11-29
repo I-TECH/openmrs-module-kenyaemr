@@ -12,7 +12,6 @@ package org.openmrs.module.kenyaemr.chore;
 import org.apache.commons.lang.ObjectUtils;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
-import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -36,7 +35,6 @@ import org.openmrs.module.kenyaemr.regimen.RegimenConversionUtil;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -51,8 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -124,7 +120,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
     }
 
     private void processRegimenChanges(Person patient, int masterSet, List<RegimenChange> changes, Form form, EncounterType encounterType) {
-        FormService formService = Context.getFormService();
         PatientService patientService = Context.getPatientService();
         String program = masterSet == 1085 ? "ARV" : "TB";
         ConceptService conceptService = Context.getConceptService();
@@ -133,18 +128,10 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
         String TB_TREATMENT_PLAN_CONCEPT = "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String CURRENT_DRUGS = "1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String START_DRUGS = "1256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        String REASON_REGIMEN_STOPPED_CODED = "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        Patient pPatient = patientService.getPatient(patient.getPersonId());
-        Encounter lastEncounter = null;
         Encounter e = null;
 
         for (RegimenChange change : changes) {
             RegimenOrder regimenStarted = change.getStarted();
-            RegimenOrder regimenStopped = change.getStopped();
-            Set<Concept> changeResonsCoded = change.getChangeReasons();
-            Set<String> changeReasonNonCoded = change.getChangeReasonsNonCoded();
             String conceptRef = null;
 
            // block for processing start change with/out stopped
@@ -164,8 +151,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 if (regimenDefinitions != null && regimenDefinitions.size() > 0) {
                     conceptRef = regimenDefinitions.get(0).getConceptRef();
                 }
-
-
                 // create event obs
                 Obs eventObs = new Obs();
                 eventObs.setConcept(conceptService.getConceptByUuid(masterSet == 1085 ? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT));
@@ -173,41 +158,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 eventObs.setObsDatetime(startDate);
                 eventObs.setValueCoded(conceptService.getConceptByUuid(START_DRUGS));
                 e.addObs(eventObs);
-
-                if (regimenStopped != null && regimenStopped.getDrugOrders().size() > 0) {
-
-                    List<Concept> cChanges = null;
-                    List<String> ncChanges = null;
-                    // get previous encounter
-                    lastEncounter = EmrUtils.lastEncounter(pPatient, encounterType, form);
-
-                    if (changeResonsCoded != null) {
-                        cChanges = new ArrayList<Concept>(changeResonsCoded);
-                    }
-
-                    if (changeReasonNonCoded != null) {
-                        ncChanges = new ArrayList<String>(changeReasonNonCoded);
-                    }
-                    // compose date stopped and reason stopped obs
-                    Obs dateStoppedObs = new Obs();
-                    dateStoppedObs.setConcept(conceptService.getConceptByUuid(DATE_REGIMEN_STOPPED));
-                    dateStoppedObs.setValueDatetime(startDate);
-                    dateStoppedObs.setObsDatetime(startDate);
-
-                    if (cChanges != null && cChanges.size() > 0) {
-                        Obs reasonStoppedCodedObs = new Obs();
-                        reasonStoppedCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_CODED));
-                        reasonStoppedCodedObs.setValueCoded(cChanges.get(0));
-                        lastEncounter.addObs(reasonStoppedCodedObs);
-                    }
-
-                    if (ncChanges != null && ncChanges.size() > 0) {
-                        Obs reasonStoppedNonCodedObs = new Obs();
-                        reasonStoppedNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_NON_CODED));
-                        reasonStoppedNonCodedObs.setValueText(ncChanges.get(0));
-                        lastEncounter.addObs(reasonStoppedNonCodedObs);
-                    }
-                }
 
                 // create regimen obs
                 if (conceptRef != null && regimenStarted != null) {
@@ -220,51 +170,10 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 }
             }
 
-
-            if (null == regimenStarted && regimenStopped != null && regimenStopped.getDrugOrders().size() > 0) {
-                List<DrugOrder> stoppedOrders = new ArrayList<DrugOrder>(regimenStopped.getDrugOrders());
-                Date dateStopped = stoppedOrders.get(0).getDateStopped();
-                List<Concept> cChanges = null;
-                List<String> ncChanges = null;
-                // get previous encounter
-                lastEncounter = EmrUtils.lastEncounter(pPatient, encounterType, form);
-
-                if (changeResonsCoded != null) {
-                    cChanges = new ArrayList<Concept>(changeResonsCoded);
-                }
-
-                if (changeReasonNonCoded != null) {
-                    ncChanges = new ArrayList<String>(changeReasonNonCoded);
-                }
-                // compose date stopped and reason stopped obs
-                Obs dateStoppedObs = new Obs();
-                dateStoppedObs.setConcept(conceptService.getConceptByUuid(DATE_REGIMEN_STOPPED));
-                dateStoppedObs.setValueDatetime(dateStopped);
-                dateStoppedObs.setObsDatetime(dateStopped);
-
-                if (cChanges != null && !cChanges.isEmpty()) {
-                    Obs reasonStoppedCodedObs = new Obs();
-                    reasonStoppedCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_CODED));
-                    reasonStoppedCodedObs.setValueCoded(cChanges.get(0));
-                    lastEncounter.addObs(reasonStoppedCodedObs);
-                }
-
-                if (ncChanges != null && !ncChanges.isEmpty()) {
-                    Obs reasonStoppedNonCodedObs = new Obs();
-                    reasonStoppedNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_NON_CODED));
-                    reasonStoppedNonCodedObs.setValueText(ncChanges.get(0));
-                    lastEncounter.addObs(reasonStoppedNonCodedObs);
-                }
-
-            }
-
-
             if (e != null) {
                 encounterService.saveEncounter(e);
             }
-            if (lastEncounter != null) {
-                encounterService.saveEncounter(lastEncounter);
-            }
+
         }
     }
 

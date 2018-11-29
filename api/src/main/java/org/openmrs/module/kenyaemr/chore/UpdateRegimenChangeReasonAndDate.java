@@ -9,17 +9,14 @@
  */
 package org.openmrs.module.kenyaemr.chore;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
@@ -28,38 +25,16 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.chore.AbstractChore;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.regimen.DrugReference;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
-import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
-import org.openmrs.module.kenyaemr.regimen.RegimenConfiguration;
-import org.openmrs.module.kenyaemr.regimen.RegimenConversionUtil;
-import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
-import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,12 +44,6 @@ import java.util.Set;
  */
 @Component("kenyaemr.chore.UpdateRegimenChangeReasonAndDate")
 public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
-
-    private Map<String, Integer> masterSetConcepts = new LinkedHashMap<String, Integer>();
-
-    private Map<String, Map<String, DrugReference>> drugs = new LinkedHashMap<String, Map<String, DrugReference>>();
-
-    private Map<String, List<RegimenDefinitionGroup>> regimenGroups = new LinkedHashMap<String, List<RegimenDefinitionGroup>>();
 
     /**
      * @see AbstractChore#perform(PrintWriter)
@@ -89,6 +58,10 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
         FormService formService = Context.getFormService();
         OrderService orderService = Context.getOrderService();
         String REASON_REGIMEN_STOPPED_CODED = "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+
 
 
         EncounterType encType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
@@ -100,10 +73,10 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
             Order o = orderService.getOrder(orderId);
             Integer patientId = orderService.getOrder(orderId).getPatient().getPatientId();
             if (records.get(patientId) != null) {
-                records.get(patientId).add(new RegimenChangeReason(o.getDateActivated(), o.getOrderReason(), o.getOrderReasonNonCoded()));
+                records.get(patientId).add(new RegimenChangeReason(o.getPatient().getPatientId(), o.getDateActivated(), o.getDateStopped(), o.getOrderReason(), o.getOrderReasonNonCoded()));
             } else {
                 Set<RegimenChangeReason> r = new HashSet<RegimenChangeReason>();
-                RegimenChangeReason cr = new RegimenChangeReason(o.getDateActivated(), o.getOrderReason(), o.getOrderReasonNonCoded());
+                RegimenChangeReason cr = new RegimenChangeReason(o.getPatient().getPatientId(), o.getDateActivated(), o.getDateStopped(), o.getOrderReason(), o.getOrderReasonNonCoded());
                 r.add(cr);
                 records.put(patientId, r);
             }
@@ -112,6 +85,7 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
 
 
         for (Map.Entry<Integer, Set<RegimenChangeReason>> entry : records.entrySet()) {
+
             Patient p = patientService.getPatient(entry.getKey());
             Set<RegimenChangeReason> changeReasons = entry.getValue();
             List<Encounter> encounters = EmrUtils.AllEncounters(p, encType, form);
@@ -121,15 +95,31 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
             }
 
             for (RegimenChangeReason r : changeReasons) {
-                if (encMap.containsKey(r.changeDate)) {
-                    Encounter encounter = encMap.get(r.changeDate);
+
+                if (encMap.containsKey(r.getDateActivated())) {
+                    Encounter encounter = encMap.get(r.getDateActivated());
 
                     // compose date stopped and reason stopped obs
+                    Obs dateStoppedObs = new Obs();
+                    dateStoppedObs.setConcept(conceptService.getConceptByUuid(DATE_REGIMEN_STOPPED));
+                    dateStoppedObs.setValueDatetime(r.dateStopped);
+                    dateStoppedObs.setObsDatetime(r.dateStopped);
+                    encounter.addObs(dateStoppedObs);
+
                     Obs reasonStoppedCodedObs = new Obs();
                     reasonStoppedCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_CODED));
                     reasonStoppedCodedObs.setValueCoded(r.reasonCoded);
+                    reasonStoppedCodedObs.setObsDatetime(r.dateStopped);
                     encounter.addObs(reasonStoppedCodedObs);
-                    encounterService.saveEncounter(encounter);
+
+                    if (r.getReasonNonCoded() != null) {
+                        Obs reasonStoppedNonCodedObs = new Obs();
+                        reasonStoppedNonCodedObs.setConcept(conceptService.getConceptByUuid(REASON_REGIMEN_STOPPED_NON_CODED));
+                        reasonStoppedNonCodedObs.setValueText(r.reasonNonCoded);
+                        reasonStoppedNonCodedObs.setObsDatetime(r.dateStopped);
+                        encounter.addObs(reasonStoppedNonCodedObs);
+                    }
+                   encounterService.saveEncounter(encounter);
                 }
             }
         }
@@ -141,10 +131,7 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
 
 
     private Cohort getDiscontinuedOrders() {
-        String sqlQuery = "select order_id from orders where order_reason is not null or order_reason_non_coded is not null;";
-
-        //EvaluationContext evaluationContext = new EvaluationContext();
-        //evaluationContext.setParameterValues(parameterValues);
+        String sqlQuery = "select order_id from orders where date_stopped is not null and voided=0;";
         Cohort cohort = null;
         SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
         try {
@@ -156,22 +143,42 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
     }
 
     class RegimenChangeReason {
-        Date changeDate;
-        Concept reasonCoded;
-        String reasonNonCoded;
+        private Integer patientId;
+        private Date dateActivated;
+        private Date dateStopped;
+        private Concept reasonCoded;
+        private String reasonNonCoded;
 
-        public RegimenChangeReason(Date changeDate, Concept reasonCoded, String reasonNonCoded) {
-            this.changeDate = changeDate;
+        public RegimenChangeReason(Integer patientId, Date dateActivated, Date dateStopped, Concept reasonCoded, String reasonNonCoded) {
+            this.dateActivated = dateActivated;
             this.reasonCoded = reasonCoded;
             this.reasonNonCoded = reasonNonCoded;
+            this.patientId = patientId;
+            this.dateStopped = dateStopped;
         }
 
-        public Date getChangeDate() {
-            return changeDate;
+        public Date getDateStopped() {
+            return dateStopped;
         }
 
-        public void setChangeDate(Date changeDate) {
-            this.changeDate = changeDate;
+        public void setDateStopped(Date dateStopped) {
+            this.dateStopped = dateStopped;
+        }
+
+        public Date getDateActivated() {
+            return dateActivated;
+        }
+
+        public Integer getPatientId() {
+            return patientId;
+        }
+
+        public void setPatientId(Integer patientId) {
+            this.patientId = patientId;
+        }
+
+        public void setDateActivated(Date dateActivated) {
+            this.dateActivated = dateActivated;
         }
 
         public Concept getReasonCoded() {
@@ -194,7 +201,7 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = (int) (prime * result + changeDate.getTime());
+            result = (int) (prime * result + patientId + dateActivated.getTime());
             return result;
         }
 
@@ -207,9 +214,9 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
             if (getClass() != obj.getClass())
                 return false;
             RegimenChangeReason other = (RegimenChangeReason) obj;
-            if (changeDate != other.changeDate)
-                return false;
-            return true;
+
+            return patientId == other.patientId
+                    && dateActivated.equals(other.dateActivated);
 
         }
     }
