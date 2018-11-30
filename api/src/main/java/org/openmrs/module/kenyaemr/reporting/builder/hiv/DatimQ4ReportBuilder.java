@@ -212,8 +212,8 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 
         cohortDsd.addColumn("TX_RET_BREASTFEEDING", "Mothers breastfeeding and still on ART for 12 months since start", ReportUtils.map(datimQ4Indicators.aliveBfOnARTLast12Months(), indParams), "");
 
-        /*12 months retention by Disaggregated by age/gender*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALL", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
+        /*12 months retention Disaggregated by age/gender*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALIVE", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         /*TX_RET Denominator Started ART last 12 months and breastfeeding*/
         cohortDsd.addColumn("TX_RET_BF", "Started ART within last 12 Months and Breastfeeding", ReportUtils.map(datimQ4Indicators.totalBFStartedARTLast12Months(), indParams), "");

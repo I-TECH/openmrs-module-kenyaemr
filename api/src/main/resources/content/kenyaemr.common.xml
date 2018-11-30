@@ -54,7 +54,7 @@
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
-				<!--<ref bean="kenyaemr.etl.common.report.datim"/>-->
+				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.etl.common.report.datimQ4"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
@@ -399,10 +399,10 @@
 		<property name="template" value="kenyaemr:datim_report_template.xls" />
 	</bean>
 
-	<!-- DatimQ4 report-->
+	<!-- Datim Revised report-->
 	<bean id="kenyaemr.etl.common.report.datimQ4" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d6e5dd4c-e3f5-11e8-9f32-f2801f1b9fd1" />
-		<property name="name" value="Datim Report" />
+		<property name="name" value="Datim Revised Report" />
 		<property name="description" value="Datim Report" />
 		<property name="apps">
 			<set>
