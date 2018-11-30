@@ -4,11 +4,11 @@
 	def dataPoints = []
 
 	if (config.complete) {
-		def initialArtStartDate = calculations.initialArtStartDate ? calculations.initialArtStartDate.value : null
-		if (initialArtStartDate) {
-			def regimen = calculations.initialArtRegimen ? kenyaEmrUi.formatRegimenLong(calculations.initialArtRegimen.value, ui) : null
 
-			dataPoints << [ label: "ART start date", value: initialArtStartDate, showDateInterval: true ]
+		def regimen = firstEnc.regimenShortDisplay ? firstEnc.regimenShortDisplay : ui.message("general.none")
+		if (firstEnc && firstEnc.startDate) {
+
+			dataPoints << [ label: "ART start date", value: firstEnc.startDate, showDateInterval: true ]
 			dataPoints << [ label: "Initial ART regimen", value: regimen ]
 		} else {
 			dataPoints << [ label: "ART start date", value: "Never" ]
