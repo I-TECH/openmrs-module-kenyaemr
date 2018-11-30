@@ -43,7 +43,7 @@ public class MCHMSDeliveryFormProcessor implements AfterReturningAdvice {
         if (method.getName().equals("saveEncounter")) {
             Encounter enc = (Encounter) args[0];
 
-            if(enc != null && enc.getForm().getUuid().equals(DELIVERY_FORMUUID)) {      //EncounterType 15 MCH
+            if(enc != null && enc.getForm() != null && enc.getForm().getUuid().equals(DELIVERY_FORMUUID)) {      //EncounterType 15 MCH
                 boolean errorOccured = false;
                 Person parent = personService.getPerson(enc.getPatient().getPersonId());
                 // construct object for each baby and process
