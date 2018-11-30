@@ -51,9 +51,6 @@ public class CurrentVisitSummaryFragmentController {
 
 	protected static final Log log = LogFactory.getLog(CurrentVisitSummaryFragmentController.class);
 
-	PatientService patientService = Context.getPatientService();
-	PersonService personService = Context.getPersonService();
-	EncounterService encounterService = Context.getEncounterService();
 	ObsService obsService = Context.getObsService();
 	ConceptService conceptService = Context.getConceptService();
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
