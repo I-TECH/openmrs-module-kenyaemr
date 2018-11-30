@@ -19,6 +19,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.*;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -70,7 +71,7 @@ public class RegimenUtilFragmentController {
 		encounter.setDateCreated(date);
 		encounter.setForm(regimenEditor);
 		Concept con = cs.getConceptByUuid(command.getRegimenConceptRef());
-		Encounter enc = EmrUtils.lastEncounter(command.getPatient(),encounterType,regimenEditor);
+		Encounter enc = EncounterBasedRegimenUtils.getLastEncounterForCategory(command.getPatient(), command.getCategory());
 
 
 
