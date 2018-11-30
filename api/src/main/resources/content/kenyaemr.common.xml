@@ -28,8 +28,8 @@
 			<set>
 				<ref bean="kenyaemr.common.form.triage" />
 				<ref bean="kenyaemr.common.form.clinicalEncounter" />
-				<ref bean="kenyaemr.common.form.labResults" />
-				<ref bean="kenyaemr.common.form.otherMedications" />
+<!--				<ref bean="kenyaemr.common.form.labResults" />
+				<ref bean="kenyaemr.common.form.otherMedications" />-->
 				<ref bean="kenyaemr.common.form.progressNote" />
 				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
