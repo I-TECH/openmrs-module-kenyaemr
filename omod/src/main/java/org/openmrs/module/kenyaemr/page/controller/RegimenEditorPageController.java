@@ -9,26 +9,21 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.regimen.RegimenChange;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,17 +42,6 @@ public class RegimenEditorPageController {
 
 		model.addAttribute("category", category);
 		model.addAttribute("returnUrl", returnUrl);
-
-		Concept masterSet = regimenManager.getMasterSetConcept(category);
-		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
-		model.addAttribute("history", history);
-
-		RegimenChange lastChange = history.getLastChange();
-		Date lastChangeDate =  (lastChange != null) ? lastChange.getDate() : null;
-		Date now = new Date();
-		boolean futureChanges = OpenmrsUtil.compareWithNullAsEarliest(lastChangeDate, now) >= 0;
-
-		model.addAttribute("initialDate", futureChanges ? lastChangeDate : now);
 
 		try {
 			boolean isManager = false;

@@ -86,6 +86,34 @@ public class EncounterBasedRegimenUtils {
         return null;
     }
 
+    public static Encounter getFirstEncounterForCategory (Patient patient, String category) {
+
+        FormService formService = Context.getFormService();
+        EncounterService encounterService = Context.getEncounterService();
+        String ARV_TREATMENT_PLAN_EVENT_CONCEPT = "1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String TB_TREATMENT_PLAN_CONCEPT = "1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        List<SimpleObject> history = new ArrayList<SimpleObject>();
+        String categoryConceptUuid = category.equals("ARV")? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT;
+
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
+
+        List<Encounter> encs = EmrUtils.AllEncounters(patient, et, form);
+        NavigableMap<Date, Encounter> programEncs = new TreeMap<Date, Encounter>();
+        for (Encounter e : encs) {
+            if (e != null) {
+                Set<Obs> obs = e.getObs();
+                if (programEncounterMatching(obs, categoryConceptUuid)) {
+                    programEncs.put(e.getEncounterDatetime(), e);
+                }
+            }
+        }
+        if (!programEncs.isEmpty()) {
+            return programEncs.firstEntry().getValue();
+        }
+        return null;
+    }
+
     public static boolean programEncounterMatching(Set<Obs> obs, String conceptUuidToMatch) {
         for (Obs o : obs) {
             if (o.getConcept().getUuid().equals(conceptUuidToMatch)) {

@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.program.tb;
 
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -19,7 +18,6 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiseaseClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbPatientClassificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentNumberCalculation;
-import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -66,10 +64,6 @@ public class TbCarePanelFragmentController {
 
 		model.addAttribute("calculations", calculationResults);
 		model.addAttribute("result", message);
-
-		Concept medSet = regimenManager.getMasterSetConcept("TB");
-		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, medSet);
-		model.addAttribute("regimenHistory", history);
 
 		List<SimpleObject> obshistory = EncounterBasedRegimenUtils.getRegimenHistoryFromObservations(patient, "TB");
 		model.put("regimenFromObs", obshistory);
