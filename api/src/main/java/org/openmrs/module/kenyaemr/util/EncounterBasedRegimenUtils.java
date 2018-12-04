@@ -189,7 +189,7 @@ public class EncounterBasedRegimenUtils {
             }
         }
 
-        return null;
+        return "Unknown";
     }
     public static String getRegimenConceptJson() {
         String json = "[\n" +

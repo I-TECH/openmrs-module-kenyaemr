@@ -69,7 +69,7 @@ public class AdxViewFragmentController {
     protected final Log log = LogFactory.getLog(getClass());
 
     private LocationService locationService;
-    public String SERVER_ADDRESS = "https://webhook.site/55ef839b-91ed-4a43-a6c3-2b8403c35794";
+    public String SERVER_ADDRESS = "http://41.204.187.152:9721/api/";
     DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -145,6 +145,10 @@ public class AdxViewFragmentController {
                     }
                 }
             }
+
+            if (datasetName == null)
+                continue;
+
             mappingDetails.get("datasets").getElements();
             w.append("\t").append("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
                     + "/P1M\" dataSet=\"" + datasetName + "\">\n");
@@ -212,6 +216,10 @@ public class AdxViewFragmentController {
                     }
                 }
             }
+
+            if (datasetName == null)
+                continue;
+
             Element eDataset = document.createElement("group");
             // add group attributes
             eDataset.setAttribute("orgUnit", mfl);
@@ -266,6 +274,20 @@ public class AdxViewFragmentController {
         con.setRequestProperty("Content-Type", "application/adx+xml");
         con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
         con.setDoOutput(true);
+
+        // -----------------------
+/*        if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            if (con.getResponseCode() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
+                return  SimpleObject.create("statusCode", String.valueOf(504), "statusMsg", "Server Timeout");
+            } else if (con.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
+                return SimpleObject.create("statusCode", String.valueOf(503), "statusMsg", "Server Unavailable");
+            } else {
+                return SimpleObject.create("statusCode", 0, "statusMsg", "Uknown Response code.");
+            }
+        } */
+
+
+        // ----------------------
 
         DataOutputStream out = new DataOutputStream(con.getOutputStream());
 

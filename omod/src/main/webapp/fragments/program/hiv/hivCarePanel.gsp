@@ -5,7 +5,7 @@
 
 	if (config.complete) {
 
-		def regimen = firstEnc.regimenShortDisplay ? firstEnc.regimenShortDisplay : ui.message("general.none")
+		def regimen = firstEnc && firstEnc.regimenShortDisplay ? firstEnc.regimenShortDisplay : ui.message("general.none")
 		if (firstEnc && firstEnc.startDate) {
 
 			dataPoints << [ label: "ART start date", value: firstEnc.startDate, showDateInterval: true ]
@@ -68,8 +68,8 @@
 	<%
 		if (lastEnc) {
 			def lastChange = lastEnc
-			def regimen = lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
-			def dateLabel = lastEnc.startDate ? "Started" : "Stopped"
+			def regimen = lastEnc && lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
+			def dateLabel = lastEnc && lastEnc.startDate ? "Started" : "Stopped"
 	%>
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: regimen ]) }
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: dateLabel, value: lastEnc.startDate, showDateInterval: true ]) }
