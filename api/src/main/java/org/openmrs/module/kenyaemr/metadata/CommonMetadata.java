@@ -126,7 +126,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
 
-		String adxMappingString = "[{\"reportName\":\"DATIM Report\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"3\",\"dhisName\":\"CT\"}]},{\"reportName\":\"MOH 731 Report- Green Card\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"1\",\"dhisName\":\"HTS\"},{\"name\":\"2\",\"dhisName\":\"PMTCT\"},{\"name\":\"3\",\"dhisName\":\"Vo4KDrUFwnA\"}]}]";
+		String adxMappingString = "[{\"reportName\":\"DATIM Report\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"3\",\"dhisName\":\"CT\"}]},{\"reportName\":\"MOH 731 Report- Green Card\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"3\",\"dhisName\":\"Vo4KDrUFwnA\"}]}]";
 
 		install(globalProperty(EmrConstants.GP_DHIS2_DATASET_MAPPING, "ADX Mapping for KenyaEMR and DHIS2 datasets", adxMappingString));
 		install(globalProperty("order.drugDosingUnitsConceptUuid", "Drug dosing units concept", "162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
