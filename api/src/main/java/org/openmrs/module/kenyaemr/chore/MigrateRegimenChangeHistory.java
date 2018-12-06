@@ -98,9 +98,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
             List<RegimenChange> tbRegimenChanges = tbRegimenHistory.getChanges();
             List<RegimenChange> arvRegimenChanges = hivRegimenHistory.getChanges();
 
-            System.out.println("Processing patient: " + patientId + ", " +
-                    "TB Rg changes: " + tbRegimenChanges.size() + ", ARV rg changes: " + arvRegimenChanges.size());
-
             if (tbRegimenChanges.size() < 1 && arvRegimenChanges.size() < 1) {
                 continue;
             }
@@ -151,6 +148,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 if (regimenDefinitions != null && regimenDefinitions.size() > 0) {
                     conceptRef = regimenDefinitions.get(0).getConceptRef();
                 }
+
                 // create event obs
                 Obs eventObs = new Obs();
                 eventObs.setConcept(conceptService.getConceptByUuid(masterSet == 1085 ? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT));
