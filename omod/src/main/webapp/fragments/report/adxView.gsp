@@ -89,7 +89,7 @@ textarea {
                 .error(function(xhr, status, err) {
                     jq("#showStatus").hide();
                     jq("#msg").addClass("errorText");
-                    jq("#msg").text("There was an error sending the message! Please try again (" + xhr.responseText + ", "+ status +")");
+                    jq("#msg").text("There was an error sending the message! Please confirm your network status and try again");
                     jq("#post").prop("disabled", false);
                 })
 

@@ -275,20 +275,6 @@ public class AdxViewFragmentController {
         con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
         con.setDoOutput(true);
 
-        // -----------------------
-/*        if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            if (con.getResponseCode() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
-                return  SimpleObject.create("statusCode", String.valueOf(504), "statusMsg", "Server Timeout");
-            } else if (con.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                return SimpleObject.create("statusCode", String.valueOf(503), "statusMsg", "Server Unavailable");
-            } else {
-                return SimpleObject.create("statusCode", 0, "statusMsg", "Uknown Response code.");
-            }
-        } */
-
-
-        // ----------------------
-
         DataOutputStream out = new DataOutputStream(con.getOutputStream());
 
 
@@ -318,6 +304,50 @@ public class AdxViewFragmentController {
         return SimpleObject.create("statusCode", String.valueOf(responseCode), "statusMsg", httpResponse);
     }
 
+    private HttpURLConnection getConnection(URL entries) throws InterruptedException, IOException {
+        int retry = 0;
+        boolean delay = false;
+        do {
+            if (delay) {
+                Thread.sleep(5);
+            }
+            HttpURLConnection con = (HttpURLConnection)entries.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/adx+xml");
+            //con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
+            con.setDoOutput(true);
+
+                if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+
+                    return con;
+
+                } else if (con.getResponseCode() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT) {
+                    //return null;
+                    System.out.println("Timeout. Retrying");
+                } else if (con.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
+                    //return null;
+                    System.out.println("Server unavailable");
+                } else {
+                    //return null;
+                }
+
+
+            // we did not succeed with connection (or we would have returned the connection).
+            con.disconnect();
+            // retry
+            retry++;
+            System.out.println("Failed retry " + retry + "/" );
+            if (retry == 4) {
+                delay = false;
+            } else {
+                delay = true;
+            }
+
+        } while (retry < 4);
+
+        return null;
+
+    }
 
     public SimpleObject saveOrUpdateServerAddress(@RequestParam("newUrl") String newUrl) {
         administrationService = Context.getAdministrationService();
