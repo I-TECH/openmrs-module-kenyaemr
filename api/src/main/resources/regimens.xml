@@ -160,7 +160,7 @@
 				<component drugCode="3TC" units="tab" />
 				<component drugCode="ABC" units="tab" />
 			</regimen>
-			<regimen name="TDF / ABC / LPV/r"  conceptRef="162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+			<regimen name="TDF/ABC/LPV/r"  conceptRef="162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<component drugCode="TDF" units="tab" />
 				<component drugCode="ABC" units="tab" />
 				<component drugCode="LPV" units="tab" />
