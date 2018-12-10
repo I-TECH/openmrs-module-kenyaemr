@@ -39,8 +39,12 @@ public class StartedHAARTInANCCohortDefinitionEvaluator implements CohortDefinit
 		if (definition == null)
 			return null;
 
-		String qry =  "select distinct v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_drug_event d on v.patient_id=d.patient_id\n" +
-				"                where d.date_started >= v.visit_date;";
+		String qry =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+				"inner join kenyaemr_etl.etl_drug_event d on e.patient_id=d.patient_id\n" +
+				"left join kenyaemr_etl.etl_mch_postnatal_visit pnc on pnc.patient_id=e.patient_id\n" +
+				"left join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id = e.patient_id\n" +
+				"where d.program = 'HIV' and d.date_started >= e.visit_date\n" +
+				"and d.date_started < ld.visit_date and d.date_started < pnc.visit_date ";
 
 		Cohort newCohort = new Cohort();
 		SqlQueryBuilder builder = new SqlQueryBuilder();
