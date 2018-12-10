@@ -13,7 +13,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.convert.converter.Converter;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link StringToEnumConverterFactory}

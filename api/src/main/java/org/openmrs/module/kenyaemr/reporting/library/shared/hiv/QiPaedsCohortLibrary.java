@@ -31,7 +31,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

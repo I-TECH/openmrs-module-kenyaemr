@@ -16,7 +16,6 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;

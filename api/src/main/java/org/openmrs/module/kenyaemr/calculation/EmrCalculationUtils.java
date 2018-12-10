@@ -21,9 +21,6 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.ResultUtil;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
@@ -31,14 +28,8 @@ import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculation utility methods, also used by some reporting classes

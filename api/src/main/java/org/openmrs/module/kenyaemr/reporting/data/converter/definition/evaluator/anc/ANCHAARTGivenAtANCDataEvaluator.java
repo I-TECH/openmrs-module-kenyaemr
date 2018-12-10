@@ -2,7 +2,6 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCHAARTGivenAtANCDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCHeightDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;

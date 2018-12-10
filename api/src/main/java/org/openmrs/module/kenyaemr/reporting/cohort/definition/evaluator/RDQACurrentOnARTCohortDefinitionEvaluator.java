@@ -17,7 +17,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACurrentOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731CohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;

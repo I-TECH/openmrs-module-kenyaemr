@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -24,9 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefin
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by codehub on 10/23/15.

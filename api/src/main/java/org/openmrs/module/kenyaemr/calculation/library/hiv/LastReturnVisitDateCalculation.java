@@ -10,8 +10,6 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -20,8 +18,6 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;

@@ -23,7 +23,8 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link PatientWrapper}

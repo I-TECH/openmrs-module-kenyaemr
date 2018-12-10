@@ -17,7 +17,8 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * Tests for {@link EmrUtilsFragmentController}

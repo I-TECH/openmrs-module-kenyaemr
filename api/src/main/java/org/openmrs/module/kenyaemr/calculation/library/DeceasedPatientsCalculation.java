@@ -9,14 +9,11 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Map;

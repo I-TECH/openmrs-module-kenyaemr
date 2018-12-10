@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.hei;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIMotherFacilityAndCCCNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIMothersNameAndTelephoneDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;

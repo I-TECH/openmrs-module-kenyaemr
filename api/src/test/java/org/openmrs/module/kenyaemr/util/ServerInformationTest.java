@@ -15,7 +15,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
 
 /**
  * Tests for {@link ServerInformation}

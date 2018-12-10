@@ -143,7 +143,7 @@ public class EncounterBasedRegimenUtils {
         for(Obs obs:obsList) {
 
             if (obs.getConcept().getUuid().equals(CURRENT_DRUGS) ) {
-                regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "";
+                regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "Unresolved Regimen name";
                 try {
                     regimenShort = getRegimenNameFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
                 } catch (IOException e1) {

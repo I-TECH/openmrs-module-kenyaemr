@@ -2,7 +2,6 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCPartnerHIVResultsDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCPartnerTestedHIVInPNCDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;

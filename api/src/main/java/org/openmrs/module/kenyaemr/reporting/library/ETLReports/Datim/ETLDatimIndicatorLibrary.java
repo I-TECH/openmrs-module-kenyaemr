@@ -10,8 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.Datim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithVLInLast12MonthsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;

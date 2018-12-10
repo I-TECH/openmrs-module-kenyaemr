@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Obs;
 import org.openmrs.Program;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;

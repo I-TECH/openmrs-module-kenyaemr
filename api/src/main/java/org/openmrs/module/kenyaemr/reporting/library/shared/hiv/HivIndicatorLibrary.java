@@ -11,8 +11,6 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;

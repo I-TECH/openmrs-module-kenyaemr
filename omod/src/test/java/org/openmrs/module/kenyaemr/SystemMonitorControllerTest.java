@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link SystemMonitorController}

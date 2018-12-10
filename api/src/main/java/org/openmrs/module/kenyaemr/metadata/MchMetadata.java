@@ -16,7 +16,10 @@ import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.encounterType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.patientIdentifierType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.program;
 
 /**
  * MCH metadata bundle

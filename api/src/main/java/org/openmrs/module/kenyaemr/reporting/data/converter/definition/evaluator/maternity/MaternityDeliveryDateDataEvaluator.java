@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityDeliveryConductedByDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityDeliveryDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;

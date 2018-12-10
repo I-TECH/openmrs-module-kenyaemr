@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCFinalTestResultsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCHIVTestOneDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;

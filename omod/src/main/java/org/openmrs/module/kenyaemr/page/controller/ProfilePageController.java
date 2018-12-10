@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.openmrs.User;
-import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.ui.framework.page.PageModel;

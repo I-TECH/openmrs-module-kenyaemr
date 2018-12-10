@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -26,7 +24,6 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

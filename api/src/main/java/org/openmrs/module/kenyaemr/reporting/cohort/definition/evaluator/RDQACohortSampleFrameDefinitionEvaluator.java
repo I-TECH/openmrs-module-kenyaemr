@@ -14,9 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.metadata.RDQAMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortSampleFrameDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,12 +22,6 @@ import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinition
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Evaluator for  all patients to be sampled for RDQA

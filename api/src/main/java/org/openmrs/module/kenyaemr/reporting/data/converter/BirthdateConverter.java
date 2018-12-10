@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.reporting.data.converter;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 

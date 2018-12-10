@@ -3,7 +3,6 @@ package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ANCRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.PNCRegisterCohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;

@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.program.ipt;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openmrs.Patient;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -21,6 +18,9 @@ import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IptCarePanelFragmentController {
 

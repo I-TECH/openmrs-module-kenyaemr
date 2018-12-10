@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Encounter;
-import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -23,8 +22,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 

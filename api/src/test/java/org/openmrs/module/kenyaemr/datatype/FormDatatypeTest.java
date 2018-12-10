@@ -14,7 +14,8 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link FormDatatype}

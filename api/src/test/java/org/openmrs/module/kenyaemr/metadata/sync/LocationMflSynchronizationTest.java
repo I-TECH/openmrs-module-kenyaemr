@@ -30,7 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link LocationMflSynchronization}

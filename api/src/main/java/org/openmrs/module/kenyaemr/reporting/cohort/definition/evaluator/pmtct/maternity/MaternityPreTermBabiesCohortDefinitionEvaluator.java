@@ -4,23 +4,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.maternity.MaternityClientsWithAPHCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.maternity.PreTermBabiesCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Evaluator for babies born Pre-term

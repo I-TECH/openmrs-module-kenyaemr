@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.codehaus.jackson.node.ObjectNode;
-import org.openmrs.Location;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreUtils;

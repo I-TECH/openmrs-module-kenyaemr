@@ -1,7 +1,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCHIVResultsGreaterThan6WeeksDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCHIVResultsWithin6WeeksDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;

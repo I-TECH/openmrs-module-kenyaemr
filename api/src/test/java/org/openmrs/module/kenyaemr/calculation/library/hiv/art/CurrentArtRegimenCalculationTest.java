@@ -11,16 +11,15 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
-import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;

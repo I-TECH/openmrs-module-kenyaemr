@@ -16,24 +16,26 @@ package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
-import org.joda.time.Months;
-import org.joda.time.Weeks;
-import org.openmrs.*;
-import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyacore.calculation.*;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Determines whether a mother is eligible for discharge -- should access the discharge form

@@ -19,7 +19,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link RecentObsElement}

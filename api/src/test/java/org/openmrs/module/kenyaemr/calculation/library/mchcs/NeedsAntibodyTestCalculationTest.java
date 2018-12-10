@@ -13,17 +13,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 

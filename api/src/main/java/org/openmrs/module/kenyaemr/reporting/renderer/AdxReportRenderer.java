@@ -24,12 +24,10 @@ import org.openmrs.module.reporting.report.renderer.RenderingException;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
-import javax.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

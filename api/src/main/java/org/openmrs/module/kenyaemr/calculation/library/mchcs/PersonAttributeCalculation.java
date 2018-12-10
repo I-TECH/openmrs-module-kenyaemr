@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
@@ -19,6 +16,9 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class PersonAttributeCalculation extends AbstractPatientCalculation {
 	private String patientAttributeName;
