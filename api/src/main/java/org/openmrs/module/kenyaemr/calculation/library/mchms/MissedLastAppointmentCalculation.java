@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Encounter;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -31,6 +26,11 @@ import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 public class MissedLastAppointmentCalculation extends AbstractPatientCalculation{
 

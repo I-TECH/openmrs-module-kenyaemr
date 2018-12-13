@@ -11,24 +11,12 @@ package org.openmrs.module.kenyaemr.page.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Facility dashboard page controller

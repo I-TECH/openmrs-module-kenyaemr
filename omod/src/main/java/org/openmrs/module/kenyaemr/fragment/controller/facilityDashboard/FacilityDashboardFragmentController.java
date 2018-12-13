@@ -17,7 +17,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.page.PageModel;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;

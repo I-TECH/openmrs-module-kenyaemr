@@ -28,7 +28,6 @@ import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
 import org.openmrs.web.user.CurrentUsers;

@@ -21,7 +21,6 @@
 	def frequencyOptions = frequencies.collect( { """<option value="${ it.key }">${ it.value }</option>""" } ).join()
 %>
 <script type="text/javascript">
-	// Create variable to hold regimen presets
 
 </script>
 

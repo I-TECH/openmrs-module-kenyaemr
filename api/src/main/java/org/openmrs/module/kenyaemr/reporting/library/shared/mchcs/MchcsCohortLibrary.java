@@ -10,9 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.PatientSetService.TimeModifier;
@@ -32,6 +29,9 @@ import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Library of MCH-CS related cohort definitions

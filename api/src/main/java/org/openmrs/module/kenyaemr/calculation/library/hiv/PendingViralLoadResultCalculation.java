@@ -9,15 +9,12 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import org.joda.time.Period;
-import org.joda.time.Months;
-import org.joda.time.Days;
-import org.openmrs.Obs;
-import org.openmrs.Program;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
+import org.openmrs.Obs;
+import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -29,20 +26,14 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.DurationUnit;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 
 /**
  * Created by codehub on 05/06/15.

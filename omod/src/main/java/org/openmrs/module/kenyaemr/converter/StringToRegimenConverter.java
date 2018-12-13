@@ -18,7 +18,6 @@ import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import javax.naming.Context;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;

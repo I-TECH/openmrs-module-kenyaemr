@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.program.ipt;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
@@ -19,6 +16,9 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class IptOutcomeSummaryFragmentController {
 

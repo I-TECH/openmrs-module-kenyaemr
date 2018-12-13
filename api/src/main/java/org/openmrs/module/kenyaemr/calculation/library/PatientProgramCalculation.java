@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -23,7 +21,11 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dev on 9/24/16.

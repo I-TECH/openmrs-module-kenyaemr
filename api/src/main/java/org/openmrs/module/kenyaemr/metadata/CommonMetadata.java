@@ -19,7 +19,14 @@ import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.encounterType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.globalProperty;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.patientIdentifierType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.personAttributeType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.relationshipType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitAttributeType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitType;
 
 /**
  * Common metadata bundle

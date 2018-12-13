@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.metadata.sync;
 
 import org.openmrs.Location;
-
 import org.openmrs.api.LocationService;
 import org.openmrs.module.kenyaemr.wrapper.Facility;
 import org.openmrs.module.metadatadeploy.sync.ObjectSynchronization;

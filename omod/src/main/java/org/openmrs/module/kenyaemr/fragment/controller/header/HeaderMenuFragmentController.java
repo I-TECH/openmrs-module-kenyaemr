@@ -11,7 +11,6 @@ package org.openmrs.module.kenyaemr.fragment.controller.header;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
 /**

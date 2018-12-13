@@ -9,13 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -30,7 +24,8 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.junit.Assert;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Tests for {@link TBSuspectCalculation}

@@ -10,12 +10,8 @@
 package org.openmrs.module.kenyaemr.util;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.util.OpenmrsConstants;
 
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;

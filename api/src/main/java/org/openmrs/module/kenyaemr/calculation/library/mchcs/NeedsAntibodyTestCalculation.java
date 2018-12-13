@@ -11,10 +11,8 @@ package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.data.time.Month;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.joda.time.Weeks;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Person;

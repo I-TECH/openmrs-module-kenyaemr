@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -29,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link MotherNewBornPairReviewedCalculation}

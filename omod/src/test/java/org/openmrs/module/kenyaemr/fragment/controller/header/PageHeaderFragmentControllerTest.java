@@ -18,7 +18,9 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Tests for {@link PageHeaderFragmentController}

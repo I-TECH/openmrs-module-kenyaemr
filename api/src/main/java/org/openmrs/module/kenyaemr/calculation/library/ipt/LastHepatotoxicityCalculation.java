@@ -8,9 +8,6 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.calculation.library.ipt;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -21,6 +18,10 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class LastHepatotoxicityCalculation extends AbstractPatientCalculation {
 

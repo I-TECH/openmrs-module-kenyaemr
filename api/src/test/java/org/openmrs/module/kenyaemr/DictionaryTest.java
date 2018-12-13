@@ -18,7 +18,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.metadatadeploy.MissingMetadataException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link Dictionary}
