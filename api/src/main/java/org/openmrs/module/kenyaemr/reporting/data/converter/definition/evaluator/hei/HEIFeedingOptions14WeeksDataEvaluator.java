@@ -32,8 +32,8 @@ public class HEIFeedingOptions14WeeksDataEvaluator implements PersonDataEvaluato
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "  d.patient_id = f.patient_id\n" +
-                "WHERE timestampdiff(week,d.DOB,f.visit_date) = 14\n" +
-                "GROUP BY patient_id;";
+                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) = 14\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

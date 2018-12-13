@@ -33,7 +33,7 @@ public class HEIPCRConfirmatoryTestTypeDataEvaluator implements PersonDataEvalua
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          d.patient_id = f.patient_id\n" +
                 "WHERE f.dna_pcr_result = 703\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

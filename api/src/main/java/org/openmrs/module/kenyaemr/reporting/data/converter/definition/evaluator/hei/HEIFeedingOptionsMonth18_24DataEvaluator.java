@@ -26,15 +26,14 @@ public class HEIFeedingOptionsMonth18_24DataEvaluator implements PersonDataEvalu
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "\n" +
-                "select\n" +
-                "       f.patient_id,\n" +
-                "       mid(max(concat(visit_date, (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end))),11) as infant_feeding_24_months\n" +
+        String qry = "select\n" +
+                "  f.patient_id,\n" +
+                "  mid(max(concat(visit_date, (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end))),11) as infant_feeding_24_months\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "       INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "        d.patient_id = f.patient_id\n" +
-                "WHERE timestampdiff(month,d.DOB,f.visit_date) BETWEEN 18 AND 24\n" +
-                "GROUP BY patient_id;";
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "  d.patient_id = f.patient_id\n" +
+                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

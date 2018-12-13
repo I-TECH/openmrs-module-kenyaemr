@@ -33,7 +33,7 @@ public class HEIGivenCTX6_8WeeksDataEvaluator implements PersonDataEvaluator {
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "                                          d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 6 AND 8\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

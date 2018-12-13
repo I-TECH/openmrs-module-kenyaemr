@@ -30,7 +30,7 @@ public class HEIMotherCCCNumberDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  parent_ccc_number\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

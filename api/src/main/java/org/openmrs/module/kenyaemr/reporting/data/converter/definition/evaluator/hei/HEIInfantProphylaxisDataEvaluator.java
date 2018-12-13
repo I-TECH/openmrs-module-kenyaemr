@@ -30,7 +30,7 @@ public class HEIInfantProphylaxisDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  (case infant_prophylaxis when 80586 then \"Sd NVP Only\" when 1652 then \"sd NVP+AZT+3TC\" when 1149 then \"NVP for 6 weeks(Mother on HAART)\" when 1107 then \"None\" else \"\" end) as infant_prophylaxis\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

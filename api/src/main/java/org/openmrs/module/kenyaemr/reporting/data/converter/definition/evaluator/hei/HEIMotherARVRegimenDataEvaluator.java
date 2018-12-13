@@ -34,7 +34,7 @@ public class HEIMotherARVRegimenDataEvaluator implements PersonDataEvaluator {
                 "   when 162561 then \"3TC/AZT/LPV/r\" when 164511 then \"AZT-3TC-ATV/r\" when 164512 then \"TDF-3TC-ATV/r\" when 162560 then \"3TC/D4T/LPV/r\"\n" +
                 "   when 162563 then \"3TC/ABC/EFV\" when 162562 then \"ABC/LPV/R/TDF\" when 162559 then \"ABC/DDI/LPV/r\"  else \"\" end) as mother_drug_regimen\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
