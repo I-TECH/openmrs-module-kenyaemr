@@ -43,10 +43,9 @@ public class OnARVFirstANCCohortDefinitionEvaluator implements CohortDefinitionE
 		OnARVFirstANCCohortDefinition definition = (OnARVFirstANCCohortDefinition) cohortDefinition;
 		if (definition == null)
 			return null;
-		String qry = "select distinct e.patient_id\n" +
-				"from kenyaemr_etl.etl_mch_enrollment e\n" +
-				"inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
-				"where d.program = 'HIV' and d.date_started < e.visit_date ;";
+		String qry = "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+				"                inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+				"                where d.date_started < e.visit_date;";
 
 		Cohort newCohort = new Cohort();
 		SqlQueryBuilder builder = new SqlQueryBuilder();

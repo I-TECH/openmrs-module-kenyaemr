@@ -41,9 +41,8 @@ public class MaternityStartedHAARTCohortDefinitionEvaluator implements CohortDef
             return null;
 
         String qry = "select distinct ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\n" +
-                "left join kenyaemr_etl.etl_mch_postnatal_visit pnc on pnc.patient_id=ld.patient_id\n" +
-                "where d.program = 'HIV' and d.date_started >= ld.visit_date and d.date_started < pnc.visit_date;";
+                "                 inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\n" +
+                "                where d.date_started >= ld.visit_date;";
 
         Cohort newCohort = new Cohort();
         SqlQueryBuilder builder = new SqlQueryBuilder();
