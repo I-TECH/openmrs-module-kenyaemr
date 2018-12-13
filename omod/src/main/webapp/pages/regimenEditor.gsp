@@ -9,7 +9,7 @@
 
 
 	def changeDateField = { label ->
-		[ label: label, formFieldName: "dateActivated", class: java.util.Date, showTime: true, initialValue: null ]
+		[ label: label, formFieldName: "changeDate", class: java.util.Date, showTime: true, initialValue: null ]
 	}
 
 	def regimenField = {
