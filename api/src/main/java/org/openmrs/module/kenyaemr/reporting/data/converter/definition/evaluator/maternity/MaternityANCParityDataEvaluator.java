@@ -28,7 +28,7 @@ public class MaternityANCParityDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "       patient_id,\n" +
-                "       parity+parity_abortion\n" +
+                "       parity\n" +
                 "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

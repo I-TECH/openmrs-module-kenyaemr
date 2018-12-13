@@ -33,7 +33,7 @@ public class HEIFinalAntiBodyTestTypeMonth18_24DataEvaluator implements PersonDa
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 " d.patient_id = f.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

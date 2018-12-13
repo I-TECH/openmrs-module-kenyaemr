@@ -27,18 +27,19 @@ public class HEIHIVStatusMonth24DataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       f.patient_id,\n" +
-                "       mid(max(concat(visit_date, (case when final_antibody_result = 664 and f.infant_feeding = 5526 then \"Uninfected_Breastfed (UBF)\"\n" +
-                "                                        when final_antibody_result = 664 and infant_feeding = 1595 then \"Uninfected_not Breastfed (UBFn)\"\n" +
-                "                                        when final_antibody_result = 664 and infant_feeding = \"\" then \"Uninfected_Breastfed Uknown (UBFu)\"\n" +
-                "                                        when final_antibody_result = 703 and infant_feeding = 5526 then \"Infected_Breastfed (IBF)\"\n" +
-                "                                        when final_antibody_result = 703 and infant_feeding = 1595 then \"Infected_not Breastfed (UBFn)\"\n" +
-                "                                        when final_antibody_result = 703 and infant_feeding = \"\" then \"Infected_Breastfed Uknown (UBFu)\" else \"\" end))),11) as HIV_status_24_months\n" +
+                "  f.patient_id,\n" +
+                "  mid(max(concat(visit_date, (case when final_antibody_result = 664 and f.infant_feeding = 5526 then \"Uninfected_Breastfed (UBF)\"\n" +
+                "       when final_antibody_result = 664 and infant_feeding = 1595 then \"Uninfected_not Breastfed (UBFn)\"\n" +
+                "       when final_antibody_result = 664 and infant_feeding = \"\" then \"Uninfected_Breastfed Uknown (UBFu)\"\n" +
+                "       when final_antibody_result = 703 and infant_feeding = 5526 then \"Infected_Breastfed (IBF)\"\n" +
+                "       when final_antibody_result = 703 and infant_feeding = 1595 then \"Infected_not Breastfed (UBFn)\"\n" +
+                "       when final_antibody_result = 703 and infant_feeding = \"\" then \"Infected_Breastfed Uknown (UBFu)\" else \"\" end))),11) as HIV_status_24_months\n" +
                 "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "        INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "        f.patient_id = d.patient_id\n" +
-                "WHERE  timestampdiff(month,d.DOB,f.visit_date) BETWEEN 18 AND 24\n" +
-                "GROUP BY f.patient_id;";
+                "\n" +
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "  f.patient_id = d.patient_id\n" +
+                "WHERE  round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
+                "GROUP BY f.patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -30,7 +30,7 @@ public class HEIMotherOnARVDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  (case mother_on_art_at_infant_enrollment when 1065 then \"HAART\" when 1066 then \"Unknown\" else \"\" end) as mother_on_art_at_infant_enrollment\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

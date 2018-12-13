@@ -27,13 +27,13 @@ public class HEIAgeAtTestInMonths12DataEvaluator implements PersonDataEvaluator 
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       d.patient_id,\n" +
-                "       timestampdiff(month,d.DOB,f.visit_date) as age_at_test_twelve_months\n" +
+                "  d.patient_id,\n" +
+                "  round(DATEDIFF(f.visit_date,d.DOB)/30) as age_at_test_twelve_months\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "       INNER JOIN kenyaemr_etl.etl_hei_follow_up_visit f ON\n" +
-                "        d.patient_id = f.patient_id\n" +
-                "WHERE timestampdiff(year,d.DOB,f.visit_date) =1\n" +
-                "GROUP BY patient_id;";
+                "  INNER JOIN kenyaemr_etl.etl_hei_follow_up_visit f ON\n" +
+                "  d.patient_id = f.patient_id\n" +
+                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =48\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

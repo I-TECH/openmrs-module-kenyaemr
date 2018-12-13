@@ -26,11 +26,9 @@ public class MaternityNumberOfANCVisitsDataEvaluator implements PersonDataEvalua
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       d.patient_id,\n" +
-                "       count(av.visit_id)\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "inner join kenyaemr_etl.etl_mchs_delivery d on av.patient_id =d.patient_id\n" +
-                "group by d.patient_id;";
+                "  patient_id,\n" +
+                " Max(anc_visit_number)\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

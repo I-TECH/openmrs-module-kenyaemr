@@ -30,7 +30,7 @@ public class HEISerialNumberDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  serial_no\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id;";
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
