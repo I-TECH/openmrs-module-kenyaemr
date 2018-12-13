@@ -18,7 +18,7 @@ import java.util.Map;
  * Evaluates a PersonDataDefinition
  */
 @Handler(supports= MaternityEDDUltrasoundDateDataDefinition.class, order=50)
-public class MaternityEDDUltrasoundDateDataEvaluator implements PersonDataEvaluator {
+public class MaternityEDDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,8 +27,8 @@ public class MaternityEDDUltrasoundDateDataEvaluator implements PersonDataEvalua
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  patient_id,\n" +
-                "  edd_ultrasound\n" +
+                "       patient_id,\n" +
+                "       DATE_ADD(LMP,INTERVAL 280 DAY) as EDD\n" +
                 "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

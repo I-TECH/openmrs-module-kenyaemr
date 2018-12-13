@@ -33,7 +33,7 @@ public class HEIHIVStatusOfPairMonth24DataEvaluator implements PersonDataEvaluat
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "   d.patient_id = c.patient_id\n" +
                 "WHERE round(DATEDIFF(c.visit_date,d.DOB)/7) = 96\n" +
-                "GROUP BY patient_id";
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
