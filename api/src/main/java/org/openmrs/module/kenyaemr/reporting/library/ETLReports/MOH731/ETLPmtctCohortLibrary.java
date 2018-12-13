@@ -312,11 +312,11 @@ public class ETLPmtctCohortLibrary {
     //On HAART at 1st ANC  HV02-16
     public CohortDefinition totalOnHAARTAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct anc.patient_id \n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit anc\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on anc.patient_id=d.patient_id\n" +
-                "where d.program = 'HIV' and date(anc.visit_date) BETWEEN date(:startDate) and date(:endDate) and\n" +
-                "anc.anc_visit_number = 1 and d.date_started < anc.visit_date;";
+        String sqlQuery =  "select distinct anc.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit a \n" +
+                "inner join kenyaemr_etl.etl_drug_event d on anc.patient_id=d.patient_id \n"+
+                "where date(anc.visit_date) BETWEEN date(:startDate) and date(:endDate) and \n" +
+                "anc_visit_number = 1 and d.date_started < anc.visit_date";
 
         cd.setName("totalOnHAARTAtFirstANC");
         cd.setQuery(sqlQuery);
@@ -330,11 +330,11 @@ public class ETLPmtctCohortLibrary {
     //  Start HAART during ANC  HV02-17
     public CohortDefinition startedHAARTAtANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id = v.patient_id\n" +
-                "where  d.program = 'HIV' and date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "and d.date_started >= v.visit_date;";
+        String sqlQuery =  "select distinct a.patient_id\n" +
+                "                from kenyaemr_etl.etl_mch_antenatal_visit a \n" +
+                "                inner join kenyaemr_etl.etl_drug_event d on a.patient_id=d.patient_id\n" +
+                "                where date(a.visit_date) between date(:startDate) and date(:endDate)  \n" +
+                "                and d.date_started >= a.visit_date;";
 
         cd.setName("totalStartedOnHAARTAtANC");
         cd.setQuery(sqlQuery);
@@ -349,12 +349,11 @@ public class ETLPmtctCohortLibrary {
     public CohortDefinition totalStartedHAARTAtLabourAndDelivery(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct ld.patient_id\n" +
-                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\n" +
-                "left join kenyaemr_etl.etl_mch_postnatal_visit pnc on pnc.patient_id=ld.patient_id\n" +
-                "where  d.program = 'HIV' and  date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "and d.date_started >= ld.visit_date and d.date_started < pnc.visit_date ;";
+        String sqlQuery =  "select distinct ld.patient_id\\n\" +\n" +
+                "                \"from kenyaemr_etl.etl_mchs_delivery ld\\n\" +\n" +
+                "                \"  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=ld.patient_id\\n\" +\n" +
+                "                \"where date(ld.visit_date) between date(:startDate) and date(:endDate)\\n\" +\n" +
+                "                \"      and d.date_started >= ld.visit_date;";
 
 
         cd.setName("totalStartedHAARTAtLabourAndDelivery");
