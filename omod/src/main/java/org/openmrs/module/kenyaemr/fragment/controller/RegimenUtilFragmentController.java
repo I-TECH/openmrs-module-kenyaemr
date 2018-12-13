@@ -75,7 +75,6 @@ public class RegimenUtilFragmentController {
 
 
 
-
 		//create an obs for regimen
 		Obs o = new Obs();
 		o.setConcept(cs.getConcept(1193));
@@ -94,6 +93,7 @@ public class RegimenUtilFragmentController {
 		o2.setObsDatetime(command.getChangeDate());
 		o2.setValueCoded(command.getChangeReason());
 		o2.setPerson(command.getPatient());
+
 
 
 		//create  obs for Change reason Noncoded
@@ -131,6 +131,7 @@ public class RegimenUtilFragmentController {
 		}
 
 		if(command.getChangeType()==RegimenChangeType.CHANGE) {
+
 			category.setValueCoded(cs.getConcept(1259));
 			if (enc != null) {
 				enc.getEncounterId();
@@ -141,7 +142,7 @@ public class RegimenUtilFragmentController {
 				if(command.getChangeReason() !=null) {
 					enc.addObs(o2);
 				}
-				encounterService.saveEncounter(enc);
+				 encounterService.saveEncounter(enc);
 			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);

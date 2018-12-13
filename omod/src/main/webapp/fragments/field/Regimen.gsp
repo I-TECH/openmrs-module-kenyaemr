@@ -22,44 +22,7 @@
 %>
 <script type="text/javascript">
 	// Create variable to hold regimen presets
-	if (typeof regimen_presets === 'undefined') {
-		regimen_presets = new Array();
-	}
-	regimen_presets['${ config.id }'] = ${ ui.toJson(regimenDefinitions) };
 
-	jq(function() {
-		jq('#${ config.id }-container .standard-regimen-select').change(function () {
-			// Get selected regimen definition
-			var stdRegIndex = parseInt(jq(this).val());
-			var stdReg = regimen_presets['${ config.id }'][stdRegIndex];
-			var components = stdReg.components;
-
-			// Get container div and component fields
-			var container = jq(this).parent();
-			var drugFields = container.find('.regimen-component-drug');
-			var doseFields = container.find('.regimen-component-dose');
-			var unitsFields = container.find('.regimen-component-units');
-			var frequencyFields = container.find('.regimen-component-frequency');
-
-			// Clear all inputs
-			container.find('input, select').val('');
-
-			// Set component controls for each component of selected regimen
-			for (var c = 0; c < components.length; c++) {
-				var component = components[c];
-				jq(drugFields[c]).val(component.drugRef);
-				jq(doseFields[c]).val(component.dose);
-				jq(unitsFields[c]).val(component.units);
-				jq(frequencyFields[c]).val(component.frequency);
-			}
-
-			kenyaemr.updateRegimenFromDisplay('${ config.id }');
-		});
-
-		jq('#${ config.id }-container .regimen-component-drug, #${ config.id }-container .regimen-component-dose, #${ config.id }-container .regimen-component-units, #${ config.id }-container .regimen-component-frequency').blur(function() {
-			kenyaemr.updateRegimenFromDisplay('${ config.id }');
-		});
-	});
 </script>
 
 <div id="${ config.id }-container">
