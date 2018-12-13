@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * Created by dev on 1/14/17.
+ * Created by dev on 1/10/18.
  */
 
 /**
@@ -268,7 +268,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery =" select patient_id \n" +
                 "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
+                "where (visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate)) \n" +
                 "and (lab_test in (856, 1305));";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -290,7 +290,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = " select patient_id \n" +
                 "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
+                "where (visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate)) \n" +
                 "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -469,11 +469,14 @@ public class ETLDatimQ4CohortLibrary {
 
     public CohortDefinition alreadyOnARTAtBeginningOfPregnacy() {
 
-        String sqlQuery = "select  v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "inner join etl_drug_event ede on ede.patient_id = v.patient_id\n" +
-                "group by v.patient_id\n" +
-                "having mid(min(concat(v.visit_date,v.patient_id)),1,10) > mid(max(concat(ede.date_started,ede.patient_id)),1,10)";
+        String sqlQuery = "select\n" +
+                "     e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
+                "where d.program = 'HIV' and e.date_of_discontinuation is null\n" +
+                "  and d.date_started < e.visit_date\n" +
+                "  and e.visit_date between  date(:startDate) and date(:endDate)\n" +
+                "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("alreadyOnARTBeforePregancy");
@@ -487,12 +490,13 @@ public class ETLDatimQ4CohortLibrary {
 
     public CohortDefinition newOnARTDuringPregnancy() {
 
-        String sqlQuery = "select\n" +
-                "       distinct e.patient_id\n" +
-                " from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "       inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_mchs_delivery ld on d.patient_id= ld.patient_id\n" +
-                "where d.program = 'HIV' and d.date_started >= e.visit_date and d.date_started <=  ld.visit_date and e.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select fup.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
+                "where e.program = 'HIV' and date_started between date(:startDate) and date(:endDate)) started_art on\n" +
+                "started_art.patient_id = fup.patient_id\n" +
+                "where fup.pregnancy_status =1065\n" +
+                "and fup.visit_date between date(:startDate) and date(:endDate) group by fup.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newOnARTDuringPregnancy");
@@ -506,11 +510,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Inpatient Services Negative*/
     public CohortDefinition testedNegativeAtPITCInpatientServices() {
 
-        String sqlQuery = "select distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "    and hts.patient_given_result =\"Yes\"\n" +
-                "    and hts.test_strategy=\"Provider Initiated Testing(PITC)\"\n" +
-                "    and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
-                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "and hts.patient_given_result =\"Yes\"\n" +
+                "and hts.test_strategy=\"Provider Initiated Testing(PITC)\"\n" +
+                "and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Inpatient_Negative");
@@ -525,11 +529,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Inpatient Services Positive*/
     public CohortDefinition testedPositiveAtPITCInpatientServices() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"In Patient Department(IPD)\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Inpatient_Positive");
@@ -544,11 +548,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Paediatric services Positive*/
     public CohortDefinition testedPositiveAtPITCPaediatricServices() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Paediatric_Positive");
@@ -563,11 +567,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Paediatric services Negative*/
     public CohortDefinition testedNegativeAtPITCPaediatricServices() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+        String sqlQuery = "select  hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Paediatric_Negative");
@@ -582,11 +586,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Malnutrition Clinics Negative*/
     public CohortDefinition testedNegativeAtPITCMalnutritionClinics() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Malnutrition_Negative");
@@ -601,11 +605,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Malnutrition Clinics Positive*/
     public CohortDefinition testedPositiveAtPITCMalnutritionClinics() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Nutrition Clinic\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Malnutrition_Positive");
@@ -620,11 +624,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC TB Clinic Negative*/
     public CohortDefinition testedNegativeAtPITCTBClinic() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"TB\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_TB_Negative");
@@ -639,11 +643,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC TB Clinic Positive*/
     public CohortDefinition testedPositiveAtPITCTBClinic() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"TB\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_TB_Positive");
@@ -658,11 +662,11 @@ public class ETLDatimQ4CohortLibrary {
     /*Tested Negative at PITC Other*/
     public CohortDefinition testedNagativeAtPITCOther() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Other\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Other_Negative");
@@ -677,11 +681,11 @@ public class ETLDatimQ4CohortLibrary {
     /*Tested Positive at PITC Other*/
     public CohortDefinition testedPositiveAtPITCOther() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"Other\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Other_Positive");
@@ -696,11 +700,11 @@ public class ETLDatimQ4CohortLibrary {
     /*Tested Negative at PITC VCT*/
     public CohortDefinition testedNagativeAtPITCVCT() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"VCT\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_VCT_Negative");
@@ -715,11 +719,11 @@ public class ETLDatimQ4CohortLibrary {
     /*Tested Positive at PITC VCT*/
     public CohortDefinition testedPositiveAtPITCVCT() {
 
-        String sqlQuery = "select  distinct(patient_id) from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
                 "and hts.hts_entry_point =\"VCT\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_VCT_Positive");
@@ -734,11 +738,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Index Negative*/
     public CohortDefinition indexTestedNegative() {
 
-        String sqlQuery = "select  distinct(hts.patient_id) from kenyaemr_etl.etl_hts_test hts\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
                 "join openmrs.kenyaemr_hiv_testing_patient_contact pc on pc.patient_related_to = hts.patient_id\n" +
                 "where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Negative");
@@ -753,11 +757,11 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Index Positive*/
     public CohortDefinition indextestedPositive() {
 
-        String sqlQuery = "select  distinct(hts.patient_id) from kenyaemr_etl.etl_hts_test hts\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
                 "join openmrs.kenyaemr_hiv_testing_patient_contact pc on pc.patient_related_to = hts.patient_id\n" +
                 "where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate);";
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Positive");
@@ -770,9 +774,7 @@ public class ETLDatimQ4CohortLibrary {
     }
 
     /*Newly Started ART While Pregnant*/
-
     public CohortDefinition newlyStartedARTWhilePregnant() {
-
         String sqlQuery = "select  fup.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "            join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
@@ -818,14 +820,13 @@ public class ETLDatimQ4CohortLibrary {
 
     public CohortDefinition newlyStartedARTWithTB() {
 
-        String sqlQuery = "select  fup.patient_id\n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "join  kenyaemr_etl.etl_drug_event e on e.patient_id = fup.patient_id\n" +
-                "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id\n" +
+        String sqlQuery = "select  e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id = e.patient_id\n" +
                 "where e.program = 'HIV' and e.date_started between date(:startDate) and date(:endDate)\n" +
-                "and tb.visit_date between date(:startDate) and date(:endDate)\n" +
-                "and fup.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by fup.patient_id;";
+                "and e.date_started > tb.visit_date\n" +
+                "and tb.date_of_discontinuation is null\n" +
+                "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_New_TB");
@@ -880,7 +881,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_hei_follow_up_visit v\n" +
                 "join kenyaemr_etl.etl_patient_demographics de on de.patient_id = v.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=24 and de.dead =0\n" +
+                "and timestampdiff(month,de.dob,:startDate) >=24 and de.dead =0\n" +
                 "and v.final_antibody_result = 703 and v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id;";
 
@@ -899,7 +900,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_hei_follow_up_visit v\n" +
                 "join kenyaemr_etl.etl_patient_demographics de on de.patient_id = v.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=24 and de.dead =0\n" +
+                "and timestampdiff(month,de.dob,:startDate) >=24 and de.dead =0\n" +
                 "and v.final_antibody_result = 664 and v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id;";
 
@@ -915,13 +916,11 @@ public class ETLDatimQ4CohortLibrary {
 
     /*Unknown HIV Status HEI Cohort*/
     public CohortDefinition unknownHIVStatusHEICohort() {
-
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_hei_follow_up_visit v\n" +
                 "join kenyaemr_etl.etl_patient_demographics de on de.patient_id = v.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=24 and de.dead =0\n" +
+                "and timestampdiff(month,de.dob,:startDate) >=24 and de.dead =0\n" +
                 "and v.final_antibody_result = 1067 and v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id;";
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_FO_HEI_UNKNOWN_HIV_STATUS");
         cd.setQuery(sqlQuery);
@@ -937,7 +936,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_hei_follow_up_visit v\n" +
                 "join kenyaemr_etl.etl_patient_demographics de on de.patient_id = v.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=24 and de.dead =1\n" +
+                "and timestampdiff(month,de.dob,:startDate) >=24 and de.dead =1\n" +
                 "and v.final_antibody_result = 1067 and v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id;";
 
@@ -1131,10 +1130,12 @@ public class ETLDatimQ4CohortLibrary {
     /*Patients on ART with Suppressed routine VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedRoutineVLLast12Months() {
 
-        String sqlQuery = "select patient_id \n" +
-                "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
-                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+        String sqlQuery = "select x.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "inner join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where  e.program ='HIV' and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(x.visit_date,x.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_ROUTINE_ALL");
@@ -1149,10 +1150,12 @@ public class ETLDatimQ4CohortLibrary {
     /*Patients on ART with Suppressed targeted VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedTargetedVLLast12Months() {
 
-        String sqlQuery = "select patient_id \n" +
-                "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
-                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+        String sqlQuery = "select x.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "inner join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where  e.program ='HIV' and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(x.visit_date,x.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_TARGETED_ALL");
@@ -1167,10 +1170,12 @@ public class ETLDatimQ4CohortLibrary {
     /*Patients on ART with Suppressed undocumented VL within last 12 Months*/
     public CohortDefinition onARTWithSuppressedUndocumentedVLLast12Months() {
 
-        String sqlQuery = "select patient_id \n" +
-                "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
-                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+        String sqlQuery = "select x.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "inner join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
+                "where  e.program ='HIV' and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(x.visit_date,x.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_UNDOCUMENTED_ALL");
@@ -1187,9 +1192,12 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where  e.program ='HIV' and (ex.visit_date BETWEEN date_sub(date(:startDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_PREGNANT_ROUTINE");
@@ -1206,9 +1214,12 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where  e.program ='HIV' and (ex.visit_date BETWEEN date_sub(date(:startDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_PREGNANT_TARGETED");
@@ -1225,9 +1236,12 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where  e.program ='HIV' and (ex.visit_date BETWEEN date_sub(date(:startDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_PREGNANT_UNDOCUMENTED");
@@ -1244,9 +1258,13 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and e.program ='HIV'\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_BF_ROUTINE");
@@ -1263,9 +1281,13 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and e.program ='HIV'\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_BF_TARGETED");
@@ -1282,9 +1304,13 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
-                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "       inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = ex.patient_id\n" +
+                "where v.baby_feeding_method in (5526,6046) and  (ex.visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate))\n" +
+                "  and e.program ='HIV'\n" +
+                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_BF_UNDOCUMENTED");
@@ -1301,8 +1327,11 @@ public class ETLDatimQ4CohortLibrary {
 
          String sqlQuery = "select ex.patient_id\n" +
                  "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                 "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                 "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                 "      inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                 "      where e.program ='HIV'\n" +
+                 "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                 "group by ex.patient_id\n" +
+                 "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
          SqlCohortDefinition cd = new SqlCohortDefinition();
          cd.setName("TX_PVLS_SUPP_ROUTINE");
@@ -1317,8 +1346,11 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "      inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "      where e.program ='HIV'\n" +
+                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_TARGETED");
@@ -1335,8 +1367,11 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select ex.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                "where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+                "      inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "      where e.program ='HIV'\n" +
+                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_UNDOCUMENTED");
@@ -1411,9 +1446,10 @@ public class ETLDatimQ4CohortLibrary {
         String sqlQuery = "select x.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract x\n" +
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
                 "where e.program = 'HIV' and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and (x.lab_test in (856, 1305));";
+                "and (x.lab_test in (856, 1305))\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_ROUTINE");
@@ -1431,9 +1467,10 @@ public class ETLDatimQ4CohortLibrary {
         String sqlQuery = "select x.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract x\n" +
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
                 "where e.program = 'HIV' and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and (x.lab_test in (856, 1305));";
+                "and (x.lab_test in (856, 1305))\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_TARGETED");
@@ -1451,9 +1488,10 @@ public class ETLDatimQ4CohortLibrary {
         String sqlQuery = "select x.patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract x\n" +
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = x.patient_id\n" +
                 "where e.program = 'HIV' and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "  and (x.lab_test in (856, 1305));";
+                "and (x.lab_test in (856, 1305))\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_PREGNANT_UNDOCUMENTED");
@@ -1473,8 +1511,10 @@ public class ETLDatimQ4CohortLibrary {
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
                 "       join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
                 "where e.program = 'HIV' and (v.baby_feeding_method in (5526,6046))\n" +
-                "and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "and (x.lab_test in (856, 1305));";
+                "  and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "  and (x.lab_test in (856, 1305))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_ROUTINE");
@@ -1494,8 +1534,10 @@ public class ETLDatimQ4CohortLibrary {
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
                 "       join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
                 "where e.program = 'HIV' and (v.baby_feeding_method in (5526,6046))\n" +
-                "and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "and (x.lab_test in (856, 1305));";
+                "  and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "  and (x.lab_test in (856, 1305))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_TARGETED");
@@ -1514,9 +1556,11 @@ public class ETLDatimQ4CohortLibrary {
                 "from kenyaemr_etl.etl_laboratory_extract x\n" +
                 "       join kenyaemr_etl.etl_drug_event e on e.patient_id = x.patient_id\n" +
                 "       join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = x.patient_id\n" +
-                "where (v.baby_feeding_method in (5526,6046))\n" +
-                "and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
-                "and (x.lab_test in (856, 1305));";
+                "where e.program = 'HIV' and (v.baby_feeding_method in (5526,6046))\n" +
+                "  and (x.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "  and (x.lab_test in (856, 1305))\n" +
+                "group by x.patient_id\n" +
+                "having mid(max(concat(v.visit_date,v.patient_id)),1,10) between date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED");
