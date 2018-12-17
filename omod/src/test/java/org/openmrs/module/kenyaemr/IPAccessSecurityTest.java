@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.IPAccessSecurity;
 import org.openmrs.web.WebConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 

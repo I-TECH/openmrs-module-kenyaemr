@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyacore.test.TestUtils;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -25,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link EmrUtils}

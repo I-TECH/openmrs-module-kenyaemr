@@ -9,6 +9,15 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.util.OpenmrsUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,11 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import org.openmrs.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Regimen change history of a patient. Use for ARVs

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
@@ -25,12 +34,12 @@ public class ANCHAARTGivenBeforeFirstANCDataEvaluator implements EncounterDataEv
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select \n" +
-                "e.encounter_id,\n" +
-                "(case d.date_started when \"\" then 'No' else 'Yes' end) as on_arv_before_first_anc\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e \n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id \n" +
-                "where d.program = 'HIV' and d.date_started < e.visit_date ;";
+        String qry = "select\n" +
+                "  e.encounter_id,\n" +
+                "  (case d.date_started when \"\" then \"No\" else \"Yes\" end) as on_arv_before_first_anc\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+                "where d.date_started < e.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

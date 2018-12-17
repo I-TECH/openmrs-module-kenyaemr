@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
@@ -26,11 +35,9 @@ public class MaternityNumberOfANCVisitsDataEvaluator implements PersonDataEvalua
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       d.patient_id,\n" +
-                "       count(av.visit_id)\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "inner join kenyaemr_etl.etl_mchs_delivery d on av.patient_id =d.patient_id\n" +
-                "group by d.patient_id;";
+                "  patient_id,\n" +
+                " Max(anc_visit_number)\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

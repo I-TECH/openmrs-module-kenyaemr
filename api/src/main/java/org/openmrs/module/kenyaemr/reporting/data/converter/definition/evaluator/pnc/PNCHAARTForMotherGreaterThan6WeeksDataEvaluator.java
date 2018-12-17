@@ -1,7 +1,15 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCFistulaScreeningDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCHAARTForMotherGreaterThan6WeeksDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -27,10 +35,10 @@ public class PNCHAARTForMotherGreaterThan6WeeksDataEvaluator implements Encounte
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select d.encounter_id,\n" +
-                "  (case de.date_started when \"\" then \"No\" else \"Yes\" end)as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
-                "from kenyaemr_etl.etl_drug_event de\n" +
-                "  join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = de.patient_id\n" +
-                "where de.program = 'HIV' and timestampdiff(week,d.date_of_delivery,date(de.date_started))>6 ;";
+                "                (case de.date_started when \"\" then \"No\" else \"Yes \" end)as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
+                "                from kenyaemr_etl.etl_drug_event de\n" +
+                "                join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = de.patient_id\n" +
+                "                where timestampdiff(week,d.date_of_delivery,date(de.date_started))>6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

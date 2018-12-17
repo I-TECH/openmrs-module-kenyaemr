@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -21,6 +18,9 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class ParentCalculation extends AbstractPatientCalculation {
 	private final static Logger logger = Logger.getLogger(ChildrenGivenVaccineCalculation.class);

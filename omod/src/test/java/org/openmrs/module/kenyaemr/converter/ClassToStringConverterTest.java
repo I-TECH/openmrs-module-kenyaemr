@@ -12,7 +12,7 @@ package org.openmrs.module.kenyaemr.converter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link ClassToStringConverter}

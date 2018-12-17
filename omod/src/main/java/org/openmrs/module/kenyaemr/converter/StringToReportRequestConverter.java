@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.converter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.service.ReportService;

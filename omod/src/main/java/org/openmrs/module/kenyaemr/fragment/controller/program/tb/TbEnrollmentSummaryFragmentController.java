@@ -13,7 +13,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.Enrollment;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;

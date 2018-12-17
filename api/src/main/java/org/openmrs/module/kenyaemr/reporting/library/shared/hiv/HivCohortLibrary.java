@@ -21,7 +21,6 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.CtxFromAListOfMedicationOrdersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.FirstProgramEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.OnCtxWithinDurationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.TransferredInAfterEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;

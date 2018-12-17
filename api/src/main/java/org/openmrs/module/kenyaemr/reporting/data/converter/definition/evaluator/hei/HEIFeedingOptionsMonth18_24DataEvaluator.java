@@ -1,8 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.hei;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIFeedingOptionsMonth18_24DataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEISerialNumberDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -26,15 +34,14 @@ public class HEIFeedingOptionsMonth18_24DataEvaluator implements PersonDataEvalu
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "\n" +
-                "select\n" +
-                "       f.patient_id,\n" +
-                "       mid(max(concat(visit_date, (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end))),11) as infant_feeding_24_months\n" +
+        String qry = "select\n" +
+                "  f.patient_id,\n" +
+                "  mid(max(concat(visit_date, (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end))),11) as infant_feeding_24_months\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "       INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "        d.patient_id = f.patient_id\n" +
-                "WHERE timestampdiff(month,d.DOB,f.visit_date) BETWEEN 18 AND 24\n" +
-                "GROUP BY patient_id;";
+                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "  d.patient_id = f.patient_id\n" +
+                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 72 AND 96\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

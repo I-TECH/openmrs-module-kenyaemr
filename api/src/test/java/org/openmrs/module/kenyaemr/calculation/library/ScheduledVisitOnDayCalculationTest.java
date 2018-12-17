@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +19,11 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link ScheduledVisitOnDayCalculation}

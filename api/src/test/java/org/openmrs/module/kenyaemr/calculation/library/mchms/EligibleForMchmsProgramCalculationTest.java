@@ -19,7 +19,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link EligibleForMchmsProgramCalculation}

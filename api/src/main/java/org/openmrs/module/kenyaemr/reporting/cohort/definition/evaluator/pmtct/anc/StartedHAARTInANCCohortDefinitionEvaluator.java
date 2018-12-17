@@ -1,27 +1,36 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.pmtct.anc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.StartedHAARTInANCCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * Evaluator for patients who started haart in ANC Register
  */
-import java.util.*;
 
 
 @Handler(supports = {StartedHAARTInANCCohortDefinition.class})
@@ -39,12 +48,8 @@ public class StartedHAARTInANCCohortDefinitionEvaluator implements CohortDefinit
 		if (definition == null)
 			return null;
 
-		String qry =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
-				"inner join kenyaemr_etl.etl_drug_event d on e.patient_id=d.patient_id\n" +
-				"left join kenyaemr_etl.etl_mch_postnatal_visit pnc on pnc.patient_id=e.patient_id\n" +
-				"left join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id = e.patient_id\n" +
-				"where d.program = 'HIV' and d.date_started >= e.visit_date\n" +
-				"and d.date_started < ld.visit_date and d.date_started < pnc.visit_date ";
+		String qry =  "select distinct v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_drug_event d on v.patient_id=d.patient_id\n" +
+				"                where d.date_started >= v.visit_date;";
 
 		Cohort newCohort = new Cohort();
 		SqlQueryBuilder builder = new SqlQueryBuilder();

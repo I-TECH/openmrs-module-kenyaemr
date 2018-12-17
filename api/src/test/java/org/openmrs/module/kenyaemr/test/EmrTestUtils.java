@@ -10,15 +10,26 @@
 package org.openmrs.module.kenyaemr.test;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderFrequency;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.OrderContext;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Utility methods for unit tests

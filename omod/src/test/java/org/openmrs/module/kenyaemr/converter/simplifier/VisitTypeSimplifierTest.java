@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.openmrs.VisitType;
 import org.openmrs.ui.framework.SimpleObject;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
 
 /**
  * Tests for {@link VisitTypeSimplifier}

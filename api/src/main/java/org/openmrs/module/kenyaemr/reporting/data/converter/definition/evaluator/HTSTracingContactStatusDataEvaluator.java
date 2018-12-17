@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTracingContactStatusDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;

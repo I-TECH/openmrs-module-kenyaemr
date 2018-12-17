@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.openmrs.Encounter;
@@ -28,6 +24,10 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class NotInTbProgramMissedTbScreeningAtLastAppointmentCalculation extends AbstractPatientCalculation implements PatientFlagCalculation{
 

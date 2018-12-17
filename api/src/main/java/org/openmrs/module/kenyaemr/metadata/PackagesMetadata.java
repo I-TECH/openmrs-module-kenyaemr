@@ -12,7 +12,7 @@ package org.openmrs.module.kenyaemr.metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.packageFile;
 
 /**
  * Packages metadata bundle. Kept separate to keep out of unit tests

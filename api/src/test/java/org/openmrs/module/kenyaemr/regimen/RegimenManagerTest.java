@@ -11,9 +11,7 @@ package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
@@ -25,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * Tests for {@link RegimenManager}

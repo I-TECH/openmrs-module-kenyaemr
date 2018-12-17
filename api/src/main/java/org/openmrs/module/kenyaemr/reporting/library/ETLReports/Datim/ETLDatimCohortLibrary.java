@@ -440,7 +440,7 @@ public class ETLDatimCohortLibrary {
 
         String sqlQuery = "select\n" +
                 "      distinct v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v  where v.visit_date between date(:startDate) and date(:endDate);";
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_STA_Denominator");
@@ -536,5 +536,6 @@ public class ETLDatimCohortLibrary {
         return cd;
 
     }
+
 
 }
