@@ -22,7 +22,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.idSet;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.privilege;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.role;
 
 /**
  * Security metadata bundle

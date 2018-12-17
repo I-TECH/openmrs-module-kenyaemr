@@ -13,7 +13,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderFrequency;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.OrderContext;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.test.TestUtils;
@@ -21,7 +29,11 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.test.EmrTestUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Tests for {@link RegimenChangeHistory}

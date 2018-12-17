@@ -16,14 +16,14 @@ import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link EditProgramFormPageController}

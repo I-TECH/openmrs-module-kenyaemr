@@ -11,14 +11,26 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.regimen.*;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.regimen.Regimen;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
@@ -75,7 +87,6 @@ public class RegimenUtilFragmentController {
 
 
 
-
 		//create an obs for regimen
 		Obs o = new Obs();
 		o.setConcept(cs.getConcept(1193));
@@ -94,6 +105,7 @@ public class RegimenUtilFragmentController {
 		o2.setObsDatetime(command.getChangeDate());
 		o2.setValueCoded(command.getChangeReason());
 		o2.setPerson(command.getPatient());
+
 
 
 		//create  obs for Change reason Noncoded
@@ -131,6 +143,7 @@ public class RegimenUtilFragmentController {
 		}
 
 		if(command.getChangeType()==RegimenChangeType.CHANGE) {
+
 			category.setValueCoded(cs.getConcept(1259));
 			if (enc != null) {
 				enc.getEncounterId();
@@ -141,7 +154,7 @@ public class RegimenUtilFragmentController {
 				if(command.getChangeReason() !=null) {
 					enc.addObs(o2);
 				}
-				encounterService.saveEncounter(enc);
+				 encounterService.saveEncounter(enc);
 			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);

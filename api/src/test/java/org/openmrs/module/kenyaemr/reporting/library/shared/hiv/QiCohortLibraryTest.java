@@ -15,11 +15,11 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -30,8 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link QiCohortLibrary}

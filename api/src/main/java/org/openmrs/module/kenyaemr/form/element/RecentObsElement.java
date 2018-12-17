@@ -15,7 +15,6 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.FormEntryContext;
 import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;

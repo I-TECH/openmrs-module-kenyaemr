@@ -9,51 +9,21 @@
  */
 package org.openmrs.module.kenyaemr.page.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.RelationshipType;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.appframework.service.AppFrameworkService;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.kenyaui.annotation.SharedPage;
-import org.openmrs.ui.framework.Link;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
-import org.openmrs.ui.framework.page.PageRequest;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Controller for relationship edit page

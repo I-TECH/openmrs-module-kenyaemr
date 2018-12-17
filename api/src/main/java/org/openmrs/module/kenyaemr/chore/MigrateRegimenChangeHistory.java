@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
+ *
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -19,6 +19,7 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.User;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
@@ -81,6 +82,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
         PatientService patientService = Context.getPatientService();
         EncounterService encounterService = Context.getEncounterService();
         FormService formService = Context.getFormService();
+        User defaultUser = Context.getUserService().getUser(1);
 
         EncounterType encType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
@@ -165,6 +167,10 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                     regimenObs.setValueCoded(conceptService.getConceptByUuid(conceptRef));
                     regimenObs.setObsDatetime(startDate);
                     e.addObs(regimenObs);
+                } else {
+                    e.setVoided(true);
+                    e.setDateVoided(new Date());
+                    e.setVoidReason("No matching regimen for regimen order. Needs re-entering");
                 }
             }
 

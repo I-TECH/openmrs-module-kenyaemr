@@ -14,9 +14,6 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDate
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
-import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
-import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
-import org.openmrs.module.reporting.data.visit.evaluator.VisitDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;

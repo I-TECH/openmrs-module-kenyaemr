@@ -11,7 +11,6 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -25,7 +24,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link OnArtCalculation}

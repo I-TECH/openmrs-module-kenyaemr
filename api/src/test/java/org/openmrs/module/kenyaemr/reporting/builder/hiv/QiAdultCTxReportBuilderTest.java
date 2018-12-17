@@ -14,12 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
+import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
-import org.openmrs.module.kenyacore.test.ReportingTestUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link QiAdultCTxReportBuilder}

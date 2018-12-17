@@ -1,7 +1,15 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityAdmissionDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityEDDUltrasoundDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -18,7 +26,7 @@ import java.util.Map;
  * Evaluates a PersonDataDefinition
  */
 @Handler(supports= MaternityEDDUltrasoundDateDataDefinition.class, order=50)
-public class MaternityEDDateDataEvaluator implements PersonDataEvaluator {
+public class MaternityEDDUltrasoundDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -27,8 +35,8 @@ public class MaternityEDDateDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       patient_id,\n" +
-                "       DATE_ADD(LMP,INTERVAL 280 DAY) as EDD\n" +
+                "  patient_id,\n" +
+                "  edd_ultrasound\n" +
                 "from kenyaemr_etl.etl_mch_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

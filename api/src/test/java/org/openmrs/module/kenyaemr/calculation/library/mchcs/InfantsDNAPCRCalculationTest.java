@@ -25,7 +25,6 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.util.databasechange.BooleanConceptChangeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;

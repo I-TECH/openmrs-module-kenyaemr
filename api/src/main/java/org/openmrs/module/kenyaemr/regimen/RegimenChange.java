@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.openmrs.Concept;
+
 import java.util.Date;
 import java.util.Set;
-
-import org.openmrs.Concept;
 
 /**
  *

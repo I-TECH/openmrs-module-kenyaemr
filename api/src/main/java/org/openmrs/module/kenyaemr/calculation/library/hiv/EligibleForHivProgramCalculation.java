@@ -12,8 +12,8 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.Filters;
 
 import java.util.Collection;
 import java.util.Map;

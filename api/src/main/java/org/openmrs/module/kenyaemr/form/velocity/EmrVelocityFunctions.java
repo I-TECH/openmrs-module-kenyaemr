@@ -11,31 +11,34 @@ package org.openmrs.module.kenyaemr.form.velocity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.GlobalProperty;
+import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.Person;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
+import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.htmlformentry.FormEntrySession;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.DateUtil;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import org.openmrs.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.module.htmlformentry.FormEntrySession;
-import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentARTStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation;
-
-import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.api.PatientService;
-import org.openmrs.Patient;
 /**
  * Velocity functions for adding logic to HTML forms
  */

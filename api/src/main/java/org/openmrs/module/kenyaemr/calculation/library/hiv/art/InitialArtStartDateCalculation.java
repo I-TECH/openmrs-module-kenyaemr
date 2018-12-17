@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 import org.openmrs.Concept;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -20,6 +16,10 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Calculates the date on which a patient first started ART

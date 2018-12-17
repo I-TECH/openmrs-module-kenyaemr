@@ -9,17 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation;
 
-import org.junit.Assert;
 import org.junit.Ignore;
-import org.junit.Test;
-import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Tests for {@link EmrCalculationUtils}

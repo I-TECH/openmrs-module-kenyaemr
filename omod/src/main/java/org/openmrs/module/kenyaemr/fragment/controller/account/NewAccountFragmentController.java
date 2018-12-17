@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
@@ -27,9 +23,9 @@ import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.validator.EmailAddressValidator;
 import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
 import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.form.AbstractWebForm;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
@@ -43,6 +39,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Create new account fragment controller

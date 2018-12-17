@@ -25,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link EmrModelConfigurator}

@@ -19,7 +19,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationProfiler;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests for {@link DeveloperUtilsFragmentController}

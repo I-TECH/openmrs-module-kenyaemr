@@ -18,7 +18,6 @@
  */
 
 import org.openmrs.api.context.Context
-import org.openmrs.api.PatientSetService
 
 /**
  * Fetches a singleton component from the application context

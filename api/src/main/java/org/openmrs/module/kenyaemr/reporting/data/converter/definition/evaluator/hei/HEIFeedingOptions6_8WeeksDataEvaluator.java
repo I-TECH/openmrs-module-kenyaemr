@@ -1,8 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.hei;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIFeedingOptions6_8WeeksDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEISerialNumberDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -27,13 +35,13 @@ public class HEIFeedingOptions6_8WeeksDataEvaluator implements PersonDataEvaluat
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       f.patient_id,\n" +
-                "       (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end) as infant_feeding_six_weeks\n" +
+                "  f.patient_id,\n" +
+                "  (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end) as infant_feeding_six_weeks\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "       INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "        d.patient_id = f.patient_id\n" +
-                "WHERE timestampdiff(week,d.DOB,f.visit_date) BETWEEN 6 AND 8\n" +
-                "GROUP BY patient_id;";
+                "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "d.patient_id = f.patient_id\n" +
+                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 6 AND 8\n" +
+                "GROUP BY patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

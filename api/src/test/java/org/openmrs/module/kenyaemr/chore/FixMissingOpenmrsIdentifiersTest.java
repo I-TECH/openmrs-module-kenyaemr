@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.PrintWriter;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link FixMissingOpenmrsIdentifiers}

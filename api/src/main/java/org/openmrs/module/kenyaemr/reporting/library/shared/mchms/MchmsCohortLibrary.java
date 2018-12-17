@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchms;
 import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.ArtAssessmentMethod;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.PregnancyStage;
@@ -20,12 +21,10 @@ import org.openmrs.module.kenyaemr.calculation.library.mchms.DiscordantCoupleCal
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsFirstVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.MchmsHivTestDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchms.TestedForHivInMchmsCalculation;
-import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
