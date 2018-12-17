@@ -15,17 +15,30 @@
 
 	<style type="text/css">
 		table.hei {
-		border-collapse: collapse;
-		background-color: #fff0f7;
+			border-collapse: collapse;
+			background-color: #fff0f7;
 		}
 		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
-		border: 1px solid black;
-		vertical-align: baseline;
-		padding: 4px;
-		text-align: left;
+			border: 1px solid black;
+			vertical-align: baseline;
+			padding: 4px;
+			text-align: left;
 		}
 	</style>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+        var value1;
+        jq(document).ready(function(){
+            jq('#ptransferred').hide();
+            jq("#idReason select").change(function() {
+                if((getValue('idReason.value')) == 159492) {
+                    jq('#ptransferred').show();
+                }else{
+                    jq('#ptransferred').hide();
+                }
+            });
+        });
+	</script>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
@@ -37,16 +50,20 @@
 	<div class="ke-form-content">
 		<table class="hei" align="center">
 			<tbody>
-				<tr><td colspan="2"><b>Child Services Discontinuation</b></td></tr>
-				<tr>
-					<td>Discontinued Date</td>
-					<td><encounterDate  id="exitDate" showTime="true"/></td>
-				</tr>
-				<tr>
-					<td>Reason</td>
-					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Completed,Died,Transferred Out"/></td>
-				</tr>
-				<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
+			<tr><td colspan="2"><b>Child Services Discontinuation</b></td></tr>
+			<tr>
+				<td>Discontinued Date</td>
+				<td><encounterDate  id="exitDate" showTime="true"/></td>
+			</tr>
+			<tr>
+				<td>Reason</td>
+				<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Completed,Died,Transferred Out" id="idReason" /></td>
+			</tr>
+			<tr id="ptransferred">
+				<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+				<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+			</tr>
+			<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
 			</tbody>
 		</table>
 	</div>
