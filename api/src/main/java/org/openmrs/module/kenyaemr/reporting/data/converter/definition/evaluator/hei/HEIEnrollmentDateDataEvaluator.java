@@ -30,7 +30,7 @@ public class HEIEnrollmentDateDataEvaluator implements PersonDataEvaluator {
                 "  patient_id,\n" +
                 "  visit_date\n" +
                 "from kenyaemr_etl.etl_hei_enrollment\n" +
-                "GROUP BY patient_id";
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

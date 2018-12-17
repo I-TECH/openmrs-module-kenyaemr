@@ -31,7 +31,7 @@ public class HEIGivenNVPCTXMonth9DataEvaluator implements PersonDataEvaluator {
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
                 "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
                 "      d.patient_id = f.patient_id\n" +
-                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =36\n" +
+                "WHERE timestampdiff(month,d.DOB,f.visit_date) =9\n" +
                 "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
