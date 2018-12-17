@@ -35,7 +35,7 @@ public class PersonSimplifier extends AbstractSimplifier<Person> {
 		SimpleObject ret = new SimpleObject();
 
 		ret.put("id", person.getId());
-		ret.put("name", kenyaui.formatPersonName(getName(person)));
+		ret.put("name", kenyaui.formatPersonName(person));
 		ret.put("gender", person.getGender().toLowerCase());
 		ret.put("isPatient", person.isPatient());
 		ret.put("dead", person.isDead());
