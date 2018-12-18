@@ -128,7 +128,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "    max(d.visit_date) as date_discontinued,\n" +
                 "    d.patient_id as disc_patient,\n" +
-                "  de.patient_id as started_on_drugs\n" +
+                "  de.patient_id as started_on_drugs,\n" +
                 "  de.program as hiv_program\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
