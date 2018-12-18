@@ -402,8 +402,8 @@
 	<!-- Datim Revised report-->
 	<bean id="kenyaemr.etl.common.report.datimQ4" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d6e5dd4c-e3f5-11e8-9f32-f2801f1b9fd1" />
-		<property name="name" value="Revised Datim Report" />
-		<property name="description" value="Revised Datim Report" />
+		<property name="name" value="New Datim Report" />
+		<property name="description" value="New Datim Report" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
