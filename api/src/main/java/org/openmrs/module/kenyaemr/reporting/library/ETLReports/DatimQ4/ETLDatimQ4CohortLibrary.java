@@ -25,38 +25,39 @@ import java.util.Date;
  */
 @Component
 public class ETLDatimQ4CohortLibrary {
-     /**
+    /**
      * Patients started on ART during the reporting period (last 3 months)
      * TX_New Datim indicator
      * @return
      */
     public  CohortDefinition startedOnART() {
-        String sqlQuery="select net.patient_id \n" +
-                "from ( \n" +
-                "select e.patient_id,e.date_started, \n" +
-                "e.gender,\n" +
-                "e.dob,\n" +
-                "d.visit_date as dis_date, \n" +
-                "if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "e.regimen, e.regimen_line, e.alternative_regimen, \n" +
-                "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                "max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
-                "max(fup.visit_date) as latest_vis_date\n" +
-                "from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-                "mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-                "mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-                "max(if(discontinued,1,0))as alternative_regimen \n" +
-                "from kenyaemr_etl.etl_drug_event e \n" +
-                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "group by e.patient_id) e \n" +
-                "left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-                "left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
-                "where e.program = 'HIV' and date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
-                "group by e.patient_id \n" +
-                "having TI_on_art=0\n" +
-                ")net;";
+        String sqlQuery="select net.patient_id  \n" +
+                "                from (  \n" +
+                "                select e.patient_id,e.date_started,  \n" +
+                "                e.gender, \n" +
+                "                e.dob, \n" +
+                "                d.visit_date as dis_date,  \n" +
+                "                if(d.visit_date is not null, 1, 0) as TOut, \n" +
+                "                e.regimen, e.regimen_line, e.alternative_regimen,  \n" +
+                "                mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,  \n" +
+                "                max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art, \n" +
+                "                max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,  \n" +
+                "                max(fup.visit_date) as latest_vis_date \n" +
+                "                from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,  \n" +
+                "                mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,  \n" +
+                "                mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,  \n" +
+                "                max(if(discontinued,1,0))as alternative_regimen  \n" +
+                "                from kenyaemr_etl.etl_drug_event e\n" +
+                "                join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "                where e.program = 'HIV'\n" +
+                "                group by e.patient_id) e  \n" +
+                "                left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id  \n" +
+                "                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
+                "                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id  \n" +
+                "                where date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
+                "                group by e.patient_id  \n" +
+                "                having TI_on_art=0 \n" +
+                "                )net;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_New");
         cd.setQuery(sqlQuery);
@@ -90,12 +91,13 @@ public class ETLDatimQ4CohortLibrary {
                 "       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
                 "       max(if(discontinued,1,0))as alternative_regimen \n" +
                 "       from kenyaemr_etl.etl_drug_event e \n" +
-                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id  \n" +
+                "        where e.program = 'HIV'\n" +
                 "       group by e.patient_id) e \n" +
                 "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
-                "       where  e.program = 'HIV' and date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
+                "       where date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
                 "       and fup.pregnancy_status =1065 and fup.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)\n" +
                 "       group by e.patient_id \n" +
                 "       having TI_on_art=0\n" +
@@ -134,12 +136,13 @@ public class ETLDatimQ4CohortLibrary {
                 "       max(if(discontinued,1,0))as alternative_regimen \n" +
                 "       from kenyaemr_etl.etl_drug_event e \n" +
                 "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "       where e.program = 'HIV'\n" +
                 "       group by e.patient_id) e \n" +
                 "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_tb_enrollment tbenr on tbenr.patient_id = e.patient_id\n" +
-                "       where  e.program = 'HIV' and date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
+                "       where date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
                 "       and ((fup.pregnancy_status =1662 and fup.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or \n" +
                 "       tbenr.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) )\n" +
                 "       group by e.patient_id \n" +
@@ -212,11 +215,12 @@ public class ETLDatimQ4CohortLibrary {
                 "    max(if(discontinued,1,0))as alternative_regimen " +
                 "    from kenyaemr_etl.etl_drug_event e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
+                "    where e.program = 'HIV'\n" +
                 "    group by e.patient_id) e " +
                 "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id " +
                 "    left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id " +
                 "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id " +
-                "    where e.program = 'HIV' and date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year) " +
+                "    where date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year) " +
                 "    group by e.patient_id " +
                 "    )net; ";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -419,7 +423,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
                 "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where and hv.dna_pcr_result=664 and\n" +
+                "where hv.dna_pcr_result=664 and\n" +
                 "hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -999,6 +1003,7 @@ public class ETLDatimQ4CohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Alive, Breastfeeding and on ART for last 12 months");
         return cd;
+
     }
 
     /*Alive on ART in last 12 months by Age / Sex*/
@@ -1026,7 +1031,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-   /*Total started ART in last 12 months and Breastfeeding*/
+    /*Total started ART in last 12 months and Breastfeeding*/
     public CohortDefinition breastfeedingAndstartedARTinLast12Months() {
 
         String sqlQuery = "select net.patient_id\n" +
@@ -1040,12 +1045,13 @@ public class ETLDatimQ4CohortLibrary {
                 "                  max(if(discontinued,1,0))as alternative_regimen\n" +
                 "           from kenyaemr_etl.etl_drug_event e\n" +
                 "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "    where e.program = 'HIV'\n" +
                 "           group by e.patient_id) e\n" +
                 "            join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "     where  e.program = 'HIV' and v.baby_feeding_method in (5526,6046)\n" +
+                "     where  v.baby_feeding_method in (5526,6046)\n" +
                 "       and date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year)\n" +
                 "     group by e.patient_id\n" +
                 "     )net;";
@@ -1074,12 +1080,13 @@ public class ETLDatimQ4CohortLibrary {
                 "                  max(if(discontinued,1,0))as alternative_regimen\n" +
                 "           from kenyaemr_etl.etl_drug_event e\n" +
                 "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "    where e.program = 'HIV'\n" +
                 "           group by e.patient_id) e\n" +
                 "            join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "     where e.program = 'HIV' and date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year)\n" +
+                "     where date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year)\n" +
                 "     group by e.patient_id\n" +
                 "     )net;";
 
@@ -1107,11 +1114,12 @@ public class ETLDatimQ4CohortLibrary {
                 "                  max(if(discontinued,1,0))as alternative_regimen\n" +
                 "           from kenyaemr_etl.etl_drug_event e\n" +
                 "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "    where e.program = 'HIV'\n" +
                 "           group by e.patient_id) e\n" +
                 "            left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "     where  e.program = 'HIV' and date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year)\n" +
+                "     where  date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year)\n" +
                 "     group by e.patient_id\n" +
                 "     )net;";
 
@@ -1298,7 +1306,7 @@ public class ETLDatimQ4CohortLibrary {
 
     }
 
-/*Breastfeeding mother on ART with Suppressed undocumented VL within last 12 Months*/
+    /*Breastfeeding mother on ART with Suppressed undocumented VL within last 12 Months*/
     public CohortDefinition bfOnARTSuppUndocumentedVL() {
 
         String sqlQuery = "select ex.patient_id\n" +
@@ -1322,25 +1330,25 @@ public class ETLDatimQ4CohortLibrary {
     }
 
     /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
-     public CohortDefinition onARTSuppRoutineVLBySex() {
+    public CohortDefinition onARTSuppRoutineVLBySex() {
 
-         String sqlQuery = "select ex.patient_id\n" +
-                 "from kenyaemr_etl.etl_laboratory_extract ex\n" +
-                 "      inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
-                 "      where e.program ='HIV'\n" +
-                 "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
-                 "group by ex.patient_id\n" +
-                 "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
+        String sqlQuery = "select ex.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract ex\n" +
+                "      inner join kenyaemr_etl.etl_drug_event e on e.patient_id = ex.patient_id\n" +
+                "      where e.program ='HIV'\n" +
+                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302))\n" +
+                "group by ex.patient_id\n" +
+                "having mid(max(concat(ex.visit_date,ex.patient_id)),1,10) BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate);";
 
-         SqlCohortDefinition cd = new SqlCohortDefinition();
-         cd.setName("TX_PVLS_SUPP_ROUTINE");
-         cd.setQuery(sqlQuery);
-         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-         cd.setDescription("On ART with Suppressed Routine VL within last 12 Months by sex/age");
-         return cd;
-     }
-   /*On ART with Suppressed Targeted VL within last 12 Months by sex/age*/
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_PVLS_SUPP_ROUTINE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("On ART with Suppressed Routine VL within last 12 Months by sex/age");
+        return cd;
+    }
+    /*On ART with Suppressed Targeted VL within last 12 Months by sex/age*/
     public CohortDefinition onARTSuppTargetedVLBySex() {
 
         String sqlQuery = "select ex.patient_id\n" +
