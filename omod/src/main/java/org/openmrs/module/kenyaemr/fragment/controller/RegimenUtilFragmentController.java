@@ -179,7 +179,7 @@ public class RegimenUtilFragmentController {
 			}
 		}
 
-		if(command.getChangeType()==RegimenChangeType.START) {
+		if(command.getChangeType()==RegimenChangeType.START || command.getChangeType()==RegimenChangeType.RESTART) {
 			category.setValueCoded(cs.getConcept(1256));
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);
@@ -270,7 +270,8 @@ public class RegimenUtilFragmentController {
 				}
 			}
 			
-			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE) {
+			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE
+					|| changeType == RegimenChangeType.RESTART) {
 				require(errors, "regimenConceptRef");
 			}
 
