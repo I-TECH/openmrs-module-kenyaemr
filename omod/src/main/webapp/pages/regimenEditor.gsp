@@ -2,8 +2,8 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient, layout: "sidebar" ])
 
 	def allowNew = !regimenFromObs
-	def allowChange = regimenFromObs && lastEnc.startDate
-	def allowRestart = regimenFromObs && !lastEnc.startDate
+	def allowChange = regimenFromObs && lastEnc.startDate && !lastEnc.endDate
+	def allowRestart = regimenFromObs && lastEnc.endDate
 	def allowUndo = regimenFromObs && regimenFromObs.size() > 0
 	def isManager = isManager
 
