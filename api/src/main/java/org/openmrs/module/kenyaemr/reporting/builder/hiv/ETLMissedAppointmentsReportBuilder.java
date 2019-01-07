@@ -61,7 +61,6 @@ import java.util.List;
 @Builds({"kenyaemr.common.report.etlMissedAppointments"})
 public class ETLMissedAppointmentsReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
-	public static final String ENC_DATE_FORMAT = "yyyy/MM/dd";
 	/**
 	 *
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(org.openmrs.module.kenyacore.report.CohortReportDescriptor, PatientDataSetDefinition)
