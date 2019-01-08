@@ -77,9 +77,9 @@ public class IsPregnantCalculation extends AbstractPatientCalculation implements
 			if(encounter != null) {
 				result = true;
 			}
-			if(encounter != null && encounterPostNatal != null && encounterPostNatal.getEncounterDatetime().after(encounter.getEncounterDatetime())){
-				result = false;
-			}
+//			if(encounter != null && encounterPostNatal != null && encounterPostNatal.getEncounterDatetime().after(encounter.getEncounterDatetime())){
+//				result = true;
+//			}
 
 			if(encounter != null && encounterDiscontinuation != null && encounterDiscontinuation.getEncounterDatetime().after(encounter.getEncounterDatetime())){
 				result = false;
