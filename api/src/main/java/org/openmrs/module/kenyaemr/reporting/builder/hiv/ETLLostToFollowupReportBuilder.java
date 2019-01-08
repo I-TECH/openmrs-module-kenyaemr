@@ -28,8 +28,10 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgra
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLLostToFollowupCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -67,6 +69,7 @@ public class ETLLostToFollowupReportBuilder extends AbstractHybridReportBuilder 
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+		dsd.addSortCriteria("Last Appointment date", SortCriteria.SortDirection.DESC);
 		dsd.setName("lostToFollowup");
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
@@ -83,7 +86,7 @@ public class ETLLostToFollowupReportBuilder extends AbstractHybridReportBuilder 
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-		dsd.addColumn("Last Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
+		dsd.addColumn("Last Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
 		dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 		dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
