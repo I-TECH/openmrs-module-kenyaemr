@@ -364,6 +364,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "    where  date(e.date_started) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year) " +
                 "    group by e.patient_id " +
                 "    having   (dis_date>date(:endDate) or dis_date is null) )net; ";
+
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("art12MonthNetCohort");
         cd.setQuery(sqlQuery);
