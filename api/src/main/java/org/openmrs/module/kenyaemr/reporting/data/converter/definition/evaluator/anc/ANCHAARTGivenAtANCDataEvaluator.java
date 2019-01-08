@@ -40,7 +40,7 @@ public class ANCHAARTGivenAtANCDataEvaluator implements EncounterDataEvaluator {
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
                 "  inner join kenyaemr_etl.etl_mchs_delivery ld on d.patient_id= ld.patient_id\n" +
-                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
+                "where d.program = 'HIV' and d.date_started >= e.visit_date and d.date_started <= ld.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
