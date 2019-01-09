@@ -35,10 +35,10 @@ public class PNCHAARTForMotherGreaterThan6WeeksDataEvaluator implements Encounte
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select d.encounter_id,\n" +
-                "                (case de.date_started when \"\" then \"No\" else \"Yes \" end)as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
-                "                from kenyaemr_etl.etl_drug_event de\n" +
-                "                join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = de.patient_id\n" +
-                "                where timestampdiff(week,d.date_of_delivery,date(de.date_started))>6;";
+                "  (case de.date_started when \"\" then \"No\" else \"Yes\" end)as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
+                "from kenyaemr_etl.etl_drug_event de\n" +
+                "  join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = de.patient_id\n" +
+                "where de.program = 'HIV' and timestampdiff(week,d.date_of_delivery,date(de.date_started))>6 ;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -47,13 +47,13 @@ public class AdolescentsStartedHaart_10_19AtANCCohortDefinitionEvaluator impleme
 			return null;
 
 		String qry = "select\n" +
-				"  distinct v.patient_id\n" +
-				"from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-				"  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=v.patient_id\n" +
-				"  inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=v.patient_id\n" +
-				"  inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id=v.patient_id\n" +
-				"WHERE timestampdiff(year,dm.DOB,v.visit_date) BETWEEN 10 AND 19\n" +
-				"      and d.date_started >= v.visit_date and d.date_started < ld.visit_date;";
+				"distinct e.patient_id\n" +
+				"from kenyaemr_etl.etl_mch_enrollment e\n" +
+				"inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
+				"inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id=e.patient_id\n" +
+				"inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id=e.patient_id\n" +
+				"WHERE d.program = 'HIV' and timestampdiff(year,dm.DOB,e.visit_date) BETWEEN 10 AND 19\n" +
+				"and d.date_started >= e.visit_date and d.date_started < ld.visit_date ;";
 
 		Cohort newCohort = new Cohort();
 		SqlQueryBuilder builder = new SqlQueryBuilder();
