@@ -84,7 +84,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
         FormService formService = Context.getFormService();
         User defaultUser = Context.getUserService().getUser(1);
 
-        EncounterType encType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        EncounterType encType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 
         int tbRegimenConceptId = 160021;

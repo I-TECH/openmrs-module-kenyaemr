@@ -230,7 +230,7 @@ public class RegimenJsonGenerator {
         Map<String, Encounter> changeEncounters = new HashMap<String, Encounter>();
         EncounterService encounterService = Context.getEncounterService();
         FormService formService = Context.getFormService();
-        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
         List<Encounter> encounters = EmrUtils.AllEncounters(patient, et, form);
         List<Encounter> hivEncounters = new ArrayList<Encounter>();
