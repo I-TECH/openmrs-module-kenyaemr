@@ -354,13 +354,10 @@ public class ETLDatimQ4CohortLibrary {
     /*PMTCT ANC only*/
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = hts.patient_id\n" +
-                "where hts.final_test_result =\"Positive\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
-                "  and hts.hts_entry_point =\"PMTCT\"\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\" \n" +
+                "and v.anc_visit_number = 1\n" +
+                "and v.visit_date between date(:startDate) and date(:endDate) group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testPositiveResultsANC");
@@ -373,13 +370,10 @@ public class ETLDatimQ4CohortLibrary {
     }
     public CohortDefinition patientHIVNegativeResultsATANC() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = hts.patient_id\n" +
-                "where hts.final_test_result =\"Negative\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
-                "  and hts.hts_entry_point =\"PMTCT\"\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\" \n" +
+                "and v.anc_visit_number = 1\n" +
+                "and v.visit_date between date(:startDate) and date(:endDate) group by v.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testNegativeResultsANC");
@@ -605,7 +599,7 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition testedNegativeAtPITCMalnutritionClinics() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "inner join etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
                 "where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
@@ -627,7 +621,7 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition testedPositiveAtPITCMalnutritionClinics() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "inner join etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
                 "where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.test_strategy =\"Provider Initiated Testing(PITC)\"\n" +
@@ -801,9 +795,7 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition newlyStartedARTWhilePregnant() {
         String sqlQuery = "select  fup.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "            join (select patient_id from kenyaemr_etl.etl_drug_event e\n" +
-                "                  where e.program = 'HIV' and date_started between date(:startDate) and date(:endDate)) started_art on\n" +
-                "        started_art.patient_id = fup.patient_id\n" +
+                "       join  kenyaemr_etl.etl_drug_event e on e.patient_id = fup.patient_id and e.date_started >=fup.visit_date\n" +
                 "where fup.pregnancy_status =1065\n" +
                 "  and fup.visit_date between date(:startDate) and date(:endDate) group by fup.patient_id;";
 
