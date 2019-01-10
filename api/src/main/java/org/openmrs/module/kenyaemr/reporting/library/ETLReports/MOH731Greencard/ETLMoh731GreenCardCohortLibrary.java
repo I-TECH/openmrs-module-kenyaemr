@@ -468,7 +468,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     public CohortDefinition onTherapyAt12Months() {
 
-        String sqlQuery = "    select  net.patient_id, date_started, dis_date, TOut, date_died, latest_vis_date, latest_tca\n" +
+        String sqlQuery = "    select  net.patient_id\n" +
                 "  from ( \n" +
                 "  select e.patient_id,e.date_started, d.visit_date as dis_date, if(d.visit_date is not null and d.discontinuation_reason=159492, 1, 0) as TOut, d.date_died,\n" +
                 " mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
@@ -485,6 +485,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "   group by e.patient_id \n" +
                 "   having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) and (\n" +
                 "        (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(dis_date) or dis_date is null ))  or \n" +
+                "         (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_tca) >= date(latest_vis_date)) ) ) or \n" +
                 "         (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and \n" +
                 "         (date(latest_tca) > date(dis_date) or dis_date is null )\n" +
                 "        )\n" +
