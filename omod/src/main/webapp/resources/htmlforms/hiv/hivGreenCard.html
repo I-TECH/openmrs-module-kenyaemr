@@ -129,6 +129,7 @@ Green Card follow-up visit form
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             onEncounterDateChange();
+            recordedStabilityAssessmentIndicators();
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -585,6 +586,7 @@ function onEncounterDateChange() {
             jq('#calculated-duration-current-regimen').html(msg);
         });
 }
+
 function displayRecentBmi() {
     var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
     var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
@@ -595,7 +597,7 @@ function displayRecentBmi() {
             bmi = weightKg / (heightM * heightM);
             recent_bmi = bmi.toFixed(2);
             jq('#recent-calculated-bmi').html(recent_bmi);
-
+            jq('#bmi-value:text').val(recent_bmi);
             //set recent nutritional status from recent bmi
             if (recent_bmi &lt; 16 &amp;&amp; recent_bmi &gt; 1) {
                 jq("#nutritional-status input[value=163302]").prop("checked", true);
@@ -608,6 +610,13 @@ function displayRecentBmi() {
             }
         }
     }
+}
+//Recorded stability assessment criteria box
+function recordedStabilityAssessmentIndicators() {
+    //1. Age
+    jq('#age:text').val(pAge);
+    //2. BMI
+    /* displayRecentBmi() */
 }
 function onLmpChange() {
     jq('#pregnancyOption :input').prop('disabled', false);
@@ -3682,7 +3691,7 @@ beforeSubmit.push(function() {
                 <fieldset class="stability-details">
                     <legend>Stability assessment</legend>
                     <table>
-                        <tr>
+                       <tr>
                             <td>
                                 Is the patient stable?  &#160;&#160;&#160;&#160;
                             </td>
@@ -3691,7 +3700,60 @@ beforeSubmit.push(function() {
                                     id="stability"/>
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
-                        </tr>
+                           <td></td><td></td><td></td>
+                        <td>
+                                <table border="1">
+                                    <tr>
+                                        <td>
+                                            <u>
+                                               Recorded stability assessment indicators:
+                                            </u>
+                                              <tr>
+                                                 <td>
+                                            Age:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="age" id="age" readonly="True" />
+                                                 </td>
+                                              <td>
+                                                  BMI:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                  <input type="text" name="bmi-value" id="bmi-value" readonly="True" />
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Current regimen:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input type="text" name="current-regimen" id="current-regimen" readonly="True" />
+                                                   </td>
+                                                <td>
+                                                    Duration of current regimen:  &#160;&#160;
+                                                    <input type="text" name="current-regimen-duration" id="current-regimen-duration" readonly="True" />
+                                                    </td>
+                                            </tr>
+                                        <tr>
+                                            <td>
+                                                Active OIs:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <input type="text" name="active-oi" id="active-oi" readonly="True" />
+                                                </td>
+                                            <td>
+                                            Most recent VL results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="vl-value" id="vl-value" readonly="True" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Missed appointment in last 6 months :
+                                                <input type="text" name="missed-appointment" id="missed-appointment" readonly="True" />
+
+                                                </td>
+                                            <td>
+                                            Completed 6 months IPT:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="ipt-completion" id="ipt-completion" readonly="True" />
+                                                </td>
+                                           </tr>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                       </tr>
                     </table>
                 </fieldset>
                 <fieldset class="tca-part">
