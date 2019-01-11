@@ -47,30 +47,31 @@ public class CumulativeOnARTCohortDefinitionEvaluator implements CohortDefinitio
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct net.patient_id \n" +
+		String qry="select distinct net.patient_id  \n" +
 				"from (\n" +
 				"select e.patient_id,e.date_started,min(enr.visit_date) as enrollment_date,\n" +
 				"e.gender,\n" +
-				"e.regimen, \n" +
+				"e.regimen,\n" +
 				"e.regimen_line,\n" +
 				"e.alternative_regimen,\n" +
 				"e.dob,d.visit_date as dis_date,\n" +
-				"max(if(d.visit_date is not null, 1, 0)) as TOut, \n" +
+				"max(if(d.visit_date is not null, 1, 0)) as TOut,\n" +
 				"max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
 				"max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-				"enr.transfer_in_date,max(fup.visit_date) as latest_vis_date, \n" +
-				"mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca \n" +
-				"from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-				"mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-				"mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-				"max(if(discontinued,1,0))as alternative_regimen \n" +
-				"from kenyaemr_etl.etl_drug_event e \n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-				"group by e.patient_id) e \n" +
-				"left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-				"left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-				"left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
-				"group by e.patient_id \n" +
+				"enr.transfer_in_date,max(fup.visit_date) as latest_vis_date,\n" +
+				"mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca\n" +
+				"from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
+				"mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
+				"mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
+				"max(if(discontinued,1,0))as alternative_regimen\n" +
+				"from kenyaemr_etl.etl_drug_event e\n" +
+				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+				"where e.program = 'HIV'\n" +
+				"group by e.patient_id) e\n" +
+				"left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
+				"left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+				"left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
+				"group by e.patient_id\n" +
 				"having  (TI_on_art =0 and date_started <= :endDate ) )net;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();

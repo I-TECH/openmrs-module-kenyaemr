@@ -49,8 +49,9 @@ public class ETLDatimCohortLibrary {
                 "max(if(discontinued,1,0))as alternative_regimen \n" +
                 "from kenyaemr_etl.etl_drug_event e \n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "where e.program='HIV' " +
                 "group by e.patient_id) e \n" +
-                "left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
+                "left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee'\n" +
                 "left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "where  date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
@@ -91,8 +92,9 @@ public class ETLDatimCohortLibrary {
                 "       max(if(discontinued,1,0))as alternative_regimen \n" +
                 "       from kenyaemr_etl.etl_drug_event e \n" +
                 "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "       where e.program='HIV' " +
                 "       group by e.patient_id) e \n" +
-                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
+                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee' \n" +
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "       where  date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
@@ -134,8 +136,9 @@ public class ETLDatimCohortLibrary {
                 "       max(if(discontinued,1,0))as alternative_regimen \n" +
                 "       from kenyaemr_etl.etl_drug_event e \n" +
                 "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
+                "       where e.program='HIV' " +
                 "       group by e.patient_id) e \n" +
-                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
+                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee'\n" +
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "       left outer join kenyaemr_etl.etl_tb_enrollment tbenr on tbenr.patient_id = e.patient_id\n" +
@@ -212,8 +215,9 @@ public class ETLDatimCohortLibrary {
                 "    max(if(discontinued,1,0))as alternative_regimen " +
                 "    from kenyaemr_etl.etl_drug_event e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
+                "    where e.program='HIV' " +
                 "    group by e.patient_id) e " +
-                "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id " +
+                "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee' " +
                 "    left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id " +
                 "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id " +
                 "    where  date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year) " +
@@ -242,13 +246,13 @@ public class ETLDatimCohortLibrary {
                 "  if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date, max(fup.next_appointment_date) as latest_tca" +
                 "    from kenyaemr_etl.etl_drug_event e " +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id " +
+                "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee' " +
                 "    left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id " +
                 "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id " +
-                "    where  date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year) " +
+                "    where e.program='HIV' and  date(e.date_started) between date_sub(:startDate , interval 1 year) and date_sub(:endDate , interval 1 year) " +
                 "    group by e.patient_id " +
                 "    having   (dis_date>:endDate or dis_date is null) and (datediff(latest_tca,:endDate)<=90))net; ";
-
+        
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_RET_Numerator");
         cd.setQuery(sqlQuery);
@@ -312,7 +316,7 @@ public class ETLDatimCohortLibrary {
         String sqlQuery = " select  fup.patient_id " +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup " +
                 "join (select patient_id from kenyaemr_etl.etl_drug_event e " +
-                "where date_started between date(:startDate) and date(:endDate)) started_art on  " +
+                "where e.program='HIV' and date_started between date(:startDate) and date(:endDate)) started_art on  " +
                 "started_art.patient_id = fup.patient_id " +
                 "where fup.pregnancy_status =1065 " +
                 "and fup.visit_date between date(:startDate) and date(:endDate);";
@@ -332,7 +336,7 @@ public class ETLDatimCohortLibrary {
         String sqlQuery = "select  fup.patient_id \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
                 "join (select patient_id from kenyaemr_etl.etl_drug_event e \n" +
-                "where date_started between date(:startDate) and date(:endDate)) started_art on  \n" +
+                "where e.program='HIV' and date_started between date(:startDate) and date(:endDate)) started_art on  \n" +
                 "started_art.patient_id = fup.patient_id \n" +
                 "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id\n" +
                 "where fup.visit_date between date(:startDate) and date(:endDate);";

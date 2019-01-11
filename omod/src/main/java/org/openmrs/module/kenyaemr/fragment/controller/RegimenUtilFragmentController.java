@@ -75,7 +75,7 @@ public class RegimenUtilFragmentController {
 
 		Encounter encounter = new Encounter();
 		Date date = new Date();
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+		EncounterType encounterType = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
 		Form regimenEditor = Context.getFormService().getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 		encounter.setPatient(command.getPatient());
 		encounter.setEncounterType(encounterType);

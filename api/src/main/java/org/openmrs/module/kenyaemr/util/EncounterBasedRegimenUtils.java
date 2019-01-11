@@ -49,7 +49,7 @@ public class EncounterBasedRegimenUtils {
         List<SimpleObject> history = new ArrayList<SimpleObject>();
         String categoryConceptUuid = category.equals("ARV")? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT;
 
-        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 
         List<Encounter> regimenChangeHistory = EmrUtils.AllEncounters(patient, et, form);
@@ -76,7 +76,7 @@ public class EncounterBasedRegimenUtils {
         List<SimpleObject> history = new ArrayList<SimpleObject>();
         String categoryConceptUuid = category.equals("ARV")? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT;
 
-        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 
         List<Encounter> encs = EmrUtils.AllEncounters(patient, et, form);
@@ -104,7 +104,7 @@ public class EncounterBasedRegimenUtils {
         List<SimpleObject> history = new ArrayList<SimpleObject>();
         String categoryConceptUuid = category.equals("ARV")? ARV_TREATMENT_PLAN_EVENT_CONCEPT : TB_TREATMENT_PLAN_CONCEPT;
 
-        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CONSULTATION);
+        EncounterType et = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
         Form form = formService.getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR);
 
         List<Encounter> encs = EmrUtils.AllEncounters(patient, et, form);
