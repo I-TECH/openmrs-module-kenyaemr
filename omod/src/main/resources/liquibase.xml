@@ -160,7 +160,7 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="${project.parent.artifactId}-20171018-1044" author="aojwang">
+	<changeSet id="${project.parent.artifactId}-20190114-1044" author="aojwang">
 		<comment>
 			Restore VL results that were originally LDL and were erroneously updated to default VL value of 50
 		</comment>
