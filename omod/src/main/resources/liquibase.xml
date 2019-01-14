@@ -160,4 +160,15 @@
 		</sql>
 	</changeSet>
 
+	<changeSet id="${project.parent.artifactId}-20171018-1044" author="aojwang">
+		<comment>
+			Restore VL results that were originally LDL and were erroneously updated to default VL value of 50
+		</comment>
+		<sql>
+			update obs
+			set concept_id=1305, value_numeric=NULL
+			where concept_id=856 and value_numeric is not null and value_coded=1302;
+		</sql>
+	</changeSet>
+
 </databaseChangeLog>

@@ -20,6 +20,7 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.User;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
@@ -115,6 +116,9 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
         }
         out.println("Completed migration for drug regimen history");
+        out.println("Voiding encounters with null regimen....");
+        voidAllEncountersWithNullRegimen();
+        out.println("Successfully completed all drug regimen migration operations");
 
     }
 
@@ -351,5 +355,24 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
     protected Set<Integer> getPatientsWithOrders() {
         Cohort patientsHavingDrugOrder = Context.getPatientSetService().getPatientsHavingDrugOrder(null, null, null, null, null, null, null, null);
         return patientsHavingDrugOrder.getMemberIds();
+    }
+
+    protected void voidAllEncountersWithNullRegimen(){
+
+        String encountersWithNullRegimenQry = "update encounter e inner join \n" +
+                "(\n" +
+                "select \n" +
+                "e.encounter_id,\n" +
+                "max(if(o.concept_id=1193,o.value_coded,null)) as regimen \n" +
+                "from encounter e \n" +
+                "inner join obs o on e.encounter_id = o.encounter_id and o.voided=0 and o.concept_id in(1193,1252,5622,1191,1255,1268) \n" +
+                "inner join ( select encounter_type, uuid,name from form where uuid in('da687480-e197-11e8-9f32-f2801f1b9fd1') ) f on f.encounter_type=e.encounter_type \n" +
+                "group by e.encounter_id having regimen is null\n" +
+                ") t on e.encounter_id=t.encounter_id\n" +
+                "set e.voided=1;";
+
+        AdministrationService as = Context.getAdministrationService();
+        List<List<Object>> rowsAffected = as.executeSQL(encountersWithNullRegimenQry, false);
+        System.out.println("Rows affected: " + rowsAffected.size());
     }
 }
