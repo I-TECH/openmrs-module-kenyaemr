@@ -61,8 +61,6 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 										 PatientCalculationContext context) {
 
-
-
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
 		Set<Integer> alive = Filters.alive(cohort, context);
@@ -72,15 +70,12 @@ public class EligibleForArtCalculation extends AbstractPatientCalculation implem
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (int ptId : cohort) {
-			boolean eligible = true;
-			log.info("Start  ==>");
-			if (inHivProgram.contains(ptId) && patientArvs.getAsBoolean(1)) {
-
-				eligible = false;
-				log.info("Eligible ==>"+eligible);
+			boolean eligible = false;
+			if (inHivProgram.contains(ptId) && patientArvs.isEmpty()) {
+				eligible = true;
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));
-		}
+			}
 		return ret;
 	}
 }
