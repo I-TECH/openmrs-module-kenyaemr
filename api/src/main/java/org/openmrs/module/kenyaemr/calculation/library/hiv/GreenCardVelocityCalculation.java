@@ -148,8 +148,11 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                      vlResult = 0.0;
                 }
             } else if (ldl != null && vl == null) {
-                ldlResult = "LDL";
-                 vlResult = 0.0;
+                lastVLObsResult = EmrCalculationUtils.obsResultForPatient(lastLDLObs, ptId);
+                if(lastVLObsResult != null && (lastVLObsResult.getConcept() == LDLQuestion && lastVLObsResult.getValueCoded() == LDLAnswer)) {
+                    ldlResult = "LDL";
+                    vlResult = 0.0;
+                }
             } else if (ldl == null && vl != null) {
                 lastVLObsResult = EmrCalculationUtils.obsResultForPatient(lastVLObs, ptId);
                 if(lastVLObsResult != null && lastVLObsResult.getConcept() == latestVL) {
