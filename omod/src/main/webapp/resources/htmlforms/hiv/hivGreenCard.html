@@ -93,18 +93,6 @@ Green Card follow-up visit form
         var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
        // var ART_START_DATE = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
 
-//        console.log("PATIENT_ON_IPT ==>"+PATIENT_ON_IPT);
-//        console.log("PATIENT_ON_TB ==>"+PATIENT_ON_TB);
-//        console.log("PATIENT_DUE_TB_ENROLLMENT ==>"+PATIENT_DUE_TB_ENROLLMENT);
-//        console.log("PATIENT_ON_ART ==>"+PATIENT_ON_ART);
-//        console.log("PATIENT_HAS_BEEN_ON_ART ==>"+PATIENT_HAS_BEEN_ON_ART);
-//        console.log("REGIMEN_NAME ==>"+REGIMEN_NAME);
-//        console.log("REGIMEN_DURATION ==>"+REGIMEN_DURATION);
-//        console.log("VL_RESULT ==>"+VL_RESULT);
-//        console.log("LDL_RESULT ==>"+LDL_RESULT);
-//        console.log("IPT_COMPLETED ==>"+IPT_COMPLETED);
-     // console.log("PATIENT_ART_START_DATE ==>"+ART_START_DATE);
-
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
 
@@ -587,13 +575,14 @@ function onEncounterDateChange() {
     if(encDate == null) {
         encDate = new Date();
     }
-    if(REGIMEN_NAME != null || REGIMEN_NAME != "") {
+    if(PATIENT_ON_ART =="true") {
         jq('#current-regimen').html(REGIMEN_NAME);
         jq('#current-regimen-stability:text').val(REGIMEN_NAME);
         jq('#current-regimen-duration:text').val(REGIMEN_DURATION);
     }else{
-        jq('#current-regimen:text').val("None");
-        jq('#current-regimen-stability:text').val("");
+        jq('#current-regimen').html("None");
+        jq('#current-regimen-stability:text').val("None");
+        jq('#current-regimen-duration:text').val("N/A");
     }
 }
 
@@ -628,9 +617,6 @@ function recordedStabilityAssessmentIndicators() {
     //2. BMI
     /* displayRecentBmi() */
     //3. Most recent VL
-
-    console.log("Cuse VL_RESULT ==> "+VL_RESULT);
-    console.log("Cuse LDL_RESULT ==> "+LDL_RESULT);
     if(VL_RESULT &gt; 1){
         jq('#vl-value:text').val(VL_RESULT);
     }else if (LDL_RESULT == "LDL" ) {
