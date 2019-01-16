@@ -31,7 +31,7 @@ public class OnArtCalculation extends AbstractPatientCalculation implements Pati
 	public String getFlagMessage() {
 		return "On ART";
 	}
-	
+
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -47,7 +47,6 @@ public class OnArtCalculation extends AbstractPatientCalculation implements Pati
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Map.Entry<Integer, CalculationResult> e : patientArvs.entrySet()) {
 			boolean onART = e.getValue() != null && !e.getValue().isEmpty();
-
 			ret.put(e.getKey(), new BooleanResult(onART, this, context));
 		}
 		return ret;
