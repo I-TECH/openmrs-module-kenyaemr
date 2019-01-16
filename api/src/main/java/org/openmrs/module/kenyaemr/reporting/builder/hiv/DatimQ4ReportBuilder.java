@@ -97,6 +97,56 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         ColumnParameters m_Over_50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
         ColumnParameters colTot = new ColumnParameters(null, "Total", "");
 
+        /*New age disaggregations
+        * <1 1-4 5-9 10-14 15-19 20-24 25-29 30-34 35-39 40-44 45-49 50+ for both males and females*/
+        ColumnParameters fInfant = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
+        ColumnParameters mInfant = new ColumnParameters(null, "<1, Male", "gender=M|age=<1");
+        ColumnParameters f1_to4 = new ColumnParameters(null, "1-4, Female", "gender=F|age=1-4");
+        ColumnParameters m1_to4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
+        ColumnParameters f5_to9 = new ColumnParameters(null, "5-9, Female", "gender=F|age=5-9");
+        ColumnParameters m5_to9 = new ColumnParameters(null, "5-9, Male", "gender=M|age=5-9");
+        ColumnParameters f10_to14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
+        ColumnParameters m10_to14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
+        ColumnParameters f15_to19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
+        ColumnParameters m15_to19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
+        ColumnParameters f20_to24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
+        ColumnParameters m20_to24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
+        ColumnParameters f25_to29 = new ColumnParameters(null, "25-29, Female", "gender=F|age=25-29");
+        ColumnParameters m25_to29 = new ColumnParameters(null, "25-29, Male", "gender=M|age=25-29");
+        ColumnParameters f30_to34 = new ColumnParameters(null, "30-34, Female", "gender=F|age=30-34");
+        ColumnParameters m30_to34 = new ColumnParameters(null, "30-34, Male", "gender=M|age=30-34");
+        ColumnParameters f35_to39 = new ColumnParameters(null, "35-39, Female", "gender=F|age=35-39");
+        ColumnParameters m35_to39 = new ColumnParameters(null, "35-39, Male", "gender=M|age=35-39");
+        ColumnParameters f40_to44 = new ColumnParameters(null, "40-44, Female", "gender=F|age=40-44");
+        ColumnParameters m40_to44 = new ColumnParameters(null, "40-44, Male", "gender=M|age=40-44");
+        ColumnParameters f45_to49 = new ColumnParameters(null, "45-49, Female", "gender=F|age=45-49");
+        ColumnParameters m45_to49 = new ColumnParameters(null, "45-49, Male", "gender=M|age=45-49");
+        ColumnParameters fAbove50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
+        ColumnParameters mAbove50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
+
+        /*Peads*/
+        ColumnParameters all0_14 = new ColumnParameters(null, "0-14", "age=0-14");
+        ColumnParameters all5_19 = new ColumnParameters(null, "15-19", "age=15-19");
+        ColumnParameters al20_24 = new ColumnParameters(null, "20-24", "age=20-24");
+
+        /*DCM*/
+        ColumnParameters all0_to4 = new ColumnParameters(null, "0-4", "age=5-9");
+        ColumnParameters all5_to9 = new ColumnParameters(null, "5-9", "age=5-9");
+        ColumnParameters all10_to14 = new ColumnParameters(null, "10-14", "age=10-14");
+        ColumnParameters all15_to19 = new ColumnParameters(null, "15-19", "age=15-19");
+        ColumnParameters all20_to24 = new ColumnParameters(null, "20-24", "age=20-24");
+        ColumnParameters all25_to29 = new ColumnParameters(null, "25-29", "age=25-29");
+        ColumnParameters all30_to34 = new ColumnParameters(null, "30-34", "age=30-34");
+        ColumnParameters all35_to39 = new ColumnParameters(null, "35-39", "age=35-39");
+        ColumnParameters all40_to44 = new ColumnParameters(null, "40-44", "age=40-44");
+        ColumnParameters all45_to49 = new ColumnParameters(null, "45-49", "age=45-49");
+        ColumnParameters allAbove50 = new ColumnParameters(null, "50+", "age=50+");
+
+
+        List<ColumnParameters> datimNewAgeDisaggregation =
+                Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
+                        f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50 );
+
         List<ColumnParameters> datimQ4AgeDisaggregation =
                 Arrays.asList(colInfant, children_1_to_9, f10_14, m10_14, f15_19, m15_19, f20_24, m20_24, f25_49, m25_49, f_Over_50, m_Over_50);
 
