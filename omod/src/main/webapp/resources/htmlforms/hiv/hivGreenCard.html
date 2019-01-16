@@ -86,12 +86,24 @@ Green Card follow-up visit form
         var PATIENT_DUE_TB_ENROLLMENT = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
+        var VL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
+        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
+        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
+       // var ART_START_DATE = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
 
 //        console.log("PATIENT_ON_IPT ==>"+PATIENT_ON_IPT);
 //        console.log("PATIENT_ON_TB ==>"+PATIENT_ON_TB);
 //        console.log("PATIENT_DUE_TB_ENROLLMENT ==>"+PATIENT_DUE_TB_ENROLLMENT);
 //        console.log("PATIENT_ON_ART ==>"+PATIENT_ON_ART);
 //        console.log("PATIENT_HAS_BEEN_ON_ART ==>"+PATIENT_HAS_BEEN_ON_ART);
+//        console.log("REGIMEN_NAME ==>"+REGIMEN_NAME);
+//        console.log("REGIMEN_DURATION ==>"+REGIMEN_DURATION);
+//        console.log("VL_RESULT ==>"+VL_RESULT);
+//        console.log("LDL_RESULT ==>"+LDL_RESULT);
+//        console.log("IPT_COMPLETED ==>"+IPT_COMPLETED);
+     // console.log("PATIENT_ART_START_DATE ==>"+ART_START_DATE);
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -129,6 +141,7 @@ Green Card follow-up visit form
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             onEncounterDateChange();
+            recordedStabilityAssessmentIndicators();
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -574,17 +587,16 @@ function onEncounterDateChange() {
     if(encDate == null) {
         encDate = new Date();
     }
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-        .done(function(data) {
-            var msg = data.duration ? data.duration : 'Not started';
-            jq('#calculated-duration-start-art').html(msg);
-        });
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-        .done(function(data) {
-            var msg = data.duration ? (data.regimen ) : 'None';
-            jq('#calculated-duration-current-regimen').html(msg);
-        });
+    if(REGIMEN_NAME != null || REGIMEN_NAME != "") {
+        jq('#current-regimen').html(REGIMEN_NAME);
+        jq('#current-regimen-stability:text').val(REGIMEN_NAME);
+        jq('#current-regimen-duration:text').val(REGIMEN_DURATION);
+    }else{
+        jq('#current-regimen:text').val("None");
+        jq('#current-regimen-stability:text').val("");
+    }
 }
+
 function displayRecentBmi() {
     var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
     var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
@@ -595,7 +607,7 @@ function displayRecentBmi() {
             bmi = weightKg / (heightM * heightM);
             recent_bmi = bmi.toFixed(2);
             jq('#recent-calculated-bmi').html(recent_bmi);
-
+            jq('#bmi-value:text').val(recent_bmi);
             //set recent nutritional status from recent bmi
             if (recent_bmi &lt; 16 &amp;&amp; recent_bmi &gt; 1) {
                 jq("#nutritional-status input[value=163302]").prop("checked", true);
@@ -608,6 +620,35 @@ function displayRecentBmi() {
             }
         }
     }
+}
+//Recorded stability assessment criteria box
+function recordedStabilityAssessmentIndicators() {
+    //1. Age
+    jq('#age:text').val(pAge);
+    //2. BMI
+    /* displayRecentBmi() */
+    //3. Most recent VL
+
+    console.log("Cuse VL_RESULT ==> "+VL_RESULT);
+    console.log("Cuse LDL_RESULT ==> "+LDL_RESULT);
+    if(VL_RESULT &gt; 1){
+        jq('#vl-value:text').val(VL_RESULT);
+    }else if (LDL_RESULT == "LDL" ) {
+        jq('#vl-value:text').val(LDL_RESULT);
+    }else{
+        jq('#vl-value:text').val("Not available");
+    }
+    //4. Active OIs
+
+    //5. Missed appointment last 6 months
+
+    //5. Completed 6 months IPT
+    if(IPT_COMPLETED == 'true') {
+        jq('#ipt-completion:text').val("YES");
+    }else{
+        jq('#ipt-completion:text').val("NO");
+    }
+
 }
 function onLmpChange() {
     jq('#pregnancyOption :input').prop('disabled', false);
@@ -1506,7 +1547,7 @@ var stabilitySelected = function() {
     var stabilityStatus = getValue('stability.value');
     var tca_reason = getField('returnVisitReason.value').val();
     var refillDate = jq("#refill-date").hide();
-    if (stabilityStatus == "false" || stabilityStatus == 1066){
+    if (stabilityStatus == false || stabilityStatus == 1066){
         jq("#tbl-standard").show();
         jq("#tbl-fast-track").hide();
         jq("#refill-label").hide();
@@ -1524,7 +1565,7 @@ var stabilitySelected = function() {
 var returnReasonSelected = function() {
     var stabilityStatus = getValue('stability.value');
     var tca_reason = getField('returnVisitReason.value').val();
-    if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521){
+    if (stabilityStatus == true &amp;&amp; tca_reason == 160521){
         jq("#refill-label").show();
         jq("#refill-date").show();
         jq('#refill-label input').prop('disabled', false);
@@ -1909,6 +1950,7 @@ beforeSubmit.push(function() {
     var cacxScreened = getValue('cacx-screening.value');
     var stiScreened = getValue('screened-sti.value');
     var stiPartnerNotification = getValue('sti-partnerNotification.value');
+
     if (prophylaxis_Used == false) {
         getField('prophylaxis-used.error').html('Please specify Prophylaxis used.').show();
         return false;
@@ -1943,11 +1985,11 @@ beforeSubmit.push(function() {
     }else{
         getField('dapsone-dispensed.error').html('Please specify if Dapsone was dispensed.').hide();
     }
-    if (PATIENT_ON_ART == "true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART == true &amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false ) {
-        getField('arv-adherence.error').html('Please specify ARV adherence.').show();
+    if (PATIENT_ON_ART =="true"&amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true"&amp;&amp; personPresent == SELF &amp;&amp; arvAdherence == false ) {
+        getField('arv-adherence.error').html('Please conduct ARV adherence.').show();
         return false;
     }else{
-        getField('arv-adherence.error').html('Please specify ARV adherence.').hide();
+        getField('arv-adherence.error').html('Please conduct ARV adherence.').hide();
     }
     if (pgender == 'F') {     //Cacx screening on over 18 years is mandatory
         if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
@@ -2102,7 +2144,7 @@ beforeSubmit.push(function() {
                             //Stability assessment
                             var stabilityStatus = getValue('stability.value');
                             var tca_reason = getField('returnVisitReason.value').val();
-                            if (stabilityStatus == "false" || stabilityStatus == 1066){
+                            if (stabilityStatus == false || stabilityStatus == 1066){
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
                                 jq('#standard select').prop('disabled', false);
@@ -3536,7 +3578,7 @@ beforeSubmit.push(function() {
                                 <table cellpadding="0" border="0" cellspacing="5">
                                     <tr>
                                         <td>Current Regimen:</td>
-                                        <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+                                        <td colspan="2"><span id="current-regimen" class="value"></span></td>
                                     </tr>
                                 </table>
                                 <table class = "on-art">
@@ -3682,7 +3724,7 @@ beforeSubmit.push(function() {
                 <fieldset class="stability-details">
                     <legend>Stability assessment</legend>
                     <table>
-                        <tr>
+                       <tr>
                             <td>
                                 Is the patient stable?  &#160;&#160;&#160;&#160;
                             </td>
@@ -3691,7 +3733,60 @@ beforeSubmit.push(function() {
                                     id="stability"/>
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
-                        </tr>
+                           <td></td><td></td><td></td>
+                        <td>
+                                <table border="1">
+                                    <tr>
+                                        <td>
+                                            <u>
+                                               Recorded stability assessment indicators:
+                                            </u>
+                                              <tr>
+                                                 <td>
+                                            Age:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="age" id="age" readonly="True" />
+                                                 </td>
+                                              <td>
+                                                  BMI:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                  <input type="text" name="bmi-value" id="bmi-value" readonly="True" />
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Current regimen:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input type="text" name="current-regimen-stability" id="current-regimen-stability" readonly="True" />
+                                                   </td>
+                                                <td>
+                                                    Duration of current regimen (Days):  &#160;&#160;
+                                                    <input type="text" name="current-regimen-duration" id="current-regimen-duration" readonly="True" />
+                                                    </td>
+                                            </tr>
+                                        <tr>
+                                            <td>
+                                                Active OIs:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                <input type="text" name="active-oi" id="active-oi" readonly="True" />
+                                                </td>
+                                            <td>
+                                            Most recent VL results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="vl-value" id="vl-value" readonly="True" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Missed appointment in last 6 months :
+                                                <input type="text" name="missed-appointment" id="missed-appointment" readonly="True" />
+
+                                                </td>
+                                            <td>
+                                            Completed 6 months IPT:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input type="text" name="ipt-completion" id="ipt-completion" readonly="True" />
+                                                </td>
+                                           </tr>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                       </tr>
                     </table>
                 </fieldset>
                 <fieldset class="tca-part">
