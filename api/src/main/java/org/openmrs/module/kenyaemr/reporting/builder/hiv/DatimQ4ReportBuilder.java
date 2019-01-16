@@ -91,8 +91,8 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         ColumnParameters m15_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
         ColumnParameters f20_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
         ColumnParameters m20_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
-        ColumnParameters f25_49 = new ColumnParameters(null, "20-49, Female", "gender=F|age=20-49");
-        ColumnParameters m25_49 = new ColumnParameters(null, "20-49, Male", "gender=M|age=20-49");
+        ColumnParameters f25_49 = new ColumnParameters(null, "25-49, Female", "gender=F|age=20-49");
+        ColumnParameters m25_49 = new ColumnParameters(null, "25-49, Male", "gender=M|age=20-49");
         ColumnParameters f_Over_50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
         ColumnParameters m_Over_50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
         ColumnParameters colTot = new ColumnParameters(null, "Total", "");
@@ -260,13 +260,13 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_PVLS_SUPP_BF_UNDOCUMENTED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF undocumented Test", ReportUtils.map(datimQ4Indicators.bfOnARTSuppUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Routine*/
-        //EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppRoutineVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppRoutineVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Targeted*/
-        //EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppTargetedVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppTargetedVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Undocumented*/
-        //EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_UNDOCUMENTED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppUndocumentedVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_UNDOCUMENTED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.onARTSuppUndocumentedVLAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         /*TX_PVLS (Denominator)*/
 
@@ -303,14 +303,14 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED", "Number of patients on ART with  viral load results  BF undocumented Test", ReportUtils.map(datimQ4Indicators.breastfeedingOnARTUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with viral load Routine results in the past 12 months. Disaggregated by Age/Sex*/
-        //EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_ROUTINE", "On ART with VL routine test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimQ4Indicators.onARTRoutineVLLast12MonthsbyAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_ROUTINE", "On ART with VL routine test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimQ4Indicators.onARTRoutineVLLast12MonthsbyAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
-        /*TX_PVLS Number of adults and pediatric patients on ART with viral load Targeted results in the past 12 months. Disaggregated by Age/Sex*//*
+        /*TX_PVLS Number of adults and pediatric patients on ART with viral load Targeted results in the past 12 months. Disaggregated by Age/Sex*/
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_TARGETED", "On ART with VL targeted test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimQ4Indicators.onARTTargetedVLLast12MonthsbyAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
-        /*TX_PVLS Number of adults and pediatric patients on ART with viral load undocumented results in the past 12 months. Disaggregated by Age/Sex*//*
+        /*TX_PVLS Number of adults and pediatric patients on ART with viral load undocumented results in the past 12 months. Disaggregated by Age/Sex*/
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_UNDOCUMENTED", "On ART with VL undocumented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimQ4Indicators.onARTUndocumentedVLLast12MonthsbyAgeSex(),indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
-*/
+
 
         return cohortDsd;
 
