@@ -371,6 +371,14 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         /*TX_PVLS Number of adults and pediatric patients on ART with viral load undocumented results in the past 12 months. Disaggregated by Age/Sex*/
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_UNDOCUMENTED", "On ART with VL undocumented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimQ4Indicators.onARTUndocumentedVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
 
+        /*TX_ML Number of ART patients with no clinical contact since their last expected contact*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML", "Number of ART patients with no clinical contact since their last expected contact", ReportUtils.map(datimQ4Indicators.onARTMissedAppointment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results*/
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "No. of individuals identified and tested & received results using Index testing services", ReportUtils.map(datimQ4Indicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection*/
+        EmrReportingUtils.addRow(cohortDsd, "HTS_RECENT", "Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection", ReportUtils.map(datimQ4Indicators.recentHIVInfections(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
 
         return cohortDsd;
 
