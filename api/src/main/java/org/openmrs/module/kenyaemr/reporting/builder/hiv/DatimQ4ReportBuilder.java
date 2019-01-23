@@ -199,10 +199,10 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested for Virology with no results", ReportUtils.map(datimQ4Indicators.infantsTestedForVirologyNoResult(), indParams), datimQ4AgeDisaggregationMonths, Arrays.asList("01", "02"));
 
         //Mothers already on ART at start of current pregnancy
-        cohortDsd.addColumn("PMTCT_ART_Already", "Number of Mothers Already on ART at the start of current Pregnancy", ReportUtils.map(datimQ4Indicators.mothersAlreadyOnARTAtStartOfCurrentPregnancy(), indParams), "");
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART_Already", "Number of Mothers Already on ART at the start of current Pregnancy", ReportUtils.map(datimQ4Indicators.mothersAlreadyOnARTAtStartOfCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
 
         //Mothers new on ART during current pregnancy
-        cohortDsd.addColumn("PMTCT_ART_New", "Mothers new on ART during current pregnancy", ReportUtils.map(datimQ4Indicators.mothersNewOnARTDuringCurrentPregnancy(), indParams), "");
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART_New", "Mothers new on ART during current pregnancy", ReportUtils.map(datimQ4Indicators.mothersNewOnARTDuringCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
 
         /*Tested Negative at PITC Inpatient Services*/
         EmrReportingUtils.addRow(cohortDsd, "HTC_TST_Inpatient_Negative", "Tested Negative at PITC Inpatient Services", ReportUtils.map(datimQ4Indicators.testedNegativeAtPITCInpatientServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
@@ -275,22 +275,34 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         /*HEI died with HIV-final status unknown*/
         cohortDsd.addColumn("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN", "HEI died with unknown HIV Status", ReportUtils.map(datimQ4Indicators.heiDiedWithunknownHIVStatus(), indParams), "");
 
-        /*TX_RET Number of mothers who are still alive and on treatment at 12 months after initiating ART*/
+/* TX_RET has been retired
+        */
+/*TX_RET Number of mothers who are still alive and on treatment at 12 months after initiating ART*//*
+
         cohortDsd.addColumn("TX_RET_PREGNANT", "Mothers pregnant and Still on ART upto 12 months since start", ReportUtils.map(datimQ4Indicators.alivePregnantOnARTLast12Months(), indParams), "");
 
         cohortDsd.addColumn("TX_RET_BREASTFEEDING", "Mothers breastfeeding and still on ART for 12 months since start", ReportUtils.map(datimQ4Indicators.aliveBfOnARTLast12Months(), indParams), "");
 
-        /*12 months retention Disaggregated by age/gender*/
+        */
+/*12 months retention Disaggregated by age/gender*//*
+
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALIVE", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
 
-        /*TX_RET Denominator Started ART last 12 months and breastfeeding*/
+        */
+/*TX_RET Denominator Started ART last 12 months and breastfeeding*//*
+
         cohortDsd.addColumn("TX_RET_BF", "Started ART within last 12 Months and Breastfeeding", ReportUtils.map(datimQ4Indicators.totalBFStartedARTLast12Months(), indParams), "");
 
-        /*TX_RET Denominator Started ART last 12 months and pregnant*/
+        */
+/*TX_RET Denominator Started ART last 12 months and pregnant*//*
+
         cohortDsd.addColumn("TX_RET_DENOMINATOR_PREGNANT", "Started ART with past 12 Months and pregnant", ReportUtils.map(datimQ4Indicators.totalPregnantStartedARTLast12Months(), indParams), "");
 
-        /*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*/
+        */
+/*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*//*
+
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_ART_ALL", "All started ART with last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.allOnARTLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+*/
 
         /*TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
         cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimQ4Indicators.onARTSuppRoutineVLLast12Months(), indParams), "");
