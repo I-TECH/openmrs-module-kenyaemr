@@ -1903,4 +1903,71 @@ public class ETLDatimQ4CohortLibrary {
         return cd;
 
     }
+
+    /*TX_ML Number of ART patients with no clinical contact since their last expected contact */
+    public CohortDefinition onARTMissedAppointment() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from (select fup.visit_date, fup.patient_id, min(e.visit_date)  as enroll_date,\n" +
+                "             max(fup.visit_date) as latest_vis_date,\n" +
+                "             mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11) as latest_tca\n" +
+                "      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "             inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
+                "             inner join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
+                "             left join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id = fup.patient_id and d.program_name ='HIV'\n" +
+                "      where\n" +
+                "          fup.visit_date <= curdate()\n" +
+                "      group by fup.patient_id\n" +
+                "      having (\n" +
+                "                 (((date(latest_tca) <= :startDate) and\n" +
+                "                   (date(latest_vis_date) < date(latest_tca)))))) e;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_ML");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of ART patients with no clinical contact since their last expected contact");
+        return cd;
+
+    }
+
+    /*HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results */
+    public CohortDefinition contactIndexTesting() {
+
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where t.voided=0 and\n" +
+                "                              c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617) and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of Contacts tested through Index Services");
+        return cd;
+
+    }
+
+    /*HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection */
+    public CohortDefinition recentHIVInfections() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
+                "inner join kenyaemr_etl.etl_patient_demographics d\n" +
+                "on d.patient_id = hts.patient_id and YEAR(:startDate)-YEAR(D.DOB)>= 15\n" +
+                "where hts.final_test_result = \"Positive\" group by hts.patient_id having mid(min(concat(hts.visit_date,hts.patient_id)),1,10) > :startDate;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_RECENT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Persons ≥15 years newly diagnosed with HIV-1 infection");
+        return cd;
+
+    }
+
+
 }

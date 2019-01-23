@@ -596,4 +596,28 @@ public class ETLDatimQ4IndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
+        /**
+     * TX_ML Number of ART patients with no clinical contact since their last expected contact
+     */
+    public CohortIndicator onARTMissedAppointment() {
+        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTMissedAppointment(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
+     */
+    public CohortIndicator testedThroughIndexServices() {
+        return cohortIndicator("Number of individuals who were identified and tested using Index testing services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.contactIndexTesting(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection
+     */
+    public CohortIndicator recentHIVInfections() {
+        return cohortIndicator("Persons aged ≥15 years newly diagnosed with HIV-1 infection", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.recentHIVInfections(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
 }
