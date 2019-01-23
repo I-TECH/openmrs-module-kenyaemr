@@ -1533,14 +1533,14 @@ var stabilitySelected = function() {
     var stabilityStatus = getValue('stability.value');
     var tca_reason = getField('returnVisitReason.value').val();
     var refillDate = jq("#refill-date").hide();
-    if (stabilityStatus == false || stabilityStatus == 1066){
+    if (stabilityStatus == "false" || stabilityStatus == 1066){
         jq("#tbl-standard").show();
         jq("#tbl-fast-track").hide();
         jq("#refill-label").hide();
         jq("#refill-date").hide();
         jq('#standard select').prop('disabled', false);
         jq('#fast-track select').prop('disabled', true);
-        clearHiddenSections([refillDate]);
+       // clearHiddenSections([refillDate]);
     }else {
         jq("#tbl-fast-track").show();
         jq("#tbl-standard").hide();
@@ -1551,7 +1551,7 @@ var stabilitySelected = function() {
 var returnReasonSelected = function() {
     var stabilityStatus = getValue('stability.value');
     var tca_reason = getField('returnVisitReason.value').val();
-    if (stabilityStatus == true &amp;&amp; tca_reason == 160521){
+    if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521){
         jq("#refill-label").show();
         jq("#refill-date").show();
         jq('#refill-label input').prop('disabled', false);
@@ -2130,7 +2130,7 @@ beforeSubmit.push(function() {
                             //Stability assessment
                             var stabilityStatus = getValue('stability.value');
                             var tca_reason = getField('returnVisitReason.value').val();
-                            if (stabilityStatus == false || stabilityStatus == 1066){
+                            if (stabilityStatus == "false" || stabilityStatus == 1066){
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
                                 jq('#standard select').prop('disabled', false);
@@ -3719,8 +3719,8 @@ beforeSubmit.push(function() {
                                     id="stability"/>
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
-                           <td></td><td></td><td></td>
-                        <td>
+                           <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                           <td>
                                 <table border="1">
                                     <tr>
                                         <td>

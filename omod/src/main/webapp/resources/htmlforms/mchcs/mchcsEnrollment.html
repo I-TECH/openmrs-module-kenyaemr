@@ -212,7 +212,6 @@
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/currentMothersArvRegimen.action', { patientId: patientId, now: encounterDate })
                 .done(function(data) {
                     var msg = data.regimen;
-               console.log("Current regimen ==>"+msg);
                     if(msg != ""){
                         jq("#onART input[value=1065]").prop("checked", true);
                         jq('#current-mothers-regimen').html(msg);

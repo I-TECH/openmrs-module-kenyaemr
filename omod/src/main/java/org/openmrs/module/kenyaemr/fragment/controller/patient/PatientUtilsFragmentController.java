@@ -184,6 +184,7 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Look for the mothers name for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of mothers
 	 */
 	public SimpleObject[] getMothers(@RequestParam("patientId") Patient patient,UiUtils ui) {
@@ -206,6 +207,7 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Look for the fathers name for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of fathers
 	 */
 	public SimpleObject[] getFathers(@RequestParam("patientId") Patient patient,UiUtils ui) {
@@ -227,6 +229,7 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Look for the guardians name for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of guardians
 	 */
 	public SimpleObject[] getGuardians(@RequestParam("patientId") Patient patient,UiUtils ui) {
@@ -244,6 +247,7 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Check mothers is alive for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of mothers
 	 */
 	public SimpleObject[] getMothersLiveStatus(@RequestParam("patientId") Patient patient,UiUtils ui) {
@@ -269,6 +273,7 @@ public class PatientUtilsFragmentController {
 	/**
 	 * Check mothers is CCC number for an infant from the relationship defined
 	 * @param patient
+	 * @param now
 	 * @return list of mothers
 	 */
 
@@ -337,8 +342,7 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 								regimenName = o.get("regimenShortDisplay").toString();
 								if (regimenName != null) {
 									obj = SimpleObject.create(
-											"regimen", regimenName != null ? regimenName : null
-
+											"regimen", regimenName
 									);
 								}
 							}
@@ -355,12 +359,17 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 						if(Context.getPatientService().getPatient(personId) != null){
 							Patient mother = Context.getPatientService().getPatient(personId);
 							Concept arvs = regimenManager.getMasterSetConcept("ARV");
-							RegimenChangeHistory history = RegimenChangeHistory.forPatient(mother, arvs);
-							RegimenChange current = history.getLastChangeBeforeDate(now);
-							 obj = SimpleObject.create(
-									"regimen", current != null ? kenyaEmrUi.formatRegimenShort(current.getStarted(), ui) : null,
-									"duration", current != null ? kenyaUi.formatInterval(current.getDate(), now) : null
-							);
+							String regimenName = null;
+							Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(mother, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+							if (lastDrugRegimenEditorEncounter != null) {
+								SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+								regimenName = o.get("regimenShortDisplay").toString();
+								if (regimenName != null) {
+									obj = SimpleObject.create(
+											"regimen", regimenName
+									);
+								}
+							}
 						}
 					}
 				}
