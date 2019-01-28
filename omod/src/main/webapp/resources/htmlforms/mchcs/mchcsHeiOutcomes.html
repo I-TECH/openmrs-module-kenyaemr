@@ -28,7 +28,12 @@
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td align="left">Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>
+					Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -40,7 +45,8 @@
 				</tr>
 				<tr>
 					<td>Exit Date</td>
-					<td><encounterDate  id="exitDate" showTime="true" /></td>
+					<!--<td><encounterDate  id="exitDate" showTime="true" /></td>-->
+					<td id ="exitDate"><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="heiOutcomeDate"/></td>
 				</tr>
 				<tr>
 					<td>HIV Status</td>
