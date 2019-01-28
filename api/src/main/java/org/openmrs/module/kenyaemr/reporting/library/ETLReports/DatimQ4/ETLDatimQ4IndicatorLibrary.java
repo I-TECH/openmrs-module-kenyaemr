@@ -275,7 +275,7 @@ public class ETLDatimQ4IndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator indexTestedPositive() {
-        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indextestedPositive(),
+        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indexTestedPositive(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
