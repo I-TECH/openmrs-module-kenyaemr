@@ -35,6 +35,21 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Currently on ART", ReportUtils.map(datimQ4Cohorts.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
+     * @return the indicator
+     */
+    public CohortIndicator pregnantCurrentlyOnART() {
+        return cohortIndicator("Pregnant Currently on ART", ReportUtils.map(datimQ4Cohorts.pregnantCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator bfMothersCurrentlyOnART() {
+        return cohortIndicator("BF Currently on ART", ReportUtils.map(datimQ4Cohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * Number of patients who were started on Art
@@ -275,7 +290,7 @@ public class ETLDatimQ4IndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator indexTestedPositive() {
-        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indexTestedPositive(),
+        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.indextestedPositive(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -315,7 +330,7 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Newly Started ART While Confirmed TB and / or TB Treated", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTByAgeSex(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-/*Annual Cohort Indicators*/
+    /*Annual Cohort Indicators*/
     /**
      * PMTCT_FO Number of HIV-exposed infants who were born 24 months prior to the reporting period
      * @return the indicator
@@ -507,7 +522,7 @@ public class ETLDatimQ4IndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /*TX_PVLS (Denominator)*//*
-    *//**
+     *//**
      * TX_PVLS Total Patients on Routine ART with a viral load result in the past 12 months.
      */
     public CohortIndicator onARTRoutineVLLast12Months() {
@@ -596,7 +611,7 @@ public class ETLDatimQ4IndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-        /**
+    /**
      * TX_ML Number of ART patients with no clinical contact since their last expected contact
      */
     public CohortIndicator onARTMissedAppointment() {

@@ -174,14 +174,23 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 
         /*EmrReportingUtils.addRow(cohortDsd, "TX_New", "Started on Art", ReportUtils.map(datimQ4Indicators.startedOnArt(), indParams), allAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"));*/
 
-        cohortDsd.addColumn("TX_New_TB_co_infected", "Started on ART and TB co-infected", ReportUtils.map(datimQ4Indicators.startedOnARTAndTBCoinfected(), indParams), "");
-        cohortDsd.addColumn("TX_New_pregnant", "Started on ART and pregnant ", ReportUtils.map(datimQ4Indicators.startedOnARTAndPregnant(), indParams), "");
+        /*cohortDsd.addColumn("TX_New_TB_co_infected", "Started on ART and TB co-infected", ReportUtils.map(datimQ4Indicators.startedOnARTAndTBCoinfected(), indParams), "");*/
+        /*cohortDsd.addColumn("TX_New_pregnant", "Started on ART and pregnant ", ReportUtils.map(datimQ4Indicators.startedOnARTAndPregnant(), indParams), "");*/
 
         //4 HIV Negative at ANC
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Negative", "Clients tested HIV Negative at ANC", ReportUtils.map(datimQ4Indicators.patientsTestNegativeAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
 
         //4 HIV Positive at ANC
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimQ4Indicators.patientsTestPositiveAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
+        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_AGE_SEX", "Number of Adults and Children with HIV infection receiving ART", ReportUtils.map(datimQ4Indicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        //Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
+        cohortDsd.addColumn("TX_CURR_PREGNANT", "Pregnant women with HIV infection receiving ART", ReportUtils.map(datimQ4Indicators.pregnantCurrentlyOnART(), indParams), "");
+
+        //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART)
+        cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimQ4Indicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //Number of clients with known HIV status at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Numerator", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
@@ -275,34 +284,34 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         /*HEI died with HIV-final status unknown*/
         cohortDsd.addColumn("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN", "HEI died with unknown HIV Status", ReportUtils.map(datimQ4Indicators.heiDiedWithunknownHIVStatus(), indParams), "");
 
-/* TX_RET has been retired
-        */
-/*TX_RET Number of mothers who are still alive and on treatment at 12 months after initiating ART*//*
+        /* TX_RET has been retired
+         */
+        /*TX_RET Number of mothers who are still alive and on treatment at 12 months after initiating ART*//*
 
         cohortDsd.addColumn("TX_RET_PREGNANT", "Mothers pregnant and Still on ART upto 12 months since start", ReportUtils.map(datimQ4Indicators.alivePregnantOnARTLast12Months(), indParams), "");
 
         cohortDsd.addColumn("TX_RET_BREASTFEEDING", "Mothers breastfeeding and still on ART for 12 months since start", ReportUtils.map(datimQ4Indicators.aliveBfOnARTLast12Months(), indParams), "");
 
         */
-/*12 months retention Disaggregated by age/gender*//*
+        /*12 months retention Disaggregated by age/gender*//*
 
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALIVE", "12 Months ART retention by Age / sex", ReportUtils.map(datimQ4Indicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
 
         */
-/*TX_RET Denominator Started ART last 12 months and breastfeeding*//*
+        /*TX_RET Denominator Started ART last 12 months and breastfeeding*//*
 
         cohortDsd.addColumn("TX_RET_BF", "Started ART within last 12 Months and Breastfeeding", ReportUtils.map(datimQ4Indicators.totalBFStartedARTLast12Months(), indParams), "");
 
         */
-/*TX_RET Denominator Started ART last 12 months and pregnant*//*
+        /*TX_RET Denominator Started ART last 12 months and pregnant*//*
 
         cohortDsd.addColumn("TX_RET_DENOMINATOR_PREGNANT", "Started ART with past 12 Months and pregnant", ReportUtils.map(datimQ4Indicators.totalPregnantStartedARTLast12Months(), indParams), "");
 
         */
-/*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*//*
+        /*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*//*
 
         EmrReportingUtils.addRow(cohortDsd, "TX_RET_ART_ALL", "All started ART with last 12 Months by Age / sex", ReportUtils.map(datimQ4Indicators.allOnARTLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
-*/
+        */
 
         /*TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
         cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimQ4Indicators.onARTSuppRoutineVLLast12Months(), indParams), "");
