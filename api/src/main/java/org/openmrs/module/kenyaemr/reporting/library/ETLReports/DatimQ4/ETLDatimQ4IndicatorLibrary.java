@@ -116,6 +116,13 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Clients with Known HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.knownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * Number of clients with known HIV status at ANC
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
+        return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * Number of clients newly enrolled for ANC
      * @return the indicator
      */

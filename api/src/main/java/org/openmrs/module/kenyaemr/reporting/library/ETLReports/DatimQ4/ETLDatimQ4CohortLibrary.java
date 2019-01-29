@@ -395,6 +395,24 @@ public class ETLDatimQ4CohortLibrary {
         return cd;
 
     }
+    public CohortDefinition unKnownStatusAtANC() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where (e.hiv_status = 1067 )\n" +
+                "and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by e.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("knownHIVStatusAtANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with Known HIV status at ANC");
+        return cd;
+
+    }
 //TODO add mch_enrollment ==>max(mch_enrollment)
     //TODO subquery to get last enrollment
     public CohortDefinition newANCClients() {
