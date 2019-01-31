@@ -397,6 +397,24 @@ public class ETLDatimQ4CohortLibrary {
         return cd;
 
     }
+    public CohortDefinition unKnownStatusAtANC() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where (e.hiv_status = 1067 )\n" +
+                "and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by e.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("knownHIVStatusAtANC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with Known HIV status at ANC");
+        return cd;
+
+    }
     //TODO add mch_enrollment ==>max(mch_enrollment) - Done
     //TODO subquery to get last enrollment
     public CohortDefinition newANCClients() {
@@ -789,11 +807,13 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Index Negative*/
     public CohortDefinition indexTestedNegative() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "join openmrs.kenyaemr_hiv_testing_patient_contact pc on pc.patient_id = hts.patient_id\n" +
-                "where hts.final_test_result =\"Negative\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                        and t.patient_given_result ='Yes' and t.final_test_result = \"Negative\"\n" +
+                "                        and t.voided=0\n" +
+                "                        and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Negative");
@@ -808,11 +828,13 @@ public class ETLDatimQ4CohortLibrary {
     /*PITC Index Positive*/
     public CohortDefinition indextestedPositive() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "join openmrs.kenyaemr_hiv_testing_patient_contact pc on pc.patient_id = hts.patient_id\n" +
-                "where hts.final_test_result =\"Positive\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                        and t.patient_given_result ='Yes' and t.final_test_result = \"Positive\"\n" +
+                "                        and t.voided=0\n" +
+                "                        and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTC_TST_Index_Positive");

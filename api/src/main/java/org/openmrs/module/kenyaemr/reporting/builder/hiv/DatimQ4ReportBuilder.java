@@ -193,10 +193,11 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimQ4Indicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //Number of clients with known HIV status at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Numerator", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
-
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        //Number of clients with known HIV status at ANC
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
         //Newly enrolled to ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STA_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
 
         //Infants tested Negative for Virology
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Negative", "Infants tested Negative for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedNegativeForVirology(), indParams), datimQ4AgeDisaggregationMonths, Arrays.asList("01", "02"));

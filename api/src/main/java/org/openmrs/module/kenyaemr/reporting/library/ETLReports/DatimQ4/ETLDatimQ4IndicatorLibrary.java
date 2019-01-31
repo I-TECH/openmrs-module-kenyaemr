@@ -35,6 +35,21 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Currently on ART", ReportUtils.map(datimQ4Cohorts.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
+     * @return the indicator
+     */
+    public CohortIndicator pregnantCurrentlyOnART() {
+        return cohortIndicator("Pregnant Currently on ART", ReportUtils.map(datimQ4Cohorts.pregnantCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator bfMothersCurrentlyOnART() {
+        return cohortIndicator("BF Currently on ART", ReportUtils.map(datimQ4Cohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * Number of patients who were started on Art
@@ -114,6 +129,13 @@ public class ETLDatimQ4IndicatorLibrary {
      */
     public CohortIndicator clientsWithKnownHIVStatusAtANC() {
         return cohortIndicator("Clients with Known HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.knownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of clients with known HIV status at ANC
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
+        return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Number of clients newly enrolled for ANC
@@ -208,23 +230,6 @@ public class ETLDatimQ4IndicatorLibrary {
     public CohortIndicator testedPositiveAtPITCPMTCTPostANC1() {
         return cohortIndicator("Tested Positive at PITC PMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.positiveAtPITCPMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
-     * Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
-     * @return the indicator
-     */
-    public CohortIndicator pregnantCurrentlyOnART() {
-        return cohortIndicator("Pregnant Currently on ART", ReportUtils.map(datimQ4Cohorts.pregnantCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART
-     * @return the indicator
-     */
-    public CohortIndicator bfMothersCurrentlyOnART() {
-        return cohortIndicator("BF Currently on ART", ReportUtils.map(datimQ4Cohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
     /**
      * Number Tested Positive at PITC Paediatric services
      * @return the indicator
