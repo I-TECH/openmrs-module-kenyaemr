@@ -188,7 +188,10 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
 //Number of clients with known HIV status at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
         //Newly enrolled to ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), "");
+
+        //Infants tested Negative for Virology
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_SampleTaken", "Infants tested Negative for Virology", ReportUtils.map(datimQ4Indicators.infantsSampleTakenForVirology(), indParams), datimQ4AgeDisaggregationMonths, Arrays.asList("01", "02"));
 
         //Infants tested Negative for Virology
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Negative", "Infants tested Negative for Virology", ReportUtils.map(datimQ4Indicators.infantsTestedNegativeForVirology(), indParams), datimQ4AgeDisaggregationMonths, Arrays.asList("01", "02"));

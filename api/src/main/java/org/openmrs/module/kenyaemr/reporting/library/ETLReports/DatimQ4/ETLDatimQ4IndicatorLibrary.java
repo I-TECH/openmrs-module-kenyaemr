@@ -134,10 +134,16 @@ public class ETLDatimQ4IndicatorLibrary {
      * Number of Infants with a Negative virology test result
      * @return the indicator
      */
+    public CohortIndicator infantsSampleTakenForVirology() {
+        return cohortIndicator("Infants sample taken for Virology", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.infantVirologySampleTaken(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of Infants with a Negative virology test result
+     * @return the indicator
+     */
     public CohortIndicator infantsTestedNegativeForVirology() {
         return cohortIndicator("Infants tested negative for Virology", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.infantVirologyNegativeResults(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
      * Number of Infants with a positive virology test result
      * @return the indicator
