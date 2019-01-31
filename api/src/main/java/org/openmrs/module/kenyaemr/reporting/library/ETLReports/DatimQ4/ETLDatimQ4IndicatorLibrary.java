@@ -35,21 +35,6 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Currently on ART", ReportUtils.map(datimQ4Cohorts.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
-     * Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
-     * @return the indicator
-     */
-    public CohortIndicator pregnantCurrentlyOnART() {
-        return cohortIndicator("Pregnant Currently on ART", ReportUtils.map(datimQ4Cohorts.pregnantCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART
-     * @return the indicator
-     */
-    public CohortIndicator bfMothersCurrentlyOnART() {
-        return cohortIndicator("BF Currently on ART", ReportUtils.map(datimQ4Cohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
-    }
 
     /**
      * Number of patients who were started on Art
