@@ -353,7 +353,7 @@ public class ETLDatimGreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTC_TST_Positive");
+        cd.setName("HTS_TST_Positive");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -367,7 +367,7 @@ public class ETLDatimGreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTC_TST_Negative");
+        cd.setName("HTS_TST_Negative");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
