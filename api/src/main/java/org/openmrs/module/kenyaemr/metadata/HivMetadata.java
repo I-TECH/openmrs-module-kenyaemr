@@ -55,6 +55,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String FAST_TRACK = "83fb6ab2-faec-4d87-a714-93e77a28a201";
 		public static final String FAMILY_TESTING_FORM_FOR_NEGATIVE_CLIENTS = "62846fae-8d0b-4202-827e-8b6ffd30e587";
 		public static final String DRUG_ORDER = "888dbabd-1c18-4653-82c2-e753415ab79a";
+		public static final String TREATMENT_PREPARATION = "782a4263-3ac9-4ce8-b316-534571233f12";
 
 	}
 
@@ -92,6 +93,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("ART Fast Track", "ART Fast Track Form", _EncounterType.ART_REFILL, "1", _Form.FAST_TRACK));
 		install(form("Family and Partner Testing Results", "Family and Partner Testing for HIV Negative Patients", _EncounterType.FAMILY_AND_PARTNER_TESTING, "1", _Form.FAMILY_TESTING_FORM_FOR_NEGATIVE_CLIENTS));
 		install(form("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER, "1", _Form.DRUG_ORDER));
+		install(form("ART Preparation", "ART Preparation", _EncounterType.HIV_CONSULTATION, "1", _Form.TREATMENT_PREPARATION));
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));

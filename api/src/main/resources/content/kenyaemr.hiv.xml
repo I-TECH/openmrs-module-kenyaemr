@@ -22,6 +22,11 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.hiv.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />
+		<property name="patientForms">
+			<set>
+				<ref bean="kenyaemr.hiv.form.treatmentPreparation" />
+			</set>
+		</property>
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
@@ -94,6 +99,19 @@
 		<property name="order" value="200011" />
 	</bean>
 
+	<!-- HIV treatment preparation  -->
+	<bean id="kenyaemr.hiv.form.treatmentPreparation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="782a4263-3ac9-4ce8-b316-534571233f12"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/treatmentPreparation.html"/>
+		<property name="order" value="400"/>
+	</bean>
 	<!-- Clinical Encounter - HIV Addendum -->
 	<bean id="kenyaemr.hiv.form.clinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
