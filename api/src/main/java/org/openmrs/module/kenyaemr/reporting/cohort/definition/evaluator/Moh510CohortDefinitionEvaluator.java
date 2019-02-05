@@ -41,25 +41,9 @@ public class Moh510CohortDefinitionEvaluator implements EncounterQueryEvaluator 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "select encounter_id from kenyaemr_etl.etl_hei_immunization \n" +
-				"where \n" +
-				"\tvisit_date between :startDate and :endDate OR \n" +
-				"\tBCG between :startDate and :endDate OR \n" +
-				"\tOPV_birth between :startDate and :endDate OR \n" +
-				"\tOPV_1 between :startDate and :endDate OR \n" +
-				"\tOPV_2 between :startDate and :endDate OR \n" +
-				"\tOPV_3 between :startDate and :endDate OR \n" +
-				"\tIPV between :startDate and :endDate OR \n" +
-				"\tDPT_Hep_B_Hib_1 between :startDate and :endDate OR \n" +
-				"\tDPT_Hep_B_Hib_2 between :startDate and :endDate OR \n" +
-				"\tDPT_Hep_B_Hib_3 between :startDate and :endDate OR \n" +
-				"\tPCV_10_1 between :startDate and :endDate OR \n" +
-				"\tPCV_10_2 between :startDate and :endDate OR \n" +
-				"\tPCV_10_3 between :startDate and :endDate OR \n" +
-				"\tROTA_1 between :startDate and :endDate OR \n" +
-				"\tROTA_2 between :startDate and :endDate OR \n" +
-				"\tMeasles_rubella_1 between :startDate and :endDate OR \n" +
-				"\tMeasles_rubella_2 between :startDate and :endDate  ; ";
+		String qry = "select i.encounter_id \n" +
+				"from kenyaemr_etl.etl_hei_immunization i inner join kenyaemr_etl.etl_hei_enrollment e on e.patient_id=i.patient_id\n" +
+				"where e.visit_date between date(:startDate) and (:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
