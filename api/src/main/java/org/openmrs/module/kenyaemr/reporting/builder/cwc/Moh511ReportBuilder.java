@@ -9,27 +9,19 @@
  */
 package org.openmrs.module.kenyaemr.reporting.builder.cwc;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.mchcs.DewormingCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAttributeCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.library.moh510.Moh510CohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -43,39 +35,27 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 @Component
 @Builds({"kenyaemr.mchcs.report.moh511"})
-public class Moh511ReportBuilder extends AbstractHybridReportBuilder{
+public class Moh511ReportBuilder extends AbstractReportBuilder {
 
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
-	
-	protected Mapped<CohortDefinition> childrenEnrolledInCWCCohort() {
-		CohortDefinition cd = new Moh510CohortLibrary().enrolledInCWC();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));		
-		return ReportUtils.map(cd, "onOrAfter=${startDate},onOrBefore=${endDate}");
-	}
 
     @SuppressWarnings("unchecked")
 	@Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
-
-    	Date reportingStartDate = report.getParameter("startDate") != null && !report.getParameter("startDate").equals("") ? (Date)report.getParameter("startDate").getDefaultValue(): null;
-    	Date reportingEndDate = report.getParameter("endDate") != null && !report.getParameter("endDate").equals("") ? (Date)report.getParameter("endDate").getDefaultValue(): null;
-    	
-        PatientDataSetDefinition moh510PDSD = moh510DataSetDefinition("cwcRegister", reportingStartDate, reportingEndDate);
-        moh510PDSD.addRowFilter(childrenEnrolledInCWCCohort());
-        DataSetDefinition moh510DSD = moh510PDSD;
-
         return Arrays.asList(
-                ReportUtils.map(moh510DSD, "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(moh510DataSetDefinition("cwcRegister"), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -88,11 +68,8 @@ public class Moh511ReportBuilder extends AbstractHybridReportBuilder{
 		);
 	}
 	
-	protected PatientDataSetDefinition moh510DataSetDefinition(String datasetName,Date reportingStartDate, Date reportingEndDate) {
-		EncounterAndObsDataSetDefinition edsd = new EncounterAndObsDataSetDefinition();
-		edsd.setName(datasetName);
-
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
+	protected DataSetDefinition moh510DataSetDefinition(String datasetName) {
+        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition(datasetName);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
         
@@ -103,16 +80,16 @@ public class Moh511ReportBuilder extends AbstractHybridReportBuilder{
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
         dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
-        dsd.addColumn("Revisit this year", new ObsForPersonDataDefinition("Revisit this year", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
+        //dsd.addColumn("Revisit this year", new ObsForPersonDataDefinition("Revisit this year", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("CWC Number", identifierDef, "");
-        dsd.addColumn("Full Name", nameDef, "");
+        dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Age", new AgeDataDefinition(), "");
-        dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
+        dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Sublocation", new CalculationDataDefinition("Sublocation", new PersonAddressCalculation("sublocation")), "", new RDQACalculationResultConverter());       
         dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());       
         dsd.addColumn("Telephone Number", new CalculationDataDefinition("Telephone Number", new PersonAttributeCalculation("Telephone contact")), "", new RDQACalculationResultConverter());
 
-        dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
+       /* dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("Weight category", new ObsForPersonDataDefinition("Weight category", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_FOR_AGE_STATUS),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("height/length in cm", new ObsForPersonDataDefinition("height/length in cm", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.HEIGHT_CM),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("Stunted", new ObsForPersonDataDefinition("Stunted", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NUTRITIONAL_STUNTING),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
@@ -126,16 +103,11 @@ public class Moh511ReportBuilder extends AbstractHybridReportBuilder{
         dsd.addColumn("Counseled on", new ObsForPersonDataDefinition("Counseled on", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.COUNSELING_ORDERS),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("Referrals from", new ObsForPersonDataDefinition("Referrals from", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REFERRED_FROM),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("Referrals to", new ObsForPersonDataDefinition("Referrals to", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REFERRED_TO),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        //dsd.addColumn("Issued itn net", new ObsForPersonDataDefinition("Issued itn net", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
+        *///dsd.addColumn("Issued itn net", new ObsForPersonDataDefinition("Issued itn net", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         //dsd.addColumn("Hiv testing", new ObsForPersonDataDefinition("Hiv testing", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         
         return dsd;
     }
 
-	@Override
-	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		
-		return childrenEnrolledInCWCCohort();
-	}
 
 }
