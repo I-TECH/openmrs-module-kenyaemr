@@ -7,41 +7,62 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.cwc;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+
+import java.util.Date;
 
 /**
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class EverTestedForHIVDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class DateOfVaccineDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
+
+    @ConfigurationProperty
+    private String vaccineTableColumn;
 
     /**
      * Default Constructor
      */
-    public EverTestedForHIVDataDefinition() {
+    public DateOfVaccineDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public EverTestedForHIVDataDefinition(String name) {
+    public DateOfVaccineDataDefinition(String name) {
+
         super(name);
     }
 
     //***** INSTANCE METHODS *****
 
+
+    public String getVaccineTableColumn() {
+        return vaccineTableColumn;
+    }
+
+    public void setVaccineTableColumn(String vaccineTableColumn) {
+        this.vaccineTableColumn = vaccineTableColumn;
+    }
+
+    public DateOfVaccineDataDefinition(String name, String vaccineTableColumn) {
+        super(name);
+        this.vaccineTableColumn = vaccineTableColumn;
+    }
+
     /**
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Double.class;
+        return Date.class;
     }
 }

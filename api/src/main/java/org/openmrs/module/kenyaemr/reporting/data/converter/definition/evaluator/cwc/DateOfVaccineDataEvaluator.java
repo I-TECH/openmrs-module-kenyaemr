@@ -7,35 +7,41 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cwc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cwc.DateOfVaccineDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
-@Handler(supports=EverTestedForHIVDataDefinition.class, order=50)
-public class EverTestedForHIVDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=DateOfVaccineDataDefinition.class, order=50)
+public class DateOfVaccineDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
+        DateOfVaccineDataDefinition def = (DateOfVaccineDataDefinition) definition;
 
-        String qry = "select encounter_id, ever_tested_for_hiv from kenyaemr_etl.etl_hts_test ";
+        String tableColumn = def.getVaccineTableColumn();
 
+        String qry = "select encounter_id, (CASE WHEN :vaccineColumn != '' THEN STR_TO_DATE(:vaccineColumn, '%Y-%m-%d') ELSE NULL END) from kenyaemr_etl.etl_hei_immunization ";
+
+        qry = qry.replaceAll(":vaccineColumn", tableColumn);
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);

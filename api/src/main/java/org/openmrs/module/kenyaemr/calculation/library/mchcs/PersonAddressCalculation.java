@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
@@ -17,13 +18,15 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class PersonAddressCalculation extends AbstractPatientCalculation {
 
 	private String address;
-	
+
 
 	public PersonAddressCalculation(String address) {
 		this.address = address.toLowerCase();
@@ -42,57 +45,22 @@ public class PersonAddressCalculation extends AbstractPatientCalculation {
 			String personAddressString = null;
 
 			Patient patient = Context.getPatientService().getPatient(ptId);
-			
-			if (this.address == null) {
+			PersonAddress personAddress = patient.getPersonAddress();
+			List<String> addresses = new ArrayList<String>();
 
-				PersonAddress personAddress = patient.getPersonAddress();
-				
-				if (personAddress != null) {
-
-					String landmark = personAddress.getAddress2();
-					String estate = personAddress.getCityVillage();
-
-					personAddressString = "";
-					if (landmark != null && !landmark.equals("")) {
-						personAddressString += landmark;
-					}
-
-					if (estate != null && !estate.equals("")) {
-						personAddressString += " | ";
-						personAddressString += estate;
-					}
-				}
+			// get village
+			if (personAddress.getCityVillage() != null) {
+				addresses.add(patient.getPersonAddress().getCityVillage());
 			}
-			else {
-				
-				if (this.address.equals("province")) {
-					personAddressString = patient.getPersonAddress().getStateProvince();
-				}
-				
-				if (this.address.equals("district")) {
-					personAddressString = patient.getPersonAddress().getCountyDistrict();
-				}
 
-				if (this.address.equals("division")) {
-					personAddressString = patient.getPersonAddress().getAddress4();
-				}
+			// get landmark
+			if (personAddress.getAddress2() != null) {
+				addresses.add(patient.getPersonAddress().getAddress2());
+			}
 
-				if (this.address.equals("location")) {
-					personAddressString = patient.getPersonAddress().getAddress6();
-				}				
+			if (addresses.size() > 0) {
+				personAddressString = StringUtils.join(addresses, "|");
 
-				if (this.address.equals("sublocation")) {
-					personAddressString = patient.getPersonAddress().getAddress5();
-				}
-
-				if (this.address.equals("landmark")) {
-					personAddressString = patient.getPersonAddress().getAddress2();
-				}
-
-				if (this.address.equals("village")) {
-					personAddressString = patient.getPersonAddress().getCityVillage();
-				}
-				
 			}
 
 			ret.put(ptId, new SimpleResult(personAddressString, this, context));

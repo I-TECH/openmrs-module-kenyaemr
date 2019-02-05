@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -29,8 +30,8 @@ import java.util.List;
 /**
  * Evaluator for patients for HTS Register
  */
-@Handler(supports = {HTSRegisterCohortDefinition.class})
-public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
+@Handler(supports = {Moh510CohortDefinition.class})
+public class Moh510CohortDefinitionEvaluator implements EncounterQueryEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -40,7 +41,25 @@ public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 1 and voided = 0 and date(visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
+		String qry = "select encounter_id from kenyaemr_etl.etl_hei_immunization \n" +
+				"where \n" +
+				"\tvisit_date between :startDate and :endDate OR \n" +
+				"\tBCG between :startDate and :endDate OR \n" +
+				"\tOPV_birth between :startDate and :endDate OR \n" +
+				"\tOPV_1 between :startDate and :endDate OR \n" +
+				"\tOPV_2 between :startDate and :endDate OR \n" +
+				"\tOPV_3 between :startDate and :endDate OR \n" +
+				"\tIPV between :startDate and :endDate OR \n" +
+				"\tDPT_Hep_B_Hib_1 between :startDate and :endDate OR \n" +
+				"\tDPT_Hep_B_Hib_2 between :startDate and :endDate OR \n" +
+				"\tDPT_Hep_B_Hib_3 between :startDate and :endDate OR \n" +
+				"\tPCV_10_1 between :startDate and :endDate OR \n" +
+				"\tPCV_10_2 between :startDate and :endDate OR \n" +
+				"\tPCV_10_3 between :startDate and :endDate OR \n" +
+				"\tROTA_1 between :startDate and :endDate OR \n" +
+				"\tROTA_2 between :startDate and :endDate OR \n" +
+				"\tMeasles_rubella_1 between :startDate and :endDate OR \n" +
+				"\tMeasles_rubella_2 between :startDate and :endDate  ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
