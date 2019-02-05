@@ -2178,7 +2178,7 @@ public class ETLDatimQ4CohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
                 "inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "on d.patient_id = hts.patient_id and YEAR(:startDate)-YEAR(D.DOB)>= 15\n" +
+                "on d.patient_id = hts.patient_id and YEAR(:startDate)-YEAR(d.DOB)>= 15\n" +
                 "where hts.final_test_result = \"Positive\" group by hts.patient_id having mid(min(concat(hts.visit_date,hts.patient_id)),1,10) > :startDate;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
