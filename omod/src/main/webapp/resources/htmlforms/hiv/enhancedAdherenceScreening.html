@@ -1,0 +1,350 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        jQuery(function($) {
+            //Defaults
+            var adherenceResponses1=jq('#adherence-1');
+            var adherenceResponses2=jq('#adherence-2');
+            jq('#adherence-2').hide();
+            clearHiddenSections([adherenceResponses1, adherenceResponses2]);
+            jq("#adherence-1").change(adherenceAssessment);
+
+
+            beforeSubmit.push(function() {
+            });
+
+        });
+        //Morisky assessment
+        var adherenceAssessment  = function () {
+            var val = jq(this).val();
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066;
+            var assessmentRadios = jq('#adherence-1').find('input[type=radio]');
+            var assessmentYesResponses = [];
+            var assessmentNoResponses = [];
+            //Fetch responses for the assessment questions
+            jq.each(assessmentRadios, function(){
+                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentYesResponses.push(this);
+                }
+                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+            });
+            //If no responses have been recorded then prompt since this assessment is mandatory
+            if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+                //Prompt to complete assessment
+            }else{
+                if(assessmentYesResponses.length &gt; 0) {
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 0) {
+                    jq("#arv-adherence input[value=159405]").prop("checked", true);
+                    jq('#adherence-2').hide();
+                }
+                if(assessmentYesResponses.length == 1 || assessmentYesResponses.length == 2 ) {
+                    jq("#arv-adherence input[value=163794]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 3 || assessmentYesResponses.length == 4 ) {
+                    jq("#arv-adherence input[value=159407]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+            }
+        }
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+        }
+    </script>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+                <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset class="gbv-scree">
+            <!--Enhance adherence screening-->
+            <fieldset id="enhanced-adherence-tab">
+                <legend>
+                   <strong> Morisky Medication Adherence Scale </strong>
+                </legend>
+                <table id="adherence-1">
+                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;     Morisky Medication Adherence Scale (MMAS - 4)
+                        <tr>
+                            <td> 1. Do you ever forget to take your medicine? </td>
+                            <td><input type="radio" name="question-1" class="question-1" value="1065"/> Yes
+                                <input type="radio" name="question-1" class="question-1" value="1066"/> No
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> 2. Are you careless at times about taking your medicine? </td>
+                            <td><input type="radio" name="question-2" class="question-2" value="1065"/> Yes
+                                <input type="radio" name="question-2" class="question-2" value="1066"/> No
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> 3. Sometimes if you feel worse when you take the medicine, do you stop taking it? </td>
+                            <td><input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                <input type="radio" name="question-3" class="question-3" value="1066"/> No
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> 4. When you feel better do you sometimes stop taking your medicine? </td>
+                            <td><input type="radio" name="question-4" class="question-4" value="1065"/> Yes
+                                <input type="radio" name="question-4" class="question-4" value="1066"/> No
+                            </td>
+                        </tr>
+                      </table>
+                <br /><hr/><br />
+                <table id="adherence-2">
+                    <tr><td> Morisky Medication Adherence Scale (MMAS - 8)</td></tr>
+                    <tr>
+                        <td> 5. Did you take the medicine yesterday? </td>
+                        <td><input type="radio" name="question-5" class="question-5" value="1065"/> Yes
+                            <input type="radio" name="question-5" class="question-5" value="1066"/> No
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 6. When you feel like your symptoms are under control, do you sometimes stop taking your medicine? </td>
+                        <td><input type="radio" name="question-6" class="question-6" value="1065"/> Yes
+                            <input type="radio" name="question-6" class="question-6" value="1066"/> No
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 7. Do you ever feel under pressure about sticking to your treatment plan? </td>
+                        <td><input type="radio" name="question-7" class="question-7" value="1065"/> Yes
+                            <input type="radio" name="question-7" class="question-7" value="1066"/> No
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 8. How often do you have difficulty remembering to take all your medications? </td>
+                        <td><select name="question-8" class="question-8">
+                            <option value="1066">Select</option>
+                            <option value="1090">Never/Rarely</option>
+                            <option value="159416">Once in a while</option>
+                            <option value="1385">Sometimes</option>
+                            <option value="1804">Usually</option>
+                            <option value="1358">All the time</option>
+                        </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+                <fieldset id="enhanced-adherence-outcome">
+                    <legend>
+                        <strong> Morisky Medication Adherence Score </strong>
+                    </legend>
+                <table>
+                    <br /><br />
+                    <tr>
+                        <td>Adherence rating</td>
+                        <td>
+                            <obs
+                                    conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                    style="radio" id="arv-adherence"
+                            />
+                        </td>
+                    </tr>
+                </table>
+                </fieldset>
+
+            <!--Viral Load -->
+            <fieldset id="viral-load-tab">
+                <legend>
+                    Viral Load
+                </legend>
+                <table id="vl-screening-questions">
+                        <tr><td><strong>Understanding Viral Load (High/Suppressed): </strong> </td></tr>
+                        <tr>
+                           <td> 1. How does the patient feel concerning the result?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164981" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 2. What does the patient think caused the high viral load?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164982" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                </table>
+            </fieldset>
+            <fieldset id="adherence-barriers-tab">
+                <legend>
+                    Barriers to adherence
+                </legend>
+                <table id="adherence-barriers-screening-questions">
+                     <tr><td><strong>Access for possible barriers to adherence </strong><br /><br /> </td></tr>
+
+                    <tr><td><strong> Cognitive Barriers </strong></td></tr>
+                        <tr>
+                            <td> 1. How does the patient feel concerning the result?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164983" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                    <tr><td><strong>Behavioural  Barriers </strong> </td></tr>
+                        <tr>
+                            <td> 1. Let the patient explan how they take their drugs, and at what time and how they store them	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164984" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 2. How does treatment fit the patient daily routines? What reminder tools are used?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164985" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 3. What does the patient do in case of visits and travels?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164986" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 4. What does the patient do incase of Side Effects?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164987" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 5. What are the most difficult situations for the patient to take drugs?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164988" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                    <tr><td><strong> Emotional Barriers </strong></td></tr>
+                        <tr>
+                            <td>1. How does the patient feel about taking drugs everyday?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164989" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 2. Motivation. What are the patient ambitions in life? What are the 3 most important things they still want to achieve?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164990" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                    <tr><td><strong>Socio-Economic Barriers  </strong></td></tr>
+                        <tr>
+                            <td>
+                                1. Does the patient have any people in their life who they can talk to about HIV status and ART?	</td>
+
+                            <td><obs conceptId="164991"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /><br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td>2. Discuss how the patient can enlist the support of their family, friends and/or co-workers, a treatment buddy, community or support group?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164992" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 3. Review the patient's and family's sources of income and how well they cover their needs.	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="164993" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 4. Does the patient have any challenges getting the clinic on regular basis?	</td>
+
+                        <td><obs conceptId="164994"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+
+                        </tr>
+                        <tr>
+                            <td> 5. Is the patient worried about people finding out about their HIV status accidentally?	</td>
+
+                        <td><obs conceptId="164995"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td> 6. Does the patient feel like people treat them differently when they know their HIV status?	</td>
+
+                        <td><obs conceptId="164996"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td> 7. Does stigma making it difficult for them to take their medications on time, or for them to attend clinical appointments?	</td>
+
+                        <td><obs conceptId="164997"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td> 8. Find out if the patient has tried faith healing, or if they have ever stopped taking their medicine because of religious belief	</td>
+
+                        <td><obs conceptId="164998"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+
+                        <tr><td><strong> Referrals and Networks </strong></td></tr>
+                        <tr>
+                            <td>
+                                1. Has the patient been referred to other services? (Nutrition, psychosocial support services, substance use treatment, etc)	</td>
+                            <td><obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td>2. Did he/she attend the appointments?	</td>
+
+                            <td><obs conceptId="164999" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /><br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td> 3. What was the experience? Do the referrals need to be re-organized?	</td>
+                        </tr>
+                        <tr>
+                            <td><obs conceptId="165000" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 4. Will the patient benefit from a home visit?	</td>
+
+                        <td><obs conceptId="165001"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        </tr>
+                        <tr>
+                            <td> 5. Adherence plan	</td>
+                        </tr>
+                        <tr>
+                        <td><obs conceptId="165002" rows="2" cols="100" style="textarea" /></td>
+                        </tr>
+                        <tr>
+                            <td> 6. Does the patient feel like people treat them differently when they know their HIV status?	</td>
+                        </tr>
+                </table>
+            </fieldset>
+
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+
+</htmlform>

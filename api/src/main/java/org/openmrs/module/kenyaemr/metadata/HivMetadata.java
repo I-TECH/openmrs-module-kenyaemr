@@ -58,6 +58,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String TREATMENT_PREPARATION = "782a4263-3ac9-4ce8-b316-534571233f12";
 		public static final String GBV_SCREENING = "03767614-1384-4ce3-aea9-27e2f4e67d01";
 		public static final String ALCOHOL_AND_DRUGS_SCREENING = "7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c";
+		public static final String ENHANCED_ADHERENCE_SCREENING = "c483f10f-d9ee-4b0d-9b8c-c24c1ec24701";
 
 	}
 
@@ -98,6 +99,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("ART Preparation", "ART Preparation", _EncounterType.HIV_CONSULTATION, "1", _Form.TREATMENT_PREPARATION));
 		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.GBV_SCREENING));
 		install(form("Alcohol and Drug Abuse Screening", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
+		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
