@@ -32,6 +32,8 @@ public class EmrConstants {
 	public static final String APP_ADMIN = MODULE_ID + ".admin";
 	public static final String APP_DEVELOPER = MODULE_ID + ".developer";
 	public static final String APP_FACILITY_DASHBOARD = MODULE_ID + ".facilityDashboard";
+	public static final String APP_DRUG_ORDER = MODULE_ID + ".drugorder";
+	public static final String APP_LAB_ORDER = MODULE_ID + ".laborder";
 
 	/**
 	 * Global property names
