@@ -11,13 +11,7 @@ package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -35,6 +29,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
@@ -337,15 +332,20 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 
 						Integer personId = relationship.getPersonB().getPersonId();
 						//Patient mother = Context.getPatientService().getPatient(personId);
-						if(Context.getPatientService().getPatient(personId) != null) {
+						if (Context.getPatientService().getPatient(personId) != null) {
 							Patient mother = Context.getPatientService().getPatient(personId);
 							Concept arvs = regimenManager.getMasterSetConcept("ARV");
-							RegimenChangeHistory history = RegimenChangeHistory.forPatient(mother, arvs);
-							RegimenChange current = history.getLastChangeBeforeDate(now);
-							obj = SimpleObject.create(
-									"regimen", current != null ? kenyaEmrUi.formatRegimenShort(current.getStarted(), ui) : null,
-									"duration", current != null ? kenyaUi.formatInterval(current.getDate(), now) : null
-							);
+							String regimenName = null;
+							Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(mother, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+							if (lastDrugRegimenEditorEncounter != null) {
+								SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+								regimenName = o.get("regimenShortDisplay").toString();
+								if (regimenName != null) {
+									obj = SimpleObject.create(
+											"regimen", regimenName
+									);
+								}
+							}
 						}
 					}
 				}
@@ -359,12 +359,17 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 						if(Context.getPatientService().getPatient(personId) != null){
 							Patient mother = Context.getPatientService().getPatient(personId);
 							Concept arvs = regimenManager.getMasterSetConcept("ARV");
-							RegimenChangeHistory history = RegimenChangeHistory.forPatient(mother, arvs);
-							RegimenChange current = history.getLastChangeBeforeDate(now);
-							 obj = SimpleObject.create(
-									"regimen", current != null ? kenyaEmrUi.formatRegimenShort(current.getStarted(), ui) : null,
-									"duration", current != null ? kenyaUi.formatInterval(current.getDate(), now) : null
-							);
+							String regimenName = null;
+							Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(mother, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+							if (lastDrugRegimenEditorEncounter != null) {
+								SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+								regimenName = o.get("regimenShortDisplay").toString();
+								if (regimenName != null) {
+									obj = SimpleObject.create(
+											"regimen", regimenName
+									);
+								}
+							}
 						}
 					}
 				}

@@ -35,6 +35,21 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Currently on ART", ReportUtils.map(datimQ4Cohorts.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
+     * @return the indicator
+     */
+    public CohortIndicator pregnantCurrentlyOnART() {
+        return cohortIndicator("Pregnant Currently on ART", ReportUtils.map(datimQ4Cohorts.pregnantCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator bfMothersCurrentlyOnART() {
+        return cohortIndicator("BF Currently on ART", ReportUtils.map(datimQ4Cohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * Number of patients who were started on Art
@@ -116,6 +131,13 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Clients with Known HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.knownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * Number of clients with known HIV status at ANC
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
+        return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * Number of clients newly enrolled for ANC
      * @return the indicator
      */
@@ -127,10 +149,16 @@ public class ETLDatimQ4IndicatorLibrary {
      * Number of Infants with a Negative virology test result
      * @return the indicator
      */
+    public CohortIndicator infantsSampleTakenForVirology() {
+        return cohortIndicator("Infants sample taken for Virology", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.infantVirologySampleTaken(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of Infants with a Negative virology test result
+     * @return the indicator
+     */
     public CohortIndicator infantsTestedNegativeForVirology() {
         return cohortIndicator("Infants tested negative for Virology", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.infantVirologyNegativeResults(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
      * Number of Infants with a positive virology test result
      * @return the indicator
@@ -175,6 +203,38 @@ public class ETLDatimQ4IndicatorLibrary {
      */
     public CohortIndicator testedPositiveAtPITCInpatientServices() {
         return cohortIndicator("Tested Positive at PITC Inpatient Services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.testedPositiveAtPITCInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Negative at PITC PMTCT services ANC-1 only
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCPMTCTANC1() {
+        return cohortIndicator("Tested Negative at PITC PMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.negativeAtPITCPMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Positive at PITC PMTCT services ANC-1 only
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCPMTCTANC1() {
+        return cohortIndicator("Tested Positive at PITC PMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.positiveAtPITCPMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Negative at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeAtPITCPMTCTPostANC1() {
+        return cohortIndicator("Tested Negative at PITC PMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.negativeAtPITCPMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Positive at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveAtPITCPMTCTPostANC1() {
+        return cohortIndicator("Tested Positive at PITC PMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.positiveAtPITCPMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Number Tested Positive at PITC Paediatric services
@@ -315,7 +375,7 @@ public class ETLDatimQ4IndicatorLibrary {
         return cohortIndicator("Newly Started ART While Confirmed TB and / or TB Treated", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.newlyStartedARTByAgeSex(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-/*Annual Cohort Indicators*/
+    /*Annual Cohort Indicators*/
     /**
      * PMTCT_FO Number of HIV-exposed infants who were born 24 months prior to the reporting period
      * @return the indicator
@@ -507,7 +567,7 @@ public class ETLDatimQ4IndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /*TX_PVLS (Denominator)*//*
-    *//**
+     *//**
      * TX_PVLS Total Patients on Routine ART with a viral load result in the past 12 months.
      */
     public CohortIndicator onARTRoutineVLLast12Months() {
@@ -593,6 +653,30 @@ public class ETLDatimQ4IndicatorLibrary {
      */
     public CohortIndicator onARTUndocumentedVLLast12MonthsbyAgeSex() {
         return cohortIndicator("Patients on ART with undocumented VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTWithUndocumentedVLLast12MonthsByAgeSex(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML Number of ART patients with no clinical contact since their last expected contact
+     */
+    public CohortIndicator onARTMissedAppointment() {
+        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.onARTMissedAppointment(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
+     */
+    public CohortIndicator testedThroughIndexServices() {
+        return cohortIndicator("Number of individuals who were identified and tested using Index testing services", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.contactIndexTesting(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection
+     */
+    public CohortIndicator recentHIVInfections() {
+        return cohortIndicator("Persons aged ≥15 years newly diagnosed with HIV-1 infection", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.recentHIVInfections(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 

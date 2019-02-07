@@ -1,0 +1,84 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+		jQuery(function($) {
+			beforeSubmit.push(function() {
+			});
+
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset class="gbv-scree">
+			<!--Gender based violence screening-->
+			<fieldset id="psychosocial-preparation-tab">
+				<legend>
+					CAGE-AID SCREENING FOR ALCOHOL AND DRUG USE DISORDERS FOR ADULTS
+				</legend>
+				<table id="alcohol-screening-questions">
+					<obsgroup groupingConceptId="158728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+						<tr>
+							<td>1. How often do you have a drink containing alcohol?  &#160;&#160;&#160;&#160;<br />
+							<obs conceptId="159449AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+									                   1091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+									                   1092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+									                   1093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+									                   1094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Never,
+									               Monthly or less,
+									               2 to 4 times a month,
+									               2 to 3 times a week,
+									               4 or More Times a Week"
+								 style="radio" answerSeparator="&lt;br /&gt;" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<br />
+								2. How often do you smoke?  &#160;&#160;&#160;&#160;<br />
+								<obs conceptId="163201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+									 answerConceptIds="1090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163197AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163196AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+									 answerLabels="Never smoked,Former cigarette smoker,Current some day smoker,Current light tobacco smoker,Current heavy tobacco smoker,Unknown if ever smoked"  answerSeparator="&lt;br /&gt;"/>
+							</td>
+						</tr>
+						<tr>
+						<td><br />
+							3. How often do you use drugs?  &#160;&#160;&#160;&#160;<br />
+								<obs conceptId="112603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "
+									 answerConceptIds="1090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+									 answerLabels="Never,Monthly or less,2 to 4 times a month,2 to 3 times a week,4 or More Times a Week"  answerSeparator="&lt;br /&gt;"/>
+							</td>
+						</tr>
+					</obsgroup>
+				</table>
+			</fieldset>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>
