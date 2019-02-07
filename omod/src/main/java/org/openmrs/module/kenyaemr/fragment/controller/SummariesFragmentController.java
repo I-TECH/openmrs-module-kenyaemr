@@ -395,18 +395,9 @@ public class SummariesFragmentController {
         //current art regimen
         CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
         if(currentRegimenResults != null) {
-            RegimenOrder roCurrent = (RegimenOrder) currentRegimenResults.getValue();
-            List<String> componentsCurrent = new ArrayList<String>();
-
+            String roCurrent = currentRegimenResults.toString();
             if (roCurrent != null) {
-                for (DrugOrder drugOrder : roCurrent.getDrugOrders()) {
-                    ConceptName cnn = drugOrder.getConcept().getPreferredName(CoreConstants.LOCALE);
-                    if (cnn == null) {
-                        cnn = drugOrder.getConcept().getName(CoreConstants.LOCALE);
-                    }
-                    componentsCurrent.add(cnn.getName());
-                }
-                patientSummary.setCurrentArtRegimen(getRegimenName(standardRegimens(), componentsCurrent));
+                patientSummary.setCurrentArtRegimen(roCurrent);
             }
         }
         else {

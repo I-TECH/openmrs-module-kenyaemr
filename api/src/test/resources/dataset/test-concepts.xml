@@ -2295,6 +2295,17 @@
 
   <concept concept_id="162309" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="162309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_id="162309" name="Anti tb start" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
   <concept concept_id="164948" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="164948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
   <concept_name concept_id="164948" name="Currently on Anti tb" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="c30dc9be-43ce-11e8-842f-0ed5f89f718b" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="1255" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="1255" name="ARV_TREATMENT_PLAN_EVENT_CONCEPT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="88225BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="1256" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="1256AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="1256" name="START_DRUGS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="1335BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
+  <concept concept_id="1268" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2013-02-22 18:02:28.0" retired_by="1" uuid="1268AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+  <concept_name concept_id="1268" name="TB_TREATMENT_PLAN_CONCEPT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="2602" voided="0" voided_by="1" uuid="1347BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
+
 </dataset>

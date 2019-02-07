@@ -1,0 +1,141 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+		jQuery(function($) {
+			beforeSubmit.push(function() {
+			});
+
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset class="treatment-preparation">
+			<!--ART Treatment preparation-->
+			<fieldset id="psychosocial-preparation-tab">
+				<legend>
+					 Psychosocial/Knowledge Criteria (applies to patients and caregivers)
+				</legend>
+				<table id="psychosocial-screening-questions">
+					<obsgroup groupingConceptId="160525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+						<tr>
+							<td>1. Understands the nature of HIV infection and benefits of ART	</td>
+							<td><obs conceptId="1729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>2. Has screened negative for alcohol or other drug use disorder, or is stable on treatment</td>
+							<td><obs conceptId="160246AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>3. Has screened negative for depression or other psychiatric illness, or is stable on treatment</td>
+							<td><obs conceptId="159891AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						   <tr>
+							   <td>4. Is willing to disclose/has disclosed HIV status, ideally to a family member or close friend?
+									</td>
+								<td><obs conceptId="1048AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
+								</td>
+							</tr>
+						<tr>
+							<td>5. Has received demonstration of how to take/administer ART and other prescribed medication?
+									</td>
+								<td><obs conceptId="164425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+								</td>
+							</tr>
+							<tr>
+								<td>6. Has received information on predictable side effects of ART and understands what steps to take in case of these side effects?
+								</td>
+								<td><obs conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
+								</td>
+							</tr>
+						<tr>
+							<td>7. For patients dependent on a caregiver: caregiver is committed to long-term support of the patient, daily administration of ART, and meets the criteria above?</td>
+							<td><obs conceptId="5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>8. Other likely barriers to adherence have been identified and there is a plan in place to address them (e.g. frequent travel for work, plan to deal with unexpected travel, distance from clinic, etc)?</td>
+							<td><obs conceptId="159707AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>9. Patient/caregiver has provided accurate locator information and contact details?	</td>
+							<td><obs conceptId="163089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>10. Patient/caregiver feels ready to start ART today?</td>
+							<td><obs conceptId="162695AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						</obsgroup>
+				</table>
+			</fieldset>
+			<fieldset id="support-systems-preparation-tab">
+				<legend>
+					Support Systems Criteria (applies to patients and caregivers)
+				</legend>
+				<table id="support-screening-questions">
+					<obsgroup groupingConceptId="160525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+						<tr>
+							<td>1. Has identified convenient time/s of day for taking ART, and/or associated dose/s with daily event/s</td>
+							<td><obs conceptId="160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr>
+							<td>2. Treatment supporter has been identified and engaged in HIV education, or will attend next counselling session?
+							</td>
+							<td><obs conceptId="164886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>3. Is aware of support group meeting time/s?
+							</td>
+							<td><obs conceptId="163766AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>4. If facility has SMS reminder system: Has enrolled into SMS reminder system?
+							</td>
+							<td><obs conceptId="163164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr>
+							<td>5. Other support systems are in place or planned (e.g. setting phone alarm, pill box)?
+
+							</td>
+							<td><obs conceptId="164360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+					</obsgroup>
+				</table>
+			</fieldset>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

@@ -13,8 +13,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Program;
+import org.openmrs.*;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -29,10 +30,9 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.openmrs.module.kenyaemr.Metadata.Concept.TB_TREATMENT_PLAN_CONCEPT;
 
 /**
  * Tests for {@link EligibleForArtCalculation}
@@ -69,38 +69,44 @@ public class EligibleForArtCalculationTest extends BaseModuleContextSensitiveTes
 		tbMetadata.install();
 		mchMetadata.install();
 	}
-	
+
 	/**
 	 * @see EligibleForArtCalculation#evaluate(Collection,Map,PatientCalculationContext)
 	 * @verifies calculate eligibility
 	 */
 	@Test
 	public void evaluate_shouldCalculateEligibility() throws Exception {
+		ConceptService cs = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
+
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-		// Enroll patients #6, #7 and #8 in the HIV Program
-		TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
-		TestUtils.enrollInProgram(TestUtils.getPatient(7), hivProgram, TestUtils.date(2011, 1, 1));
-		TestUtils.enrollInProgram(TestUtils.getPatient(8), hivProgram, TestUtils.date(2011, 1, 1));
+		// Enroll patients #5, #6  in the HIV Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
+		//TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
 
-		// Give patient #6 a high CD4 count today
-		Concept cd4 = Dictionary.getConcept(Dictionary.CD4_COUNT);
-		TestUtils.saveObs(TestUtils.getPatient(6), cd4, 1001, TestUtils.date(2015, 1, 1));
+		// Give patient #6 an ARV regimen
+		EncounterType type = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
+		Obs obs = new Obs();
+		obs.setConcept(Dictionary.getConcept(Dictionary.ARV_TREATMENT_PLAN_EVENT_CONCEPT));
+		obs.setObsDatetime(new Date());
+		obs.setValueCoded(Dictionary.getConcept(Dictionary.START_DRUGS));
+		TestUtils.saveEncounter(TestUtils.getPatient(6), type, new Date(), obs);
 
-		// Give patients #7 and #8 a low CD4 count today
-		TestUtils.saveObs(TestUtils.getPatient(7), cd4, 101, TestUtils.date(2011, 1, 1));
-		TestUtils.saveObs(TestUtils.getPatient(8), cd4, 101, TestUtils.date(2011, 1, 1));
+		// Enroll patients #8  in the TB Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), tbProgram, TestUtils.date(2011, 5, 15));
 
-		// Put patient #8 already on ARTs
-		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
+		// Give patient #8 an TB regimen
+		Concept onTB = Dictionary.getConcept(Dictionary.TB_TREATMENT_PLAN_CONCEPT);
+		TestUtils.saveObs(TestUtils.getPatient(8), onTB, 1256, TestUtils.date(2012, 1, 1));
 
-		List<Integer> cohort = Arrays.asList(6, 7, 8, 999);
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
 
 		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // below 10 years should be put on art regardless of other factors
-		Assert.assertTrue((Boolean) resultMap.get(7).getValue()); // has low CD4
-		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // already on ART
-		Assert.assertFalse((Boolean) resultMap.get(999).getValue()); // not in HIV Program
+			Assert.assertTrue((Boolean) resultMap.get(2).getValue()); // in HIV program with no ARV
+			Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // in HIV program but already on ART
+			Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // not in HIV Program
+			Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // only in TB Program
 	}
 }

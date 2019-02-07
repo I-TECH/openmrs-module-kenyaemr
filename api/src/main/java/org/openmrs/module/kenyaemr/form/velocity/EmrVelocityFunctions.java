@@ -45,7 +45,7 @@ import java.util.List;
 public class EmrVelocityFunctions {
 
 	private FormEntrySession session;
-	protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+	protected static final Log log = LogFactory.getLog(EmrVelocityFunctions.class);
 	/**
 	 * Constructs a new functions provider
 	 * @param session the form entry session
