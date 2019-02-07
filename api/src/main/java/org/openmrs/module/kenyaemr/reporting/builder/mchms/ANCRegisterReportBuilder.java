@@ -103,7 +103,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         // new columns
         dsd.addColumn("Visit Number", new ANCVisitNumberDataDefinition(),"");
         dsd.addColumn("First ANC Visit", new FirstANCVisitDataDefinition(),"");
-        dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
+        dsd.addColumn("NuNmber of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("Parity", new ANCParityDataDefinition(),"");
         dsd.addColumn("Gravida", new ANCGravidaDataDefinition(),"");
         dsd.addColumn("Height", new ANCHeightDataDefinition(),"");

@@ -121,4 +121,18 @@ public class CommonDimensionLibrary {
 
 		return dim;
 	}
+
+	/**
+	 * Dimension of age between
+	 * @return Dimension
+	 */
+	public CohortDefinitionDimension moh710AgeGroups() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.setName("Fine age between(<1,>=1)");
+		dim.addParameter(new Parameter("onDate", "Date", Date.class));
+		dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
+		dim.addCohortDefinition(">=1", map(commonCohortLibrary.agedAtLeast(1), "effectiveDate=${onDate}"));
+
+		return dim;
+	}
 }
