@@ -118,6 +118,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
         out.println("Completed migration for drug regimen history");
         out.println("Voiding encounters with null regimen....");
         voidAllEncountersWithNullRegimen();
+        discontinueAllActiveOrders();
         out.println("Successfully completed all drug regimen migration operations");
 
     }
@@ -373,6 +374,15 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
         AdministrationService as = Context.getAdministrationService();
         List<List<Object>> rowsAffected = as.executeSQL(encountersWithNullRegimenQry, false);
+        System.out.println("Rows affected: " + rowsAffected.size());
+    }
+
+    protected void discontinueAllActiveOrders(){
+
+        String activeOrdersQry = "update orders set order_action='DISCONTINUE', order_reason_non_coded='order fulfilled' WHERE order_action='NEW';";
+
+        AdministrationService as = Context.getAdministrationService();
+        List<List<Object>> rowsAffected = as.executeSQL(activeOrdersQry, false);
         System.out.println("Rows affected: " + rowsAffected.size());
     }
 }
