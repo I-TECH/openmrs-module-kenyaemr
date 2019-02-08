@@ -14,6 +14,8 @@
 <htmlform>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var LATEST_SESSION = "<lookup expression="fn.latestObs(1639).valueNumeric"/>"
+
         jQuery(function($) {
             //Defaults
             var adherenceResponses1=jq('#adherence-1');
@@ -21,7 +23,20 @@
             jq('#adherence-2').hide();
             clearHiddenSections([adherenceResponses1, adherenceResponses2]);
             jq("#adherence-1").change(adherenceAssessment);
-
+            //Process flow
+            jq("#has-vl :input[type=radio]").change(hasViralLoadResult);
+            jq("#result-status :input[type=radio]").change(hasHighViralLoadResult);
+             hasViralLoadResult();
+             hasHighViralLoadResult();
+            if(LATEST_SESSION == "" || LATEST_SESSION &gt; 3) {
+                jq('#review').hide();
+                jq('#viral-load-tab').show();
+                jq('#adherence-barriers-tab').show();
+                }else{
+                jq('#review').show();
+                jq('#viral-load-tab').show();
+                jq('#adherence-barriers-tab').hide();
+               }
 
             beforeSubmit.push(function() {
             });
@@ -66,6 +81,35 @@
                 }
             }
         }
+
+        function hasViralLoadResult(){
+           var val = getValue('has-vl.value');
+            if(val == 1065) {
+                jq('#vl-status').show();
+                jq('#vl-feeling').show();
+                jq('#vl-feeling-txt').show();
+                jq('#vl-high').show();
+                jq('#vl-high-txt').show();
+                jq('#vl-advice').show();
+            }else{
+                jq('#vl-status').hide();
+                jq('#vl-feeling').hide();
+                jq('#vl-feeling-txt').hide();
+                jq('#vl-high').hide();
+                jq('#vl-high-txt').hide();
+                jq('#vl-advice').hide();
+
+            }
+        }
+        function hasHighViralLoadResult(){
+            var val = getValue('result-status.value');
+            if(val == 1066) {
+                jq('#vl-high-txt textarea').prop("disabled", false);
+            }else{
+                jq('#vl-high-txt textarea').prop("disabled", true);
+
+            }
+        }
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
                 parentObj[i].find('input[type=radio]').each(function() {
@@ -94,7 +138,26 @@
     </div>
 
     <div class="ke-form-content">
-        <fieldset class="gbv-scree">
+        <fieldset class="session-number">
+            <legend>
+                <strong> Visit details </strong>
+            </legend>
+            <table id="session">
+                <tr>
+                    <td> Session Number:</td>
+                    <td>
+                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <span class="value"><recentObs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                    <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Pill count adherence % (from pill count):</td>
+                    <td>
+                        <obs conceptId="162846AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset class="adherence-screening">
             <!--Enhance adherence screening-->
             <fieldset id="enhanced-adherence-tab">
                 <legend>
@@ -167,8 +230,7 @@
                         <strong> Morisky Medication Adherence Score </strong>
                     </legend>
                 <table>
-                    <br /><br />
-                    <tr>
+                      <tr>
                         <td>Adherence rating</td>
                         <td>
                             <obs
@@ -190,17 +252,32 @@
                 <table id="vl-screening-questions">
                         <tr><td><strong>Understanding Viral Load (High/Suppressed): </strong> </td></tr>
                         <tr>
-                           <td> 1. How does the patient feel concerning the result?	</td>
+                            <td>
+                                1. Has patient received viral load result?
+                                <obs conceptId="163310AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" id ="has-vl"/><br /><br /></td>
                         </tr>
-                        <tr>
+                    <tr id ="vl-status">
+                        <td>
+                            2. Was the Viral load result suppressed (less than 1000) or unsuppressed (greater than 1000) ?
+                            <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Suppressed,Unsuppressed" id="result-status" /><br /><br /></td>
+                    </tr>
+                        <tr id="vl-feeling">
+                           <td> 3. How does the patient feel concerning the result?	</td>
+                        </tr>
+                        <tr id="vl-feeling-txt">
                             <td><obs conceptId="164981" rows="2" cols="100" style="textarea" /></td>
                         </tr>
-                        <tr>
-                            <td> 2. What does the patient think caused the high viral load?	</td>
+                        <tr id="vl-high">
+                            <td> 4. What does the patient think caused the high viral load?	</td>
                         </tr>
-                        <tr>
+                        <tr id="vl-high-txt">
                             <td><obs conceptId="164982" rows="2" cols="100" style="textarea" /></td>
                         </tr>
+                        <tr id= "vl-advice">
+                        <td> 5. Way forward:    <br /><br />
+                        <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="100" style="textarea" />
+                        </td>
+                    </tr>
                 </table>
             </fieldset>
             <fieldset id="adherence-barriers-tab">
@@ -306,7 +383,39 @@
 
                         <td><obs conceptId="164998"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
                         </tr>
+                </table>
+            </fieldset>
+            <!--Review -->
+            <fieldset id="review">
+                <legend>
+                    Review
+                </legend>
+                <table id="review-questions">
+                    <tr><td><strong> Review Adherence Plan from previous session </strong> </td></tr>
+                    <tr>
+                        <td> 1. Does patient think adherence  has improved since last session? &#160;&#160;&#160;&#160;&#160;
 
+                            <obs conceptId="1898AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                    </tr>
+                    <tr>
+                        <td> 2. Have any dosses been missed?   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                               &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                &#160;&#160;
+                        <obs conceptId="160110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"  /> <br /><br /></td>
+                    </tr>
+                    <tr>
+                        <td> 3. Review barriers to adherence from previous session and if strategies identified have been taken up identified have been taken up, identify other gaps and issue emerging     </td>
+                    </tr>
+                    <tr>
+                        <td><obs conceptId="163108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="100" style="textarea" /></td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset id="referrals">
+                <legend>
+                    <strong> Referrals </strong>
+                </legend>
+                <table id="referrals-tab">
                         <tr><td><strong> Referrals and Networks </strong></td></tr>
                         <tr>
                             <td>
@@ -335,9 +444,21 @@
                         <tr>
                         <td><obs conceptId="165002" rows="2" cols="100" style="textarea" /></td>
                         </tr>
-
                 </table>
             </fieldset>
+                    <fieldset id="appointment">
+                        <legend>
+                            <strong> Appointment </strong>
+                        </legend>
+                        <table id="appointment-tab">
+                            <tr>
+                                <td>Follow up Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160; </td>
+                                <td>
+                                <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" "  />
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
 
         </fieldset>
     </div>

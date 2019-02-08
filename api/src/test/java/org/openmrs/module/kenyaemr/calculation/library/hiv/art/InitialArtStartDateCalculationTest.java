@@ -12,17 +12,24 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
+import org.openmrs.*;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,12 +37,27 @@ import java.util.List;
  */
 public class InitialArtStartDateCalculationTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
 	/**
 	 * Setup each test
 	 */
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
@@ -43,31 +65,37 @@ public class InitialArtStartDateCalculationTest extends BaseModuleContextSensiti
 	 */
 	@Test
 	public void evaluate_shouldCalculateInitialArtStartDate() throws Exception {
-		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		Concept azt = Context.getConceptService().getConcept(86663);
-		Concept _3tc = Context.getConceptService().getConcept(78643);
-		Concept efv = Context.getConceptService().getConcept(75523);
+		ConceptService cs = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
 
-		EncounterType scheduled = Context.getEncounterService().getEncounterType(1);
-		Encounter scheduledEncounter1 = new Encounter();
-		scheduledEncounter1.setPatient(TestUtils.getPatient(6));
-		scheduledEncounter1.setEncounterType(scheduled);
-		scheduledEncounter1.setEncounterDatetime(TestUtils.date(2011, 1, 1));
-		scheduledEncounter1 = Context.getEncounterService().saveEncounter(scheduledEncounter1);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-		// Put patient #6 on Dapsone
-		TestUtils.saveDrugOrder(TestUtils.getPatient(6), dapsone, TestUtils.date(2011, 1, 1), null, scheduledEncounter1);
+		// Enroll patients #5, #6  in the HIV Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
+		//TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
 
-		// Put patient #7 on AZT, then 3TC, then EFV
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), azt, TestUtils.date(2010, 1, 1), null);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), _3tc, TestUtils.date(2011, 1, 1), null);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), efv, TestUtils.date(2011, 1, 1), null);
+		// Give patient #6 an ARV regimen
+		EncounterType type = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
+		Obs obs = new Obs();
+		obs.setConcept(Dictionary.getConcept(Dictionary.ARV_TREATMENT_PLAN_EVENT_CONCEPT));
+		obs.setObsDatetime(new Date());
+		obs.setValueCoded(Dictionary.getConcept(Dictionary.START_DRUGS));
+		TestUtils.saveEncounter(TestUtils.getPatient(6), type, new Date(), obs);
 
-		List<Integer> cohort = Arrays.asList(6, 7, 8);
+		// Enroll patients #8  in the TB Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), tbProgram, TestUtils.date(2011, 5, 15));
 
-		CalculationResultMap resultMap = new InitialArtStartDateCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertNull(resultMap.get(6)); // isn't on any ART drugs
-		Assert.assertEquals(TestUtils.date(2010, 1, 1), resultMap.get(7).getValue());
-		Assert.assertNull(resultMap.get(8)); // isn't on any drugs
+		// Give patient #8 an TB regimen
+		Concept onTB = Dictionary.getConcept(Dictionary.TB_TREATMENT_PLAN_CONCEPT);
+		TestUtils.saveObs(TestUtils.getPatient(8), onTB, 1256, TestUtils.date(2012, 1, 1));
+
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
+
+		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertTrue((Boolean) resultMap.get(2).getValue()); // in HIV program with no ARV
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // in HIV program but already on ART
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // not in HIV Program
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // only in TB Program
 	}
 }
