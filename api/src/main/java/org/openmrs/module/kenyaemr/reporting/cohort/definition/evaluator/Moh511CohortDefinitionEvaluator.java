@@ -12,8 +12,7 @@ package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh511CohortDefinition;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -30,8 +29,8 @@ import java.util.List;
 /**
  * Evaluator for patients for HTS Register
  */
-@Handler(supports = {Moh510CohortDefinition.class})
-public class Moh510CohortDefinitionEvaluator implements EncounterQueryEvaluator {
+@Handler(supports = {Moh511CohortDefinition.class})
+public class Moh511CohortDefinitionEvaluator implements EncounterQueryEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired

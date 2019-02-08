@@ -21,8 +21,8 @@
 	<%
 		if (lastEnc) {
 			def lastChange = lastEnc
-			def regimen = firstEnc && lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
-			def dateLabel = firstEnc && lastEnc.startDate ? "Started" : "Stopped"
+			def regimen = lastEnc && lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
+			def dateLabel = lastEnc && lastEnc.startDate ? "Started" : "Stopped"
 	%>
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: regimen ]) }
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: dateLabel, value: lastEnc.startDate, showDateInterval: true ]) }

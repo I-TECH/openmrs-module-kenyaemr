@@ -15,7 +15,6 @@
 			<tr>
 				<td width="30%" valign="top">
 					${ ui.includeFragment("kenyaemr", "patient/patientSummary", [ patient: currentPatient ]) }
-					${ ui.includeFragment("kenyaemr", "patient/patientAllergiesAndChronicIllnesses", [ patient: currentPatient ]) }
 					${ ui.includeFragment("kenyaemr", "patient/patientRelationships", [ patient: currentPatient ]) }
 					${ ui.includeFragment("kenyaemr", "program/programHistories", [ patient: currentPatient, showClinicalData: true ]) }
 				</td>
