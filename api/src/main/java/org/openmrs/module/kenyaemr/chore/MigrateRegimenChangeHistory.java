@@ -379,7 +379,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
     protected void discontinueAllActiveOrders(){
 
-        String activeOrdersQry = "update orders set order_action='DISCONTINUE', order_reason_non_coded='order fulfilled' WHERE order_action='NEW';";
+        String activeOrdersQry = "update orders set order_action='DISCONTINUE', order_reason_non_coded='previously existing orders' WHERE order_action='NEW';";
 
         AdministrationService as = Context.getAdministrationService();
         List<List<Object>> rowsAffected = as.executeSQL(activeOrdersQry, false);
