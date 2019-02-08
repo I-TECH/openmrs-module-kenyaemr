@@ -38,7 +38,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 	public static final class _Privilege {
 		public static final String VIEW_LEGACY_INTERFACE = "Emr: View Legacy Interface";
-		public static final String MANAGE_DRUG_ORDERS = "Emr: orderentryui.drugOrders";
+		public static final String MANAGE_DRUG_ORDERS = "Can service drug prescriptions";
+		public static final String MANAGE_LAB_REQUESTS = "Can service lab requests";
 	}
 
 	public static final class _Role {
@@ -51,6 +52,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String REGISTRATION = "Registration";
 		public static final String SYSTEM_ADMIN = "System Administrator";
 		public static final String SYSTEM_DEVELOPER = "System Developer";
+		public static final String DRUG_ORDER = "Pharmacist";
+		public static final String LAB_TECHNICIAN = "Lab Technician";
 	}
 
 	/**
@@ -83,6 +86,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		// Add custom privileges
 		install(privilege(_Privilege.VIEW_LEGACY_INTERFACE, "Can view legacy web interface"));
 		install(privilege(_Privilege.MANAGE_DRUG_ORDERS, "Can view and edit drug orders"));
+		install(privilege(_Privilege.MANAGE_LAB_REQUESTS, "Able to service lab requests"));
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
 		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
@@ -112,7 +116,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_INTAKE),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -131,7 +136,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
-						_Privilege.MANAGE_DRUG_ORDERS
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -148,7 +153,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
-						_Privilege.MANAGE_DRUG_ORDERS
+						_Privilege.MANAGE_DRUG_ORDERS,
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -162,7 +168,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(DqConstants.APP_DATAQUALITY),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
-						app(EmrConstants.APP_LAB_ORDER)
+						app(EmrConstants.APP_LAB_ORDER),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -173,6 +180,26 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD)
+				)
+		));
+
+		install(role(_Role.DRUG_ORDER, "Can access the drug prescriptions app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.LAB_TECHNICIAN, "Can access the lab requests app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 	}

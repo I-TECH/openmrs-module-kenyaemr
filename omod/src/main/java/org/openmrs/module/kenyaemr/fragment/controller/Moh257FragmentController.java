@@ -83,10 +83,6 @@ public class Moh257FragmentController {
 		model.addAttribute("page2Form", moh257VisitForm);
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
-		/*Concept masterSet = regimenManager.getMasterSetConcept("ARV");
-		RegimenChangeHistory arvHistory = RegimenChangeHistory.forPatient(patient, masterSet);
-		model.addAttribute("arvHistory", arvHistory);
-*/
 		List<SimpleObject> arvHistory = getRegimenHistoryFromObservations(patient, "ARV");
 		model.put("arvHistory", arvHistory);
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
@@ -116,7 +112,7 @@ public class Moh257FragmentController {
 			}
 			return history;
 		}
-		return null;
+		return history;
 	}
 
 	public SimpleObject getLastRegimenFromObservations (Patient patient, String category) {
