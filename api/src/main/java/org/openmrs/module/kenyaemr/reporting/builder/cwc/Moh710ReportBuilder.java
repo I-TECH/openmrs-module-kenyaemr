@@ -87,7 +87,7 @@ public class Moh710ReportBuilder extends AbstractReportBuilder {
 	 */
 	protected DataSetDefinition immunizationsDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("2");
+		dsd.setName("Immunizations");
 		dsd.setDescription("MOH 710 Immunizations");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -99,9 +99,9 @@ public class Moh710ReportBuilder extends AbstractReportBuilder {
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
-		dsd.addDimension("age", ReportUtils.map(commonDimensions.datimFineAgeGroups(), "onDate=${endDate}"));
+		dsd.addDimension("age", ReportUtils.map(commonDimensions.moh710AgeGroups(), "onDate=${endDate}"));
 		ColumnParameters infantLess_1 = new ColumnParameters(null, "<1", "age=<1");
-		ColumnParameters infantAtleast_1 = new ColumnParameters(null, ">=1", "age>=1");
+		ColumnParameters infantAtleast_1 = new ColumnParameters(null, ">=1", "age=>=1");
 
 		List<ColumnParameters> moh710Disaggregations = Arrays.asList(infantLess_1, infantAtleast_1);
 

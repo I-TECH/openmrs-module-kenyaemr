@@ -918,7 +918,7 @@ public class Moh710CohortLibrary {
     /*Given BCG*/
     public CohortDefinition givenBCGVaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.BCG) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.BCG) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("BCG");
         cd.setQuery(sqlQuery);
@@ -932,7 +932,7 @@ public class Moh710CohortLibrary {
     /*Given OPV at birth*/
     public CohortDefinition givenOPVCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_birth) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_birth) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("OPV-0");
         cd.setQuery(sqlQuery);
@@ -946,7 +946,7 @@ public class Moh710CohortLibrary {
     /*Given OPV 1*/
     public CohortDefinition givenOPV1Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_1) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_1) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("OPV-1");
         cd.setQuery(sqlQuery);
@@ -960,7 +960,7 @@ public class Moh710CohortLibrary {
     /*Given OPV 2*/
     public CohortDefinition givenOPV2Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_2) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("OPV-2");
         cd.setQuery(sqlQuery);
@@ -974,7 +974,7 @@ public class Moh710CohortLibrary {
     /*Given OPV 3*/
     public CohortDefinition givenOPV3Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_3) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.OPV_3) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("OPV-3");
         cd.setQuery(sqlQuery);
@@ -988,7 +988,7 @@ public class Moh710CohortLibrary {
     /*Given IPV*/
     public CohortDefinition givenIpvCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.IPV) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.IPV) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("IPV");
         cd.setQuery(sqlQuery);
@@ -1002,7 +1002,7 @@ public class Moh710CohortLibrary {
     /*Given Dpt-Hep-Hib 1*/
     public CohortDefinition givenDptHepHibVaccine1Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_1) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_1) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("DHH-1");
         cd.setQuery(sqlQuery);
@@ -1016,7 +1016,7 @@ public class Moh710CohortLibrary {
     /*Given Dpt-Hep-Hib 2*/
     public CohortDefinition givenDptHepHibVaccine2Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_2) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("DHH-2");
         cd.setQuery(sqlQuery);
@@ -1030,7 +1030,7 @@ public class Moh710CohortLibrary {
     /*Given Dpt-Hep-Hib 3*/
     public CohortDefinition givenDptHepHibVaccine3Cl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_3) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.DPT_Hep_B_Hib_3) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("DHH-3");
         cd.setQuery(sqlQuery);
@@ -1044,7 +1044,7 @@ public class Moh710CohortLibrary {
     /*Given Pneumococcal 1*/
     public CohortDefinition givenPneumococcal1VaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_1) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_1) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("PCV-1");
         cd.setQuery(sqlQuery);
@@ -1058,7 +1058,7 @@ public class Moh710CohortLibrary {
     /*Given Pneumococcal 2*/
     public CohortDefinition givenPneumococcal2VaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_2) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("PCV-2");
         cd.setQuery(sqlQuery);
@@ -1072,7 +1072,7 @@ public class Moh710CohortLibrary {
     /*Given Pneumococcal 3*/
     public CohortDefinition givenPneumococcal3VaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_3) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.PCV_10_3) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("PCV-3");
         cd.setQuery(sqlQuery);
@@ -1086,7 +1086,7 @@ public class Moh710CohortLibrary {
     /*Given Rota 1 vaccine*/
     public CohortDefinition givenRota1VirusVaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.ROTA_1) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.ROTA_1) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("ROTA-1");
         cd.setQuery(sqlQuery);
@@ -1100,7 +1100,7 @@ public class Moh710CohortLibrary {
     /*Given Rota 2 vaccine*/
     public CohortDefinition givenRota2VirusVaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.ROTA_2) between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.ROTA_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
         cd.setName("ROTA-2");
         cd.setQuery(sqlQuery);
@@ -1128,7 +1128,7 @@ public class Moh710CohortLibrary {
     /*Given Yellow Fever vaccine*/
     public CohortDefinition givenYellowFeverVaccineCl() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = ";";
+        String sqlQuery = "select i.patient_id,i.Measles_rubella_1 from kenyaemr_etl.etl_hei_immunization i where date(i.Yellow_fever) between date(:startDate) and date(:endDate);";
 
         cd.setName("YF");
         cd.setQuery(sqlQuery);
