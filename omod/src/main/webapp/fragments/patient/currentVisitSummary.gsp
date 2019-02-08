@@ -109,13 +109,7 @@
                             <h3>Diagnosis</h3>
                         </div>
                         <div class="info-body">
-                            <% if (diagnoses) { %>
-                            <% diagnoses.each { d -> %>
-                            <div class="ke-stack-item">	${ d.diagnosis } </div>
-                            <% } %>
-                            <% } else { %>
-                            <div class="ke-stack-item">None</div>
-                            <% } %>
+
                         </div>
                     </div>
 
@@ -126,27 +120,7 @@
                         </div>
                         <div class="info-body">
 
-                            <% if (medication) { %>
-                            <table>
-                                <tr>
-                                    <th>Drug</th>
-                                    <th>Frequency</th>
-                                    <th>Duration</th>
-                                    <th>Visit Date</th>
-                                </tr>
-                            <% medication.each { m-> %>
-                                <tr>
-                                    <td>${m.drug}</td>
-                                    <td>${m.frequency}</td>
-                                    <td>${m.duration}</td>
-                                    <td>${m.visitDate}</td>
-                                </tr>
-                            <% }  %>
-                            </table>
 
-                            <% } else { %>
-                                None
-                            <% } %>
                         </div>
                     </div>
 

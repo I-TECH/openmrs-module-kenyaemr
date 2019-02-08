@@ -69,7 +69,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_ADMIN,
 				DqConstants.APP_DATAQUALITY,
 				DqConstants.APP_DATAMANAGER,
-				EmrConstants.APP_FACILITY_DASHBOARD
+				EmrConstants.APP_FACILITY_DASHBOARD,
+				EmrConstants.APP_DRUG_ORDER,
+				EmrConstants.APP_LAB_ORDER
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -127,6 +129,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(DqConstants.APP_DATAQUALITY),
 						app(DqConstants.APP_DATAMANAGER),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER),
 						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
@@ -142,6 +146,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER),
 						_Privilege.MANAGE_DRUG_ORDERS
 				)
 		));
@@ -154,7 +160,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER)
 				)
 		));
 
