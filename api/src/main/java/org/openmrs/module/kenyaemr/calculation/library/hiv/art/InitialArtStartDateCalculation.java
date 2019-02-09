@@ -44,10 +44,10 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 		Date startDate = null;
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+			Encounter firstDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getFirstEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
 
-			if (lastDrugRegimenEditorEncounter != null) {
-				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+			if (firstDrugRegimenEditorEncounter != null) {
+				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstDrugRegimenEditorEncounter.getAllObs(), firstDrugRegimenEditorEncounter);
 				try {
 					startDate = DATE_FORMAT.parse(o.get("startDate").toString());
 				} catch (ParseException e) {
