@@ -10,13 +10,19 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -25,7 +31,7 @@ import java.util.Map;
  * Calculates the date on which a patient first started ART
  */
 public class InitialArtStartDateCalculation extends BaseEmrCalculation {
-
+	static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should return null for patients who have not started ART
@@ -35,18 +41,25 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 
-		// Get earliest dates from orders
-		Concept arvs = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
-		CalculationResultMap allDrugOrders = allDrugOrders(arvs, cohort, context);
-		CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders, context);
-
-		// Return the earliest of the two
-		CalculationResultMap result = new CalculationResultMap();
+		Date startDate = null;
+		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			Date orderDate = EmrCalculationUtils.datetimeResultForPatient(earliestOrderDates, ptId);
+			Encounter firstDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getFirstEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
 
-			result.put(ptId, orderDate == null ? null : new SimpleResult(orderDate, null));
+			if (firstDrugRegimenEditorEncounter != null) {
+				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstDrugRegimenEditorEncounter.getAllObs(), firstDrugRegimenEditorEncounter);
+				try {
+					startDate = DATE_FORMAT.parse(o.get("startDate").toString());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				if (startDate != null) {
+					ret.put(ptId, new SimpleResult(startDate, this, context));
+				} else {
+					ret.put(ptId, null);
+				}
+			}
 		}
-		return result;
+		return ret;
 	}
 }
