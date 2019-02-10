@@ -9,14 +9,17 @@
  */
 package org.openmrs.module.kenyaemr.regimen;
 
+import org.openmrs.*;
 import org.openmrs.CareSetting;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Order;
-import org.openmrs.Patient;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.Patient;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 
 /**
  * Regimen change history of a patient. Use for ARVs
@@ -123,8 +127,14 @@ public class RegimenChangeHistory {
 	/**
 	 * Undoes the last change in the history
 	 */
-	public void undoLastChange() {
-		RegimenChange lastChange = getLastChange();
+	public void undoLastChange(@FragmentParam Patient patient, @FragmentParam String category) {
+		// Patient patient = Context.getPatientService().getPatientByUuid("a958ff30-0312-4fc6-8648-3fb00ffc23d9");
+		EncounterService encounterService = Context.getEncounterService();
+		Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
+		if (lastEnc != null) {
+			 encounterService.voidEncounter(lastEnc, "Just Testing");
+		}
+		/*RegimenChange lastChange = getLastChange();
 		if (lastChange == null) {
 			return;
 		}
@@ -151,7 +161,7 @@ public class RegimenChangeHistory {
 		}
 
 		// Remove last change from history
-		changes.remove(lastChange);
+		changes.remove(lastChange);*/
 	}
 
 	/**
