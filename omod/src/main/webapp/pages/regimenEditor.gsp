@@ -4,7 +4,7 @@
 	def allowNew = !regimenFromObs
 	def allowChange = regimenFromObs && lastEnc.startDate && !lastEnc.endDate
 	def allowRestart = regimenFromObs && lastEnc.endDate
-	def allowUndo = false
+	def allowUndo = regimenFromObs && regimenFromObs.size() > 0
 	def isManager = isManager
 
 

@@ -193,11 +193,16 @@ public class RegimenUtilFragmentController {
 	 * @return the patient's current regimen
 	 */
 	public void undoLastChange(@RequestParam("patient") Patient patient, HttpSession session, @RequestParam("category") String category, @SpringBean RegimenManager regimenManager, @SpringBean KenyaUiUtils kenyaUi) {
-		Concept masterSet = regimenManager.getMasterSetConcept(category);
+		/*Concept masterSet = regimenManager.getMasterSetConcept(category);
 		RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 		history.undoLastChange();
 
-		kenyaUi.notifySuccess(session, "Removed last regimen change");
+		kenyaUi.notifySuccess(session, "Removed last regimen change");*/
+		EncounterService encounterService = Context.getEncounterService();
+		Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
+		if (lastEnc != null) {
+			encounterService.voidEncounter(lastEnc, "Just Testing");
+		}
 	}
 
 	/**
