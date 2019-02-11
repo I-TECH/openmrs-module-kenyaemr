@@ -349,10 +349,10 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
         String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Positive\"\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date  between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id\n" +
-                "having\n" +
-                "        mid(max(concat(v.visit_date,v.final_test_result)),1,10) between date(:startDate) and date(:endDate);";
+                "having mid(min(concat(v.visit_date,final_test_result)),11)=\"Positive\"\n" +
+                "   and mid(min(concat(v.visit_date,v.final_test_result)),1,10) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testPositiveResultsANC");
         cd.setQuery(sqlQuery);
@@ -366,10 +366,10 @@ public class ETLDatimQ4CohortLibrary {
     public CohortDefinition patientHIVNegativeResultsATANC() {
 
         String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.final_test_result =\"Negative\"\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date  between date(:startDate) and date(:endDate)\n" +
                 "group by v.patient_id\n" +
-                "having\n" +
-                "        mid(max(concat(v.visit_date,v.final_test_result)),1,10) between date(:startDate) and date(:endDate);";
+                "having mid(min(concat(v.visit_date,final_test_result)),11)=\"Negative\"\n" +
+                "   and mid(min(concat(v.visit_date,v.final_test_result)),1,10) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testNegativeResultsANC");
         cd.setQuery(sqlQuery);
@@ -381,12 +381,12 @@ public class ETLDatimQ4CohortLibrary {
     }
     public CohortDefinition knownStatusAtANC() {
 
-        String sqlQuery = "select e.patient_id\n" +
+        String sqlQuery = "sselect e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
-                "where (e.hiv_status = 703 ) OR (v.anc_visit_number = 1 AND  v.final_test_result in (\"Negative\",\"Positive\"))\n" +
-                "and v.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by e.patient_id;";
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where e.hiv_status in (664, 703) or (anc_visit_number = 1 and final_test_result in (\"Positive\", \"Negative\"))\n" +
+                "group by e.patient_id\n" +
+                "having  min(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("knownHIVStatusAtANC");
@@ -412,6 +412,46 @@ public class ETLDatimQ4CohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Clients with Known HIV status at ANC");
+        return cd;
+
+    }
+//Clients with positive HIV status before ANC-1
+    public CohortDefinition positiveHivStatusBeforeAnc1() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where e.hiv_status =703\n" +
+                "group by e.patient_id\n" +
+                "having min(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and min(v.visit_date) > max(e.visit_date);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_STAT_RECENT_POSITIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with positive HIV status before ANC-1");
+        return cd;
+
+    }
+
+//Clients with negative HIV status before ANC-1
+    public CohortDefinition negativeHivStatusBeforeAnc1() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where e.hiv_status in (664,1067)\n" +
+                "group by e.patient_id\n" +
+                "having min(v.visit_date) between date(:startDate) and date(:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_STAT_RECENT_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with negative HIV status before ANC-1");
         return cd;
 
     }
