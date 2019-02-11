@@ -20,6 +20,32 @@
 
 		});
 	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		tr:nth-child(even) {
+			background-color: #e495e4;
+		}
+	</style>
 
 	<div class="ke-form-header">
 		<table width="100%">
@@ -37,7 +63,7 @@
 				<legend>
 					SEXUAL AND GENDER BASE VIOLENCE
 				</legend>
-				<table id="gbv-screening-questions">
+				<table class="simple-table" id="gbv-screening-questions">
 					<obsgroup groupingConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
 						<tr>

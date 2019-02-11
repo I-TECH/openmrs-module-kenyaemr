@@ -20,6 +20,28 @@
 
         });
     </script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
 
     <div class="ke-form-header">
         <table width="100%">
@@ -41,7 +63,7 @@
                 <legend>
                     Psychosocial/Knowledge Criteria (applies to patients and caregivers)
                 </legend>
-                <table id="psychosocial-screening-questions">
+                <table class="simple-table" id="psychosocial-screening-questions">
                     <obsgroup groupingConceptId="160525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
                         <tr>
@@ -151,7 +173,7 @@
                 <legend>
                     Support Systems Criteria (applies to patients and caregivers)
                 </legend>
-                <table id="support-screening-questions">
+                <table class="simple-table" id="support-screening-questions">
                     <obsgroup groupingConceptId="160525AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
                         <tr>
