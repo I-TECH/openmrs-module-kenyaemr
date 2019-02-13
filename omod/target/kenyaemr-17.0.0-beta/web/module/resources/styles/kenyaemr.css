@@ -1,0 +1,67 @@
+/********************************************
+ *
+ * General styles for KenyaEMR
+ *
+ ********************************************/
+
+/*** Page header ***/
+
+.ke-page-header {
+	border: 5px solid #ffffff;
+	background-color: #ffffff;
+}
+
+/*** Patient header ***/
+
+.ke-patientheader {
+	padding: 4px;
+	background-color: #7f7b72;
+	overflow: auto;
+	color: white;
+}
+
+.ke-patientheader .ke-patient-name {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.ke-patientheader .ke-identifier-type, .ke-patientheader .ke-patient-gender, .ke-patientheader .ke-patient-age, .ke-patientheader .ke-tip {
+	color: #dfdbd2;
+}
+
+.ke-patientheader .ke-identifier-value {
+	color: white;
+}
+
+.ke-patientheader button {
+	background-color: #c9c3b4;
+}
+
+.ke-patientheader button:hover {
+	background-color: #d9d3c4;
+}
+
+/***** System header *****/
+
+.ke-system-header {
+	padding: 3px;
+	text-align: center;
+	background-color: #AA0000;
+	color: white;
+}
+
+/***** Visit header *****/
+
+.ke-visit-header {
+	padding: 3px;
+	text-align: center;
+	background-color: #466469;
+	color: white;
+}
+
+/***** Dynamic form fields *****/
+
+.ke-form-dynamic-field {
+	display: block;
+	margin: 5px 0 5px 0;
+}

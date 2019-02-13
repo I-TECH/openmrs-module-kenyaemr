@@ -1,0 +1,288 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<script type="text/javascript">
+		var pAge;
+        function onEncounterDateChange() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? data.duration : 'Not started';
+                    jq('#calculated-duration-start-art').html(msg);
+                });
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? (data.regimen ) : 'None';
+                    jq('#calculated-duration-current-regimen').html(msg);
+                });
+        }
+		jq(document).ready(function(){
+			pAge = parseInt('<lookup expression="patient.age"/>');
+            onEncounterDateChange();
+			if (pAge &gt; 15) {
+				whoChild.style.display='none';
+			}
+			if (pAge &lt; 15) {
+				whoAdult.style.display='none';
+			}
+			beforeSubmit.push(function() {
+				var returnDate = new Date(getValue('returnVisitDate.value')).getTime();
+				var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				var encouterDateValue = new Date(getValue('encounter-date.value'));
+				var fourMonthsFromEncounterDate = encouterDateValue.setDate(encouterDateValue.getDate() + 120);
+				if (returnDate &lt; encounterDate)  {
+					getField('returnVisitDate.error').html('Return Visit date should be after encounter date').show();
+					return false;
+				}
+		return true;
+			});
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset >
+			<legend>Impressions &amp; Diagnoses</legend>
+
+			<table>
+				<tr>
+					<td colspan="2">Record any Adverse Drug Reactions since the last visit<br/>
+						<table>
+							<tr>
+								<td>Date of onset</td>
+								<td>Reaction</td>
+								<td>Grading</td>
+								<td>Causative agent</td>
+							</tr>
+							<repeat>
+								<template>
+									<obsgroup groupingConceptId="160647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+										<tr>
+											<td><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+											<td><obs conceptId="160644AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+											<td><obs conceptId="160759AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160757AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+											<td><obs conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" labelText=" "  /></td>
+
+
+										</tr>
+									</obsgroup>
+								</template>
+								<render n="1" concept=" " />
+								<render n="2" concept=" " />
+								<render n="3" concept=" " />
+								<render n="4" concept=" " />
+								<render n="5" concept=" " />
+								<render n="6" concept=" " />
+								<render n="7" concept=" " />
+								<render n="8" concept=" " />
+								<render n="9" concept=" " />
+								<render n="10" concept=" " />
+							</repeat>
+						</table><hr/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">Current Diagnoses <b> Noted Today</b></td>
+				</tr>
+
+				<repeat>
+					<template>
+						<tr>
+							<td>
+								<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/><br/>
+							</td>
+						</tr>
+					</template>
+					<render n="11" concept="Diagnosis"/>
+					<render n="12" concept="Diagnosis"/>
+					<render n="13" concept="Diagnosis"/>
+					<render n="14" concept="Diagnosis"/>
+					<render n="15" concept="Diagnosis"/>
+					<render n="16" concept="Diagnosis"/>
+					<render n="17" concept="Diagnosis"/>
+					<render n="18" concept="Diagnosis"/>
+					<render n="19" concept="Diagnosis"/>
+					<render n="20" concept="Diagnosis"/>
+				</repeat>
+
+				<tr>
+					<td colspan="2"><hr/></td>
+				</tr>
+
+				<tr>
+					<td>WHO Staging:</td>
+					<td>
+						<div id="whoAdult">
+							<table>
+								<tr>
+									<td><strong>Adult</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+								</tr>
+							</table>
+						</div>
+						<div id="whoChild">
+							<table>
+								<tr>
+									<td><strong>Child</strong><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" /></td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend>Cotrimoxazole</legend>
+			<table>
+				<tr>
+					<td>
+						<table cellpadding="0" border="0" cellspacing="5">
+							<tr>
+								<td>Adherence</td>
+								<td>
+									<obs
+											conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Good (G),Fair (F),Poor (P)"
+											style="radio"
+											/>
+								</td>
+							</tr>
+							<tr>
+								<td>Dispensed</td>
+								<td>
+									<obs
+											conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes,No,Not applicable (N/A)"
+											style="radio"
+											/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>ARV</legend>
+			<table>
+				<tr>
+					<td>
+						<table cellpadding="0" border="0" cellspacing="5">
+							<tr>
+								<td>Current Regimen:</td>
+								<td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+							</tr>
+							<tr>
+								<td>Adherence</td>
+								<td>
+									<obs
+											conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Good (G),Fair (F),Poor (P)"
+											style="radio"
+											/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Decision Points</legend>
+			<table>
+				<tr>
+					<td>Decision Points</td>
+					<td><obs conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Clinical Notes:</td>
+					<td>
+						<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="100" />
+					</td>
+				</tr>
+				<tr>
+					<td>Return Visit Date:</td>
+					<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" required="true" /> </td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset >
+			<legend>At Risk Population</legend>
+			<table>
+				<tr>
+					<td valign="top">Is the client a member of at-risk population?</td>
+					<td>
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Discordant Couple" style="checkbox" /><br/>
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Injectable Drug User" style="checkbox" /><br/>
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Male who has sex with men" style="checkbox" /><br/>
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Sex Worker" style="checkbox" /><br/>
+						<obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Client of Sex Worker" style="checkbox" />
+
+					</td>
+				</tr>
+			</table>
+		</fieldset >
+
+		<fieldset >
+			<legend>PwP Services</legend>
+			<table>
+				<tr>
+					<td>Has the client been given condoms this visit?</td>
+					<td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Has the Client disclosed HIV status to their sexually active partner?</td>
+					<td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Has the client's partner received on-site HIV testing?</td>
+					<td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr>
+					<td>Has the client been screened for STI (in this visit)?</td>
+					<td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+			</table>
+		</fieldset >
+
+	</div>
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

@@ -1,0 +1,613 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
+        function onEncounterDateChange() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? data.duration : 'Not started';
+                    jq('#calculated-duration-start-art').html(msg);
+                });
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
+                    jq('#calculated-duration-current-regimen').html(msg);
+                });
+        }
+        var medicationFromElsewhere = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq('.drugs-from-other-facilities').hide();
+            }else {
+                jq('.drugs-from-other-facilities').show();
+            }
+        }
+        var missedDosesSelection = function() {
+            var val = jq(this).val();
+            if (val == 1066){
+                jq('.tbl-missed-doses').hide();
+            }else {
+                jq('.tbl-missed-doses').show();
+            }
+        }
+        //On ready
+        jq(function() {
+            jq('#fpOptionValues').hide();
+            jq('.drugs-from-other-facilities').hide();
+            jq('.tbl-missed-doses').hide();
+            jq('input[type=radio].medication-from-elsewhere').change(medicationFromElsewhere);
+            jq('input[type=radio].missed-doses').change(missedDosesSelection);
+            getField('encounter-date.value').change(onEncounterDateChange);
+            onEncounterDateChange();
+            //Pregnancy validation
+
+            //Patient not pregnant
+            jq('#pregnancyOption input:radio').change(function () {
+                if ((getValue('pregnancyOption.value')) == 1065) {
+                    jq('#fpOptionValues').hide();
+               }
+                //Patient pregnant
+                else if((getValue('pregnancyOption.value')) == 1066){
+                    jq('#fpOptionValues').show();
+                 //Patient not sure
+                }else if((getValue('pregnancyOption.value')) == 1067){
+                    jq('#fpOptionValues').show();
+
+                }
+
+            });
+            var strtext = "";
+            var familyPlanningOption = getValue('fplanning.value');
+            var pregnancyOption = getValue('pregnancyOption.value');
+
+            if (familyPlanningOption == "") {
+                jq('#onFp :input').prop('disabled', true);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+            if (familyPlanningOption == "965") {
+                jq('#onFp :input').prop('disabled', false);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+            if (familyPlanningOption == "160652") {
+                jq('#onFp :input').prop('disabled', true);
+                jq('#notOnFp :input').prop('disabled', false);
+            }
+            if (familyPlanningOption == "1360") {
+                jq('#onFp :input').prop('disabled', false);
+                jq('#notOnFp :input').prop('disabled', true);
+            }
+
+            jq("#fplanning select ").change(function () {
+
+                jq("#fplanning select option:selected").each(function () {
+                    strtext += jq(this).val();
+                });
+
+                if (strtext == "") {
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', true);
+                }
+                if (strtext == "965") {
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
+                }
+                if (strtext == "160652") {
+                    jq('#onFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', true);
+                    jq('#notOnFp :input').prop('disabled', false);
+                }
+                if (strtext == "1360") {
+                    jq('#notOnFp :input').prop('checked', false);
+                    jq('#onFp :input').prop('disabled', false);
+                    jq('#notOnFp :input').prop('disabled', true);
+                }
+
+                strtext = "";
+            });
+
+            jq("#wants-pregnancy").change(function(){
+                getField('fplanning.value').prop("selectedIndex", 0);
+                jq('#fp-details').show();
+                jq('#fpOptionValues :input[type=checkbox]').prop('disabled', true);
+                jq('#fpOptionValues :input').prop('checked', false);
+            });
+
+        });
+
+
+        </script>
+    <macros>
+        <macro key="artFastTrackEncounterType" value="e87aa2ad-6886-422e-9dfd-064e3bfe3aad" />
+    </macros>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+                <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+                <td>Provider: <encounterProvider default="currentUser"> </encounterProvider></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>ART Fast Track for Stable Patients</legend>
+
+            <table>
+                <tr>
+                    <td colspan="2">
+                        ART Refill Model :
+                        <obs conceptId="1758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fast-track"
+                             answerConceptIds="1744AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5618AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown"
+                             answerLabels="Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
+                        <hr/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Current Regimen:</td>
+                    <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+                </tr>
+                <tr>
+                    <td>Treatment Supporter:</td>
+                    <td><lookup expression="fn.latestObs(160638).valueText"/></td>
+
+                    <td>Phone Number:<strong> <lookup expression="fn.latestObs(160642).valueText"/></strong></td>
+                </tr>
+            </table>
+            <table>
+                <tr><br /></tr>
+                <tr>
+                    <td colspan="4" align="left"><strong>Other Medications Dispensed</strong></td>
+
+                        <table cellspacing="0">
+                            <tr>
+                                <th style="color: #888; text-align: center">Drug</th>
+                                <th style="color: #888; text-align: center">Dose</th>
+                                <th style="color: #888; text-align: center">Units</th>
+                                <th style="color: #888; text-align: center">Frequency</th>
+                                <th style="color: #888; text-align: center">Duration</th>
+                                <th style="color: #888; text-align: center">Duration units</th>
+
+
+                            </tr>
+                            <repeat>
+                                <template>
+                                    <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                            <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                            <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                            <td>
+                                                <obs
+                                                        conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                                />
+                                            </td>
+                                            <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                            <td>
+                                                <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabels="Hours,Days,Weeks,Months" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+                                </template>
+                                <render n="1" concept="Drug"/>
+                                <render n="2" concept="Drug"/>
+                                <render n="3" concept="Drug"/>
+                                <render n="4" concept="Drug"/>
+                                <render n="5" concept="Drug"/>
+                            </repeat>
+                 </table>
+                </tr>
+             <table/>
+            </table>
+            <fieldset>
+                <legend>Other supplies</legend>
+                <table>
+                    <tr>
+                            <th style="color: #888">Item</th>
+                            <th style="color: #888; text-align: center">Units</th>
+                            <th style="color: #888; text-align: center">Duration</th>
+                            <th style="color: #888; text-align: center">Duration units</th>
+                    </tr>
+                    <tr>
+                            <td>
+                                <div style="float: left; padding-right: 50px">
+                                    <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="CTX" /><br />
+                                </div>
+                            </td>
+                                <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                <td>
+                                    <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Hours,Days,Weeks,Months" />
+                                </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="float: left; padding-right: 50px">
+                            <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Dapsone" /><br />
+                        </div>
+                    </td>
+                        <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                        <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                        <td>
+                            <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Hours,Days,Weeks,Months" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="float: left; padding-right: 50px">
+                                <obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Oral Contraceptives" /><br />
+                            </div>
+                        </td>
+                        <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                        <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                        <td>
+                            <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Hours,Days,Weeks,Months" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Condoms distributed	</td>
+                        <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                    </tr>
+                </table>
+        </fieldset>
+        </fieldset>
+        <fieldset>
+            <legend>Missed ARV doses</legend>
+            <table>
+                <tr>
+                    <td> Any missed doses of ARVs since last clinic visit?</td>
+                    <td>
+                        <input type="radio" name="missed-doses" class="missed-doses" value="1065"/> Yes
+                        <input type="radio" name="missed-doses" class="missed-doses" value="1066"/> No
+                    </td>
+                </tr>
+            </table>
+            <table class="tbl-missed-doses">
+                <tr>
+                    <td>If yes specify how many doses missed:</td>
+                    <td><obs conceptId="162878AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Any Current/Worsening symptoms</legend>
+        <table style="float: left; padding-right: 60px">
+            <tr>
+                <td>Fatigue:	</td>
+                <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="162626AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerLabels="Yes,No"
+                         style="radio"/></td>
+            </tr>
+                <tr>
+                    <td>Cough:</td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Fever:	</td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Rash:</td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"
+
+                    /></td>
+                </tr>
+        </table>
+        <table style="display: inline-block;  padding-right: 50px">
+                <tr>
+                    <td>Nausea/vomiting: </td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="5978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Genital sore/discharge:</td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="135462AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/></td>
+                </tr>
+                <tr>
+                    <td>Diarrhea:	</td>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/></td>
+                </tr>
+                <tr>
+                    <td><obs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox"
+                    /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                </tr>
+
+        </table>
+        </fieldset>
+        <fieldset>
+            <legend>Medications prescribed elsewhere</legend>
+           <table>
+               <tr>
+                   <td> Any new medications prescribed from outside of the HIV clinic? </td>
+                      <td>
+                       <input type="radio" name="medication-from-elsewhere" class="medication-from-elsewhere" value="1065"/> Yes
+                       <input type="radio" name="medication-from-elsewhere" class="medication-from-elsewhere" value="1066"/> No
+                      </td>
+               </tr>
+           </table>
+           <table class='drugs-from-other-facilities' cellspacing="0">
+                        <tr>
+                            <th style="color: #888; text-align: center">Drug</th>
+                            <th style="color: #888; text-align: center">Dose</th>
+                            <th style="color: #888; text-align: center">Units</th>
+                            <th style="color: #888; text-align: center">Frequency</th>
+                            <th style="color: #888; text-align: center">Duration</th>
+                            <th style="color: #888; text-align: center">Duration units</th>
+                            <th style="color: #888; text-align: center">Dispence date*</th>
+
+                        </tr>
+                        <repeat>
+                            <template>
+                                <obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <tr>
+                                        <td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+                                        <td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+                                        <td>
+                                            <obs
+                                                    conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                    answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+                                            />
+                                        </td>
+                                        <td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+                                        <td>
+                                            <obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                 answerLabels="Hours,Days,Weeks,Months" />
+                                        </td>
+                                        <td><obs id="drug-pickup-date" conceptId="162550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+                                    </tr>
+                                </obsgroup>
+                            </template>
+                            <render n="1" concept="Drug"/>
+                            <render n="2" concept="Drug"/>
+                            <render n="3" concept="Drug"/>
+                            <render n="4" concept="Drug"/>
+                            <render n="5" concept="Drug"/>
+                        </repeat>
+                    </table>
+
+        </fieldset>
+        <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
+        <fieldset id="fp-details" >
+            <table>
+                <tr>
+                    <td colspan="3" style="text-align: left">
+                        <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             labelText="Pregnancy status:&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Pregnant,Not Pregnant,Not Sure" id="pregnancyOption"/>
+                    </td>
+                </tr>
+            </table>
+            <legend>Family Planning Status</legend>
+            <table id="fpOptionValues">
+                <tr>
+                    <td colspan="2">
+                        Family Planning Status :
+                        <obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fplanning"
+                             answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown"
+                             answerLabels="On Family Planning,Not using Family Planning,Wants Family Planning"/>
+                        <hr/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="onFp">
+                            If currently using Family Planning, or wants Family Planning, specify which method(s)
+                            <hr/>
+                            <includeIf velocityTest="$patient.gender == 'F' ">
+                                <table class="right-aligned-first" style="width: 100%;" border="0">
+                                    <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+
+                                            <td style="text-align: left">
+                                                <div style="float: left; padding-right: 50px">
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Emergency contraceptive pills" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Oral Contraceptives Pills" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Injectible" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Implant" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Intrauterine Device" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Lactational Amenorhea Method" style="checkbox"/>
+                                                    <br />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="float: left; padding-right: 50px">
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Diaphram/Cervical Cap" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Fertility Awareness"
+                                                         style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Tubal Ligation" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Condoms" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Vasectomy(Partner)" style="checkbox"/>
+                                                    <br />
+                                                    <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Undecided" style="checkbox"/>
+                                                    <br />
+                                                </div></td>
+                                        </tr>
+                                    </obsgroup>
+                                </table>
+                            </includeIf>
+
+                            <includeIf velocityTest="$patient.gender == 'M' ">
+                                <table class="right-aligned-first" style="width: 100%;" border="0">
+                                    <obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Condoms" style="checkbox"/>
+                                                <br/>
+                                                <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Vasectomy" style="checkbox"/>
+                                                <br/>
+                                                <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Undecided" style="checkbox"/>
+                                            </td>
+
+                                        </tr>
+                                    </obsgroup>
+                                </table>
+                            </includeIf>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="notOnFp">
+                            <br/>Not using Family Planning? Specify reason(s)
+                            <hr/>
+                            <includeIf velocityTest="$patient.gender == 'F' ">
+                                <table style="width: 70%" border="0">
+                                    <obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <div style="float: left; padding-right: 50px">
+                                                    <!--<obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                    <!--answerConceptId="160571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
+                                                    <!--answerLabel="Wants to get Pregnant"-->
+                                                    <!--style="checkbox"/>-->
+                                                    <!--<br/>-->
+                                                    <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="160572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Thinks can't get pregnant"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                    <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerLabel="Not sexually active now"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </div> </td>
+                                        </tr>
+                                    </obsgroup>
+                                </table>
+                            </includeIf>
+                            <includeIf velocityTest="$patient.gender == 'M' ">
+                                <table style="width: 100%" border="0">
+                                    <obsgroup groupingConceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td width="10%"></td>
+                                            <td>
+                                                <obs conceptId="160575AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="160573AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Not sexually active now"
+                                                     style="checkbox"/>
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+                                </table>
+                            </includeIf>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        </includeIf>
+        <fieldset>
+            <legend>Referred</legend>
+            <table>
+                <tr>
+                    <td> Referred to clinic:</td>
+                    <td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Return Visit Date:</td>
+                    <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+</htmlform>

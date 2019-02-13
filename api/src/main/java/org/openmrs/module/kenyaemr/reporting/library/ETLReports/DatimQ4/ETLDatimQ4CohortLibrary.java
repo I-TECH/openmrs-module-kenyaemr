@@ -442,7 +442,8 @@ public class ETLDatimQ4CohortLibrary {
         String sqlQuery = "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
-                "where e.hiv_status in (664,1067)\n" +
+                "        join kenyaemr_etl.etl_hts_test tst on tst.patient_id = e.patient_id\n" +
+                "where e.hiv_status =664\n" +
                 "group by e.patient_id\n" +
                 "having min(v.visit_date) between date(:startDate) and date(:endDate);";
 
@@ -462,7 +463,7 @@ public class ETLDatimQ4CohortLibrary {
         String sqlQuery = "select  en.latest_enr from (select mid(max(concat(e.visit_date,e.patient_id)),11 )latest_enr\n" +
                 "                            from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "                                   inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = e.patient_id\n" +
-                "                            where e.date_of_discontinuation is null and v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                            where e.date_of_discontinuation is null and e.visit_date between date(:startDate) and date(:endDate)\n" +
                 "                            group by e.patient_id) en;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newANCClients");

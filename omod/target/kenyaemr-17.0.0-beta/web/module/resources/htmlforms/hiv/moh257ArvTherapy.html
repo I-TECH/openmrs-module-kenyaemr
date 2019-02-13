@@ -1,0 +1,572 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+<style type="text/css">
+    table.moh257 {
+        border-collapse: collapse;
+        background-color: #F3F9FF;
+    }
+    table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
+        border: 1px solid black;
+        vertical-align: baseline;
+        padding: 4px;
+        text-align: left;
+    }
+</style>
+
+<script type="text/javascript">
+var ADULT = 15;
+var CD4COUNT = 5497;
+var CD4PERCENT = 730;
+var WHOSTAGE = 5356;
+var STOP_CONCEPT=1260;
+var WHO_STAGE_1_PEDS_CONCEPT_ID = 1220;
+var WHO_STAGE_2_PEDS_CONCEPT_ID = 1221;
+var WHO_STAGE_3_PEDS_CONCEPT_ID = 1222;
+var WHO_STAGE_4_PEDS_CONCEPT_ID = 1223;
+var WHO_STAGE_1_ADULT_CONCEPT_ID = 1204;
+var WHO_STAGE_2_ADULT_CONCEPT_ID = 1205;
+var WHO_STAGE_3_ADULT_CONCEPT_ID = 1206;
+var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
+var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
+var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+
+
+var birthDate = new Date(getValue('dob.value'))//.getTime();
+var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+/*Calculate BMI at start of HAART*/
+function calculateStartARTBMI() {
+    var display = '';
+
+    var heightM = parseFloat(getValue('artHeight.value'))  / 100;
+    var weightKg = parseFloat(getValue('artWeight.value'));
+
+    if (!isNaN(weightKg) &amp;&amp;(!isNaN(heightM)))
+    {
+        var bmi = weightKg / (heightM * heightM);
+        display = bmi;
+        if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
+            //getField('bmi.error').html('Abnormal value. Where height and height entered correctly?');
+            //setValue('bmi.value','')
+            display = 'Abnormal value. Were height and height entered correctly?';
+        }
+        else {
+            //setValue('bmi.value',bmi.toFixed(2));// ='BMI:' + bmi.toFixed(2) + '(Adults)';
+            display ='BMI:' + bmi.toFixed(2) + '(Adults)';
+        }
+    }
+
+    jq('#calculated-bmi').html(display);
+
+}
+
+function onDateStartedChange() {
+    var date_started= new Date(getValue('date_started_haart.value'));
+    if(date_started &lt; birthDate )
+    {
+        /* Encounter Date should be greater than the Patients's date of Birth    */
+        getField('date_started_haart.error').html('Should not be less than the date of birth').show();
+    }
+    else
+    {
+        getField('date_started_haart.error').hide();
+    }
+
+}
+
+function onEncounterDateChange() {
+
+    var today = new Date()//.getTime();        //get current date
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+
+
+    /*this data should not be in Future */
+    if (ENC_DATE &gt; today) {
+        getField('encounter-date.error').html('Should not be greater than the Current date').show();
+    }
+    else if(ENC_DATE &lt; birthDate)
+    {
+        /* Encounter Date should be greater than the Patients's date of Birth    */
+        getField('encounter-date.error').html('Should not be less than the date of Birth').show();
+    }
+    else
+    {
+        getField('encounter-date.error').hide();
+    }
+
+    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+            .done(function(data) {
+                onPatientAgeUpdate(data.age);
+            });
+
+
+}
+
+/**
+ * Updates the form due to a patient age change
+ */
+function onPatientAgeUpdate(age) {
+    var isPediatric = (age &lt; 15);
+    jq('#el_stage_ad select option').each(function() {
+        var concept = parseInt(jq(this).prop('value'));
+
+        if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', !isPediatric);
+        }
+        else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', isPediatric);
+        }
+    });
+
+    jq('#start_who_ad select option').each(function() {
+        var concept = parseInt(jq(this).prop('value'));
+
+        if (WHO_STAGES_PEDS.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', !isPediatric);
+        }
+        else if (WHO_STAGES_ADULT.indexOf(concept) >= 0) {
+            jq(this).prop('disabled', isPediatric);
+        }
+    });
+
+    //jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
+}
+
+
+
+
+function OnStop()
+{
+    if (getValue('interrupt.value')== STOP_CONCEPT)
+    {
+        //jq('#art-History').show();
+        jq('#stop :input').attr('disabled',false);
+    }
+    else
+    {
+        //jq('#art-History').hide();
+        jq('#stop :input').attr('disabled',true);
+    }
+}
+
+/*
+ Hide or display cd4 entry field
+ */
+function onCd4CountEligibility() {
+    if(getValue('cd4_count.value')== CD4COUNT)
+    {
+        jq('#cd4_count_val').show();
+    }
+    else
+    {
+        setValue('cd_count.value','') ;
+        jq('#cd4_count_val').hide();
+    }
+}
+
+/*
+ Hide or display cd percent entry field
+ */
+function onCd4PercentEligibility() {
+    if(getValue('cd4_percent.value')== CD4PERCENT)
+    {
+        jq('#cd4_percent_val').show();
+    }
+    else
+    {
+        setValue('cd_percent.value','') ;
+        jq('#cd4_percent_val').hide();
+    }
+}
+
+/**
+ * Hide or display WHO Stage entry field
+ */
+function onWHOEligibility() {
+    var age = parseInt(getValue('age.value'));
+    if (getValue('who.value') == WHOSTAGE) {
+        jq('#initialWhoStageAd').show();
+    }
+    else {
+        //setValue('el_stage_ch.value','') ;
+        setValue('el_stage_ad.value','') ;
+        //jq('#initialWhoStageCh').hide();
+        jq('#initialWhoStageAd').hide();
+    }
+}
+/**
+ * Disabling the first line regimen widget that created issues with cummulative on ART
+ */
+function disableFirstLineRegimenWidget() {
+	jq('#date_started_haart :input').prop('disabled', true);
+}
+
+jq(function(){
+    jq('#interrupt input').click(OnStop);
+    OnStop();
+    getField('encounter-date.value').change(onEncounterDateChange);
+    onEncounterDateChange();
+    getField('artWeight.value').change(calculateStartARTBMI);
+    onEncounterDateChange();
+    getField('artHeight.value').change(calculateStartARTBMI);
+    calculateStartARTBMI();
+
+    onCd4CountEligibility();
+    getField('cd4_count.value').change(onCd4CountEligibility);
+
+    onCd4PercentEligibility();
+    getField('cd4_percent.value').change(onCd4PercentEligibility);
+
+    onWHOEligibility();
+    getField('who.value').change(onWHOEligibility);
+
+    // Validate ART start date
+	disableFirstLineRegimenWidget();
+
+    getField('date_started_haart.value').change(function(){
+
+        var selDate =new Date(getValue('date_started_haart.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE=new Date(getValue('encounter-date.value'))//.getTime();
+
+        var start_month;
+        var start_year;
+        var strCohort = "";
+        var monthlist = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]
+
+        if (selDate === undefined) {
+            getField('date_started_haart.error').hide();
+        }
+        else {
+            start_month = selDate.getMonth();
+            start_year = selDate.getFullYear();
+            strCohort = monthlist[start_month] + "-" + start_year;
+
+            if (selDate &lt; birthDate) {
+                getField('date_started_haart.error').html('Should not be less than the date of birth').show();
+            }
+
+            else {
+                getField('date_started_haart.error').hide();
+            }
+
+        }
+        jq('#cohort').html(strCohort);
+    });
+
+    //validate date of medical eligibility
+    getField('date_Eligible.value').change(function(){
+
+        var selDate = new Date(getValue('date_Eligible.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+        if (selDate === undefined) {
+            getField('date_Eligible.error').hide();
+        }
+        else {
+            if (selDate &lt; birthDate) {
+                getField('date_Eligible.error').html('Should not be less than the date of birth').show();
+            }
+            else if (selDate &gt; ENC_DATE) {
+                getField('date_Eligible.error').html('Should not be greater than the visit date').show();
+            }
+            else {
+                getField('date_Eligible.error').hide();
+            }
+        }
+    });
+
+    //validate transfer out date
+    getField('to_date.value').change(function(){
+
+        var selDate = new Date(getValue('to_date.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+        if (selDate === undefined) {
+            getField('to_date.error').hide();
+        }
+        else {
+            if (selDate &lt; birthDate) {
+                getField('to_date.error').html('Should not be less than the date of birth').show();
+            }
+
+            else {
+                getField('to_date.error').hide();
+            }
+        }
+    });
+
+    //validate date died
+    getField('date_died.value').change(function(){
+
+        var selDate = new Date(getValue('date_died.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+        if (selDate === undefined) {
+            getField('date_died.error').hide();
+        }
+        else
+        {
+            if (selDate &lt; birthDate) {
+                getField('date_died.error').html('Should not be less than the date of birth').show();
+            }
+
+            else {
+                getField('date_died.error').hide();
+            }
+        }
+    });
+
+    //validate date interrupted
+    getField('interruption_date.value').change(function(){
+
+        var selDate = new Date(getValue('interruption_date.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+        if (selDate === undefined) {
+            getField('interruption_date.error').hide();
+        }
+        else {
+            if (selDate &lt; birthDate) {
+                getField('interruption_date.error').html('Should not be less than the date of birth').show();
+            }
+            else {
+                getField('interruption_date.error').hide();
+            }
+        }
+    });
+
+    //validate date restarted
+    getField('date_restarted.value').change(function(){
+
+        var selDate = new Date(getValue('date_restarted.value')) ;
+        var birthDate = new Date(getValue('dob.value'))//.getTime();
+        var ENC_DATE = new Date(getValue('encounter-date.value'))//.getTime();
+
+        if (selDate === undefined) {
+            getField('date_restarted.error').hide();
+        }
+        else {
+            if (selDate &lt; birthDate) {
+                getField('date_restarted.error').html('Should not be less than the date of birth').show();
+            }
+
+            else {
+                getField('date_restarted.error').hide();
+            }
+        }
+    });
+}) ;
+</script>
+
+<div style="display:none">
+    <encounterProvider default="ae01b8ff-a4cc-4012-bcf7-72359e852e14" />
+</div>
+
+<div class="ke-form-header">
+    <table style="width: 100%">
+        <tr>
+            <td>Date: <encounterDate id="encounter-date" showTime="false"/></td>
+            <td>Facility: <encounterLocation  default="GlobalProperty:kenyaemr.defaultLocation"/></td>
+        </tr>
+    </table>
+</div>
+
+<div class="ke-form-content">
+	<table class="moh257" align="center">
+		<tbody>
+			<tr>
+    			<td>
+					Patient's Names: <br/><lookup class="value" expression="patient.personName"/>
+					Patient Clinic Number:<lookup class="value" complexExpression="#foreach( $patId in $patientIdentifiers.get('Unique Patient Number') ) $patId #end "/>
+					Date of Birth: <lookup class="value" id="dob" expression="patient.birthdate"/>
+					Age: <lookup class="value" id="age" expression="patient.age"/>
+    			</td>
+			</tr>
+			<tr>
+    			<td style="background-color: #696969; color: #ffffff;">ARV THERAPY</td>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td colspan="3">Date Medically Eligible <obs id="date_Eligible" conceptId="162227AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+						</tr>
+						<tr>
+							<td>Eligible Thru.?
+								<obs id="who" conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="WHO Stage" />
+							</td>
+							<td>
+								<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PCR" />
+							</td>
+							<td>
+								<obs id="cd4_count" conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cd4 Count" />
+								<obs id="cd4_percent" conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Cd4%" />
+
+								<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="162226AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OPT-B" />
+								<obs conceptId="162225AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="162224AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Research" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+
+								<span id="initialWhoStageAd">WHO Stage<obs id="el_stage_ad" conceptId="160553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"   /></span>
+
+							</td>
+							<td>
+
+								<span id="cd4_count_val">CD4 Count <obs id="cd_count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3"/></span>
+							</td>
+							<td>
+								<span id="cd4_percent_val">CD4 %<obs  id="cd_percent" conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  size="3"/></span>
+
+							</td>
+						</tr>
+						<tr>
+							<obsgroup groupingConceptId="160648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<td>Date Started on 1st Line:<br/><obs id="date_started_haart" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/></td>
+								<td>COHORT: <span id="cohort" style="font-weight:bold"></span></td>
+								<td>Regimen:<obs conceptId="162240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptIds="792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,103166AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerLabels="D4T/3TC/NVP,
+																LPV/r,
+																AZT/3TC,
+																D4T,
+																DDI,
+																ABC,
+																NFV,
+																NVP,
+																EFV,
+																3TC,
+																TDF,
+																IDV,
+																AZT/3TC/EFV,
+																D4T/3TC/EFV,
+																AZT,
+																FTC,
+																LPV,
+																RTV,
+																ATV,
+																3TC/NVP/AZT,
+																3TC/D4T,
+																TDF/3TC,
+																TDF/3TC/EFV,
+																ABC/3TC,
+																EFV/FTC/TDF,
+																3TC/LPV/r/TDF,
+																ABC/3TC/AZT,
+																ABC/NVP/3TC,
+																3TC/ABC/LPV/r"/>
+								</td>
+							</obsgroup>
+						</tr>
+						<tr>
+							<td colspan="3"><br/>At Start of ART:</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<obsgroup groupingConceptId="160648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+									Weight(kgs): <obs id="artWeight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									Height(cms): <obs id="artHeight" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									<span id="calculated-bmi" class="value"></span>
+
+									<span id="startWhoStageAd">WHO Stage<obs id="start_who_ad" conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></span>
+
+								</obsgroup>
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight:bold;">Transfer Out and Death</td>
+						</tr>
+						<tr>
+							<td>
+								<table>
+									<tr>
+										<td>Dates</td>
+										<td>Event</td>
+										<td>Where?</td>
+									</tr>
+									<tr>
+										<td> <obs id="to_date" conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/> </td>
+										<td>Patient Transferred Out</td>
+										<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+									</tr>
+									<tr>
+										<td><obs id="date_died" conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/> </td>
+										<td>Patient Died</td>
+										<td></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight:bold;">ART Treatment Interruptions</td>
+						</tr>
+						<tr>
+							<td>
+								<table>
+									<tr>
+										<td>Dates</td>
+										<td>Reason for Interruption</td>
+										<td>Reason for Stop</td>
+										<td>Date Restarted</td>
+									</tr>
+									<tr>
+										<obsgroup groupingConceptId="160740AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<td style="vertical-align:top;"><obs id="interruption_date" conceptId="160739AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="true"/></td>
+											<td style="vertical-align: top;"><obs id="interrupt" conceptId="1667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+																				  answerLabels="STOP,LFU" style="radio" answerSeparator="&lt;br/&gt;" /></td>
+											<td>
+																<span id="stop">
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="1-Toxicity/Side effects" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1434AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="2-Pregnancy" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="3-Treatment failure" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="4-Poor adherence" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5485AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="5-Illness, Hospitalization" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="6-Drug out of stock" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="7-Patient lacks finances" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="8-Planned treatment interruptions" style="checkbox"/>  <br/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="9-Other patient decision" style="checkbox"/>
+																<obs conceptId="1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="10-Other" style="checkbox"/>
+																</span>
+											</td>
+											<td style="vertical-align:top;"><obs id="date_restarted" conceptId="160738AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"/></td>
+										</obsgroup>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="ke-form-footer">
+    <submit />
+</div>
+
+</htmlform>

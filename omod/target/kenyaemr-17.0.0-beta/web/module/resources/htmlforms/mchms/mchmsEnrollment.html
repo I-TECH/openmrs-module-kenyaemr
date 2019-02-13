@@ -1,0 +1,576 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+<style type="text/css">
+	table.tb {
+		background-color: #B3C2F0;
+		border: 1px solid black;
+	}
+
+	table.tb1 {
+		border: 1px solid black;
+		vertical-align: baseline;
+		text-align: left;
+		background-color: #E1E1FF;
+	}
+
+	table.tb1 tr th, table.tb1 tr td {
+		border: 0;
+		padding: 10px;
+	}
+</style>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+<script type="text/javascript">
+
+	var NOT_HIV_TESTED_ID = 1402;
+	var NEGATIVE = 664;
+    var HIV_POSITIVE = 703;
+	var UNKNOWN = 1067;
+	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
+	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+    var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+
+//Start on ready
+	jq(function () {
+	    //Gravida validations
+        getField('parity-term.value').change(onParityChange);
+        getField('parity-abortion.value').change(onParityChange);
+        jq('#gravida input[type=text]').attr("style", "pointer-events:none;");
+		onLmpChange();
+        validateOtherFields();
+		onPatientHivStatusChange();
+		onPartnerHivStatusChange();
+        onEncounterDateChange();
+		getField('lmp.value').change(onLmpChange);
+		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
+		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
+		//First ANC visit date validation
+        if(ANC_START_DATE !="" || ANC_START_DATE != null){
+            getField('first-anc-date.value').val(ANC_START_DATE);
+        }
+        //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
+        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
+            if(HIV_TEST_DATE != "") {
+                var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                getField('patient-hiv-test-date.value').val(formattedTestDate);
+            }
+            jq('#patient-hiv-test-date input').prop('disabled', false);
+            getField('patient-hiv-status.value').val(HIV_POSITIVE);
+            jq('#tbl-known-positive').show();
+            jq('#hiv-known-positive:text').val('Positive');
+
+            //Prepopulate if already on HAART
+            if(PATIENT_ON_ART =="true") {
+                jq('#on-art:text').val('Yes');
+            }else {
+                jq('#on-art:text').val('No');
+            }
+        }else{
+            jq('#tbl-known-positive').hide();
+		}
+
+
+        jq('#first-anc-today').click(defaultFirstAncDateChange);
+	});
+	//End on ready
+    function onParityChange() {
+        var gravida = '';
+        var parityTerm = parseInt(getValue('parity-term.value'));
+        var parityAbortion = parseInt(getValue('parity-abortion.value'));
+        if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+            gravida = parityTerm + parityAbortion + 1;
+            getField('gravida.value').val(gravida);
+        }
+    }
+	function onLmpChange() {
+//		var display = 'EDD could not be calculated!';
+//		var displayGes = 'Gestation could not be calculated!';
+        var display = '-';
+		var displayGes = '-';
+		var lmpValue = getValue('lmp.value');
+		if (lmpValue) {
+			var lmp = Date.parse(getValue('lmp.value'));
+			var edd = lmp;
+			display = calculateEdd(new Date(lmp));
+            displayGes = calculateGestation(new Date(lmp))
+		}
+		$j('#calculated-edd').html(display);
+		$j('#calculated-gestation').html(displayGes);
+	}
+    //Ckeckbox to prepopulate default today as first anc visit date
+    var defaultFirstAncDateChange = function () {
+        val = jq(this).val();
+        var encDate = getValue('encounter-date.value');
+        var formattedEncounterDate =moment(moment(encDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
+        if (jq(this).is(':checked')){
+            getField('first-anc-date.value').val(formattedEncounterDate);
+            setDatetimeValue('first-anc-date.value',formattedEncounterDate);
+
+        }else{
+            getField('first-anc-date.value').val("");
+        }
+    }
+
+	function daysInMonth(month, year) {
+		var dim = 31;
+		if (month == 1) {
+			if (year % 4 == 0) {
+				dim = 29;
+			} else {
+				dim = 28;
+			}
+		} else if (month == 3 || month == 5 || month == 8 || month == 10) {
+			dim = 30;
+		}
+		return dim;
+	}
+
+	function calculateEdd(lmp) {
+		var lmpDay = lmp.getDate();
+		var lmpMonth = lmp.getMonth();
+		var lmpYear = lmp.getFullYear();
+
+		var dayOffset = 7;
+		var monthOffset = -2;
+		var yearOffset = 1;
+
+		var eddDay = lmpDay + dayOffset;
+		var dim = daysInMonth(lmpMonth, lmpYear);
+		if (eddDay &gt; dim) {
+			eddDay -= dim;
+			monthOffset++;
+		}
+		var eddMonth = lmpMonth + monthOffset;
+		if (eddMonth &lt;= 0) {
+			eddMonth += 12;
+			yearOffset--;
+		}
+		var eddYear = lmpYear + yearOffset;
+		return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' +
+				eddYear;
+	}
+    function calculateGestation(lmp) {
+        var today = new Date();
+
+        var timeDiff = Math.abs(lmp.getTime() - today.getTime());
+        return Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
+
+    }
+	function validateRequiredFields() {
+		var gravida = getValue('gravida.value');
+		var parityTerm = getValue('parity-term.value');
+		var parityAbortion = getValue('parity-abortion.value');
+		var parity = parseInt(parityTerm, 10) + parseInt(parityAbortion, 10);
+		if (parity &gt; gravida) {
+			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
+			return false;
+		}
+
+		var hivStatus = getValue('patient-hiv-status.value');
+		if (hivStatus == UNKNOWN || hivStatus == "") {
+
+        }else{
+			var hivTestDate = getValue('patient-hiv-test-date.value');
+			if (hivTestDate == "" &amp;&amp; HIV_TEST_DATE == "") {
+				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
+				return false;
+			}
+		}
+		var partnerHivStatus = getValue('partner-hiv-status.value');
+		if (partnerHivStatus == UNKNOWN || partnerHivStatus == "" ) {
+
+        }else{
+			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
+			if (partnerHivTestDate == "") {
+				getField('partner-hiv-test-date.error').html('Specify the date when the partner was tested for HIV.').show();
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function validateOtherFields() {
+
+        var menarche = getValue('menarche-age.value');
+		var urinePh = getValue('urine-ph.value');
+		var urineSpecificGravity = getValue('urine-specific-gravity.value');
+		var ultrasoundEdd = getValue('ultrasound-edd.value');
+
+        if (menarche != null) {
+            var menarcheValue = parseFloat(menarche);
+            if (menarcheValue &lt; 8.0 || menarcheValue &gt; 18.0) {
+                getField('menarche-age.error').html('Menarche must be between 8 and 18 years.').show();
+                return false;
+            }
+        }
+		if (urinePh != null) {
+			var urinePhValue = parseFloat(urinePh);
+			if (urinePhValue &lt; 5.0 || urinePhValue &gt; 9.0) {
+				getField('urine-ph.error').html('Urine pH must be between 5.0 and 9.0.').show();
+				return false;
+			}
+		}
+		if (urineSpecificGravity != null) {
+			var urineSpecificGravityValue = parseFloat(urineSpecificGravity);
+			if (urineSpecificGravityValue &lt; 1.0000 || urineSpecificGravityValue &gt; 1.1000) {
+				getField('urine-specific-gravity.error').html('Urine specific gravity must be between 1.000 and 1.1000.').show();
+				return false;
+			}
+		}
+		if (ultrasoundEdd != null) {
+			var lmpDate = Date.parse(getValue('lmp.value'));
+			var uEddDate = Date.parse(getValue('ultrasound-edd.value'));
+			if (uEddDate &lt;= lmpDate) {
+				getField('ultrasound-edd.error').html('EDD (Ultrasound) cannot be on before LMP date.').show();
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called when 'HIV Status' field is changed
+	 */
+	function onPatientHivStatusChange() {
+		var patientHivStatus = getValue('patient-hiv-status.value');
+
+		if (patientHivStatus == '' || patientHivStatus == UNKNOWN) {
+			jq('#patient-hiv-test-date input').prop('disabled', true);
+			setValue('patient-hiv-test-date.value', null);
+		} else {
+			jq('#patient-hiv-test-date input').prop('disabled', false);
+		}
+		var isMismatch = ((patientHivStatus == UNKNOWN || patientHivStatus == "") &amp;&amp; PATIENT_IS_ENROLLED_HIV);
+		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
+	}
+
+	/**
+	 * Called when 'Partner HIV Status' field is changed
+	 */
+	function onPartnerHivStatusChange() {
+		var partnerHivStatus = getValue('partner-hiv-status.value');
+
+		if (partnerHivStatus == '' || partnerHivStatus == UNKNOWN) {
+			jq('#partner-hiv-test-date input').prop('disabled', true);
+			setValue('partner-hiv-test-date.value', null);
+		} else {
+			jq('#partner-hiv-test-date input').prop('disabled', false);
+		}
+	}
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+        if(PATIENT_ON_ART =="true") {
+            jq('#current-regimen').html(REGIMEN_NAME);
+        }else{
+            jq('#current-regimen').html("None");
+        }
+    }
+    beforeSubmit.push(function () {
+        if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
+            return true;
+        }
+        return false;
+    });
+</script>
+
+<div class="ke-form-header">
+	<table style="width: 100%">
+		<tr>
+			<td>Enrollment date:
+				<encounterDate id="encounter-date" showTime="true"/>
+			</td>
+			<td>Enrolled by:
+				<encounterProvider default="currentUser"/>
+			</td>
+			<td>Enrolled at:
+				<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div class="ke-form-content">
+<table align="center" border="0" class="tb" cellspacing="10">
+<tr>
+	<td colspan="2">
+		<div class="ke-form-instructions">
+			<b>*</b>
+			indicates a required field
+		</div>
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+		<legend>Maternal/Antenatal Profile</legend>
+		<table align="center" width="100%" class="tb1">
+			<tr>
+				<td width="250">ANC No:</td>
+				<td>
+					<obs conceptId="163530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+					<i>(xxxx/yy)</i>
+				</td>
+				<td>Gestation in weeks:</td>
+				<td>
+					<span id="calculated-gestation" class="value"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>Parity:</td>
+				<td>
+					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
+					+
+					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="parity-abortion"/>
+				</td>
+				<td>EDD (Calculated from L.M.P):</td>
+				<td>
+					<span id="calculated-edd" class="value"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>Gravida:</td>
+				<td>
+					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+				</td>
+
+				<td>EDD (Ultrasound):</td>
+				<td>
+					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+						 id="ultrasound-edd"/>
+				</td>
+			</tr>
+			<tr>
+				<td width="250">Age at Menarche:</td>
+				<td>
+					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="menarche-age" required="false"/>
+				</td>
+				<td>TB Screening results:</td>
+				<td>
+					<obs id="tb-result-status"
+						 conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 style="dropdown"
+						 answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
+				</td>
+			</tr>
+			<tr>
+				<td>L.M.P:</td>
+				<td>
+					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+
+					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+					Estimated
+				</td>
+
+				<td width="250">Date of first ANC visit:</td>
+				<td>
+					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
+				</td>
+			</tr>
+			<tr>
+				<td>HIV Status before first ANC Visit:</td>
+				<td>
+					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="patient-hiv-status"
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Known Positive,Unknown"/>
+					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+				</td>
+				<td width="250">HIV Test Date:</td>
+				<td>
+					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+				</td>
+			</tr>
+			<tr>
+				<td>Partner HIV Status:</td>
+				<td>
+					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+						 id="partner-hiv-status"
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+				</td>
+				<td width="250">Partner HIV Test Date:</td>
+				<td>
+					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<legend>Laboratory investigations</legend>
+		<table align="center" width="100%" class="tb1">
+			<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td>Syphilis serology:</td>
+								<td>
+									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="syphilis-test-results"
+										 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Non Reactive,Reactive,Requested,Not Tested,Poor Sample quality"/>
+								</td>
+								<td>BS for MPS:</td>
+								<td>
+									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td width="250">Blood Group/Rhesus:</td>
+								<td>
+									<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>
+								<table id="tbl-known-positive" border="1">
+										<td>
+											<u>
+												HIV Test Recorded Recently
+											</u>
+											<br/>
+											<br/>Final results:
+											<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Date:
+											<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+											<br/>
+											<br/>On HAART:
+											<input type="text" name="on-art" id="on-art" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Regimen:
+											<span id="current-regimen" class="value"></span>
+											<br/>
+										</td>
+								</table>
+								</td>
+							</tr>
+						</table>
+			         <table>
+						 <br/>
+							<legend><strong>Urinalysis</strong></legend>
+							 <hr />
+							<tr>
+								<td>Urine Microscopy</td>
+								<td>
+									<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+								</td>
+								<td>Urine Leukocyte Esterase Test</td>
+								<td>
+									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Urinary Albumin</td>
+								<td>
+									<obs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
+									mg/dL
+								</td>
+								<td>Urinary Ketone</td>
+								<td>
+									<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
+									mg/dL
+								</td>
+							</tr>
+							<tr>
+								<td>Glucose Measurement (Qualitative)</td>
+								<td>
+									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+								</td>
+								<td>Urine Bile Salt Test</td>
+								<td>
+									<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
+									mg/dL
+								</td>
+							</tr>
+							<tr>
+								<td>Urine pH</td>
+								<td>
+									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+								</td>
+								<td>Urine Bile Pigment Test</td>
+								<td>
+									<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Urine Specific Gravity</td>
+								<td>
+									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+								</td>
+								<td>Urine Color</td>
+								<td>
+									<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td>Urine Nitrite Test</td>
+								<td>
+									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+								</td>
+								<td>Urine Turbidity</td>
+								<td>
+									<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+						 <tr>
+							 <td>Urine Dipstick for Blood</td>
+							 <td>
+								 <obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							 </td>
+						 </tr>
+						</table>
+					</td>
+				</tr>
+			</obsgroup>
+		</table>
+	</td>
+</tr>
+</table>
+<enrollInProgram programId="b5d9e05f-f5ab-4612-98dd-adb75438ed34"/>
+</div>
+
+<div class="ke-form-footer">
+	<submit/>
+</div>
+
+</htmlform>

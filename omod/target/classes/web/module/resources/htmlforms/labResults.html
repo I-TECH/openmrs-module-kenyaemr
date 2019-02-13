@@ -1,0 +1,177 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+	<script type="text/javascript">
+        function viralLoadValidation(){
+
+            if(getValue('ldl.value') == 1302){
+                jq('#vLoadResults :input').prop( "disabled", true );
+                jq('#viral-load-value input').val('');
+            }
+            if(getValue('ldl.value') != 1302){
+                jq('#vLoadResults :input').prop( "disabled", false );
+            }
+        }
+		function getLatedtVlOrder(){
+
+			var testOrderDate=new Date("<lookup expression="fn.latestObs(1271).obsDatetime"/>")
+			var testOrderVlConcept= "<lookup expression="fn.latestObs(1271).valueCoded"/>"
+
+			if (testOrderVlConcept == 856) {
+			//alert(testOrderVlConcept)
+			var month = testOrderDate.getMonth()+1;
+			var display ="VL last ordered on: " + testOrderDate.getDate()+"-"+ month +"-"+testOrderDate.getFullYear();
+				 jq('#lastVl').html(display);
+			}
+		}
+
+		jq(function() {
+            getField('ldl.value').change(viralLoadValidation);
+			viralLoadValidation();
+			getLatedtVlOrder();
+		});
+
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Common Laboratory Investigations</legend>
+		<table style="width: 80%">
+
+			<tr>
+				<th align="left">No. </th>
+				<th align="left">Test</th>
+				<th align="left">Ordered</th>
+				<th align="left">Date Ordered</th>
+				<th align="left">Result</th>
+				<th align="left">Date Collected (if not today)</th>
+			</tr>
+			<tr>
+				<td>01.</td>
+				<td>CD4 Count</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+			</tr>
+			<tr>
+				<td>02.</td>
+				<td>CD4%</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="730AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>03.</td>
+				<td>VDRL</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>04.</td>
+				<td>ALT</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>05.</td>
+				<td>Creatinine</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>06 (a).</td>
+				<td>HIV Viral Load</td>
+				<td>
+					<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+					<span id="lastVl"></span>
+				</td>
+				<td id="vLoadResults">
+					<obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true" id="viral-load-value" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+				</td>
+
+			</tr>
+			<tr>
+				<td>06 (b).</td>
+				<td>HIV Viral Load(LDL)</td>
+				<td> - </td>
+				<td> - </td>
+				<td id="ldlResults"><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl"  dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>07.</td>
+				<td>HIV DNA PCR</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>08.</td>
+				<td>Hemoglobin</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>09.</td>
+				<td>Urinalysis</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>10.</td>
+				<td>Malaria Smear</td>
+				<td><obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerLabel="" style="checkbox" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+				<td><obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+			<tr>
+				<td>11.</td>
+				<td>Gene Xpert</td>
+				<td>
+				<obs 
+				conceptId="162202AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+				answerConceptIds="162204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+								162203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+								164104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+								664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 
+								163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+				answerLabels="MTB detected, 
+								Rif resistance not detected, MTB detected &amp; Rif resistance detected, 
+								MTB detected &amp; Rif resistance intermediate, 
+								MTB not detected, 
+								Invalid/No result/Error" 
+				dateLabel="&lt;/td&gt;&lt;td&gt;"/></td>
+
+			</tr>
+		</table>
+		</fieldset>
+		</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

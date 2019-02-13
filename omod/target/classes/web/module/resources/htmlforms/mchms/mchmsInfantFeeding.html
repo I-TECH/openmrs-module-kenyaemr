@@ -1,0 +1,141 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+			background-color: #B3C2F0;
+			border: 1px solid black;
+		}
+
+		table.tb1 {
+			border: 1px solid black;
+			vertical-align: baseline;
+			text-align: left;
+			background-color: #E1E1FF;
+		}
+
+		table.tb1 tr th, table.tb1 tr td {
+			border: 0;
+			padding: 10px;
+		}
+	</style>
+
+	<script type="text/javascript">
+
+		jq(function () {
+			jq('#hiv-feeding-options input').click(onFeedingOptionsChange);
+			onFeedingOptionsChange();
+		});
+
+		beforeSubmit.push(function () {
+			if (!jq('#mother-decision').is(':visible')) {
+				clearMotherDecision();
+			}
+			return true;
+		});
+
+		function onFeedingOptionsChange() {
+			if (getValue('hiv-feeding-options.value') != null) {
+				jq('#mother-decision-table').show();
+			} else {
+				jq('#mother-decision-table').hide();
+			}
+		}
+
+		function clearMotherDecision() {
+			setValue('mother-decision.value') == null;
+		}
+	</script>
+
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>Infant Feeding</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Infant feeding counselling done (all mothers)"
+									 style="checkbox"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptId="161096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Counselling on exclusive breastfeeding done"
+									 style="checkbox"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 id="hiv-feeding-options"
+									 answerConceptId="162091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabel="Infant feeding options for HIV infected discussed"
+									 style="checkbox"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table id="mother-decision-table">
+									<tr>
+										<td>If yes (above), mother decision:</td>
+										<td>
+											<obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 id="mother-decision"
+												 answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>
