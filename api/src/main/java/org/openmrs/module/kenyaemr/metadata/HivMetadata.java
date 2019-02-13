@@ -41,6 +41,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String HIV_CONFIRMATION = "0c61819d-4f82-434e-b24d-aa8c82d49297";
 		public static final String DRUG_ORDER = "7df67b83-1b84-4fe2-b1b7-794b4e9bfcc3";
 		public static final String LAB_ORDER = "e1406e88-e9a9-11e8-9f32-f2801f1b9fd1";
+		public static final String CCC_DEFAULTER_TRACING = "1495edf8-2df2-11e9-b210-d663bd873d93";
 	}
 
 	public static final class _Form {
@@ -59,6 +60,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String GBV_SCREENING = "03767614-1384-4ce3-aea9-27e2f4e67d01";
 		public static final String ALCOHOL_AND_DRUGS_SCREENING = "7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c";
 		public static final String ENHANCED_ADHERENCE_SCREENING = "c483f10f-d9ee-4b0d-9b8c-c24c1ec24701";
+		public static final String CCC_DEFAULTER_TRACING = "a1a62d1e-2def-11e9-b210-d663bd873d93";
 
 	}
 
@@ -83,6 +85,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("HIV Confirmation", "HIV Confirmatory Encounter", _EncounterType.HIV_CONFIRMATION));
 		install(encounterType("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER));
 		install(encounterType("Lab Order", "Lab Order", _EncounterType.LAB_ORDER));
+		install(encounterType("CCC Defaulter Tracing", "CCC Defaulter Tracing", _EncounterType.CCC_DEFAULTER_TRACING));
 
 
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
@@ -100,6 +103,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.GBV_SCREENING));
 		install(form("Alcohol and Drug Abuse Screening", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
+		install(form("CCC Defaulter Tracing", "Enhanced Adherence Screening", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));

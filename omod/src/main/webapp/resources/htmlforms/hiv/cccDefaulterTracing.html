@@ -1,0 +1,140 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            beforeSubmit.push(function () {
+            });
+
+        });
+    </script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td>Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>Tracing</legend>
+
+            <table>
+                <tr>
+                    <td>Type of tracing</td>
+                    <td>
+                        <obs id="tracing_type" conceptId="a55f9516-ddb6-47ec-b10d-cb99d1d0bd41" answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,eb113c76-aef8-4890-a611-fe22ba003123,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Client Called,Physical Tracing,Treatment Supporter" style="radio"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Outcome</legend>
+
+            <table>
+                <tr>
+                    <td>Tracing Outcome</td>
+                    <td>
+                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Tracing Numbering</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>Please specify the attempt number<br/> since last missed appointment (i.e. 1, 2, 3)</td>
+                    <td>
+                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Was the final outcome reached?</td>
+                    <td>
+                        <obs conceptId="163725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="final_outcome">
+            <legend>True Status</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>True Status</td>
+                    <td><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                             answerLabels="Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
+                        <obs id="true-status-other" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                    <td class="cause-of-death">Cause of death</td>
+                    <td class="cause-of-death"><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                             answerLabels="Cancer,TB,Other infectious and parasitic diseases,Natural cause,Unnatural Cause,Uknown Cause" answerSeparator="&lt;br /&gt;" style="radio"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Provider Comments</legend>
+
+            <table>
+                <tr>
+                    <td>Comments</td>
+                    <td>
+                        <obs conceptId="160716AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
