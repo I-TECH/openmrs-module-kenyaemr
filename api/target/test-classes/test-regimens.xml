@@ -1,0 +1,41 @@
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!--
+	Defines the standard Kenya regimens
+-->
+<definitions xmlns="http://www.kenyaemr.org/regimens" version="1">
+	<category code="category1" masterSetUuid="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+		<drugs>
+			<drug code="D4T" conceptUuid="84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Stavudine -->
+			<drug code="AZT" conceptUuid="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Zidovudine -->
+			<drug code="3TC" conceptUuid="78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><!-- Lamivudine -->
+		</drugs>
+
+		<group code="group1" name="Group #1">
+			<regimen name="regimen1">
+				<component drugCode="AZT" dose="300" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+			</regimen>
+			<regimen name="regimen2">
+				<component drugCode="D4T" dose="30" units="mg" frequency="OD" />
+				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+			</regimen>
+		</group>
+
+		<group code="group2" name="Group #2">
+			<regimen name="regimen3">
+				<component drugCode="D4T" units="tab (s)"  />
+				<component drugCode="3TC" units="tab (s)" />
+			</regimen>
+		</group>
+	</category>
+</definitions>

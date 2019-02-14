@@ -1,0 +1,166 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+			background-color: #B3C2F0;
+			border: 1px solid black;
+		}
+
+		table.tb1 {
+			border: 1px solid black;
+			vertical-align: baseline;
+			text-align: left;
+			background-color: #E1E1FF;
+		}
+
+		table.tb1 tr th, table.tb1 tr td {
+			border: 0;
+			padding: 10px;
+		}
+	</style>
+
+	<script type="text/javascript">
+		beforeSubmit.push(function () {
+
+			for (var i = 1; i &lt; 12; i++) {
+
+				//Validate that the sequence no. is between 1 and 5
+				var seqNo = getValue('sequence-no-' + i + '.value');
+				if (seqNo != "") {
+					if (seqNo &lt; 1 || seqNo &gt; 5) {
+						getField('sequence-no-' + i + '.error').html('Sequence No. must be between 1 and 5.').show();
+						return false;
+					}
+				}
+
+				//Validate that next vaccine data is not earlier than current vaccine date
+				var date = getValue('vaccine-date-' + i + '.value');
+				if (date != null) {
+					var nextDate = getValue('next-vaccine-date-' + i + '.value')
+					if (nextDate != null) {
+						if (Date.parse(getValue('next-vaccine-date-' + i + '.value')) &lt;= Date.parse(getValue('vaccine-date-' + i + '.value'))) {
+							getField('next-vaccine-date-' + i + '.error').html('Next vaccine date cannot be on or earlier than vaccine date.').show();
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		});
+	</script>
+
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>Provider:
+					<encounterProvider default="currentUser"/>
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<tr>
+				<td colspan="2">
+					<div class="ke-form-instructions">
+						<b>*</b>
+						indicates a required field
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<fieldset>
+						<legend>General</legend>
+						<table align="center" width="100%" class="tb1">
+							<tr>
+								<td style="background-color: #696969; color: #ffffff;">Preventive Services</td>
+								<td style="background-color: #696969; color: #ffffff;">Sequence No.</td>
+								<td style="background-color: #696969; color: #ffffff;">Date</td>
+								<td style="background-color: #696969; color: #ffffff;">Comment</td>
+								<td style="background-color: #696969; color: #ffffff;">Next
+									<Visit></Visit>
+								</td>
+							</tr>
+							<repeat>
+								<template>
+									<obsgroup groupingConceptId="160593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+										<tr>
+											<td>
+												<obs conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 answerConceptIds="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160428AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														id="vaccine-{n}"/>
+											</td>
+											<td>
+												<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="sequence-no-{n}"/>
+											</td>
+
+											<td>
+												<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="vaccine-date-{n}"/>
+											</td>
+											<td>
+												<obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="comment-{n}"/>
+											</td>
+											<td>
+												<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+													 allowFutureDates="true" id="next-vaccine-date-{n}"/>
+											</td>
+										</tr>
+									</obsgroup>
+								</template>
+								<render n="1"/>
+								<render n="2"/>
+								<render n="3"/>
+								<render n="4"/>
+								<render n="5"/>
+								<render n="6"/>
+								<render n="7"/>
+								<render n="8"/>
+								<render n="9"/>
+								<render n="10"/>
+								<render n="11"/>
+							</repeat>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<legend>ARV Medication</legend>
+					<table align="center" width="100%" class="tb1">
+						<tr>
+							<td>
+								Refer to the MCH Antenatal Visit form
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit/>
+	</div>
+
+</htmlform>

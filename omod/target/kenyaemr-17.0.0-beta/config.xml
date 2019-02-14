@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+
+<module configVersion="1.2">
+
+	<id>kenyaemr</id>
+	<name>KenyaEMR</name>
+	<version>17.0.0-beta</version>
+	<package>org.openmrs.module.kenyaemr</package>
+	<author>I-TECH</author>
+	<description>OpenMRS-based EMR for Kenya</description>
+	<require_version>1.12.0</require_version>
+	<!--<require_version>1.11.*, 1.10.2 - 1.10.*, 1.12.*</require_version>-->
+
+	<require_modules>
+		<require_module version="2.2.1">org.openmrs.module.appframework</require_module>
+		<require_module version="1.1">org.openmrs.calculation</require_module>
+		<require_module version="2.4">org.openmrs.module.htmlformentry</require_module>
+		<require_module version="2.6">org.openmrs.module.idgen</require_module>
+		<require_module version="2.4.1-SNAPSHOT">org.openmrs.module.kenyacore</require_module>
+		<require_module version="2.1-SNAPSHOT">org.openmrs.module.kenyaui</require_module>
+		<require_module version="1.1.8">org.openmrs.module.metadatasharing</require_module>
+		<require_module version="0.9.8.1">org.openmrs.module.reporting</require_module>
+		<require_module version="2.2.4">org.openmrs.module.groovy</require_module>
+		<require_module version="3.8">org.openmrs.module.uiframework</require_module>
+		<require_module version="1.0-SNAPSHOT">org.openmrs.module.kenyaemrorderentry</require_module>
+	</require_modules>
+
+	<!--<aware_of_modules>
+		<aware_of_module version="1.0-SNAPSHOT">org.openmrs.module.kenyaemrorderentry</aware_of_module>
+	</aware_of_modules>-->
+
+	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
+
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>org.openmrs.module.kenyaemr.advice.EncounterServiceAdvice</class>
+	</advice>
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>org.openmrs.module.kenyaemr.advice.MCHMSDeliveryFormProcessor</class>
+	</advice>
+
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+
+</module>

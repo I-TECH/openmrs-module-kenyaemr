@@ -1,0 +1,151 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+
+	<style type="text/css">
+		table.tb {
+			background-color: #FFFFCC;
+			}
+	</style>
+
+	<script type="text/javascript">
+
+			function treatmentoutcomes(){
+				if (getValue('treatment_outcome.value') == "") {
+					jq('#transferout :input').prop('disabled', true);
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', true);
+					jq('#notes :input').prop('disabled', true);
+				}
+				else {
+					jq('#id_treatment_outcome_date_value :input').prop('disabled', false);
+					jq('#notes :input').prop('disabled', false);
+				}
+				if (getValue('treatment_outcome.value') == 159492){
+					jq('#transferout :input').prop('disabled', false);
+				}
+				else{
+					jq('#transferout :input').prop('disabled', true);
+					jq('#notes :input').prop('disabled', false);
+				}
+			}
+
+			jq(function() {
+				treatmentoutcomes();
+				jq('#treatment_outcome').click(treatmentoutcomes);
+
+				beforeSubmit.push(function() {
+					if (getValue('treatment_outcome.value') == "") {
+						getField('treatment_outcome.error').html('Missing treatment outcome').show();
+						return false;
+					}
+					/*if ((getValue('treatmentoutcomedate.value') == "")){
+						getField('treatmentoutcomedate.error').html('Missing treatment outcome date').show();
+						return false;
+
+					}*/
+					if (getValue('treatment_outcome.value') == 159492){
+						if(getValue('transferredoutto.value') == ""){
+							getField('transferredoutto.error').html('Missing transfer to facility').show();
+							return false;
+						}
+					}
+					return true;
+				});
+			});
+	</script>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<table class="tb" align="center">
+				<tr>
+					<td>
+
+						<table  border="0" cellspacing="5" align="center">
+							<tr>
+								<td>Treatment Outcome</td>
+								<td>
+									<obs 
+										conceptId="159786AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="dropdown" id="treatment_outcome"  
+										answerConceptIds="159791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160035AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														159874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														159976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" 
+										answerLabels="Cured(Smear. Negative),
+														Treatment Completed(no smear result),
+														Failure(Smear. Positive),
+														Dead,
+														Defaulted,
+														Lost to followup,
+														Not evaluated,
+														Moved to category 4 classification,
+														Transferred Out"/>
+								</td>
+								<td id ="id_treatment_outcome_date_ttle">Treatment Outcome date</td>
+								<td id ="id_treatment_outcome_date_value"><obs conceptId="159787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="treatmentoutcomedate"/></td>
+
+							</tr>
+						</table>
+						<table  border="0" cellspacing="5"  align="center">
+							<tr>
+								<td>
+								<div id="transferout">
+									<table>
+										<tr>
+											<td>Transferred out to:</td>
+											<td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="transferredoutto"/></td>
+										</tr>
+									</table>
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<table>
+										<td valign="top"><b>Notes:</b></td>
+										<td><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" id="notes"/></td>
+									</table>
+
+								</td>
+								<td>
+
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<completeProgram programId="9f144a34-3a4a-44a9-8486-6b7af6cc64f6"/>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

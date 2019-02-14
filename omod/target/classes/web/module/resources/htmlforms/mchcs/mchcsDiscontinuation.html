@@ -1,0 +1,57 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+	<style type="text/css">
+		table.hei {
+		border-collapse: collapse;
+		background-color: #fff0f7;
+		}
+		table.hei > tbody > tr > td, table.hei > tbody > tr > th {
+		border: 1px solid black;
+		vertical-align: baseline;
+		padding: 4px;
+		text-align: left;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<table class="hei" align="center">
+			<tbody>
+				<tr><td colspan="2"><b>Child Services Discontinuation</b></td></tr>
+				<tr>
+					<td>Discontinued Date</td>
+					<td><encounterDate  id="exitDate" showTime="true"/></td>
+				</tr>
+				<tr>
+					<td>Reason</td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Completed,Died,Transferred Out"/></td>
+				</tr>
+				<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
+			</tbody>
+		</table>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>
