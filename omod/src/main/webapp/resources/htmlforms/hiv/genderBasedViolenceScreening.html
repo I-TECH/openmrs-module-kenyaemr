@@ -20,6 +20,32 @@
 
 		});
 	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		tr:nth-child(even) {
+			background-color: #e495e4;
+		}
+	</style>
 
 	<div class="ke-form-header">
 		<table width="100%">
@@ -37,29 +63,33 @@
 				<legend>
 					SEXUAL AND GENDER BASE VIOLENCE
 				</legend>
-				<table id="gbv-screening-questions">
+				<table class="simple-table" id="gbv-screening-questions">
 					<obsgroup groupingConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
 						<tr>
 							<td>1. Within the past year, have you been hit, slapped, kicked or physically hurt by someone in any way?	</td>
 							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
 						</tr>
+						<tr></tr>
 						<tr>
 							<td>2. Are you in a relationship with a person who physically hit you?</td>
 							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="158358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
 							</td>
 						</tr>
+						<tr></tr>
 						<tr>
 							<td>3. Are you in a relationship with a person who threatens, frightens or insults you or treats you badly?</td>
 							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="118688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
 							</td>
 						</tr>
+						<tr></tr>
 						   <tr>
 							   <td>4. Are you in relationship with a person who forces you to participate in sexual activities that make you feel uncomfortable?
 									</td>
 								<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="152370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
 								</td>
 							</tr>
+						<tr></tr>
 						<tr>
 							<td>5. Have you ever experienced any of the above with someone you do not have a relationship with?
 									</td>
