@@ -47,7 +47,6 @@
 				<!--<ref bean="kenyaemr.common.report.moh731" />-->
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>
-
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
@@ -62,7 +61,6 @@
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
-				<ref bean="kenyaemr.common.report.MOH710"/>
 			</set>
 		</property>
 	</bean>
@@ -350,6 +348,7 @@
 		</property>
 	</bean>
 
+
 	<!-- the report has since been removed -->
 	<!--	<bean id="kenyaemr.common.report.moh711" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="c546b523-83f8-43ba-a979-e0631f0a5364" />
@@ -365,15 +364,6 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
-
-	<bean id="kenyaemr.common.report.MOH710" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="8bd4f53e-40e0-4f04-ba47-818380d44deb" />
-		<property name="name" value="MOH 710" />
-		<property name="description" value="Integrated Immunization and Logistics Summary" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:moh710.xls" />
-	</bean>
-
 
 	<bean id="kenyaemr.etl.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="b90e5c71-4e7b-4996-b8b8-b2278d5929af" />
@@ -412,8 +402,8 @@
 	<!-- Datim Revised report-->
 	<bean id="kenyaemr.etl.common.report.datimQ4" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d6e5dd4c-e3f5-11e8-9f32-f2801f1b9fd1" />
-		<property name="name" value="Revised Datim Report" />
-		<property name="description" value="Revised Datim Report" />
+		<property name="name" value="New Datim Report" />
+		<property name="description" value="New Datim Report" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />

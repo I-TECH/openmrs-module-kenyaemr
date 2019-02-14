@@ -137,22 +137,6 @@ public class ETLDatimQ4IndicatorLibrary {
     public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
         return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
-     * Number of clients with positive HIV status before ANC-1
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithPositiveHivStatusBeforeAnc1() {
-        return cohortIndicator("Clients with positive HIV Status before ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.positiveHivStatusBeforeAnc1(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of clients with Negative HIV status before ANC-1
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithNegativeHivStatusBeforeAnc1() {
-        return cohortIndicator("Clients with Negative HIV Status before ANC-1", ReportUtils.<CohortDefinition>map(datimQ4Cohorts.negativeHivStatusBeforeAnc1(), "startDate=${startDate},endDate=${endDate}"));
-    }
     /**
      * Number of clients newly enrolled for ANC
      * @return the indicator
