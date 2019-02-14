@@ -192,17 +192,10 @@ public class DatimQ4ReportBuilder extends AbstractReportBuilder {
         //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART)
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimQ4Indicators.bfMothersCurrentlyOnART(), indParams), "");
 
-        //Numerator: Number of clients with known HIV status at ANC
-        cohortDsd.addColumn("PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithKnownHIVStatusAtANC(), indParams),"");
+        //Number of clients with known HIV status at ANC
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
 //Number of clients with known HIV status at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimQ4Indicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
-
-        //Recent Positive at entry: Before ANC 1 or at enrollment
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_POSITIVE", "Clients with Positive HIV status before ANC ", ReportUtils.map(datimQ4Indicators.clientsWithPositiveHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
-
-        //Recent Positive at entry: Before ANC 1 or at enrollment
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_NEGATIVE", "Clients with Negative HIV status before ANC ", ReportUtils.map(datimQ4Indicators.clientsWithNegativeHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
-
         //Newly enrolled to ANC
         cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimQ4Indicators.clientsNewlyEnrolledToANC(), indParams), "");
 
