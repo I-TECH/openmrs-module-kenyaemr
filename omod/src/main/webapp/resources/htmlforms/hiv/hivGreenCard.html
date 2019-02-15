@@ -83,16 +83,17 @@ Green Card follow-up visit form
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
-        var PATIENT_DUE_TB_ENROLLMENT = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
-        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
-        var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
-        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
-        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
-        var VL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
-        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
-        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
-       // var ART_START_DATE = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+        var VL_RESULT = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
+        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
+        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
+        var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
+        //var PATIENT_DUE_TB_ENROLLMENT = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
 
+//           console.log("GOOD ADHERENCE ==> "+GOOD_ADHERENCE);
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
 
@@ -627,8 +628,14 @@ function recordedStabilityAssessmentIndicators() {
     //4. Active OIs
 
     //5. Missed appointment last 6 months
-
-    //5. Completed 6 months IPT
+  if(PATIENT_ON_ART =="true" &amp;&amp; GOOD_ADHERENCE == 'true') {
+      jq('#good-adherence:text').val("YES");
+  }else if(PATIENT_ON_ART =="true" &amp;&amp; GOOD_ADHERENCE == 'false'){
+      jq('#good-adherence:text').val("NO");
+  }else  {
+      jq('#good-adherence:text').val("N/A");
+  }
+  //6. Completed 6 months IPT
     if(IPT_COMPLETED == 'true') {
         jq('#ipt-completion:text').val("YES");
     }else{
@@ -727,10 +734,13 @@ function onPersonPresentChange() {
     var cnsFindingsSelected = jq('.cns-findings');
     var gusFindingsSelected = jq('.gus-findings');
     var stabilityAssessment = jq(".stability-details");
+
     if (getValue('person-present.value') == SELF ) {
         jq('.patient-details :input').prop('disabled', false);
         jq('#greencard').smartWizard('enableFinish', false);
         jq(".stability-details").show();
+        jq("#difcom").show();
+        jq(".phdp").show();
     } else {
         complaintSelected();
         knownAllergiesSelected();
@@ -742,12 +752,14 @@ function onPersonPresentChange() {
         jq("#tbl-ctx-adherence").hide();
         jq("#tbl-dap-adherence").hide();
         jq(".stability-details").hide();
+        jq("#difcom").hide();
+        jq(".phdp").hide();
         jq("#refill-label").hide();
         jq("#refill-date").hide();
         jq('.patient-details :input').prop('disabled', true);
         jq('#greencard').smartWizard('goToStep', 4);
         jq('#greencard').smartWizard('enableFinish', true);
-        clearHiddenSections([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
+        clearRadios([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
             workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
             adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
             skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected, stabilityAssessment]);
@@ -894,15 +906,9 @@ var chronicIllnessesSelected = function() {
     var val = getValue('chronic-illness.value');
     var illness = jq('.illness-chronic select').val('');
     var onset = jq('.onset-date-chronic-illness input').val('');
-    var drug = jq('.drug-chronic-illness input').val('');
-    var dose = jq('.dose-chronic-illness input').val('');
-    var units = jq('.units-chronic-illness input').val('');
-    var frequency = jq('.frequency-chronic-illness select').val('');
-    var duration = jq('.duration-chronic-illness input').val('');
-    var durationUnits = jq('.duration-units-illness select').val('');
     if (val == "false" || val == 1066){
         jq("#tbl-chronic-illness").hide();
-        clearHiddenSections([illness, onset, drug, dose, units, frequency, duration, durationUnits]);
+        clearHiddenSections([illness, onset]);
         getField('chronic.error').html('Please specify the chronic illness.').hide();
     }else {
         jq("#tbl-chronic-illness").show();
@@ -1578,6 +1584,7 @@ clearHiddenSections = function(parentObj) {
         parentObj[i].find('select').each(function() {
             this.selectedIndex =0;
         });
+
     }
 }
 //Smart wizard validations
@@ -1862,22 +1869,18 @@ clearHiddenSections = function(parentObj) {
                 } else {
                     getField('fplanning.error').html('Please specify if patient is using family planning methods.').hide();
                 }
-                //Validate fp options chooses atleast one option if on fp
+                //Validate fp options chooses atleast one option if on fp   or if wants fp
                 if (isPregnant == 1066 &amp;&amp; onfpMethodChecked == 965 &amp;&amp; fpMethodsChecked.length == 0) {
                     jq('#fp-details').show();
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                     getField('fp-error.error').html('Please add at least one family planning method.').show();
                     return false;
-                } else {
-                    getField('fp-error.error').html('Please add at least one family planning method.').hide();
-                }
-                //Validate fp options chooses atleast one option if on fp
-                if (isPregnant == 1066 &amp;&amp; onfpMethodChecked == 1360 &amp;&amp; fpMethodsChecked.length == 0) {
-                    jq('#fp-details').show();
-                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                    getField('fp-error.error').html('Please add at least one family planning method.').show();
-                    return false;
-                } else {
+                } else if (isPregnant == 1066 &amp;&amp; onfpMethodChecked == 1360 &amp;&amp; fpMethodsChecked.length == 0) {
+                      jq('#fp-details').show();
+                      jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                      getField('fp-error.error').html('Please add at least one family planning method.').show();
+                     return false;
+                }else{
                     getField('fp-error.error').html('Please add at least one family planning method.').hide();
                 }
                 //Validate not-on-fp options chooses atleast one option if not on fp
@@ -2860,12 +2863,6 @@ beforeSubmit.push(function() {
                         <tr>
                             <th style="color: #888">Illness</th>
                             <th style="color: #888; text-align: center">Onset Date</th>
-                            <th style="color: #888">Drug</th>
-                            <th style="color: #888; text-align: center">Dose</th>
-                            <th style="color: #888; text-align: center">Units</th>
-                            <th style="color: #888; text-align: center">Frequency</th>
-                            <th style="color: #888; text-align: center">Duration</th>
-                            <th style="color: #888; text-align: center">Duration units</th>
                         </tr>
                         <repeat>
                             <template>
@@ -2880,25 +2877,8 @@ beforeSubmit.push(function() {
                                             />
                                         </td>
                                         <td><obs class="onset-date-chronic-illness" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
-                                        <td><obs class= "drug-chronic-illness" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
-                                        <td><obs class = "dose-chronic-illness" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                        <td><obs class ="units-chronic-illness" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
-                                        <td>
-                                            <obs class="frequency-chronic-illness"
-                                                 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
-                                            />
-                                        </td>
-                                        <td><obs class="duration-chronic-illness" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-                                        <td>
-                                            <obs class="duration-units-illness"
-                                                 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                 answerLabels="Hours,Days,Weeks,Months" />
-                                        </td>
                                     </tr>
-                                </obsgroup>
+                                  </obsgroup>
                             </template>
                             <render n="1" concept="Drug"/>
                             <render n="2" concept="Drug"/>
@@ -3188,11 +3168,7 @@ beforeSubmit.push(function() {
                                                             <br />
                                                             <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                                  answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerLabel="Vasectomy(Partner)" style="checkbox"/>
-                                                            <br />
-                                                            <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                 answerLabel="Undecided" style="checkbox" id="fp-error"/>
+                                                                 answerLabel="Vasectomy(Partner)" style="checkbox" id="fp-error"/>
                                                             <br />
                                                         </div>
                                                     </td>
@@ -3211,11 +3187,8 @@ beforeSubmit.push(function() {
                                                         <br/>
                                                         <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Vasectomy" style="checkbox"/>
+                                                             answerLabel="Vasectomy" style="checkbox" id="fp-error"/>
                                                         <br/>
-                                                        <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerLabel="Undecided" style="checkbox" id="fp-error"/>
                                                     </td>
                                                 </tr>
                                             </obsgroup>
@@ -3641,6 +3614,7 @@ beforeSubmit.push(function() {
                     </table>
                 </fieldset>
                 <fieldset class="patient-details">
+                    <fieldset class="phdp">
                     <legend>PHDP Services</legend>
                     <table id = "tbl-phdp">
                         <tr>
@@ -3706,6 +3680,7 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                 </fieldset>
+                </fieldset>
                 <!--Stability Assessment -->
                 <fieldset class="stability-details">
                     <legend>Stability assessment</legend>
@@ -3759,8 +3734,8 @@ beforeSubmit.push(function() {
                                         </tr>
                                         <tr>
                                             <td>
-                                                Missed appointment in last 6 months :
-                                                <input type="text" name="missed-appointment" id="missed-appointment" readonly="True" />
+                                                Good adherence in the last 6 months :
+                                                <input type="text" name="good-adherence" id="good-adherence" readonly="True" />
 
                                                 </td>
                                             <td>

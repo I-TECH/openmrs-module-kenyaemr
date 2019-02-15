@@ -32,7 +32,7 @@
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening" />
 				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
-				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
+				<!--<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />-->
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
