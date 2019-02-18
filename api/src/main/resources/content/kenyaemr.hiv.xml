@@ -32,7 +32,7 @@
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening" />
 				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
-				<!--<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />-->
+				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
 				<ref bean="kenyaemr.common.form.tbScreening" />
 				<ref bean="kenyaemr.common.form.geneXpert" />
@@ -143,19 +143,19 @@
 		<property name="order" value="200005"/>
 	</bean>
 
-	<!-- Enhanced adherence screening  -->
-	<!--<bean id="kenyaemr.hiv.form.enhancedAdherenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">-->
-		<!--<property name="targetUuid" value="c483f10f-d9ee-4b0d-9b8c-c24c1ec24701"/>-->
-		<!--<property name="apps">-->
-			<!--<set>-->
-				<!--<ref bean="kenyaemr.app.clinician"/>-->
-				<!--<ref bean="kenyaemr.app.chart"/>-->
-			<!--</set>-->
-		<!--</property>-->
-		<!--<property name="icon" value="kenyaui:forms/generic.png"/>-->
-		<!--<property name="htmlform" value="kenyaemr:hiv/enhancedAdherenceScreening.html"/>-->
-		<!--<property name="order" value="200007"/>-->
-	<!--</bean>-->
+	 <!--Enhanced adherence screening  -->
+	<bean id="kenyaemr.hiv.form.enhancedAdherenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="c483f10f-d9ee-4b0d-9b8c-c24c1ec24701"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/enhancedAdherenceScreening.html"/>
+		<property name="order" value="200007"/>
+	</bean>
 	<!-- Clinical Encounter - HIV Addendum -->
 	<bean id="kenyaemr.hiv.form.clinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
