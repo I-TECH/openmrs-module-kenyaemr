@@ -174,14 +174,11 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             }
                // Good adherence in the last 6 months
             if (adherenceResults != null) {
-//                log.info("Adherence is not null ==> "+adherenceResults.getConceptId());//
-                if (adherenceResults != null && adherenceResults.getConceptId() == goodAdherenceAnswer ) {
+                if (adherenceResults != null && adherenceResults.getConceptId().equals(goodAdherenceAnswer) ) {
                     Obs adherenceObsResults = EmrCalculationUtils.obsResultForPatient(lastAdherenceObs, ptId);
                     adherenceObsDate = adherenceObsResults.getObsDatetime();
                     adherenceDiffDays = daysBetween(currentDate, adherenceObsDate);
-//                    log.info("Adherence diff days_1 ==> "+adherenceDiffDays);
                      if (adherenceDiffDays >= 0 && adherenceDiffDays <= 182) {
-//                    log.info("Adherence diff days_2 ==> "+adherenceDiffDays);
                          goodAdherence6Months = true;
                      }
                 }
