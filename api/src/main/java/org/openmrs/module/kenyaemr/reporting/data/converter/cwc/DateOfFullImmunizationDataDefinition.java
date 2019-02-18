@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.cwc;
+package org.openmrs.module.kenyaemr.reporting.data.converter.cwc;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -21,7 +21,7 @@ import java.util.Date;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class DateOfVaccineDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class DateOfFullImmunizationDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
@@ -31,14 +31,14 @@ public class DateOfVaccineDataDefinition extends BaseDataDefinition implements E
     /**
      * Default Constructor
      */
-    public DateOfVaccineDataDefinition() {
+    public DateOfFullImmunizationDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public DateOfVaccineDataDefinition(String name) {
+    public DateOfFullImmunizationDataDefinition(String name) {
 
         super(name);
     }
@@ -54,7 +54,7 @@ public class DateOfVaccineDataDefinition extends BaseDataDefinition implements E
         this.vaccineTableColumn = vaccineTableColumn;
     }
 
-    public DateOfVaccineDataDefinition(String name, String vaccineTableColumn) {
+    public DateOfFullImmunizationDataDefinition(String name, String vaccineTableColumn) {
         super(name);
         this.vaccineTableColumn = vaccineTableColumn;
     }

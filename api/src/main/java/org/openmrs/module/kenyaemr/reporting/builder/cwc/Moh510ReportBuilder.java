@@ -9,15 +9,9 @@
  */
 package org.openmrs.module.kenyaemr.reporting.builder.cwc;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
@@ -25,20 +19,15 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.ParentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAttributeCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.mchcs.VaccinationDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ConceptNamesDataConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsDatetimeConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueDatetimeConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cwc.DateOfVaccineDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.moh510.Moh510CohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.data.converter.cwc.DateOfFullImmunizationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.cwc.DateOfVaccineDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.cwc.DateOfVitaminADataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
@@ -46,9 +35,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
@@ -58,11 +45,14 @@ import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinitio
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 @Builds({"kenyaemr.mchcs.report.moh510"})
@@ -132,10 +122,10 @@ public class Moh510ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("PCV 10(Pneumococcal) 3", new DateOfVaccineDataDefinition("PCV 10(Pneumococcal) 3", "PCV_10_3"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("ROTA 1", new DateOfVaccineDataDefinition("ROTA 1", "ROTA_1"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("ROTA 2", new DateOfVaccineDataDefinition("ROTA 2", "ROTA_2"), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Vitamin A", new ObsForPersonDataDefinition("Vitamin A", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.ADMINISTRATION_OF_VITAMIN_A), null, null), "", new ObsDatetimeConverter());
+        dsd.addColumn("Vitamin A", new DateOfVitaminADataDefinition("Vitamin A"), "", null);
         dsd.addColumn("Measles 1", new DateOfVaccineDataDefinition("Measles 1", "Measles_rubella_1"), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Yellow Fever", new ObsForPersonDataDefinition("Yellow Fever", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.YELLOW_FEVER_VACCINE), null, null), "", new ObsDatetimeConverter());
-        dsd.addColumn("Fully Immunized Child", new ObsForPersonDataDefinition("Fully Immunized Child", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.FULLY_IMMUNIZED_CHILD), null, null), "", new ConceptNamesDataConverter());
+        dsd.addColumn("Yellow Fever", new DateOfVaccineDataDefinition("Yellow Fever", "Yellow_fever"), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Fully Immunized Child", new DateOfFullImmunizationDataDefinition("Fully Immunized Child"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Measles 2", new DateOfVaccineDataDefinition("Measles 2", "Measles_rubella_2"), "", new DateConverter(DATE_FORMAT));
         Moh510CohortDefinition cd = new Moh510CohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
