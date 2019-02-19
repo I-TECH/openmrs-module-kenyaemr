@@ -29,9 +29,6 @@ import java.util.Set;
  * Calculates the recorded pregnancy status of patients
  */
 public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
-
-
-
     /**
 	 * Evaluates the calculation
      * @should calculate null for deceased patients

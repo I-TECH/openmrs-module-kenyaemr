@@ -2344,7 +2344,30 @@ public class ETLDatimQ4CohortLibrary {
     /*Number of ART patients with no clinical contact since their last expected contact due to death of as result of other disease/condition*/
     public CohortDefinition onARTMissedAppointmentDiedOtherDisease() {
 
-        String sqlQuery = "";
+        String sqlQuery = "select  e.patient_id\n" +
+                "            from (\n" +
+                "                 select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "                        max(fup.visit_date) as latest_vis_date,\n" +
+                "                        mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                        max(d.visit_date) as date_discontinued,\n" +
+                "                        d.patient_id as disc_patient\n" +
+                "                 from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "                        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "                        join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "                        left outer JOIN\n" +
+                "                          (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                           where date(visit_date) <= curdate()  and program_name='HIV'\n" +
+                "                           group by patient_id\n" +
+                "                          ) d on d.patient_id = fup.patient_id\n" +
+                "            \n" +
+                "                 where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "                 group by patient_id\n" +
+                "                 having (\n" +
+                "                            (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
+                "                              and timestampdiff(day, date(latest_tca),:endDate) > 28 and latest_tca between date_sub(date(:endDate),interval  6 MONTH) and date(:endDate))\n" +
+                "                 ) e  inner join kenyaemr_etl.etl_ccc_defaulter_tracing dt on dt.patient_id = e.patient_id and dt.true_status = 160432\n" +
+                "                                                                   and dt.is_final_trace = 1267 and dt.tracing_outcome = 1267\n" +
+                "                                                                   and dt.cause_of_death = 162574;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_ML_DIED_OTHER_DISEASE");
         cd.setQuery(sqlQuery);
