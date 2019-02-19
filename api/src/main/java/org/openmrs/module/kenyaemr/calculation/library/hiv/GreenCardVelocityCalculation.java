@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
+import org.joda.time.Months;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -23,11 +24,14 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
@@ -45,7 +49,7 @@ import java.util.*;
  * Not started on tb drugs - due for tb enrollment
  * In IPT program
  * On ART
- *
+ *Is not pregnant
  */
 public class GreenCardVelocityCalculation extends BaseEmrCalculation {
 
@@ -76,20 +80,24 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
         Concept LDLQuestion = Context.getConceptService().getConcept(1305);
         Concept LDLAnswer = Context.getConceptService().getConcept(1302);
+        //Checking adherence
+        Concept AdherenceQuestion = Context.getConceptService().getConcept(1658);
 
         CalculationResultMap iptCurrent = Calculations.lastObs(IptCurrentQuestion, cohort, context);
         CalculationResultMap iptStarted = Calculations.lastObs(IptStartQuestion, cohort, context);
         CalculationResultMap iptStopped = Calculations.lastObs(IptStopQuestion, cohort, context);
         CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram, context);
         CalculationResultMap lastLDLObs = Calculations.lastObs(LDLQuestion, inHivProgram, context);
+        CalculationResultMap lastAdherenceObs = Calculations.lastObs(AdherenceQuestion, inHivProgram, context);
 
         // Get active ART regimen of each patient
         Concept arvs = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
         CalculationResultMap currentARVDrugOrders = activeDrugOrders(arvs, cohort, context);
 
-        // Get ART start date
-        CalculationResultMap allDrugOrders = allDrugOrders(arvs, cohort, context);
-        CalculationResultMap earliestOrderDates = earliestStartDates(allDrugOrders, context);
+        //find pregnant women
+        Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
+        //find breastfeeding women
+        Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         StringBuilder sb = new StringBuilder();
@@ -105,12 +113,18 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Date iptStartDate = null;
             Date tbStartObsDate = null;
             Date tbStopObsDate = null;
+            Date adherenceObsDate = null;
             Date currentDate =new Date();
             boolean inIptProgram = false;
             boolean currentInIPT = false;
             boolean patientInIPT6Months = false;
+            boolean goodAdherence6Months = false;
+            boolean isPregnant = false;
+            boolean isBreastFeeding = false;
             Integer iptStartStopDiff = 0;
             Integer iptCompletionDays = 0;
+            Integer adherenceDiffDays = 0;
+            Integer  goodAdherenceAnswer = 159405;
             //ART calculations
             String artStartObsDate = null;
             Date artStartDate = null;
@@ -121,7 +135,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Obs lastVLObsResult = null;
             String ldlResult = null;
             Double vlResult = 0.0;
-            //Patient with current on anti tb drugs and/or anti tb start dates
+                //Patient with current on anti tb drugs and/or anti tb start dates
             Obs tbCurrentObs = EmrCalculationUtils.obsResultForPatient(tbCurrent, ptId);
             Obs tbStartObs = EmrCalculationUtils.obsResultForPatient(tbStarted, ptId);
 
@@ -134,6 +148,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
             Concept ldl = EmrCalculationUtils.codedObsResultForPatient(lastLDLObs, ptId);
 
+            //Adherence
+            Concept adherenceResults = EmrCalculationUtils.codedObsResultForPatient(lastAdherenceObs, ptId);
             // get latest of ldl or vl
             if (ldl != null && vl != null) {
                 Obs vlObs = EmrCalculationUtils.obsResultForPatient(lastVLObs, ptId);
@@ -163,7 +179,17 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 vlResult = 0.0;
                 ldlResult = null;
             }
-
+               // Good adherence in the last 6 months
+            if (adherenceResults != null) {
+                if (adherenceResults != null && adherenceResults.getConceptId().equals(goodAdherenceAnswer) ) {
+                    Obs adherenceObsResults = EmrCalculationUtils.obsResultForPatient(lastAdherenceObs, ptId);
+                    adherenceObsDate = adherenceObsResults.getObsDatetime();
+                    adherenceDiffDays = daysBetween(currentDate, adherenceObsDate);
+                     if (adherenceDiffDays >= 0 && adherenceDiffDays <= 182) {
+                         goodAdherence6Months = true;
+                     }
+                }
+            }
             //Enrolled in tb program
             if (inTbProgram.contains(ptId)) {
                 patientInTBProgram = true;
@@ -221,7 +247,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 if (artStartObsDate != null) {
                     try {
                         artStartDate = DATE_FORMAT.parse(artStartObsDate);
-                        artStartCurrDiff = daysBetween(currentDate,artStartDate);
+                        artStartCurrDiff = monthsBetween(currentDate,artStartDate);
                         if (artStartCurrDiff > 3) {
                             hasBeenOnART = true;
                         }
@@ -232,16 +258,27 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+            if(pregnantWomen.contains(ptId)) {
+                isPregnant = true;
+            }
+
+            if(breastFeeding.contains(ptId)) {
+                isBreastFeeding = true;
+            }
+
             sb.append("inIPT:").append(inIptProgram).append(",");
             sb.append("inTB:").append(patientInTBProgram).append(",");
-            sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             sb.append("onART:").append(patientOnART).append(",");
             sb.append("hasBeenOnART:").append(hasBeenOnART).append(",");
             sb.append("regimenName:").append(regimenName).append(",");
             sb.append("duration:").append(artStartCurrDiff).append(",");
             sb.append("vlResult:").append(vlResult).append(",");
             sb.append("ldlResult:").append(ldlResult).append(",");
-            sb.append("iptCompleted:").append(patientInIPT6Months);
+            sb.append("iptCompleted:").append(patientInIPT6Months).append(",");
+            sb.append("goodAdherence:").append(goodAdherence6Months).append(",");
+            sb.append("isPregnant:").append(isPregnant).append(",");
+            sb.append("isBreastFeeding:").append(isBreastFeeding);
+            // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             // sb.append("artStartDate:").append(artStartDate).append(",");
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
@@ -258,5 +295,10 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         DateTime d1 = new DateTime(date1.getTime());
         DateTime d2 = new DateTime(date2.getTime());
         return Math.abs(Days.daysBetween(d1, d2).getDays());
+    }
+    private int monthsBetween(Date d1, Date d2) {
+        DateTime dateTime1 = new DateTime(d1.getTime());
+        DateTime dateTime2 = new DateTime(d2.getTime());
+        return Math.abs(Months.monthsBetween(dateTime1, dateTime2).getMonths());
     }
 }

@@ -138,6 +138,22 @@ public class DatimIndicatorLibrary {
     public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
         return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * Number of clients with positive HIV status before ANC-1
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithPositiveHivStatusBeforeAnc1() {
+        return cohortIndicator("Clients with positive HIV Status before ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positiveHivStatusBeforeAnc1(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of clients with Negative HIV status before ANC-1
+     * @return the indicator
+     */
+    public CohortIndicator clientsWithNegativeHivStatusBeforeAnc1() {
+        return cohortIndicator("Clients with Negative HIV Status before ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativeHivStatusBeforeAnc1(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of clients newly enrolled for ANC
      * @return the indicator
@@ -665,6 +681,93 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
+     */
+    public CohortIndicator onARTMissedAppointmentDied() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDied(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_TB Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of TB
+     */
+    public CohortIndicator onARTMissedAppointmentDiedTB() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of TB", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedTB(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_CANCER Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of Cancer
+     */
+    public CohortIndicator onARTMissedAppointmentDiedCancer() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of Cancer", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedCancer(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_OTHER_INFECTIOUS_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other infectious disease
+     */
+    public CohortIndicator onARTMissedAppointmentDiedOtherInfectious() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of other Infectious disease", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedOtherInfectious(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_OTHER_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other disease/condition
+     */
+    public CohortIndicator onARTMissedAppointmentDiedOtherDisease() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of other Infectious disease", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedOtherDisease(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_NATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of natural causes
+     */
+    public CohortIndicator onARTMissedAppointmentDiedNatural() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of natural causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedNatural(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_NONNATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of non-natural causes
+     */
+    public CohortIndicator onARTMissedAppointmentDiedNonNatural() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of non-natural causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedNonNatural(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_DIED_UNKNOWN Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of unknown causes
+     */
+    public CohortIndicator onARTMissedAppointmentDiedUnknown() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of unknown causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedUnknown(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
+     */
+    public CohortIndicator onARTMissedAppointmentTransferred() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to undocumented transfer", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentTransferred(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_TRACED_UNLOCATED Number of ART patients with no clinical contact since their last expected contact due to un-traceability
+     */
+    public CohortIndicator onARTMissedAppointmentUntraceable() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact and were untraceable", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentUntraceable(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML_NO_TRACE_ATTEMPTED Number of ART patients with no clinical contact since their last expected contact with no tracing attempted
+     */
+    public CohortIndicator onARTMissedAppointmentNotTraced() {
+        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact and no tracing attempted", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentNotTraced(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
      */

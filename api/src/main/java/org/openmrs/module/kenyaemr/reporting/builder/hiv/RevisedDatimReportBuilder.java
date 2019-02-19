@@ -192,10 +192,17 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART)
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
-        //Number of clients with known HIV status at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
-//Number of clients with known HIV status at ANC
+        //Numerator: Number of clients with known HIV status at ANC
+        cohortDsd.addColumn("PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithKnownHIVStatusAtANC(), indParams),"");
+//Number of clients with unknown HIV status at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //Recent Positive at entry: Before ANC 1 or at enrollment
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_POSITIVE", "Clients with Positive HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithPositiveHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //Recent Positive at entry: Before ANC 1 or at enrollment
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_NEGATIVE", "Clients with Negative HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithNegativeHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
         //Newly enrolled to ANC
         cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
 
@@ -410,6 +417,39 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
 
         /*TX_ML Number of ART patients with no clinical contact since their last expected contact*/
         EmrReportingUtils.addRow(cohortDsd, "TX_ML", "Number of ART patients with no clinical contact since their last expected contact", ReportUtils.map(datimIndicators.onARTMissedAppointment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with no clinical contact since their last expected contact due to death", ReportUtils.map(datimIndicators.onARTMissedAppointmentDied(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_TB Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of TB*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_TB", "ART patients with no clinical contact since their last expected contact due to death as a result of TB", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedTB(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_CANCER Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of Cancer*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_CANCER", "ART patients with no clinical contact since their last expected contact due to death as a result of cancer", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedCancer(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_OTHER_INFECTIOUS_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other infectious and parasitic disease*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_OTHER_INFECTIOUS_DISEASE", "ART patients with no clinical contact since their last expected contact due to death as a result of other infectious and parasitic disease", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedOtherInfectious(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_OTHER_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other disease or condition*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_OTHER_DISEASE", "ART patients with no clinical contact since their last expected contact due to death as a result of other disease or condition", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedOtherDisease(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_NATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of natural cause*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_NATURAL", "ART patients with no clinical contact since their last expected contact due to death as a result of natural cause", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedNatural(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_NONNATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of non-natural cause*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_NONNATURAL", "ART patients with no clinical contact since their last expected contact due to death as a result of non-natural cause", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedNonNatural(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_DIED_UNKNOWN Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of unknown cause*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED_UNKNOWN", "ART patients with no clinical contact since their last expected contact due to death as a result of unknown cause", ReportUtils.map(datimIndicators.onARTMissedAppointmentDiedUnknown(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_PREV_UNDOCUMENTED_TRF", "ART patients with no clinical contact since their last expected contact due to undocumented transfer", ReportUtils.map(datimIndicators.onARTMissedAppointmentTransferred(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_TRACED_UNLOCATED Number of ART patients with no clinical contact since their last expected contact due to un-traceability*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRACED_UNLOCATED", "ART patients with no clinical contact since their last expected contact and were untraceable", ReportUtils.map(datimIndicators.onARTMissedAppointmentUntraceable(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+
+        /*TX_ML_NO_TRACE_ATTEMPTED Number of ART patients with no clinical contact since their last expected contact with no tracing attempted*/
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_NO_TRACE_ATTEMPTED", "Number of ART patients with no clinical contact since their last expected contact cohort definitions, dataset definitions and ", ReportUtils.map(datimIndicators.onARTMissedAppointmentNotTraced(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
 
         /*HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results*/
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "No. of individuals identified and tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
