@@ -201,7 +201,7 @@ public class RegimenUtilFragmentController {
 		EncounterService encounterService = Context.getEncounterService();
 		Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
 		if (lastEnc != null) {
-			encounterService.voidEncounter(lastEnc, "Just Testing");
+			encounterService.voidEncounter(lastEnc, "undo last regimen change");
 		}
 	}
 
@@ -285,8 +285,8 @@ public class RegimenUtilFragmentController {
 				Concept masterSet = regimenManager.getMasterSetConcept(category);
 				RegimenChangeHistory history = RegimenChangeHistory.forPatient(patient, masterSet);
 				RegimenChange lastChange = history.getLastChange();
-				boolean onRegimen = lastChange != null && lastChange.getStarted() != null;
-
+				Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
+				boolean onRegimen = lastChange != null && lastChange.getStarted() != null && lastEnc !=null;
 				// Can't start if already started
 				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
