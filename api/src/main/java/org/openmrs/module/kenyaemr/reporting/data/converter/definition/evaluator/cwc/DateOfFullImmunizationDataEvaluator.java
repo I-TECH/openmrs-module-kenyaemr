@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cwc;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.cwc.DateOfFullImmunizationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.cwc.DateOfVaccineDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -25,21 +26,17 @@ import java.util.Map;
 /**
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
-@Handler(supports=DateOfVaccineDataDefinition.class, order=50)
-public class DateOfVaccineDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=DateOfFullImmunizationDataDefinition.class, order=50)
+public class DateOfFullImmunizationDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-        DateOfVaccineDataDefinition def = (DateOfVaccineDataDefinition) definition;
 
-        String tableColumn = def.getVaccineTableColumn();
+        String qry = "select encounter_id, date(fully_immunized) from kenyaemr_etl.etl_hei_immunization ";
 
-        String qry = "select encounter_id, (CASE WHEN :vaccineColumn != '' THEN STR_TO_DATE(:vaccineColumn, '%Y-%m-%d') ELSE NULL END) from kenyaemr_etl.etl_hei_immunization ";
-
-        qry = qry.replaceAll(":vaccineColumn", tableColumn);
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
