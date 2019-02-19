@@ -174,7 +174,7 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //4 HIV Positive at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_ANC_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimIndicators.patientsTestPositiveAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
-        //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggationm
+        //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
         EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Number of Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
