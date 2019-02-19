@@ -28,12 +28,9 @@ import java.util.Set;
 /**
  * Calculates the recorded pregnancy status of patients
  */
-public class IsBreastFeedingCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
 
-	@Override
-	public String getFlagMessage() {
-		return "Breast feeding";
-	}
+
 
     /**
 	 * Evaluates the calculation
