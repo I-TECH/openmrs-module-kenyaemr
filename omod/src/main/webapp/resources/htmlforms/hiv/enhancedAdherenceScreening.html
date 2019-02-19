@@ -83,17 +83,11 @@
             if(val == 1065) {
                 jq('#vl-status').show();
                 jq('#vl-feeling').show();
-                jq('#vl-feeling-txt').show();
                 jq('#vl-high').show();
-                jq('#vl-high-txt').show();
-                jq('#vl-advice').show();
             }else{
                 jq('#vl-status').hide();
                 jq('#vl-feeling').hide();
-                jq('#vl-feeling-txt').hide();
                 jq('#vl-high').hide();
-                jq('#vl-high-txt').hide();
-                jq('#vl-advice').hide();
             }
         }
         function hasHighViralLoadResult(){
@@ -280,22 +274,21 @@
                     <tr id ="vl-status">
                         <td>
                             2. Was the Viral load result suppressed (less than 1000) or unsuppressed (greater than 1000) ?
-                            <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Suppressed,Unsuppressed" id="result-status" /><br /><br /></td>
+                        </td><td>
+                            <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Suppressed,Unsuppressed" id="result-status" /><br /><br />
+                    </td>
                     </tr>
                     <tr id="vl-feeling">
                         <td> 3. How does the patient feel concerning the result?	</td>
-                    </tr>
-                    <tr id="vl-feeling-txt">
                         <td><obs conceptId="164981" rows="2" cols="100" style="textarea" /></td>
                     </tr>
                     <tr id="vl-high">
                         <td> 4. What does the patient think caused the high viral load?	</td>
-                    </tr>
-                    <tr id="vl-high-txt">
                         <td><obs conceptId="164982" rows="2" cols="100" style="textarea" /></td>
                     </tr>
-                    <tr id= "vl-advice">
-                        <td> 5. Way forward:    <br /><br />
+                    <tr>
+                        <td> 5. Way forward:    <br /><br /> </td>
+                        <td>
                             <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="100" style="textarea" />
                         </td>
                     </tr>
@@ -402,7 +395,7 @@
                     <tr>
                         <td> 8. Find out if the patient has tried faith healing, or if they have ever stopped taking their medicine because of religious belief	</td>
 
-                        <td><obs conceptId="164998"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        <td><obs conceptId="164998"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> </td>
                     </tr>
                 </table>
             </fieldset>
@@ -414,21 +407,21 @@
                 <table class="simple-table" id="review-questions">
                     <tr><td><strong> Review Adherence Plan from previous session </strong> </td></tr>
                     <tr>
-                        <td> 1. Does patient think adherence  has improved since last session? &#160;&#160;&#160;&#160;&#160;
-
-                            <obs conceptId="1898AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
+                        <td> 1. Does patient think adherence  has improved since last session?
+                        </td>
+                        <td>
+                            <obs conceptId="1898AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> </td>
                     </tr>
                     <tr>
-                        <td> 2. Have any dosses been missed?   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            &#160;&#160;
-                            <obs conceptId="160110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"  /> <br /><br /></td>
+                        <td> 2. Have any dosses been missed?
+                        </td>
+                        <td>
+                            <obs conceptId="160110AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"  />
+                        </td>
                     </tr>
                     <tr>
-                        <td> 3. Review barriers to adherence from previous session and if strategies identified have been taken up identified have been taken up, identify other gaps and issue emerging     </td>
-                    </tr>
-                    <tr>
-                        <td><obs conceptId="163108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="100" style="textarea" /></td>
+                        <td> 3. Review barriers to adherence from previous session and if strategies identified have been <br />  taken up, identify other gaps and issue emerging     </td>
+                         <td><obs conceptId="163108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="2" cols="100" style="textarea" /></td>
                     </tr>
                 </table>
             </fieldset>
@@ -440,7 +433,7 @@
                     <tr><td><strong> Referrals and Networks </strong></td></tr>
                     <tr>
                         <td>
-                            1. Has the patient been referred to other services? (Nutrition, psychosocial support services, substance use treatment, etc)	</td>
+                            1. Has the patient been referred to other services? (Nutrition, psychosocial support services, <br />  substance use treatment, etc)	</td>
                         <td><obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /> <br /><br /></td>
                     </tr>
                     <tr>
@@ -450,8 +443,6 @@
                     </tr>
                     <tr>
                         <td> 3. What was the experience? Do the referrals need to be re-organized?	</td>
-                    </tr>
-                    <tr>
                         <td><obs conceptId="165000" rows="2" cols="100" style="textarea" /></td>
                     </tr>
                     <tr>
@@ -461,8 +452,6 @@
                     </tr>
                     <tr>
                         <td> 5. Adherence plan	</td>
-                    </tr>
-                    <tr>
                         <td><obs conceptId="165002" rows="2" cols="100" style="textarea" /></td>
                     </tr>
                 </table>
