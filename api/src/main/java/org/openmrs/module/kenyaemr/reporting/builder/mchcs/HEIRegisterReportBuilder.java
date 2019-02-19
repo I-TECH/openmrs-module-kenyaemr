@@ -94,16 +94,17 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
-		dsd.addColumn("Name", nameDef, "");
+
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-//		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+		//		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 //		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		dsd.addColumn("DOBAndAge", new HEIAgeAndDOBDataDefinition(), "");
 		// new columns
 		dsd.addColumn("Serial Number", new HEISerialNumberDataDefinition(),"");
 		dsd.addColumn("Enrollment Date", new HEIEnrollmentDateDataDefinition(),"");
 		dsd.addColumn("HEI Id", new HEIIdDataDefinition(),"");
+		dsd.addColumn("Name", nameDef, "");
+		dsd.addColumn("DOBAndAge", new HEIAgeAndDOBDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Entry Point", new HEIEntryPointDataDefinition(),"");
 		dsd.addColumn("Infant Relation", new HEIRelationToInfantDataDefinition(),"");
 		dsd.addColumn("Mothers Name and Phone", new HEIMothersNameAndTelephoneDataDefinition(),"");

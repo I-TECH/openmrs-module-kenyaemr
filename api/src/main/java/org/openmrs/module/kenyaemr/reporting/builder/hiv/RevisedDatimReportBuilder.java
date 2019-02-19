@@ -141,14 +141,14 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
 
         List<ColumnParameters> datimNewAgeDisaggregation =
                 Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
-                        f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50 );
+                        f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50,colTotal );
 
         List<ColumnParameters> datimHTSSelfTestAgeDisaggregation =
                 Arrays.asList(f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24, f25_to29, m25_to29, f30_to34, m30_to34, f35_to39,
                         m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50 );
 
         List<ColumnParameters> datimPMTCTANCAgeDisaggregation =
-                Arrays.asList(funder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50);
+                Arrays.asList(funder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50,colTotal);
 
         List<ColumnParameters> datimOtherReportsAgeDisaggregation = Arrays.asList(all1_to9, all10_to14, all15_to19, all20_to24, allOver25);
 
@@ -157,7 +157,7 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
 
         List<ColumnParameters> datimPAMAAgeDisaggregation = Arrays.asList(all0_to14);
 
-        List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m);
+        List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m,colTotal);
 
       /*  List<ColumnParameters> datimQ4AgeDisaggregation =
                 Arrays.asList(colInfant, children_1_to_9, f10_14, m10_14, f15_19, m15_19, f20_24, m20_24, f25_49, m25_49, f_Over_50, m_Over_50);
@@ -178,127 +178,127 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         /*cohortDsd.addColumn("TX_New_pregnant", "Started on ART and pregnant ", ReportUtils.map(datimIndicators.startedOnARTAndPregnant(), indParams), "");*/
 
         //4 HIV Negative at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_ANC_Negative", "Clients tested HIV Negative at ANC", ReportUtils.map(datimIndicators.patientsTestNegativeAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT", "Clients tested HIV Negative at ANC", ReportUtils.map(datimIndicators.patientsTestNegativeAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //4 HIV Positive at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_ANC_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimIndicators.patientsTestPositiveAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT", "Clients tested HIV Positive at ANC", ReportUtils.map(datimIndicators.patientsTestPositiveAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
-        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_AGE_SEX", "Number of Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Number of Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
-        cohortDsd.addColumn("TX_CURR_PREGNANT", "Pregnant women with HIV infection receiving ART", ReportUtils.map(datimIndicators.pregnantCurrentlyOnART(), indParams), "");
+        cohortDsd.addColumn("TX_CURR", "Pregnant women with HIV infection receiving ART", ReportUtils.map(datimIndicators.pregnantCurrentlyOnART(), indParams), "");
 
         //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART)
-        cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
+        cohortDsd.addColumn("TX_CURR", "Breast Feeding mothers with HIV infection receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //Number of clients with known HIV status at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Known_Status", "Clients with Known HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT", "Clients with Known HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 //Number of clients with known HIV status at ANC
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT", "Clients with Unknown HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
         //Newly enrolled to ANC
-        cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Clients newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
+        cohortDsd.addColumn( "PMTCT_STAT", "Denominator:Clients newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
 
         //Infants tested Negative for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_SampleTaken", "Infants tested Negative for Virology", ReportUtils.map(datimIndicators.infantsSampleTakenForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID", "Infants tested Negative for Virology", ReportUtils.map(datimIndicators.infantsSampleTakenForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
 
         //Infants tested Negative for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Negative", "Infants tested Negative for Virology", ReportUtils.map(datimIndicators.infantsTestedNegativeForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID", "Infants tested Negative for Virology", ReportUtils.map(datimIndicators.infantsTestedNegativeForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
 
         //Infants tested Positive for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Positive", "Infants tested Positive for Virology", ReportUtils.map(datimIndicators.infantsTestedPositiveForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID", "Infants tested Positive for Virology", ReportUtils.map(datimIndicators.infantsTestedPositiveForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
 
         //Infant Virology with no results
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested for Virology with no results", ReportUtils.map(datimIndicators.infantsTestedForVirologyNoResult(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID", "Infants tested for Virology with no results", ReportUtils.map(datimIndicators.infantsTestedForVirologyNoResult(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
 
         //Mothers already on ART at start of current pregnancy
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART_Already", "Number of Mothers Already on ART at the start of current Pregnancy", ReportUtils.map(datimIndicators.mothersAlreadyOnARTAtStartOfCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART", "Number of Mothers Already on ART at the start of current Pregnancy", ReportUtils.map(datimIndicators.mothersAlreadyOnARTAtStartOfCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //Mothers new on ART during current pregnancy
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART_New", "Mothers new on ART during current pregnancy", ReportUtils.map(datimIndicators.mothersNewOnARTDuringCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_ART", "Mothers new on ART during current pregnancy", ReportUtils.map(datimIndicators.mothersNewOnARTDuringCurrentPregnancy(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         /*Tested Negative at PITC Inpatient Services*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Inpatient_Negative", "Tested Negative at PITC Inpatient Services", ReportUtils.map(datimIndicators.testedNegativeAtPITCInpatientServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Negative at PITC Inpatient Services", ReportUtils.map(datimIndicators.testedNegativeAtPITCInpatientServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Positive at PITC Inpatient Services*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Inpatient_Positive", "Tested Positive at PITC Inpatient Services", ReportUtils.map(datimIndicators.testedPositiveAtPITCInpatientServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Positive at PITC Inpatient Services", ReportUtils.map(datimIndicators.testedPositiveAtPITCInpatientServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Negative at PITC PMTCT services ANC-1 only*/
-        EmrReportingUtils.addRow(cohortDsd,"HTS_TST_PMTCT_ANC1_Negative", "Tested Negative at PITC PMTCT ANC1", ReportUtils.map(datimIndicators.testedNegativeAtPITCPMTCTANC1(), indParams),datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd,"HTS_TST", "Tested Negative at PITC PMTCT ANC1", ReportUtils.map(datimIndicators.testedNegativeAtPITCPMTCTANC1(), indParams),datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         /*Tested Positive at PITC PMTCT services ANC-1 only*/
-        EmrReportingUtils.addRow(cohortDsd,"HTS_TST_PMTCT_ANC1_Positive", "Tested Positive at PITC PMTCT ANC1", ReportUtils.map(datimIndicators.testedPositiveAtPITCPMTCTANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd,"HTS_TST", "Tested Positive at PITC PMTCT ANC1", ReportUtils.map(datimIndicators.testedPositiveAtPITCPMTCTANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         /*Tested Negative at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)*/
-        EmrReportingUtils.addRow(cohortDsd,"HTS_TST_PMTCT_POSTANC1_Negative", "Tested Negative at PITC PMTCT Post ANC1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedNegativeAtPITCPMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd,"HTS_TST", "Tested Negative at PITC PMTCT Post ANC1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedNegativeAtPITCPMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         /*Tested Positive at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)*/
-        EmrReportingUtils.addRow(cohortDsd,"HTS_TST_PMTCT_POSTANC1_Positive", "Tested Positive at PITC PMTCT Post ANC1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedPositiveAtPITCPMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+        EmrReportingUtils.addRow(cohortDsd,"HTS_TST", "Tested Positive at PITC PMTCT Post ANC1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedPositiveAtPITCPMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation,Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         /*Tested Negative at PITC Paediatric services*/
-        cohortDsd.addColumn("HTS_TST_Paediatric_Negative", "Tested Negative at PITC Paediatric services", ReportUtils.map(datimIndicators.testedNegativeAtPITCPaediatricServices(), indParams), "");
+        cohortDsd.addColumn("HTS_TST", "Tested Negative at PITC Paediatric services", ReportUtils.map(datimIndicators.testedNegativeAtPITCPaediatricServices(), indParams), "");
 
         /*Tested Positive at PITC Paediatric services*/
-        cohortDsd.addColumn("HTS_TST_Paediatric_Positive", "Tested Positive at PITC Paediatric Services", ReportUtils.map(datimIndicators.testedPositiveAtPITCPaediatricServices(), indParams), "");
+        cohortDsd.addColumn("HTS_TST", "Tested Positive at PITC Paediatric Services", ReportUtils.map(datimIndicators.testedPositiveAtPITCPaediatricServices(), indParams), "");
 
         /*Tested Negative at PITC Malnutrition Clinic*/
-        cohortDsd.addColumn("HTS_TST_Malnutrition_Negative", "Tested Negative at PITC Malnutrition Clinic", ReportUtils.map(datimIndicators.testedNegativeAtPITCMalnutritionClinic(), indParams), "");
+        cohortDsd.addColumn("HTS_TST", "Tested Negative at PITC Malnutrition Clinic", ReportUtils.map(datimIndicators.testedNegativeAtPITCMalnutritionClinic(), indParams), "");
 
         /*Tested Positive at PITC Malnutrition Clinic*/
-        cohortDsd.addColumn("HTS_TST_Malnutrition_Positive", "Tested Positive at PITC Malnutrition Clinic", ReportUtils.map(datimIndicators.testedPositiveAtPITCMalnutritionClinic(), indParams), "");
+        cohortDsd.addColumn("HTS_TST", "Tested Positive at PITC Malnutrition Clinic", ReportUtils.map(datimIndicators.testedPositiveAtPITCMalnutritionClinic(), indParams), "");
 
         /*Tested Negative at PITC TB Clinic*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_TB_Negative", "Tested Negative at PITC TB Clinic", ReportUtils.map(datimIndicators.testedNegativeAtPITCTBClinic(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Negative at PITC TB Clinic", ReportUtils.map(datimIndicators.testedNegativeAtPITCTBClinic(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Positive at PITC TB Clinic*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_TB_Positive", "Tested Positive at PITC TB Clinic", ReportUtils.map(datimIndicators.testedPositiveAtPITCTBClinic(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Positive at PITC TB Clinic", ReportUtils.map(datimIndicators.testedPositiveAtPITCTBClinic(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Negative at PITC Other*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Other_Negative", "Tested Negative at PITC Other", ReportUtils.map(datimIndicators.testedNegativeAtPITCOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Negative at PITC Other", ReportUtils.map(datimIndicators.testedNegativeAtPITCOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Positive at PITC Other*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Other_Positive", "Tested Positive at PITC Other", ReportUtils.map(datimIndicators.testedPositiveAtPITCOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Positive at PITC Other", ReportUtils.map(datimIndicators.testedPositiveAtPITCOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Negative at PITC VCT*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_VCT_Negative", "Tested Negative at PITC VCT", ReportUtils.map(datimIndicators.testedNegativeAtPITCVCT(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Negative at PITC VCT", ReportUtils.map(datimIndicators.testedNegativeAtPITCVCT(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Tested Positive at PITC VCT*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_VCT_Positive", "Tested Positive at PITC VCT", ReportUtils.map(datimIndicators.testedPositiveAtPITCVCT(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Tested Positive at PITC VCT", ReportUtils.map(datimIndicators.testedPositiveAtPITCVCT(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25","25"));
 
         /*Index Tested Negative*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Index_Negative", "Index Tested Negative", ReportUtils.map(datimIndicators.indexTestedNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Index Tested Negative", ReportUtils.map(datimIndicators.indexTestedNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25","25"));
 
         /*Index Tested Positive*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Index_Positive", "Index Tested Positive", ReportUtils.map(datimIndicators.indexTestedPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST", "Index Tested Positive", ReportUtils.map(datimIndicators.indexTestedPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //TX_New
         /*Newly Started ART While Pregnant*/
-        cohortDsd.addColumn("TX_New_Pregnant", "Newly Started ART While Pregnant", ReportUtils.map(datimIndicators.newlyStartedARTWhilePregnant(), indParams), "");
+        cohortDsd.addColumn("TX_New", "Newly Started ART While Pregnant", ReportUtils.map(datimIndicators.newlyStartedARTWhilePregnant(), indParams), "");
 
         /*Newly Started ART While BreastFeeding*/
-        cohortDsd.addColumn("TX_New_BF", "Newly Started ART While Breastfeeding", ReportUtils.map(datimIndicators.newlyStartedARTWhileBF(), indParams), "");
+        cohortDsd.addColumn("TX_New", "Newly Started ART While Breastfeeding", ReportUtils.map(datimIndicators.newlyStartedARTWhileBF(), indParams), "");
 
         /*Newly Started ART While Confirmed TB and / or TB Treated*/
-        cohortDsd.addColumn("TX_New_TB", "Newly Started ART with TB", ReportUtils.map(datimIndicators.newlyStartedARTWithTB(), indParams), "");
+        cohortDsd.addColumn("TX_New", "Newly Started ART with TB", ReportUtils.map(datimIndicators.newlyStartedARTWithTB(), indParams), "");
 
         /*Disaggregated by Age / Sex*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_New_Sex_Age", "Newly Started ART Disaggregated by Age / Sex ", ReportUtils.map(datimIndicators.newlyStartedARTByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Newly Started ART Disaggregated by Age / Sex ", ReportUtils.map(datimIndicators.newlyStartedARTByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*Annual Cohort Indicators*/
         /*PMTCT_FO Number of HIV-exposed infants who were born 24 months prior to the reporting period and registered in the birth cohort.*/
-        cohortDsd.addColumn("PMTCT_FO_HEI_COHORT", "HEI Cohort", ReportUtils.map(datimIndicators.totalHEI(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "HEI Cohort", ReportUtils.map(datimIndicators.totalHEI(), indParams), "");
 
         /*HEI Cohort HIV infected*/
-        cohortDsd.addColumn("PMTCT_FO_INFECTED_HEI", "HEI Cohort HIV+", ReportUtils.map(datimIndicators.hivInfectedHEI(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "HEI Cohort HIV+", ReportUtils.map(datimIndicators.hivInfectedHEI(), indParams), "");
 
         /*HEI Cohort HIV uninfected*/
-        cohortDsd.addColumn("PMTCT_FO_UNINFECTED_HEI", "HEI Cohort HIV-", ReportUtils.map(datimIndicators.hivUninfectedHEI(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "HEI Cohort HIV-", ReportUtils.map(datimIndicators.hivUninfectedHEI(), indParams), "");
 
         /*HEI Cohort HIV-final status unknown*/
-        cohortDsd.addColumn("PMTCT_FO_HEI_UNKNOWN_HIV_STATUS", "HEI Cohort with unknown HIV Status", ReportUtils.map(datimIndicators.unknownHIVStatusHEI(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "HEI Cohort with unknown HIV Status", ReportUtils.map(datimIndicators.unknownHIVStatusHEI(), indParams), "");
 
         /*HEI died with HIV-final status unknown*/
-        cohortDsd.addColumn("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN", "HEI died with unknown HIV Status", ReportUtils.map(datimIndicators.heiDiedWithunknownHIVStatus(), indParams), "");
+        cohortDsd.addColumn("PMTCT_FO", "HEI died with unknown HIV Status", ReportUtils.map(datimIndicators.heiDiedWithunknownHIVStatus(), indParams), "");
 
         /* TX_RET has been retired
          */
@@ -311,7 +311,7 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         */
         /*12 months retention Disaggregated by age/gender*//*
 
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALIVE", "12 Months ART retention by Age / sex", ReportUtils.map(datimIndicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ALIVE", "12 Months ART retention by Age / sex", ReportUtils.map(datimIndicators.aliveOnlyOnARTInLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         */
         /*TX_RET Denominator Started ART last 12 months and breastfeeding*//*
@@ -326,96 +326,96 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         */
         /*TX_RET (Denominator) All started ART last 12 months disaggregated by Age/sex*//*
 
-        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ART_ALL", "All started ART with last 12 Months by Age / sex", ReportUtils.map(datimIndicators.allOnARTLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RET_ART_ALL", "All started ART with last 12 Months by Age / sex", ReportUtils.map(datimIndicators.allOnARTLast12MonthsByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
         */
 
         /*TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimIndicators.onARTSuppRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimIndicators.onARTSuppRoutineVLLast12Months(), indParams), "");
 
         /*TX_PVLS (Targeted) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_TARGETED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Targeted Test", ReportUtils.map(datimIndicators.onARTSuppTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Targeted Test", ReportUtils.map(datimIndicators.onARTSuppTargetedVLLast12Months(), indParams), "");
 
         /*TX_PVLS (Undocumented) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_UNDOCUMENTED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Undocumented Test", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Undocumented Test", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of pregnant patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / Routine*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_PREGNANT_ROUTINE", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) pregnant routine", ReportUtils.map(datimIndicators.pregnantOnARTWithSuppressedRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) pregnant routine", ReportUtils.map(datimIndicators.pregnantOnARTWithSuppressedRoutineVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / Targeted*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_PREGNANT_TARGETED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Pregnant Targeted", ReportUtils.map(datimIndicators.pregnantOnARTSuppTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Pregnant Targeted", ReportUtils.map(datimIndicators.pregnantOnARTSuppTargetedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / undocumented*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_PREGNANT_UNDOCUMENTED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Pregnant Undocumented Test", ReportUtils.map(datimIndicators.pregnantOnARTSuppUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Pregnant Undocumented Test", ReportUtils.map(datimIndicators.pregnantOnARTSuppUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by BF / Routine*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_BF_ROUTINE", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF Routine", ReportUtils.map(datimIndicators.bfOnARTSuppRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF Routine", ReportUtils.map(datimIndicators.bfOnARTSuppRoutineVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by BF / Targeted*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_BF_TARGETED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF Targeted", ReportUtils.map(datimIndicators.bfOnARTSuppTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF Targeted", ReportUtils.map(datimIndicators.bfOnARTSuppTargetedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by BF / Undocumented*/
-        cohortDsd.addColumn("TX_PVLS_SUPP_BF_UNDOCUMENTED", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF undocumented Test", ReportUtils.map(datimIndicators.bfOnARTSuppUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) BF undocumented Test", ReportUtils.map(datimIndicators.bfOnARTSuppUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Routine*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppRoutineVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppRoutineVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Targeted*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppTargetedVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppTargetedVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Undocumented*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_UNDOCUMENTED", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "All started ART within last 12 Months by Age / sex", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_PVLS (Denominator)*/
 
         /*Number of adult and pediatric ART patients with a viral load result documented in the patient medical record and /or laboratory records in the past 12 months.*//*
         /*Disaggregated by Routine*/
         /*TX_PVLS Denominator viral load result last 12 months with Routine test result*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_ROUTINE_ALL", "On ART within last 12 Months and viral load Routine test result", ReportUtils.map(datimIndicators.onARTRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:On ART within last 12 Months and viral load Routine test result", ReportUtils.map(datimIndicators.onARTRoutineVLLast12Months(), indParams), "");
 
         /*Disaggregated by Targeted*//*
          */
         /*TX_PVLS Denominator viral load result last 12 months with Targeted test result*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_TARGETED_ALL", "On ART within last 12 Months and viral load Targeted test result", ReportUtils.map(datimIndicators.onARTTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:On ART within last 12 Months and viral load Targeted test result", ReportUtils.map(datimIndicators.onARTTargetedVLLast12Months(), indParams), "");
 
         /*Disaggregated by Undocumented*/
         /*TX_PVLS Denominator viral load result last 12 months with Undocumented test result*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL", "On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of  patients on ART with  viral load results  within the past 12 months. Disaggregated by Pregnant / Routine*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_PREGNANT_ROUTINE", "Number of patients on ART with  viral load results  pregnant routine", ReportUtils.map(datimIndicators.pregnantOnARTRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  pregnant routine", ReportUtils.map(datimIndicators.pregnantOnARTRoutineVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of  patients on ART with  viral load results  within the past 12 months. Disaggregated by Pregnant / Targeted*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_PREGNANT_TARGETED", "Number of patients on ART with  viral load results  Pregnant Targeted", ReportUtils.map(datimIndicators.pregnantOnARTTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  Pregnant Targeted", ReportUtils.map(datimIndicators.pregnantOnARTTargetedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of  patients on ART with  viral load results  within the past 12 months. Disaggregated by Pregnant / undocumented*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_PREGNANT_UNDOCUMENTED", "Number of patients on ART with  viral load results  Pregnant Undocumented Test", ReportUtils.map(datimIndicators.pregnantARTUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  Pregnant Undocumented Test", ReportUtils.map(datimIndicators.pregnantARTUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of  patients on ART with  viral load results  within the past 12 months. Disaggregated by BF / Routine*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_BF_ROUTINE", "Number of patients on ART with  viral load results  BF Routine", ReportUtils.map(datimIndicators.breastfeedingOnARTRoutineVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  BF Routine", ReportUtils.map(datimIndicators.breastfeedingOnARTRoutineVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of  patients on ART with  viral load results  within the past 12 months. Disaggregated by BF / Targeted*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_BF_TARGETED", "Number of patients on ART with  viral load results  BF Targeted", ReportUtils.map(datimIndicators.breastfeedingOnARTTargetedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  BF Targeted", ReportUtils.map(datimIndicators.breastfeedingOnARTTargetedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of patients on ART with  viral load results  within the past 12 months. Disaggregated by BF / Undocumented*/
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED", "Number of patients on ART with  viral load results  BF undocumented Test", ReportUtils.map(datimIndicators.breastfeedingOnARTUndocumentedVLLast12Months(), indParams), "");
+        cohortDsd.addColumn("TX_PVLS", "Denominator:Number of patients on ART with  viral load results  BF undocumented Test", ReportUtils.map(datimIndicators.breastfeedingOnARTUndocumentedVLLast12Months(), indParams), "");
 
         /*TX_PVLS Number of adults and pediatric patients on ART with viral load Routine results in the past 12 months. Disaggregated by Age/Sex*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_ROUTINE", "On ART with VL routine test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTRoutineVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "Denominator:On ART with VL routine test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTRoutineVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with viral load Targeted results in the past 12 months. Disaggregated by Age/Sex*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_TARGETED", "On ART with VL targeted test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTTargetedVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "Denominator:On ART with VL targeted test documented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTTargetedVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_PVLS Number of adults and pediatric patients on ART with viral load undocumented results in the past 12 months. Disaggregated by Age/Sex*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_UNDOCUMENTED", "On ART with VL undocumented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTUndocumentedVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS", "Denominator:On ART with VL undocumented in the last 12 Months by Age / sex / Indication", ReportUtils.map(datimIndicators.onARTUndocumentedVLLast12MonthsbyAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*TX_ML Number of ART patients with no clinical contact since their last expected contact*/
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML", "Number of ART patients with no clinical contact since their last expected contact", ReportUtils.map(datimIndicators.onARTMissedAppointment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        //EmrReportingUtils.addRow(cohortDsd, "TX_ML", "Number of ART patients with no clinical contact since their last expected contact", ReportUtils.map(datimIndicators.onARTMissedAppointment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "No. of individuals identified and tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "No.of individuals identified and tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         /*HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection*/
-        EmrReportingUtils.addRow(cohortDsd, "HTS_RECENT", "Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection", ReportUtils.map(datimIndicators.recentHIVInfections(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_RECENT", "Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection", ReportUtils.map(datimIndicators.recentHIVInfections(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         return cohortDsd;
 
