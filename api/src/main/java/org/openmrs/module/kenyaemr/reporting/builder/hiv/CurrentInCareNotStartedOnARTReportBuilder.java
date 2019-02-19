@@ -24,7 +24,6 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueDatetimeConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientEntryPointDataConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
