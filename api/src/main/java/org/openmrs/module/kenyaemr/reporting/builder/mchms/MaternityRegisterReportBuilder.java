@@ -104,18 +104,18 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
-		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("Unique Patient No", identifierDef, "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-		dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), "");
-		dsd.addColumn("Age", new AgeDataDefinition(), "");
 
+		//dsd.addColumn("Unique Patient No", identifierDef, "");
+		//dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		// new columns
 		dsd.addColumn("Admission Number", new MaternityAdmissionNumberDataDefinition(),"");
 		dsd.addColumn("Date of Admission", new MaternityAdmissionDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Number of ANC Visits", new MaternityNumberOfANCVisitsDataDefinition(),"");
+		dsd.addColumn("Name", nameDef, "");
+		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+		dsd.addColumn("Age", new AgeDataDefinition(), "");
+		dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), "");
 		dsd.addColumn("Parity", new MaternityANCParityDataDefinition(),"");
 		dsd.addColumn("Gravida", new MaternityGravidaDataDefinition(),"");
 		dsd.addColumn("LMP", new MaternityLMPDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
@@ -126,9 +126,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Delivery Time", new MaternityDeliveryTimeDataDefinition(),"");
 		dsd.addColumn("Gestation at Birth in weeks", new MaternityGestationAtBirthDataDefinition(),"");
 		dsd.addColumn("Mode of Delivery", new MaternityDeliveryModeDataDefinition(),"");
-		dsd.addColumn("Blood Loss", new MaternityBloodLossDataDefinition(),"");
 		dsd.addColumn("Placenta Complete", new MaternityPlacentaCompleteDataDefinition(),"");
-		dsd.addColumn("Blood loss", new MaternityBloodLossDataDefinition(),"");
+		dsd.addColumn("Blood Loss", new MaternityBloodLossDataDefinition(),"");
 		dsd.addColumn("Condition after delivery", new MaternityConditionAfterDeliveryDataDefinition(),"");
 		dsd.addColumn("Deaths Audited", new MaternityDeathAuditedDataDefinition(),"");
 		dsd.addColumn("Other Delivery Complications", new MaternityOtherDeliveryComplicationsDataDefinition(),"");
