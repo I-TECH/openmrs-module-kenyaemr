@@ -175,7 +175,7 @@ public class DatimCohortLibrary {
                 "  from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
+                "  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
                 "  left outer JOIN\n" +
                 "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
@@ -1411,7 +1411,7 @@ public class DatimCohortLibrary {
                 "    from kenyaemr_etl.etl_laboratory_extract\n" +
                 "    where lab_test in (1305, 856) and urgency = 'ROUTINE'\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "where timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "where e.program='HIV' and timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
                 "group by e.patient_id\n" +
                 "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
 
@@ -1440,7 +1440,7 @@ public class DatimCohortLibrary {
                 "    from kenyaemr_etl.etl_laboratory_extract\n" +
                 "    where lab_test in (1305, 856) and urgency = 'IMMEDIATELY'\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "where timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "where e.program='HIV' and timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
                 "group by e.patient_id\n" +
                 "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
 
@@ -1469,7 +1469,7 @@ public class DatimCohortLibrary {
                 "    from kenyaemr_etl.etl_laboratory_extract\n" +
                 "    where lab_test in (1305, 856) and urgency not in ('IMMEDIATELY','ROUTINE')\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "where timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "where and e.program='HIV' and timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
                 "group by e.patient_id\n" +
                 "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
 
@@ -2735,7 +2735,7 @@ public class DatimCohortLibrary {
                 "                      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "                             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
+                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
                 "                             left outer JOIN\n" +
                 "                               (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
@@ -2776,7 +2776,7 @@ public class DatimCohortLibrary {
                 "                      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "                             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
+                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
                 "                             left outer JOIN\n" +
                 "                               (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
