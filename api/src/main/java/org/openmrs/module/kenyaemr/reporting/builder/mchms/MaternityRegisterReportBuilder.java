@@ -105,8 +105,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 
-		//dsd.addColumn("Unique Patient No", identifierDef, "");
-		//dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Unique Patient No", identifierDef, "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		// new columns
 		dsd.addColumn("Admission Number", new MaternityAdmissionNumberDataDefinition(),"");
 		dsd.addColumn("Date of Admission", new MaternityAdmissionDateDataDefinition(),"", new DateConverter(DATE_FORMAT));

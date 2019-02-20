@@ -93,9 +93,9 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
 
-        //dsd.addColumn("Sex", new GenderDataDefinition(), "");
+        dsd.addColumn("Sex", new GenderDataDefinition(), "");
 
-        //dsd.addColumn("Unique Patient Number", identifierDef, null);
+        dsd.addColumn("Unique Patient Number", identifierDef, null);
 
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
