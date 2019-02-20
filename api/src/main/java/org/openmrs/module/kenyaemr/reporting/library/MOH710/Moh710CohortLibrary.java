@@ -1114,7 +1114,7 @@ public class Moh710CohortLibrary {
 	/*Given Vitamin A at 6 Months*/
 	public CohortDefinition givenVitAAt6MAgeCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.VitaminA_6_months) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("VA6M");
 		cd.setQuery(sqlQuery);
@@ -1156,7 +1156,7 @@ public class Moh710CohortLibrary {
 	/*Fully immunized child*/
 	public CohortDefinition fullyImmunizedCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.fully_immunized) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("FIC");
 		cd.setQuery(sqlQuery);
@@ -1170,7 +1170,7 @@ public class Moh710CohortLibrary {
 	/*Given Vitamin A at 1 years (200,000IU)*/
 	public CohortDefinition givenVitAAt12MonthsCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.VitaminA_1_yr) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("VA-1Y");
 		cd.setQuery(sqlQuery);
@@ -1184,7 +1184,7 @@ public class Moh710CohortLibrary {
 	/*Given Vitamin A at 2 years to 5 years (200,000IU)*/
 	public CohortDefinition givenVitAAt18MonthsCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.VitaminA_1_and_half_yr) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("VA-2Y-5Y");
 		cd.setQuery(sqlQuery);
@@ -1198,7 +1198,7 @@ public class Moh710CohortLibrary {
 	/*Given Measles - Rubella 2(at 1 1/2 - 2 years)*/
 	public CohortDefinition givenVitAAt2To5YearsCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.VitaminA_2_to_5_yr) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("MR-2-1.5Y>2Y");
 		cd.setQuery(sqlQuery);
@@ -1212,7 +1212,7 @@ public class Moh710CohortLibrary {
 	/*Measles - Rubella 2(at 1 1/2 - 2 years)*/
 	public CohortDefinition givenMeaslesRubella2VaccineAge18To24MonthsCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.Measles_rubella_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("MR-2-1.5Y>2Y");
 		cd.setQuery(sqlQuery);
@@ -1226,7 +1226,7 @@ public class Moh710CohortLibrary {
 	/*Measles-Rubella 2 Above 2 years*/
 	public CohortDefinition givenMeaslesRubellaVaccine2AndAgedOver2YearsCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		String sqlQuery = ";";
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.Measles_rubella_2) between date(:startDate) and date(:endDate) group by i.patient_id;";
 
 		cd.setName("MR-2->2Y");
 		cd.setQuery(sqlQuery);
