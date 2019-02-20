@@ -1479,7 +1479,7 @@ public class DatimCohortLibrary {
                 "    from kenyaemr_etl.etl_laboratory_extract\n" +
                 "    where lab_test in (1305, 856) and urgency not in ('IMMEDIATELY','ROUTINE')\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "where and e.program='HIV' and timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
+                "where e.program='HIV' and timestampdiff(MONTH , e.date_started, :endDate)>3 and (vl_result.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
                 "group by e.patient_id\n" +
                 "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
 

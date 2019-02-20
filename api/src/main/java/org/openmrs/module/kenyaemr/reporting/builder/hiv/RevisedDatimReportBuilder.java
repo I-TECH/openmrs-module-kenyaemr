@@ -168,11 +168,16 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_New_TB_co_infected", "Started on ART and TB co-infected", ReportUtils.map(datimIndicators.startedOnARTAndTBCoinfected(), indParams), "");
         cohortDsd.addColumn("TX_New_pregnant", "Started on ART and pregnant ", ReportUtils.map(datimIndicators.startedOnARTAndPregnant(), indParams), "");*/
 
+        //Known positive before ANC
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_POSITIVE", "Clients with Positive HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithPositiveHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
         //4 HIV Negative at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_ANC_Negative", "Clients tested HIV Negative at ANC", ReportUtils.map(datimIndicators.patientsTestNegativeAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //4 HIV Positive at ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_ANC_Positive", "Clients tested HIV Positive at ANC", ReportUtils.map(datimIndicators.patientsTestPositiveAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
+
+        //Known Negative before ANC
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_NEGATIVE", "Clients with Negative HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithNegativeHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
         EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Number of Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
