@@ -15,11 +15,11 @@ import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DrugOrdersListForPatientDataDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.data.patient.PatientData;
-import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -44,7 +44,9 @@ public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEv
 
 		RegimenOrderCohortDefinition cd = (RegimenOrderCohortDefinition) cohortDefinition;
 
-		DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
+		//DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
+		DrugOrdersListForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersListForPatientDataDefinition();
+
 		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(cd.getMasterConceptSet()));
 		drugOrdersForPatientDataDefinition.setActiveOnDate(cd.getOnDate());
 
