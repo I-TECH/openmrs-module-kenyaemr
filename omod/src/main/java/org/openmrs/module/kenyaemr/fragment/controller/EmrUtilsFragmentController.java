@@ -11,17 +11,17 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Patient;
-import org.openmrs.Relationship;
-import org.openmrs.Visit;
+import org.openmrs.*;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -29,14 +29,17 @@ import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.PublicAction;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Fragment actions generally useful for KenyaEMR
@@ -84,7 +87,50 @@ public class EmrUtilsFragmentController {
 		String id = Context.getService(KenyaEmrService.class).getNextHivUniquePatientNumber(comment);
 		return SimpleObject.create("value", id);
 	}
+	/**
+	 * Checks whether the patient has HIV identifier
+	 * @return true if patient has such an identifier
+	 */
+	public SimpleObject identifierExists(@RequestParam(value = "heiNumber", required = false) String heiNumber,
+										 @RequestParam(value = "upn", required = false) String upn,
+										 @RequestParam(value = "cwcNumber", required = false) String cwcNumber,
+										 @RequestParam(value = "clinicNumber", required = false) String clinicNumber) {
+		boolean heiNoExists = false;
+		boolean upnExists = false;
+		boolean clinicNoExists = false;
+		boolean cwcNoExists = false;
+		PatientService patientService = Context.getPatientService();
 
+		if (heiNumber != null && heiNumber != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, heiNumber.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, Metadata.IdentifierType.HEI_UNIQUE_NUMBER)), true );
+			if (patientsFound.size() > 0)
+				heiNoExists = true;
+		}
+
+		if (upn != null && upn != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, upn.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, Metadata.IdentifierType.UNIQUE_PATIENT_NUMBER)), true );
+			if (patientsFound.size() > 0)
+				upnExists = true;
+		}
+
+		if (clinicNumber != null && clinicNumber != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, clinicNumber.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, Metadata.IdentifierType.PATIENT_CLINIC_NUMBER)), true );
+			if (patientsFound.size() > 0)
+				clinicNoExists = true;
+		}
+
+		if (cwcNumber != null && cwcNumber != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, cwcNumber.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, Metadata.IdentifierType.CWC_NUMBER)), true );
+			if (patientsFound.size() > 0)
+				cwcNoExists = true;
+		}
+		return SimpleObject.create(
+				"heiNumberExists", heiNoExists,
+				"upnExists",upnExists,
+				"clinicNumberExists", clinicNoExists,
+				"cwcNoExists", cwcNoExists
+				);
+	}
 	/**
 	 * Voids the given relationship
 	 * @param relationship the relationship

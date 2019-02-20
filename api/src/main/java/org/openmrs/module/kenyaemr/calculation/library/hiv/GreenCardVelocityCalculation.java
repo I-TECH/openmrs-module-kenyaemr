@@ -97,7 +97,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         //find pregnant women
         Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
         //find breastfeeding women
-        Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
+       // Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         StringBuilder sb = new StringBuilder();
@@ -120,7 +120,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             boolean patientInIPT6Months = false;
             boolean goodAdherence6Months = false;
             boolean isPregnant = false;
-            boolean isBreastFeeding = false;
+            //boolean isBreastFeeding = false;
             Integer iptStartStopDiff = 0;
             Integer iptCompletionDays = 0;
             Integer adherenceDiffDays = 0;
@@ -262,9 +262,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 isPregnant = true;
             }
 
-            if(breastFeeding.contains(ptId)) {
-                isBreastFeeding = true;
-            }
+//            if(breastFeeding.contains(ptId)) {
+//                isBreastFeeding = true;
+//            }
 
             sb.append("inIPT:").append(inIptProgram).append(",");
             sb.append("inTB:").append(patientInTBProgram).append(",");
@@ -275,9 +275,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("vlResult:").append(vlResult).append(",");
             sb.append("ldlResult:").append(ldlResult).append(",");
             sb.append("iptCompleted:").append(patientInIPT6Months).append(",");
-            sb.append("goodAdherence:").append(goodAdherence6Months).append(",");
-            sb.append("isPregnant:").append(isPregnant).append(",");
-            sb.append("isBreastFeeding:").append(isBreastFeeding);
+            sb.append("goodAdherence:").append(goodAdherence6Months);
+//            sb.append("isPregnant:").append(isPregnant).append(",");
+//            sb.append("isBreastFeeding:").append(isBreastFeeding);
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             // sb.append("artStartDate:").append(artStartDate).append(",");
 

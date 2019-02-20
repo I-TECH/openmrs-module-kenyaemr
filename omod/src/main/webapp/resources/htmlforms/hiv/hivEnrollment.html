@@ -37,6 +37,9 @@
             var hasBeenOnARVs = "<lookup expression="fn.latestObs(160533).getValueCoded()"/>";
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
+            jq('#upnError').hide();
+            jq("#hiv-id input[type=text]").blur(checkForExistingPatientIdentifiers);
+
             ageGroup();
             jq('.muac').hide();
             jq('#transfer-in-status input').change(onTransferStatusChange);
@@ -49,6 +52,7 @@
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
+
             //vl and ldl validation
             getField('ldl.value').change(viralLoadValidation);
             getField('vl.value').keyup(viralLoadValidation);
@@ -123,6 +127,19 @@
             //jq('#hiv-id :input').prop('disabled', true);
             //jq('#baseline-fieldset :input').prop('disabled', true);
         });
+
+        function checkForExistingPatientIdentifiers() {
+            var upnEntered = jq('#hiv-id input[type=text]').val();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: upnEntered }, function(data) {
+                jq('#upnError').hide();
+                if (data.upnExists === true) {
+
+                    jq('#upnError').text("A patient with similar UPN already exists. Please correct before proceeding");
+                    jq('#upnError').show();
+                    jq('#hiv-id input[type=text]').focus();
+				}
+            });
+        }
 
         //Before Submit
         beforeSubmit.push(function() {
@@ -363,6 +380,8 @@
                 }
             });
         }
+
+
         function onSubmitWithUpnField(upn) {
             var isPresent = "";
             jq.getJSON('/' + ctxPath +  '/kenyaemr/patient/patientUtils/patientExist.action',{ patientId: upn },function(data) {
@@ -487,6 +506,7 @@
 							 conceptId="160540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerConceptIds="159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159937AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160551AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="HBTC,VCT Site,MCH,IPD-Adult,IPD-Child,TB Clinic,OPD,CCC,Self Test,Other(eg STI)"
+							 required="true"
 						/>
 					<td><obsgroup groupingConceptId="161358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -497,7 +517,7 @@
 					<td>Unique Patient Number (UPN)</td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
-						<input type="button" id="generate-hiv-id" value="Generate"/>
+						<span id="upnError" class="error"></span>
 					</td>
 				</tr>
 			</table>

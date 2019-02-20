@@ -66,7 +66,6 @@ public class EmrVelocityFunctions {
 			return session.getPatient().getPatientIdentifier(pit) != null;
 		}
 	}
-
 	/**
 	 * Fetches a concept from its identifier
 	 * @param conceptIdentifier the concept identifier
