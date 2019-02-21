@@ -553,17 +553,12 @@ public class DatimCohortLibrary {
                 "                               mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "                               max(d.visit_date) as date_discontinued,\n" +
                 "                               d.patient_id as disc_patient,\n" +
-                "                               de.patient_id as started_on_drugs\n" +
+                "                               de.patient_id as started_on_drugs,\n" +
+                "                               de.date_started as date_started_drugs\n" +
                 "                        from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                               join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "                               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                               join (select av.patient_id,mid(max(concat(av.visit_date,av.patient_id)),1,10) ltst_anc, mid(min(concat(av.visit_date,av.patient_id)),1,10) 1st_anc\n" +
-                "                                     from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                                            inner join kenyaemr_etl.etl_mch_enrollment mch on av.patient_id = mch.patient_id and mch.date_of_discontinuation is null\n" +
-                "                                     where av.visit_date between date_sub(date(:endDate), INTERVAL 3 MONTH ) and date(:endDate)\n" +
-                "                                     group by av.patient_id ) anc\n" +
-                "                               left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                                                                                   and de.date_started < anc.1st_anc\n" +
+                "                               left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV'\n" +
                 "                               left outer JOIN\n" +
                 "                                 (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
@@ -574,7 +569,13 @@ public class DatimCohortLibrary {
                 "                        having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
                 "                            ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
                 "                            )\n" +
-                "                        ) t;";
+                "                        ) t\n" +
+                "                          join (select av.patient_id,max(av.visit_date) ltst_anc, min(av.visit_date) 1st_anc\n" +
+                "                                from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                                       inner join kenyaemr_etl.etl_mch_enrollment mch on av.patient_id = mch.patient_id and mch.date_of_discontinuation is null\n" +
+                "                                    where av.visit_date between date_sub(date(:endDate), INTERVAL 3 MONTH ) and date(:endDate)\n" +
+                "                               group by av.patient_id)anc\n" +
+                "                                on anc.patient_id = t.patient_id and t.date_started_drugs < anc.1st_anc;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("alreadyOnARTBeforePregancy");
@@ -589,33 +590,34 @@ public class DatimCohortLibrary {
     public CohortDefinition newOnARTDuringPregnancy() {
 
         String sqlQuery = "select t.patient_id from(\n" +
-                "                      select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "                             max(fup.visit_date) as latest_vis_date,\n" +
-                "                             mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                             max(d.visit_date) as date_discontinued,\n" +
-                "                             d.patient_id as disc_patient,\n" +
-                "                             de.patient_id as started_on_drugs\n" +
-                "                      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                             join (select av.patient_id,mid(max(concat(av.visit_date,av.patient_id)),1,10) ltst_anc, mid(min(concat(av.visit_date,av.patient_id)),1,10) 1st_anc\n" +
-                "                                   from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                                   inner join kenyaemr_etl.etl_mch_enrollment mch on av.patient_id = mch.patient_id and mch.date_of_discontinuation is null\n" +
-                "                                   where av.visit_date between date_sub(date(:endDate), INTERVAL 3 MONTH ) and date(:endDate)\n" +
-                "                                   group by av.patient_id ) anc\n" +
-                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                              and de.date_started between anc.1st_anc and anc.ltst_anc\n" +
-                "                             left outer JOIN\n" +
-                "                               (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                                group by patient_id\n" +
-                "                               ) d on d.patient_id = fup.patient_id\n" +
-                "                      where fup.visit_date <= date(:endDate)\n" +
-                "                      group by patient_id\n" +
-                "                      having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
-                "                          ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
-                "                          )\n" +
-                "                      ) t;";
+                "                        select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "                               max(fup.visit_date) as latest_vis_date,\n" +
+                "                               mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                               max(d.visit_date) as date_discontinued,\n" +
+                "                               d.patient_id as disc_patient,\n" +
+                "                               de.patient_id as started_on_drugs,\n" +
+                "                               de.date_started as date_started_drugs\n" +
+                "                        from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "                               join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "                               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "                               left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV'\n" +
+                "                               left outer JOIN\n" +
+                "                                 (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "                                  group by patient_id\n" +
+                "                                 ) d on d.patient_id = fup.patient_id\n" +
+                "                        where fup.visit_date <= date(:endDate)\n" +
+                "                        group by patient_id\n" +
+                "                        having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+                "                            ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
+                "                            )\n" +
+                "                        ) t\n" +
+                "                          join (select av.patient_id,max(av.visit_date) ltst_anc, min(av.visit_date) 1st_anc\n" +
+                "                                from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                                       inner join kenyaemr_etl.etl_mch_enrollment mch on av.patient_id = mch.patient_id and mch.date_of_discontinuation is null\n" +
+                "                                where av.visit_date between date_sub(date(:endDate), INTERVAL 3 MONTH ) and date(:endDate)\n" +
+                "                                group by av.patient_id)anc\n" +
+                "                            on anc.patient_id = t.patient_id and t.date_started_drugs between anc.1st_anc and ltst_anc;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newOnARTDuringPregnancy");
@@ -2617,6 +2619,67 @@ public class DatimCohortLibrary {
                 "                        group by c.id ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of Contacts tested through Index Services");
+        return cd;
+
+    }
+
+    //HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
+    public CohortDefinition hivPositiveContact() {
+
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                          and t.final_test_result = \"Positive\"\n" +
+                "                          and t.patient_given_result ='Yes'\n" +
+                "                          and t.voided=0\n" +
+                "                          and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_POSITIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of individuals who were tested Positive using Index testing services");
+        return cd;
+
+    }
+
+    //Number of individuals who were tested HIV Negative using Index testing services
+    public CohortDefinition hivNegativeContact() {
+
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                          and t.final_test_result = \"Negative\"\n" +
+                "                          and t.patient_given_result ='Yes'\n" +
+                "                          and t.voided=0\n" +
+                "                          and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of individuals who were tested HIV Negative using Index testing services");
+        return cd;
+
+    }
+    //Known HIV Positive contacts
+    public CohortDefinition knownPositiveContact() {
+
+        String sqlQuery = "select patient_id from (select c.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                          and c.baseline_hiv_status = \"Positive\"\n" +
+                "                          and t.voided=0\n" +
+                "                          and date(t.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "                        group by c.id ) t;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_KNOWN_POSITIVE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
