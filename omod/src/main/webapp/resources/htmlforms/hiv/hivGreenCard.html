@@ -112,8 +112,8 @@ Green Card follow-up visit form
         var LDL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
         var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
         var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
-//        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
-//        var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
+        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
+        var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
 
         console.log("Greencard velocity ==>"+ GREENCARD_VELOCITY);
 
@@ -183,6 +183,7 @@ Green Card follow-up visit form
             var age = parseInt('<lookup expression="patient.age"/>');
             if (age &lt; 11) {
                 jq('#fp-details').hide();
+                jq('#pregnantBreastFeeding').hide();
                 jq('.reproductive-part').hide();
             }
             //Gravida
@@ -664,18 +665,18 @@ function recordedStabilityAssessmentIndicators() {
     }else{
         jq('#ipt-completion:text').val("NO");
     }
-//    //7. pregnant
-//    if(PATIENT_PREGNANT == 'true') {
-//        jq('#pregnant:text').val("YES");
-//    }else{
-//        jq('#pregnant:text').val("NO");
-//    }
-//    //7. breast feeding
-//    if(PATIENT_BREASTFEEDING == 'true') {
-//        jq('#breast-feeding:text').val("YES");
-//    }else{
-//        jq('#breast-feeding:text').val("NO");
-//    }
+    //7. pregnant
+    if(PATIENT_PREGNANT == 'true') {
+        jq('#pregnant:text').val("YES");
+    }else{
+        jq('#pregnant:text').val("NO");
+    }
+    //8. breast feeding
+    if(PATIENT_BREASTFEEDING == 'true') {
+        jq('#breast-feeding:text').val("YES");
+    }else{
+        jq('#breast-feeding:text').val("NO");
+    }
 }
 function onLmpChange() {
     jq('#pregnancyOption :input').prop('disabled', false);
@@ -2256,6 +2257,7 @@ beforeSubmit.push(function() {
                             }
                             if (age &lt; 11) {
                                 jq('.reproductive-part').hide();
+                                jq('#pregnantBreastFeeding').hide();
                                 jq("#fp-details").hide();
                             }
                             //If using ctx show dispece and adherence
@@ -3762,21 +3764,14 @@ beforeSubmit.push(function() {
                                         <td><input type="text" name="ipt-completion" id="ipt-completion" readonly="True" /></td>
                                     </tr>
 
-
-                                    <!--<includeIf velocityTest="$patient.gender == 'F'">-->
-                                    <!--<tr>-->
-                                        <!--<td>-->
-                                            <!--Pregnant :-->
-                                            <!--<input type="text" name="pregnant" id="pregnant" readonly="True" />-->
-
-                                        <!--</td>-->
-                                        <!--<td>-->
-                                            <!--Breast feeding:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;-->
-                                            <!--<input type="text" name="breast-feeding" id="breast-feeding" readonly="True" />-->
-                                        <!--</td>-->
-                                    <!--</tr>-->
-                                    <!--</includeIf>-->
-
+                                    <includeIf velocityTest="$patient.gender == 'F'">
+                                    <tr id ="pregnantBreastFeeding">
+                                        <td>Pregnant </td>
+                                        <td><input type="text" name="pregnant" id="pregnant" readonly="True" /> </td>
+                                        <td>Breast feeding </td>
+                                        <td><input type="text" name="breast-feeding" id="breast-feeding" readonly="True" /> </td>
+                                    </tr>
+                                    </includeIf>
                                 </table>
                             </td>
                        </tr>
