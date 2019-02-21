@@ -30,6 +30,7 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.PublicAction;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -88,8 +89,8 @@ public class EmrUtilsFragmentController {
 		return SimpleObject.create("value", id);
 	}
 	/**
-	 * Checks whether the patient has HIV identifier
-	 * @return true if patient has such an identifier
+	 * Checks whether provided identifier(s) is already assigned
+	 * @return simple object with statuses for the different identifiers
 	 */
 	public SimpleObject identifierExists(@RequestParam(value = "heiNumber", required = false) String heiNumber,
 										 @RequestParam(value = "upn", required = false) String upn,
@@ -130,6 +131,38 @@ public class EmrUtilsFragmentController {
 				"clinicNumberExists", clinicNoExists,
 				"cwcNoExists", cwcNoExists
 				);
+	}
+
+	/**
+	 * Checks whether provided identifier(s) is already assigned
+	 * @return simple object with statuses for the different identifiers
+	 */
+	public SimpleObject clientsBookedOnDate(@RequestParam(value = "appointmentDate") String tca) {
+
+		String appointmentQuery = "select count(patient_id) as bookings\n" +
+				"from (\n" +
+				"select\n" +
+				"e.patient_id\n" +
+				"from encounter e\n" +
+				"inner join\n" +
+				"(\n" +
+				"\tselect encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e','d1059fb9-a079-4feb-a749-eedd709ae542', '465a92f2-baf8-42e9-9612-53064be868e8')\n" +
+				") et on et.encounter_type_id=e.encounter_type\n" +
+				"inner join obs o on o.encounter_id=e.encounter_id and o.voided=0\n" +
+				"\tand o.concept_id in (5096) and date(o.value_datetime) = '2019-03-05'\n" +
+				"where e.voided=0\n" +
+				"group by e.patient_id\n" +
+				")t;";
+
+
+		Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
+
+		return SimpleObject.create(
+			"bookingsOnDate", bookings
+		);
+
+
+
 	}
 	/**
 	 * Voids the given relationship
