@@ -156,7 +156,7 @@ Green Card follow-up visit form
             onEncounterDateChange();
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
-            getField("returnVisitDate.value").blur(getPatientsBookedOnDate);
+            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -572,11 +572,9 @@ Green Card follow-up visit form
         });   //End onReady
 // get count of patients booked on a date
 function getPatientsBookedOnDate() {
-    var tcaDate = jq('#returnVisitDate input[type=hidden]').val();
-
-    console.log("TCA Date: " + tcaDate);
+    var tca_date = getValue('returnVisitDate.value');
     jq('#showNumberBooked').hide();
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedOnDate.action', { appointmentDate: tcaDate }, function(data) {
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedOnDate.action', { appointmentDate: tca_date }, function(data) {
         jq('#showBookedResult').text(data.bookingsOnDate);
         jq('#showNumberBooked').show();
     });
@@ -3812,7 +3810,7 @@ beforeSubmit.push(function() {
                     </table>
                     <table id="showNumberBooked" class="simple-table">
                         <tr>
-                        <td>Number Booked on Date Selected</td>
+                        <td> <span class="ke-flagtag">Number Booked on Date Selected</span></td>
                         <td><span id="showBookedResult"></span></td></tr>
                     </table>
                     <table>
