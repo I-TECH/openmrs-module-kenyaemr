@@ -84,19 +84,18 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
-       // dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-        //dsd.addColumn("Age", new AgeDataDefinition(), "");
-        //dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        //dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
-        //dsd.addColumn("Unique Patient Number", identifierDef, null);
-
+        dsd.addColumn("Sex", new GenderDataDefinition(), "");
+        dsd.addColumn("Unique Patient Number", identifierDef, null);
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
         dsd.addColumn("Register Number", new PNCRegisterNumberDataDefinition(),"");
         dsd.addColumn("Admission Number", new PNCAdmissionNumberDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Date of Birth", new PNCDateOfBirthAndAgeDataDefinition(),"");
+        //dsd.addColumn("Date of Birth", new PNCDateOfBirthAndAgeDataDefinition(),"");
+        dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        dsd.addColumn("Age", new AgeDataDefinition(), "");
+        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
         dsd.addColumn("Delivery Date", new PNCDeliveryDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Place of Delivery", new PNCPlaceOfDeliveryDataDefinition(),"");
         dsd.addColumn("Mode of Delivery", new PNCModeOfDeliveryDataDefinition(),"");

@@ -70,6 +70,27 @@ Green Card follow-up visit form
             cursor: pointer;
         }
     /* .Modal  */
+
+        .simple-table {
+            border: solid 1px #06031b;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 15px Arial, sans-serif;
+        }
+        .simple-table th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 8px;
+            text-shadow: 1px 1px 1px #fff;
+        }
     </style>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <!--Wizard plugins-->
@@ -3709,55 +3730,40 @@ beforeSubmit.push(function() {
                                     id="stability"/>
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
-                           <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                           <td>&#160;&#160;&#160;&#160;</td>
+                           <td>&#160;&#160;&#160;&#160;</td>
                            <td>
-                                <table border="1">
+                                <table class="simple-table">
                                     <tr>
-                                        <td>
-                                            <u>
-                                               Recorded stability assessment indicators:
-                                            </u>
-                                              <tr>
-                                                 <td>
-                                            Age:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            <input type="text" name="age" id="age" readonly="True" />
-                                                 </td>
-                                              <td>
-                                                  BMI:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                  <input type="text" name="bmi-value" id="bmi-value" readonly="True" />
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Current regimen:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                    <input type="text" name="current-regimen-stability" id="current-regimen-stability" readonly="True" />
-                                                   </td>
-                                                <td>
-                                                    Duration of current regimen (Months):  &#160;&#160;
-                                                    <input type="text" name="current-regimen-duration" id="current-regimen-duration" readonly="True" />
-                                                    </td>
-                                            </tr>
-                                        <tr>
-                                            <td>
-                                                Active OIs:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                <input type="text" name="active-oi" id="active-oi" readonly="True" />
-                                                </td>
-                                            <td>
-                                            Most recent VL results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            <input type="text" name="vl-value" id="vl-value" readonly="True" />
-                                            </td>
-                                        </tr>
-                                    <tr>
-                                        <td>
-                                            Good adherence in the last 6 months :
-                                            <input type="text" name="good-adherence" id="good-adherence" readonly="True" />
-
-                                        </td>
-                                        <td>
-                                            Completed 6 months IPT:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            <input type="text" name="ipt-completion" id="ipt-completion" readonly="True" />
-                                        </td>
+                                        <th colspan="4">
+                                               Recorded stability assessment indicators
+                                        </th>
                                     </tr>
+                                    <tr>
+                                        <td>Age</td>
+                                        <td><input type="text" name="age" id="age" readonly="True" /></td>
+                                        <td>BMI</td>
+                                        <td><input type="text" name="bmi-value" id="bmi-value" readonly="True" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Current regimen</td>
+                                        <td><input type="text" name="current-regimen-stability" id="current-regimen-stability" readonly="True" /></td>
+                                        <td>Duration of current regimen (Months)</td>
+                                        <td><input type="text" name="current-regimen-duration" id="current-regimen-duration" readonly="True" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Active Ois</td>
+                                        <td><input type="text" name="active-oi" id="active-oi" readonly="True" /></td>
+                                        <td>Most recent VL Results</td>
+                                        <td><input type="text" name="vl-value" id="vl-value" readonly="True" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Good adherence in the last 6 months</td>
+                                        <td><input type="text" name="good-adherence" id="good-adherence" readonly="True" /></td>
+                                        <td>Completed 6 months IPT</td>
+                                        <td><input type="text" name="ipt-completion" id="ipt-completion" readonly="True" /></td>
+                                    </tr>
+
                                     <includeIf velocityTest="$patient.gender == 'F'">
                                     <tr id ="pregnantBreastFeeding">
                                         <td>
