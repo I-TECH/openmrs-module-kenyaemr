@@ -49,7 +49,7 @@ public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
 
 			Obs feedingStatusObs = EmrCalculationUtils.obsResultForPatient(infantFeedingStatusObs, ptId);
 
-			if (feedingStatusObs != null && feedingStatusObs.getValueCoded().equals(ExclusiveBreastFeeding) || feedingStatusObs.getValueCoded().equals(MixedBreastFeeding) ) {
+			if (feedingStatusObs != null && (feedingStatusObs.getValueCoded().equals(ExclusiveBreastFeeding) || feedingStatusObs.getValueCoded().equals(MixedBreastFeeding)) ) {
 				breastFeeding = true;
 			}
 
