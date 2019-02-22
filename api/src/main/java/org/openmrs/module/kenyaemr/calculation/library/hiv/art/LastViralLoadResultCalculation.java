@@ -16,6 +16,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +28,7 @@ import java.util.Map;
 /**
  * Created by codehub on 12/3/15.
  */
-public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
+public class LastViralLoadResultCalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -35,17 +36,20 @@ public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
 
         CalculationResultMap numericViralLoadValues = calculate(new LastViralLoadCalculation(), cohort, context);
         CalculationResultMap ldlViralLoadValues = calculate(new LowDetectableViralLoadCalculation(), cohort, context);
-        Map<String, Date> viralLoadValues = new HashMap<String, Date>();
+
+
 
         for(Integer ptId:cohort){
-            Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
+
+            SimpleObject object = null;            Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
             Obs ldlVLObs = EmrCalculationUtils.obsResultForPatient(ldlViralLoadValues, ptId);
             if(numericVLObs != null && ldlVLObs == null){
-                viralLoadValues.put(numericVLObs.getValueNumeric()+" copies/ml",numericVLObs.getObsDatetime());
+                object = SimpleObject.create("lastVl", numericVLObs.getValueNumeric()+" copies/ml", "lastVlDate", numericVLObs.getObsDatetime());
             }
            if(numericVLObs == null && ldlVLObs != null){
-                viralLoadValues.put( "LDL", ldlVLObs.getObsDatetime());
-            }
+               object = SimpleObject.create("lastVl", "LDL", "lastVlDate", ldlVLObs.getObsDatetime());
+
+           }
             if(numericVLObs != null && ldlVLObs != null) {
                 //find the latest of the 2
                 Obs lastViralLoadPicked = null;
@@ -55,15 +59,15 @@ public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
                     lastViralLoadPicked = ldlVLObs;
                 }
 
-                if(lastViralLoadPicked.getConcept().equals(org.openmrs.module.kenyaemr.Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
-                    viralLoadValues.put(lastViralLoadPicked.getValueNumeric() + " copies/ml", lastViralLoadPicked.getObsDatetime());
+                if(lastViralLoadPicked.getConcept().equals(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
+                    object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric()+" copies/ml", "lastVlDate", numericVLObs.getObsDatetime());
                 }
                 else {
-                    viralLoadValues.put("LDL", lastViralLoadPicked.getObsDatetime());
+                    object = SimpleObject.create("lastVl", "LDL", "lastVlDate", ldlVLObs.getObsDatetime());
                 }
 
             }
-            ret.put(ptId, new SimpleResult(viralLoadValues, this));
+            ret.put(ptId, new SimpleResult(object, this));
         }
         return ret;
     }

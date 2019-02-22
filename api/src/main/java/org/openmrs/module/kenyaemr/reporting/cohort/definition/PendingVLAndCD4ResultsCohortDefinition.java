@@ -15,10 +15,10 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Patients awaiting VL and CD4 lab results
+ * Cumulative on ART cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.CumulativeOnARTCohortDefinition")
-public class CumulativeOnARTCohortDefinition extends BaseCohortDefinition {
+public class PendingVLAndCD4ResultsCohortDefinition extends BaseCohortDefinition {
 
 }
