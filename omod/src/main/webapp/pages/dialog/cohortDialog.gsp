@@ -49,10 +49,6 @@
 					lastVlResults.get(patient.id).value.lastVl : "" }</td>
 				<td>${ lastVlResults.get(patient.id) != null && lastVlResults.get(patient.id).value != null ?
 						dateFormat.format(lastVlResults.get(patient.id).value.lastVlDate) : "" }
-			<td>${ lastCD4Results.get(patient.id) != null && lastCD4Results.get(patient.id).value != null ?
-					lastCD4Results.get(patient.id).value.lastCD4 : "" }</td>
-			<td>${ lastCD4Results.get(patient.id) != null && lastCD4Results.get(patient.id).value != null ?
-					dateFormat.format(lastCD4Results.get(patient.id).value.lastCD4Date) : "" }</td>
 			</tr>
 			<% } %>
 		</tbody>

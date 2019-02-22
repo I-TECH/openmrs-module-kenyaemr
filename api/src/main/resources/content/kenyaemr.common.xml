@@ -60,6 +60,11 @@
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
+
+				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
+				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
+				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
+				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 			</set>
 		</property>
 	</bean>
@@ -548,5 +553,35 @@
 		<property name="template" value="kenyaemr:mer.xls" />
 	</bean>
 
+	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
+		<property name="name" value="Viral Suppression Report" />
+		<property name="description" value="Current in Care - Viral Suppression status" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.tx_curr_linelist_monthly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="f0305a84-30ee-11e9-b210-d663bd873d93" />
+		<property name="name" value="TX CURR Line lists (Monthly)" />
+		<property name="description" value="TX CURR Linelists at different reporting periods" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.tx_curr_linelist_quarterly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="cbd36f94-30f0-11e9-b210-d663bd873d93" />
+		<property name="name" value="TX CURR Line lists (Quarterly)" />
+		<property name="description" value="TX CURR Linelists at different reporting periods" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.pendingVLAndCD4Report" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="d21dd5f4-3660-11e9-b210-d663bd873d93" />
+		<property name="name" value="Pending VL and CD4 Results" />
+		<property name="description" value="Patients with Pending VL and CD4 Results" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
 
 </beans>

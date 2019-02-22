@@ -95,9 +95,9 @@ public class CohortDialogPageController {
         LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
         CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
-        LastCD4ResultCalculation lastCD4ResultCalculation = new LastCD4ResultCalculation();
+        /*LastCD4ResultCalculation lastCD4ResultCalculation = new LastCD4ResultCalculation();
         CalculationResultMap lastCD4Results = lastCD4ResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
-
+*/
 
         model.addAttribute("column", dataSetColumn);
         model.addAttribute("reportRequest", reportRequest);
@@ -107,6 +107,6 @@ public class CohortDialogPageController {
         model.addAttribute("enrollmentDates", enrollmentDates);
         model.addAttribute("artInitializationDates", artInitializationDates);
         model.addAttribute("lastVlResults", lastVlResults);
-        model.addAttribute("lastCD4Results", lastCD4Results);
+        //model.addAttribute("lastCD4Results", lastCD4Results);
     }
 }
