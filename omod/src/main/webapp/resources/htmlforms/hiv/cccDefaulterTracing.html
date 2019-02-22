@@ -14,11 +14,59 @@
 <htmlform>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var YES_FINAL_OUTCOME = 1267;
+        var NO_FINAL_OUTCOME = 163339;
+        var DECEASED_STATUS = 160432;
         jQuery(function ($) {
+            //Defaults
+            jq('#final_outcome').hide();
+            jq('.cause-of-death').hide();
+            jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
+            jq('#true-status :input[type=radio]').change(onDeceasedOutcomeChange);
+
             beforeSubmit.push(function () {
             });
-
         });
+
+        function onFinalOutcomeChange(){
+            var final_outcome = getValue('final-outcome.value');
+            var final_status = jq('#true-status');
+            var final_status_other = jq('#true-status-other');
+            var cause_death = jq('#death-reason');
+                if(final_outcome == YES_FINAL_OUTCOME){
+                jq('#final_outcome').show();
+               }
+                if(final_outcome == NO_FINAL_OUTCOME){
+                    jq('#final_outcome').hide();
+                    clearHiddenSections([final_status,final_status_other,cause_death]);
+                    }
+        }
+        function onDeceasedOutcomeChange(){
+            var tracing_outcome = getValue('true-status.value');
+            var cause_death = jq('#death-reason');
+            if(tracing_outcome == DECEASED_STATUS){
+                jq('.cause-of-death').show();
+            }else{
+                jq('.cause-of-death').hide();
+                clearHiddenSections([cause_death]);
+            }
+        }
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.value = "";
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+        }
     </script>
     <style>
         .simple-table {
@@ -97,7 +145,9 @@
                 <tr>
                     <td>Was the final outcome reached?</td>
                     <td>
-                        <obs conceptId="163725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>
+                        <obs conceptId="163725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="final-outcome"
+                             answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No" style="radio"/>
                     </td>
                 </tr>
             </table>
@@ -108,13 +158,15 @@
             <table class="simple-table">
                 <tr>
                     <td>Outcome</td>
-                    <td><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                    <td><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="true-status"
+                             answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
                              answerLabels="Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
                         <obs id="true-status-other" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                     </td>
                     <td class="cause-of-death">Cause of death</td>
-                    <td class="cause-of-death"><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
-                             answerLabels="Cancer,TB,Other infectious and parasitic diseases,Natural cause,Unnatural Cause,Uknown Cause" answerSeparator="&lt;br /&gt;" style="radio"/>
+                    <td class="cause-of-death"><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="death-reason"
+                                                    answerConceptIds="162574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                                                   answerLabels="Death related to HIV infection,Cancer,TB,Other infectious and parasitic diseases,Natural cause,Unnatural Cause,Uknown Cause" answerSeparator="&lt;br /&gt;" style="radio"/>
                     </td>
                 </tr>
             </table>

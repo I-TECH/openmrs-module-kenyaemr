@@ -62,7 +62,10 @@
             jq('#onART input').change(onARTatEnrollment);
 
             jq('#heiNumberError').hide();
-            jq("#hei-id input[type=text]").blur(checkForExistingPatientIdentifiers);
+            jq("#hei-id input[type=text]").blur(checkForExistingPatientHeiIdentifiers);
+
+            jq('#cwcNumberError').hide();
+            jq("#cwc-id input[type=text]").blur(checkForExistingPatientCwcIdentifiers);
 
             jq('#specialCare input').change(needSpecialCare);
             //including the mother details
@@ -302,7 +305,7 @@
                 clearHiddenSections(jq('#facility-registered'));
             }
         }
-        function checkForExistingPatientIdentifiers() {
+        function checkForExistingPatientHeiIdentifiers() {
             var heiNumberEntered = jq('#hei-id input[type=text]').val();
             jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { heiNumber: heiNumberEntered }, function(data) {
                 jq('#heiNumberError').hide();
@@ -311,6 +314,18 @@
                     jq('#heiNumberError').text("A patient with similar HEI ID already exists. Please correct before proceeding");
                     jq('#heiNumberError').show();
                     jq('#hei-id input[type=text]').focus();
+                }
+            });
+        }
+        function checkForExistingPatientCwcIdentifiers() {
+            var cwcNumberEntered = jq('#cwc-id input[type=text]').val();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { cwcNumber: cwcNumberEntered }, function(data) {
+                jq('#cwcNumberError').hide();
+                if (data.cwcNoExists === true) {
+
+                    jq('#cwcNumberError').text("A patient with similar CWC Number already exists. Please correct before proceeding");
+                    jq('#cwcNumberError').show();
+                    jq('#cwc-id input[type=text]').focus();
                 }
             });
         }
@@ -474,13 +489,15 @@
 					</tr>
 					<tr>
 						<td>CWC No <br />
-							Format:(CWC-MFL code-serial number) e.g CWC-15007-00001(). </td>
-						<td><patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" required="false" /></td>
+							Format:(CWC-MFL code-serial number) e.g <strong>CWC-15007-00001 </strong> </td>
+						<td><span id="cwc-id"><patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" required="false" /></span>
+						</td>
 						<td>Permanent Register Number </td>
 						<td><obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						<td></td>
 						<td></td>
 					</tr>
+					<tr><td><span id="cwcNumberError" class="error"></span></td></tr>
 					<tr>
 						<td colspan="4">National Unique Patient Identifier <patient field="identifier" identifierTypeId="f85081e2-b4be-4e48-b3a4-7994b69bb101" required="false" /></td>
 						<td></td>
