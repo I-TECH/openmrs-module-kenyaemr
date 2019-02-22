@@ -147,7 +147,6 @@
             jq('#vl-sample').hide();
             var encounterDate = getValue('encounter-date.value');
             jq('#tbl-hiv-test').show();
-            console.log("Encounter date ==> "+DATE_OF_DELIVERY);
             var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
             var encounterDateFormatted = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
             var __duration = moment.duration(moment(encounterDateFormatted).diff(deliveryDateFormatted));
@@ -166,7 +165,8 @@
 
        //Maternal history prepopulation
         if(DATE_OF_DELIVERY !=""){
-            getField('delivery-date.value').val(DATE_OF_DELIVERY);
+            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+            getField('delivery-date.value').val(deliveryDateFormatted);
         }else{
             getField('delivery-date.value').val("");
         }
@@ -480,6 +480,7 @@
     }
 	beforeSubmit.push(function () {
         var fundalHeight = getValue('fundal.value');
+        var deliveryDate = getValue('delivery-date.value');
         if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
             getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
             return false;
@@ -487,6 +488,12 @@
 		if (!jq('#arv-medication').is(':visible')) {
 			clearArvMeds();
 		}
+        if (deliveryDate =="" ) {
+            getField('delivery-date.error').html('Delivery date should not be empty').show();
+            return false;
+        }else{
+            getField('delivery-date.error').html('Delivery date should not be empty').hide();
+        }
 		return true;
 	});
 
@@ -553,7 +560,7 @@
 							<tr>
 								<td>Date of delivery:</td>
 								<td>
-									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-date" allowTime="false" allowFutureDates="false" required = "true"/>
+									<obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-date" allowTime="false" allowFutureDates="false" /> <span style="color:red;"><strong>*</strong></span>
 								</td>
 								<td>Mode of Delivery:</td>
 								<td>
