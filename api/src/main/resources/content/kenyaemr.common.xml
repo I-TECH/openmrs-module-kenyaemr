@@ -555,7 +555,7 @@
 
 	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
-		<property name="name" value="Viral Suppression Report" />
+		<property name="name" value="Viral Suppression Report for Current in Care Patients" />
 		<property name="description" value="Current in Care - Viral Suppression status" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
@@ -563,21 +563,21 @@
 	<bean id="kenyaemr.hiv.report.tx_curr_linelist_monthly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="f0305a84-30ee-11e9-b210-d663bd873d93" />
 		<property name="name" value="TX CURR Line lists (Monthly)" />
-		<property name="description" value="TX CURR Linelists at different reporting periods" />
+		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.tx_curr_linelist_quarterly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="cbd36f94-30f0-11e9-b210-d663bd873d93" />
 		<property name="name" value="TX CURR Line lists (Quarterly)" />
-		<property name="description" value="TX CURR Linelists at different reporting periods" />
+		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 	<bean id="kenyaemr.hiv.report.pendingVLAndCD4Report" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="d21dd5f4-3660-11e9-b210-d663bd873d93" />
-		<property name="name" value="Pending VL and CD4 Results" />
-		<property name="description" value="Patients with Pending VL and CD4 Results" />
+		<property name="name" value="Viral Load and CD4 Lab requests pending Results" />
+		<property name="description" value="Patients with VL and CD4 Lab requests pending Results" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
