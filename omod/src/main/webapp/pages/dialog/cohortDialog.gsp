@@ -21,8 +21,6 @@
                 <th>ART Start Date</th>
 				<th>Last VL</th>
 				<th>Last VL Date</th>
-				<th>Last CD4</th>
-				<th>Last CD4 Date</th>
 			</tr>
 		</thead>
 		<tbody>
