@@ -173,10 +173,10 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_New", "Newly Started ART", ReportUtils.map(datimIndicators.newlyStartedARTByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //Newly Started ART While Confirmed TB and / or TB Treated
-        cohortDsd.addColumn("TX_New_TB", "Newly Started ART with TB", ReportUtils.map(datimIndicators.newlyStartedARTWithTB(), indParams), "");
+        //cohortDsd.addColumn("TX_New_TB", "Newly Started ART with TB", ReportUtils.map(datimIndicators.newlyStartedARTWithTB(), indParams), "");
 
         //Newly Started ART While Pregnant
-        cohortDsd.addColumn("TX_New_Pregnant", "Newly Started ART While Pregnant", ReportUtils.map(datimIndicators.newlyStartedARTWhilePregnant(), indParams), "");
+        //cohortDsd.addColumn("TX_New_Pregnant", "Newly Started ART While Pregnant", ReportUtils.map(datimIndicators.newlyStartedARTWhilePregnant(), indParams), "");
 
         //Newly Started ART While BreastFeeding
         cohortDsd.addColumn("TX_New_BF", "Newly Started ART While Breastfeeding", ReportUtils.map(datimIndicators.newlyStartedARTWhileBF(), indParams), "");
@@ -290,15 +290,21 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
 
         //90-90-90 Viral Suppression
         //TX_PVLS
-        //TX_PVLS Denominator viral load result last 12 months with Routine test result
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_ROUTINE_ALL", "On ART within last 12 Months and viral load Routine test result", ReportUtils.map(datimIndicators.onARTRoutineVLLast12Months(), indParams), "");
+
+        //TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.
+        //cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "On ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimIndicators.onARTSuppRoutineVLLast12Months(), indParams), "");
 
         //TX_PVLS (Targeted) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.
-        cohortDsd.addColumn("TX_PVLS_SUPP_TARGETED_ALL", "On ART with suppressed viral load results (<1,000 copies/ml) Targeted Test", ReportUtils.map(datimIndicators.onARTSuppTargetedVLLast12Months(), indParams), "");
+        //cohortDsd.addColumn("TX_PVLS_SUPP_TARGETED_ALL", "On ART with suppressed viral load results (<1,000 copies/ml) Targeted Test", ReportUtils.map(datimIndicators.onARTSuppTargetedVLLast12Months(), indParams), "");
 
         //TX_PVLS (Undocumented) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.
-        cohortDsd.addColumn("TX_PVLS_SUPP_UNDOCUMENTED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Undocumented Test", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLLast12Months(), indParams), "");
-//SOEMTHING MISSING HERE
+        //cohortDsd.addColumn("TX_PVLS_SUPP_UNDOCUMENTED_ALL", "Number of patients on ART with suppressed viral load results (<1,000 copies/ml) Undocumented Test", ReportUtils.map(datimIndicators.onARTSuppUndocumentedVLLast12Months(), indParams), "");
+
+        //TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.
+        //cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "On ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimIndicators.onARTSuppRoutineVLLast12Months(), indParams), "");
+
+        //TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Routine
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "On ART with suppressed routine viral load results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppRoutineVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Targeted
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "On ART with suppressed Targeted viral load results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppTargetedVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
@@ -351,19 +357,13 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //TX_PVLS Number of patients on ART with  viral load results  within the past 12 months. Disaggregated by BF / Undocumented
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED", "On ART with  viral load results  BF undocumented Test", ReportUtils.map(datimIndicators.breastfeedingOnARTUndocumentedVLLast12Months(), indParams), "");
 
-        //TX_PVLS (Routine) Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) documented in the medical records and/or supporting laboratory results within the past 12 months.
-        cohortDsd.addColumn("TX_PVLS_SUPP_ROUTINE_ALL", "On ART with suppressed viral load results (<1,000 copies/ml) Routine Test", ReportUtils.map(datimIndicators.onARTSuppRoutineVLLast12Months(), indParams), "");
-
-        //TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Age/Sex Routine
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "On ART with suppressed routine viral load results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppRoutineVLAgeSex(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
-
         //Disaggregated by Targeted
         //TX_PVLS Denominator viral load result last 12 months with Targeted test result
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_TARGETED_ALL", "On ART within last 12 Months and viral load Targeted test result", ReportUtils.map(datimIndicators.onARTTargetedVLLast12Months(), indParams), "");
+        //cohortDsd.addColumn("TX_PVLS_DENOMINATOR_TARGETED_ALL", "On ART within last 12 Months and viral load Targeted test result", ReportUtils.map(datimIndicators.onARTTargetedVLLast12Months(), indParams), "");
 
         //Disaggregated by Undocumented
         //TX_PVLS Denominator viral load result last 12 months with Undocumented test result
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL", "On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
+        //cohortDsd.addColumn("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL", "On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
 
         //HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
         //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
