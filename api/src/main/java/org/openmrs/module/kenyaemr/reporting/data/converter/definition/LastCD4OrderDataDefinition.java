@@ -18,21 +18,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class LastVLOrderDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class LastCD4OrderDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public LastVLOrderDataDefinition() {
+    public LastCD4OrderDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public LastVLOrderDataDefinition(String name) {
+    public LastCD4OrderDataDefinition(String name) {
         super(name);
     }
 

@@ -9,27 +9,25 @@
  */
 package org.openmrs.module.kenyaemr.reporting.data.converter;
 
-import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.module.kenyaemr.calculation.library.models.CD4VLValueAndDate;
-import org.openmrs.module.kenyaemr.calculation.library.models.Cd4ValueAndDate;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * handles last CD4 and/or VL result
+ * handles last CD4 and/or VL order date and reason
  */
-public class Cd4OrVLValueAndDateConverter implements DataConverter {
+public class LastOrderDateAndReasonDateConverter implements DataConverter {
 
     private String what;
 
-    public Cd4OrVLValueAndDateConverter(){
+    public LastOrderDateAndReasonDateConverter(){
 
     }
 
-    public Cd4OrVLValueAndDateConverter(String what) {
+    public LastOrderDateAndReasonDateConverter(String what) {
         this.what = what;
     }
 
@@ -48,33 +46,56 @@ public class Cd4OrVLValueAndDateConverter implements DataConverter {
             return "";
         }
 
-        Object value = ((CalculationResult) obj).getValue();
-        CD4VLValueAndDate cd4VLValueAndDate = (CD4VLValueAndDate) value;
+        String value = (String) obj;
 
-        if(cd4VLValueAndDate == null) {
-            return  "Missing";
+        if(value == null) {
+            return  "";
         }
-        if(what.equals("date") && cd4VLValueAndDate.getConcept()=="vl") {
-            return formatDate(cd4VLValueAndDate.getDate());
+
+        String orderDateStr = value.substring(0, 10);
+        String orderReason = value.substring(10);
+        if(what.equals("date")) {
+            Date date1 = null;
+            try {
+                date1= new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return formatDate(date1);
         }
-        if(what.equals("date") && cd4VLValueAndDate.getConcept()=="cd4") {
-            return formatDate(cd4VLValueAndDate.getDate());
-        }
-        if(what.equals("value") && cd4VLValueAndDate.getConcept()=="vl") {
-            return cd4VLValueAndDate.getValue();
+
+        if(what.equals("reason")) {
+
+            Integer reasonCode = Integer.valueOf(orderReason);
+            if (reasonCode != null) {
+                if (reasonCode.equals(843)) {
+                    return "Clinical Treatment Failure";
+                } else if (reasonCode.equals(1434)) {
+                    return "Pregnancy";
+                } else if (reasonCode.equals(162080)) {
+                    return "Baseline";
+                } else if (reasonCode.equals(162081)) {
+                    return "Follow Up";
+                } else if (reasonCode.equals(1259)) {
+                    return "Single Drug Substitution";
+                } else if (reasonCode.equals(159882)) {
+                    return "Breastfeeding";
+                } else if (reasonCode.equals(163523)) {
+                    return "Clinical Failure";
+                } else if (reasonCode.equals(161236)) {
+                    return "Routine";
+                }
+            }
+            return "";
 
         }
-        if(what.equals("value") && cd4VLValueAndDate.getConcept()=="cd4") {
-            return cd4VLValueAndDate.getValue() + "**";
-
-        }
-        return  "Missing";
+        return  "";
 
     }
 
     @Override
     public Class<?> getInputDataType() {
-        return CalculationResult.class;
+        return Object.class;
     }
 
     @Override

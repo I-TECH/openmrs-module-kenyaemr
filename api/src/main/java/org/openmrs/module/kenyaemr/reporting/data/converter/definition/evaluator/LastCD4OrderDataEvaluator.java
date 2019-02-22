@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.LastCD4OrderDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,8 +26,8 @@ import java.util.Map;
 /**
  * Evaluates a VisitIdDataDefinition to produce a VisitData
  */
-@Handler(supports=KenyaEMRMaritalStatusDataDefinition.class, order=50)
-public class KenyaEMRMaritalStatusDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=LastCD4OrderDataDefinition.class, order=50)
+public class LastCD4OrderDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,10 @@ public class KenyaEMRMaritalStatusDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, marital_status from kenyaemr_etl.etl_patient_demographics group by patient_id";
+        String qry = "select o.patient_id, max(concat(date(o.date_activated),o.order_reason)) lastDateAndReason from orders o \n" +
+                "  inner join (select order_type_id from order_type where uuid = '52a447d3-a64a-11e3-9aeb-50e549534c5e') ot on ot.order_type_id = o.order_type_id\n" +
+                "  where o.concept_id in (5497, 730) and o.voided=0 and o.order_action='NEW'\n" +
+                "  group by o.patient_id";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

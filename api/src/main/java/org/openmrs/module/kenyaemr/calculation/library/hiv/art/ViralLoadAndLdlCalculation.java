@@ -48,12 +48,13 @@ public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
             }
             if(numericVLObs != null && ldlVLObs != null) {
                 //find the latest of the 2
-                List<Obs> listOfViralLoad = new ArrayList<Obs>();
-                listOfViralLoad.add(numericVLObs);
-                listOfViralLoad.add(ldlVLObs);
+                Obs lastViralLoadPicked = null;
+                if (numericVLObs.getObsDatetime().after(ldlVLObs.getObsDatetime())) {
+                    lastViralLoadPicked = numericVLObs;
+                } else {
+                    lastViralLoadPicked = ldlVLObs;
+                }
 
-                //since observations are sorted we pick the last one
-                Obs lastViralLoadPicked = listOfViralLoad.get(1);
                 if(lastViralLoadPicked.getConcept().equals(org.openmrs.module.kenyaemr.Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
                     viralLoadValues.put(lastViralLoadPicked.getValueNumeric() + " copies/ml", lastViralLoadPicked.getObsDatetime());
                 }

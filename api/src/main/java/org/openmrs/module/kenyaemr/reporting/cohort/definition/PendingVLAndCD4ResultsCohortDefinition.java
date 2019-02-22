@@ -19,6 +19,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.CumulativeOnARTCohortDefinition")
-public class CumulativeOnARTCohortDefinition extends BaseCohortDefinition {
+public class PendingVLAndCD4ResultsCohortDefinition extends BaseCohortDefinition {
 
 }

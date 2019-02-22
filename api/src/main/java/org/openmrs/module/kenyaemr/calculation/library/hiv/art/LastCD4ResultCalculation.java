@@ -14,59 +14,58 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.ui.framework.SimpleObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by codehub on 12/3/15.
  */
-public class LastViralLoadResultCalculation extends AbstractPatientCalculation {
+public class LastCD4ResultCalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
 
-        CalculationResultMap numericViralLoadValues = calculate(new LastViralLoadCalculation(), cohort, context);
-        CalculationResultMap ldlViralLoadValues = calculate(new LowDetectableViralLoadCalculation(), cohort, context);
 
-        SimpleObject object = null;
+        CalculationResultMap cd4CountValues = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT), cohort, context);
+        CalculationResultMap cd4PercentValues = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
+
+
 
         for(Integer ptId:cohort){
-            Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
-            Obs ldlVLObs = EmrCalculationUtils.obsResultForPatient(ldlViralLoadValues, ptId);
-            if(numericVLObs != null && ldlVLObs == null){
-                //viralLoadValues.put(numericVLObs.getValueNumeric()+" copies/ml",numericVLObs.getObsDatetime());
-                object = SimpleObject.create("lastVl", numericVLObs.getValueNumeric()+" copies/ml");
+            SimpleObject object = null;
+            Obs cd4CountObs = EmrCalculationUtils.obsResultForPatient(cd4CountValues, ptId);
+            Obs cd4PercentObs = EmrCalculationUtils.obsResultForPatient(cd4PercentValues, ptId);
+            if(cd4CountObs != null && cd4PercentObs == null){
+                //viralLoadValues.put(cd4CountObs.getValueNumeric()+" copies/ml",cd4CountObs.getObsDatetime());
+                object = SimpleObject.create("lastCD4", cd4CountObs.getValueNumeric(), "lastCD4Date", cd4CountObs.getObsDatetime());
             }
-           if(numericVLObs == null && ldlVLObs != null){
-                //viralLoadValues.put( "LDL", ldlVLObs.getObsDatetime());
-               object = SimpleObject.create("lastVl", "LDL");
+           if(cd4CountObs == null && cd4PercentObs != null){
+                //viralLoadValues.put( "LDL", cd4PercentObs.getObsDatetime());
+               object = SimpleObject.create("lastCD4", cd4PercentObs.getValueNumeric().intValue() + "%", "lastCD4Date", cd4PercentObs.getObsDatetime());
 
            }
-            if(numericVLObs != null && ldlVLObs != null) {
+            if(cd4CountObs != null && cd4PercentObs != null) {
                 //find the latest of the 2
-                Obs lastViralLoadPicked = null;
-                if (numericVLObs.getObsDatetime().after(ldlVLObs.getObsDatetime())) {
-                    lastViralLoadPicked = numericVLObs;
+                Obs cd4Picked = null;
+                if (cd4CountObs.getObsDatetime().after(cd4PercentObs.getObsDatetime())) {
+                    cd4Picked = cd4CountObs;
                 } else {
-                    lastViralLoadPicked = ldlVLObs;
+                    cd4Picked = cd4PercentObs;
                 }
 
-                if(lastViralLoadPicked.getConcept().equals(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
-                    //viralLoadValues.put(lastViralLoadPicked.getValueNumeric() + " copies/ml", lastViralLoadPicked.getObsDatetime());
-                    object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric()+" copies/ml");
+                if(cd4Picked.getConcept().equals(Dictionary.getConcept(Dictionary.CD4_PERCENT))) {
+                    //viralLoadValues.put(cd4Picked.getValueNumeric() + " copies/ml", cd4Picked.getObsDatetime());
+                    object = SimpleObject.create("lastCD4", cd4PercentObs.getValueNumeric()+ "%", "lastCD4Date", cd4PercentObs.getObsDatetime());
                 }
                 else {
-                    //viralLoadValues.put("LDL", lastViralLoadPicked.getObsDatetime());
-                    object = SimpleObject.create("lastVl", "LDL");
+                    //viralLoadValues.put("LDL", cd4Picked.getObsDatetime());
+                    object = SimpleObject.create("lastCD4", cd4CountObs.getValueNumeric(), "lastCD4Date", cd4CountObs.getObsDatetime());
                 }
 
             }

@@ -54,6 +54,7 @@
 				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
+				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -396,6 +397,16 @@
 		<property name="name" value="TX CURR Line lists (Quarterly)" />
 		<property name="description" value="TX CURR Linelists at different reporting periods" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.pendingVLAndCD4Report" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="d21dd5f4-3660-11e9-b210-d663bd873d93" />
+		<property name="name" value="Pending VL and CD4 Results" />
+		<property name="description" value="Patients with Pending VL and CD4 Results" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
 	</bean>
 
 </beans>

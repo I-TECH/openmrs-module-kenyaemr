@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.builder.hts;
+package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
@@ -18,13 +18,13 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.PendingVLAndCD4ResultsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.LastOrderDateAndReasonDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageToCareDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRemarksDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSSelfTestDataDefinition;
@@ -32,10 +32,11 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTBScre
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.LastCD4OrderDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.LastVLOrderDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDisabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDateDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -55,46 +56,40 @@ import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDe
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.htsConfirmationRegister"})
-public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder {
+@Builds({"kenyaemr.hiv.report.pendingVLAndCD4Report"})
+public class PendingVLAndCD4ResultsReportBuilder extends AbstractReportBuilder {
     public static final String ENC_DATE_FORMAT = "yyyy/MM/dd";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-        return Arrays.asList(
-                new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)
-        );
+        return new ArrayList<Parameter>();
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
         return Arrays.asList(
-                ReportUtils.map(datasetColumns(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(datasetColumns(), "")
         );
     }
 
     protected DataSetDefinition datasetColumns() {
-        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
-        dsd.setName("HTSInformation");
-        dsd.setDescription("Visit information");
-        dsd.addSortCriteria("Visit Date", SortCriteria.SortDirection.ASC);
-        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
-        String paramMapping = "startDate=${startDate},endDate=${endDate}";
+        PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+        dsd.setName("PendingVLAndCD4LabOrders");
+        dsd.setDescription("Pending VL and CD4 Lab Orders");
+        //dsd.addSortCriteria("Visit Date", SortCriteria.SortDirection.ASC);
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName} {middleName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
@@ -110,31 +105,15 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
-        dsd.addColumn("Unique Patient Number", identifierDef, null);
+        dsd.addColumn("Unique Patient Number", identifierDef, "");
+        dsd.addColumn("VL Order Date", new LastVLOrderDataDefinition(), "", new LastOrderDateAndReasonDateConverter("date"));
+        dsd.addColumn("VL Order Reason", new LastVLOrderDataDefinition(), "", new LastOrderDateAndReasonDateConverter("reason"));
+        dsd.addColumn("CD4 Order Date", new LastCD4OrderDataDefinition(), "", new LastOrderDateAndReasonDateConverter("date"));
+        dsd.addColumn("CD4 Order Reason", new LastCD4OrderDataDefinition(), "", new LastOrderDateAndReasonDateConverter("reason"));
 
-        dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
-        // new columns
-        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
-        dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
-        dsd.addColumn("disability", new PatientDisabilityDataDefinition(), null);
-        dsd.addColumn("consent", new PatientConsentDataDefinition(), null);
-        dsd.addColumn("clientTestedAs", new IndividualORCoupleTestDataDefinition(), null);
-        dsd.addColumn("testingStrategy", new HTSTestStrategyDataDefinition(), null);
-        dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
-        dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
-        dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
-        dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), null);
-        dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
-        dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
-        dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
-        dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
-        HTSConfirmationRegisterCohortDefinition cd = new HTSConfirmationRegisterCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
-        dsd.addRowFilter(cd, paramMapping);
+        PendingVLAndCD4ResultsCohortDefinition cd = new PendingVLAndCD4ResultsCohortDefinition();
+        dsd.addRowFilter(cd, "");
         return dsd;
 
     }

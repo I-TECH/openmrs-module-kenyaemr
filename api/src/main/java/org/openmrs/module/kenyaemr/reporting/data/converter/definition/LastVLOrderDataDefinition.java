@@ -18,21 +18,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class KenyaEMRMaritalStatusDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class LastVLOrderDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public KenyaEMRMaritalStatusDataDefinition() {
+    public LastVLOrderDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public KenyaEMRMaritalStatusDataDefinition(String name) {
+    public LastVLOrderDataDefinition(String name) {
         super(name);
     }
 
