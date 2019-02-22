@@ -65,6 +65,7 @@
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
+				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -564,6 +565,16 @@
 		<property name="targetUuid" value="d21dd5f4-3660-11e9-b210-d663bd873d93" />
 		<property name="name" value="Viral Load and CD4 Lab requests pending Results" />
 		<property name="description" value="Patients with VL and CD4 Lab requests pending Results" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.cccDefaulterTracingRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="b71a8cfe-3695-11e9-b210-d663bd873d93" />
+		<property name="name" value="CCC Defaulter Tracing Register (Mini)" />
+		<property name="description" value="Report that shows tracing attempts within a period" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
