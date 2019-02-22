@@ -35,7 +35,6 @@
 				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
 				<ref bean="kenyaemr.common.form.tbScreening" />
-				<ref bean="kenyaemr.common.form.geneXpert" />
 				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
 				<ref bean="kenyaemr.hiv.form.cccDefaulterTracing"/>
 			</set>
