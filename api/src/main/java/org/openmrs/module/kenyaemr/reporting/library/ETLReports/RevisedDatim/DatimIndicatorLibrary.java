@@ -775,6 +775,27 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of individuals who were identified and tested using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactIndexTesting(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
+     */
+    public CohortIndicator contactTestedPositive() {
+        return cohortIndicator("Number of individuals who were tested Positive using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.hivPositiveContact(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HTS_INDEX_NEGATIVE Number of individuals who were tested HIV Negative using Index testing services
+     */
+    public CohortIndicator contactTestedNegative() {
+        return cohortIndicator("Number of individuals who were tested HIV Negative using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.hivNegativeContact(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HTS_INDEX_KNOWN_POSITIVE Known HIV Positive contacts
+     */
+    public CohortIndicator contactKnownPositive() {
+        return cohortIndicator("Known HIV Positive contacts", ReportUtils.<CohortDefinition>map(datimCohorts.knownPositiveContact(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection
