@@ -17,8 +17,12 @@
 				<th>Age</th>
 				<th>Sex</th>
 				<th>Unique Patient Number</th>
-                <th>Enrollment Date (HIV Program)</th>
-                <th>ART Initiation Date</th>
+                <th>HIV Enrollment Date</th>
+                <th>ART Start Date</th>
+				<th>Last VL</th>
+				<th>Last VL Date</th>
+				<th>Last CD4</th>
+				<th>Last CD4 Date</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -41,6 +45,14 @@
 						dateFormat.format(enrollmentDates.get(patient.id).value) : "") : ""  }</td>
                 <td>${ artInitializationDates.get(patient.id) != null ?
 						dateFormat.format(artInitializationDates.get(patient.id).value) : "" }</td>
+				<td>${ lastVlResults.get(patient.id) != null && lastVlResults.get(patient.id).value != null ?
+					lastVlResults.get(patient.id).value.lastVl : "" }</td>
+				<td>${ lastVlResults.get(patient.id) != null && lastVlResults.get(patient.id).value != null ?
+						dateFormat.format(lastVlResults.get(patient.id).value.lastVlDate) : "" }
+			<td>${ lastCD4Results.get(patient.id) != null && lastCD4Results.get(patient.id).value != null ?
+					lastCD4Results.get(patient.id).value.lastCD4 : "" }</td>
+			<td>${ lastCD4Results.get(patient.id) != null && lastCD4Results.get(patient.id).value != null ?
+					dateFormat.format(lastCD4Results.get(patient.id).value.lastCD4Date) : "" }</td>
 			</tr>
 			<% } %>
 		</tbody>
