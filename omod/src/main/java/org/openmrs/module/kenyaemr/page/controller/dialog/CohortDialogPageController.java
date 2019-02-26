@@ -20,6 +20,9 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCD4ResultCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadResultCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -89,6 +92,13 @@ public class CohortDialogPageController {
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
         CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
+        LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
+        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+
+        /*LastCD4ResultCalculation lastCD4ResultCalculation = new LastCD4ResultCalculation();
+        CalculationResultMap lastCD4Results = lastCD4ResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+*/
+
         model.addAttribute("column", dataSetColumn);
         model.addAttribute("reportRequest", reportRequest);
         model.addAttribute("dataSet", dataSetName);
@@ -96,5 +106,7 @@ public class CohortDialogPageController {
         model.addAttribute("patients", ui.simplifyCollection(patients));
         model.addAttribute("enrollmentDates", enrollmentDates);
         model.addAttribute("artInitializationDates", artInitializationDates);
+        model.addAttribute("lastVlResults", lastVlResults);
+        //model.addAttribute("lastCD4Results", lastCD4Results);
     }
 }

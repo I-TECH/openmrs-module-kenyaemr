@@ -50,7 +50,7 @@
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
-                <ref bean="kenyaemr.common.report.rdqaReport" />
+                <!--<ref bean="kenyaemr.common.report.rdqaReport" />-->
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
@@ -60,6 +60,12 @@
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
+
+				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
+				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
+				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
+				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
+				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -222,20 +228,6 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
 		<property name="order" value="200014" />
-	</bean>
-
-	<!-- GENE XPERT FORM -->
-	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="${metadata.form.GENE_XPERT}" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
-		<property name="order" value="201100" />
 	</bean>
 
 	<!-- Medical and Surgical History -->
@@ -548,5 +540,45 @@
 		<property name="template" value="kenyaemr:mer.xls" />
 	</bean>
 
+	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
+		<property name="name" value="Viral Suppression Report for Current in Care Patients" />
+		<property name="description" value="Current in Care - Viral Suppression status" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.tx_curr_linelist_monthly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="f0305a84-30ee-11e9-b210-d663bd873d93" />
+		<property name="name" value="TX CURR Line lists (Monthly)" />
+		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.tx_curr_linelist_quarterly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="cbd36f94-30f0-11e9-b210-d663bd873d93" />
+		<property name="name" value="TX CURR Line lists (Quarterly)" />
+		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.pendingVLAndCD4Report" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="d21dd5f4-3660-11e9-b210-d663bd873d93" />
+		<property name="name" value="Viral Load and CD4 Lab requests pending Results" />
+		<property name="description" value="Patients with VL and CD4 Lab requests pending Results" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
+
+	<bean id="kenyaemr.hiv.report.cccDefaulterTracingRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="b71a8cfe-3695-11e9-b210-d663bd873d93" />
+		<property name="name" value="CCC Defaulter Tracing Register (Mini)" />
+		<property name="description" value="Report that shows tracing attempts within a period" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
 
 </beans>

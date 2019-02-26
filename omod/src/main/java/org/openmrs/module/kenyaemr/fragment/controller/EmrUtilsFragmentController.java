@@ -11,7 +11,11 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.Relationship;
+import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
@@ -21,7 +25,6 @@ import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
@@ -30,7 +33,6 @@ import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.PublicAction;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -139,6 +141,7 @@ public class EmrUtilsFragmentController {
 	 */
 	public SimpleObject clientsBookedOnDate(@RequestParam(value = "appointmentDate") String tca) {
 
+		System.out.println("Date passed from browser: " + tca);
 		String appointmentQuery = "select count(patient_id) as bookings\n" +
 				"from (\n" +
 				"select\n" +
@@ -149,7 +152,7 @@ public class EmrUtilsFragmentController {
 				"\tselect encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e','d1059fb9-a079-4feb-a749-eedd709ae542', '465a92f2-baf8-42e9-9612-53064be868e8')\n" +
 				") et on et.encounter_type_id=e.encounter_type\n" +
 				"inner join obs o on o.encounter_id=e.encounter_id and o.voided=0\n" +
-				"\tand o.concept_id in (5096) and date(o.value_datetime) = '2019-03-05'\n" +
+				"\tand o.concept_id in (5096) and date(o.value_datetime) = date('" + tca + "')\n" +
 				"where e.voided=0\n" +
 				"group by e.patient_id\n" +
 				")t;";

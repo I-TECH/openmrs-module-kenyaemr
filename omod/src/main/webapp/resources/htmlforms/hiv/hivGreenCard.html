@@ -115,10 +115,11 @@ Green Card follow-up visit form
         var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
 
-        console.log("Greencard velocity ==>"+ GREENCARD_VELOCITY);
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
 
 //Start on jq onready
         jq(function() {
@@ -154,6 +155,8 @@ Green Card follow-up visit form
             onWeightOrHeightChange();
             onEncounterDateChange();
             recordedStabilityAssessmentIndicators();
+            jq('#showNumberBooked').hide();
+            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -567,6 +570,16 @@ Green Card follow-up visit form
                     });
                        showHideIPTInitiationTab();
         });   //End onReady
+// get count of patients booked on a date
+function getPatientsBookedOnDate() {
+    var tca_date = getValue('returnVisitDate.value');
+    jq('#showNumberBooked').hide();
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedOnDate.action', { appointmentDate: tca_date }, function(data) {
+        jq('#showBookedResult').text(data.bookingsOnDate);
+        jq('#showNumberBooked').show();
+    });
+}
+
 function onWeightOrHeightChange() {
     var display = '';
     var weightKg = parseFloat(getValue('weight.value'));
@@ -3794,6 +3807,11 @@ beforeSubmit.push(function() {
                             <td id="refill-label">Refill Date:&#160;&#160;</td>
                             <td id="refill-date"><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="refillVisitDate" /></td>
                         </tr><tr></tr>
+                    </table>
+                    <table id="showNumberBooked" class="simple-table">
+                        <tr>
+                        <td> <span class="ke-flagtag">Number of patients already booked on the Date selected</span></td>
+                        <td><span id="showBookedResult"></span></td></tr>
                     </table>
                     <table>
                         <tr id="tbl-fast-track">

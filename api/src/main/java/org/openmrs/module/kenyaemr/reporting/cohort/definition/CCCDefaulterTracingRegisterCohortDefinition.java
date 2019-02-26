@@ -9,16 +9,34 @@
  */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
-import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
+import org.openmrs.Encounter;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+import org.openmrs.module.reporting.query.BaseQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+
+import java.util.Date;
 
 /**
- * Patients awaiting VL and CD4 lab results
+ * Cumulative on ART cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.CumulativeOnARTCohortDefinition")
-public class CumulativeOnARTCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.cccDefaulterTracingRegisterCohortDefinition")
+public class CCCDefaulterTracingRegisterCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
 
+    @ConfigurationProperty
+    private Date asOfDate;
+
+    public CCCDefaulterTracingRegisterCohortDefinition() {
+    }
+
+    public Date getAsOfDate() {
+        return asOfDate;
+    }
+
+    public void setAsOfDate(Date asOfDate) {
+        this.asOfDate = asOfDate;
+    }
 }
