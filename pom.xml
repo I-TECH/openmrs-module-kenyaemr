@@ -57,10 +57,10 @@
         <htmlformentryVersion>2.4</htmlformentryVersion>
         <htmlwidgetsVersion>1.6.6</htmlwidgetsVersion>
         <idgenVersion>2.6</idgenVersion>
-        <kenyacoreVersion>2.4.1-SNAPSHOT</kenyacoreVersion>
+        <kenyacoreVersion>2.4.1</kenyacoreVersion>
         <kenyadqVersion>1.2</kenyadqVersion>
-        <kenyauiVersion>2.1-SNAPSHOT</kenyauiVersion>
-        <kenyaemrOrderentryVersion>1.0-SNAPSHOT</kenyaemrOrderentryVersion>
+        <kenyauiVersion>2.1.0</kenyauiVersion>
+        <kenyaemrOrderentryVersion>1.0.0</kenyaemrOrderentryVersion>
         <logicVersion>0.5.2</logicVersion>
         <metadatadeployVersion>1.3</metadatadeployVersion>
         <metadatamappingVersion>1.0.1</metadatamappingVersion>
