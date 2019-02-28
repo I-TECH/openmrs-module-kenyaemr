@@ -51,8 +51,8 @@
     var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
     var ANC_NUMBER = "<lookup expression="fn.latestObs(163530).getValueText()"/>";
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
-    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
-    var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+    var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
     //Start on ready
 	jq(function () {
         jq('#anc-counselling').hide();

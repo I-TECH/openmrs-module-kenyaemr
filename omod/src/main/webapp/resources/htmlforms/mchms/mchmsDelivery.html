@@ -36,9 +36,9 @@
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
         //var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
-        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
-        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
-		//On ready start
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        //On ready start
         jq(document).ready(function () {
             onEncounterDateChange();
             //On delivery outcome change
