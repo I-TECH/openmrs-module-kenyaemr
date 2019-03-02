@@ -83,7 +83,7 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
         }
 
 
-
+        int counter = 0;
         for (Map.Entry<Integer, Set<RegimenChangeReason>> entry : records.entrySet()) {
 
             Patient p = patientService.getPatient(entry.getKey());
@@ -121,6 +121,16 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
                     }
                    encounterService.saveEncounter(encounter);
                 }
+            }
+            counter++;
+
+            if ((counter%500)==0) {
+                Context.flushSession();
+                Context.clearSession();
+                out.println("flushing and clearing session ========================================= > at counter " + counter);
+                counter=0;
+                out.println("Counter reset after. Counter now at  ========================================= > at " + counter);
+
             }
         }
 
