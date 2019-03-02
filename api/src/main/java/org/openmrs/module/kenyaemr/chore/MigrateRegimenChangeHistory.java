@@ -121,9 +121,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
             if ((counter%400)==0) {
                 Context.flushSession();
                 Context.clearSession();
-                System.out.println("flushing and clearing session ========================================= > at counter " + counter);
                 counter=0;
-                System.out.println("Counter reset after. Counter now at  ========================================= > at " + counter);
 
             }
 

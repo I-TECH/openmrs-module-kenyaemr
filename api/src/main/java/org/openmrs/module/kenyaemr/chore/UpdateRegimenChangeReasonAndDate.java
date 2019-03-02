@@ -127,10 +127,7 @@ public class UpdateRegimenChangeReasonAndDate extends AbstractChore {
             if ((counter%500)==0) {
                 Context.flushSession();
                 Context.clearSession();
-                out.println("flushing and clearing session ========================================= > at counter " + counter);
                 counter=0;
-                out.println("Counter reset after. Counter now at  ========================================= > at " + counter);
-
             }
         }
 
