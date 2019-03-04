@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * HEI cohort definition
+ * ART Preparation cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ARTPreparationRegisterCohortDefinition")

@@ -145,13 +145,4 @@
         <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
     </bean>
 
-    <bean id="kenyaemr.hiv.report.art.artPreparationRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-        <property name="targetUuid" value="67f57664-d061-4dce-888a-072090e3b227" />
-        <property name="name" value="ART Preparation Register" />
-        <property name="description" value="ART Preparation Register" />
-        <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artPreparationRegister.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artPreparationRegister" />
-    </bean>
-
 </beans>

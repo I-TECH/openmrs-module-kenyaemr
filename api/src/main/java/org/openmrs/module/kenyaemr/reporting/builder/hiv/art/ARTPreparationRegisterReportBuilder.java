@@ -21,13 +21,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -82,7 +81,7 @@ public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBui
 
 	protected PatientDataSetDefinition artPreparationDataSetDefinition() {
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition("ART_PREP_Register");
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition("artPrepRegister");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -95,8 +94,9 @@ public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBui
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		//		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-		// new columns
+		dsd.addColumn("Name", nameDef, "");
+		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Understands HIV Infection and ART Benefits", new ARTBenefitsDataDefinition(), "");
 		dsd.addColumn("Screened Negative for Substance abuse", new ScreenedSubstanceAbuseDefinition(),"");
 		dsd.addColumn("Screened Negative for Psychiatric illness", new ScreenedPsychiatricIllnessDataDefinition(),"");
