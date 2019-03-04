@@ -381,7 +381,7 @@
 		<property name="description" value="ART Preparation Register" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hiv/artPreparationRegister.xls" />
-		<property name="repeatingSection" value="sheet:1,row:4,dataset:artPrepRegister" />
+		<property name="repeatingSection" value="sheet:1,row:5,dataset:artPrepRegister" />
 	</bean>
 
 </beans>
