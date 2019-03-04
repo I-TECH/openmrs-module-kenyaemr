@@ -15,6 +15,7 @@
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
         var LATEST_SESSION = "<lookup expression="fn.latestObs(1639).valueNumeric"/>"
+        var LATEST_SESSION_START_DATE = "<lookup expression="fn.latestObs(1639).getObsDatetime()"/>"
         jQuery(function($) {
             //Defaults
             var adherenceResponses1=jq('#adherence-1');
@@ -25,9 +26,10 @@
             //Process flow
             jq("#has-vl :input[type=radio]").change(hasViralLoadResult);
             jq("#result-status :input[type=radio]").change(hasHighViralLoadResult);
+            jq("#session-number :input[type=text]").change(sessionNumberChange);
             hasViralLoadResult();
             hasHighViralLoadResult();
-            if(LATEST_SESSION == "" || LATEST_SESSION &gt; 3) {
+            if(LATEST_SESSION == "") {
                 jq('#review').hide();
                 jq('#viral-load-tab').show();
                 jq('#adherence-barriers-tab').show();
@@ -35,6 +37,14 @@
                 jq('#review').show();
                 jq('#viral-load-tab').show();
                 jq('#adherence-barriers-tab').hide();
+            }
+            console.log("LATEST SESSION==>"+LATEST_SESSION);
+            console.log("LATEST SESSION START DATE==>"+LATEST_SESSION_START_DATE);
+            if(LATEST_SESSION &gt; 0) {
+                var formattedSessionStartDate =moment(moment(LATEST_SESSION_START_DATE,'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                getField('session-startdate.value').val(formattedSessionStartDate);
+            }else{
+                getField('session-startdate.value').val("");
             }
             beforeSubmit.push(function() {
             });
@@ -78,6 +88,19 @@
                 }
             }
         }
+        function sessionNumberChange(){
+            var val = getValue('session-number.value');
+            if(val == 1) {
+                getField('session-startdate.value').val("");
+                jq('#review').hide();
+                jq('#viral-load-tab').show();
+                jq('#adherence-barriers-tab').show();
+                 }else{
+                jq('#review').show();
+                jq('#viral-load-tab').show();
+                jq('#adherence-barriers-tab').hide();
+            }
+           }
         function hasViralLoadResult(){
             var val = getValue('has-vl.value');
             if(val == 1065) {
@@ -158,8 +181,15 @@
                 <tr>
                     <td> Session Number:</td>
                     <td>
-                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        id="session-number"/>
                         <span class="value"><recentObs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                    <td> Date of first session:</td>
+                    <td>
+                        <obs conceptId="164891AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        id="session-startdate"
+                        />
                     </td>
                     <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Pill count adherence % (from pill count):</td>
                     <td>
