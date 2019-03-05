@@ -59,16 +59,12 @@ public class PendingViralLoadResultCalculation  extends AbstractPatientCalculati
             if (inHivProgram.contains(ptId)) {
                 //Check whether client has active vl order
                 OrderType patientLabOrders = orderService.getOrderTypeByUuid(TEST_ORDER_TYPE_UUID);
-                log.info("Client has pending orders ==> " + patientLabOrders);
                 if (patientLabOrders != null) {
                        //Get active lab orders
                     List<Order> activeVLTestOrders = orderService.getActiveOrders(Context.getPatientService().getPatient(ptId), patientLabOrders, null, null);
                     if (activeVLTestOrders.size() > 0) {
-                        log.info("Client active orders ==> " + activeVLTestOrders);
                         for (Order o : activeVLTestOrders) {
                             if (o.getConcept().getConceptId().equals(856)) {
-                                log.info("Client patient ID ==> " + ptId);
-
                                 pendingViralLoadResult = true;
                             }
 

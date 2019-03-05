@@ -65,12 +65,11 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
-      //Check for ordered tests
-        String TEST_ORDER_TYPE_UUID = "52a447d3-a64a-11e3-9aeb-50e549534c5e";
-        CalculationResultMap ret = new CalculationResultMap();
 
         // need to exclude those on ART already
         Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+        // need to exclude those with vl orders
+        Set<Integer> pendingVlResults = CalculationUtils.patientsThatPass(calculate(new PendingViralLoadResultCalculation(), cohort, context));
         //check for last viral load recorded
         CalculationResultMap viralLoadLast = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         //check for last ldl
@@ -84,7 +83,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
         //get the initial art start date
         CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
-
+        CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:cohort) {
             OrderService orderService = Context.getOrderService();
             boolean needsViralLoadTest = false;
@@ -98,7 +97,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             //find pregnancy obs
             Obs pregnantStatus = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
             // Newly initiated and more than 3 months without ldl,vl or orders
-            if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
+            if(inHivProgram.contains(ptId) && onArt.contains(ptId) && !pendingVlResults.contains(ptId)){
                 if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 183)) {
                     needsViralLoadTest = true;
                 }
@@ -158,21 +157,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                     if(lastViralLoadObs != null && listObsViralLoads.size() == 0 && daysSince(lastViralLoadObs.getObsDatetime(), context) < 183) {
                         needsViralLoadTest = false;
                     }
-                }
-                //Check whether client has active vl order
-                OrderType patientLabOrders = orderService.getOrderTypeByUuid(TEST_ORDER_TYPE_UUID);
-                if (patientLabOrders != null) {
-                    //Get active lab orders
-                    List<Order> activeVLTestOrders = orderService.getActiveOrders(Context.getPatientService().getPatient(ptId), patientLabOrders, null, null);
-                    if (activeVLTestOrders.size() > 0) {
-                        for (Order o : activeVLTestOrders) {
-                            if (o.getConcept().getConceptId().equals(856)) {
-                                needsViralLoadTest = false;
-                            }
-
-                        }
-                    }
-
                 }
 
             }
