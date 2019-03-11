@@ -35,7 +35,7 @@ public class PatientIncomeSourcesDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,patien_income_sources from kenyaemr_etl.etl_enhanced_adherence group by patient_id;";
+        String qry = "select patient_id,patient_income_sources from kenyaemr_etl.etl_enhanced_adherence group by patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

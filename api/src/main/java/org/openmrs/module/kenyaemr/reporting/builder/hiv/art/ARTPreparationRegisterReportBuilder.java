@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.builder.hiv;
+package org.openmrs.module.kenyaemr.reporting.builder.hiv.art;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
@@ -16,8 +16,8 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EnhancedAdherenceRegisterCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.enhancedAdherence.*;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ARTPreparationRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -39,9 +39,8 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.enhancedAdherenceRegister"})
-public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReportBuilder {
-
+@Builds({"kenyaemr.hiv.report.artPrepRegister"})
+public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	@Override
@@ -50,17 +49,17 @@ public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReport
 	}
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
-        CohortDefinition cd = new EnhancedAdherenceRegisterCohortDefinition();
+        CohortDefinition cd = new ARTPreparationRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("Enhanced Adherence");
+        cd.setName("ART Preparation");
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 
-        PatientDataSetDefinition allPatients = enhancedAdherenceDataSetDefinition();
+        PatientDataSetDefinition allPatients = artPreparationDataSetDefinition();
         allPatients.addRowFilter(allPatientsCohort());
 		//allPatients.addRowFilter(buildCohort(descriptor));
         DataSetDefinition allPatientsDSD = allPatients;
@@ -80,8 +79,9 @@ public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReport
 		);
 	}
 
-	protected PatientDataSetDefinition enhancedAdherenceDataSetDefinition() {
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition("EnhancedAdherenceRegister");
+	protected PatientDataSetDefinition artPreparationDataSetDefinition() {
+
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition("ARTPrepRegister");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -97,39 +97,22 @@ public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReport
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Understands HIV Infection and ART Benefits", new ARTBenefitsDataDefinition(), "");
+		dsd.addColumn("Screened Negative for Substance abuse", new ScreenedSubstanceAbuseDefinition(),"");
+		dsd.addColumn("Screened Negative for Psychiatric illness", new ScreenedPsychiatricIllnessDataDefinition(),"");
+		dsd.addColumn("Disclosed or ready to disclose HIV status", new HIVStatusDisclosureDataDefinition(), "");
+		dsd.addColumn("Trained on drug administration", new ARTDrugAdminTrainingDataDefinition(), "");
+		dsd.addColumn("Informed about drug side effects", new ARTDrugSideEffectsDataDefinition(), "");
+		dsd.addColumn("Care giver is committed", new CareGiverCommitmentDataDefinition(),"");
+		dsd.addColumn("Adherance Barriers Identified", new AdheranceBarriersDataDefinition(),"");
+		dsd.addColumn("Care Giver Location and contacts given", new CareGiverLocatorDataDefinition(),"");
+		dsd.addColumn("Ready to start ART", new ARTStartReadinessDataDefinition(),"");
+		dsd.addColumn("Identified drug time", new IdentifiedDrugTimeDataDefinition(),"");
+		dsd.addColumn("Treatment supporter engaged", new TreatmentSupporterEngagedDataDefinition(),"");
+		dsd.addColumn("Aware of support group meetings", new SupportGroupAwarenessDataDefinition(),"");
+		dsd.addColumn("Enrolled in reminder system", new EnrolledInReminderSystemDataDefinition(),"");
+		dsd.addColumn("Other support systems in place/planned", new OtherSupportSystemsDataDefinition(),"");
 
-		// new columns
-		dsd.addColumn("Session number", new SessionNumberDataDefinition(), "");
-		dsd.addColumn("First session date", new FirstSessionDateDataDefinition(),"");
-		dsd.addColumn("Pill count", new PillCountDataDefinition(),"");
-		dsd.addColumn("Arv adherence status", new ArvAdherenceDataDefinition(), "");
-		dsd.addColumn("Has VL results", new HasViralLoadResultsDataDefinition(), "");
-		dsd.addColumn("Has suppressed VL results", new HasSuppressedVlDataDefinition(), "");
-		dsd.addColumn("Feeling about VL results", new VlResultsFeelingDataDefinition(),"");
-		dsd.addColumn("Cause of high VL", new CauseOfHighVlDataDefinition(),"");
-		dsd.addColumn("Patient HIV Knowledge", new PatientHivKnowledgeDataDefinition(),"");
-		dsd.addColumn("Patient drugs uptake", new PatientDrugsUptakeDataDefinition(),"");
-		dsd.addColumn("Patient drugs reminder tools", new PatientDrugsReminderToolsDataDefinition(),"");
-		dsd.addColumn("Patient drugs uptake during travels", new PatientDrugsUptakeDuringTravelsDataDefinition(),"");
-		dsd.addColumn("Patient drugs side effects response", new PatientDrugsSideEffectsResponseDataDefinition(),"");
-		dsd.addColumn("Patient drugs uptake in difficult times", new PatientDrugsUptakeInDifficultTimesDataDefinition(),"");
-		dsd.addColumn("Patient drugs daily uptake feeling", new PatientDrugsDailyUptakeFeelingDataDefinition(),"");
-		dsd.addColumn("Patient ambitions", new PatientAmbitionsDataDefinition(),"");
-		dsd.addColumn("Patient has people to talk to", new PatientHasPeopleToTalkDataDefinition(),"");
-		dsd.addColumn("Patient enlisting social support", new PatientEnlistingSocialSupportDataDefinition(),"");
-		dsd.addColumn("Patient income sources", new PatientIncomeSourcesDataDefinition(),"");
-		dsd.addColumn("Patient challenges reaching clinic", new PatientChallengesReachingClinicDataDefinition(),"");
-		dsd.addColumn("Patient treated differently", new PatientTreatedDifferentlyDataDefinition(),"");
-		dsd.addColumn("Stigma hindering adherence", new StigmaHinderingAdherenceDataDefinition(),"");
-		dsd.addColumn("Patient tried faith healing", new PatientTriedFaithHealingDataDefinition(),"");
-		dsd.addColumn("Patient improved adherence", new PatientAdherenceImprovedDataDefinition(),"");
-		dsd.addColumn("Patient missed doses", new PatientMissedDosesDataDefinition(),"");
-		dsd.addColumn("Patient other referrals", new PatientOtherReferralsDataDefinition(),"");
-		dsd.addColumn("Patient appointments met", new PatientAppointmentsMetDataDefinition(),"");
-		dsd.addColumn("Patient referral experience", new PatientReferralExperienceDataDefinition(),"");
-		dsd.addColumn("Patient home visit benefit", new PatientHomeVisitBenefitDataDefinition(),"");
-		dsd.addColumn("Patient adherence plan", new PatientAdherencePlanDataDefinition(),"");
-		dsd.addColumn("Patient next appointment date", new PatientNextAppointmentDateDataDefinition(),"");
 		return dsd;
 	}
 }

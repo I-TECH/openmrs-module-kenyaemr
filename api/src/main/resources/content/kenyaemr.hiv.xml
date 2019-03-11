@@ -51,6 +51,7 @@
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
+				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -375,7 +376,7 @@
 	</bean>
 
 	<!-- Enhanced Adherence register-->
-	<bean id="kenyaemr.hiv.report.hiv.enhancedAdherenceRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+	<bean id="kenyaemr.hiv.report.enhancedAdherenceRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="d08b075f-7a16-46c6-8211-cc9e8a73d93c" />
 		<property name="name" value="Enhanced Adherence Register" />
 		<property name="description" value="Enhanced adherence Register" />
