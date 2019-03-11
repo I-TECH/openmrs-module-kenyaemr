@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.chore;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -93,6 +94,8 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
         refresh();
 
+        int counter=0;
+
         for (Integer patientId : getPatientsWithOrders()) {
             Patient patient = patientService.getPatient(patientId);
             RegimenChangeHistory tbRegimenHistory = RegimenChangeHistory.forPatient(patient, TBRegimenConcept);
@@ -113,6 +116,14 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
                 processRegimenChanges(patient, arvRegimenConceptId, arvRegimenChanges, form, encType);
 
             }
+            counter++;
+
+            if ((counter%400)==0) {
+                Context.flushSession();
+                Context.clearSession();
+                counter=0;
+
+            }
 
         }
         out.println("Completed migration for drug regimen history");
@@ -122,6 +133,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
         out.println("Successfully completed all drug regimen migration operations");
 
     }
+
 
     private void processRegimenChanges(Person patient, int masterSet, List<RegimenChange> changes, Form form, EncounterType encounterType) {
         PatientService patientService = Context.getPatientService();
