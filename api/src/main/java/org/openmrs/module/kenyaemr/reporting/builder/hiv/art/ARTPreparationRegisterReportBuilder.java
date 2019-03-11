@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.art.artPreparationRegister"})
+@Builds({"kenyaemr.hiv.report.artPrepRegister"})
 public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
@@ -81,7 +81,7 @@ public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBui
 
 	protected PatientDataSetDefinition artPreparationDataSetDefinition() {
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition("artPrepRegister");
+		PatientDataSetDefinition dsd = new PatientDataSetDefinition("ARTPrepRegister");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -105,7 +105,7 @@ public class ARTPreparationRegisterReportBuilder extends AbstractHybridReportBui
 		dsd.addColumn("Informed about drug side effects", new ARTDrugSideEffectsDataDefinition(), "");
 		dsd.addColumn("Care giver is committed", new CareGiverCommitmentDataDefinition(),"");
 		dsd.addColumn("Adherance Barriers Identified", new AdheranceBarriersDataDefinition(),"");
-		dsd.addColumn("Care Giver's Location and contacts given", new CareGiverLocatorDataDefinition(),"");
+		dsd.addColumn("Care Giver Location and contacts given", new CareGiverLocatorDataDefinition(),"");
 		dsd.addColumn("Ready to start ART", new ARTStartReadinessDataDefinition(),"");
 		dsd.addColumn("Identified drug time", new IdentifiedDrugTimeDataDefinition(),"");
 		dsd.addColumn("Treatment supporter engaged", new TreatmentSupporterEngagedDataDefinition(),"");
