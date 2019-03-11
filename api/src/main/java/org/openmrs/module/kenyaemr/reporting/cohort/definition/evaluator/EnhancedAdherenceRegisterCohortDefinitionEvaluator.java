@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.EnhancedAdherenceRegisterCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -29,32 +29,29 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for HIE
+ * Evaluator for Enhanced Adherence Preparation
  */
-@Handler(supports = {HEIRegisterCohortDefinition.class})
-public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {EnhancedAdherenceRegisterCohortDefinition.class})
+public class EnhancedAdherenceRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
-    private final Log log = LogFactory.getLog(this.getClass());
+	private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
 	EvaluationService evaluationService;
 
-    @Override
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
+	@Override
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		HEIRegisterCohortDefinition definition = (HEIRegisterCohortDefinition) cohortDefinition;
+		EnhancedAdherenceRegisterCohortDefinition definition = (EnhancedAdherenceRegisterCohortDefinition) cohortDefinition;
 
-        if (definition == null)
-            return null;
+		if (definition == null)
+			return null;
 
 		Cohort newCohort = new Cohort();
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		//EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
-				"    inner join kenyaemr_etl.etl_hei_enrollment he\n" +
-				"    on he.patient_id = hf.patient_id where he.visit_date <= hf.visit_date\n" +
-				"                                          and date(hf.visit_date) BETWEEN date(:startDate) AND date(:endDate);";
+		String qry = "select patient_id from kenyaemr_etl.etl_enhanced_adherence where visit_date between date(:startDate) and date(:endDate);";
 
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
@@ -67,11 +64,7 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 
-
-//		queryResult.getMemberIds().addAll(results);
-//		return queryResult;
-
-        return new EvaluatedCohort(newCohort, definition, context);
-    }
+		return new EvaluatedCohort(newCohort, definition, context);
+	}
 
 }
