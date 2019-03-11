@@ -21,13 +21,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.enhancedA
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -42,6 +41,7 @@ import java.util.List;
 @Component
 @Builds({"kenyaemr.hiv.report.hiv.enhancedAdherenceRegister"})
 public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReportBuilder {
+
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	@Override
@@ -81,7 +81,6 @@ public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReport
 	}
 
 	protected PatientDataSetDefinition enhancedAdherenceDataSetDefinition() {
-
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("EnhancedAdherenceRegister");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -95,7 +94,7 @@ public class EnhancedAdherenceRegisterReportBuilder extends AbstractHybridReport
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		//		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+
 		// new columns
 		dsd.addColumn("Session number", new SessionNumberDataDefinition(), "");
 		dsd.addColumn("First session date", new FirstSessionDateDataDefinition(),"");

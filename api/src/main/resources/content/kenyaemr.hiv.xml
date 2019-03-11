@@ -50,6 +50,7 @@
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
+				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -383,5 +384,14 @@
 		<property name="repeatingSection" value="sheet:1,row:5,dataset:EnhancedAdherenceRegister" />
 	</bean>
 
+	<!-- HIV Treatment preparation-->
+	<bean id="kenyaemr.hiv.report.artPrepRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="67f57664-d061-4dce-888a-072090e3b227" />
+		<property name="name" value="ART Preparation Register" />
+		<property name="description" value="ART Preparation Register" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/artPreparationRegisterTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:5,dataset:ARTPrepRegister" />
+	</bean>
 
 </beans>
