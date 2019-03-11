@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.report;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
@@ -18,6 +19,11 @@ import org.openmrs.Location;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.facilityreporting.api.FacilityreportingService;
+import org.openmrs.module.facilityreporting.api.models.FacilityReportDataset;
+import org.openmrs.module.facilityreporting.api.restUtil.DatasetIndicatorDetails;
+import org.openmrs.module.facilityreporting.api.restUtil.FacilityReporting;
+import org.openmrs.module.facilityreporting.api.restUtil.ReportDatasetValueEntryMapper;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
@@ -55,7 +61,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +74,8 @@ import java.util.List;
 public class AdxViewFragmentController {
 
     private AdministrationService administrationService;
+    private FacilityreportingService facilityreportingService;
+    private final Integer MOH_731_ID = 1;
     protected final Log log = LogFactory.getLog(getClass());
 
     private LocationService locationService;
@@ -110,7 +120,9 @@ public class AdxViewFragmentController {
 
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
+        Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
         administrationService = Context.getAdministrationService();
+        facilityreportingService = Context.getService(FacilityreportingService.class);
 		locationService = Context.getLocationService();
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
@@ -164,6 +176,25 @@ public class AdxViewFragmentController {
             }
             w.append("</group>\n");
         }
+
+        for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
+
+            Integer datasetId = Integer.parseInt(e.getDatasetID());
+            FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
+
+            w.append("\t").append("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
+                    + "/P1M\" dataSet=\"" + ds.getMapping() + "\">\n");
+            for (DatasetIndicatorDetails row : e.getIndicators()) {
+                if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
+                    String name = row.getName();
+                    Object value = row.getValue();
+
+                    w.append("\t\t").append("<dataValue dataElement=\"" + columnPrefix + "" + name + "\" value=\"" + value.toString() + "\"/>\n");
+
+                }
+            }
+            w.append("</group>\n");
+        }
         w.append("</adx>\n");
         //w.flush();
         return w.toString();
@@ -178,6 +209,7 @@ public class AdxViewFragmentController {
         locationService = Context.getLocationService();
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
+        Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
         String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
@@ -243,6 +275,35 @@ public class AdxViewFragmentController {
             }
             root.appendChild(eDataset);
         }
+
+        // add additional MOH 731 indicators for air
+
+        for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
+
+            Integer datasetId = Integer.parseInt(e.getDatasetID());
+            FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
+            String datasetName = ds.getMapping();
+
+            Element eDataset = document.createElement("group");
+            // add group attributes
+            eDataset.setAttribute("orgUnit", mfl);
+            eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
+            eDataset.setAttribute("dataSet", datasetName);
+
+            for (DatasetIndicatorDetails row : e.getIndicators()) {
+                if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
+                    String name = row.getName();
+                    Object value = row.getValue();
+                    // add data values
+                    Element dataValue = document.createElement("dataValue");
+                    dataValue.setAttribute("dataElement", columnPrefix.concat(name));
+                    dataValue.setAttribute("value", value.toString());
+                    eDataset.appendChild(dataValue);
+
+                }
+            }
+            root.appendChild(eDataset);
+        }
         document.appendChild(root);
 
         // create the xml file
@@ -272,6 +333,47 @@ public class AdxViewFragmentController {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/adx+xml");
+        con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
+        con.setDoOutput(true);
+
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+
+
+        out.writeBytes(outStream.toString());
+
+
+        out.flush();
+        out.close();
+
+        //Get Response
+        int responseCode = con.getResponseCode();
+        String httpResponse = null;
+
+        if (responseCode == HttpURLConnection.HTTP_OK) { //success
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            httpResponse = response.toString();
+
+        }
+        return SimpleObject.create("statusCode", String.valueOf(responseCode), "statusMsg", httpResponse);
+    }
+
+    private SimpleObject getDataFromFacilityReportingModule(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
+
+        //System.out.println("Posting to server at: " + serverAddress);
+        URL url = new URL("http://localhost:8080/openmrs/ws/rest/v1/facilityreporting/getreportdata");
+        String params = "{\"REPORTID\":\"1\",\"STARTDATE\":\"2019-01-02\",\"ENDDATE\":\"2019-01-31\",\"ADXORGUNIT\":\"10657\",\"ADXREPORTINGPERIOD\":\"2018-01-01/P1M\"}";
+
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
         con.setDoOutput(true);
 
@@ -366,5 +468,22 @@ public class AdxViewFragmentController {
            e.printStackTrace();
        }
         return SimpleObject.create("statusMgs", "Server address saved successfully");
+    }
+
+    protected List<ReportDatasetValueEntryMapper> getFaclityReportData(Integer reportID, String startDate, String endDate) {
+
+        List<ReportDatasetValueEntryMapper> list = new ArrayList<ReportDatasetValueEntryMapper>();
+        if (reportID != 0) {
+            try {
+                list = FacilityReporting.getReportDataForPeriod(reportID, startDate, endDate);
+            }
+            catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return list;
+
     }
 }

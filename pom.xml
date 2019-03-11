@@ -14,7 +14,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>kenyaemr</artifactId>
-    <version>17.0.0</version>
+    <version>17.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>KenyaEMR</name>
     <description>OpenMRS-based EMR for Kenya</description>
@@ -67,7 +67,9 @@
         <metadatasharingVersion>1.1.8</metadatasharingVersion>
         <reportingVersion>0.9.8.1</reportingVersion>
         <serializationxstreamVersion>0.2.7</serializationxstreamVersion>
-        <uiframeworkVersion>3.8</uiframeworkVersion><!--
+        <facilityReportingVersion>1.0.0-SNAPSHOT</facilityReportingVersion>
+        <uiframeworkVersion>3.8</uiframeworkVersion>
+        <!--
         <kenyaemrChartsVersion>1.0</kenyaemrChartsVersion>
         <kenyaemrHivTestingVersion>1.0</kenyaemrHivTestingVersion>-->
 
@@ -195,6 +197,12 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api</artifactId>
             <version>${serializationxstreamVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>facilityreporting-api</artifactId>
+            <version>${facilityReportingVersion}</version>
             <scope>provided</scope>
         </dependency>
 
