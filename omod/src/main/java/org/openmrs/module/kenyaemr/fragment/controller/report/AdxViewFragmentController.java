@@ -204,7 +204,7 @@ public class AdxViewFragmentController {
                                           @SpringBean ReportService reportService) throws ParserConfigurationException, IOException, TransformerException {
 
         ReportData reportData = reportService.loadReportData(reportRequest);
-
+        facilityreportingService = Context.getService(FacilityreportingService.class);
         administrationService = Context.getAdministrationService();
         locationService = Context.getLocationService();
 
