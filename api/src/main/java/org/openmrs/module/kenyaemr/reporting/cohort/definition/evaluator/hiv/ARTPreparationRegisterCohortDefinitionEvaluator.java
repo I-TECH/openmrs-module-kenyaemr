@@ -7,12 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.hiv;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ARTPreparationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -29,10 +30,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for HIE
+ * Evaluator for ART Preparation
  */
-@Handler(supports = {HEIRegisterCohortDefinition.class})
-public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {ARTPreparationRegisterCohortDefinition.class})
+public class ARTPreparationRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -41,7 +42,7 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		HEIRegisterCohortDefinition definition = (HEIRegisterCohortDefinition) cohortDefinition;
+		ARTPreparationRegisterCohortDefinition definition = (ARTPreparationRegisterCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
@@ -50,10 +51,9 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		//EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
-		String qry = "SELECT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
-				"    inner join kenyaemr_etl.etl_hei_enrollment he\n" +
-				"    on he.patient_id = hf.patient_id where he.visit_date <= hf.visit_date\n" +
-				"                                          and date(hf.visit_date) BETWEEN date(:startDate) AND date(:endDate);";
+
+		String qry = "select patient_id from kenyaemr_etl.etl_ART_preparation where visit_date between date(:startDate) and date(:endDate);";
+
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
@@ -64,10 +64,6 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
-
-
-//		queryResult.getMemberIds().addAll(results);
-//		return queryResult;
 
         return new EvaluatedCohort(newCohort, definition, context);
     }

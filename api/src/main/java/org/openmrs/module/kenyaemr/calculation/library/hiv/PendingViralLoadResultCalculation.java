@@ -42,7 +42,7 @@ public class PendingViralLoadResultCalculation  extends AbstractPatientCalculati
     public String getFlagMessage() {
         return "Pending VL result";
     }
-    protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+    protected static final Log log = LogFactory.getLog(PendingViralLoadResultCalculation.class);
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
