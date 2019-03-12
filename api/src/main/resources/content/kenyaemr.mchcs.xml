@@ -205,6 +205,7 @@
 		<property name="description" value="Permanent Immunization Register" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:moh510.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:immunizationRegister" />
 	</bean>
 
 	<bean id="kenyaemr.mchcs.report.moh511" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
