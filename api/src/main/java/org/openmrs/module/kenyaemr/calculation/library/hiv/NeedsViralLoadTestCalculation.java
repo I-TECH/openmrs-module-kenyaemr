@@ -14,7 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Program;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -60,13 +64,12 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
-
         Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
-
-        CalculationResultMap ret = new CalculationResultMap();
 
         // need to exclude those on ART already
         Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
+        // need to exclude those with vl orders
+        Set<Integer> pendingVlResults = CalculationUtils.patientsThatPass(calculate(new PendingViralLoadResultCalculation(), cohort, context));
         //check for last viral load recorded
         CalculationResultMap viralLoadLast = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         //check for last ldl
@@ -75,14 +78,14 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         CalculationResultMap viralLoadList = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         //check for non detectables
         CalculationResultMap ldlViralLoad = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
-        //find for prgnant females
 
         CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
 
         //get the initial art start date
         CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
-
+        CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:cohort) {
+            OrderService orderService = Context.getOrderService();
             boolean needsViralLoadTest = false;
             Obs lastViralLoadObs = EmrCalculationUtils.obsResultForPatient(viralLoadLast, ptId);
             Obs lastLdlObs = EmrCalculationUtils.obsResultForPatient(ldlLast, ptId);
@@ -94,7 +97,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             //find pregnancy obs
             Obs pregnantStatus = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
             // Newly initiated and more than 3 months without ldl,vl or orders
-            if(inHivProgram.contains(ptId) && onArt.contains(ptId)){
+            if(inHivProgram.contains(ptId) && onArt.contains(ptId) && !pendingVlResults.contains(ptId)){
                 if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 183)) {
                     needsViralLoadTest = true;
                 }
@@ -155,7 +158,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                         needsViralLoadTest = false;
                     }
                 }
-
 
             }
             ret.put(ptId, new BooleanResult(needsViralLoadTest, this));
