@@ -14,15 +14,14 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>kenyaemr</artifactId>
-		<version>17.0.0</version>
+		<version>17.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>kenyaemr-api</artifactId>
-    <version>17.0.0</version>
+    <version>17.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module API</name>
 	<description>API project for KenyaEMR Module</description>
-
 	<build>
 		<pluginManagement>
 			<plugins>
