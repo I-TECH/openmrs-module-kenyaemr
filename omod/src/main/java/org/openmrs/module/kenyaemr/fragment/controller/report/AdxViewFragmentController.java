@@ -66,6 +66,7 @@ import java.util.List;
 public class AdxViewFragmentController {
 
     private AdministrationService administrationService;
+    private final Integer MOH_731_ID = 1;
     protected final Log log = LogFactory.getLog(getClass());
 
     private LocationService locationService;
@@ -110,6 +111,7 @@ public class AdxViewFragmentController {
 
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
+        Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
         administrationService = Context.getAdministrationService();
 		locationService = Context.getLocationService();
 
@@ -164,6 +166,7 @@ public class AdxViewFragmentController {
             }
             w.append("</group>\n");
         }
+
         w.append("</adx>\n");
         //w.flush();
         return w.toString();
@@ -173,11 +176,11 @@ public class AdxViewFragmentController {
                                           @SpringBean ReportService reportService) throws ParserConfigurationException, IOException, TransformerException {
 
         ReportData reportData = reportService.loadReportData(reportRequest);
-
         administrationService = Context.getAdministrationService();
         locationService = Context.getLocationService();
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
+        Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
         String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
@@ -243,6 +246,9 @@ public class AdxViewFragmentController {
             }
             root.appendChild(eDataset);
         }
+
+        // add additional MOH 731 indicators for air
+
         document.appendChild(root);
 
         // create the xml file
@@ -272,6 +278,47 @@ public class AdxViewFragmentController {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/adx+xml");
+        con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
+        con.setDoOutput(true);
+
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+
+
+        out.writeBytes(outStream.toString());
+
+
+        out.flush();
+        out.close();
+
+        //Get Response
+        int responseCode = con.getResponseCode();
+        String httpResponse = null;
+
+        if (responseCode == HttpURLConnection.HTTP_OK) { //success
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            httpResponse = response.toString();
+
+        }
+        return SimpleObject.create("statusCode", String.valueOf(responseCode), "statusMsg", httpResponse);
+    }
+
+    private SimpleObject getDataFromFacilityReportingModule(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
+
+        //System.out.println("Posting to server at: " + serverAddress);
+        URL url = new URL("http://localhost:8080/openmrs/ws/rest/v1/facilityreporting/getreportdata");
+        String params = "{\"REPORTID\":\"1\",\"STARTDATE\":\"2019-01-02\",\"ENDDATE\":\"2019-01-31\",\"ADXORGUNIT\":\"10657\",\"ADXREPORTINGPERIOD\":\"2018-01-01/P1M\"}";
+
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Content-Length", Integer.toString(outStream.size()));
         con.setDoOutput(true);
 
@@ -367,4 +414,5 @@ public class AdxViewFragmentController {
        }
         return SimpleObject.create("statusMgs", "Server address saved successfully");
     }
+
 }

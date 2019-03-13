@@ -49,12 +49,12 @@ public class PersonAddressCalculation extends AbstractPatientCalculation {
 			List<String> addresses = new ArrayList<String>();
 
 			// get village
-			if (personAddress.getCityVillage() != null) {
+			if (personAddress !=null && personAddress.getCityVillage() != null) {
 				addresses.add(patient.getPersonAddress().getCityVillage());
 			}
 
 			// get landmark
-			if (personAddress.getAddress2() != null) {
+			if (personAddress !=null && personAddress.getAddress2() != null) {
 				addresses.add(patient.getPersonAddress().getAddress2());
 			}
 

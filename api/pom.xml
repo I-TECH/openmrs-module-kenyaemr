@@ -22,7 +22,6 @@
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module API</name>
 	<description>API project for KenyaEMR Module</description>
-
 	<build>
 		<pluginManagement>
 			<plugins>
