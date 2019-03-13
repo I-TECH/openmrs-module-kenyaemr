@@ -165,7 +165,7 @@
 
        //Maternal history prepopulation
         if(DATE_OF_DELIVERY !=""){
-            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD/MMM/YYYY').format('DD-MMM-YYYY');
             getField('delivery-date.value').val(deliveryDateFormatted);
         }else{
             getField('delivery-date.value').val("");

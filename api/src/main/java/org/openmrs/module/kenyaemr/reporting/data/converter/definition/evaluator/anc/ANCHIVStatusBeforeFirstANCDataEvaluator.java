@@ -36,7 +36,7 @@ public class ANCHIVStatusBeforeFirstANCDataEvaluator implements EncounterDataEva
 
         String qry = "select\n" +
                 "   e.encounter_id,\n" +
-                "  (case e.hiv_status when 703 then \"Known positive\" else \"Uknown\" end) as hiv_status\n" +
+                "  (case e.hiv_status when 703 then \"Known positive\" else \"Unknown\" end) as hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "GROUP BY e.encounter_id;";
 
