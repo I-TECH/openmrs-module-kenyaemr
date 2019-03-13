@@ -247,11 +247,11 @@ public class DashBoardCohorts {
      * @param context optional (used to return a cached value if possible)
      * @return
      */
-    public static EvaluatedCohort htsTotalTested(EvaluationContext context) {
+    public static EvaluatedCohort htsTotalTestedFamily(EvaluationContext context) {
         try {
             return getService().evaluate(new HTSClientsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating total HTS tested", e);
+            throw new IllegalStateException("Error evaluating total HTS family contacts tested", e);
         }
     }
 
@@ -259,11 +259,93 @@ public class DashBoardCohorts {
      * @param context optional (used to return a cached value if possible)
      * @return
      */
-    public static EvaluatedCohort htsTotalPositive(EvaluationContext context) {
+    public static EvaluatedCohort htsTotalTestedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS IDU contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status Partner contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status IDU contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS Partners contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositivePartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive Partner contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveFamily(EvaluationContext context) {
         try {
             return getService().evaluate(new HTSPositiveResultsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating HTS positive Results", e);
+            throw new IllegalStateException("Error evaluating HTS HIV positive family contacts", e);
         }
     }
 
@@ -271,11 +353,35 @@ public class DashBoardCohorts {
      * @param context optional (used to return a cached value if possible)
      * @return
      */
-    public static EvaluatedCohort htsTotalLinked(EvaluationContext context) {
+    public static EvaluatedCohort htsTotalLinkedFamily(EvaluationContext context) {
         try {
             return getService().evaluate(new HTSLinkedClientsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating HTS linked clients", e);
+            throw new IllegalStateException("Error evaluating HTS linked family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedPartners(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedClientsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked Partner contacts", e);
         }
     }
     private static CohortDefinitionService getService() {

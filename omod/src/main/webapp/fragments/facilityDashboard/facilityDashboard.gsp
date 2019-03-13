@@ -341,6 +341,13 @@
                                             <td>0</td>
                                             <td>0</td>
                                         </tr>
+                                        <tr>
+                                            <td><b>Injectable Drug User</b></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
                                     </table>
                             </div>
                         </div>
