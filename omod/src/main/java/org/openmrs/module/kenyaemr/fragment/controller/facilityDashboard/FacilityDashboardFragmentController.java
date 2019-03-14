@@ -37,7 +37,7 @@ public class FacilityDashboardFragmentController {
 	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-		Integer allPatients = 0,  patientsOnArt = 0,
+		Integer htsTested = 0,htsPositive = 0, htsLinked = 0, allPatients = 0,  patientsOnArt = 0,
 				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
 				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
@@ -99,6 +99,15 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> newEnrollmentsInHiv = DashBoardCohorts.newlyEnrolledInHiv(evaluationContext).getMemberIds();
 		newlyEnrolledInHiv = newEnrollmentsInHiv != null? newEnrollmentsInHiv.size(): 0;
 
+		Set<Integer> htsTotalTested = DashBoardCohorts.htsTotalTested(evaluationContext).getMemberIds();
+		htsTested = htsTotalTested != null? htsTotalTested.size(): 0;
+
+		Set<Integer> htsTotalPositive = DashBoardCohorts.htsTotalPositive(evaluationContext).getMemberIds();
+		htsPositive = htsTotalPositive != null? htsTotalPositive.size(): 0;
+
+		Set<Integer> htsTotalLinked = DashBoardCohorts.htsTotalLinked(evaluationContext).getMemberIds();
+		htsLinked = htsTotalLinked != null? htsTotalLinked.size(): 0;
+
 		Set<Integer> htsTotalTestedFamily = DashBoardCohorts.htsTotalTestedFamily(evaluationContext).getMemberIds();
 		htsTestedFamily = htsTotalTestedFamily != null? htsTotalTestedFamily.size(): 0;
 
@@ -148,12 +157,15 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("patientsSeen", patientsSeen);
 		model.addAttribute("checkedIn", checkedIn);
 		model.addAttribute("unscheduled", unscheduledVisits);
+		model.addAttribute("htsTested", htsTested);
+		model.addAttribute("htsPositive", htsPositive);
+		model.addAttribute("htsLinked", htsLinked);
 		model.addAttribute("htsTestedFamily", htsTestedFamily);
 		model.addAttribute("htsPositiveFamily", htsPositiveFamily);
 		model.addAttribute("htsUnknownStatusFamily", htsUnknownStatusFamily);
 		model.addAttribute("htsLinkedFamily", htsLinkedFamily);
 		model.addAttribute("htsTestedPartners", htsTestedPartners);
-		model.addAttribute("htsPositivePartners", htsPositivePartner);
+		model.addAttribute("htsPositivePartner", htsPositivePartner);
 		model.addAttribute("htsUnknownStatusPartner", htsUnknownStatusPartner);
 		model.addAttribute("htsLinkedPartner", htsLinkedPartner);
 		model.addAttribute("htsTestedIDU", htsTestedIDU);

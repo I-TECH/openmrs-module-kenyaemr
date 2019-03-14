@@ -320,33 +320,27 @@
                                             <th>Total Unknown</th>
                                             <th>Total Enrolled</th>
                                         </tr>
+
                                         <tr>
-                                            <td><b>Total Contacts</b></td>
-                                            <td>${htsTested}</td>
-                                            <td>${htsPositive}</td>
-                                            <td>0</td>
-                                            <td>${htsLinked}</td>
+                                            <td><b>Family Member(s)</b></td>
+                                            <td>${htsTestedFamily}</td>
+                                            <td>${htsPositiveFamily}</td>
+                                            <td>${htsUnknownStatusFamily}</td>
+                                            <td>${htsLinkedFamily}</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Family Members</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td><b>Sexual Partner(s)</b></td>
+                                            <td>${htsTestedPartners}</td>
+                                            <td>${htsPositivePartner}</td>
+                                            <td>${htsUnknownStatusPartner}</td>
+                                            <td>${htsLinkedPartner}</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Sexual Partner</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Injectable Drug User</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td><b>Injectable Drug User(s)</b></td>
+                                            <td>${htsTestedIDU}</td>
+                                            <td>${htsPositiveIDU}</td>
+                                            <td>${htsUnknownStatusIDU}</td>
+                                            <td>${htsLinkedIDU}</td>
                                         </tr>
                                     </table>
                             </div>
