@@ -42,7 +42,7 @@ public class HTSConfirmationRegisterCohortDefinitionEvaluator implements Encount
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test where test_type = 2 and voided = 0 AND date(visit_date) BETWEEN date(:startDate) AND date(:endDate); ";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test t inner join person p on p.person_id=t.patient_id and p.voided=0 where t.test_type = 2 and t.voided = 0 and date(t.visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
