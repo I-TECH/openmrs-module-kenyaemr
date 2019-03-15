@@ -12,20 +12,7 @@ package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsPatientsSeenCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsUnscheduledCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnCareCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLNewHivEnrollmentCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLNewOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithVLInLast12MonthsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedClientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSPositiveResultsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.*;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -242,7 +229,6 @@ public class DashBoardCohorts {
             throw new IllegalStateException("Error evaluating patients newly enrolled in Hiv", e);
         }
     }
-
     /**
      * @param context optional (used to return a cached value if possible)
      * @return
@@ -276,6 +262,148 @@ public class DashBoardCohorts {
             return getService().evaluate(new HTSLinkedClientsCohortDefinition(), context);
         } catch (EvaluationException e) {
             throw new IllegalStateException("Error evaluating HTS linked clients", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSFamilyContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS family contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSIDUContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS IDU contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSFamilyContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPartnerContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status Partner contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSIDUContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status IDU contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPartnerContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS Partners contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositivePartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositivePartnerContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive Partner contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositiveIDUContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositiveFamilyContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS HIV positive family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedFamilyContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedIDUContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedPartners(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedPartnerContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked Partner contacts", e);
         }
     }
     private static CohortDefinitionService getService() {
