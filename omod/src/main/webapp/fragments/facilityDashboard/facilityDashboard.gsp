@@ -195,6 +195,98 @@
         });
     });
 
+    jQuery(function () {
+        jQuery('#hts_contacts_tracker').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Patient Contacts'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+
+            series: [{
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [{
+
+                    name: 'Family contacts tested',
+                    y:${htsTestedFamily},
+
+                }, {
+                    name: 'HIV+ family contacts',
+                    y: ${htsPositiveFamily},
+
+                }, {
+                    name: 'Family contacts unknown status',
+                    y: ${htsUnknownStatusFamily},
+
+                }, {
+                    name: 'Family contacts linked',
+                    y: ${htsLinkedFamily},
+                },{
+                    name: 'Partners tested',
+                    y:${htsTestedPartners},
+
+                }, {
+                    name: 'HIV+ partners',
+                    y: ${htsPositivePartner},
+
+                }, {
+                    name: 'Partners Unknown status',
+                    y: ${htsUnknownStatusPartner},
+
+                }, {
+                    name: 'Partners linked',
+                    y: ${htsLinkedPartner},
+                },{
+                    name: 'IDU tested',
+                    y:${htsTestedIDU},
+
+                }, {
+                    name: 'IDU HIV+',
+                    y: ${htsPositiveIDU},
+
+                }, {
+                    name: 'IDU Unknown status',
+                    y: ${htsUnknownStatusIDU},
+
+                }, {
+                    name: 'IDU linked',
+                    y: ${htsLinkedIDU}
+
+                }]
+            }],
+        });
+    });
 </script>
 
 <div class="ke-page-content">
@@ -320,30 +412,32 @@
                                             <th>Total Unknown</th>
                                             <th>Total Enrolled</th>
                                         </tr>
+
                                         <tr>
-                                            <td><b>Total Contacts</b></td>
-                                            <td>${htsTested}</td>
-                                            <td>${htsPositive}</td>
-                                            <td>0</td>
-                                            <td>${htsLinked}</td>
+                                            <td><b>Family Member(s)</b></td>
+                                            <td>${htsTestedFamily}</td>
+                                            <td>${htsPositiveFamily}</td>
+                                            <td>${htsUnknownStatusFamily}</td>
+                                            <td>${htsLinkedFamily}</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Family Members</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td><b>Sexual Partner(s)</b></td>
+                                            <td>${htsTestedPartners}</td>
+                                            <td>${htsPositivePartner}</td>
+                                            <td>${htsUnknownStatusPartner}</td>
+                                            <td>${htsLinkedPartner}</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Sexual Partner</b></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <td><b>Injectable Drug User(s)</b></td>
+                                            <td>${htsTestedIDU}</td>
+                                            <td>${htsPositiveIDU}</td>
+                                            <td>${htsUnknownStatusIDU}</td>
+                                            <td>${htsLinkedIDU}</td>
                                         </tr>
                                     </table>
                             </div>
                         </div>
+                        <div id="hts_contacts_tracker" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>

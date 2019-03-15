@@ -37,11 +37,13 @@ public class FacilityDashboardFragmentController {
 	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-		Integer allPatients = 0,  patientsOnArt = 0,
+		Integer htsTested = 0,htsPositive = 0, htsLinked = 0, allPatients = 0,  patientsOnArt = 0,
 				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
 				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
-				htsTested =0, htsPositive = 0, htsLinked = 0;
+				htsTestedFamily =0,htsTestedPartners =0,htsTestedIDU =0, htsPositiveFamily = 0,htsPositivePartner = 0,
+				htsPositiveIDU = 0, htsUnknownStatusFamily = 0,htsUnknownStatusPartner = 0, htsUnknownStatusIDU = 0,htsLinkedFamily = 0,
+				htsLinkedPartner = 0, htsLinkedIDU = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -106,6 +108,42 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> htsTotalLinked = DashBoardCohorts.htsTotalLinked(evaluationContext).getMemberIds();
 		htsLinked = htsTotalLinked != null? htsTotalLinked.size(): 0;
 
+		Set<Integer> htsTotalTestedFamily = DashBoardCohorts.htsTotalTestedFamily(evaluationContext).getMemberIds();
+		htsTestedFamily = htsTotalTestedFamily != null? htsTotalTestedFamily.size(): 0;
+
+		Set<Integer> htsTotalPositiveFamily = DashBoardCohorts.htsTotalPositiveFamily(evaluationContext).getMemberIds();
+		htsPositiveFamily = htsTotalPositiveFamily != null? htsTotalPositiveFamily.size(): 0;
+
+		Set<Integer> htsUnknownStatusFamilyContact = DashBoardCohorts.htsUnknownStatusFamily(evaluationContext).getMemberIds();
+		htsUnknownStatusFamily = htsUnknownStatusFamilyContact != null? htsUnknownStatusFamilyContact.size(): 0;
+
+		Set<Integer> htsTotalLinkedFamily = DashBoardCohorts.htsTotalLinkedFamily(evaluationContext).getMemberIds();
+		htsLinkedFamily = htsTotalLinkedFamily != null? htsTotalLinkedFamily.size(): 0;
+
+		Set<Integer> htsTotalTestedPartners = DashBoardCohorts.htsTotalTestedPartner(evaluationContext).getMemberIds();
+		htsTestedPartners = htsTotalTestedPartners != null? htsTotalTestedPartners.size(): 0;
+
+		Set<Integer> htsPositivePartners = DashBoardCohorts.htsTotalPositivePartner(evaluationContext).getMemberIds();
+		htsPositivePartner = htsPositivePartners != null? htsPositivePartners.size(): 0;
+
+		Set<Integer> htsUnknownStatusPartnerContact = DashBoardCohorts.htsUnknownStatusPartner(evaluationContext).getMemberIds();
+		htsUnknownStatusPartner = htsUnknownStatusPartnerContact != null? htsUnknownStatusPartnerContact.size(): 0;
+
+		Set<Integer> htsTotalLinkedPartners = DashBoardCohorts.htsTotalLinkedPartners(evaluationContext).getMemberIds();
+		htsLinkedPartner = htsTotalLinkedPartners != null? htsTotalLinkedPartners.size(): 0;
+
+		Set<Integer> htsTestedIDUs = DashBoardCohorts.htsTotalTestedIDU(evaluationContext).getMemberIds();
+		htsTestedIDU = htsTestedIDUs != null? htsTestedIDUs.size(): 0;
+
+		Set<Integer> htsPositiveIDUs = DashBoardCohorts.htsTotalPositiveIDU(evaluationContext).getMemberIds();
+		htsPositiveIDU = htsPositiveIDUs != null? htsPositiveIDUs.size(): 0;
+
+		Set<Integer> htsUnknownStatusIDUs = DashBoardCohorts.htsUnknownStatusIDU(evaluationContext).getMemberIds();
+		htsUnknownStatusIDU = htsUnknownStatusIDUs != null? htsUnknownStatusIDUs.size(): 0;
+
+		Set<Integer> htsLinkedIDUs = DashBoardCohorts.htsTotalLinkedIDU(evaluationContext).getMemberIds();
+		htsLinkedIDU = htsLinkedIDUs != null? htsLinkedIDUs.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -122,6 +160,18 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("htsTested", htsTested);
 		model.addAttribute("htsPositive", htsPositive);
 		model.addAttribute("htsLinked", htsLinked);
+		model.addAttribute("htsTestedFamily", htsTestedFamily);
+		model.addAttribute("htsPositiveFamily", htsPositiveFamily);
+		model.addAttribute("htsUnknownStatusFamily", htsUnknownStatusFamily);
+		model.addAttribute("htsLinkedFamily", htsLinkedFamily);
+		model.addAttribute("htsTestedPartners", htsTestedPartners);
+		model.addAttribute("htsPositivePartner", htsPositivePartner);
+		model.addAttribute("htsUnknownStatusPartner", htsUnknownStatusPartner);
+		model.addAttribute("htsLinkedPartner", htsLinkedPartner);
+		model.addAttribute("htsTestedIDU", htsTestedIDU);
+		model.addAttribute("htsPositiveIDU", htsPositiveIDU);
+		model.addAttribute("htsUnknownStatusIDU", htsUnknownStatusIDU);
+		model.addAttribute("htsLinkedIDU", htsLinkedIDU);
 
 		return null;
 	}

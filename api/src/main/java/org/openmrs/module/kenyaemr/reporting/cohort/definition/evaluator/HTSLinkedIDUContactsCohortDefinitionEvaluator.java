@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedClientsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedIDUContactsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -23,14 +23,15 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for Current on ART
+ * Evaluator for IDU contacts linked to care
  */
-@Handler(supports = {HTSLinkedClientsCohortDefinition.class})
-public class HTSClientsLinkedEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {HTSLinkedIDUContactsCohortDefinition.class})
+public class HTSLinkedIDUContactsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -39,20 +40,23 @@ public class HTSClientsLinkedEvaluator implements CohortDefinitionEvaluator {
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		HTSLinkedClientsCohortDefinition definition = (HTSLinkedClientsCohortDefinition) cohortDefinition;
+		HTSLinkedIDUContactsCohortDefinition definition = (HTSLinkedIDUContactsCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
 
 		Cohort newCohort = new Cohort();
 
-		String qry = "SELECT l.patient_id from kenyaemr_etl.etl_hts_referral_and_linkage l " +
-				"inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id inner join person p on p.person_id=l.patient_id and p.voided=0 where l.voided=0";
-
+		String qry="select id from (select c.id\n" +
+				"                from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+				"                                                            inner join kenyaemr_etl.etl_hts_referral_and_linkage l on l.patient_id=c.patient_id and l.voided=0 \n" +
+				"                where t.voided=0 and c.relationship_type =157351\n" +
+				"                group by c.id ) t;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
-
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
