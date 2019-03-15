@@ -14,6 +14,7 @@ import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
@@ -22,6 +23,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinit
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -30,6 +32,7 @@ import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientData
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -42,35 +45,8 @@ import java.util.List;
 
 @Component
 @Builds({"kenyaemr.mchcs.report.heiRegister"})
-public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
+public class HEIRegisterReportBuilder extends AbstractReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
-
-	@Override
-	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		return allPatientsCohort();
-	}
-
-    protected Mapped<CohortDefinition> allPatientsCohort() {
-        CohortDefinition cd = new HEIRegisterCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("HEI All Patients");
-        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
-    }
-
-    @Override
-    protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
-
-        PatientDataSetDefinition allPatients = heiDataSetDefinition();
-        allPatients.addRowFilter(allPatientsCohort());
-		//allPatients.addRowFilter(buildCohort(descriptor));
-        DataSetDefinition allPatientsDSD = allPatients;
-
-
-        return Arrays.asList(
-                ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
-        );
-    }
 
 	@Override
 	protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
@@ -81,11 +57,26 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 		);
 	}
 
-	protected PatientDataSetDefinition heiDataSetDefinition() {
+	@Override
+	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
+		return Arrays.asList(
+				ReportUtils.map(heiDataSetDefinition(), "startDate=${startDate},endDate=${endDate}")
+		);
+	}
 
-		PatientDataSetDefinition dsd = new PatientDataSetDefinition("HEIRegister");
+
+
+	protected DataSetDefinition heiDataSetDefinition() {
+
+		EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
+		dsd.setName("heiRegister");
+		dsd.setDescription("Visit information");
+		dsd.addSortCriteria("Visit Date", SortCriteria.SortDirection.ASC);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+		String paramMapping = "startDate=${startDate},endDate=${endDate}";
+
 
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");

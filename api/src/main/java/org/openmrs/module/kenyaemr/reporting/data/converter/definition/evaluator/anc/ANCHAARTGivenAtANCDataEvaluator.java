@@ -35,12 +35,13 @@ public class ANCHAARTGivenAtANCDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  e.encounter_id,\n" +
-                "  (case d.date_started when \"\" then \"No\" else \"Yes\" end) as on_arv_before_first_anc\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id= e.patient_id\n" +
-                "  inner join kenyaemr_etl.etl_mchs_delivery ld on d.patient_id= ld.patient_id\n" +
-                "where d.program = 'HIV' and d.date_started >= e.visit_date and d.date_started <= ld.visit_date;";
+                "  v.encounter_id,\n" +
+                "(case d.date_started when \"\" then \"No\" else \"Yes\" end) as on_arv_at_anc\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id= v.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
+                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
