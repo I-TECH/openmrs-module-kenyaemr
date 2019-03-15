@@ -46,8 +46,10 @@ public class HTSClientsLinkedEvaluator implements CohortDefinitionEvaluator {
 
 		Cohort newCohort = new Cohort();
 
-		String qry = "SELECT l.patient_id from kenyaemr_etl.etl_hts_referral_and_linkage l " +
-				"inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id inner join person p on p.person_id=l.patient_id and p.voided=0 where l.voided=0";
+		String qry = "SELECT l.patient_id from kenyaemr_etl.etl_hts_referral_and_linkage l \n" +
+				"inner join patient pt on pt.patient_id=l.patient_id and pt.voided=0 inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type=1 and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
+				"inner join kenyaemr_etl.etl_hts_test c on c.patient_id=l.patient_id and c.test_type=2 and c.final_test_result='Positive' and c.voided=0 and c.visit_date <=l.visit_date inner join person p on p.person_id=l.patient_id and p.voided=0 where l.voided=0\n" +
+				"order by l.patient_id";
 
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
