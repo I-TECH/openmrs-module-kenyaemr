@@ -2662,12 +2662,13 @@ public class DatimCohortLibrary {
     public CohortDefinition hivPositiveContact() {
 
         String sqlQuery = "select patient_id from (select c.patient_id\n" +
-                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "                          and (t.final_test_result = \"Positive\" and t.visit_date > c.date_created)\n" +
+                "                          and (t.final_test_result = \"Positive\" and t.visit_date >= c.date_created)\n" +
                 "                          and t.patient_given_result ='Yes'\n" +
+                "                          and t.test_type = 2\n" +
                 "                          and t.voided=0\n" +
-                "                          and date(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
+                "                          and date(c.date_created) between date_sub( date(:endDate), INTERVAL 3 MONTH )and date(:endDate)\n" +
                 "                        group by c.id ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_POSITIVE");
@@ -2685,10 +2686,11 @@ public class DatimCohortLibrary {
         String sqlQuery = "select patient_id from (select c.patient_id\n" +
                 "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "                          and (t.final_test_result = \"Negative\" and t.visit_date > c.date_created)\n" +
+                "                          and (t.final_test_result = \"Positive\" and t.visit_date >= c.date_created)\n" +
                 "                          and t.patient_given_result ='Yes'\n" +
+                "                          and t.test_type = 2\n" +
                 "                          and t.voided=0\n" +
-                "                          and date(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
+                "                          and date(c.date_created) between date_sub( date(:endDate), INTERVAL 3 MONTH )and date(:endDate)\n" +
                 "                        group by c.id ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_NEGATIVE");
@@ -2702,13 +2704,13 @@ public class DatimCohortLibrary {
     //Known HIV Positive contacts
     public CohortDefinition knownPositiveContact() {
 
-        String sqlQuery = "select patient_id from (select c.patient_id\n" +
-                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-                "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "                          and (c.baseline_hiv_status = \"Positive\" and t.visit_date < c.date_created)  or (t.visit_date < c.date_created and t.final_test_result =\"Positive\")\n" +
-                "                          and t.voided=0\n" +
-                "                          and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
-                "                        group by c.id ) t;";
+        String sqlQuery = "select t.patient_id from (select c.patient_id\n" +
+                "                  from kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                  where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617) and\n" +
+                "                  (t.visit_date < c.date_created and t.final_test_result =\"Positive\"\n" +
+                "                  and t.test_type = 2 and t.patient_given_result = \"Yes\"  and t.voided=0) #or  (c.baseline_hiv_status = \"Positive\")\n" +
+                "                  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
+                "                  group by c.id ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_KNOWN_POSITIVE");
         cd.setQuery(sqlQuery);

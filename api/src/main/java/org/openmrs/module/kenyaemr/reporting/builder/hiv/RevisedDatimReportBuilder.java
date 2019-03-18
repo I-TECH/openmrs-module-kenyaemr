@@ -365,8 +365,20 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //TX_PVLS Denominator viral load result last 12 months with Undocumented test result
         //cohortDsd.addColumn("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL", "On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
 
-        //HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
-        //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        //HTS_INDEX_OFFERED Index services
+        //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+
+        //HTS_INDEX_ACCEPTED Index services
+        //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+
+        //HIV+ HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
+        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_POSITIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+
+        //HIV- HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
+        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_NEGATIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+
+        //KNOWN +VE HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
+        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_KNOWN_POSITIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //HTS_INDEX New Positives
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
