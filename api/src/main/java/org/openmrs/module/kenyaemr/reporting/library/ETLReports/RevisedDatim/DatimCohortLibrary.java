@@ -1128,12 +1128,12 @@ public class DatimCohortLibrary {
     /*HIV Infected HEI Cohort*/
     public CohortDefinition hivInfectedHEICohort() {
 
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_hei_follow_up_visit v on v.patient_id = e.patient_id\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = e.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=18 and de.dead =0\n" +
-                "where  v.final_antibody_result = 703 and e.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by v.patient_id;";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e inner join kenyaemr_etl.etl_patient_demographics pd\n" +
+                "                                on e.patient_id = pd.patient_id where timestampdiff(month ,pd.DOB, e.visit_date)>= 0 and timestampdiff(month ,pd.DOB, e.visit_date)<=18\n" +
+                "                                and pd.dead = 0 and timestampdiff(month,pd.dob,:endDate) =24\n" +
+                "                                and substr(pd.dob,6,2)= substr(:endDate,6,2)\n" +
+                "                                and e.hiv_status_at_exit = \"Positive\"\n" +
+                "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_FO_INFECTED_HEI");
@@ -1148,12 +1148,12 @@ public class DatimCohortLibrary {
     /*Uninfected HEI Cohort*/
     public CohortDefinition hivUninfectedHEICohort() {
 
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_hei_follow_up_visit v on v.patient_id = e.patient_id\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = e.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=18 and de.dead =0\n" +
-                "where  v.final_antibody_result = 664 and e.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by v.patient_id;";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e inner join kenyaemr_etl.etl_patient_demographics pd\n" +
+                "                      on e.patient_id = pd.patient_id where timestampdiff(month ,pd.DOB, e.visit_date)>= 0 and timestampdiff(month ,pd.DOB, e.visit_date)<=18\n" +
+                "                      and pd.dead = 0 and timestampdiff(month,pd.dob,:endDate) =24\n" +
+                "                      and substr(pd.dob,6,2)= substr(:endDate,6,2)\n" +
+                "                      and e.hiv_status_at_exit =\"Negative\"\n" +
+                "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_FO_UNINFECTED_HEI");
@@ -1167,12 +1167,12 @@ public class DatimCohortLibrary {
 
     /*Unknown HIV Status HEI Cohort*/
     public CohortDefinition unknownHIVStatusHEICohort() {
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_hei_follow_up_visit v on v.patient_id = e.patient_id\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = e.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=18 and de.dead =0\n" +
-                "where  v.final_antibody_result = 1067 and e.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by v.patient_id;";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e inner join kenyaemr_etl.etl_patient_demographics pd\n" +
+                "                                    on e.patient_id = pd.patient_id where timestampdiff(month ,pd.DOB, e.visit_date)>= 0 and timestampdiff(month ,pd.DOB, e.visit_date)<=18\n" +
+                "                                                                      and pd.dead = 0 and timestampdiff(month,pd.dob,:endDate) =24\n" +
+                "                                                                      and substr(pd.dob,6,2)= substr(:endDate,6,2)\n" +
+                "                                                                      and e.hiv_status_at_exit is NULL or e.hiv_status_at_exit not in (\"Positive\",\"Negative\")\n" +
+                "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_FO_HEI_UNKNOWN_HIV_STATUS");
         cd.setQuery(sqlQuery);
@@ -1186,12 +1186,13 @@ public class DatimCohortLibrary {
     /*HEI died with Unknown HIV Status*/
     public CohortDefinition heiDiedWithUnknownStatus() {
 
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_hei_follow_up_visit v on v.patient_id = e.patient_id\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = e.patient_id\n" +
-                "and timestampdiff(month,de.dob,:startDate) <=18 and de.dead =1\n" +
-                "where  v.final_antibody_result = 1067 and e.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by v.patient_id;";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e inner join kenyaemr_etl.etl_patient_demographics pd\n" +
+                "                       on e.patient_id = pd.patient_id where timestampdiff(month ,pd.DOB, e.visit_date)>= 0 and timestampdiff(month ,pd.DOB, e.visit_date)<=18\n" +
+                "                       and timestampdiff(month,pd.dob,:endDate) =24\n" +
+                "                       and substr(pd.dob,6,2)= substr(:endDate,6,2)\n" +
+                "                       and (e.exit_reason = 160034 or pd.dead = 1)\n" +
+                "                       and e.hiv_status_at_exit is NULL or e.hiv_status_at_exit not in (\"Positive\",\"Negative\")\n" +
+                "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN");
