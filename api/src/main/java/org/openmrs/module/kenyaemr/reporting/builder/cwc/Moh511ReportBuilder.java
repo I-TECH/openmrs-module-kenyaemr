@@ -15,14 +15,12 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAttributeCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
@@ -31,7 +29,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -55,7 +52,7 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 	@Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(moh510DataSetDefinition("cwcRegister"), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(moh511DataSetDefinition("cwcRegister"), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -68,11 +65,14 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 		);
 	}
 	
-	protected DataSetDefinition moh510DataSetDefinition(String datasetName) {
+	protected DataSetDefinition moh511DataSetDefinition(String datasetName) {
+
         EncounterDataSetDefinition dsd = new EncounterDataSetDefinition(datasetName);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        
+        String paramMapping = "startDate=${startDate},endDate=${endDate}";
+
+
         PatientIdentifierType cwcn = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(cwcn.getName(), cwcn), identifierFormatter);
@@ -105,7 +105,12 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Referrals to", new ObsForPersonDataDefinition("Referrals to", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REFERRED_TO),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         *///dsd.addColumn("Issued itn net", new ObsForPersonDataDefinition("Issued itn net", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         //dsd.addColumn("Hiv testing", new ObsForPersonDataDefinition("Hiv testing", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        
+
+        Moh510CohortDefinition cd = new Moh510CohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        dsd.addRowFilter(cd, paramMapping);
         return dsd;
     }
 

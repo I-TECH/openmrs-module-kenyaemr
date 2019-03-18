@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Evaluator for patients for HTS Register
+ * Evaluator for patients for MOH 511 Register
  */
 @Handler(supports = {Moh511CohortDefinition.class})
 public class Moh511CohortDefinitionEvaluator implements EncounterQueryEvaluator {
@@ -40,9 +40,9 @@ public class Moh511CohortDefinitionEvaluator implements EncounterQueryEvaluator 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "select i.encounter_id \n" +
-				"from kenyaemr_etl.etl_hei_immunization i inner join kenyaemr_etl.etl_hei_enrollment e on e.patient_id=i.patient_id\n" +
-				"where e.visit_date between date(:startDate) and (:endDate) ; ";
+		String qry = "select v.encounter_id \n" +
+				"from kenyaemr_etl.etl_hei_enrollment e inner join kenyaemr_etl.etl_hei_follow_up_visit v  on e.patient_id=v.patient_id\n" +
+				"where v.visit_date between date(:startDate) and (:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
