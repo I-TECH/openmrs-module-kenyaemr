@@ -87,6 +87,9 @@ public class IsPregnantCalculation extends AbstractPatientCalculation implements
 			if(encounter !=null && confinement != null && confinement.getValueDatetime().after(encounter.getEncounterDatetime())) {
 				result = false;
 			}
+			if(encounter !=null && confinement != null && confinement.getValueDatetime().before(encounter.getEncounterDatetime())) {
+				result = false;
+			}
 
 			ret.put(ptId, new BooleanResult(result, this));
 		}

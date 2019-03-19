@@ -111,8 +111,13 @@
 			display = calculateEdd(new Date(lmp));
             displayGes = calculateGestation(new Date(lmp))
 		}
-		$j('#calculated-edd').html(display);
-		$j('#calculated-gestation').html(displayGes);
+        $j('#calculated-edd').html(display);
+		if(displayGes &gt; 42){
+            $j('#calculated-gestation').html("Check encounter and LMP dates for correct gestation");
+		}else {
+            $j('#calculated-gestation').html(displayGes);
+        }
+
 	}
     //Ckeckbox to prepopulate default today as first anc visit date
     var defaultFirstAncDateChange = function () {
@@ -168,8 +173,8 @@
 	}
     function calculateGestation(lmp) {
         var today = new Date();
-
-        var timeDiff = Math.abs(lmp.getTime() - today.getTime());
+        var encounterDate = Date.parse(getValue('encounter-date.value'));
+        var timeDiff = Math.abs(lmp.getTime() - encounterDate);
         return Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
 
     }
@@ -394,8 +399,8 @@
 				<td>
 					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
 						 id="patient-hiv-status"
-						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="Known Positive,Unknown"/>
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Positive,Negative,Unknown"/>
 					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 				</td>
 				<td width="250">HIV Test Date:</td>

@@ -50,6 +50,7 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		//EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
+
 		String qry = "SELECT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
 				"    inner join kenyaemr_etl.etl_hei_enrollment he\n" +
 				"    on he.patient_id = hf.patient_id where he.visit_date <= hf.visit_date\n" +

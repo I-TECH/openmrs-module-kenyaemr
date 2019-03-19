@@ -35,9 +35,10 @@ public class ANCProphylaxisGivenDataEvaluator implements EncounterDataEvaluator 
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.patient_id,\n" +
-                "  (case v.prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE / TRIMETHOPRIM\" when 74250 then \"DAPSONE\" when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "  v.encounter_id,\n" +
+                "  (case prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE\" when 74250 then \"DAPSONE\" when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
