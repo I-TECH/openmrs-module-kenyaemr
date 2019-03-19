@@ -59,11 +59,19 @@
         var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
         var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
         var pAge = parseInt('<lookup expression="patient.age"/>');
-         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
-         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
-         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
-         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
-         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
+        var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+        var VL_RESULT = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
+        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
+        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
+        var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
+        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
+        var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
     //Start on jq onready
   jq(function() {
             jq('#person-present input').click(onPersonPresentChange);
@@ -332,19 +340,15 @@
             if(encDate == null) {
                 encDate = new Date();
             }
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? data.duration : 'Not started';
-                    jq('#calculated-duration-start-art').html(msg);
-                });
+         if(PATIENT_ON_ART =="true") {
+             jq('#current-regimen').html(REGIMEN_NAME);
+             jq('#current-regimen-time').html(REGIMEN_DURATION);
 
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
-                    jq('#calculated-duration-current-regimen').html(msg);
-                });
-
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+         }else{
+             jq('#current-regimen').html("None");
+             jq('#current-regimen-time').html("");
+         }
+      jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
                 .done(function(data) {
                     onPatientAgeUpdate(data.age);
                 });
@@ -1300,7 +1304,9 @@
                         <tr>
                             <td>Current ARV Regimen:</td>
                             <td> &#160;&#160;&#160;&#160;
-                            <span id="calculated-duration-current-regimen" class="value"></span>
+                                <span id="current-regimen" class="value"></span>
+                                &#160;&#160;&#160;&#160;
+                                Duration (in Months):  <span id="current-regimen-time" class="value"></span>
                             </td>
                         </tr>
                         <br />

@@ -138,8 +138,9 @@ public class EmrUtilsFragmentController {
 	/**
 	 * Checks whether provided identifier(s) is already assigned
 	 * @return simple object with statuses for the different identifiers
+	 * Uses Next appointments for HIV greencard Triage and HIV consultation
 	 */
-	public SimpleObject clientsBookedOnDate(@RequestParam(value = "appointmentDate") String tca) {
+	public SimpleObject clientsBookedForHivConsultationOnDate(@RequestParam(value = "appointmentDate") String tca) {
 
 		System.out.println("Date passed from browser: " + tca);
 		String appointmentQuery = "select count(patient_id) as bookings\n" +
@@ -162,6 +163,40 @@ public class EmrUtilsFragmentController {
 
 		return SimpleObject.create(
 			"bookingsOnDate", bookings
+		);
+
+
+
+	}
+	/**
+	 * Checks whether provided identifier(s) is already assigned
+	 * @return simple object with statuses for the different identifiers
+	 * Uses Next appointments for MCH consultation and CWC consulation
+	 *
+	 */
+	public SimpleObject clientsBookedForMchConsultationOnDate(@RequestParam(value = "appointmentDate") String tca) {
+
+		System.out.println("Date passed from browser: " + tca);
+		String appointmentQuery = "select count(patient_id) as bookings\n" +
+				"from (\n" +
+				"select\n" +
+				"e.patient_id\n" +
+				"from encounter e\n" +
+				"inner join\n" +
+				"(\n" +
+				"\tselect encounter_type_id, uuid, name from encounter_type where uuid in('c6d09e05-1f25-4164-8860-9f32c5a02df0','bcc6da85-72f2-4291-b206-789b8186a021')\n" +
+				") et on et.encounter_type_id=e.encounter_type\n" +
+				"inner join obs o on o.encounter_id=e.encounter_id and o.voided=0\n" +
+				"\tand o.concept_id in (5096) and date(o.value_datetime) = date('" + tca + "')\n" +
+				"where e.voided=0\n" +
+				"group by e.patient_id\n" +
+				")t;";
+
+
+		Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
+
+		return SimpleObject.create(
+				"bookingsOnDate", bookings
 		);
 
 

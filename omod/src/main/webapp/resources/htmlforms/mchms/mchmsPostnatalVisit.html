@@ -37,6 +37,8 @@
 	var ARV_CONCEPT_ID = 1148;
 	var HAART_CONCEPT_ID = 1149;
 	var NA_CONCEPT_ID = 1175;
+    var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
     var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
@@ -60,6 +62,9 @@
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
         onEncounterDateChange();
+        //Show number of clients already booked on tca date
+        jq('#showNumberBooked').hide();
+        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
         //On delivery outcome change
         jq('#single').show();
         jq('#twins').hide();
@@ -286,6 +291,7 @@
         }
     });
     //on ready end
+
     function onDeliveryOutcomeChange() {
         if (getValue('delivery-outcome.value') == 159913) {
             jq('#single').show();
@@ -476,6 +482,15 @@
             jq('#current-regimen').html("None");
         }
     }
+    // get count of patients booked on a date
+    function getPatientsBookedOnDate() {
+        var tca_date = getValue('returnVisitDate.value');
+        jq('#showNumberBooked').hide();
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+            jq('#showBookedResult').text(data.bookingsOnDate);
+            jq('#showNumberBooked').show();
+        });
+    }
     //Clear hidden sections
     clearHiddenSections = function(parentObj) {
         parentObj.find('input[type=radio]').each(function() {
@@ -491,6 +506,7 @@
             this.selectedIndex =0;
         });
     }
+
 	beforeSubmit.push(function () {
         var fundalHeight = getValue('fundal.value');
         var deliveryDate = getValue('delivery-date.value');
@@ -1316,6 +1332,11 @@
 							<span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
+				</table>
+				<table id="showNumberBooked" class="simple-table">
+					<tr>
+						<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+						<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
 				</table>
 			</fieldset>
 		</td>
