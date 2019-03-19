@@ -2637,6 +2637,229 @@ public class DatimCohortLibrary {
         return cd;
 
     }
+        /*HTS_INDEX_OFFERED Number of individuals who were offered index testing services */
+        public CohortDefinition offeredIndexServices() {
+
+            String sqlQuery = "select c.patient_related_to from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t\n" +
+                    "on c.patient_related_to = t.patient_id where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                    "and t.final_test_result = \"Positive\" and t.voided=0  and t.test_type = 2 and c.date_created\n" +
+                    "between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate) group by t.patient_id;";
+            SqlCohortDefinition cd = new SqlCohortDefinition();
+            cd.setName("HTS_INDEX_OFFERED");
+            cd.setQuery(sqlQuery);
+            cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+            cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+            cd.setDescription("Number of indexes offered Index Services");
+            return cd;
+
+        }
+
+    /*HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services */
+    public CohortDefinition acceptedIndexServices() {
+
+        String sqlQuery = "select c.patient_related_to from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t\n" +
+                "on c.patient_related_to = t.patient_id where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "and t.final_test_result = \"Positive\" and t.voided=0  and t.test_type = 2 and c.date_created\n" +
+                "between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate) group by t.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_ACCEPTED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of indexes accepted Index Services");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15 HIV+ male contacts under 15 years
+    public CohortDefinition positiveMaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "    and c.baseline_hiv_status = \"Positive\" and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR ,date(:endDate),c.birth_date) < 15 and c.date_created\n" +
+                "    between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts under 15 years and HIV+");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_POSITIVE_OVER15 HIV+ male contacts 15+ years
+    public CohortDefinition positiveMaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                        and c.baseline_hiv_status = \"Positive\" and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >= 15 and c.date_created\n" +
+                "                        between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_POSITIVE_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts over 15 years and HIV+");
+        return cd;
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_NEGATIVE_UNDER15 HIV Negative male contacts under 15 years
+    public CohortDefinition negativeMaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status = \"Negative\" and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR , date(:endDate), c.birth_date) < 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_NEGATIVE_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts under 15 years and HIV negative");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_NEGATIVE_OVER15 HIV Negative male contacts 15+ years
+    public CohortDefinition negativeMaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                        and c.baseline_hiv_status = \"Negative\" and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >= 15 and c.date_created\n" +
+                "                        between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_NEGATIVE_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts over 15 years and HIV negative");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_UNKNOWN_UNDER15 HIV Unknown status male contacts under 15 years
+    public CohortDefinition unknownStatusMaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status in (\"Unknown\",\"Exposed\") and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR , date(:endDate), c.birth_date) < 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_UNKNOWN_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts under 15 years with Unknown HIV status");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_MALE_UNKNOWN_OVER15 HIV Unknown status male contacts Over 15 years
+    public CohortDefinition unknownStatusMaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status in (\"Unknown\",\"Exposed\") and voided = 0 and c.sex = \"M\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >= 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_MALE_UNKNOWN_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Male Contacts over 15 years with Unknown HIV status");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15 HIV+ female contacts under 15 years
+    public CohortDefinition positiveFemaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status = \"Positive\" and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) < 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts under 15 years and HIV+");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_POSITIVE_OVER15 HIV+ female contacts 15+ years
+    public CohortDefinition positiveFemaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status = \"Positive\" and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >=15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_POSITIVE_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts over 15 years and HIV+");
+        return cd;
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_UNDER15 HIV Negative female contacts under 15 years
+    public CohortDefinition negativeFemaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status = \"Negative\" and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) < 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts under 15 years and HIV negative");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_OVER15 HIV Negative female contacts 15+ years
+    public CohortDefinition negativeFemaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status = \"Negative\" and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >=15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts over 15 years and HIV negative");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15 HIV Unknown status female contacts under 15 years
+    public CohortDefinition unknownStatusFemaleContactsUnder15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status in (\"Unknown\",\"Exposed\") and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) < 15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts under 15 years with Unknown HIV status");
+        return cd;
+
+    }
+
+    //HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15 HIV Unknown status female contacts 15+ years
+    public CohortDefinition unknownStatusFemaleContactsOver15() {
+
+        String sqlQuery = "select c.id from  kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                "                                                           and c.baseline_hiv_status in (\"Unknown\",\"Exposed\") and voided = 0 and c.sex = \"F\" and timestampdiff(YEAR , date(:endDate), c.birth_date) >=15 and c.date_created\n" +
+                "                                                                   between date_sub( date(:endDate), INTERVAL  3 MONTH ) and date(:endDate) group by c.id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Female Contacts over 15 years with Unknown HIV status");
+        return cd;
+
+    }
 
     /*HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results */
     public CohortDefinition contactIndexTesting() {
@@ -2662,7 +2885,7 @@ public class DatimCohortLibrary {
     public CohortDefinition hivPositiveContact() {
 
         String sqlQuery = "select patient_id from (select c.patient_id\n" +
-                "                        from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
                 "                          and (t.final_test_result = \"Positive\" and t.visit_date >= c.date_created)\n" +
                 "                          and t.patient_given_result ='Yes'\n" +
@@ -2686,7 +2909,7 @@ public class DatimCohortLibrary {
         String sqlQuery = "select patient_id from (select c.patient_id\n" +
                 "                        from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                        where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "                          and (t.final_test_result = \"Positive\" and t.visit_date >= c.date_created)\n" +
+                "                          and (t.final_test_result = \"Negative\" and t.visit_date >= c.date_created)\n" +
                 "                          and t.patient_given_result ='Yes'\n" +
                 "                          and t.test_type = 2\n" +
                 "                          and t.voided=0\n" +
@@ -2705,10 +2928,10 @@ public class DatimCohortLibrary {
     public CohortDefinition knownPositiveContact() {
 
         String sqlQuery = "select t.patient_id from (select c.patient_id\n" +
-                "                  from kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "                  from openmrs.kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                  where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617) and\n" +
                 "                  (t.visit_date < c.date_created and t.final_test_result =\"Positive\"\n" +
-                "                  and t.test_type = 2 and t.patient_given_result = \"Yes\"  and t.voided=0) #or  (c.baseline_hiv_status = \"Positive\")\n" +
+                "                  and t.test_type = 2 and t.patient_given_result = \"Yes\"  and t.voided=0) \n" +
                 "                  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
                 "                  group by c.id ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();

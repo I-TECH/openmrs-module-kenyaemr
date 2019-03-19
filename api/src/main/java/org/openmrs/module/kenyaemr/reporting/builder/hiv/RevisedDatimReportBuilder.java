@@ -366,20 +366,46 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //cohortDsd.addColumn("TX_PVLS_DENOMINATOR_UNDOCUMENTED_ALL", "On ART within last 12 Months and viral load Undocumented test result", ReportUtils.map(datimIndicators.totalARTWithUndocumentedVLLast12Months(), indParams), "");
 
         //HTS_INDEX_OFFERED Index services
-        //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Indexes offered Index testing services", ReportUtils.map(datimIndicators.offeredIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         //HTS_INDEX_ACCEPTED Index services
-        //EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Indexes who accepted Index testing services", ReportUtils.map(datimIndicators.acceptedIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
-        //HIV+ HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
-        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_POSITIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        //HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15 HIV+ male contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15", "Male Contacts under 15 years and HIV+", ReportUtils.map(datimIndicators.positiveMaleContactsUnder15(),indParams), "");
 
-        //HIV- HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
-        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_NEGATIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        //HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15 HIV+ male contacts over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_POSITIVE_OVER15", "Male Contacts over 15 years and HIV+", ReportUtils.map(datimIndicators.positiveMaleContactsOver15(),indParams), "");
 
-        //KNOWN +VE HTS_INDEX_CONTACTS_ELICITED Number of contacts elicited from index services
-        // EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_CONTACTS_KNOWN_POSITIVE", "Tested & received results using Index testing services", ReportUtils.map(datimIndicators.testedThroughIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+        //HTS_INDEX_CONTACTS_MALE_NEGATIVE_UNDER15 HIV Negative male contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_NEGATIVE_UNDER15", "Male Contacts under 15 years and HIV negative", ReportUtils.map(datimIndicators.negativeMaleContactsUnder15(),indParams), "");
 
+        //HTS_INDEX_CONTACTS_MALE_NEGATIVE_OVER15 HIV Negative male contacts over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_NEGATIVE_OVER15", "Male Contacts over 15 years and HIV negative", ReportUtils.map(datimIndicators.negativeMaleContactsOver15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_MALE_UNKNOWN_UNDER15 HIV Unknown status male contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_UNKNOWN_UNDER15", "Male Contacts under 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusMaleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_MALE_UNKNOWN_OVER15 HIV Unknown status male contacts Over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_UNKNOWN_OVER15", "Male Contacts over 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusMaleContactsOver15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15 HIV+ female contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15", "Female Contacts under 15 years and HIV+", ReportUtils.map(datimIndicators.positiveFemaleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15 HIV+ female contacts over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_POSITIVE_OVER15", "Female Contacts over 15 years and HIV+", ReportUtils.map(datimIndicators.positiveFemaleContactsOver15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_UNDER15 HIV Negative female contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_UNDER15", "Female Contacts under 15 years and HIV negative", ReportUtils.map(datimIndicators.negativeFemaleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_OVER15 HIV Negative female contacts over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_OVER15", "Female Contacts over 15 years and HIV negative", ReportUtils.map(datimIndicators.negativeFemaleContactsOver15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15 HIV Unknown status female contacts under 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15", "Female Contacts under 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusFemaleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15 HIV Unknown status female contacts Over 15 years
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15", "Female Contacts over 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusFemaleContactsOver15(),indParams), "");
         //HTS_INDEX New Positives
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
