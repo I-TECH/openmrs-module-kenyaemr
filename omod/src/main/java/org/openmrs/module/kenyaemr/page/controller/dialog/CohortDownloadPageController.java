@@ -151,7 +151,7 @@ public class CohortDownloadPageController {
 
             data.add(row.toArray());
         }
-        String filename =  "Cohort.csv";
+        String filename =  dataSetColumn !=null && dataSetColumn.getName() != null ? dataSetColumn.getName().replaceAll(" ", "_") + "_Cohort.csv" : "Cohort.csv";
         FileDownload fileDownload = new FileDownload(filename, "text/csv", csvMaker.createCsv(data, header));
         return fileDownload;
     }
