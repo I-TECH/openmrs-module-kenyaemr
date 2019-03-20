@@ -304,7 +304,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Number of stable patients'
+                    text: 'Number of stable patients currently in care'
                 }
 
             },
@@ -329,7 +329,13 @@
             series: [{
                 name: 'Statistics',
                 colorByPoint: true,
-                data: [{
+                data: [
+                    {
+                        name: 'Total Stable patients',
+                        y: ${stableOver4mtca+stableUnder4mtca},
+
+                    },
+                    {
 
                     name: 'Stable patients with under 4 months tca',
                     y:${stableUnder4mtca},
@@ -339,11 +345,7 @@
                     y: ${stableOver4mtca},
 
                 },
-                    {
-                        name: 'Total Stable patients',
-                        y: ${stableOver4mtca+stableUnder4mtca},
 
-                    },
                 ]
             }],
         });
@@ -561,7 +563,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker" style="min-width: 500px; height: 350px; margin: 0 auto"></div>
+                        <div id="differentiated_care_tracker" style="min-width: 600px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
