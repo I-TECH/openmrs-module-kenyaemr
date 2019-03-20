@@ -32,6 +32,9 @@
 </style>
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
+
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
         var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
@@ -73,6 +76,10 @@
                 jq("#explain-complications").hide();
                 getField('other-complications.value').val("");
             }
+            //Show number of clients already booked on tca date
+            jq('#showNumberBooked').hide();
+            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
             jq('#partner-tested select').change(onPartnerTestedChange);
@@ -386,6 +393,15 @@
                 getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
             }
             return true;
+        }
+        // get count of patients booked on a date
+        function getPatientsBookedOnDate() {
+            var tca_date = getValue('returnVisitDate.value');
+            jq('#showNumberBooked').hide();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+                jq('#showBookedResult').text(data.bookingsOnDate);
+                jq('#showNumberBooked').show();
+            });
         }
         beforeSubmit.push(function () {
             if (validateOtherFields()) {
@@ -1010,6 +1026,11 @@
 									<span style="color:red;"><strong>*</strong></span>
 								</td>
 							</tr>
+						</table>
+						<table id="showNumberBooked" class="simple-table">
+							<tr>
+								<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+								<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
 						</table>
 					</fieldset>
 				</td>

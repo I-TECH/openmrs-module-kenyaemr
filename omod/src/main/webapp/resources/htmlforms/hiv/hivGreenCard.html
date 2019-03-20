@@ -574,7 +574,7 @@ Green Card follow-up visit form
 function getPatientsBookedOnDate() {
     var tca_date = getValue('returnVisitDate.value');
     jq('#showNumberBooked').hide();
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedOnDate.action', { appointmentDate: tca_date }, function(data) {
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForHivConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
         jq('#showBookedResult').text(data.bookingsOnDate);
         jq('#showNumberBooked').show();
     });
@@ -3810,7 +3810,7 @@ beforeSubmit.push(function() {
                     </table>
                     <table id="showNumberBooked" class="simple-table">
                         <tr>
-                        <td> <span class="ke-flagtag">Number of patients already booked on the Date selected</span></td>
+                        <td> <span class="ke-flagtag">Number of patients already booked for HIV consultation on the date selected</span></td>
                         <td><span id="showBookedResult"></span></td></tr>
                     </table>
                     <table>

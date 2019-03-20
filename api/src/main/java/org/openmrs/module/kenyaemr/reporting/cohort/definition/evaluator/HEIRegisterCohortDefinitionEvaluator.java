@@ -49,12 +49,14 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 		Cohort newCohort = new Cohort();
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
-		//EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
-				"    inner join kenyaemr_etl.etl_hei_enrollment he\n" +
-				"    on he.patient_id = hf.patient_id where he.visit_date <= hf.visit_date\n" +
-				"                                          and date(hf.visit_date) BETWEEN date(:startDate) AND date(:endDate);";
+		String qry = "SELECT DISTINCT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
+				"  INNER JOIN kenyaemr_etl.etl_hei_enrollment he\n" +
+				"  INNER JOIN kenyaemr_etl.etl_patient_demographics pd\n" +
+				"    on hf.patient_id = he.patient_id  and hf.patient_id = pd.patient_id\n" +
+				"where  he.visit_date <= hf.visit_date\n" +
+				"and date(pd.DOB) BETWEEN date(:startDate) AND date(:endDate)\n" +
+				"GROUP BY pd.DOB DESC ;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
@@ -65,10 +67,6 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
-
-
-//		queryResult.getMemberIds().addAll(results);
-//		return queryResult;
 
         return new EvaluatedCohort(newCohort, definition, context);
     }
