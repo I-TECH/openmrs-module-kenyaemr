@@ -50,13 +50,13 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 
-		String qry = "SELECT DISTINCT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
+		String qry = "SELECT DISTINCT hf.patient_id, pd.DOB from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
 				"  INNER JOIN kenyaemr_etl.etl_hei_enrollment he\n" +
 				"  INNER JOIN kenyaemr_etl.etl_patient_demographics pd\n" +
 				"    on hf.patient_id = he.patient_id  and hf.patient_id = pd.patient_id\n" +
 				"where  he.visit_date <= hf.visit_date\n" +
 				"and date(pd.DOB) BETWEEN date(:startDate) AND date(:endDate)\n" +
-				"GROUP BY pd.DOB DESC ;";
+				"ORDER BY pd.DOB DESC ;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

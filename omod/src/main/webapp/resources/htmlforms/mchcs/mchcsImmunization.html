@@ -42,6 +42,7 @@
 		}
 
 	</style>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 
 	<script>jQuery.noConflict();</script>
 
@@ -200,85 +201,121 @@
 				}
 								
 			});
-			
-			$("span.dateGiven input:text").change(function(){
-				
-				var selectedDate = $(this).val();
-				var parentRow = $(this).parents('tr:first')
 
-				if (selectedDate != '')	{
-				
-					var dateGiven = new Date(selectedDate);
-					var vaccineObsDateTime = parentRow.find('span.vaccineConcept input:text'); //Get the vaccine obs datetime (ConceptId 984)
-					var vitaminAGivenYes = parentRow.find('span.vitAGivenYes input:checkbox');
-					
-					if (vaccineObsDateTime.length > 0 ){
-										
-						//vaccineObsDateTime.val( MyApp.common.formatDate(dateGiven) );
-						vaccineObsDateTime.datepicker("setDate", MyApp.common.formatDate(dateGiven) );
-					}
-					
-					if (vitaminAGivenYes.length > 0) {
-					
-						vitaminAGivenYes.attr('checked', 'checked');
-						
-					}
-					
-					//Autocompute the date of next visit based on the 'date given' input				
-					var spacing = MyApp.immunization.getSpacingInDays($(this));	
-					var nextVisitingDate = dateGiven;
-					var formattedNextVisitingDate = '';
+            $("span.dateGiven input:text").change(function(){
 
-					if (spacing > 0) {
-					
-						nextVisitingDate.setDate ( dateGiven.getDate() + parseInt(spacing) );						
-						//parentRow.find('span.nextVisitDate input:text').val( MyApp.common.formatDate(nextVisitingDate) );
-						parentRow.find('span.nextVisitDate input:text').datepicker("setDate", MyApp.common.formatDate(nextVisitingDate) );
+                var selectedDate = $(this).val();
+                var parentRow = $(this).parents('tr:first')
 
-					}
-				} else {
-				
-					parentRow.find('input:checkbox').removeAttr('checked');
-					parentRow.find('input:text').val('');
-					
-				}				
-			});
-			
+                if (selectedDate != '')	{
+
+                    var dateGiven = new Date(selectedDate);
+                    var vaccineObsDateTime = parentRow.find('span.vaccineConcept input:text'); //Get the vaccine obs datetime (ConceptId 984)
+                    if (vaccineObsDateTime.length > 0 ){
+                        //vaccineObsDateTime.val( MyApp.common.formatDate(dateGiven) );
+                        vaccineObsDateTime.datepicker("setDate", MyApp.common.formatDate(dateGiven) );
+                    }
+                    //Autocompute the date of next visit based on the 'date given' input
+                    var spacing = MyApp.immunization.getSpacingInDays($(this));
+                    var nextVisitingDate = dateGiven;
+                    var formattedNextVisitingDate = '';
+
+                    if (spacing > 0) {
+                        //	nextVisitingDate.setDate (dateGiven.getDate() + parseInt(spacing) );   use momentjs
+                        var expectedNextVisitDate = moment(selectedDate, "DD-MMM-YYYY").add(spacing, 'days').format('DD-MMM-YYYY');   //add spacing
+                        parentRow.find('span.nextVisitDate input:text').datepicker("setDate",expectedNextVisitDate );
+
+                    }
+                } else {
+
+                    parentRow.find('input:checkbox').removeAttr('checked');
+                    parentRow.find('input:text').val('');
+                }
+            });
+
+            $("span.dateVitAGiven input:text").change(function(){
+
+                var selectedDate = $(this).val();
+                var parentRow = $(this).parents('tr:first')
+
+                if (selectedDate != '')	{
+
+                    var vitaminAGivenYes = parentRow.find('span.vitAGivenYes input:checkbox');
+                    //Autocompute the date of next visit based on the 'date given' input
+                    var spacing = MyApp.immunization.getSpacingInDays($(this));
+                    if (spacing > 0) {
+                        var expectedNextVitAVisitDate = moment(selectedDate, "DD-MMM-YYYY").add(spacing, 'days').format('DD-MMM-YYYY');   //add spacing
+                        parentRow.find('span.nextVitAVisitDate input:text').datepicker("setDate",expectedNextVitAVisitDate );
+                        vitaminAGivenYes.attr('checked', 'checked');
+                     }else {
+
+                        parentRow.find('input:checkbox').removeAttr('checked');
+                        parentRow.find('input:text').val('');
+                    }
+
+                }
+            });
 			$('#bcg-scar-checked input:radio').click(function() {
 				MyApp.ui.bcgScarValidation();
 			});
 			
 			beforeSubmit.push(function() {
-			
-				var validationFailed = false;
+                //Date validations
+                var encounterDate = getValue('encounter-date.value');
+                var expiryDate = getValue('expiry-date.value');
+                var dateGiven = getValue('date-given.value');
+                var nextDoseDate = getValue('next-dose-date.value');
+                var dateScarChecked = getValue('date-scar-checked.value');
+                var dateBCGRepeated = getValue('date-scar-check-repeat.value');
+                var vitADateGiven = getValue('dateVitA-given.value');
+                var nextVitAVisitDate = getValue('nextVitAVisitDate.value');
 
-				$('span.error').html('').hide();
-			
-				$('span.controlConcept input:checked').each(function(){
-					
-					var parentRow = $(this).parents('tr:first');
-					
-					$.each (parentRow.find('input:text'), function () {
-						
-						var txtField = $(this);
-						
-						if ( !txtField.is(':hidden') ) {
-						
-							if (txtField.val() == '' ) {
-							
-								txtField.siblings('.error:first').html('* Required').show();
-								validationFailed = true;
-							}
-						}						
-					});
-														
-				});
-				
-				return !validationFailed;
+                if (encounterDate =="") {
+                    getField('encounter-date.error').html('Immunization encounter date should not be empty').show();
+                    return false;
+                }else{
+                    getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
+				}
+                var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
+                if (isDateGivenBeforeEncounterDate) {
+                    getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
+                    return false;
+                }else{
+                    getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
+				}
+                var isExpiryDateBeforeDateGiven = moment(moment(moment(expiryDate, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(dateGiven, 'YYYY-MM-DD').toDate()));
+                if (isExpiryDateBeforeDateGiven) {
+                    getField('expiry-date.error').html('This vaccine is expired').show();
+                    return false;
+                } else{
+                    getField('expiry-date.error').html('This vaccine is expired').hide();
+				}
+                var isNextDoseDateBeforeDateGiven = moment(moment(moment(nextDoseDate, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(dateGiven, 'YYYY-MM-DD').toDate()));
+                if (isNextDoseDateBeforeDateGiven) {
+                    getField('next-dose-date.error').html('Next visit date cannot be before date given').show();
+                    return false;
+                }else{
+                    getField('next-dose-date.error').html('Next visit date cannot be before date given').hide();
+				}
+                var isNextVitADoseDateBeforeVitADateGiven = moment(moment(moment(nextVitAVisitDate, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(vitADateGiven, 'YYYY-MM-DD').toDate()));
+                if (isNextVitADoseDateBeforeVitADateGiven) {
+                    getField('nextVitAVisitDate.error').html('Next visit date cannot be before date given').show();
+                    return false;
+                }else{
+                    getField('nextVitAVisitDate.error').html('Next visit date cannot be before date given').hide();
+				}
+                var isDateBCGRepeatedBeforeScarChecked = moment(moment(moment(dateBCGRepeated, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(dateScarChecked, 'YYYY-MM-DD').toDate()));
+                if (isDateBCGRepeatedBeforeScarChecked) {
+                    getField('date-scar-check-repeat.error').html('Date BCG repeated cannot be before BCG scar check').show();
+                    return false;
+                }else{
+                    getField('date-scar-check-repeat.error').html('Date BCG repeated cannot be before BCG scar check').hide();
+				}
+
+                return true;
 			});
 
 			MyApp.ui.bcgScarValidation();
-			
 		});
 
 	</script>
@@ -321,17 +358,17 @@
 									<obs conceptId="1420" size="7" />
 								</td>
 								<td>
-									<obs conceptId="162502" allowFutureDates="true"/>
+									<obs conceptId="162502" allowFutureDates="true" id="expiry-date"/>
 								</td>
 								<td>
 									<obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" allowDecimal="true"/>/
 									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" />
 								</td>
 								<td>
-									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="dateGiven"/>
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" class="dateGiven" id="date-given"/>
 								</td>
 								<td>
-									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="{class} nextVisitDate"/>							
+									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="{class} nextVisitDate" id="next-dose-date"/>
 								</td>
 							</tr>
 						</obsgroup>
@@ -368,16 +405,17 @@
 		<table class="hei" align="center" width="70%">
           <tbody>
             <tr>
-              <th colspan="4" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
+              <th colspan="6" style="background-color: #696969; color: #ffffff;text-align:center;">VITAMIN A CAPSULES FROM 6 MONTHS</th>
             </tr>
             <tr>
-              <th colspan="2">VITAMIN A CAPSULE: Given orally At 6 months or at first contact thereafter</th>
+              <th colspan="3">VITAMIN A CAPSULE: Given orally At 6 months or at first contact thereafter</th>
               <th></th>
               <th></th>
             </tr>
             
             <tr>
               <th colspan="2">Dose/Units</th>
+              <th>Given</th>
               <th>Date Given</th>
               <th>Date of next visit</th>
             </tr>
@@ -386,14 +424,18 @@
               <tr>
                 <td colspan="2">{caption}</td>
                 <td>
-				<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showDate="true" answerLabel="" class="controlConcept vitA dateGiven" id="vitaA-{n}"/> 
+				<obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" class="controlConcept vitA dateGiven" id="vitaA-{n}"/>
 				<obs conceptId="1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="3" class="sequenceNo" id="{id}SequenceNo"/>	
 				<input type="hidden" name="{id}hVaccineSequenceNo" class="hVaccineSequenceNo" value="{sequenceNo}" />	
 				<span id="vitA-given">
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="Yes" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenYes" />
 					<obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox" answerLabel="No" answerConceptId="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" class="vitAGivenNo" /> 
-				</span>				</td>
-                <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="nextVisitDate"/></td>
+				</span>
+				  <td>
+					  <obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" class="dateVitAGiven" id="dateVitA-given"/>
+				  </td>
+				</td>
+                <td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="nextVitAVisitDate" id="nextVitAVisitDate"/></td>
               </tr>
             </obsgroup>
             </template>
