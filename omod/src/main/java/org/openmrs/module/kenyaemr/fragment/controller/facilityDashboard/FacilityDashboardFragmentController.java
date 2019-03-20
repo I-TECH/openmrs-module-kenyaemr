@@ -43,7 +43,7 @@ public class FacilityDashboardFragmentController {
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
 				htsTestedFamily =0,htsTestedPartners =0,htsTestedIDU =0, htsPositiveFamily = 0,htsPositivePartner = 0,
 				htsPositiveIDU = 0, htsUnknownStatusFamily = 0,htsUnknownStatusPartner = 0, htsUnknownStatusIDU = 0,htsLinkedFamily = 0,
-				htsLinkedPartner = 0, htsLinkedIDU = 0;
+				htsLinkedPartner = 0, htsLinkedIDU = 0, unstable = 0, stableUnder4mtca = 0, stableOver4mtca = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -144,6 +144,16 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> htsLinkedIDUs = DashBoardCohorts.htsTotalLinkedIDU(evaluationContext).getMemberIds();
 		htsLinkedIDU = htsLinkedIDUs != null? htsLinkedIDUs.size(): 0;
 
+
+		Set<Integer> stableOver4monthsTca = DashBoardCohorts.stableOver4Monthstca(evaluationContext).getMemberIds();
+		stableOver4mtca = stableOver4monthsTca != null? stableOver4monthsTca.size(): 0;
+
+		Set<Integer> stableUnder4monthsTca = DashBoardCohorts.stableUnder4Monthstca(evaluationContext).getMemberIds();
+		stableUnder4mtca = stableUnder4monthsTca != null? stableUnder4monthsTca.size(): 0;
+
+		Set<Integer> unstablePatients = DashBoardCohorts.unstablePatients(evaluationContext).getMemberIds();
+		unstable = unstablePatients != null? unstablePatients.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -172,6 +182,11 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("htsPositiveIDU", htsPositiveIDU);
 		model.addAttribute("htsUnknownStatusIDU", htsUnknownStatusIDU);
 		model.addAttribute("htsLinkedIDU", htsLinkedIDU);
+		model.addAttribute("stableOver4mtca", stableOver4mtca);
+		model.addAttribute("stableUnder4mtca", stableUnder4mtca);
+		model.addAttribute("unstable", unstable);
+
+
 
 		return null;
 	}

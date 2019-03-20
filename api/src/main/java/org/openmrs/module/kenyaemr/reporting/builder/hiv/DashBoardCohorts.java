@@ -406,6 +406,43 @@ public class DashBoardCohorts {
             throw new IllegalStateException("Error evaluating HTS linked Partner contacts", e);
         }
     }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4Monthstca(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable patients with 4+ months tca", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4Monthstca(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable patients with under months tca", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstablePatients(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable patients", e);
+        }
+    }
+
     private static CohortDefinitionService getService() {
         return Context.getService(CohortDefinitionService.class);
     }
