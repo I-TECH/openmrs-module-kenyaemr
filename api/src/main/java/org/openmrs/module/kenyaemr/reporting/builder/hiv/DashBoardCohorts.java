@@ -443,7 +443,128 @@ public class DashBoardCohorts {
         }
     }
 
+    /**
+ * @param context optional (used to return a cached value if possible)
+ * @return
+ */
+public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
+    try {
+        return getService().evaluate(new DiffCarecurrentInCareOnARTCohortDefinition(), context);
+    } catch (EvaluationException e) {
+        throw new IllegalStateException("Error evaluating current in care ART patients", e);
+    }
+}
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care females over 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care males over 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care under 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable female patients with over 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable male patients with over 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable female patients with under 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable children patients with over 4 months prescription aged below 15 years", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable male patients with under 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable children patients with under 4 months prescription aged below 15 years", e);
+        }
+    }
+
+
     private static CohortDefinitionService getService() {
         return Context.getService(CohortDefinitionService.class);
     }
 }
+

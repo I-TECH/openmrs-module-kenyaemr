@@ -13,8 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedIDUContactsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaUnder15CohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -31,8 +30,8 @@ import java.util.List;
 /**
  * Evaluator for IDU contacts linked to care
  */
-@Handler(supports = {DiffCareUnstableCohortDefinition.class})
-public class DiffCareUnstableCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {DiffCareStableUnder4MonthstcaUnder15CohortDefinition.class})
+public class DiffCareStableUnder4MonthstcaUnder15CohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -41,7 +40,7 @@ public class DiffCareUnstableCohortDefinitionEvaluator implements CohortDefiniti
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DiffCareUnstableCohortDefinition definition = (DiffCareUnstableCohortDefinition) cohortDefinition;
+		DiffCareStableUnder4MonthstcaUnder15CohortDefinition definition = (DiffCareStableUnder4MonthstcaUnder15CohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
@@ -49,8 +48,11 @@ public class DiffCareUnstableCohortDefinitionEvaluator implements CohortDefiniti
 		Cohort newCohort = new Cohort();
 
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"   on c.patient_id = f.patient_id where f.stability = 2\n" +
-				"   and c.started_on_drugs is not null group by c.patient_id;";
+				"                             on c.patient_id = f.patient_id\n" +
+				"                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = c.patient_id and timestampdiff(year ,d.dob,c.latest_vis_date)< 15\n" +
+				"                             where f.stability = 1 and f.person_present = 978\n" +
+				"                            and timestampdiff(month,c.latest_vis_date,c.latest_tca) between 0 and 3\n" +
+				"group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

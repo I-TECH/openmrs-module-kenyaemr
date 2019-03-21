@@ -43,7 +43,10 @@ public class FacilityDashboardFragmentController {
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
 				htsTestedFamily =0,htsTestedPartners =0,htsTestedIDU =0, htsPositiveFamily = 0,htsPositivePartner = 0,
 				htsPositiveIDU = 0, htsUnknownStatusFamily = 0,htsUnknownStatusPartner = 0, htsUnknownStatusIDU = 0,htsLinkedFamily = 0,
-				htsLinkedPartner = 0, htsLinkedIDU = 0, unstable = 0, stableUnder4mtca = 0, stableOver4mtca = 0;
+				htsLinkedPartner = 0, htsLinkedIDU = 0, unstable = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
+				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
+				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
+				currInCareOnARTOver15F = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -154,6 +157,36 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> unstablePatients = DashBoardCohorts.unstablePatients(evaluationContext).getMemberIds();
 		unstable = unstablePatients != null? unstablePatients.size(): 0;
 
+		Set<Integer> currentInCareOnART = DashBoardCohorts.currentInCareOnART(evaluationContext).getMemberIds();
+		currInCareOnART = currentInCareOnART != null? currentInCareOnART.size(): 0;
+
+		Set<Integer> stableOver4mtcaBelow15y = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
+		stableOver4mtcaBelow15 = stableOver4mtcaBelow15y != null? stableOver4mtcaBelow15y.size(): 0;
+
+		Set<Integer> stableOver4mtcaOver15yM = DashBoardCohorts.currentInCareOnARTOver15Male(evaluationContext).getMemberIds();
+		stableOver4mtcaOver15M = stableOver4mtcaOver15yM != null? stableOver4mtcaOver15yM.size(): 0;
+
+		Set<Integer> stableOver4mtcaOver15yF = DashBoardCohorts.currentInCareOnARTUnder15(evaluationContext).getMemberIds();
+		stableOver4mtcaOver15F = stableOver4mtcaOver15yF != null? stableOver4mtcaOver15yF.size(): 0;
+
+		Set<Integer> stableUnder4mtcaBelow15y = DashBoardCohorts.stableOver4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		stableUnder4mtcaBelow15 = stableUnder4mtcaBelow15y != null? stableUnder4mtcaBelow15y.size(): 0;
+
+		Set<Integer> stableUnder4mtcaOver15My = DashBoardCohorts.stableOver4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		stableUnder4mtcaOver15M = stableUnder4mtcaOver15My != null? stableUnder4mtcaOver15My.size(): 0;
+
+		Set<Integer> stableUnder4mtcaOver15yF = DashBoardCohorts.stableOver4MonthstcaUnder15(evaluationContext).getMemberIds();
+		stableUnder4mtcaOver15F = stableUnder4mtcaOver15yF != null? stableUnder4mtcaOver15yF.size(): 0;
+
+		Set<Integer> currInCareOnARTUnder15y = DashBoardCohorts.stableUnder4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		currInCareOnARTUnder15 = currInCareOnARTUnder15y != null? currInCareOnARTUnder15y.size(): 0;
+
+		Set<Integer> currInCareOnARTOver15yM = DashBoardCohorts.stableUnder4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		currInCareOnARTOver15M = currInCareOnARTOver15yM != null? currInCareOnARTOver15yM.size(): 0;
+
+		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.stableUnder4MonthstcaUnder15(evaluationContext).getMemberIds();
+		currInCareOnARTOver15F = currInCareOnARTOver15yF != null? currInCareOnARTOver15yF.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -185,6 +218,16 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("stableOver4mtca", stableOver4mtca);
 		model.addAttribute("stableUnder4mtca", stableUnder4mtca);
 		model.addAttribute("unstable", unstable);
+		model.addAttribute("currInCareOnART", currInCareOnART);
+		model.addAttribute("stableOver4mtcaBelow15", stableOver4mtcaBelow15);
+		model.addAttribute("stableOver4mtcaOver15M", stableOver4mtcaOver15M);
+		model.addAttribute("stableOver4mtcaOver15F", stableOver4mtcaOver15F);
+		model.addAttribute("stableUnder4mtcaBelow15", stableUnder4mtcaBelow15);
+		model.addAttribute("stableUnder4mtcaOver15M", stableUnder4mtcaOver15M);
+		model.addAttribute("stableUnder4mtcaOver15F", stableUnder4mtcaOver15F);
+		model.addAttribute("currInCareOnARTUnder15", currInCareOnARTUnder15);
+		model.addAttribute("currInCareOnARTOver15M", currInCareOnARTOver15M);
+		model.addAttribute("currInCareOnARTOver15F", currInCareOnARTOver15F);
 
 
 

@@ -13,8 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedIDUContactsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCarecurrentInCareOnARTCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -31,8 +31,8 @@ import java.util.List;
 /**
  * Evaluator for IDU contacts linked to care
  */
-@Handler(supports = {DiffCareUnstableCohortDefinition.class})
-public class DiffCareUnstableCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {DiffCarecurrentInCareOnARTCohortDefinition.class})
+public class DiffCarecurrentInCareOnARTCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -41,16 +41,14 @@ public class DiffCareUnstableCohortDefinitionEvaluator implements CohortDefiniti
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DiffCareUnstableCohortDefinition definition = (DiffCareUnstableCohortDefinition) cohortDefinition;
+		DiffCarecurrentInCareOnARTCohortDefinition definition = (DiffCarecurrentInCareOnARTCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"   on c.patient_id = f.patient_id where f.stability = 2\n" +
-				"   and c.started_on_drugs is not null group by c.patient_id;";
+		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c where c.started_on_drugs is not null;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

@@ -51,7 +51,7 @@ public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements C
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
 				"                           on c.patient_id = f.patient_id where f.stability = 1 and f.person_present = 978\n" +
 				"                           and timestampdiff(month,c.latest_vis_date,c.latest_tca) between 0 and 3\n" +
-				"group by c.patient_id;";
+				"and c.started_on_drugs is not null group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
