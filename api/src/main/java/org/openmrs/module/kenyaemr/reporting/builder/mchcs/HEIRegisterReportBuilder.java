@@ -22,6 +22,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinit
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -84,6 +85,7 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 	protected PatientDataSetDefinition heiDataSetDefinition() {
 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("HEIRegister");
+		dsd.addSortCriteria("DOBAndAge", SortCriteria.SortDirection.DESC);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
