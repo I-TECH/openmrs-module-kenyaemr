@@ -372,7 +372,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Patients current in care on ART'
+                    text: 'Current on treatment'
                 }
 
             },
@@ -399,37 +399,37 @@
                 colorByPoint: true,
                 data: [
                     {
-                        name: '<15 years Current in care',
+                        name: '<15 years',
                         y: ${currInCareOnARTUnder15},
 
                     },
                     {
-                        name: '15+ years Females current in care',
+                        name: '15+ years Females',
                         y: ${currInCareOnARTOver15F},
 
                     },
                     {
 
-                        name: '15+ years Males current in care',
+                        name: '15+ years Males',
                         y:${currInCareOnARTOver15M},
 
                     }, {
-                        name: '<15 years Stable over 4 months prescription',
+                        name: '<15 years Stable 4+ months prescription',
                         y: ${stableOver4mtcaBelow15},
 
                     },
                     {
-                        name: '15+ years Females Stable over 4 months prescription',
+                        name: '15+ years Females Stable 4+ months prescription',
                         y: ${stableOver4mtcaOver15F},
 
                     },
                     {
-                        name: '15+ years Males Stable over 4 months prescription',
+                        name: '15+ years Males Stable 4+ months prescription',
                         y: ${stableOver4mtcaOver15M},
 
                     },
                     {
-                        name: '<15 years Stable below months prescription',
+                        name: '<15 years Stable below 4 months prescription',
                         y: ${stableUnder4mtcaBelow15},
 
                     },
@@ -647,23 +647,22 @@
                                             <tr>
                                                 <th>Stable<br/>(on less than 4 months prescription)</th>
                                                 <th>Stable<br/>(on 4+ months prescription)</th>
-                                                <th>Current on Treatment</th>
-
+                                                <th>Unstable</th>
                                             </tr>
                                             <tr>
                                                 <td>${stableUnder4mtca}</td>
                                                 <td>${stableOver4mtca}</td>
-                                                <td>${currInCareOnART}</td>
+                                                <td>${unstable}</td>
                                             </tr>
                                     <tr>
                                         <td colspan="2" class="heading"><strong>Total Stable: ${stableOver4mtca + stableUnder4mtca}</strong></td>
                                     </tr>
-                                    <tr><td colspan="1" class="heading"><strong>Total Unstable: ${unstable}</strong></td></tr>
+                                    <tr><td colspan="3" class="heading"><strong>Current on Treatment: ${currInCareOnART}</strong></td></tr>
                                 </table>
                             </div>
                         </div>
                         <div id="differentiated_care_tracker" style="min-width: 600px; height: 350px; margin: 0 auto"></div>
-                        <div id="differentiated_care_tracker_disaggregated" style="min-width: 600px; height: 350px; margin: 0 auto"></div>
+                        <div id="differentiated_care_tracker_disaggregated" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>

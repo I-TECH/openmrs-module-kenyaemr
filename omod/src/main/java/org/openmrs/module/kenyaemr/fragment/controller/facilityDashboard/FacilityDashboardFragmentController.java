@@ -160,31 +160,31 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> currentInCareOnART = DashBoardCohorts.currentInCareOnART(evaluationContext).getMemberIds();
 		currInCareOnART = currentInCareOnART != null? currentInCareOnART.size(): 0;
 
-		Set<Integer> stableOver4mtcaBelow15y = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
+		Set<Integer> stableOver4mtcaBelow15y = DashBoardCohorts.stableOver4MonthstcaUnder15(evaluationContext).getMemberIds();
 		stableOver4mtcaBelow15 = stableOver4mtcaBelow15y != null? stableOver4mtcaBelow15y.size(): 0;
 
-		Set<Integer> stableOver4mtcaOver15yM = DashBoardCohorts.currentInCareOnARTOver15Male(evaluationContext).getMemberIds();
+		Set<Integer> stableOver4mtcaOver15yM = DashBoardCohorts.stableOver4MonthstcaOver15Male(evaluationContext).getMemberIds();
 		stableOver4mtcaOver15M = stableOver4mtcaOver15yM != null? stableOver4mtcaOver15yM.size(): 0;
 
-		Set<Integer> stableOver4mtcaOver15yF = DashBoardCohorts.currentInCareOnARTUnder15(evaluationContext).getMemberIds();
+		Set<Integer> stableOver4mtcaOver15yF = DashBoardCohorts.stableOver4MonthstcaOver15Female(evaluationContext).getMemberIds();
 		stableOver4mtcaOver15F = stableOver4mtcaOver15yF != null? stableOver4mtcaOver15yF.size(): 0;
 
-		Set<Integer> stableUnder4mtcaBelow15y = DashBoardCohorts.stableOver4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		Set<Integer> stableUnder4mtcaBelow15y = DashBoardCohorts.stableUnder4MonthstcaUnder15(evaluationContext).getMemberIds();
 		stableUnder4mtcaBelow15 = stableUnder4mtcaBelow15y != null? stableUnder4mtcaBelow15y.size(): 0;
 
-		Set<Integer> stableUnder4mtcaOver15My = DashBoardCohorts.stableOver4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		Set<Integer> stableUnder4mtcaOver15My = DashBoardCohorts.stableUnder4MonthstcaOver15Male(evaluationContext).getMemberIds();
 		stableUnder4mtcaOver15M = stableUnder4mtcaOver15My != null? stableUnder4mtcaOver15My.size(): 0;
 
-		Set<Integer> stableUnder4mtcaOver15yF = DashBoardCohorts.stableOver4MonthstcaUnder15(evaluationContext).getMemberIds();
+		Set<Integer> stableUnder4mtcaOver15yF = DashBoardCohorts.stableUnder4MonthstcaOver15Female(evaluationContext).getMemberIds();
 		stableUnder4mtcaOver15F = stableUnder4mtcaOver15yF != null? stableUnder4mtcaOver15yF.size(): 0;
 
-		Set<Integer> currInCareOnARTUnder15y = DashBoardCohorts.stableUnder4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		Set<Integer> currInCareOnARTUnder15y = DashBoardCohorts.currentInCareOnARTUnder15(evaluationContext).getMemberIds();
 		currInCareOnARTUnder15 = currInCareOnARTUnder15y != null? currInCareOnARTUnder15y.size(): 0;
 
-		Set<Integer> currInCareOnARTOver15yM = DashBoardCohorts.stableUnder4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		Set<Integer> currInCareOnARTOver15yM = DashBoardCohorts.currentInCareOnARTOver15Male(evaluationContext).getMemberIds();
 		currInCareOnARTOver15M = currInCareOnARTOver15yM != null? currInCareOnARTOver15yM.size(): 0;
 
-		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.stableUnder4MonthstcaUnder15(evaluationContext).getMemberIds();
+		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
 		currInCareOnARTOver15F = currInCareOnARTOver15yF != null? currInCareOnARTOver15yF.size(): 0;
 
 		model.addAttribute("allPatients", allPatients);

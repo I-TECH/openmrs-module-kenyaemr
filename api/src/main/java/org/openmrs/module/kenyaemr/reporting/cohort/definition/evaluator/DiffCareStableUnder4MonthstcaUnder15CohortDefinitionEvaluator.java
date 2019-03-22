@@ -50,7 +50,7 @@ public class DiffCareStableUnder4MonthstcaUnder15CohortDefinitionEvaluator imple
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
 				"                             on c.patient_id = f.patient_id\n" +
 				"                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = c.patient_id and timestampdiff(year ,d.dob,c.latest_vis_date)< 15\n" +
-				"                             where f.stability = 1 and f.person_present = 978\n" +
+				"                             where f.stability = 1 and f.person_present = 978 and c.started_on_drugs is not null \n" +
 				"                            and timestampdiff(month,c.latest_vis_date,c.latest_tca) between 0 and 3\n" +
 				"group by c.patient_id;";
 
