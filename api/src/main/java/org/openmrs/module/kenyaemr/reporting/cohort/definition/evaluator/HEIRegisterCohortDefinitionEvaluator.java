@@ -55,8 +55,7 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 				"  INNER JOIN kenyaemr_etl.etl_patient_demographics pd\n" +
 				"    on hf.patient_id = he.patient_id  and hf.patient_id = pd.patient_id\n" +
 				"where  he.visit_date <= hf.visit_date\n" +
-				"and date(pd.DOB) BETWEEN date(:startDate) AND date(:endDate)\n" +
-				"GROUP BY pd.DOB DESC ;";
+				"and date(pd.DOB) BETWEEN date(:startDate) AND date(:endDate);";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
