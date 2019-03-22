@@ -399,18 +399,18 @@
                 colorByPoint: true,
                 data: [
                     {
-                        name: '<15 years',
+                        name: '<15 years on treatment',
                         y: ${currInCareOnARTUnder15},
 
                     },
                     {
-                        name: '15+ years Females',
+                        name: '15+ years Females on treatment',
                         y: ${currInCareOnARTOver15F},
 
                     },
                     {
 
-                        name: '15+ years Males',
+                        name: '15+ years Males on treatment',
                         y:${currInCareOnARTOver15M},
 
                     }, {
