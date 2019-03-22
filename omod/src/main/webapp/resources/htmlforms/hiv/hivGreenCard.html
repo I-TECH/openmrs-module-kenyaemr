@@ -212,9 +212,12 @@ Green Card follow-up visit form
             jq("#tbl-ever-on-ipt").hide();
             //IPT OUTCOME
             jq("#tbl-ipt-outcome").hide();
+            jq("#tbl-ipt-ever-outcome").hide();
+            jq("#div-ipt-outcome").hide();
             jq("#reason-for-discontinuation").hide();
             getField('ipt-event-type.value').change(iptEventSelected);
             jq("#bt-ipt-outcome").click(onRecordIPTOutcome);
+            jq("#bt-ipt-ever-outcome").click(onRecordPastIPTOutcome);
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
@@ -848,6 +851,9 @@ function onVisitScheduledChange() {
 }
 function onRecordIPTOutcome() {
     jq("#tbl-ipt-outcome").toggle();
+}
+function onRecordPastIPTOutcome() {
+    jq("#tbl-ipt-ever-outcome").toggle();
 }
 function onParityChange() {
     var gravida = '';
@@ -2629,6 +2635,21 @@ beforeSubmit.push(function() {
                             </td>
                         </tr>
                     </table>
+                    <div>  <button type="button" name="bt-ipt-ever-outcome" id="bt-ipt-ever-outcome">Record IPT Outcome</button> </div>
+                    <table id="tbl-ipt-ever-outcome">
+                        <tr>
+                            <td>Event/Date:</td>
+                            <td><obs id="ipt-ever-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=" "  showDate="true"/></td>
+                        </tr>
+                        <tr id="reason-for-ever-discontinuation">
+                            <td>Reason for discontinuation</td>
+                            <td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
+                        </tr>
+                        <tr>
+                            <td>Action Taken</td>
+                            <td><obs id="action-taken" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="45" rows="1" /></td>
+                        </tr>
+                    </table>
                     <br/>
                     <fieldset id="tb-screening-tab">
                         <legend>Screening Questions</legend>
@@ -2829,7 +2850,7 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                     <br />
-                    <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
+                    <div id="div-ipt-outcome">  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
                     <table id="tbl-ipt-outcome">
                         <tr>
                             <td>Event/Date:</td>
