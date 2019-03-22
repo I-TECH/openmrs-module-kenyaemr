@@ -138,4 +138,17 @@ public class CommonDimensionLibrary {
         dim.addCohortDefinition(">2", map(commonCohortLibrary.agedAtLeast(2), "effectiveDate=${onDate}"));
         return dim;
     }
+
+    /**
+     * Dimension of age using the 2 standard age groups. <15 and 15+ years
+     * @return the dimension
+     */
+    public CohortDefinitionDimension diffCareAgeGroups() {
+        CohortDefinitionDimension dim = new CohortDefinitionDimension();
+        dim.setName("age groups (<15, 15+)");
+        dim.addParameter(new Parameter("onDate", "Date", Date.class));
+        dim.addCohortDefinition("<15", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("15+", map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${onDate}"));
+        return dim;
+    }
 }
