@@ -754,6 +754,14 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
+     */
+    public CohortIndicator onARTMissedAppointmentStoppedTreatment() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact because they stopped treatment", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentStoppedTreatment(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * TX_ML_TRACED_UNLOCATED Number of ART patients with no clinical contact since their last expected contact due to un-traceability
      */
     public CohortIndicator onARTMissedAppointmentUntraceable() {
