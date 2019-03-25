@@ -225,6 +225,7 @@ Green Card follow-up visit form
             iptClientWorkupTab.hide();
             iptFollowup.hide();
             iptInitiationTab.hide();
+            jq("#tbl-ipt-ever-outcome").hide();
             ageGroup();
             displayRecentBmi();
             //Prophylaxis section
@@ -1042,12 +1043,14 @@ var everOnIPT = function () {
     var iptClientWorkupTab = jq('#ipt-client-workup');
     var actionTakenTab = jq('#action-taken');
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEverOnIPTTab = jq('#tbl-ipt-ever-outcome');
     if(val == 1066) {
         // show TB screening, TB results and IPT workup forms
         tbScreeningTab.show();
         tbScreeningResults.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
+        iptEverOnIPTTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
     if(val == 1065) {
@@ -1056,6 +1059,7 @@ var everOnIPT = function () {
         tbScreeningTab.show();
         actionTakenTab.hide();
         iptInitiationTab.hide();
+        iptEverOnIPTTab.show();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
@@ -2628,6 +2632,12 @@ beforeSubmit.push(function() {
                             <td>
                             </td>
                         </tr>
+                        <tr id="tbl-ipt-ever-outcome">
+                            <td>Last IPT outcome status and date:</td>
+                            <td><obs id="ipt-ever-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     style="dropdown" labelText=" "  showDate="true"/></td>
+                        </tr>
                     </table>
                     <br/>
                     <fieldset id="tb-screening-tab">
@@ -2829,7 +2839,7 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                     <br />
-                    <div id="div-ipt-outcome">  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
+                    <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
                     <table id="tbl-ipt-outcome">
                         <tr>
                             <td>Event/Date:</td>
