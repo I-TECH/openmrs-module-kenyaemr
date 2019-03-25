@@ -35,9 +35,12 @@ public class ANCBloodPressureDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "v.encounter_id,\n" +
-                "concat(v.systolic_bp, \"/\" ,v.diastolic_bp) as blood_pressure\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "  v.encounter_id,\n" +
+                "  coalesce(concat(v.systolic_bp, \"/\" ,v.diastolic_bp),concat(t.systolic_pressure, \"/\" ,t.diastolic_pressure)) as blood_pressure\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  LEFT JOIN kenyaemr_etl.etl_patient_triage t\n" +
+                "    ON v.patient_id = t.patient_id AND\n" +
+                "       date(v.visit_date) = date(t.visit_date);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
