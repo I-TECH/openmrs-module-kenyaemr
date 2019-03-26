@@ -263,6 +263,9 @@ public class RevisedDatimReportBuilder extends AbstractReportBuilder {
         //TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_PREV_UNDOCUMENTED_TRF", "ART patients with missed appointment due to undocumented transfer", ReportUtils.map(datimIndicators.onARTMissedAppointmentTransferred(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
+        //TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_STOPPED_TREATMENT", "ART patients with missed appointment because they stopped treatment", ReportUtils.map(datimIndicators.onARTMissedAppointmentStoppedTreatment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
+
         //TX_ML_TRACED_UNLOCATED Number of ART patients with no clinical contact since their last expected contact due to un-traceability
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRACED_UNLOCATED", "ART patients with missed appointment and untraceable", ReportUtils.map(datimIndicators.onARTMissedAppointmentUntraceable(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 

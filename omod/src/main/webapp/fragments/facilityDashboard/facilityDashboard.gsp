@@ -398,52 +398,37 @@
                 name: 'Statistics',
                 colorByPoint: true,
                 data: [
-                    {
-                        name: '<15 years on treatment',
-                        y: ${currInCareOnARTUnder15},
 
-                    },
-                    {
-                        name: '15+ years Females on treatment',
-                        y: ${currInCareOnARTOver15F},
-
-                    },
-                    {
-
-                        name: '15+ years Males on treatment',
-                        y:${currInCareOnARTOver15M},
-
-                    }, {
-                        name: '<15 years Stable 4+ months prescription',
-                        y: ${stableOver4mtcaBelow15},
-
-                    },
-                    {
-                        name: '15+ years Females Stable 4+ months prescription',
-                        y: ${stableOver4mtcaOver15F},
-
-                    },
-                    {
-                        name: '15+ years Males Stable 4+ months prescription',
-                        y: ${stableOver4mtcaOver15M},
-
-                    },
                     {
                         name: '<15 years Stable below 4 months prescription',
                         y: ${stableUnder4mtcaBelow15},
 
                     },
                     {
-                        name: '15+ years Females Stable below 4 months prescription',
+                        name: '<15 years Stable 4+ months prescription',
+                        y: ${stableOver4mtcaBelow15},
+
+                    },
+                    {
+                        name: '15+ years Stable Females below 4 months prescription',
                         y: ${stableUnder4mtcaOver15F},
 
                     },
                     {
-                        name: '15+ years Males Stable below 4 months prescription',
+                        name: '15+ years Stable Males below 4 months prescription',
                         y: ${stableUnder4mtcaOver15M},
 
                     },
+                    {
+                        name: '15+ years Stable Females 4+ months prescription',
+                        y: ${stableOver4mtcaOver15F},
 
+                    },
+                    {
+                        name: '15+ years Stable Males 4+ months prescription',
+                        y: ${stableOver4mtcaOver15M},
+
+                    },
                 ]
             }],
         });
@@ -661,7 +646,6 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker" style="min-width: 600px; height: 350px; margin: 0 auto"></div>
                         <div id="differentiated_care_tracker_disaggregated" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
