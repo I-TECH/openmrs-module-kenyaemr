@@ -211,7 +211,7 @@
             }
 
             var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-            if(!tsTelephone.match(phoneno)) {
+            if(tsTelephone != "" &amp;&amp; !tsTelephone.match(phoneno)) {
                 getField('ts-telephone.error').html('Phone number should contain only digits').show();
                 return false;
             }
