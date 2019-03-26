@@ -22,6 +22,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinit
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -84,6 +85,7 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 	protected PatientDataSetDefinition heiDataSetDefinition() {
 
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition("HEIRegister");
+		dsd.addSortCriteria("DOBAndAge", SortCriteria.SortDirection.DESC);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -94,17 +96,14 @@ public class HEIRegisterReportBuilder extends AbstractHybridReportBuilder {
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
-
+		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		//		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-//		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		// new columns
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+
+		dsd.addColumn("DOBAndAge", new HEIAgeAndDOBDataDefinition(), "");
 		dsd.addColumn("Serial Number", new HEISerialNumberDataDefinition(),"");
 		dsd.addColumn("Enrollment Date", new HEIEnrollmentDateDataDefinition(),"");
 		dsd.addColumn("HEI Id", new HEIIdDataDefinition(),"");
-		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("DOBAndAge", new HEIAgeAndDOBDataDefinition(), "");
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Entry Point", new HEIEntryPointDataDefinition(),"");
 		dsd.addColumn("Infant Relation", new HEIRelationToInfantDataDefinition(),"");
 		dsd.addColumn("Mothers Name and Phone", new HEIMothersNameAndTelephoneDataDefinition(),"");

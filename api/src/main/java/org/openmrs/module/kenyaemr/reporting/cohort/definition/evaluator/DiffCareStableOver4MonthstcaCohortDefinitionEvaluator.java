@@ -13,11 +13,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableOver4MonthstcaCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedIDUContactsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -29,10 +29,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for HIE
+ * Evaluator for IDU contacts linked to care
  */
-@Handler(supports = {HEIRegisterCohortDefinition.class})
-public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {DiffCareStableOver4MonthstcaCohortDefinition.class})
+public class DiffCareStableOver4MonthstcaCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -41,31 +41,26 @@ public class HEIRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		HEIRegisterCohortDefinition definition = (HEIRegisterCohortDefinition) cohortDefinition;
+		DiffCareStableOver4MonthstcaCohortDefinition definition = (DiffCareStableOver4MonthstcaCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
 
 		Cohort newCohort = new Cohort();
 
-		context = ObjectUtil.nvl(context, new EvaluationContext());
-
-		String qry = "SELECT DISTINCT hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
-				"  INNER JOIN kenyaemr_etl.etl_hei_enrollment he\n" +
-				"  INNER JOIN kenyaemr_etl.etl_patient_demographics pd\n" +
-				"    on hf.patient_id = he.patient_id  and hf.patient_id = pd.patient_id\n" +
-				"where  he.visit_date <= hf.visit_date\n" +
-				"and date(pd.DOB) BETWEEN date(:startDate) AND date(:endDate);";
+		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
+				"on c.patient_id = f.patient_id where f.stability = 1 and f.person_present = 978\n" +
+				"and timestampdiff(month,c.latest_vis_date,c.latest_tca) >=4\n" +
+				"and c.started_on_drugs is not null group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
-		Date startDate = (Date)context.getParameterValue("startDate");
 		Date endDate = (Date)context.getParameterValue("endDate");
 		builder.addParameter("endDate", endDate);
-		builder.addParameter("startDate", startDate);
-
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
+
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
+
 
         return new EvaluatedCohort(newCohort, definition, context);
     }

@@ -122,14 +122,14 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("VDRL Done", new ANCVDRLDoneDataDefinition(),"");
         dsd.addColumn("VDRL Results", new ANCVDRLResultsDataDefinition(),"");
         dsd.addColumn("VDRL Treated", new ANCVDRLTreatedDataDefinition(),"");
-        dsd.addColumn("HIV Status before First ANC", new ANCHIVStatusBeforeFirstANCDataDefinition(),"");
+        dsd.addColumn("HIV Status preANC", new ANCHIVStatusBeforeFirstANCDataDefinition(),"");
         dsd.addColumn("HIV Test Type", new ANCHIVTestTypeDataDefinition(),"");
         dsd.addColumn("HIV Test One", new ANCHIVTestOneDataDefinition(),"");
         dsd.addColumn("HIV Test Two", new ANCHIVTestTwoDataDefinition(),"");
         dsd.addColumn("HIV Test Results", new ANCFinalTestResultsDataDefinition(),"");
         dsd.addColumn("WHO Stage", new ANCWHOStageDataDefinition(),"");
         dsd.addColumn("VL Test Results", new ANCVLTestResultsDataDefinition(),"");
-        dsd.addColumn("Given HAART before first ANC", new ANCHAARTGivenBeforeFirstANCDataDefinition(),"");
+        dsd.addColumn("Given HAART preANC", new ANCHAARTGivenBeforeFirstANCDataDefinition(),"");
         dsd.addColumn("Given HAART at ANC", new ANCHAARTGivenAtANCDataDefinition(),"");
         dsd.addColumn("Prophylaxis Given", new ANCProphylaxisGivenDataDefinition(),"");
         dsd.addColumn("AZT Dispensed", new ANCAZTDispensedDataDefinition(),"");

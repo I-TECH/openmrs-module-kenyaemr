@@ -32,8 +32,12 @@
 </style>
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
+
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+        var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
         //var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
@@ -72,6 +76,10 @@
                 jq("#explain-complications").hide();
                 getField('other-complications.value').val("");
             }
+            //Show number of clients already booked on tca date
+            jq('#showNumberBooked').hide();
+            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
             jq('#partner-tested select').change(onPartnerTestedChange);
@@ -174,7 +182,17 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
-
+        //Baby prophylaxis prepopulation
+            if(BABY_PROPHYLAXIS ==160123){
+                jq("#azt-dispensed input[value=160123]").prop("checked", true);
+            }else{
+                jq("#azt-dispensed input[value=160123]").prop("checked", false);
+            }
+            if(BABY_PROPHYLAXIS ==80586){
+                jq("#nvp-dispensed input[value=80586]").prop("checked", true);
+            }else{
+                jq("#nvp-dispensed input[value=80586]").prop("checked", false);
+            }
         });
     //on ready end
         function complicationsChange() {
@@ -352,6 +370,8 @@
         function validateOtherFields() {
 
             var gestation = getValue('gestation.value');
+            var encounterDate = getValue('encounter-date.value');
+            var tca_date = getValue('returnVisitDate.value');
 
             if (gestation != null) {
                 var gestationValue = parseFloat(gestation);
@@ -360,7 +380,28 @@
                     return false;
                 }
             }
+            if (tca_date == "") {
+                getField('returnVisitDate.error').html('Please specify return visit date for client.').show();
+                return false;
+            }else{
+                getField('returnVisitDate.error').html('Please specify return visit date for client.').hide();
+            }
+            if (tca_date &lt; encounterDate ) {
+                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
+                return false;
+            }else{
+                getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
+            }
             return true;
+        }
+        // get count of patients booked on a date
+        function getPatientsBookedOnDate() {
+            var tca_date = getValue('returnVisitDate.value');
+            jq('#showNumberBooked').hide();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+                jq('#showBookedResult').text(data.bookingsOnDate);
+                jq('#showNumberBooked').show();
+            });
         }
         beforeSubmit.push(function () {
             if (validateOtherFields()) {
@@ -921,7 +962,8 @@
 									<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerLabels="Yes,No"/>
-									&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+									<span class="value"><recentObs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									&#160;&#160;&#160;&#160;&#160;
 								Partner HIV Status:
 									&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 									<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -984,6 +1026,11 @@
 									<span style="color:red;"><strong>*</strong></span>
 								</td>
 							</tr>
+						</table>
+						<table id="showNumberBooked" class="simple-table">
+							<tr>
+								<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+								<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
 						</table>
 					</fieldset>
 				</td>

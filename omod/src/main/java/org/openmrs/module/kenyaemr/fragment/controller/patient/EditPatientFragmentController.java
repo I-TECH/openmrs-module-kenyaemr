@@ -358,6 +358,9 @@ public class EditPatientFragmentController {
 			if (StringUtils.isNotBlank(telephoneContact)) {
 				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
 			}
+			if (StringUtils.isNotBlank(alternatePhoneContact)) {
+				validateField(errors, "alternatePhoneContact", new TelephoneNumberValidator());
+			}
 			if (StringUtils.isNotBlank(nextOfKinContact)) {
 				validateField(errors, "nextOfKinContact", new TelephoneNumberValidator());
 			}

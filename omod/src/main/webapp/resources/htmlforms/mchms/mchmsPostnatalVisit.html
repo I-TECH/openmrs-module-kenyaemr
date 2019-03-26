@@ -37,8 +37,11 @@
 	var ARV_CONCEPT_ID = 1148;
 	var HAART_CONCEPT_ID = 1149;
 	var NA_CONCEPT_ID = 1175;
+    var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
     //var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
     var DATE_OF_DELIVERY = "<lookup expression="fn.latestObs(5599).getValueDatetime()"/>";
     var PLACE_OF_DELIVERY = "<lookup expression="fn.latestObs(1572).getValueCoded()"/>";
@@ -51,13 +54,17 @@
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
     var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
-    //On ready start
+
+     //On ready start
     jq(function () {
         var strtext = "";
         getField('weight.value').change(onWeightOrHeightChange);
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
         onEncounterDateChange();
+        //Show number of clients already booked on tca date
+        jq('#showNumberBooked').hide();
+        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
         //On delivery outcome change
         jq('#single').show();
         jq('#twins').hide();
@@ -165,7 +172,7 @@
 
        //Maternal history prepopulation
         if(DATE_OF_DELIVERY !=""){
-            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+            var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD/MMM/YYYY').format('DD-MMM-YYYY');
             getField('delivery-date.value').val(deliveryDateFormatted);
         }else{
             getField('delivery-date.value').val("");
@@ -271,8 +278,20 @@
         }else{
             getField('infant-feeding.value').prop("selectedIndex", 0);
         }
+        //Baby prophylaxis prepopulation
+        if(BABY_PROPHYLAXIS ==160123){
+            jq("#azt-dispensed input[value=160123]").prop("checked", true);
+        }else{
+            jq("#azt-dispensed input[value=160123]").prop("checked", false);
+        }
+        if(BABY_PROPHYLAXIS ==80586){
+            jq("#nvp-dispensed input[value=80586]").prop("checked", true);
+        }else{
+            jq("#nvp-dispensed input[value=80586]").prop("checked", false);
+        }
     });
     //on ready end
+
     function onDeliveryOutcomeChange() {
         if (getValue('delivery-outcome.value') == 159913) {
             jq('#single').show();
@@ -463,6 +482,15 @@
             jq('#current-regimen').html("None");
         }
     }
+    // get count of patients booked on a date
+    function getPatientsBookedOnDate() {
+        var tca_date = getValue('returnVisitDate.value');
+        jq('#showNumberBooked').hide();
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+            jq('#showBookedResult').text(data.bookingsOnDate);
+            jq('#showNumberBooked').show();
+        });
+    }
     //Clear hidden sections
     clearHiddenSections = function(parentObj) {
         parentObj.find('input[type=radio]').each(function() {
@@ -478,9 +506,13 @@
             this.selectedIndex =0;
         });
     }
+
 	beforeSubmit.push(function () {
         var fundalHeight = getValue('fundal.value');
         var deliveryDate = getValue('delivery-date.value');
+        var encounterDate = getValue('encounter-date.value');
+        var tca_date = getValue('returnVisitDate.value');
+
         if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
             getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
             return false;
@@ -488,11 +520,23 @@
 		if (!jq('#arv-medication').is(':visible')) {
 			clearArvMeds();
 		}
-        if (deliveryDate =="" ) {
+        if (DATE_OF_DELIVERY =="" &amp;&amp; deliveryDate =="" ) {
             getField('delivery-date.error').html('Delivery date should not be empty').show();
             return false;
         }else{
             getField('delivery-date.error').html('Delivery date should not be empty').hide();
+        }
+        if (tca_date == "") {
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').hide();
+        }
+        if (tca_date &lt; encounterDate ) {
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
         }
 		return true;
 	});
@@ -1034,6 +1078,7 @@
 							<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerLabels="Yes,No"/>
+							<span class="value"><recentObs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						Partner HIV Status:
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -1160,7 +1205,6 @@
 									<table class="right-aligned-first" style="width: 100%;" border="0">
 										<obsgroup groupingConceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 											<tr>
-
 												<td style="text-align: left">
 													<div style="float: left; padding-right: 50px">
 														<obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1288,6 +1332,11 @@
 							<span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
+				</table>
+				<table id="showNumberBooked" class="simple-table">
+					<tr>
+						<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+						<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
 				</table>
 			</fieldset>
 		</td>

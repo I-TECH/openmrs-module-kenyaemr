@@ -43,8 +43,11 @@
     var NOT_HIV_TESTED_ID = 1402;
     var NEGATIVE = 664;
     var UNKNOWN = 1067;
+    var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
     var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
     var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
     var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
@@ -83,6 +86,9 @@
         jq("#hiv-test2-result select").change(secondTestSelected);
         //test kit expiry
         jq("#expiry-date input").change(expiryDateSelected);
+        //Show number of clients already booked on tca date
+        jq('#showNumberBooked').hide();
+        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
 		//Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-known-positive').show();
@@ -206,6 +212,17 @@
             jq("#expiry-date2 input").prop("disabled", false);
             getField('hiv-final-result.value').val(1138);
         }
+        //Baby prophylaxis prepopulation
+        if(BABY_PROPHYLAXIS ==160123){
+            jq("#azt-dispensed input[value=160123]").prop("checked", true);
+           }else{
+            jq("#azt-dispensed input[value=160123]").prop("checked", false);
+        }
+        if(BABY_PROPHYLAXIS ==80586){
+            jq("#nvp-dispensed input[value=80586]").prop("checked", true);
+        }else{
+            jq("#nvp-dispensed input[value=80586]").prop("checked", false);
+		}
 	});
 //End on ready
 
@@ -218,7 +235,15 @@
 		}
 		return false;
 	});
-
+    // get count of patients booked on a date
+    function getPatientsBookedOnDate() {
+        var tca_date = getValue('returnVisitDate.value');
+        jq('#showNumberBooked').hide();
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+            jq('#showBookedResult').text(data.bookingsOnDate);
+            jq('#showNumberBooked').show();
+        });
+    }
     function onCacxResultChange() {
         if (getValue('cacx-screening.value') == 1118 || getValue('cacx-screening.value') == 1175) {
             jq('#cacx-screening-method').hide();
@@ -299,6 +324,8 @@
 		var fundalHeight = getValue('fundal.value');
 		var urinePh = getValue('urine-ph.value');
 		var urineSpecificGravity = getValue('urine-specific-gravity.value');
+        var encounterDate = getValue('encounter-date.value');
+        var tca_date = getValue('returnVisitDate.value');
 
 		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
 			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
@@ -318,6 +345,18 @@
 				return false;
 			}
 		}
+        if (tca_date == "") {
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').hide();
+        }
+        if (tca_date &lt; encounterDate ) {
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
+        }
 		return true;
 	}
     //First and second test validation
@@ -490,7 +529,7 @@
 								</td>
 								<td> ANC Clinic Number:</td>
 								<td>
-									<input type="text" name="anc-number" id="anc-number" readonly="True" />
+									<input type="text" name="anc-number" id="anc-number"  />
 									<i>(xxxx/yy)</i>
 								</td>
 							</tr>
@@ -783,6 +822,7 @@
 										<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 											 answerLabels="Yes,No"/>
+										<span class="value"><recentObs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 									</td>
 									<td>Partner HIV Status:</td>
 									<td>
@@ -1174,26 +1214,54 @@
 						<td colspan="6">
 							<table id="anc-counselling" align="center" width="100%" class="tb1">
 								<tr>
-									<td style="background-color: #B3C2F0; color: #000000;">Subject</td>
+									<td style="color: #000000;"><strong><u>Subject(s)</u></strong></td>
 								</tr>
-								<repeat>
-									<template>
 										<obsgroup groupingConceptId="161048AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 											<tr>
-												<td>
-													<obs id="subject" class="anc-counsel"
-														 conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-														 answerConceptIds="159758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159854AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1381AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-														 answerLabels="Birth plans,Danger signs,Family planning,HIV,Supplimental feeding,Breast care,Infant feeding,Insectiside treated nets"/>
+												<td style="text-align: left">
+													<div style="float: left; padding-right: 50px">
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Birth plans" style="checkbox"
+														/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Danger signs" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="156277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Family planning" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="HIV" style="checkbox"/>
+														<br />
+													</div>
 												</td>
-
+												<td>
+													<div style="float: left; padding-right: 50px">
+														 <obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159854AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Supplimental feeding"
+															 style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Breast care" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Infant feeding" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="1381AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Insectiside treated nets" style="checkbox"/>
+														<br />
+													</div>
+												</td>
 											</tr>
 										</obsgroup>
-									</template>
-									<render counselId="1"/>
-									<render counselId="2"/>
-									<render counselId="3"/>
-								</repeat>
 							</table>
 						</td>
 					</tr>
@@ -1239,6 +1307,11 @@
 							<span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
+				</table>
+				<table id="showNumberBooked" class="simple-table">
+					<tr>
+						<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+						<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
 				</table>
 			</fieldset>
 		</td>

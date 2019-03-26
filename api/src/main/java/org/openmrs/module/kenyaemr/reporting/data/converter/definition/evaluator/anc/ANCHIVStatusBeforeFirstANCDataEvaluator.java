@@ -34,11 +34,18 @@ public class ANCHIVStatusBeforeFirstANCDataEvaluator implements EncounterDataEva
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
+//        String qry = "select\n" +
+//                "   e.encounter_id,\n" +
+//                "  (case e.hiv_status when 703 then \"Known positive\" when 1067 then \"Unknown\" else \"\" end) as hiv_status\n" +
+//                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+//                "GROUP BY e.encounter_id;";
+
         String qry = "select\n" +
-                "   e.encounter_id,\n" +
-                "  (case e.hiv_status when 703 then \"Known positive\" else \"Uknown\" end) as hiv_status\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "GROUP BY e.encounter_id;";
+                "  v.encounter_id,\n" +
+                "  (case e.hiv_status when 703 then \"Positive\" when 664 then \"Negative\"  else \"Unknown\" end) as hiv_status\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -287,6 +287,152 @@
             }],
         });
     });
+
+    jQuery(function () {
+        jQuery('#differentiated_care_tracker').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Current on Treatment'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+
+            series: [{
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [
+                    {
+                        name: 'Total current on treatment',
+                        y: ${currInCareOnART},
+
+                    },
+                    {
+                        name: 'Total Stable patients',
+                        y: ${stableOver4mtca+stableUnder4mtca},
+
+                    },
+                    {
+
+                    name: 'Stable patients with under 4 months prescription',
+                    y:${stableUnder4mtca},
+
+                }, {
+                    name: 'Stable patients with 4+ months prescription',
+                    y: ${stableOver4mtca},
+
+                },
+
+                ]
+            }],
+        });
+    });
+
+    jQuery(function () {
+        jQuery('#differentiated_care_tracker_disaggregated').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Current on treatment'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+
+            series: [{
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [
+
+                    {
+                        name: '<15 years Stable below 4 months prescription',
+                        y: ${stableUnder4mtcaBelow15},
+
+                    },
+                    {
+                        name: '<15 years Stable 4+ months prescription',
+                        y: ${stableOver4mtcaBelow15},
+
+                    },
+                    {
+                        name: '15+ years Stable Females below 4 months prescription',
+                        y: ${stableUnder4mtcaOver15F},
+
+                    },
+                    {
+                        name: '15+ years Stable Males below 4 months prescription',
+                        y: ${stableUnder4mtcaOver15M},
+
+                    },
+                    {
+                        name: '15+ years Stable Females 4+ months prescription',
+                        y: ${stableOver4mtcaOver15F},
+
+                    },
+                    {
+                        name: '15+ years Stable Males 4+ months prescription',
+                        y: ${stableOver4mtcaOver15M},
+
+                    },
+                ]
+            }],
+        });
+    });
 </script>
 
 <div class="ke-page-content">
@@ -480,11 +626,27 @@
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
-
+                                    <tr>
+                                                <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Stable<br/>(on less than 4 months prescription)</th>
+                                                <th>Stable<br/>(on 4+ months prescription)</th>
+                                                <th>Unstable</th>
+                                            </tr>
+                                            <tr>
+                                                <td>${stableUnder4mtca}</td>
+                                                <td>${stableOver4mtca}</td>
+                                                <td>${unstable}</td>
+                                            </tr>
+                                    <tr>
+                                        <td colspan="2" class="heading"><strong>Total Stable: ${stableOver4mtca + stableUnder4mtca}</strong></td>
+                                    </tr>
+                                    <tr><td colspan="3" class="heading"><strong>Current on Treatment: ${currInCareOnART}</strong></td></tr>
                                 </table>
                             </div>
                         </div>
-
+                        <div id="differentiated_care_tracker_disaggregated" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
