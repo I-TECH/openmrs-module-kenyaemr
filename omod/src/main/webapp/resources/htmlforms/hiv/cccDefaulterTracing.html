@@ -95,7 +95,14 @@
         <table width="100%">
             <tr>
                 <td>Date:
-                    <encounterDate id="encounter-date" showTime="true"/>
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    <encounterDate id="encounter-date" showTime="false"/>
                 </td>
                 <td>Location:
                     <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
