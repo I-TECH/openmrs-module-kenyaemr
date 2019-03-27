@@ -1,5 +1,7 @@
 <%
     ui.includeCss("kenyaemr", "referenceapplication.css", 100)
+    ui.includeJavascript("kenyaemr", "highcharts.js")
+    ui.includeJavascript("kenyaemr", "highcharts-grouped-categories.js")
 %>
 <style>
 .alignLeft {
@@ -288,76 +290,14 @@
         });
     });
 
-    jQuery(function () {
-        jQuery('#differentiated_care_tracker').highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                title: {
-                    text: 'Current on Treatment'
-                }
-
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.0f}'
-                    }
-                }
-            },
-
-            tooltip: {
-                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
-            },
-
-            series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [
-                    {
-                        name: 'Total current on treatment',
-                        y: ${currInCareOnART},
-
-                    },
-                    {
-                        name: 'Total Stable patients',
-                        y: ${stableOver4mtca+stableUnder4mtca},
-
-                    },
-                    {
-
-                        name: 'Stable patients with under 4 months prescription',
-                        y:${stableUnder4mtca},
-
-                    }, {
-                        name: 'Stable patients with 4+ months prescription',
-                        y: ${stableOver4mtca},
-
-                    },
-
-                ]
-            }],
-        });
-    });
 
     jQuery(function () {
         jQuery('#differentiated_care_tracker_stable').highcharts({
+            plotOptions: {
+                series: {
+                    colorByPoint: true
+                }
+            },
             chart: {
                 type: 'column'
             },
@@ -393,45 +333,24 @@
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
-
             series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [
-
-                    {
-                        name: '<15 years below 4 months prescription',
-                        y: ${stableUnder4mtcaBelow15},
-
-                    },
-
-                    {
-                        name: '15+ years Females below 4 months prescription',
-                        y: ${stableUnder4mtcaOver15F},
-
-                    },
-                    {
-                        name: '15+ years Males below 4 months prescription',
-                        y: ${stableUnder4mtcaOver15M},
-
-                    },
-                    {
-                        name: '<15 years 4+ months prescription',
-                        y: ${stableOver4mtcaBelow15},
-
-                    },
-                    {
-                        name: '15+ years Females 4+ months prescription',
-                        y: ${stableOver4mtcaOver15F},
-
-                    },
-                    {
-                        name: '15+ years Males 4+ months prescription',
-                        y: ${stableOver4mtcaOver15M},
-
-                    },
-                ]
+                data: [{y:${stableUnder4mtcaBelow15},color:"#7cb5ec"}, {y:${stableOver4mtcaBelow15},color:"#434348"},{y:${stableUnder4mtcaOver15F},color:"#90ed7d"}, {y:${stableUnder4mtcaOver15M},color:"#f7a35c"},  {y:${stableOver4mtcaOver15F},color:"#8085e9"},
+                    {y:${stableOver4mtcaOver15M},color:"#f15c80"}]
             }],
+            xAxis: {
+                categories: [{
+                    name: "<15 Years",
+                    categories: ["Below 4 months prescription", "4+ months prescription"]
+                }, {
+                    name: "15+ Years",
+                    categories: ["Females below 4 months prescription", " Males below 4 months prescription", "Females 4+ months prescription", "Males 4+ months prescription"]
+                }, {
+                    name: "Fish",
+                    categories: ["Cod", "Salmon", "Tuna"]
+                },
+                ]
+            }
+
         });
     });
 
@@ -500,6 +419,7 @@
             }],
         });
     });
+
 </script>
 
 <div class="ke-page-content">
@@ -716,9 +636,14 @@
                                         <td>${unstableFemales15Plus}</td>
                                         <td>${unstableMales15Plus}</td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="3" class="heading"><strong>Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td>
+                                    <tr><strong>
+                                    <td colspan="3" class="heading"><strong style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td></strong>
                                     </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong></td>
+                                    </tr>
+
+
                                 </table>
                             </div>
                         </div>
@@ -756,7 +681,10 @@
                                         <td>${stableOver4mtcaOver15M}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading"><strong>Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Current on ART: ${currInCareOnART}</strong></td>
                                     </tr>
 
                                 </table>
