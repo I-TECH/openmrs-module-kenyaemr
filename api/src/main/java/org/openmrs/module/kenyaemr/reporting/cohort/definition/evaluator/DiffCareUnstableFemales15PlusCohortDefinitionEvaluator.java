@@ -13,7 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableFemales15PlusYearsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableUnder15YearsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -28,10 +29,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for stable patients with under 4 months prescription
+ * Evaluator for unstable Female patients aged 15+ years
  */
-@Handler(supports = {DiffCareStableUnder4MonthstcaCohortDefinition.class})
-public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {DiffCareUnstableFemales15PlusYearsCohortDefinition.class})
+public class DiffCareUnstableFemales15PlusCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -40,7 +41,7 @@ public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements C
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DiffCareStableUnder4MonthstcaCohortDefinition definition = (DiffCareStableUnder4MonthstcaCohortDefinition) cohortDefinition;
+		DiffCareUnstableFemales15PlusYearsCohortDefinition definition = (DiffCareUnstableFemales15PlusYearsCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
@@ -48,9 +49,9 @@ public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements C
 		Cohort newCohort = new Cohort();
 
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"                           on c.patient_id = f.patient_id where f.stability = 1 and f.person_present = 978\n" +
-				"                           and timestampdiff(month,c.latest_vis_date,c.latest_tca) between 0 and 3\n" +
-				"and c.started_on_drugs is not null group by c.patient_id;";
+				"                             on c.patient_id = f.patient_id\n" +
+				"                                                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = c.patient_id and timestampdiff(year ,d.dob,c.latest_vis_date)>= 15 and d.Gender=\"F\"\n" +
+				"where f.stability = 2 and c.started_on_drugs is not null group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

@@ -15,10 +15,10 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Differentiated care unstable patients during their latest HIV followup
+ * Unstable patients aged 15+ years during their latest HIV followup
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.DiffCareUnstableCohortDefinition")
-public class DiffCareUnstableCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.DiffCareUnstableMales15PlusYearsCohortDefinition")
+public class DiffCareUnstableMales15PlusYearsCohortDefinition extends BaseCohortDefinition {
 
 }
