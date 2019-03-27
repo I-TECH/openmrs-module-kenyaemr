@@ -143,6 +143,7 @@ public class EncounterBasedRegimenUtils {
 
         String regimen = null;
         String regimenShort = null;
+        String regimenLine = null;
         String regimenUuid = null;
         String endDate = null;
         String startDate = e != null? DATE_FORMAT.format(e.getEncounterDatetime()) : "";
@@ -155,6 +156,7 @@ public class EncounterBasedRegimenUtils {
                 regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "Unresolved Regimen name";
                 try {
                     regimenShort = getRegimenNameFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
+                    regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -176,6 +178,7 @@ public class EncounterBasedRegimenUtils {
                     "startDate", startDate,
                     "endDate", endDate != null? endDate : "",
                     "regimenShortDisplay", regimenShort != null ? regimenShort : regimen,
+                    "regimenLine", regimenLine != null ? regimenLine : "",
                     "regimenLongDisplay", regimen,
                     "changeReasons", changeReason,
                     "regimenUuid", regimenUuid,
@@ -200,155 +203,206 @@ public class EncounterBasedRegimenUtils {
 
         return "Unknown";
     }
+    public static String getRegimenLineFromRegimensXMLString(String conceptRef, String regimenJson) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode conf = (ArrayNode) mapper.readTree(regimenJson);
+
+        for (Iterator<JsonNode> it = conf.iterator(); it.hasNext(); ) {
+            ObjectNode node = (ObjectNode) it.next();
+            if (node.get("conceptRef").asText().equals(conceptRef)) {
+                return node.get("regimenLine").asText();
+            }
+        }
+
+        return "Unknown";
+    }
     public static String getRegimenConceptJson() {
         String json = "[\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/NVP\",\n" +
-                "    \"conceptRef\": \"162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/EFV\",\n" +
-                "    \"conceptRef\": \"164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/NVP\",\n" +
-                "    \"conceptRef\": \"1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/EFV\",\n" +
-                "    \"conceptRef\": \"160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"D4T/3TC/NVP\",\n" +
-                "    \"conceptRef\": \"792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"D4T/3TC/EFV\",\n" +
-                "    \"conceptRef\": \"160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/AZT\",\n" +
-                "    \"conceptRef\": \"98e38a9c-435d-4a94-9b66-5ca524159d0e\"\n" +
+                "    \"conceptRef\": \"98e38a9c-435d-4a94-9b66-5ca524159d0e\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/DTG\",\n" +
-                "    \"conceptRef\": \"6dec7d7d-0fda-4e8d-8295-cb6ef426878d\"\n" +
+                "    \"conceptRef\": \"6dec7d7d-0fda-4e8d-8295-cb6ef426878d\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/DTG\",\n" +
-                "    \"conceptRef\": \"9fb85385-b4fb-468c-b7c1-22f75834b4b0\"\n" +
+                "    \"conceptRef\": \"9fb85385-b4fb-468c-b7c1-22f75834b4b0\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/DTG\",\n" +
-                "    \"conceptRef\": \"4dc0119b-b2a6-4565-8d90-174b97ba31db\"\n" +
+                "    \"conceptRef\": \"4dc0119b-b2a6-4565-8d90-174b97ba31db\",\n" +
+                "    \"regimenLine\": \"adult_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/ATV/r\",\n" +
-                "    \"conceptRef\": \"164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/ATV/r\",\n" +
-                "    \"conceptRef\": \"164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"D4T/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/TDF/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"c421d8e7-4f43-43b4-8d2f-c7d4cfb976a4\"\n" +
+                "    \"conceptRef\": \"c421d8e7-4f43-43b4-8d2f-c7d4cfb976a4\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ETR/RAL/DRV/RTV\",\n" +
-                "    \"conceptRef\": \"337b6cfd-9fa7-47dc-82b4-d479c39ef355\"\n" +
+                "    \"conceptRef\": \"337b6cfd-9fa7-47dc-82b4-d479c39ef355\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ETR/TDF/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"7a6c51c4-2b68-4d5a-b5a2-7ba420dde203\"\n" +
+                "    \"conceptRef\": \"7a6c51c4-2b68-4d5a-b5a2-7ba420dde203\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/NVP\",\n" +
-                "    \"conceptRef\": \"162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/EFV\",\n" +
-                "    \"conceptRef\": \"162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"AZT/3TC/ABC\",\n" +
-                "    \"conceptRef\": \"817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"D4T/3TC/ABC\",\n" +
-                "    \"conceptRef\": \"b9fea00f-e462-4ea5-8d40-cc10e4be697e\"\n" +
+                "    \"conceptRef\": \"b9fea00f-e462-4ea5-8d40-cc10e4be697e\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/ABC/LPV/r\",\n" +
-                "    \"conceptRef\": \"162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/DDI/LPV/r\",\n" +
-                "    \"conceptRef\": \"162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/TDF/3TC/LPV/r\",\n" +
-                "    \"conceptRef\": \"077966a6-4fbd-40ce-9807-2d5c2e8eb685\"\n" +
+                "    \"conceptRef\": \"077966a6-4fbd-40ce-9807-2d5c2e8eb685\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RHZE\",\n" +
-                "    \"conceptRef\": \"1675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"1675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RHZ\",\n" +
-                "    \"conceptRef\": \"768AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"768AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"SRHZE\",\n" +
-                "    \"conceptRef\": \"1674AAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"1674AAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RfbHZE\",\n" +
-                "    \"conceptRef\": \"07c72be8-c575-4e26-af09-9a98624bce67\"\n" +
+                "    \"conceptRef\": \"07c72be8-c575-4e26-af09-9a98624bce67\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RfbHZ\",\n" +
-                "    \"conceptRef\": \"9ba203ec-516f-4493-9b2c-4ded6cc318bc\"\n" +
+                "    \"conceptRef\": \"9ba203ec-516f-4493-9b2c-4ded6cc318bc\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"SRfbHZE\",\n" +
-                "    \"conceptRef\": \"fce8ba26-8524-43d1-b0e1-53d8a3c06c00\"\n" +
+                "    \"conceptRef\": \"fce8ba26-8524-43d1-b0e1-53d8a3c06c00\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"S (1 gm vial)\",\n" +
-                "    \"conceptRef\": \"84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"84360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"E\",\n" +
-                "    \"conceptRef\": \"75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"75948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RH\",\n" +
-                "    \"conceptRef\": \"1194AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"1194AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"RHE\",\n" +
-                "    \"conceptRef\": \"159851AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"159851AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_intensive\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"EH\",\n" +
-                "    \"conceptRef\": \"1108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n" +
+                "    \"conceptRef\": \"1108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"child_intensive\"\n" +
                 "  }\n" +
                 "]";
         return json;
