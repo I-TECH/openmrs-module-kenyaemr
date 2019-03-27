@@ -22,11 +22,9 @@ import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefin
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Created by antony on 09/08/17.
@@ -435,11 +433,35 @@ public class DashBoardCohorts {
      * @param context optional (used to return a cached value if possible)
      * @return
      */
-    public static EvaluatedCohort unstablePatients(EvaluationContext context) {
+    public static EvaluatedCohort unstablePatientsUnder15(EvaluationContext context) {
         try {
-            return getService().evaluate(new DiffCareUnstableCohortDefinition(), context);
+            return getService().evaluate(new DiffCareUnstableUnder15YearsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating unstable patients", e);
+            throw new IllegalStateException("Error evaluating unstable patients aged under 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstableFemalePatients15Plus(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableFemales15PlusYearsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable female patients aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstableMalePatients15Plus(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableMales15PlusYearsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable male patients aged 15+ years", e);
         }
     }
 
