@@ -44,9 +44,9 @@
 	</bean>
 
 	<bean id="kenyaemr.app.hts" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
-		<constructor-arg value="kenyaemr.hts" />
+		<constructor-arg value="kenyaemr.hivtesting" />
 		<constructor-arg value="HIV Testing Services" />
-		<constructor-arg value="kenyaemr/registration/registrationHome.page" />
+		<constructor-arg value="kenyaemr/hivTesting/htsHome.page" />
 		<constructor-arg value="kenyaui:apps/hts.png" />
 		<constructor-arg value="250" />
 	</bean>

@@ -31,9 +31,9 @@
 				<ref bean="kenyaemr.common.form.labResults" />
 				<!--<ref bean="kenyaemr.common.form.otherMedications" />-->
 				<ref bean="kenyaemr.common.form.progressNote" />
-				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
+				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 			</set>
 		</property>
 	</bean>
@@ -151,6 +151,7 @@
 				<ref bean="kenyaemr.app.intake" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
@@ -270,6 +271,7 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
@@ -286,6 +288,7 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
@@ -302,6 +305,7 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
