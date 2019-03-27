@@ -12,15 +12,15 @@ package org.openmrs.module.kenyaemr.page.controller.hivTesting;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.page.PageModel;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,17 +32,12 @@ public class HtsViewPatientPageController {
 	
 	public void controller(PageModel model) {
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-		PatientWrapper patientWrapper = new PatientWrapper(patient);
 		Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
 		Form htsRetestForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CONFIRMATORY_TEST);
 		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.REFERRAL_AND_LINKAGE);
 
-		List<Encounter> initialEncounters = patientWrapper.allEncounters(htsInitialForm);
-		List<Encounter> retestEncounters = patientWrapper.allEncounters(htsRetestForm);
-		List<Encounter> linkageEncounters = patientWrapper.allEncounters(htsLinkageForm);
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsInitialForm, htsRetestForm, htsLinkageForm), null, null, null, null, false);
 
-		Collections.reverse(initialEncounters);
-		Collections.reverse(retestEncounters);
-		Collections.reverse(linkageEncounters);
+		Collections.reverse(encounters);
 	}
 }
