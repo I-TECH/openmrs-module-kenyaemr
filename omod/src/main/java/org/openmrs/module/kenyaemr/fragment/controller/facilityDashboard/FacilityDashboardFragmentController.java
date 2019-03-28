@@ -46,7 +46,7 @@ public class FacilityDashboardFragmentController {
 				htsLinkedPartner = 0, htsLinkedIDU = 0, unstableUnder15 = 0, unstableFemales15Plus = 0, unstableMales15Plus = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
 				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
 				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
-				currInCareOnARTOver15F = 0;
+				currInCareOnARTOver15F = 0, undocumentedStability = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -193,6 +193,10 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
 		currInCareOnARTOver15F = currInCareOnARTOver15yF != null? currInCareOnARTOver15yF.size(): 0;
 
+
+		Set<Integer> undocumentedPatientStability = DashBoardCohorts.undocumentedPatientStability(evaluationContext).getMemberIds();
+		undocumentedStability = undocumentedPatientStability != null? undocumentedPatientStability.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -236,6 +240,7 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("currInCareOnARTUnder15", currInCareOnARTUnder15);
 		model.addAttribute("currInCareOnARTOver15M", currInCareOnARTOver15M);
 		model.addAttribute("currInCareOnARTOver15F", currInCareOnARTOver15F);
+		model.addAttribute("undocumentedStability", undocumentedStability);
 
 		return null;
 	}

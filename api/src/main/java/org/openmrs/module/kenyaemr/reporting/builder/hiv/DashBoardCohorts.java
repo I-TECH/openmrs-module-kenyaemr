@@ -493,6 +493,18 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
      * @param context optional (used to return a cached value if possible)
      * @return
      */
+    public static EvaluatedCohort undocumentedPatientStability(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUndocumentedStabilityCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating undocumented patient stability", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
     public static EvaluatedCohort currentInCareOnARTOver15Male(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCarecurrentInCareOnARTOver15MaleCohortDefinition(), context);

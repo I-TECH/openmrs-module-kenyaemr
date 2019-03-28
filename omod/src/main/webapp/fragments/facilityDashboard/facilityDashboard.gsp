@@ -236,57 +236,23 @@
             },
 
             series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [{
-
-                    name: 'Family contacts tested',
-                    y:${htsTestedFamily},
-
-                }, {
-                    name: 'HIV+ family contacts',
-                    y: ${htsPositiveFamily},
-
-                }, {
-                    name: 'Family contacts unknown status',
-                    y: ${htsUnknownStatusFamily},
-
-                }, {
-                    name: 'Family contacts linked',
-                    y: ${htsLinkedFamily},
-                },{
-                    name: 'Partners tested',
-                    y:${htsTestedPartners},
-
-                }, {
-                    name: 'HIV+ partners',
-                    y: ${htsPositivePartner},
-
-                }, {
-                    name: 'Partners Unknown status',
-                    y: ${htsUnknownStatusPartner},
-
-                }, {
-                    name: 'Partners linked',
-                    y: ${htsLinkedPartner},
-                },{
-                    name: 'IDU tested',
-                    y:${htsTestedIDU},
-
-                }, {
-                    name: 'IDU HIV+',
-                    y: ${htsPositiveIDU},
-
-                }, {
-                    name: 'IDU Unknown status',
-                    y: ${htsUnknownStatusIDU},
-
-                }, {
-                    name: 'IDU linked',
-                    y: ${htsLinkedIDU}
-
-                }]
+                data: [{y:${htsTestedFamily},color:"#7cb5ec"}, {y:${htsPositiveFamily},color:"#434348"},{y:${htsUnknownStatusFamily},color:"#90ed7d"}, {y:${htsLinkedFamily},color:"#f7a35c"},
+                    {y:${htsTestedPartners},color:"#7cb5ec"}, {y:${htsPositivePartner},color:"#434348"},{y:${htsUnknownStatusPartner},color:"#90ed7d"}, {y:${htsLinkedPartner},color:"#f7a35c"},
+                    {y:${htsTestedIDU},color:"#7cb5ec"}, {y:${htsPositiveIDU},color:"#434348"},{y:${htsUnknownStatusIDU},color:"#90ed7d"}, {y:${htsLinkedIDU},color:"#f7a35c"}]
             }],
+            xAxis: {
+                categories: [{
+                    name: "Family contacts",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                }, {
+                    name: "Sex partners",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                }, {
+                    name: "Injectable Drug Users",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                },
+                ]
+            },
         });
     });
 
@@ -312,7 +278,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Stable patients'
+                    text: 'Documented Stable patients'
                 }
 
             },
@@ -344,9 +310,6 @@
                 }, {
                     name: "15+ Years",
                     categories: ["Females below 4 months prescription", " Males below 4 months prescription", "Females 4+ months prescription", "Males 4+ months prescription"]
-                }, {
-                    name: "Fish",
-                    categories: ["Cod", "Salmon", "Tuna"]
                 },
                 ]
             }
@@ -371,7 +334,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Unstable patients'
+                    text: 'Documented Unstable patients'
                 }
 
             },
@@ -393,30 +356,22 @@
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
+
+
             series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [
+            data: [{y:${unstableUnder15},color:"#7cb5ec"}, {y:${unstableFemales15Plus},color:"#434348"},{y:${unstableMales15Plus},color:"#90ed7d"}]
+        }],
+            xAxis: {
+            categories: [{
+                name: "<15 Years",
+                categories: ["Males and Females"]
 
-                    {
-                        name: '<15 years',
-                        y: ${unstableUnder15},
-
-                    },
-
-                    {
-                        name: '15+ years Females',
-                        y: ${unstableFemales15Plus},
-
-                    },
-                    {
-                        name: '15+ years males',
-                        y: ${unstableMales15Plus},
-
-                    },
-
-                ]
-            }],
+            }, {
+                name: "15+ Years",
+                categories: ["Females", " Males"]
+            },
+            ]
+            }
         });
     });
 
@@ -556,7 +511,7 @@
                                         <td>${htsLinkedFamily}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Sexual Partner(s)</b></td>
+                                        <td><b>Sex Partner(s)</b></td>
                                         <td>${htsTestedPartners}</td>
                                         <td>${htsPositivePartner}</td>
                                         <td>${htsUnknownStatusPartner}</td>
@@ -618,7 +573,7 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Unstable Patients</div>
+                            <div class="ke-panel-heading">Documented Unstable Patients</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -639,6 +594,9 @@
                                     <tr><strong>
                                     <td colspan="3" class="heading"><strong style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td></strong>
                                     </tr>
+                                    <tr><strong>
+                                        <td colspan="3" class="heading"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td></strong>
+                                    </tr>
                                     <tr>
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong></td>
                                     </tr>
@@ -647,12 +605,12 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker_unstable" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
+                        <div id="differentiated_care_tracker_unstable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
 
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Stable Patients</div>
+                            <div class="ke-panel-heading">Documented Stable Patients</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -684,13 +642,16 @@
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
                                     </tr>
                                     <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold">Current on ART: ${currInCareOnART}</strong></td>
                                     </tr>
 
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker_stable" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
+                        <div id="differentiated_care_tracker_stable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>

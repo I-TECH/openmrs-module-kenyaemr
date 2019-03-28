@@ -76,6 +76,7 @@ public class DiffCareStabilityReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "Stable patients with less than 4 months prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableUnder4Monthstca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Stable patients with 4+ months prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableOver4Monthstca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Unstable Patients", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.unstable()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Undocumented stability", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.undocumentedStability()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         return cohortDsd;
 
     }
