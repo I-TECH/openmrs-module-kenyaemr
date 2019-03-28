@@ -50,7 +50,7 @@
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
-                <!--<ref bean="kenyaemr.common.report.rdqaReport" />-->
+                <ref bean="kenyaemr.common.report.rdqaReport" />
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
