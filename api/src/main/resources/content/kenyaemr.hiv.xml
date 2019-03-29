@@ -277,12 +277,13 @@
 		<property name="targetUuid" value="a1a62d1e-2def-11e9-b210-d663bd873d93" />
 		<property name="apps">
 			<set>
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.defaultertracing" />
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+<!--
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation" />
+-->
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/cccDefaulterTracing.html" />
 		<property name="order" value="201090" />
