@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import java.util.Date;
 
 /**
- * MOH 510 cohort definition
+ * MOH 511 cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.moh511Cohort")

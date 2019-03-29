@@ -24,6 +24,7 @@ import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.api.impl.CsvMaker;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
@@ -36,6 +37,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageRequest;
@@ -98,6 +100,9 @@ public class CohortDownloadPageController {
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
         CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
+        LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
+        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+
 
         List<Object> data = new ArrayList<Object>();
         List<Object> headerRow = new ArrayList<Object>();
@@ -108,6 +113,8 @@ public class CohortDownloadPageController {
         header.add("UPN/Patient Clinic Number");
         header.add("Enrollment Date");
         header.add("ART Initiation Date");
+        header.add("Last VL");
+        header.add("Last VL Date");
         headerRow.add(header.toArray());
         for (Patient patient : patients) {
             List<Object> row = new ArrayList<Object>();
@@ -130,9 +137,21 @@ public class CohortDownloadPageController {
             }
             row.add(artInitializationDate);
 
+            String lastVlResult = null;
+            String lastVLResultDate = null;
+            CalculationResult lastvlresult = lastVlResults.get(patient.getId());
+            if (lastvlresult != null && lastvlresult.getValue() != null) {
+                Object lastVl =  lastvlresult.getValue();
+                SimpleObject res = (SimpleObject) lastVl;
+                lastVlResult = res.get("lastVl").toString();
+                lastVLResultDate = DATE_FORMAT.format((Date) res.get("lastVlDate"));
+            }
+            row.add(lastVlResult);
+            row.add(lastVLResultDate);
+
             data.add(row.toArray());
         }
-        String filename =  "Cohort.csv";
+        String filename =  dataSetColumn !=null && dataSetColumn.getName() != null ? dataSetColumn.getName().replaceAll(" ", "_") + "_Cohort.csv" : "Cohort.csv";
         FileDownload fileDownload = new FileDownload(filename, "text/csv", csvMaker.createCsv(data, header));
         return fileDownload;
     }

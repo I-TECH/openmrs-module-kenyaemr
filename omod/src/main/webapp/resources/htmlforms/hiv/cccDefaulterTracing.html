@@ -94,8 +94,15 @@
     <div class="ke-form-header">
         <table width="100%">
             <tr>
-                <td>Date:
-                    <encounterDate id="encounter-date" showTime="true"/>
+                <td>Date of tracing:
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    <encounterDate id="encounter-date" showTime="false"/>
                 </td>
                 <td>Location:
                     <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
@@ -113,7 +120,7 @@
                     <td>Type of tracing</td>
                     <td>
                         <obs id="tracing_type" conceptId="a55f9516-ddb6-47ec-b10d-cb99d1d0bd41" answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,eb113c76-aef8-4890-a611-fe22ba003123,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Client Called,Physical Tracing,Treatment Supporter" style="radio"/>
+                             answerLabels="Client Called,Physical Tracing,Treatment Supporter" required="true" style="radio"/>
                     </td>
                 </tr>
             </table>
@@ -126,7 +133,7 @@
                 <tr>
                     <td>Tracing Outcome</td>
                     <td>
-                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio"/>
+                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true"/>
                     </td>
                 </tr>
             </table>
@@ -139,7 +146,7 @@
                 <tr>
                     <td>Please specify the attempt number<br/> since last missed appointment (i.e. 1, 2, 3)</td>
                     <td>
-                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
                     </td>
                 </tr>
                 <tr>
@@ -147,7 +154,7 @@
                     <td>
                         <obs conceptId="163725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="final-outcome"
                              answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Yes,No" style="radio"/>
+                             answerLabels="Yes,No" style="radio" required="true"/>
                     </td>
                 </tr>
             </table>

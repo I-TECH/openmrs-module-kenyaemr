@@ -43,12 +43,28 @@
 		<constructor-arg value="200" />
 	</bean>
 
+	<bean id="kenyaemr.app.hts" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.hivtesting" />
+		<constructor-arg value="HIV Testing Services" />
+		<constructor-arg value="kenyaemr/hivTesting/htsHome.page" />
+		<constructor-arg value="kenyaui:apps/hts.png" />
+		<constructor-arg value="250" />
+	</bean>
+
 	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.medicalEncounter" />
 		<constructor-arg value="Clinician" />
 		<constructor-arg value="kenyaemr/clinician/clinicianHome.page" />
 		<constructor-arg value="kenyaui:apps/clinician.png" />
 		<constructor-arg value="300" />
+	</bean>
+
+	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.defaultertracing" />
+		<constructor-arg value="Defaulter Tracing" />
+		<constructor-arg value="kenyaemr/defaulterTracing/defaulterTracingHome.page" />
+		<constructor-arg value="kenyaui:apps/defaulter_tracing.png" />
+		<constructor-arg value="399" />
 	</bean>
 
 	<bean id="kenyaemr.app.chart" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">

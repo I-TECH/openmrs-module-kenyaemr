@@ -31,9 +31,9 @@
 				<ref bean="kenyaemr.common.form.labResults" />
 				<!--<ref bean="kenyaemr.common.form.otherMedications" />-->
 				<ref bean="kenyaemr.common.form.progressNote" />
-				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
+				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 			</set>
 		</property>
 	</bean>
@@ -50,7 +50,7 @@
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
-                <!--<ref bean="kenyaemr.common.report.rdqaReport" />-->
+                <ref bean="kenyaemr.common.report.rdqaReport" />
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
@@ -151,6 +151,7 @@
 				<ref bean="kenyaemr.app.intake" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
@@ -270,9 +271,10 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsInitialTestCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/htsInitialTest.html" />
 		<property name="order" value="201000" />
@@ -286,9 +288,10 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsRetestCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/htsConfirmatoryTest.html" />
 		<property name="order" value="201001" />
@@ -302,9 +305,10 @@
 				<ref bean="kenyaemr.app.registration" />
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
 			</set>
 		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/referralAndLinkage.html" />
 		<property name="order" value="201002" />

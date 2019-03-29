@@ -54,6 +54,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String SYSTEM_DEVELOPER = "System Developer";
 		public static final String DRUG_ORDER = "Pharmacist";
 		public static final String LAB_TECHNICIAN = "Lab Technician";
+		public static final String PEER_EDUCATOR = "Peer Educator";
+		public static final String HIV_TESTING_COUNSELLOR = "HTS Counsellor";
 	}
 
 	/**
@@ -74,7 +76,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				DqConstants.APP_DATAMANAGER,
 				EmrConstants.APP_FACILITY_DASHBOARD,
 				EmrConstants.APP_DRUG_ORDER,
-				EmrConstants.APP_LAB_ORDER
+				EmrConstants.APP_LAB_ORDER,
+				EmrConstants.APP_DEFAULTER_TRACING,
+				EmrConstants.APP_HIV_TESTING
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -105,7 +109,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(EmrConstants.APP_FACILITY_DASHBOARD)
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING)
 				)
 		));
 
@@ -117,6 +122,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -136,6 +142,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -153,6 +160,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
 						_Privilege.MANAGE_DRUG_ORDERS,
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
@@ -169,6 +177,31 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.PEER_EDUCATOR, "Can access the defaulter tracing and reporting apps",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.HIV_TESTING_COUNSELLOR, "Can access the hts and reporting apps",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_HIV_TESTING),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
