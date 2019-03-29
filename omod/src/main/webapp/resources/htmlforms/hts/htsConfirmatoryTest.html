@@ -392,6 +392,7 @@
         });
         //Before Submit
         beforeSubmit.push(function() {
+            var clientConsent = getValue('clientConsent.value');
             var hivTest1 = getField('hiv-test1-result.value').val();
             var hivTest2 = getField('hiv-test2-result.value').val();
             var kitName1 = getField('kit-name-1.value').val();
@@ -406,7 +407,7 @@
                 getField('kit-name-2.error').html('Cannot use same test kit for both tests.').show();
                 return false;
             }
-            if (hivTest1 == false ) {      //check hiv test 1 results mandatory
+            if (clientConsent == 'true' &amp;&amp; hivTest1 == false ) {      //check hiv test 1 results mandatory
                 getField('hiv-test1-result.error').html('Please specify HIV Test 1 results.').show();
                 return false;
             }else{
@@ -701,7 +702,7 @@
             <table id="tbl-consent">
                 <tr>
                     <td>Has client consented? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+                        <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clientConsent" required="true"
                              style="yes_no" />
                     </td>
                 </tr>

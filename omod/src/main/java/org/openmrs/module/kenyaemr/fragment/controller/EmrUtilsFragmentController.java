@@ -198,7 +198,29 @@ public class EmrUtilsFragmentController {
 		return SimpleObject.create(
 				"bookingsOnDate", bookings
 		);
+	}
+/**
+ * Checks whether provided identifier(s) is already assigned
+ * @return simple object with statuses for the different identifiers
+ * Uses last recorded lot number to prepopulate lot numbers in HTS tests
+ *
+ */
+	public SimpleObject lastLotNumberUsedForHTSTesting() {
 
+		String getLastLotNumberQuery = "select\n" +
+				"  max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,\n" +
+				"  max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date\n" +
+				"from openmrs.obs o\n" +
+				"  inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
+				"  inner join openmrs.form f on f.form_id=e.form_id and f.uuid in ('72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7')\n" +
+				"where o.concept_id in (164962,164964, 162502) and o.voided=0\n" +
+				"group by e.encounter_id ORDER BY e.encounter_id DESC limit 1 ;";
+
+		Long lastLotNumber = (Long) Context.getAdministrationService().executeSQL(getLastLotNumberQuery, true).get(0).get(0);
+
+		return SimpleObject.create(
+				"lastLotNumber", lastLotNumber
+		);
 
 
 	}
