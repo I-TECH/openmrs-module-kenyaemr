@@ -520,6 +520,17 @@ public class ETLMoh731GreenCardIndicatorLibrary {
                 map(moh731Cohorts.initialTestAtANCForMale(), "startDate=${startDate},endDate=${endDate}")
         );
     }
+    /**
+     * Number of Male contacts tested at L&D
+     * Initial test at L&D male HV02-30
+     *
+     * @return the indicator
+     */
+    public CohortIndicator initialTestAtDeliveryForMale() {
+        return cohortIndicator("initialTestAtDeliveryForMale",
+                map(moh731Cohorts.initialTestAtDeliveryForMale(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
 
     /**
      * Number of Male contacts tested at PNC

@@ -167,37 +167,38 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-28", "HIV+ PNC visits at 6 weeks", ReportUtils.map(moh731GreenCardIndicators.HIVPositivePNCVisitsAt6Weeks(), indParams), "");
         dsd.addColumn("HV02-29", "Known HIV+ 1st Contact", ReportUtils.map(moh731GreenCardIndicators.knownHIVPositive1stContact(), indParams), "");
         dsd.addColumn("HV02-30", "Initial Test at ANC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtANCForMale(), indParams), "");
-        dsd.addColumn("HV02-31", "Initial Test at PNC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtPNCForMale(), indParams), "");
+        dsd.addColumn("HV02-31", "Initial Test at Delivery Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtDeliveryForMale(), indParams), "");
+        dsd.addColumn("HV02-32", "Initial Test at PNC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtPNCForMale(), indParams), "");
         //dsd.addColumn("HV02-32", "Total Known status Male", ReportUtils.map(moh731GreenCardIndicators.totalKnownHIVStatusMale(), indParams), "");
         /*Adolescents (10-19 years) Testing results*/
-        dsd.addColumn("HV02-33", "1st ANC KP Adolescent (10-19)", ReportUtils.map(moh731GreenCardIndicators.firstANCKPAdolescents(), indParams), "");
-        dsd.addColumn("HV02-34", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), "");
-        dsd.addColumn("HV02-35", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), "");
+        dsd.addColumn("HV02-34", "1st ANC KP Adolescent (10-19)", ReportUtils.map(moh731GreenCardIndicators.firstANCKPAdolescents(), indParams), "");
+        dsd.addColumn("HV02-35", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), "");
+        dsd.addColumn("HV02-36", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), "");
         /*Infant HIV Exposure status at Penta 1*/
-        dsd.addColumn("HV02-36", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
-        dsd.addColumn("HV02-37", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
+        dsd.addColumn("HV02-37", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
+        dsd.addColumn("HV02-38", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
         /*Infant ARV Prophylaxis*/
-        dsd.addColumn("HV02-38", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), "");
-        dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");
-        dsd.addColumn("HV02-40", "Infant ARV Prophylaxis <8 weeks PNC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisPNCLessThan8Weeks(), indParams), "");
+        dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), "");
+        dsd.addColumn("HV02-40", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");
+        dsd.addColumn("HV02-41", "Infant ARV Prophylaxis <8 weeks PNC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisPNCLessThan8Weeks(), indParams), "");
         //dsd.addColumn("HV02-41", "Total ARV Prophylaxis", ReportUtils.map(moh731GreenCardIndicators.totalARVProphylaxis(), indParams), "");
-        dsd.addColumn("HV02-42", "HEI CTS/DDS Start <2 months", ReportUtils.map(moh731GreenCardIndicators.heiDDSCTXStartLessThan2Months(), indParams), "");
-        dsd.addColumn("HV02-43", "Initial PCR <8 weeks", ReportUtils.map(moh731GreenCardIndicators.initialPCRLessThan8Weeks(), indParams), "");
-        dsd.addColumn("HV02-44", "Initial PCR >8 weeks to 12 months", ReportUtils.map(moh731GreenCardIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
-        dsd.addColumn("HV02-45", "Total Initial PCR Test <12 months", ReportUtils.map(moh731GreenCardIndicators.totalInitialPCRTestLessThan12Months(), indParams), "");
-        dsd.addColumn("HV02-46", "Infected in 24 months", ReportUtils.map(moh731GreenCardIndicators.infectedIn24Months(), indParams), "");
-        dsd.addColumn("HV02-47", "Uninfected in 24 months", ReportUtils.map(moh731GreenCardIndicators.uninfectedIn24Months(), indParams), "");
-        dsd.addColumn("HV02-48", "Unknown Outcomes in 24 months", ReportUtils.map(moh731GreenCardIndicators.unknownOutcomesIn24Months(), indParams), "");
-        dsd.addColumn("HV02-49", "Net Cohort HEI in 24 months", ReportUtils.map(moh731GreenCardIndicators.netCohortHeiIn24Months(), indParams), "");
-        dsd.addColumn("HV02-50", "Mother-baby pairs in 24 months", ReportUtils.map(moh731GreenCardIndicators.motherBabyPairsIn24Months(), indParams), "");
-        dsd.addColumn("HV02-51", "Pair net cohort in 24 months", ReportUtils.map(moh731GreenCardIndicators.pairNetCohortIn24Months(), indParams), "");
-        dsd.addColumn("HV02-52", "Exclusive Breastfeeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveBFAt6Months(), indParams), "");
-        dsd.addColumn("HV02-53", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveRFAt6Months(), indParams), "");
-        dsd.addColumn("HV02-54", "Mixed Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.mixedFeedingAt6Months(), indParams), "");
-        dsd.addColumn("HV02-55", "Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt12Months(), indParams), "");
-        dsd.addColumn("HV02-56", "Not Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt12Months(), indParams), "");
-        dsd.addColumn("HV02-57", "Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt18Months(), indParams), "");
-        dsd.addColumn("HV02-58", "Not Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt18Months(), indParams), "");
+        dsd.addColumn("HV02-43", "HEI CTS/DDS Start <2 months", ReportUtils.map(moh731GreenCardIndicators.heiDDSCTXStartLessThan2Months(), indParams), "");
+        dsd.addColumn("HV02-44", "Initial PCR <8 weeks", ReportUtils.map(moh731GreenCardIndicators.initialPCRLessThan8Weeks(), indParams), "");
+        dsd.addColumn("HV02-45", "Initial PCR >8 weeks to 12 months", ReportUtils.map(moh731GreenCardIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
+        dsd.addColumn("HV02-46", "Total Initial PCR Test <12 months", ReportUtils.map(moh731GreenCardIndicators.totalInitialPCRTestLessThan12Months(), indParams), "");
+        dsd.addColumn("HV02-47", "Infected in 24 months", ReportUtils.map(moh731GreenCardIndicators.infectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-48", "Uninfected in 24 months", ReportUtils.map(moh731GreenCardIndicators.uninfectedIn24Months(), indParams), "");
+        dsd.addColumn("HV02-49", "Unknown Outcomes in 24 months", ReportUtils.map(moh731GreenCardIndicators.unknownOutcomesIn24Months(), indParams), "");
+        dsd.addColumn("HV02-50", "Net Cohort HEI in 24 months", ReportUtils.map(moh731GreenCardIndicators.netCohortHeiIn24Months(), indParams), "");
+        dsd.addColumn("HV02-51", "Mother-baby pairs in 24 months", ReportUtils.map(moh731GreenCardIndicators.motherBabyPairsIn24Months(), indParams), "");
+        dsd.addColumn("HV02-53", "Pair net cohort in 24 months", ReportUtils.map(moh731GreenCardIndicators.pairNetCohortIn24Months(), indParams), "");
+        dsd.addColumn("HV02-53", "Exclusive Breastfeeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveBFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-54", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveRFAt6Months(), indParams), "");
+        dsd.addColumn("HV02-55", "Mixed Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.mixedFeedingAt6Months(), indParams), "");
+        dsd.addColumn("HV02-56", "Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-57", "Not Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt12Months(), indParams), "");
+        dsd.addColumn("HV02-58", "Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt18Months(), indParams), "");
+        dsd.addColumn("HV02-59", "Not Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt18Months(), indParams), "");
 
         //End updates
 

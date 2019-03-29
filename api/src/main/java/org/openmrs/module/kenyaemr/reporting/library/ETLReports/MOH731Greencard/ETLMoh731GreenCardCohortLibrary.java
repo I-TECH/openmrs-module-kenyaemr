@@ -1666,6 +1666,23 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
+    //Initial test at Delivery Male	HV02-30
+    public CohortDefinition initialTestAtDeliveryForMale(){
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select distinct ld.patient_id\n" +
+                "from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "and ld.partner_hiv_tested =1065;";
+        cd.setName("initialTestAtDeliveryForMale");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initial Test at Delivery for Males");
+
+        return cd;
+    }
+
     //Initial test at PNC Male	HV02-31
     public CohortDefinition initialTestAtPNCForMale(){
 
