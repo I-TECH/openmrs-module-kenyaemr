@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -18,6 +22,8 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
 import java.util.Collection;
 import java.util.Map;
@@ -33,22 +39,23 @@ public class OnSecondLineArtCalculation extends AbstractPatientCalculation {
 	 * @should return null for patients who have never started ARVs
 	 * @should return whether patients are currently taking a second-line regimen
 	 */
+	protected static final Log log = LogFactory.getLog(OnArtCalculation.class);
 	@Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 
-		// Get active ART regimen of each patient
-		CalculationResultMap currentArvs = calculate(new CurrentArtRegimenCalculation(), cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean onSecondLine = false;
-			SimpleResult currentArvResult = (SimpleResult) currentArvs.get(ptId);
-
-			if (currentArvResult != null) {
-				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
-
-				onSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
+			String regimenLine = null;
+			Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+			if (lastDrugRegimenEditorEncounter != null) {
+				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+				regimenLine = o.get("regimenLine").toString();
+               if (regimenLine != null && regimenLine.equalsIgnoreCase("adult_second")){
+						onSecondLine = true;
+		    	}
 			}
 			if (ltfu.contains(ptId)) {
 				onSecondLine = false;

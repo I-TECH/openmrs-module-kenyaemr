@@ -48,10 +48,12 @@ public class DiffCareStableOver4MonthstcaCohortDefinitionEvaluator implements Co
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"on c.patient_id = f.patient_id where f.stability = 1 and f.person_present = 978\n" +
-				"and timestampdiff(month,c.latest_vis_date,c.latest_tca) >=4\n" +
-				"and c.started_on_drugs is not null group by c.patient_id;";
+		String qry="select patient_id from(\n" +
+				"                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca  from kenyaemr_etl.etl_current_in_care c\n" +
+				"                                                                       inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
+				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
+				"                                                                                                          and cic.patient_present = 978\n" +
+				"                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) >=4;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

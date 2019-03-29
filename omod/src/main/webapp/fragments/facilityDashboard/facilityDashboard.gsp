@@ -1,5 +1,7 @@
 <%
     ui.includeCss("kenyaemr", "referenceapplication.css", 100)
+    ui.includeJavascript("kenyaemr", "highcharts.js")
+    ui.includeJavascript("kenyaemr", "highcharts-grouped-categories.js")
 %>
 <style>
 .alignLeft {
@@ -234,130 +236,34 @@
             },
 
             series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [{
-
-                    name: 'Family contacts tested',
-                    y:${htsTestedFamily},
-
-                }, {
-                    name: 'HIV+ family contacts',
-                    y: ${htsPositiveFamily},
-
-                }, {
-                    name: 'Family contacts unknown status',
-                    y: ${htsUnknownStatusFamily},
-
-                }, {
-                    name: 'Family contacts linked',
-                    y: ${htsLinkedFamily},
-                },{
-                    name: 'Partners tested',
-                    y:${htsTestedPartners},
-
-                }, {
-                    name: 'HIV+ partners',
-                    y: ${htsPositivePartner},
-
-                }, {
-                    name: 'Partners Unknown status',
-                    y: ${htsUnknownStatusPartner},
-
-                }, {
-                    name: 'Partners linked',
-                    y: ${htsLinkedPartner},
-                },{
-                    name: 'IDU tested',
-                    y:${htsTestedIDU},
-
-                }, {
-                    name: 'IDU HIV+',
-                    y: ${htsPositiveIDU},
-
-                }, {
-                    name: 'IDU Unknown status',
-                    y: ${htsUnknownStatusIDU},
-
-                }, {
-                    name: 'IDU linked',
-                    y: ${htsLinkedIDU}
-
-                }]
+                data: [{y:${htsTestedFamily},color:"#7cb5ec"}, {y:${htsPositiveFamily},color:"#434348"},{y:${htsUnknownStatusFamily},color:"#90ed7d"}, {y:${htsLinkedFamily},color:"#f7a35c"},
+                    {y:${htsTestedPartners},color:"#7cb5ec"}, {y:${htsPositivePartner},color:"#434348"},{y:${htsUnknownStatusPartner},color:"#90ed7d"}, {y:${htsLinkedPartner},color:"#f7a35c"},
+                    {y:${htsTestedIDU},color:"#7cb5ec"}, {y:${htsPositiveIDU},color:"#434348"},{y:${htsUnknownStatusIDU},color:"#90ed7d"}, {y:${htsLinkedIDU},color:"#f7a35c"}]
             }],
-        });
-    });
-
-    jQuery(function () {
-        jQuery('#differentiated_care_tracker').highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
             xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                title: {
-                    text: 'Current on Treatment'
-                }
-
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.0f}'
-                    }
-                }
-            },
-
-            tooltip: {
-                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
-            },
-
-            series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [
-                    {
-                        name: 'Total current on treatment',
-                        y: ${currInCareOnART},
-
-                    },
-                    {
-                        name: 'Total Stable patients',
-                        y: ${stableOver4mtca+stableUnder4mtca},
-
-                    },
-                    {
-
-                    name: 'Stable patients with under 4 months prescription',
-                    y:${stableUnder4mtca},
-
+                categories: [{
+                    name: "Family contacts",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
                 }, {
-                    name: 'Stable patients with 4+ months prescription',
-                    y: ${stableOver4mtca},
-
+                    name: "Sex partners",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                }, {
+                    name: "Injectable Drug Users",
+                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
                 },
-
                 ]
-            }],
+            },
         });
     });
 
+
     jQuery(function () {
-        jQuery('#differentiated_care_tracker_disaggregated').highcharts({
+        jQuery('#differentiated_care_tracker_stable').highcharts({
+            plotOptions: {
+                series: {
+                    colorByPoint: true
+                }
+            },
             chart: {
                 type: 'column'
             },
@@ -372,7 +278,63 @@
             },
             yAxis: {
                 title: {
-                    text: 'Current on treatment'
+                    text: 'Documented Stable patients'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+            series: [{
+                data: [{y:${stableUnder4mtcaBelow15},color:"#7cb5ec"}, {y:${stableOver4mtcaBelow15},color:"#434348"},{y:${stableUnder4mtcaOver15F},color:"#90ed7d"}, {y:${stableUnder4mtcaOver15M},color:"#f7a35c"},  {y:${stableOver4mtcaOver15F},color:"#8085e9"},
+                    {y:${stableOver4mtcaOver15M},color:"#f15c80"}]
+            }],
+            xAxis: {
+                categories: [{
+                    name: "<15 Years",
+                    categories: ["Below 4 months prescription", "4+ months prescription"]
+                }, {
+                    name: "15+ Years",
+                    categories: ["Females below 4 months prescription", " Males below 4 months prescription", "Females 4+ months prescription", "Males 4+ months prescription"]
+                },
+                ]
+            }
+
+        });
+    });
+
+
+    jQuery(function () {
+        jQuery('#differentiated_care_tracker_unstable').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Documented Unstable patients'
                 }
 
             },
@@ -394,45 +356,25 @@
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
 
+
+
             series: [{
-                name: 'Statistics',
-                colorByPoint: true,
-                data: [
+            data: [{y:${unstableUnder15},color:"#7cb5ec"}, {y:${unstableFemales15Plus},color:"#434348"},{y:${unstableMales15Plus},color:"#90ed7d"}]
+        }],
+            xAxis: {
+            categories: [{
+                name: "<15 Years",
+                categories: ["Males and Females"]
 
-                    {
-                        name: '<15 years Stable below 4 months prescription',
-                        y: ${stableUnder4mtcaBelow15},
-
-                    },
-                    {
-                        name: '<15 years Stable 4+ months prescription',
-                        y: ${stableOver4mtcaBelow15},
-
-                    },
-                    {
-                        name: '15+ years Stable Females below 4 months prescription',
-                        y: ${stableUnder4mtcaOver15F},
-
-                    },
-                    {
-                        name: '15+ years Stable Males below 4 months prescription',
-                        y: ${stableUnder4mtcaOver15M},
-
-                    },
-                    {
-                        name: '15+ years Stable Females 4+ months prescription',
-                        y: ${stableOver4mtcaOver15F},
-
-                    },
-                    {
-                        name: '15+ years Stable Males 4+ months prescription',
-                        y: ${stableOver4mtcaOver15M},
-
-                    },
-                ]
-            }],
+            }, {
+                name: "15+ Years",
+                categories: ["Females", " Males"]
+            },
+            ]
+            }
         });
     });
+
 </script>
 
 <div class="ke-page-content">
@@ -445,6 +387,8 @@
             <div class="ke-tabmenu-item" data-tabid="hts">HTS</div>
 
             <div class="ke-tabmenu-item" data-tabid="appointments">Appointments</div>
+
+            <div class="ke-tabmenu-item" data-tabid="diff_care">Differentiated Care</div>
 
 
         </div>
@@ -547,40 +491,40 @@
                             <div class="ke-panel-heading">Contact Testing</div>
 
                             <div class="ke-panel-content">
-                                    <table class="alignLeft">
-                                        <tr>
-                                            <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th>&nbsp;</th>
-                                            <th>Total Tested</th>
-                                            <th>Total Positive</th>
-                                            <th>Total Unknown</th>
-                                            <th>Total Enrolled</th>
-                                        </tr>
+                                <table class="alignLeft">
+                                    <tr>
+                                        <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>Total Tested</th>
+                                        <th>Total Positive</th>
+                                        <th>Total Unknown</th>
+                                        <th>Total Enrolled</th>
+                                    </tr>
 
-                                        <tr>
-                                            <td><b>Family Member(s)</b></td>
-                                            <td>${htsTestedFamily}</td>
-                                            <td>${htsPositiveFamily}</td>
-                                            <td>${htsUnknownStatusFamily}</td>
-                                            <td>${htsLinkedFamily}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Sexual Partner(s)</b></td>
-                                            <td>${htsTestedPartners}</td>
-                                            <td>${htsPositivePartner}</td>
-                                            <td>${htsUnknownStatusPartner}</td>
-                                            <td>${htsLinkedPartner}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Injectable Drug User(s)</b></td>
-                                            <td>${htsTestedIDU}</td>
-                                            <td>${htsPositiveIDU}</td>
-                                            <td>${htsUnknownStatusIDU}</td>
-                                            <td>${htsLinkedIDU}</td>
-                                        </tr>
-                                    </table>
+                                    <tr>
+                                        <td><b>Family Member(s)</b></td>
+                                        <td>${htsTestedFamily}</td>
+                                        <td>${htsPositiveFamily}</td>
+                                        <td>${htsUnknownStatusFamily}</td>
+                                        <td>${htsLinkedFamily}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Sex Partner(s)</b></td>
+                                        <td>${htsTestedPartners}</td>
+                                        <td>${htsPositivePartner}</td>
+                                        <td>${htsUnknownStatusPartner}</td>
+                                        <td>${htsLinkedPartner}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Injectable Drug User(s)</b></td>
+                                        <td>${htsTestedIDU}</td>
+                                        <td>${htsPositiveIDU}</td>
+                                        <td>${htsUnknownStatusIDU}</td>
+                                        <td>${htsLinkedIDU}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                         <div id="hts_contacts_tracker" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
@@ -620,39 +564,99 @@
                         </div>
 
                     </td>
+
+                </tr>
+            </table>
+        </div>
+        <div class="ke-tab" data-tabid="diff_care">
+            <table cellspacing="0" cellpadding="0" width="100%">
+                <tr>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Differentiated Care</div>
+                            <div class="ke-panel-heading">Documented Unstable Patients</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
                                     <tr>
-                                                <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Stable<br/>(on less than 4 months prescription)</th>
-                                                <th>Stable<br/>(on 4+ months prescription)</th>
-                                                <th>Unstable</th>
-                                            </tr>
-                                            <tr>
-                                                <td>${stableUnder4mtca}</td>
-                                                <td>${stableOver4mtca}</td>
-                                                <td>${unstable}</td>
-                                            </tr>
-                                    <tr>
-                                        <td colspan="2" class="heading"><strong>Total Stable: ${stableOver4mtca + stableUnder4mtca}</strong></td>
+                                        <td colspan="4" class="heading2"><strong>Reporting Period: Today</strong></td>
                                     </tr>
-                                    <tr><td colspan="3" class="heading"><strong>Current on Treatment: ${currInCareOnART}</strong></td></tr>
+
+                                    <tr>
+                                        <th>Aged Below 15 years</th>
+                                        <th>Females aged 15+ years</th>
+                                        <th>Males aged 15+ years</th>
+                                    </tr>
+                                    <tr>
+                                        <td>${unstableUnder15}</td>
+                                        <td>${unstableFemales15Plus}</td>
+                                        <td>${unstableMales15Plus}</td>
+                                    </tr>
+                                    <tr><strong>
+                                    <td colspan="3" class="heading"><strong style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td></strong>
+                                    </tr>
+                                    <tr><strong>
+                                        <td colspan="3" class="heading"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td></strong>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong></td>
+                                    </tr>
+
+
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker_disaggregated" style="min-width: 900px; height: 350px; margin: 0 auto"></div>
+                        <div id="differentiated_care_tracker_unstable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
+                    </td>
+
+                    <td style="width: 50%; vertical-align: top; padding-left: 5px">
+                        <div class="ke-panel-frame">
+                            <div class="ke-panel-heading">Documented Stable Patients</div>
+
+                            <div class="ke-panel-content">
+                                <table class="alignLeft">
+                                    <tr>
+                                        <td colspan="6" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="3">Under 4 months prescription</th>
+                                        <th colspan="3">4+ months prescription</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="1">Below 15 years</th>
+                                        <th colspan="1">Females 15+ years</th>
+                                        <th colspan="1">Males 15+ years</th>
+                                        <th colspan="1">Below 15 years</th>
+                                        <th colspan="1">Females 15+ years</th>
+                                        <th colspan="1">Males 15+ years</th>
+                                    </tr>
+                                    <tr>
+                                        <td>${stableUnder4mtcaBelow15}</td>
+                                        <td>${stableUnder4mtcaOver15F}</td>
+                                        <td>${stableUnder4mtcaOver15M}</td>
+                                        <td>${stableOver4mtcaBelow15}</td>
+                                        <td>${stableOver4mtcaOver15F}</td>
+                                        <td>${stableOver4mtcaOver15M}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Current on ART: ${currInCareOnART}</strong></td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div id="differentiated_care_tracker_stable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
         </div>
         <br/>
-        <br/>
-        <br/>
+       <br/>
     </div>
-</div>
+   </div>
