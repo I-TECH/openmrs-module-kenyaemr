@@ -377,6 +377,7 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:moh731_greencard_template.xls" />
+		<!--<property name="template" value="kenyaemr:moh731_Greencard_Revised_Template.xls" />-->
 	</bean>
 
 	<!-- introduction of viral load alert-->
