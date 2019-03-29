@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedIDUContactsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -29,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for IDU contacts linked to care
+ * Evaluator for stable patients with under 4 months prescription
  */
 @Handler(supports = {DiffCareStableUnder4MonthstcaCohortDefinition.class})
 public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -49,9 +48,9 @@ public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements C
 		Cohort newCohort = new Cohort();
 
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"                           on c.patient_id = f.patient_id where f.stability = 1 and f.person_present = 978\n" +
-				"                           and timestampdiff(month,c.latest_vis_date,c.latest_tca) between 0 and 3\n" +
-				"and c.started_on_drugs is not null group by c.patient_id;";
+				"                             on c.patient_id = f.patient_id and f.visit_date = c.latest_vis_date where f.stability = 1 and f.person_present = 978\n" +
+				"                                                                                                   and timestampdiff(month,c.latest_vis_date,c.latest_tca) <4\n" +
+				"                                                                                                   and c.started_on_drugs is not null group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

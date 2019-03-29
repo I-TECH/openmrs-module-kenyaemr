@@ -43,10 +43,10 @@ public class FacilityDashboardFragmentController {
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
 				htsTestedFamily =0,htsTestedPartners =0,htsTestedIDU =0, htsPositiveFamily = 0,htsPositivePartner = 0,
 				htsPositiveIDU = 0, htsUnknownStatusFamily = 0,htsUnknownStatusPartner = 0, htsUnknownStatusIDU = 0,htsLinkedFamily = 0,
-				htsLinkedPartner = 0, htsLinkedIDU = 0, unstable = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
+				htsLinkedPartner = 0, htsLinkedIDU = 0, unstableUnder15 = 0, unstableFemales15Plus = 0, unstableMales15Plus = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
 				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
 				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
-				currInCareOnARTOver15F = 0;
+				currInCareOnARTOver15F = 0, undocumentedStability = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -154,8 +154,14 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> stableUnder4monthsTca = DashBoardCohorts.stableUnder4Monthstca(evaluationContext).getMemberIds();
 		stableUnder4mtca = stableUnder4monthsTca != null? stableUnder4monthsTca.size(): 0;
 
-		Set<Integer> unstablePatients = DashBoardCohorts.unstablePatients(evaluationContext).getMemberIds();
-		unstable = unstablePatients != null? unstablePatients.size(): 0;
+		Set<Integer> unstablePatientsUnder15 = DashBoardCohorts.unstablePatientsUnder15(evaluationContext).getMemberIds();
+		unstableUnder15 = unstablePatientsUnder15 != null? unstablePatientsUnder15.size(): 0;
+
+		Set<Integer> unstableFemalePatients15Plus = DashBoardCohorts.unstableFemalePatients15Plus(evaluationContext).getMemberIds();
+		unstableFemales15Plus = unstableFemalePatients15Plus != null? unstableFemalePatients15Plus.size(): 0;
+
+		Set<Integer> unstableMalePatients15Plus = DashBoardCohorts.unstableMalePatients15Plus(evaluationContext).getMemberIds();
+		unstableMales15Plus = unstableMalePatients15Plus != null? unstableMalePatients15Plus.size(): 0;
 
 		Set<Integer> currentInCareOnART = DashBoardCohorts.currentInCareOnART(evaluationContext).getMemberIds();
 		currInCareOnART = currentInCareOnART != null? currentInCareOnART.size(): 0;
@@ -187,6 +193,10 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
 		currInCareOnARTOver15F = currInCareOnARTOver15yF != null? currInCareOnARTOver15yF.size(): 0;
 
+
+		Set<Integer> undocumentedPatientStability = DashBoardCohorts.undocumentedPatientStability(evaluationContext).getMemberIds();
+		undocumentedStability = undocumentedPatientStability != null? undocumentedPatientStability.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -217,7 +227,9 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("htsLinkedIDU", htsLinkedIDU);
 		model.addAttribute("stableOver4mtca", stableOver4mtca);
 		model.addAttribute("stableUnder4mtca", stableUnder4mtca);
-		model.addAttribute("unstable", unstable);
+		model.addAttribute("unstableUnder15", unstableUnder15);
+		model.addAttribute("unstableFemales15Plus", unstableFemales15Plus);
+		model.addAttribute("unstableMales15Plus", unstableMales15Plus);
 		model.addAttribute("currInCareOnART", currInCareOnART);
 		model.addAttribute("stableOver4mtcaBelow15", stableOver4mtcaBelow15);
 		model.addAttribute("stableOver4mtcaOver15M", stableOver4mtcaOver15M);
@@ -228,8 +240,7 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("currInCareOnARTUnder15", currInCareOnARTUnder15);
 		model.addAttribute("currInCareOnARTOver15M", currInCareOnARTOver15M);
 		model.addAttribute("currInCareOnARTOver15F", currInCareOnARTOver15F);
-
-
+		model.addAttribute("undocumentedStability", undocumentedStability);
 
 		return null;
 	}

@@ -49,9 +49,8 @@ public class DiffCarecurrentInCareOnARTOver15FemaleCohortDefinitionEvaluator imp
 		Cohort newCohort = new Cohort();
 
 		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c\n" +
-				"inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = c.patient_id and timestampdiff(year ,d.dob,c.latest_vis_date)>= 15 and\n" +
-				"        d.Gender=\"F\"\n" +
-				"where c.started_on_drugs is not null;";
+					"  where      c.Gender=\"F\" and timestampdiff(year ,c.dob,c.latest_vis_date) >=15\n" +
+				"and c.started_on_drugs is not null;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

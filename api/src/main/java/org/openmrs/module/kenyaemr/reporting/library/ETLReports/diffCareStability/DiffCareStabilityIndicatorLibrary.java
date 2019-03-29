@@ -50,7 +50,13 @@ public class DiffCareStabilityIndicatorLibrary {
         return cohortIndicator("Unstable Patients" , ReportUtils.map(cohortLibrary.unstable(), ""));
     }
 
-
+    /**
+     * Number of patients in care with undocumented stability in the last follow-up visit
+     * @return the indicator
+     */
+    public CohortIndicator undocumentedStability() {
+        return cohortIndicator("Undocumented stability" , ReportUtils.map(cohortLibrary.undocumentedStability(), ""));
+    }
 
 
 }

@@ -13,7 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableMales15PlusYearsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUnstableUnder15YearsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -28,10 +29,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for IDU contacts linked to care
+ * Evaluator for unstable male patients aged 15+ years
  */
-@Handler(supports = {DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition.class})
-public class DiffCareStableUnder4MonthstcaOver15MaleCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {DiffCareUnstableMales15PlusYearsCohortDefinition.class})
+public class DiffCareUnstableMales15PlusCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -40,7 +41,7 @@ public class DiffCareStableUnder4MonthstcaOver15MaleCohortDefinitionEvaluator im
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition definition = (DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition) cohortDefinition;
+		DiffCareUnstableMales15PlusYearsCohortDefinition definition = (DiffCareUnstableMales15PlusYearsCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
@@ -48,13 +49,12 @@ public class DiffCareStableUnder4MonthstcaOver15MaleCohortDefinitionEvaluator im
 		Cohort newCohort = new Cohort();
 
 		String qry="select patient_id from(\n" +
-				"                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca,\n" +
+				"                      select c.patient_id,f.stability stability,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,\n" +
 				"                             c.Gender gender, c.dob dob\n" +
 				"                      from kenyaemr_etl.etl_current_in_care c\n" +
 				"                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
-				"                                                                                                          and cic.patient_present = 978 and cic.gender =\"M\" and timestampdiff(year ,cic.dob,cic.latest_visit_date) >=15\n" +
-				"                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) <4;";
+				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=2\n" +
+				"                                                                                                          and cic.gender =\"M\" and timestampdiff(year ,cic.dob,cic.latest_visit_date) >=15;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
