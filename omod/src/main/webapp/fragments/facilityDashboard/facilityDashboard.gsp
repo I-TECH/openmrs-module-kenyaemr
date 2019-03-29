@@ -595,7 +595,7 @@
                                     <td colspan="3" class="heading"><strong style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td></strong>
                                     </tr>
                                     <tr><strong>
-                                        <td colspan="3" class="heading"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td></strong>
+                                        <td colspan="3" class="heading"><strong style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong></td></strong>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong></td>
@@ -642,7 +642,7 @@
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Undocumented stability: ${undocumentedStability}</strong></td>
+                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong></td>
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="heading1"><strong style="font-weight: bold">Current on ART: ${currInCareOnART}</strong></td>
