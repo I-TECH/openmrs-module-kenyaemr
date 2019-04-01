@@ -214,8 +214,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, ""),
-                ReportUtils.map(activePatientsDSD, "")//,
-               // ReportUtils.map(careAndTreatmentDataSet(), "")
+                ReportUtils.map(activePatientsDSD, ""),
+               ReportUtils.map(careAndTreatmentDataSet(), "")
         );
     }
 
