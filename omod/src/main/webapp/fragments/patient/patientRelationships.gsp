@@ -47,7 +47,7 @@
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" /> Add Relationship
 	</button>
 
-	<button type="button" onclick="ui.navigate('${ ui.pageLink("hivtestingservices", "familyAndPartnerTesting", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" /> Family/Partner Tree
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("hivtestingservices", "patientContactList", [ patientId: patient.id ])}')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" /> Family/Partner List
 	</button>
 </div>
