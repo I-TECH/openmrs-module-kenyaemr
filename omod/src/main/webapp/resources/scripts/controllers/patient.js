@@ -28,7 +28,7 @@ kenyaemrApp.service('PatientService', function ($rootScope) {
 /**
  * Controller for patient search form
  */
-kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService', function($scope, patientService) {
+kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService','$timeout', function($scope, patientService, $timeout) {
 
 	$scope.query = '';
 
@@ -36,6 +36,13 @@ kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService', functio
 		$scope.which = which;
 		$scope.$evalAsync($scope.updateSearch); // initiate an initial search
 	};
+	$scope.delayOnChange = (function() {
+		var promise = null;
+		return function(callback, ms) {
+			$timeout.cancel(promise); //clearTimeout(timer);
+			promise = $timeout(callback, ms); //timer = setTimeout(callback, ms);
+		};
+	})();
 
 	$scope.updateSearch = function() {
 		patientService.updateSearch($scope.query, $scope.which);
