@@ -1037,7 +1037,20 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     public CohortIndicator onTherapyAt12Months() {
         return cohortIndicator("On therapy at 12 months", ReportUtils.map(moh731Cohorts.onTherapyAt12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * Number of patients with suppressed vl last 12 months     *
+     * @return the indicator
+     */
+    public CohortIndicator patientsWithSuppressedVlLast12Months() {
+        return cohortIndicator("Patients with suppressed vl last 12 months", ReportUtils.map(moh731Cohorts.patientsWithSuppressedVlLast12Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of patients with vl results last 12 months     *
+     * @return the indicator
+     */
+    public CohortIndicator patientsWithVLResultsLast12Months() {
+        return cohortIndicator("Patients with vl results last 12 months", ReportUtils.map(moh731Cohorts.patientsWithVLResultsLast12Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Cumulative number of patients screened for TB
      *
