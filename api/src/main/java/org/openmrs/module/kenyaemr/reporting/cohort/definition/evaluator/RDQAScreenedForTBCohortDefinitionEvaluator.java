@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAScreenedForTBCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -37,7 +38,7 @@ public class RDQAScreenedForTBCohortDefinitionEvaluator implements CohortDefinit
 
     private final Log log = LogFactory.getLog(this.getClass());
     @Autowired
-    private ETLMoh731CohortLibrary moh731Cohorts;
+    private ETLMoh731GreenCardCohortLibrary moh731Cohorts;
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
