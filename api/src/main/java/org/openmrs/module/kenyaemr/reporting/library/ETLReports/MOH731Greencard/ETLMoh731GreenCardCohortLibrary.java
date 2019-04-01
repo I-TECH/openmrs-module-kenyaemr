@@ -501,6 +501,69 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     }
 
+    /*Patients with Suppressed  VL within last 12 Months*/
+    public CohortDefinition patientsWithSuppressedVlLast12Months() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "       inner join\n" +
+                "        (\n" +
+                "         select\n" +
+                "                patient_id,\n" +
+                "                visit_date,\n" +
+                "                if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                urgency\n" +
+                "         from kenyaemr_etl.etl_laboratory_extract\n" +
+                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "       left JOIN\n" +
+                "         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "          group by patient_id\n" +
+                "         ) d on d.patient_id = e.patient_id\n" +
+                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientsWithSuppressedVlLast12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients on ART with Suppressed VL within last 12 Months");
+        return cd;
+    }
+
+    /*Patients with VL results within last 12 Months*/
+    public CohortDefinition patientsWithVLResultsLast12Months() {
+
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "       inner join\n" +
+                "        (\n" +
+                "         select\n" +
+                "                patient_id,\n" +
+                "                visit_date,\n" +
+                "                if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                urgency\n" +
+                "         from kenyaemr_etl.etl_laboratory_extract\n" +
+                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "       left JOIN\n" +
+                "         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "          group by patient_id\n" +
+                "         ) d on d.patient_id = e.patient_id\n" +
+                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
+                "group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientsWithVLResultsLast12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients on ART with VL results within last 12 Months");
+        return cd;
+    }
+
     public CohortDefinition hivCareVisitsFemale18() {
 
         String sqlQuery = "select  e.patient_id " +
