@@ -235,7 +235,7 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/ANC_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:11,dataset:ancRegister" />
+		<property name="repeatingSection" value="sheet:1,row:13,dataset:ancRegister" />
 	</bean>
 
 	<!-- Maternity register-->
@@ -248,7 +248,7 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/Maternity_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:12,dataset:maternityAllClients" />
+		<property name="repeatingSection" value="sheet:1,row:15,dataset:maternityAllClients" />
 	</bean>
 	<!-- PNC register-->
 	<bean id="kenyaemr.mchms.report.pncRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -260,6 +260,6 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/PNC_Register_Template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:10,dataset:pncRegister" />
+		<property name="repeatingSection" value="sheet:1,row:12,dataset:pncRegister" />
 	</bean>
 </beans>
