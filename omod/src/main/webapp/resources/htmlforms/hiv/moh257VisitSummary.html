@@ -12,7 +12,6 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
     <style type="text/css">
         table.moh257 {
             border-collapse: collapse;
@@ -24,7 +23,6 @@
             padding: 3.6px;
             text-align: left;
             background-color: #D9F4D3;
-
         }
         .left-table {
             display: inline-block; border: 1px solid; float: left;
@@ -36,12 +34,11 @@
     </style>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+ //Global variables
         isPediatric = null; // Set later by AJAX lookup
-        /** E1F8DB
-         * TODO use a lookup tag to get these concept ids. Will require HTML-463
-         */
         var bmi = null;
         var SELF = 978;
+        var TS = 161642;
         var YES_CONCEPT_ID = 1065;
         var NO_CONCEPT_ID = 1066;
         var ABORTION_CONCEPT_ID = 159896;
@@ -61,17 +58,256 @@
         var WHO_STAGE_4_ADULT_CONCEPT_ID = 1207;
         var WHO_STAGES_PEDS = [ WHO_STAGE_1_PEDS_CONCEPT_ID, WHO_STAGE_2_PEDS_CONCEPT_ID, WHO_STAGE_3_PEDS_CONCEPT_ID, WHO_STAGE_4_PEDS_CONCEPT_ID ];
         var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
+        var pAge = parseInt('<lookup expression="patient.age"/>');
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
+        var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+        var VL_RESULT = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
+        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
+        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
+        var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
+        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
+        var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
+    //Start on jq onready
+  jq(function() {
+            jq('#person-present input').click(onPersonPresentChange);
+            jq('.patient-details :input').prop('disabled', true);
+            jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
+            jq('.tbl-partner-notification :input').prop('disabled', true);
+            //Known allergies
+            jq('#known-allergies').change(knownAllergiesSelected);       //boolean
+            jq('.allergen :input').prop('disabled', true);
+            jq('.reaction :input').prop('disabled', true);
+            jq('.severity :input').prop('disabled', true);
+            jq('.allergy-date :input').prop('disabled', true);
+            //complaints
+            jq("#complaints-today").change(complaintSelected);       //boolean
+            jq('.complaint :input').prop('disabled', true);
+            jq('.complaint-time :input').prop('disabled', true);
+            jq('.complaint-date :input').prop('disabled', true);
+            //Complaint duration date adjustment
+            jq(".complaint-time input").change(complaintDurationInput);
+            //Adverse drug reactions
+            jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
+            jq('.medicine-causing :input').prop('disabled', true);
+            jq('.reaction :input').prop('disabled', true);
+            jq('.severity :input').prop('disabled', true);
+            jq('.adverse-events-onset-date :input').prop('disabled', true);
+            jq('.action-taken :input').prop('disabled', true);
+            //Chronic illness
+            jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+            jq('.illness-chronic :input').prop('disabled', true);
+            jq('.onset-date-chronic-illness :input').prop('disabled', true);
+            jq('.drug-chronic-illness :input').prop('disabled', true);
+            jq('.dose-chronic-illness :input').prop('disabled', true);
+            jq('.units-chronic-illnes :input').prop('disabled', true);
+            jq('.frequency-chronic-illness :input').prop('disabled', true);
+            jq('.duration-chronic-illness :input').prop('disabled', true);
+            jq('.duration-units-illness :input').prop('disabled', true);
+            //General examination findings
+            jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            getField('encounter-date.value').change(onEncounterDateChange);
+            getField('ldl.value').change(viralLoadValidation);
+            //fp options
+            jq("#fp-category input[type=checkbox]").prop("disabled",true);
+            jq("#fp-category input[type=radio]").prop("disabled",true);
+            jq('#fp-status :input[type=radio]').change(fpOptionsSelected);
+            jq('#male-fp-status :input[type=radio]').change(maleFpOptionsSelected);
+            onWeightOrHeightChange();
+            onEncounterDateChange();
+            viralLoadValidation();
+            onPersonPresentChange();
+            //Differentiated care
+//            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
+//            if(PATIENT_STABLE =="true") {
+//                jq('#fast-track').show();
+//                jq('#standard-care').hide();
+//            }else{
+//                jq('#standard-care').show();
+//                jq('#fast-track').hide();
+//            }
 
-        function onPersonPresentChange() {
+            // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
+            var realId = jq('span#pregdate-abmc input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
+            var realIdyes = jq('span#pregdate-yes input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-yes.value'] = { id: realIdyes , field: dateFieldGetterFunction, setter: dateSetterFunction };
+            var realIdno = jq('span#pregdate-no input[type=hidden]').attr('name');
+            propertyAccessorInfo['pregdate-no.value'] = { id: realIdno , field: dateFieldGetterFunction, setter: dateSetterFunction };
+//pregnancy default options
+            jq('#anc-number :input').prop('disabled', true);
+            jq('#anc-profile :input').prop('disabled', true);
+            var fpStatus = getValue('fp-status.value');
+            var fpInput = jq('#fp-status');
+            if (fpStatus == 965 || fpStatus == 1360) {
+                jq("#fp-category input[type=checkbox]").prop("disabled",false);
+            }else{
+                jq("#fp-category input[type=checkbox]").prop("disabled",true);
+                clearHiddenSections([fpInput]);
+            }
+            jq('input[name=pregoption]').click(function() {
+                var option = jq('input[name=pregoption]:checked').val();
+                setPregOption(option);
+            });
+            var initialPregStatus = getValue('pregstatus.value');
+            var initialPregOutcome = getValue('pregoutcome.value');
+            var initialPregOption = null;
+            if (initialPregStatus == YES_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
+                initialPregOption = 'yes';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
+                initialPregOption = 'no';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == ABORTION_CONCEPT_ID) {
+                initialPregOption = 'ab';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == MISCARRIAGE_CONCEPT_ID) {
+                initialPregOption = 'mc';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == LIVEBIRTH_CONCEPT_ID) {
+                initialPregOption = 'lb';
+            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == STILLBIRTH_CONCEPT_ID) {
+                initialPregOption = 'sb';
+            }
+
+            if (initialPregOption) {
+                jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
+                setPregDateField(initialPregOption);
+            }
+      //prophylaxis validation
+          jq('#dispense-ctx').click(onCtxDispenseClick);
+          jq('#dispense-dap').click(onDapDispenseClick);
+        });
+        //End on ready
+ function onCtxDispenseClick() {
+     var dispensectxselected = getValue('dispense-ctx.value');
+     var dispensedapsoneselected = getValue('dispense-dap.value');
+     var ctx = jq("#dispense-ctx");
+     var dap = jq("#dispense-dap");
+     clearHiddenSections([dap]);
+     if(dispensectxselected == 1065) {
+         jq("#dispense-dap input[value=1065]").prop("checked", false);
+         jq('#dispense-dap :input').prop('disabled', true);
+         jq('#adherence-dapsone :input').prop('disabled', true);
+         jq('#adherence-dapsone :input').prop('checked', false);
+     }
+     if(dispensectxselected != 1065) {
+         jq("#dispense-dap input[value=1065]").prop("checked", false);
+         jq('#dispense-dap :input').prop('disabled', false);
+         jq('#adherence-dapsone :input').prop('disabled', false);
+     }
+ }
+ function onDapDispenseClick() {
+     var dispensedapsoneselected = getValue('dispense-dap.value');
+     var dispensectxselected = getValue('dispense-ctx.value');
+     var ctx = jq("#dispense-ctx");
+     var dap = jq("#dispense-dap");
+     clearHiddenSections([ctx]);
+     if(dispensedapsoneselected == 1065) {
+         jq("#dispense-ctx input[value=1065]").prop("checked", false);
+         jq('#dispense-ctx :input').prop('disabled', true);
+         jq('#adherence-ctx :input').prop('disabled', true);
+         jq('#adherence-ctx :input').prop('checked', false);
+     }
+     if(dispensedapsoneselected != 1065) {
+         jq("#dispense-ctx input[value=1065]").prop("checked", false);
+         jq('#dispense-ctx :input').prop('disabled', false);
+         jq('#adherence-ctx :input').prop('disabled', false);
+     }
+ }
+ function onCtxAdherenceClick() {
+     var adherencectxselected = getValue('adherence-ctx.value');
+     var adherencedapsoneselected = getValue('adherence-dapsone.value');
+     var ctx = jq("#adherence-ctx");
+     var dap = jq("#adherence-dapsone");
+     clearHiddenSections([dap]);
+     if(adherencectxselected != null) {
+         jq('#adherence-dapsone :input').prop("checked", false);
+         jq('#adherence-dapsone :input').prop('disabled', true);
+     }
+     if(adherencectxselected == null) {
+         jq('#adherence-dapsone :input').prop("checked", false);
+         jq('#dispense-dapsone :input').prop('disabled', false);
+     }
+ }
+ function onDapAdherenceClick() {
+     var adherencedapsoneselected = getValue('adherence-dapsone.value');
+     var adherencectxselected = getValue('adherence-ctx.value');
+     var ctx = jq("#adherence-ctx");
+     var dap = jq("#adherence-dapsone");
+     clearHiddenSections([ctx]);
+     if(adherencedapsoneselected != null) {
+         jq('#adherence-ctx :input').prop("checked", false);
+         jq('#adherence-ctx :input').prop('disabled', true);
+     }
+     if(adherencedapsoneselected == null) {
+         jq('#adherence-ctx input').prop("checked", false);
+         jq('#adherence-ctx :input').prop('disabled', false);
+     }
+ }
+ function onPersonPresentChange() {
+            var tbScreeningResults = jq("#tb-screening");
+            var nutStatus = jq("#nutritional-status");
+            var whostage = jq("#whostage");
+            var fpType = jq("#fp-category");
+            var fpStatus = jq("#fp-status");
+            var maleFpStatus = jq("#male-fp-status");
+            var allergiesselected = jq('#known-allergies');
+            var complaintsselected = jq('#complaints-today');
+            var chronicillnessselected = jq('#chronic-illness');
+            var adversereactionsselected = jq('#adverse-reactions');
+            var generalexamselected = jq('#general-exam-findings');
+            var pregoptionsselected = jq('#preg-options');
+            var adultvaccselected = jq('#adult-vacc');
+            var childvaccselected = jq('#child-vacc');
+            var phdpcondomsselected = jq('#phdp-condoms');
+            var phdpdisclosureselected = jq('#phdp-disclosure');
+            var phdpsubstanceselected = jq('#phdp-substance-abuse');
+            var phdptestingselected = jq('#phdp-testing');
+            var phdpstiscreeningselected = jq('#phdp-sti-screening');
+            var adherencearvselected = jq('#adherence-arv');
+            var adherencectxselected = jq('#adherence-ctx');
+            var adherencedapsoneselected = jq('#adherence-dapsone');
             if (getValue('person-present.value') == SELF) {
+                //adherence assessment validation
+                jq('#adherence-ctx').click(onCtxAdherenceClick);
+                jq('#adherence-dapsone').click(onDapAdherenceClick);
                 jq('.patient-details :input').prop('disabled', false);
+                //art validation
+                //On ART hide adherence assessment
+                if(PATIENT_ON_ART == "true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART == "true") {
+                    jq('#adherence-arv :input').prop('disabled', false);
+                }
+                if(PATIENT_HAS_BEEN_ON_ART == "false") {
+                    jq('#adherence-arv :input').prop('disabled', true);
+                }
+
             } else {
+                complaintSelected();
+                knownAllergiesSelected();
+                chronicIllnessesSelected();
+                adverseReactionSelected();
+
                 jq('.patient-details :input').prop('disabled', true);
+                clearHiddenSections([tbScreeningResults, nutStatus, whostage, fpType, fpStatus, maleFpStatus, allergiesselected, complaintsselected, adversereactionsselected,
+                 chronicillnessselected, generalexamselected, pregoptionsselected, adultvaccselected, childvaccselected, phdpcondomsselected, phdpdisclosureselected,phdpsubstanceselected,
+                phdptestingselected, phdpstiscreeningselected, adherencearvselected, adherencectxselected, adherencedapsoneselected]);
+                jq('#weight input').val('');
+                jq('#height input').val('');
+                jq('#systolic input').val('');
+                jq('#diastolic input').val('');
+                jq('#muac input').val('');
+                jq('#calculated-bmi').html('');
+                jq('#lmp-date input').val('');
+                jq('#anc-number input').val('');
+                jq('#diagnosis-type input').val('');
+                jq('#treatment-plan textarea').val('');
+                jq('#other-vacc input').val('');
             }
         }
-
-        function onWeightOrHeightChange() {
-            pAge = parseInt('<lookup expression="patient.age"/>');
+    function onWeightOrHeightChange() {
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
@@ -98,40 +334,27 @@
                 }
             }
         }
-        /**
-         * Updates the form due to an encounter date change
-         */
-        function onEncounterDateChange() {
+     function onEncounterDateChange() {       //Updates the form due to an encounter date change
             var patientId = "<lookup expression="patient.patientId"/>";
             var encDate = getValue('encounter-date.value');
             if(encDate == null) {
                 encDate = new Date();
             }
+         if(PATIENT_ON_ART =="true") {
+             jq('#current-regimen').html(REGIMEN_NAME);
+             jq('#current-regimen-time').html(REGIMEN_DURATION);
 
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? data.duration : 'Not started';
-                    jq('#calculated-duration-start-art').html(msg);
-                });
-
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
-                    jq('#calculated-duration-current-regimen').html(msg);
-                });
-
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
+         }else{
+             jq('#current-regimen').html("None");
+             jq('#current-regimen-time').html("");
+         }
+      jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
                 .done(function(data) {
                     onPatientAgeUpdate(data.age);
                 });
         }
-
-        /**
-         * Updates the form due to a patient age change
-         */
-        function onPatientAgeUpdate(age) {
+     function onPatientAgeUpdate(age) {    //Updates the form due to a patient age change
             isPediatric = (age &lt; 16);
-
             jq('#whostage select option').each(function() {
                 var concept = parseInt(jq(this).prop('value'));
 
@@ -142,14 +365,9 @@
                     jq(this).prop('disabled', isPediatric);
                 }
             });
-
             jq('#calculated-age').html(age + '/' + (isPediatric ? 'PEDS' : 'ADULT'));
         }
-
-        /**
-         * Sets the pregnancy option
-         */
-        function setPregOption(option) {
+    function setPregOption(option) {      //Sets the pregnancy option
             var YES_CONCEPT_ID = 1065;
             var NO_CONCEPT_ID = 1066;
             switch (option) {
@@ -163,10 +381,8 @@
                     jq("#fp-category input[type=radio]").prop("disabled",false);
                     //Automate EDC Computation
                     var lmpDate = getValue('lmp-date.value');
-                   // console.log("lmp date"+lmpDate);
                     var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
                     var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-                 //Automate EDC Computation
                     var lmpDate = getValue('lmp-date.value');
                     var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
                     var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
@@ -175,10 +391,8 @@
                     var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
                     var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
                     //Using recent LMP
-                    // console.log("lmp date"+recentLMP);
                     var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
                     var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-                    //Calculation
                     if(recentEDD !=""){
                         getField('pregdate-yes.value').val(recentEDD);
                     }
@@ -190,7 +404,6 @@
                     }else{
                         getField('pregdate-yes.value').val("");
                     }
-
                     break;
                 case 'no':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
@@ -199,7 +412,7 @@
                     jq('#anc-number :input').prop('disabled', true);
                     jq('#anc-profile :input').prop('disabled', true);
                     jq('#fp-status :input').prop('disabled', false);
-                    clearHiddenSections(edd);
+                    clearHiddenSections([edd]);
                     break;
                 case 'ab':
                     setValue('pregstatus.value', NO_CONCEPT_ID);
@@ -222,16 +435,9 @@
                     jq('#anc-number :input').prop('disabled', false);
                     break;
             }
-
             setPregDateField(option);
         }
-
-        /**
-         * Displays the appropriate date field for the given pregnancy option
-         */
-
-
-        function setPregDateField(option) {
+     function setPregDateField(option) {      //Displays the appropriate date field for the given pregnancy option
             var options = [ 'yes', 'no', 'ab', 'mc', 'lb', 'sb' ];
             var labels = {
                 yes: 'EDD',
@@ -249,18 +455,10 @@
                 lb: 'pregdate-no',
                 sb: 'pregdate-no'
             };
-
-            // Update field label
-            jq('#pregdate-label').text(labels[option]);
-
-            // Show field container of desired option
-            jq('#' + fields[option] + '-container').show();
-
-            // Remove requested option so only non-desired options remain in list
-            options.splice(options.indexOf(option), 1);
-
-            // Clear values and hide containers of the other option fields
-            for (var o = 0; o &lt; options.length; ++o) {
+            jq('#pregdate-label').text(labels[option]);      // Update field label
+            jq('#' + fields[option] + '-container').show();    // Show field container of desired option
+            options.splice(options.indexOf(option), 1);    // Remove requested option so only non-desired options remain in list
+            for (var o = 0; o &lt; options.length; ++o) {    //Clear values and hide containers of the other option fields
                 var opt = options[o];
                 if (fields[opt] &amp;&amp; (fields[opt] != fields[option])) {
                     setValue(fields[opt] + '.value', null);
@@ -278,7 +476,6 @@
                 jq('.tbl-partner-notification :input').prop('disabled', true);
             }
         }
-
         var fpOptionsSelected = function() {
             var fpStatus = getValue('fp-status.value');
             if (fpStatus == USING_FP_CONCEPT_ID ) {
@@ -293,7 +490,6 @@
                 jq("#fp-category input[type=checkbox]").prop("disabled",true);
                 jq("#fp-category input[type=radio]").prop("disabled",false);
             }
-
         }
         var maleFpOptionsSelected = function() {
             var maleFpStatus = getValue('male-fp-status.value');
@@ -306,10 +502,8 @@
             if (maleFpStatus == NOT_USING_FP_CONCEPT_ID  ) {
                 jq("#fp-category input[type=checkbox]").prop("disabled",true);
             }
-
         }
         function viralLoadValidation(){
-
             if(getValue('ldl.value') == 1302){
                 jq('#vLoadResults :input').prop( "disabled", true );
                 jq('#viral-load-value input').val('');
@@ -319,7 +513,6 @@
             }
         }
         var complaintDurationInput = function() {
-
             var table = document.getElementById("tbl-complaints-today");
             for (var i = 0, row; row = table.rows[i]; i++) {
                 var val = jq(this).closest('tr').find(".complaint-time input").val();
@@ -335,20 +528,16 @@
         }
         var knownAllergiesSelected = function() {
             var val = getValue('known-allergies.value');
-            var allergy = jq('.allergen');
-            var reaction = jq('.reaction');
-            var severity = jq('.severity');
+            var allergy = jq('.allergen select').val('');
+            var reaction = jq('.reaction select').val('');
+            var severity = jq('.severity select').val('');
             var date = jq('.allergy-date input').val('');
-            if (val == "false"){
+            if (val == "false" || val == 1066){
                 jq('.allergen :input').prop('disabled', true);
                 jq('.reaction :input').prop('disabled', true);
                 jq('.severity :input').prop('disabled', true);
                 jq('.allergy-date :input').prop('disabled', true);
-                clearHiddenSections(allergy);
-                clearHiddenSections(reaction);
-                clearHiddenSections(severity);
-                clearHiddenSections(date);
-
+                clearHiddenSections([allergy, reaction, severity, date]);
             }else {
                 jq('.allergen :input').prop('disabled', false);
                 jq('.reaction :input').prop('disabled', false);
@@ -358,17 +547,14 @@
         }
         var complaintSelected = function() {
             var val = getValue('complaints-today.value');
-            var complaint = jq('.complaint');
+            var complaint = jq('.complaint select').val('');
             var complaintDuration = jq('.complaint-time input').val('');
             var complaintDate = jq('.complaint-date input').val('');
-            if (val == "false"){
+            if (val == "false" || val == 1066){
                 jq('.complaint :input').prop('disabled', true);
                 jq('.complaint-time :input').prop('disabled', true);
                 jq('.complaint-date :input').prop('disabled', true);
-
-                clearHiddenSections(complaint);
-                clearHiddenSections(complaintDuration);
-                clearHiddenSections(complaintDate);
+                clearHiddenSections([complaint, complaintDuration, complaintDate]);
             }else {
                 jq('.complaint :input').prop('disabled', false);
                 jq('.complaint-time :input').prop('disabled', false);
@@ -377,24 +563,19 @@
         }
         var adverseReactionSelected = function() {
             var val = getValue('adverse-reactions.value');
-            var medicineCausing= jq('.medicine-causing');
-            var reaction = jq('.reaction');
-            var severity = jq('.severity');
+            var medicineCausing= jq('.medicine-causing select').val('');
+            var reaction = jq('.reaction select').val('');
+            var severity = jq('.severity select').val('');
             var onsetDate = jq('.adverse-events-onset-date input').val('');
-            var action = jq('.action-taken');
+            var action = jq('.action-taken select').val('');
 
-            if (val == "false"){
-                jq('.medicine-causing :input').prop('disabled', true);
+            if (val == "false" || val == 1066){
+               // jq('.medicine-causing :input').prop('disabled', true);
                 jq('.reaction :input').prop('disabled', true);
                 jq('.severity :input').prop('disabled', true);
                 jq('.adverse-events-onset-date :input').prop('disabled', true);
                 jq('.action-taken :input').prop('disabled', true);
-                clearHiddenSections(medicineCausing);
-                clearHiddenSections(reaction);
-                clearHiddenSections(severity);
-                clearHiddenSections(onsetDate);
-                clearHiddenSections(action);
-
+                clearHiddenSections([medicineCausing, reaction, severity, onsetDate, action]);
             }else {
                 jq('.medicine-causing :input').prop('disabled', false);
                 jq('.reaction :input').prop('disabled', false);
@@ -404,18 +585,16 @@
             }
         }
         var chronicIllnessesSelected = function() {
-            var val = jq(this).val();
-
-            var illness = jq('.illness-chronic');
+            var val = getValue('chronic-illness.value');
+            var illness = jq('.illness-chronic select').val('');
             var onset = jq('.onset-date-chronic-illness input').val('');
             var drug = jq('.drug-chronic-illness input').val('');
             var dose = jq('.dose-chronic-illness input').val('');
             var units = jq('.units-chronic-illness input').val('');
-            var frequency = jq('.frequency-chronic-illness');
+            var frequency = jq('.frequency-chronic-illness select').val('');
             var duration = jq('.duration-chronic-illness input').val('');
-            var durationUnits = jq('.duration-units-illness');
-
-            if (val == 1066){
+            var durationUnits = jq('.duration-units-illness select').val('');
+            if (val == "false" || val == 1066){
                 jq('.illness-chronic :input').prop('disabled', true);
                 jq('.onset-date-chronic-illness :input').prop('disabled', true);
                 jq('.drug-chronic-illness :input').prop('disabled', true);
@@ -424,14 +603,7 @@
                 jq('.frequency-chronic-illness :input').prop('disabled', true);
                 jq('.duration-chronic-illness :input').prop('disabled', true);
                 jq('.duration-units-illness :input').prop('disabled', true);
-                clearHiddenSections(illness);
-                clearHiddenSections(onset);
-                clearHiddenSections(drug);
-                clearHiddenSections(dose);
-                clearHiddenSections(units);
-                clearHiddenSections(frequency);
-                clearHiddenSections(duration);
-                clearHiddenSections(durationUnits);
+                clearHiddenSections([illness,onset, drug, dose, units, frequency, duration, durationUnits]);
             }else {
                 jq('.illness-chronic :input').prop('disabled', false);
                 jq('.onset-date-chronic-illness :input').prop('disabled', false);
@@ -459,139 +631,49 @@
         }
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
-            parentObj.find('input[type=radio]').each(function() {
-                this.checked = false;
-            });
-            parentObj.find('input[type=checkbox]').each(function() {
-                this.checked = false;
-            });
-            parentObj.find('input[type=text]').each(function() {
-                this.val("");
-            });
-            parentObj.find('select').each(function() {
-                this.selectedIndex =0;
-            });
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.val("");
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
         }
-
-        jq(function() {
-
-            jq('#person-present input').click(onPersonPresentChange);
-            jq('.patient-details :input').prop('disabled', true);
-            jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
-            jq('.tbl-partner-notification :input').prop('disabled', true);
-            //Known allergies
-            jq('#known-allergies').change(knownAllergiesSelected);       //boolean
-            jq('.allergen :input').prop('disabled', true);
-            jq('.reaction :input').prop('disabled', true);
-            jq('.severity :input').prop('disabled', true);
-            jq('.allergy-date :input').prop('disabled', true);
-            //complaints
-            jq("#complaints-today").change(complaintSelected);       //boolean
-            jq('.complaint :input').prop('disabled', true);
-            jq('.complaint-time :input').prop('disabled', true);
-            jq('.complaint-date :input').prop('disabled', true);
-             //Complaint duration date adjustment
-            jq(".complaint-time input").change(complaintDurationInput);
-            //Adverse drug reactions
-            jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
-            jq('.medicine-causing :input').prop('disabled', true);
-            jq('.reaction :input').prop('disabled', true);
-            jq('.severity :input').prop('disabled', true);
-            jq('.adverse-events-onset-date :input').prop('disabled', true);
-            jq('.action-taken :input').prop('disabled', true);
-              //Chronic illness
-            jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
-            jq('.illness-chronic :input').prop('disabled', true);
-            jq('.onset-date-chronic-illness :input').prop('disabled', true);
-            jq('.drug-chronic-illness :input').prop('disabled', true);
-            jq('.dose-chronic-illness :input').prop('disabled', true);
-            jq('.units-chronic-illnes :input').prop('disabled', true);
-            jq('.frequency-chronic-illness :input').prop('disabled', true);
-            jq('.duration-chronic-illness :input').prop('disabled', true);
-            jq('.duration-units-illness :input').prop('disabled', true);
-            //General examination findings
-            jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
-            getField('weight.value').change(onWeightOrHeightChange);
-            getField('height.value').change(onWeightOrHeightChange);
-            getField('encounter-date.value').change(onEncounterDateChange);
-            getField('ldl.value').change(viralLoadValidation);
-            //fp options
-            jq("#fp-category input[type=checkbox]").prop("disabled",true);
-            jq("#fp-category input[type=radio]").prop("disabled",true);
-            jq('#fp-status :input[type=radio]').change(fpOptionsSelected);
-            jq('#male-fp-status :input[type=radio]').change(maleFpOptionsSelected);
-
-            onPersonPresentChange();
-            onWeightOrHeightChange();
-            onEncounterDateChange();
-            viralLoadValidation();
-
-            //Differentiated care
-            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-            if(PATIENT_STABLE =="true") {
-                jq('#fast-track').show();
-                jq('#standard-care').hide();
-            }else{
-                jq('#standard-care').show();
-                jq('#fast-track').hide();
-            }
-
-            // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
-            var realId = jq('span#pregdate-abmc input[type=hidden]').attr('name');
-            propertyAccessorInfo['pregdate-abmc.value'] = { id: realId , field: dateFieldGetterFunction, setter: dateSetterFunction };
-            var realIdyes = jq('span#pregdate-yes input[type=hidden]').attr('name');
-            propertyAccessorInfo['pregdate-yes.value'] = { id: realIdyes , field: dateFieldGetterFunction, setter: dateSetterFunction };
-            var realIdno = jq('span#pregdate-no input[type=hidden]').attr('name');
-            propertyAccessorInfo['pregdate-no.value'] = { id: realIdno , field: dateFieldGetterFunction, setter: dateSetterFunction };
-//pregnancy default options
-            jq('#anc-number :input').prop('disabled', true);
-            jq('#anc-profile :input').prop('disabled', true);
-
-            var fpStatus = getValue('fp-status.value');
-            var fpInput = jq('#fp-status');
-            if (fpStatus == 965 || fpStatus == 1360) {
-                jq("#fp-category input[type=checkbox]").prop("disabled",false);
-            }else{
-                jq("#fp-category input[type=checkbox]").prop("disabled",true);
-                clearHiddenSections(fpInput);
-            }
-            jq('input[name=pregoption]').click(function() {
-                var option = jq('input[name=pregoption]:checked').val();
-               setPregOption(option);
-            });
-
-            var initialPregStatus = getValue('pregstatus.value');
-            var initialPregOutcome = getValue('pregoutcome.value');
-            var initialPregOption = null;
-
-            if (initialPregStatus == YES_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
-                initialPregOption = 'yes';
-            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; !initialPregOutcome) {
-                initialPregOption = 'no';
-            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == ABORTION_CONCEPT_ID) {
-                initialPregOption = 'ab';
-            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == MISCARRIAGE_CONCEPT_ID) {
-                initialPregOption = 'mc';
-            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == LIVEBIRTH_CONCEPT_ID) {
-                initialPregOption = 'lb';
-            } else if (initialPregStatus == NO_CONCEPT_ID &amp;&amp; initialPregOutcome == STILLBIRTH_CONCEPT_ID) {
-                initialPregOption = 'sb';
-            }
-
-            if (initialPregOption) {
-                jq('input[name=pregoption][value=' + initialPregOption + ']').prop('checked', true);
-                setPregDateField(initialPregOption);
-            }
-        });
-        //End on ready
         //Start before submit
         beforeSubmit.push(function() {
-            var pAge = parseInt('<lookup expression="patient.age"/>');
             var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+            var personPresent =getValue('person-present.value');
+            var complaintsToday = getValue('complaints-today.value');           //boolean
+            var knownAllergies = getValue('known-allergies.value');            //boolean
+            var adverseReactions = getValue('adverse-reactions.value');        // boolean
+            var chronicIllness = getValue('chronic-illness.value');            //non boolean
             var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
             var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
             var dodDate = new Date(getValue('pregdate-no.value')).getTime();
 
+            if (complaintsToday == false &amp;&amp; personPresent == SELF) {
+                getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
+                return false;
+            }
+            if (knownAllergies == false &amp;&amp; personPresent == SELF) {
+                getField('known-allergies.error').html('Please specify if patient has any known allergies.').show();
+                return false;
+            }
+            if (adverseReactions == false &amp;&amp; personPresent == SELF) {
+                getField('adverse-reactions.error').html('Please specify if patient has any adverse drug reactions.').show();
+                return false;
+            }
+            if (chronicIllness == false &amp;&amp; personPresent == SELF) {
+                getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
+                return false;
+            }
             if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
                 getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
                 return false;
@@ -613,7 +695,6 @@
                     return false;
                 }
             }
-
             return true;
         });
     </script>
@@ -652,7 +733,7 @@
                                     answerConceptIds="978AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerLabels="Self (SF),Treatment supporter (TS),Other (give name)"
                                     style="radio"
-                                    answerSeparator="&lt;br /&gt;"/>
+                                    answerSeparator="&lt;br /&gt;" required="true"/>
                             <obs id="person-present-name" conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                         </td>
                         <td>
@@ -662,7 +743,7 @@
                     <tr class="patient-details">
                         <th colspan="2">Blood Pressure</th>
                         <td>(c)</td>
-                        <td colspan="2"><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />mmHg</td>
+                        <td colspan="2"><obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic" />/<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic" />mmHg</td>
                     </tr>
                     <tr class="patient-details">
                         <th colspan="2">Weight</th>
@@ -675,7 +756,7 @@
                         <td colspan="2"><obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height" />(cm)</td>
                     </tr>
                     <tr class="patient-details">
-                        <th colspan="2">BMI / MUAC* </th>
+                        <th colspan="2">BMI / MUAC </th>
                         <td>(f)</td>
                         <td><span id="calculated-bmi" class="value"></span></td>
                         <td><obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="muac" />(cm)</td>
@@ -692,9 +773,10 @@
                      <tr>
                          <th colspan="2">Known Allergies</th>
                          <th>
-                             <div>
+                             <div class="patient-details" >
                                  Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                 <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                                 <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" />
+                                 <span style="color:red;"><strong>*</strong></span>
                              </div>
                          </th>
                          <td>(h)</td>
@@ -740,22 +822,22 @@
                                          </table>
                          </td>
                      </tr>
-                     <tr>
+                     <tr class="patient-details">
                          <th>Female LMP</th>
                          <th colspan="2">Date</th>
                          <td>(i)</td>
                          <td colspan="2">
                              <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
-                                 LMP*  <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
+                                 LMP  <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
                              </includeIf>
                              <hr width="0" />
                          </td>
                      </tr>
-                     <tr>
+                     <tr class="patient-details">
                          <th rowspan="2"> Pregnancy </th>
                          <td colspan="2">Status</td>
                          <td>(j)</td>
-                         <td>
+                         <td id="preg-options">
                              <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
                                  <ifMode mode="VIEW" include="true">
                                      Pregnant: <obs id="pregstatus" conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><br />
@@ -777,7 +859,7 @@
                          </td>
                          <td>
                              <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
-                                 ANC No. <obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-number"/> <br></br><br></br>
+                                 ANC No. <obs conceptId="163530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-number"/> <br></br><br></br>
                              </includeIf>
                          </td>
                      </tr>
@@ -821,7 +903,7 @@
                                      style="radio"/>
                              <hr width="0" />
                              </includeIf>
-                             <includeIf velocityTest="$patient.gender == 'M' ">
+                             <includeIf velocityTest="$patient.gender == 'M' &amp;&amp; ($patient.age &gt; 10) ">
                                  <obs
                                          id="male-fp-status"
                                          conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -854,7 +936,7 @@
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Undecided" /><br />
 
                              </includeIf>
-                             <includeIf velocityTest="$patient.gender == 'M' ">
+                             <includeIf velocityTest="$patient.gender == 'M' &amp;&amp; ($patient.age &gt; 10)">
                              <obs conceptId="374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                   answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                   answerLabel="Condoms" style="checkbox"/>
@@ -882,7 +964,7 @@
                      </tr>
                      <tr class="patient-details">
                          <th rowspan="3">PwP<br />Services<br />(&#10003;)</th>
-                         <th colspan="2">Screened CaCx*</th>
+                         <th colspan="2">Screened CaCx</th>
                          <td>(o)</td>
                          <td colspan="2">
                              <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
@@ -900,19 +982,23 @@
                      <tr class="tbl-partner-notification">
                          <th colspan="2">STI Partner Notification</th>
                          <td>(q)</td>
-                         <td colspan="2"><obs conceptId="164935" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
-                          </td>
+                         <td colspan="2">
+                             <includeIf velocityTest="($patient.age &gt; 10)">
+                             <obs conceptId="164935" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                             </includeIf>
+                         </td>
                      </tr>
                      <tr>
                          <th>  Complaints and History of complaints</th>
                          <th colspan="2">
-                             <div>
+                             <div  class="patient-details" >
                                  Patient having complaint(s) today? <br /><br />
-                                 <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                                 <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+                                 <span style="color:red;"><strong>*</strong></span>
                              </div>
                          </th>
                          <td>(r)</td>
-                         <td colspan="2">
+                         <td>
                              <table id="tbl-complaints-today">
                                  <tr>
                                      <th style="color: #888">Complaint</th>
@@ -951,8 +1037,12 @@
                              </table>
                              <hr width="0" />
                          </td>
+                         <td>  <strong>Clinical Notes</strong><br/>
+                             <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="60" id="clinical-notes"/>
+                                       <span class="value"><recentObs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                         </td>
                      </tr>
-                     <tr id="general-exam-findings">
+                     <tr class="patient-details" id="general-exam-findings">
                          <th colspan="2">General Examination Findings </th>
                          <th>Findings</th>
                          <td>(s)</td>
@@ -990,7 +1080,7 @@
                                      answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="NO signs,TB presumed,TB Rx,Not done (ND)"
                                      style="radio"
-                                     answerSeparator="&lt;br /&gt;"/>
+                                     answerSeparator="&lt;br /&gt;" id="tb-screening"/>
                              TB RX #
                              <lookup class="value" expression="fn.latestObs(1113).valueDate" />
                              <includeIf velocityTest="!$fn.latestObs(1113)">
@@ -1010,9 +1100,10 @@
                      <tr>
                          <th>Adverse Drug Reactions</th>
                          <th colspan="2">
-                             <div>
+                             <div class="patient-details">
                                  Patient has adverse drug reaction(s)? <br/><br/>
-                                 <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" style="yes_no"/>
+                                 <obs id="adverse-reactions" conceptId="121764AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+                                 <span style="color:red;"><strong>*</strong></span>
                              </div>
                          </th>
                          <td>(u)</td>
@@ -1049,8 +1140,8 @@
                                                              <td>
                                                                  <obs class="action-taken"
                                                                          conceptId="1255AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                                      answerLabels="CONTINUE REGIMEN,CHANGE REGIMEN,DOSING CHANGE,CHANGE FORMULATION,NONE,STOP"
+                                                                      answerConceptIds="1257AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1259AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,981AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1260AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                      answerLabels="CONTINUE REGIMEN,SWITCHED REGIMEN,CHANGED DOSE,SUBSTITUTED DRUG,NONE,STOP,OTHER"
                                                                       style="dropdown"/>
                                                              </td>
                                                          </tr>
@@ -1094,12 +1185,13 @@
              <tr>
                  <th> Chronic illnesses and comorbidities </th>
                          <th colspan="2">
-                             <div>
+                             <div class="patient-details" >
                                  Patient has any chronic illnesse(s)?<br/><br/>
                                  <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                       answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                       style="radio" answerLabels="Yes,No"
                                  />
+                                 <span style="color:red;"><strong>*</strong></span>
                              </div>
                          </th>
                          <td>(x)</td>
@@ -1212,7 +1304,9 @@
                         <tr>
                             <td>Current ARV Regimen:</td>
                             <td> &#160;&#160;&#160;&#160;
-                            <span id="calculated-duration-current-regimen" class="value"></span>
+                                <span id="current-regimen" class="value"></span>
+                                &#160;&#160;&#160;&#160;
+                                Duration (in Months):  <span id="current-regimen-time" class="value"></span>
                             </td>
                         </tr>
                         <br />
@@ -1223,7 +1317,7 @@
                                         conceptId="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerLabels="Yes,No,Not applicable (N/A)"
-                                        style="radio"
+                                        style="radio" id="dispense-ctx"
                                 />
                             </td>
                         </tr>
@@ -1234,7 +1328,7 @@
                                         conceptId="164940"
                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                         answerLabels="Yes,No,Not applicable (N/A)"
-                                        style="radio"
+                                        style="radio" id="dispense-dap"
                                 />
                             </td>
                         </tr>
@@ -1251,26 +1345,26 @@
                     </obsgroup>
                 </td>
             </tr>
-            <tr>
+            <tr class="patient-details">
                 <th colspan="3">Diagnosis</th>
                 <td>(ab)</td>
                 <td colspan="2">
-                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" style="autocomplete"/>
+                    <obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
                 </td>
             </tr>
-            <tr>
+            <tr class="patient-details">
                 <th colspan="3">Treatment Plan</th>
                 <td>(ac)</td>
                 <td colspan="2">
-                    <obs conceptId="160430AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80"/>
+                    <obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="80" id="treatment-plan"/>
                 </td>
             </tr>
-            <tr>
+            <tr class="patient-details" >
                 <th colspan="3">Vaccinations </th>
                 <td>(ad)</td>
                 <td colspan="2" >
                     <includeIf velocityTest="$patient.age &lt; 16">
-                        <table width="30%">
+                        <table width="30%" id="child-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
                                 <th style="color: #888" align="left">Recent</th>
@@ -1304,7 +1398,7 @@
                         </table>
                     </includeIf>
                     <includeIf velocityTest="$patient.age &gt; 15">
-                        <table width="30%">
+                        <table width="30%" id="adult-vacc">
                             <tr>
                                 <th style="color: #888" align="left">Vaccination</th>
                                 <th style="color: #888" align="left">Recent</th>
@@ -1321,7 +1415,7 @@
                                 <td> <lookup expression="fn.allObs(1198).valueCoded().equals(82215).size()"/> </td>
                             </tr>
                         </table>
-                        <table>
+                        <table id="other-vacc">
                             <tr>
                                 <td><obs conceptId="1198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other" style="checkbox"
                                 /><obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -1333,7 +1427,7 @@
                     </includeIf>
                 </td>
            </tr>
-            <tr>
+            <tr class="patient-details">
                 <th colspan="3">PHDP Services</th>
                 <td>(ae)</td>
                 <td colspan="2">
@@ -1342,7 +1436,15 @@
                             <td>Has the client been given condoms this visit?</td>
                             <td><obs conceptId="159777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown"
+                                     answerLabels="Yes,No,Unknown" id="phdp-condoms"
+                                     style="radio"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Has the client been screened for substance abuse?</td>
+                            <td><obs conceptId="112603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Yes,No,Unknown" id="phdp-substance-abuse"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1350,7 +1452,7 @@
                             <td>Has the Client disclosed HIV status to their sexually active partner?</td>
                             <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown"
+                                     answerLabels="Yes,No,Unknown" id="phdp-disclosure"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1358,7 +1460,7 @@
                             <td>Has the client's partner received on-site HIV testing?</td>
                             <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown"
+                                     answerLabels="Yes,No,Unknown" id="phdp-testing"
                                      style="radio"/>
                             </td>
                         </tr>
@@ -1366,14 +1468,14 @@
                             <td>Has the client been screened for STI (in this visit)?</td>
                             <td><obs conceptId="161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes,No,Unkown"
+                                     answerLabels="Yes,No,Unknown" id="phdp-sti-screening"
                                      style="radio" />
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
-            <tr>
+            <tr class="patient-details" >
                 <th colspan="3">Adherence assessment</th>
                 <td>(af)</td>
                 <td colspan="2">
@@ -1383,8 +1485,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-arv"
                                         style="radio"  />
                                 <hr width="0" />
                             </td>
@@ -1394,8 +1496,8 @@
                             <td> &#160;&#160;&#160;&#160;
                                 <obs
                                         conceptId="161652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                        answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                        answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Good (G),Fair(F),Poor (P),Not applicablee(N/A)" id="adherence-ctx"
                                         style="radio"
                                 />
                             </td>
@@ -1405,8 +1507,8 @@
                         <td> &#160;&#160;&#160;&#160;
                             <obs
                                     conceptId="164941"
-                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    answerLabels="Good (G),Inadequate (I),Poor (P)"
+                                    answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Good (G),Fair (F),Poor (P),Not applicablee(N/A)" id="adherence-dapsone"
                                     style="radio"
                             />
                         </td>
@@ -1426,13 +1528,13 @@
                          style="dropdown"  />
                 </td>
                 <td>
-                    <div id="standard-care">
-                         Differentiated Care
-                             <obs conceptId="164947" id="standard"
-                                  answerConceptIds="164942"
-                                  style="dropdown"
-                                  answerLabels="Standard Care"/>
-                    </div>
+                    <!--<div id="standard-care">-->
+                         <!--Differentiated Care-->
+                             <!--<obs conceptId="164947" id="standard"-->
+                                  <!--answerConceptIds="164942"-->
+                                  <!--style="dropdown"-->
+                                  <!--answerLabels="Standard Care"/>-->
+                    <!--</div>-->
                      <div id="fast-track">
                          Differentiated Care
                              <obs conceptId="164947" id="fast-track"

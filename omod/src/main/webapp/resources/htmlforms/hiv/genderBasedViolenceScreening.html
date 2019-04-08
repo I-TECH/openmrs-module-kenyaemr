@@ -1,0 +1,108 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+		jQuery(function($) {
+			beforeSubmit.push(function() {
+			});
+
+		});
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		tr:nth-child(even) {
+			background-color: #e495e4;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset class="gbv-scree">
+			<!--Gender based violence screening-->
+			<fieldset id="psychosocial-preparation-tab">
+				<legend>
+					SEXUAL AND GENDER BASE VIOLENCE
+				</legend>
+				<table class="simple-table" id="gbv-screening-questions">
+					<obsgroup groupingConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+						<tr>
+							<td>1. Within the past year, have you been hit, slapped, kicked or physically hurt by someone in any way?	</td>
+							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td>2. Are you in a relationship with a person who physically hit you?</td>
+							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="158358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td>3. Are you in a relationship with a person who threatens, frightens or insults you or treats you badly?</td>
+							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="118688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+							</td>
+						</tr>
+						<tr></tr>
+						   <tr>
+							   <td>4. Are you in relationship with a person who forces you to participate in sexual activities that make you feel uncomfortable?
+									</td>
+								<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="152370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+								</td>
+							</tr>
+						<tr></tr>
+						<tr>
+							<td>5. Have you ever experienced any of the above with someone you do not have a relationship with?
+									</td>
+								<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+								</td>
+							</tr>
+					</obsgroup>
+				</table>
+			</fieldset>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

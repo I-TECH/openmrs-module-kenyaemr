@@ -1,23 +1,21 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.OrderFrequency;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.util.OpenmrsConstants;
 
 import java.util.Date;
@@ -31,9 +29,9 @@ public class RegimenComponent {
 
 	private Double dose;
 
-	private String units;
+	private Concept units;
 
-	private String frequency;
+	private Concept frequency;
 
 	/**
 	 * Creates an empty component
@@ -48,7 +46,7 @@ public class RegimenComponent {
 	 * @param units the units, e.g. mg
 	 * @apram frequency the frequency, e.g. OD
 	 */
-	public RegimenComponent(DrugReference drugRef, Double dose, String units, String frequency) {
+	public RegimenComponent(DrugReference drugRef, Double dose, Concept units, Concept frequency) {
 		this.drugRef = drugRef;
 		this.dose = dose;
 		this.units = units;
@@ -91,7 +89,7 @@ public class RegimenComponent {
 	 * Gets the units
 	 * @return the units
 	 */
-	public String getUnits() {
+	public Concept getUnits() {
 		return units;
 	}
 
@@ -99,7 +97,7 @@ public class RegimenComponent {
 	 * Sets the units
 	 * @param units the units
 	 */
-	public void setUnits(String units) {
+	public void setUnits(Concept units) {
 		this.units = units;
 	}
 
@@ -107,7 +105,7 @@ public class RegimenComponent {
 	 * Gets the frequency
 	 * @return the frequency
 	 */
-	public String getFrequency() {
+	public Concept getFrequency() {
 		return frequency;
 	}
 
@@ -115,7 +113,7 @@ public class RegimenComponent {
 	 * Sets the frequency
 	 * @param frequency the frequency
 	 */
-	public void setFrequency(String frequency) {
+	public void setFrequency(Concept frequency) {
 		this.frequency = frequency;
 	}
 
@@ -133,14 +131,17 @@ public class RegimenComponent {
 	 */
 	public DrugOrder toDrugOrder(Patient patient, Date start) {
 		DrugOrder order = new DrugOrder();
+		OrderFrequency orderFrequency = new OrderFrequency();
+		orderFrequency.setConcept(frequency);
+		orderFrequency.setFrequencyPerDay(dose);
 		order.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
 		order.setPatient(patient);
-		order.setStartDate(start);
+		order.setDateActivated(start);
 		order.setConcept(drugRef.getConcept());
 		order.setDrug(drugRef.getDrug());
 		order.setDose(dose);
-		order.setUnits(units);
-		order.setFrequency(frequency);
+		order.setDurationUnits(units);
+		order.setFrequency(orderFrequency);
 		return order;
 	}
 
@@ -149,6 +150,6 @@ public class RegimenComponent {
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("drugRef", drugRef).append("dose", dose).append("units", units).append("frequency", frequency).toString();
+		return new ToStringBuilder(this).append("drugRef", drugRef).append("dose", dose).append("units", units.getShortNameInLocale(CoreConstants.LOCALE).getName()).append("frequency", frequency).toString();
 	}
 }

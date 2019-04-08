@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.apache.commons.logging.Log;
@@ -23,26 +18,19 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
-import org.openmrs.module.kenyaemr.page.controller.FamilyAndPartnerTestingPageController;
-import org.openmrs.module.kenyaemr.wrapper.VisitWrapper;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.util.PrivilegeConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,9 +44,6 @@ public class CurrentVisitSummaryFragmentController {
 
 	protected static final Log log = LogFactory.getLog(CurrentVisitSummaryFragmentController.class);
 
-	PatientService patientService = Context.getPatientService();
-	PersonService personService = Context.getPersonService();
-	EncounterService encounterService = Context.getEncounterService();
 	ObsService obsService = Context.getObsService();
 	ConceptService conceptService = Context.getConceptService();
 	SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -111,91 +96,6 @@ public class CurrentVisitSummaryFragmentController {
 			}
 		} else {
 			model.addAttribute("vitals", null);
-		}
-		// Get the last 5 diagnoses
-		/**
-		 * Diagnosis concept in blue card and green card: 6042
-		 * Grouping concept in green card: 159947
-		 *
-		 */
-		// Limit diagnosis to green card, hiv addendum and moh 257 visit summary
-		List<Form> formsCollectingDiagnosis = Arrays.asList(
-				Context.getFormService().getFormByUuid("23b4ebbd-29ad-455e-be0e-04aa6bc30798"), // moh 257 visit summary
-				Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259"), //green card
-				Context.getFormService().getFormByUuid("bd598114-4ef4-47b1-a746-a616180ccfc0") // hiv addendum
-		);
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingDiagnosis, null, null,false);
-		// Get recorded triage
-		if(visit != null) {
-			List<Obs> diagnosisObs = obsService.getObservations(
-					Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
-					encounters,
-					Arrays.asList(conceptService.getConcept(6042)),
-					null,
-					null,
-					null,
-					null,
-					5,
-					null,
-					visit.getStartDatetime(),
-					visit.getStopDatetime(),
-					false
-			);
-
-			if (diagnosisObs != null) {
-
-				model.addAttribute("diagnoses", getDiagnoses(diagnosisObs));
-			}
-
-		} else {
-			model.addAttribute("diagnoses", null);
-		}
-		// Get medications
-		/**
-		 * Grouping concept: 1442
-		 * Drug: 1282
-		 * Dose: 1443
-		 * Duration: 159368
-		 * Units: 1732
-		 */
-		// Limit diagnosis to green card, hiv addendum and moh 257 visit summary
-		List<Form> medicationForms = Arrays.asList(
-				Context.getFormService().getFormByUuid("23b4ebbd-29ad-455e-be0e-04aa6bc30798"), // moh 257 visit summary
-				Context.getFormService().getFormByUuid("d4ff8ad1-19f8-484f-9395-04c755de9a47") // other medications
-		);
-		List<Encounter> medicationEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, medicationForms, null, null,false);
-		// Get recorded medications
-
-		if(visit != null) {
-			List<Obs> medicationObs = obsService.getObservations(
-					Arrays.asList(Context.getPersonService().getPerson(patient.getPersonId())),
-					medicationEncounters,
-					Arrays.asList(conceptService.getConcept(1442)),
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					visit.getStartDatetime(),
-					visit.getStopDatetime(),
-					false
-			);
-
-			log.info("medications: " + medicationObs);
-			List<SimpleObject> medicationList = new ArrayList<SimpleObject>();
-			for (Obs o : medicationObs) {
-				if (getMedications(o.getGroupMembers()) != null) {
-					medicationList.add(getMedications(o.getGroupMembers()));
-				}
-			}
-
-			if (medicationList != null) {
-
-				model.addAttribute("medication", medicationList);
-			}
-		} else {
-			model.addAttribute("medication", null);
 		}
 
 		/**

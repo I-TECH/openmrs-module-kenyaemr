@@ -1,30 +1,29 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,22 +39,23 @@ public class OnSecondLineArtCalculation extends AbstractPatientCalculation {
 	 * @should return null for patients who have never started ARVs
 	 * @should return whether patients are currently taking a second-line regimen
 	 */
+	protected static final Log log = LogFactory.getLog(OnArtCalculation.class);
 	@Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
 
-		// Get active ART regimen of each patient
-		CalculationResultMap currentArvs = calculate(new CurrentArtRegimenCalculation(), cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean onSecondLine = false;
-			SimpleResult currentArvResult = (SimpleResult) currentArvs.get(ptId);
-
-			if (currentArvResult != null) {
-				RegimenOrder currentRegimen = (RegimenOrder) currentArvResult.getValue();
-
-				onSecondLine = EmrCalculationUtils.regimenInGroup(currentRegimen, "ARV", "adult-second");
+			String regimenLine = null;
+			Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+			if (lastDrugRegimenEditorEncounter != null) {
+				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+				regimenLine = o.get("regimenLine").toString();
+               if (regimenLine != null && regimenLine.equalsIgnoreCase("adult_second")){
+						onSecondLine = true;
+		    	}
 			}
 			if (ltfu.contains(ptId)) {
 				onSecondLine = false;

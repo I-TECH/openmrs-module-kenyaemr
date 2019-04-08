@@ -1,20 +1,16 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.openmrs.Concept;
 
 /**
  * Represents predefined regimen with a name and group
@@ -22,6 +18,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class RegimenDefinition extends Regimen {
 
 	private String name;
+	private String conceptRef; // reference to concept for the regimen in CIEL dictionary
+	private String orderSetRef; // reference to order set for the regimen
 
 	private RegimenDefinitionGroup group;
 
@@ -44,6 +42,26 @@ public class RegimenDefinition extends Regimen {
 	}
 
 	/**
+	 * gets the reference concept uuid
+	 * @return
+	 */
+	public String getConceptRef() {
+		return conceptRef;
+	}
+
+	public void setConceptRef(String conceptRef) {
+		this.conceptRef = conceptRef;
+	}
+
+	public String getOrderSetRef() {
+		return orderSetRef;
+	}
+
+	public void setOrderSetRef(String orderSetRef) {
+		this.orderSetRef = orderSetRef;
+	}
+
+	/**
 	 * Gets the group
 	 * @return the group
 	 */
@@ -58,7 +76,7 @@ public class RegimenDefinition extends Regimen {
 	 * @param units the component units
 	 * @param frequency the component frequency
 	 */
-	public void addComponent(DrugReference drugRef, Double dose, String units, String frequency) {
+	public void addComponent(DrugReference drugRef, Double dose, Concept units, Concept frequency) {
 		components.add(new RegimenComponent(drugRef, dose, units, frequency));
 	}
 

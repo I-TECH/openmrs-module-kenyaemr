@@ -1,28 +1,30 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.CurrentInCareNotStartedOnARTCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Evaluator for patients who have missed their appointments
@@ -62,7 +64,7 @@ public class ETLMissedAppointmentsCohortDefinitionEvaluator implements CohortDef
 				"group by patient_id\n" +
 				"--  we may need to filter lost to follow-up using this\n" +
 				"having (\n" +
-				"(((date(latest_tca) < curdate()) and (date(latest_vis_date) < date(latest_tca))) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and datediff(curdate(), date(latest_tca)) <= 90)\n" +
+				"(((date(latest_tca) < curdate()) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(curdate(), date(latest_tca)) <= 90)\n" +
 				"-- drop missd completely\n" +
 				") e;";
 

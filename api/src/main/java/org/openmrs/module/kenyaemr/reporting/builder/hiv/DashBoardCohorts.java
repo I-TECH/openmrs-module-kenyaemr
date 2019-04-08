@@ -1,22 +1,18 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsCheckedInCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsDailyScheduleCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsPatientsSeenCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.AppointmentsUnscheduledCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.CumulativeOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLCurrentOnCareCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLNewHivEnrollmentCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLNewOnARTCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLPatientsWithVLInLast12MonthsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSLinkedClientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSPositiveResultsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.*;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -26,11 +22,9 @@ import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefin
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Created by antony on 09/08/17.
@@ -233,7 +227,6 @@ public class DashBoardCohorts {
             throw new IllegalStateException("Error evaluating patients newly enrolled in Hiv", e);
         }
     }
-
     /**
      * @param context optional (used to return a cached value if possible)
      * @return
@@ -269,7 +262,343 @@ public class DashBoardCohorts {
             throw new IllegalStateException("Error evaluating HTS linked clients", e);
         }
     }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSFamilyContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS family contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSIDUContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS IDU contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSFamilyContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPartnerContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status Partner contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsUnknownStatusIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSIDUContactsUknownStatusCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total Unknown HIV status IDU contacts", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalTestedPartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPartnerContactsTestedCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS Partners contacts tested", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositivePartner(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositivePartnerContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive Partner contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositiveIDUContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating total HTS HIV Positive IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalPositiveFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSPositiveFamilyContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS HIV positive family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedFamily(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedFamilyContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked family contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedIDU(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedIDUContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked IDU contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort htsTotalLinkedPartners(EvaluationContext context) {
+        try {
+            return getService().evaluate(new HTSLinkedPartnerContactsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating HTS linked Partner contacts", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4Monthstca(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable patients with 4+ months tca", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4Monthstca(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable patients with under months tca", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstablePatientsUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableUnder15YearsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable patients aged under 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstableFemalePatients15Plus(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableFemales15PlusYearsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable female patients aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort unstableMalePatients15Plus(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUnstableMales15PlusYearsCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating unstable male patients aged 15+ years", e);
+        }
+    }
+
+    /**
+ * @param context optional (used to return a cached value if possible)
+ * @return
+ */
+public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
+    try {
+        return getService().evaluate(new DiffCarecurrentInCareOnARTCohortDefinition(), context);
+    } catch (EvaluationException e) {
+        throw new IllegalStateException("Error evaluating current in care ART patients", e);
+    }
+}
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care females over 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort undocumentedPatientStability(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareUndocumentedStabilityCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating undocumented patient stability", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care males over 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort currentInCareOnARTUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCarecurrentInCareOnARTUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating current in care under 15 years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable female patients with over 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable male patients with over 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaOver15Female(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15FemaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable female patients with under 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableOver4MonthstcaUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableOver4MonthstcaUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable children patients with over 4 months prescription aged below 15 years", e);
+        }
+    }
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaOver15Male(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable male patients with under 4 months prescription aged 15+ years", e);
+        }
+    }
+
+    /**
+     * @param context optional (used to return a cached value if possible)
+     * @return
+     */
+    public static EvaluatedCohort stableUnder4MonthstcaUnder15(EvaluationContext context) {
+        try {
+            return getService().evaluate(new DiffCareStableUnder4MonthstcaUnder15CohortDefinition(), context);
+        } catch (EvaluationException e) {
+            throw new IllegalStateException("Error evaluating stable children patients with under 4 months prescription aged below 15 years", e);
+        }
+    }
+
+
     private static CohortDefinitionService getService() {
         return Context.getService(CohortDefinitionService.class);
     }
 }
+

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +46,7 @@ public class HTSPositiveResultsDefinitionEvaluator implements CohortDefinitionEv
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" SELECT patient_id from kenyaemr_etl.etl_hts_test where final_test_result = \"Positive\" and voided = 0 and test_type=1;\n";
+		String qry=" SELECT t.patient_id from kenyaemr_etl.etl_hts_test t inner join kenyaemr_etl.etl_hts_test c on c.patient_id=t.patient_id and c.test_type=1 inner join person p on t.patient_id=p.person_id and p.voided=0 where t.final_test_result = \"Positive\" and t.voided = 0 and t.test_type=2;\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

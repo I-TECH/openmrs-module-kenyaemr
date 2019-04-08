@@ -1,66 +1,109 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
+import org.openmrs.*;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for {@link OnArtCalculation}
  */
+
 public class OnArtCalculationTest extends BaseModuleContextSensitiveTest {
 
 	/**
 	 * Setup each test
 	 */
+	@Autowired
+	private CommonMetadata commonMetadata;
+
+	@Autowired
+	private HivMetadata hivMetadata;
+
+	@Autowired
+	private TbMetadata tbMetadata;
+
+	@Autowired
+	private MchMetadata mchMetadata;
 	@Before
 	public void setup() throws Exception {
 		executeDataSet("dataset/test-concepts.xml");
+
+		commonMetadata.install();
+		hivMetadata.install();
+		tbMetadata.install();
+		mchMetadata.install();
 	}
 
 	/**
 	 * @see OnArtCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Test
-	public void evaluate_shouldCalculateCurrentArtRegimen() throws Exception {
-		// Put patient #7 on Dapsone
-		Concept dapsone = Dictionary.getConcept(Dictionary.DAPSONE);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(7), dapsone, TestUtils.date(2011, 1, 1), null);
+	public void evaluate_shouldCalculateCurrentOnArt() throws Exception {
+		ConceptService cs = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
 
-		// Put patient #8 on Stavudine
-		Concept stavudine = Dictionary.getConcept(Dictionary.STAVUDINE);
-		TestUtils.saveDrugOrder(TestUtils.getPatient(8), stavudine, TestUtils.date(2011, 1, 1), null);
-		
-		List<Integer> cohort = Arrays.asList(6, 7, 8);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 
-		CalculationResultMap resultMap = new OnArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
-		Assert.assertThat((Boolean) resultMap.get(6).getValue(), is(false)); // isn't on any drugs
-		Assert.assertThat((Boolean) resultMap.get(7).getValue(), is(false)); // isn't on any ARTs
-		Assert.assertThat((Boolean) resultMap.get(8).getValue(), is(true)); // is taking D4T
-	}
+		// Enroll patients #5, #6  in the HIV Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(2), hivProgram, TestUtils.date(2011, 1, 1));
+		//TestUtils.enrollInProgram(TestUtils.getPatient(6), hivProgram, TestUtils.date(2011, 1, 1));
+
+		// Give patient #6 an ARV regimen
+		EncounterType type = encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR);
+		Obs obs = new Obs();
+		obs.setConcept(Dictionary.getConcept(Dictionary.ARV_TREATMENT_PLAN_EVENT_CONCEPT));
+		obs.setObsDatetime(new Date());
+		obs.setValueCoded(Dictionary.getConcept(Dictionary.START_DRUGS));
+		TestUtils.saveEncounter(TestUtils.getPatient(6), type, new Date(), obs);
+
+		// Enroll patients #8  in the TB Program
+		TestUtils.enrollInProgram(TestUtils.getPatient(8), tbProgram, TestUtils.date(2011, 5, 15));
+
+		Concept onARV = Dictionary.getConcept(Dictionary.ARV_TREATMENT_PLAN_EVENT_CONCEPT);
+		TestUtils.saveObs(TestUtils.getPatient(6), onARV, 1256, TestUtils.date(2011, 4, 1));
+
+		// Give patient #8 an TB regimen
+		Concept onTB = Dictionary.getConcept(Dictionary.TB_TREATMENT_PLAN_CONCEPT);
+		TestUtils.saveObs(TestUtils.getPatient(8), onTB, 1256, TestUtils.date(2012, 1, 1));
+
+		List<Integer> cohort = Arrays.asList(2, 6, 7, 8);
+
+		CalculationResultMap resultMap = new EligibleForArtCalculation().evaluate(cohort, null, Context.getService(PatientCalculationService.class).createCalculationContext());
+		Assert.assertTrue((Boolean) resultMap.get(2).getValue()); // in HIV program with no ARV
+		Assert.assertFalse((Boolean) resultMap.get(6).getValue()); // in HIV program but already on ART
+		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); // not in HIV Program
+		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // only in TB Program
+
+    }
 }

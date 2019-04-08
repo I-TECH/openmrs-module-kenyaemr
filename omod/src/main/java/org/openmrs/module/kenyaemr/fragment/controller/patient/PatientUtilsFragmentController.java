@@ -1,26 +1,17 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.Visit;
-import org.openmrs.api.PatientService;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -33,8 +24,16 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.regimen.RegimenChange;
+import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
+import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.util.EmrUiUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -227,7 +226,157 @@ public class PatientUtilsFragmentController {
 		}
 		return ui.simplifyCollection(people);
 	}
+	/**
+	 * Look for the guardians name for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of guardians
+	 */
+	public SimpleObject[] getGuardians(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Guardian")) {
+					people.add(relationship.getPersonB());
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Guardian")) {
+					people.add(relationship.getPersonA());
+			}
+		}
+		return ui.simplifyCollection(people);
+	}
+	/**
+	 * Check mothers is alive for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of mothers
+	 */
+	public SimpleObject[] getMothersLiveStatus(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+						people.add(relationship.getPersonB());
+					}
+				}
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+						people.add(relationship.getPersonA());
+					}
+				}
+			}
+		}
+			return ui.simplifyCollection(people);
+	}
+	/**
+	 * Check mothers is CCC number for an infant from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of mothers
+	 */
 
+public String getMothersUniquePatientNumber(@RequestParam("patientId") Patient patient,UiUtils ui) {
+
+		String cccNumber = "";
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+
+						Integer personId = relationship.getPersonB().getPersonId();
+						//Patient mother = Context.getPatientService().getPatient(personId);
+						if(Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+							PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+							PatientIdentifier cccObject = mother.getPatientIdentifier(pit);
+							cccNumber = cccObject.getIdentifier();
+						}
+					}
+				}
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("F")) {
+					if (!relationship.getPersonA().isDead()) {
+
+						Integer personId = relationship.getPersonA().getPersonId();
+						//Patient mother = Context.getPatientService().getPatient(personId);
+						if(Context.getPatientService().getPatient(personId) != null){
+							Patient mother = Context.getPatientService().getPatient(personId);
+							PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+						    PatientIdentifier cccObject = mother.getPatientIdentifier(pit);
+						     cccNumber = cccObject.getIdentifier();
+
+						}
+					}
+				}
+			}
+		}
+		return cccNumber;
+	}
+	/**
+	 * Check mothers current ARV regimen
+	 * @param patient
+	 * @param now
+	 * @return list of mothers
+	 */
+public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean RegimenManager regimenManager, @SpringBean EmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+	SimpleObject obj = new SimpleObject();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+
+						Integer personId = relationship.getPersonB().getPersonId();
+						//Patient mother = Context.getPatientService().getPatient(personId);
+						if (Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+							Concept arvs = regimenManager.getMasterSetConcept("ARV");
+							String regimenName = null;
+							Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(mother, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+							if (lastDrugRegimenEditorEncounter != null) {
+								SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+								regimenName = o.get("regimenShortDisplay").toString();
+								if (regimenName != null) {
+									obj = SimpleObject.create(
+											"regimen", regimenName
+									);
+								}
+							}
+						}
+					}
+				}
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("F")) {
+					if (!relationship.getPersonA().isDead()) {
+
+						Integer personId = relationship.getPersonA().getPersonId();
+						//Patient mother = Context.getPatientService().getPatient(personId);
+						if(Context.getPatientService().getPatient(personId) != null){
+							Patient mother = Context.getPatientService().getPatient(personId);
+							Concept arvs = regimenManager.getMasterSetConcept("ARV");
+							String regimenName = null;
+							Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(mother, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+							if (lastDrugRegimenEditorEncounter != null) {
+								SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
+								regimenName = o.get("regimenShortDisplay").toString();
+								if (regimenName != null) {
+									obj = SimpleObject.create(
+											"regimen", regimenName
+									);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return obj;
+	}
 	/**
 	 * Gets a patient by their id
 	 * @param patientId the patient

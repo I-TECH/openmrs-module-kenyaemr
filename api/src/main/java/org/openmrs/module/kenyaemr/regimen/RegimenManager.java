@@ -1,23 +1,18 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.ContentManager;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -158,7 +153,7 @@ public class RegimenManager implements ContentManager {
 
 						if (componentDrugRef.equals(orderDrugRef)) {
 
-							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && StringUtils.equals(order.getUnits(), component.getUnits()) && StringUtils.equals(order.getFrequency(), component.getFrequency()))) {
+							if (!exact || (ObjectUtils.equals(order.getDose(), component.getDose()) && order.getDoseUnits().equals(component.getUnits()) && order.getFrequency().getConcept().equals(component.getFrequency()))) {
 								regimenHasComponent = true;
 								break;
 							}
@@ -227,7 +222,7 @@ public class RegimenManager implements ContentManager {
 				String groupCode = groupElement.getAttribute("code");
 				String groupName = groupElement.getAttribute("name");
 
-			   	RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
+				RegimenDefinitionGroup group = new RegimenDefinitionGroup(groupCode, groupName);
 				categoryGroups.add(group);
 
 				// Parse all regimen definitions for this group
@@ -235,17 +230,26 @@ public class RegimenManager implements ContentManager {
 				for (int r = 0; r < regimenNodes.getLength(); r++) {
 					Element regimenElement = (Element)regimenNodes.item(r);
 					String name = regimenElement.getAttribute("name");
+					String conceptRef = regimenElement.getAttribute("conceptRef");
+					String orderSetRef = regimenElement.getAttribute("orderSetRef");
 
 					RegimenDefinition regimenDefinition = new RegimenDefinition(name, group);
 
+					if (conceptRef != null)
+						regimenDefinition.setConceptRef(conceptRef);
+
+					if (orderSetRef != null)
+						regimenDefinition.setOrderSetRef(orderSetRef);
+
 					// Parse all components for this regimen
 					NodeList componentNodes = regimenElement.getElementsByTagName("component");
+					ConceptService conceptService = Context.getConceptService();
 					for (int p = 0; p < componentNodes.getLength(); p++) {
 						Element componentElement = (Element)componentNodes.item(p);
 						String drugCode = componentElement.getAttribute("drugCode");
 						Double dose = componentElement.hasAttribute("dose") ? Double.parseDouble(componentElement.getAttribute("dose")) : null;
-						String units = componentElement.hasAttribute("units") ? componentElement.getAttribute("units") : null;
-						String frequency = componentElement.hasAttribute("frequency") ? componentElement.getAttribute("frequency") : null;
+						Concept units = componentElement.hasAttribute("units") ? conceptService.getConcept(componentElement.getAttribute("units")) : null;
+						Concept frequency = componentElement.hasAttribute("frequency") ? conceptService.getConcept(componentElement.getAttribute("frequency")) : null;
 
 						DrugReference drug = categoryDrugs.get(drugCode);
 						if (drug == null)

@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 
 import org.openmrs.Concept;
@@ -109,6 +104,20 @@ public class CommonCohortLibrary {
 		cd.setMaxAge(maxAge);
 		return cd;
 	}
+	/**
+	 * patients who are at least minAge months old and at most months old on ${effectiveDate}
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition agedAtLeastAgedAtMostInMonths(int minAge, int maxAge) {
+		AgeCohortDefinition cd = new AgeCohortDefinition();
+		cd.setName("aged between "+minAge+" and "+maxAge+" years");
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		cd.setMaxAge(maxAge);
+		cd.setMinAgeUnit(DurationUnit.MONTHS);
+		cd.setMaxAgeUnit(DurationUnit.MONTHS);
+		return cd;
+	}
 
 	/**
 	 * Patients who are female and at least 18 years old on ${effectiveDate}
@@ -177,7 +186,7 @@ public class CommonCohortLibrary {
 	}
 
 	/**
-	 * Patients who transferred in between ${onOrAfter} and ${onOrBefore}
+	 * Patients who transferred out between ${onOrAfter} and ${onOrBefore}
 	 * @return the cohort definition
 	 */
 	public CohortDefinition transferredOut() {

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition;
 
 import org.openmrs.Encounter;
@@ -18,16 +27,27 @@ import java.util.Date;
 public class HTSConfirmationRegisterCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
 
     @ConfigurationProperty
-    private Date asOfDate;
+    private Date startDate;
+
+    @ConfigurationProperty
+    private Date endDate;
 
     public HTSConfirmationRegisterCohortDefinition() {
     }
 
-    public Date getAsOfDate() {
-        return asOfDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setAsOfDate(Date asOfDate) {
-        this.asOfDate = asOfDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

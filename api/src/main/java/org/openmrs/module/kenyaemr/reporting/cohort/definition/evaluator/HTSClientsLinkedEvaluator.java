@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
@@ -37,8 +46,11 @@ public class HTSClientsLinkedEvaluator implements CohortDefinitionEvaluator {
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select patient_id\n" +
-				"from kenyaemr_etl.etl_hts_referral_and_linkage;";
+		String qry = "SELECT l.patient_id from kenyaemr_etl.etl_hts_referral_and_linkage l \n" +
+				"inner join patient pt on pt.patient_id=l.patient_id and pt.voided=0 inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type=1 and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
+				"inner join kenyaemr_etl.etl_hts_test c on c.patient_id=l.patient_id and c.test_type=2 and c.final_test_result='Positive' and c.voided=0 and c.visit_date <=l.visit_date inner join person p on p.person_id=l.patient_id and p.voided=0 where l.voided=0\n" +
+				"order by l.patient_id";
+
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

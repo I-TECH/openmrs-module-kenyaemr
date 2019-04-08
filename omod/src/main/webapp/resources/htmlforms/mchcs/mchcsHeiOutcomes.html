@@ -25,10 +25,51 @@
 		text-align: left;
 		}
 	</style>
+	<script type="text/javascript">
+    //Start on jq onready
+	jq(function() {
+        jq("#hiv-status select").change(onHivStatusChange);
+        jq("#tbl-hiv-negative").hide();
+        jq("#tbl-hiv-positive").hide();
+        jq("#tbl-hiv-indeterminate").hide();
+
+    });   //End onReady
+
+    // get eligible exit criteria per hiv-status chane
+    function onHivStatusChange() {
+        var hivStatus = getField('hiv-status.value').val();
+      if(hivStatus == 1138){
+          jq("#tbl-hiv-negative").hide();
+          jq("#tbl-hiv-positive").hide();
+          jq("#tbl-hiv-indeterminate").show();
+	  }
+        if(hivStatus == 664){
+            jq("#tbl-hiv-negative").show();
+            jq("#tbl-hiv-positive").hide();
+            jq("#tbl-hiv-indeterminate").hide();
+        }
+        if(hivStatus == 703){
+            jq("#tbl-hiv-negative").hide();
+            jq("#tbl-hiv-positive").show();
+            jq("#tbl-hiv-indeterminate").hide();
+        }
+    }
+
+
+
+    beforeSubmit.push(function () {
+                    return true;
+        });
+	</script>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td align="left">Date:
+					<encounterDate id="encounter-date" showTime="true"/>
+				</td>
+				<td>
+					Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -40,19 +81,38 @@
 				</tr>
 				<tr>
 					<td>Exit Date</td>
-					<td><encounterDate  id="exitDate" showTime="true" /></td>
+					<!--<td><encounterDate  id="exitDate" showTime="true" /></td>-->
+					<td id ="exitDate"><obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="heiOutcomeDate" allowFutureDates="false" required="true"/></td>
 				</tr>
 				<tr>
 					<td>HIV Status</td>
-					<td><obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  /></td>
+					<td><obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="hiv-status" required="true" /></td>
 				</tr>
-				<tr>
+				<tr id="tbl-hiv-positive">
 					<td>Exit Criteria</td>
 					<td>
 						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
-							 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="HIV Neg age &gt; 18 months,Confirmed HIV Positive,Lost,Dead,Transfer Out"
+							 answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Confirmed HIV Positive,Lost,Dead,Transfer Out"
 								/>
+					</td>
+				</tr>
+				<tr id="tbl-hiv-negative">
+					<td>Exit Criteria</td>
+					<td>
+						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
+							 answerConceptIds="1403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="HIV Neg age &gt; 18 months,Lost,Dead,Transfer Out"
+						/>
+					</td>
+				</tr>
+				<tr id="tbl-hiv-indeterminate">
+					<td>Exit Criteria</td>
+					<td>
+						<obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="idReason" style="dropdown"
+							 answerConceptIds="5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Lost,Dead,Transfer Out"
+						/>
 					</td>
 				</tr>
 			</tbody>

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.viralSuppression;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
@@ -28,7 +37,7 @@ public class ViralSuppressionIndicatorLibrary {
      * @return
      */
     public  CohortIndicator unsuppressed() {
-        return cohortIndicator("New Enrollment in care (excludes transfers)", ReportUtils.map(cohortLibrary.unsuppressed(), ""));
+        return cohortIndicator("Unsuppressed VL", ReportUtils.map(cohortLibrary.unsuppressed(), ""));
     }
 
 
@@ -37,7 +46,7 @@ public class ViralSuppressionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator noVLResults() {
-        return cohortIndicator("Currently on ART", ReportUtils.map(cohortLibrary.noVLResults(), ""));
+        return cohortIndicator("No VL Results", ReportUtils.map(cohortLibrary.noVLResults(), ""));
     }
 
 

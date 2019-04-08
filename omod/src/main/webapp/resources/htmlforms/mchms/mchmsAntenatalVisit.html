@@ -34,22 +34,197 @@
 	.arv-med {
 	}
 </style>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
 
 	var ARV_CONCEPT_ID = 1148;
 	var HAART_CONCEPT_ID = 1149;
 	var NA_CONCEPT_ID = 1175;
+    var NOT_HIV_TESTED_ID = 1402;
+    var NEGATIVE = 664;
+    var UNKNOWN = 1067;
+    var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
+    var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
+    var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
+    var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
+    var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
+    var HAART_START_DATE = "<lookup expression="fn.latestObs(163784).getValueDatetime()"/>";
+    var ANC_NUMBER = "<lookup expression="fn.latestObs(163530).getValueText()"/>";
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+    var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+    //Start on ready
 	jq(function () {
-		jq('#arv-status input').click(onArvStatusChange);
-		onArvStatusChange();
-		getField('arv-status.value').change(onArvStatusChange);
-
+        jq('#anc-counselling').hide();
+		jq('#counselled input').click(onANCCounselChange);
+        jq('.syphilis-treated').hide();
+        jq('#syphilis-test-results select').change(onSyphilisResultChange);
+        jq('#partner-tested select').change(onPartnerTestedChange);
+        jq('#cacx-screening select').change(onCacxResultChange);
+        jq('#chronic-illness').change(onCacxResultChange);
+		getField('counselled.value').change(onANCCounselChange);
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
+        onEncounterDateChange();
+		//Prepopulate anc number
+        jq('#anc-number:text').val(ANC_NUMBER);
+		//Chronic illness validation
+        jq("#tbl-chronic-illness").hide();
+        jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+        //chronicIllnessesSelected();
+       //Cacx screening method  cacx-screening-method
+        jq('#cacx-screening-method').hide();
+        // HIV Test validation
+        jq('#tbl-known-positive').hide();
+        jq("#hiv-test2").hide();
+        jq('#hiv-final-result select').attr("style", "pointer-events:none;");
+        jq("#hiv-test1-result select").change(firstTestSelected);
+        jq("#hiv-test2-result select").change(secondTestSelected);
+        //test kit expiry
+        jq("#expiry-date input").change(expiryDateSelected);
+        //Show number of clients already booked on tca date
+        jq('#showNumberBooked').hide();
+        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+		//Validation for client if already hiv positive or enrolled
+        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
+            jq('#tbl-known-positive').show();
+            jq('#hiv-known-positive:text').val('Positive');
+            jq('#tbl-hiv-test').hide();
+            jq('#art-and-prophylaxis').show();
+            jq('#who-staging').show();
+            jq('#vl-sample').show();
+            //Prepopulate if already on HAART
+            if(PATIENT_ON_ART =="true") {
+                jq('#on-art:text').val('Yes');
+            }else {
+                jq('#on-art:text').val('No');
+            }
+        }else if(PATIENT_IS_REPORTED_HIV == 664) {
+            jq('#tbl-hiv-test').show();
+            jq('#tbl-unknown-status').show();
+            jq('#hiv-status:text').val("Negative");
+            jq('#art-and-prophylaxis').hide();
+            jq('#who-staging').hide();
+            jq('#vl-sample').hide();
+        }else{
+            jq('#tbl-hiv-test').show();
+            jq('#tbl-unknown-status').show();
+            jq('#hiv-status:text').val("Reported unknown");
+            jq('#art-and-prophylaxis').hide();
+            jq('#who-staging').hide();
+            jq('#vl-sample').hide();
+        }
+        if(PATIENT_IS_REPORTED_HIV == 703 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+            jq('#tbl-haart-given').show();
+        }else{
+            jq('#tbl-haart-given').hide();
+
+        }
+
+        if(HAART_START_DATE !="" || HAART_START_DATE != "false"){
+            getField('haart-start-date.value').val(HAART_START_DATE);
+        }else{
+            getField('haart-start-date.value').val("");
+        }
+        //Validation of recent HIV tests between vl and ldl
+		if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE != "") {
+            //Latest VL or LDl
+            var isLatestVlBeforeLatestLDl = moment(moment(moment(LATEST_VIRAL_LOAD_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(LATEST_LDL_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+            if (isLatestVlBeforeLatestLDl) {
+                jq('#vl-date:text').val(LATEST_LDL_DATE);
+                jq('#vl-value:text').val('LDL');
+            } else {
+                jq('#vl-date:text').val(LATEST_VIRAL_LOAD_DATE);
+                jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
+            }
+        }else if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE == ""){
+            jq('#vl-date:text').val(LATEST_VIRAL_LOAD_DATE);
+            jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
+
+		}else if(LATEST_LDL_DATE != "" &amp;&amp; LATEST_VIRAL_LOAD_DATE == ""){
+            jq('#vl-date:text').val(LATEST_LDL_DATE);
+            jq('#vl-value:text').val('LDL');
+		}
+       //Partner testing
+        jq('#partner-hiv-status select').prop("disabled", true);
+        //skip pattern
+        //First test
+        var firstTest = getField("hiv-test1-result.value").val();
+        //Negative
+        if(firstTest ==664) {
+
+            jq("#hiv-test2-result select").prop("disabled", true);
+            jq(".kit-name2 select").prop("disabled", true);
+            jq(".lot-number2 input").prop("disabled", true);
+            jq("#expiry-date2 input").prop("disabled", true);
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(firstTest ==703){
+
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+        }
+        //Invalid
+        if(firstTest ==163611){
+
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+        }
+        //Final test
+        var secondTest = getField("hiv-test2-result.value").val();
+        //Negative
+        if(secondTest ==664) {
+            jq(".kit-name2 select").prop("disabled", true);
+            jq(".lot-number2 input").prop("disabled", true);
+            jq("#expiry-date2 input").prop("disabled", true);
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(secondTest ==703){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(703);
+            jq('#ccc-no input').prop("disabled", false);
+        }
+        //Invalid
+        if(secondTest ==163611){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Invalid
+        if(secondTest ==1175){
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Baby prophylaxis prepopulation
+        if(BABY_PROPHYLAXIS ==160123){
+            jq("#azt-dispensed input[value=160123]").prop("checked", true);
+           }else{
+            jq("#azt-dispensed input[value=160123]").prop("checked", false);
+        }
+        if(BABY_PROPHYLAXIS ==80586){
+            jq("#nvp-dispensed input[value=80586]").prop("checked", true);
+        }else{
+            jq("#nvp-dispensed input[value=80586]").prop("checked", false);
+		}
 	});
+//End on ready
 
 	beforeSubmit.push(function () {
 		if (validateOtherFields()) {
@@ -60,17 +235,68 @@
 		}
 		return false;
 	});
-
-	function onArvStatusChange() {
-		if (getValue('arv-status.value') == ARV_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else if (getValue('arv-status.value') == HAART_CONCEPT_ID) {
-			jq('#arv-medication').show();
-		} else {
-			jq('#arv-medication').hide();
-		}
-	}
-
+    // get count of patients booked on a date
+    function getPatientsBookedOnDate() {
+        var tca_date = getValue('returnVisitDate.value');
+        jq('#showNumberBooked').hide();
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
+            jq('#showBookedResult').text(data.bookingsOnDate);
+            jq('#showNumberBooked').show();
+        });
+    }
+    function onCacxResultChange() {
+        if (getValue('cacx-screening.value') == 1118 || getValue('cacx-screening.value') == 1175) {
+            jq('#cacx-screening-method').hide();
+            clearHiddenSections(jq('#screening-cacx-method'));
+        }else{
+            jq('#cacx-screening-method').show();
+        }
+    }
+    var chronicIllnessesSelected = function() {
+        var val = getValue('chronic-illness.value');
+        if (val == "false" || val == 1066){
+            jq("#tbl-chronic-illness").hide();
+            getField('illness-chronic.value').val("");
+            getField('onset-date-chronic-illness.value').val("");
+            getField('drug-chronic-illness.value').val("");
+            getField('dose-chronic-illness.value').val("");
+            getField('units-chronic-illness.value').val("");
+            getField('frequency-chronic-illness.value').val("");
+            getField('duration-chronic-illness.value').val("");
+            getField('duration-units-illness.value').val("");
+            getField('illness-chronic.error').html('Please specify the chronic illness.').hide();
+        }else {
+            jq("#tbl-chronic-illness").show();
+        }
+    }
+    function onANCCounselChange() {
+        var subjectCounselled = jq('#subject select').val('');
+        if (getValue('counselled.value') == 1065) {
+            jq('#anc-counselling').show();
+        }else{
+            jq('#anc-counselling').hide();
+            getField('subject.value').val("");
+        }
+    }
+    function onSyphilisResultChange() {
+        var syphilisResult = jq('#syphilis-test-results select').val();
+        var syphilisTreated = jq('.syphilisTreated');
+        if (syphilisResult == 1228) {
+            jq('.syphilis-treated').show();
+        }else{
+            jq('.syphilis-treated').hide();
+           clearHiddenSections(jq('.syphilisTreated'));
+        }
+    }
+    function onPartnerTestedChange() {
+        var partnerTested = jq('#partner-tested select').val();
+        if (partnerTested == 1065) {
+            jq('#partner-hiv-status select').prop("disabled", false);
+        }else{
+            jq('#partner-hiv-status select').prop("disabled", true);
+            getField('partner-hiv-status.value').val("");
+        }
+    }
 	function clearArvMeds() {
 		jq('.arv-med').each(function () {
 			var elementId = jq(this).attr('id');
@@ -98,6 +324,8 @@
 		var fundalHeight = getValue('fundal.value');
 		var urinePh = getValue('urine-ph.value');
 		var urineSpecificGravity = getValue('urine-specific-gravity.value');
+        var encounterDate = getValue('encounter-date.value');
+        var tca_date = getValue('returnVisitDate.value');
 
 		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
 			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
@@ -117,8 +345,147 @@
 				return false;
 			}
 		}
+        if (tca_date == "") {
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Please specify return visit date for client.').hide();
+        }
+        if (tca_date &lt; encounterDate ) {
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
+            return false;
+        }else{
+            getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
+        }
 		return true;
 	}
+    //First and second test validation
+    var firstTestSelected  = function () {
+        var firstTest = getField("hiv-test1-result.value").val();
+        //Negative
+        if(firstTest ==664) {
+            jq("#hiv-test2").hide();
+
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
+            clearHiddenSections(jq('.kit-name2'));
+            clearHiddenSections(jq('.lot-number2'));
+            getField('hiv-final-result.value').val(664);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(firstTest ==703){
+            jq("#hiv-test2").show();
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
+        }
+        //Invalid
+        if(firstTest ==163611){
+            jq("#hiv-test2").show();
+            jq("#hiv-test2-result select").prop("disabled", false);
+            jq("kit-name2 select").prop("disabled", false);
+            jq("lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            clearHiddenSections(jq('#hiv-test2-result'));
+        }
+    }
+    var secondTestSelected  = function () {
+        var secondTest = getField("hiv-test2-result.value").val();
+        //Negative
+        if(secondTest ==664) {
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            getField('hiv-final-result.value').val(1138);
+            jq('#ccc-no input').prop("disabled", true);
+        }
+        //Positive
+        if(secondTest ==703){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(703);
+            jq('#ccc-no input').prop("disabled", false);
+        }
+        //Invalid
+        if(secondTest ==163611){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Invalid
+        if(secondTest ==1175){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+        //Empty
+        if(secondTest ==""){
+            clearHiddenSections(jq('#ccc-no'));
+            clearHiddenSections(jq('#hiv-final-result'));
+            jq(".kit-name2 select").prop("disabled", false);
+            jq(".lot-number2 input").prop("disabled", false);
+            jq("#expiry-date2 input").prop("disabled", false);
+            getField('hiv-final-result.value').val(1138);
+        }
+    }
+
+    var expiryDateSelected  = function () {
+        var encounterDate = getValue('encounter-date.value');
+        var testKitExpiryDate = getValue('expiry-date.value');
+        var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+        if (isTestKitExpiryBeforeEncounterDate) {
+            getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+        }else{
+            getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
+        }
+    }
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+
+        if(PATIENT_ON_ART =="true") {
+            jq('#current-regimen').html(REGIMEN_NAME);
+        }else{
+            jq('#current-regimen').html("None");
+        }
+    }
+    //Clear hidden sections
+    clearHiddenSections = function(parentObj) {
+        parentObj.find('input[type=radio]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=checkbox]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=text]').each(function() {
+            jq(this).val("");
+        });
+        parentObj.find('select').each(function() {
+            this.selectedIndex =0;
+        });
+    }
+
 
 </script>
 
@@ -148,138 +515,151 @@
 		</div>
 	</td>
 </tr>
-<tr>
-	<td>
-		<legend>Vitals</legend>
-		<table align="top" width="100%" class="tb1">
-			<tr>
-				<td>
-					<table>
+	<tr>
+		<td>
+			<legend>Visit details </legend>
+			<table align="top" width="100%" class="tb1">
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td> ANC Visit Number:</td>
+								<td>
+									<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td> ANC Clinic Number:</td>
+								<td>
+									<input type="text" name="anc-number" id="anc-number"  />
+									<i>(xxxx/yy)</i>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<legend>Vitals</legend>
+			<table align="center" width="100%" class="tb1">
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td>Temperature</td>
+								<td colspan="2">
+									<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>Pulse Rate</td>
+								<td>
+									<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">B.P.</td>
+								<td>
+									<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									/
+									<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									mmHg
+								</td>
+								<td>Respiratory Rate</td>
+								<td>
+									<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">Oxygen Saturation</td>
+								<td>
+									<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+
+								<td>MUAC</td>
+								<td>
+									<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">Height:(cms)</td>
+								<td>
+									<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
+								</td>
+								<td>Weight: (kg)</td>
+								<td>
+									<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">BMI</td>
+								<td><span id="calculated-bmi" class="value"></span></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table border="1">
+							<tr>
+								<td>
+									<u>
+										Vitals Recorded Recently
+									</u>
+									<br/>
+									<br/>
+									Temperature:
+									<lookup expression="fn.latestObs(5088).valueNumeric"/>
+									<br/>
+									Pulse:
+									<lookup expression="fn.latestObs(5087).valueNumeric"/>
+									<br/>
+									B.P.:
+									<lookup expression="fn.latestObs(5085).valueNumeric"/>
+									/
+									<lookup expression="fn.latestObs(5086).valueNumeric"/>
+									<br/>
+									Respiratory Rate:
+									<lookup expression="fn.latestObs(5242).valueNumeric"/>
+									<br/>
+									Oxygen Saturation:
+									<lookup expression="fn.latestObs(5092).valueNumeric"/>
+									<br/>
+									Weight:
+									<lookup expression="fn.latestObs(5089).valueNumeric"/>
+									<br/>
+									Height:
+									<lookup expression="fn.latestObs(5090).valueNumeric"/>
+									<br/>
+									MUAC:
+									<lookup expression="fn.latestObs(1343).valueNumeric"/>
+									<br/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+				<legend>Other Observations</legend>
+					<table  align="center" width="100%" class="tb1">
 						<tr>
-							<td width="250">Temperature</td>
+							<td>Breast examination done:</td>
 							<td>
-								<obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="163590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
-							<td>Pulse Rate</td>
-							<td>
-								<obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>B.P.</td>
-							<td>
-								<obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								/
-								<obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								mmHg
-							</td>
-						</tr>
-						<tr>
-							<td>Respiratory Rate</td>
-							<td>
-								<obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Oxygen Saturation</td>
-							<td>
-								<obs conceptId="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Weight</td>
-							<td>
-								<obs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Height</td>
-							<td>
-								<obs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="height"/>
-							</td>
-						</tr>
-						<tr>
-							<td>BMI</td>
-							<td><span id="calculated-bmi" class="value"></span></td>
-						</tr>
-						<tr>
-							<td>MUAC</td>
-							<td>
-								<obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-					<table border="1">
-						<tr>
-							<td>
-								<u>
-									Other Vitals Recorded Recently
-								</u>
-								<br/>
-								<br/>
-								Temperature:
-								<lookup expression="fn.latestObs(5088).valueNumeric"/>
-								<br/>
-								Pulse:
-								<lookup expression="fn.latestObs(5087).valueNumeric"/>
-								<br/>
-								B.P.:
-								<lookup expression="fn.latestObs(5085).valueNumeric"/>
-								/
-								<lookup expression="fn.latestObs(5086).valueNumeric"/>
-								<br/>
-								Respiratory Rate:
-								<lookup expression="fn.latestObs(5242).valueNumeric"/>
-								<br/>
-								Oxygen Saturation:
-								<lookup expression="fn.latestObs(5092).valueNumeric"/>
-								<br/>
-								Weight:
-								<lookup expression="fn.latestObs(5089).valueNumeric"/>
-								<br/>
-								Height:
-								<lookup expression="fn.latestObs(5090).valueNumeric"/>
-								<br/>
-								MUAC:
-								<lookup expression="fn.latestObs(1343).valueNumeric"/>
-								<br/>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
-	<td valign="top">
-		<table>
-			<tr>
-				<td>
-					<legend>Other Observations</legend>
-					<table align="center" width="100%" class="tb1">
-						<tr>
-							<td>H.b.:</td>
-							<td>
-								<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-							</td>
-						</tr>
-						<tr>
 							<td>Pallor:</td>
 							<td>
 								<obs conceptId="5245AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+									 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 						<tr>
-							<td>Maturity:</td>
+							<td>Maturity in weeks:</td>
 							<td>
 								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Fundal Height (Weeks):</td>
 							<td>
 								<obs conceptId="1439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="fundal"/>
@@ -291,8 +671,6 @@
 								<obs conceptId="160090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="139814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160091AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Lie:</td>
 							<td>
 								<obs conceptId="162089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -303,236 +681,647 @@
 							<td>
 								<obs conceptId="1440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
-						</tr>
-						<tr>
 							<td>Foetal Movement:</td>
 							<td>
 								<obs conceptId="162107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 							</td>
 						</tr>
 					</table>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<legend>ART Eligibility Assessment (If applicable)</legend>
-					<table align="center" width="100%" class="tb1">
+		</td>
+</tr>
+<tr>
+		<td colspan="2">
+			<legend>Laboratory investigations</legend>
+			<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>
+							<br/>
+							<strong>HIV Testing</strong>
+							<hr />
+							<table id="tbl-known-positive" border="1">
+								<tr>
+									<td>
+										<u>
+											HIV Test Recorded Recently
+										</u>
+										<br/>
+										<br/>Final results:
+										<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Date:
+										<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+										<br/>
+										<br/>On HAART:
+										<input type="text" name="on-art" id="on-art" readonly="True" />
+										&#160;&#160;&#160;&#160;
+										Regimen:
+										<span id="current-regimen" class="value"></span>
+										<br/>
+									</td>
+								</tr>
+							</table>
+							<table id="tbl-hiv-test">
+								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>HIV Test 1 Results:
+										<obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
+									</td>
+									<td>&#160;&#160;&#160;&#160; Kit Name
+										<obs class="kit-name"
+											 id="kit-name-1"
+											 conceptId="164962"
+											 answerConceptIds="164960,164961"
+											 style="dropdown" answerLabels="Determine,First Response"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Lot Number
+										<obs
+												class="lot-number"
+												id="lot-number-1"
+												conceptId="164964"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Expiry Date
+										<obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+										/>
+									</td>
+								</tr>
+								</obsgroup>
+								 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								  <tr id="hiv-test2">
+
+									<td>HIV Test 2 Results:
+										<obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="Positive,Negative,N/A"/>
+									</td>
+									<td>&#160;&#160;&#160;&#160; Kit Name
+										<obs class="kit-name2"
+											 id="kit-name-2"
+											 conceptId="164962"
+											 answerConceptIds="164960,164961"
+											 style="dropdown" answerLabels="Determine,First Response"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Lot Number
+										<obs class="lot-number2"
+											 id="lot-number-2"
+											 conceptId="164964"
+										/>
+
+									</td>
+									<td>&#160;&#160;&#160;&#160;Expiry Date
+										<obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+										/>
+									</td>
+								  </tr>
+			             	</obsgroup>
+								<tr>
+									<td>Final Results:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+										<obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Positive,Negative,Inconclusive"/>
+									</td>
+									<td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
+										<obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 style="dropdown" answerLabels="YES,NO"/>
+									</td>
+									<td>
+										<table border="1" id="tbl-unknown-status">
+											<tr>
+												<td>
+													<u>
+														HIV Status Recorded Recently
+													</u>
+													<br/>
+													<br/>
+													Date:
+													<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+													<br/>
+													Final results:
+												 <input type="text" name="hiv-status" id="hiv-status" readonly="True" />
+													<br/>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong><U>Partner Testing</U></strong>
+									</td>
+								</tr>
+								<tr>
+									<td>Has the client's partner been tested for HIV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+										<obs id="partner-tested" conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Yes,No"/>
+										<span class="value"><recentObs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Partner HIV Status:</td>
+									<td>
+										<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 id="partner-hiv-status"
+											 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="HIV Positive,HIV Negative,Unknown"/>
+									</td>
+								</tr>
+							</table>
+							<table>
+								<br/>
+								<legend><strong>Urinalysis</strong></legend>
+								<hr />
+								<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+								<tr>
+									<td>Urine Microscopy</td>
+									<td>
+										<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+									<span class="value"><recentObs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urine Leukocyte Esterase Test</td>
+									<td>
+										<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+										<span class="value"><recentObs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Urinary Albumin</td>
+									<td>
+										<obs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
+										mg/dL
+										<span class="value"><recentObs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urinary Ketone</td>
+									<td>
+										<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
+										mg/dL
+										<span class="value"><recentObs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Glucose Measurement (Qualitative)</td>
+									<td>
+										<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+										<span class="value"><recentObs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urine Bile Salt Test</td>
+									<td>
+										<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
+										mg/dL
+										<span class="value"><recentObs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine pH</td>
+									<td>
+										<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+										<span class="value"><recentObs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urine Bile Pigment Test</td>
+									<td>
+										<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+										<span class="value"><recentObs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Specific Gravity</td>
+									<td>
+										<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+										<span class="value"><recentObs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urine Color</td>
+									<td>
+										<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										<span class="value"><recentObs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Nitrite Test</td>
+									<td>
+										<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+										<span class="value"><recentObs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Urine Turbidity</td>
+									<td>
+										<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										<span class="value"><recentObs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								<tr>
+									<td>Urine Dipstick for Blood</td>
+									<td>
+										<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+										<span class="value"><recentObs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+								</obsgroup>
+								<tr>
+									<br/>
+									<td>
+										<strong><U>Other tests</U></strong>
+
+									</td>
+								</tr>
+								<tr>
+									<td>Syphilis serology:</td>
+									<td>
+										<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 id="syphilis-test-results"
+											 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Non Reactive,Reactive,Requested,Not Tested,Poor Sample quality"/>
+										<span class="value"><recentObs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>
+										<table class="syphilis-treated">
+											<tr>
+												<td width="250">Has the client been treated for syphilis? </td>
+												<td>
+													<obs conceptId="159918AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 style="radio"
+														 class="syphilisTreated"
+														 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Yes,No"/>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>BS for MPS:</td>
+									<td>
+										<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+										<span class="value"><recentObs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+									<td>Haemoglobin:</td>
+									<td>
+										<obs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></obs>
+										<span class="value"><recentObs conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Client monitoring</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+								<td>Has the client undergone antenatal exercises? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+									<obs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="physical-exercises"
+										 style="radio"
+										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Yes,No"/>
+								</td><td><td><recentObs conceptId="161074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
+						</tr>
+								<tr>
+									<td>TB Screening Results: </td>
+									<td>
+										<obs
+												conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="NO signs,TB presumed,No signs and started on INH,TB Rx,Not done (ND)"
+												style="dropdown"
+												id="tb-screening"/>
+										<span class="value"><recentObs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+									</td>
+								</tr>
+						       <tr>
+									<td>Has the client been screened for CaCx ? <span style="color:red;">*</span></td>
+									<td><obs conceptId="164934"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Normal,Presumed,Confirmed,Not Done,N/A"
+											 style="dropdown"
+											 id="cacx-screening" />
+									</td>
+						</tr>
+						<tr id="cacx-screening-method">
+									<td>CaCx screening method? <span style="color:red;">*</span></td>
+									<td><obs conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerConceptIds="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164977,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Pap Smear,VIA,VILI,Other"
+											 style="radio"
+											 id="screening-cacx-method"
+											 />
+									</td>
+								</tr>
+					<!--hiv-centric-->
+					<tr id="who-staging">
 						<td>WHO Staging:</td>
 						<td>
 							<obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								 style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4"/>
+							<span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 						</td>
-						<td>CD4:</td>
+					</tr>
+					<tr id="vl-sample">
+						<td>HIV Viral load sample taken?</td>
 						<td>
-							<obs conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showUnits="true"/>
+							<obs conceptId="1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="dropdown"/>
+							<span id="lastVl"></span>
 						</td>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td colspan="2">
-		<legend>Urinalysis</legend>
-		<table align="center" width="100%" class="tb1">
-			<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-				<tr>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Microscopy</td>
-								<td>
-									<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urinary Albumin</td>
-								<td>
-									<obs conceptId="1875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Glucose Measurement (Qualitative)</td>
-								<td>
-									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine pH</td>
-								<td>
-									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Specific Gravity</td>
-								<td>
-									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Nitrite Test</td>
-								<td>
-									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Leukocyte Esterase Test</td>
-								<td>
-									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urinary Ketone</td>
-								<td>
-									<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace - 5,One Plus(+) - 15,Two Plus(++) - 50,Three Plus(+++) - 150"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Bile Salt Test</td>
-								<td>
-									<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace - 1,One Plus(+) - 4,Two Plus(++) - 8,Three Plus(+++) - 12"/>
-									mg/dL
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Bile Pigment Test</td>
-								<td>
-									<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Color</td>
-								<td>
-									<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Turbidity</td>
-								<td>
-									<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Dipstick for Blood</td>
-								<td>
-									<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</obsgroup>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td colspan="2">
-		<fieldset>
-			<legend>ARV Medication</legend>
-			<table align="center" width="100%" class="tb1">
-				<tr>
-					<td>Mother On:</td>
-					<td colspan="5">
-						<obs conceptId="1147AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 id="arv-status"
-							 style="radio"
-							 answerConceptIds="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="ARV Prophylaxis,HAART,NA"/>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="6">
-						<table id="arv-medication" align="center" width="100%" class="tb1">
-							<tr>
-								<td style="background-color: #B3C2F0; color: #000000;">Drug</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Dose Units</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Frequency</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration</td>
-								<td style="background-color: #B3C2F0; color: #000000;">Duration Units</td>
-							</tr>
-							<repeat>
-								<template>
-									<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-										<tr>
-											<td>
-												<obs id="drug" class="arv-med"
-													 conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="70056AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,77995AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,79040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80487AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose-" class="arv-med"
-													 conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="dose-units" class="arv-med"
-													 conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 size="5"/>
-											</td>
-											<td>
-												<obs id="frequency"
-													 class="arv-med"
-													 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+						<td>
+							<table border="1">
+								<tr>
+									<td>
+										<u>
+											VL Results Recorded Recently
+										</u>
+										<br/>
+										<br/>
+										Date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+										<input type="text" name="vl-date" id="vl-date" readonly="True" />
+										<br/>
+										Final results:
+										<input type="text" name="vl-value" id="vl-value" readonly="True" />
+										<br/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr id="art-and-prophylaxis">
+		<td colspan="2">
+			<fieldset>
+				<legend>ART and Prophylaxis</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Mother's prophylaxis given during this visit?</td>
+						<td><obs
+								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Cotrimoxazole,Dapsone,None"
+								style="radio" id="prophylaxis-used"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+					<tr id="tbl-haart-given">
+						<td>HAART given to mother during this visit?</td>
+						<td><obs
+								conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+							     id="haart-given"/>
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+						<td>HAART start date : </td>
+						<td><obs id="haart-start-date"
+								 conceptId="163784AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+						</td>
+					</tr>
+					<tr>
+					<td>AZT for the baby dispensed?</td>
+						<td>
+							<obs class ="azt-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="azt-dispensed" />
+						</td>
+					</tr>
+					<tr>
+						<td>NVP for the baby dispensed?</td>
+						<td>
+							<obs class ="nvp-prescribed"
+								 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No,N/A"
+								 style="radio" id="nvp-dispensed" />
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Other conditions</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Does the client have other illnesses?
+						 <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  style="radio" answerLabels="Yes,No"
+						/><td><recentObs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+						</td>
+						<td></td><td></td>
+					</tr>
+					<tr id="tbl-chronic-illness">
+						<td colspan="6">
+							<table>
+								<tr>
+									<th style="color: #888">Illness</th>
+									<th style="color: #888; text-align: center">Onset Date</th>
+									<th style="color: #888">Drug</th>
+									<th style="color: #888; text-align: center">Dose</th>
+									<th style="color: #888; text-align: center">Units</th>
+									<th style="color: #888; text-align: center">Frequency</th>
+									<th style="color: #888; text-align: center">Duration</th>
+									<th style="color: #888; text-align: center">Duration units</th>
+								</tr>
+								<repeat>
+									<template>
+										<obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<tr>
+												<td>
+													<obs
+															conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="illness-chronic"
+															answerConceptIds="149019AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,153754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159351AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120637AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1295AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118631AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139071AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117321AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133687AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118976AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															answerLabels="Alzheimer's Disease and other Dementias,Arthritis,Asthma,Cancer,Cardiovascular diseases,Chronic Hepatitis,Chronic Kidney Disease,Chronic Obstructive Pulmonary Disease(COPD),Chronic Renal Failure,Cystic Fibrosis,Deafness and Hearing impairment,Diabetes,Endometriosis,Epilepsy,Glaucoma,Heart Disease,Hyperlipidaemia,Hypertension,Hypothyroidism,Mental illness,Multiple Sclerosis,Obesity,Osteoporosis,Sickle Cell Anaemia,Thyroid disease"
+															style="dropdown"
+													/>
+												</td>
+												<td><obs id="onset-date-chronic-illness" conceptId="159948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" /></td>
+												<td><obs id= "drug-chronic-illness" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Drug" style="autocomplete" /></td>
+												<td><obs id = "dose-chronic-illness" conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+												<td><obs id ="units-chronic-illness" conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="5" /></td>
+												<td>
+													<obs id="frequency-chronic-illness"
+														 conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+													/>
+												</td>
+												<td><obs id="duration-chronic-illness" conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+												<td>
+													<obs id="duration-units-illness"
+														 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Hours,Days,Weeks,Months" />
+												</td>
+											</tr>
+										</obsgroup>
+									</template>
+									<render n="1" concept="ChronicIllness"/>
+									<render n="2" concept="ChronicIllness"/>
+									<render n="3" concept="ChronicIllness"/>
+								</repeat>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+   <tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Client education</legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Has the client received ANC counselling: &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="1912AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 id="counselled"
+								 style="radio"
+								 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Yes,No"/>
+						</td><td><td><recentObs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td></td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<table id="anc-counselling" align="center" width="100%" class="tb1">
+								<tr>
+									<td style="color: #000000;"><strong><u>Subject(s)</u></strong></td>
+								</tr>
+										<obsgroup groupingConceptId="161048AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+											<tr>
+												<td style="text-align: left">
+													<div style="float: left; padding-right: 50px">
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Birth plans" style="checkbox"
 														/>
-											</td>
-											<td>
-												<obs id="duration" class="arv-med"
-													 conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-											</td>
-											<td>
-												<obs id="duration-units"
-													 class="arv-med"
-													 conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-													 answerLabels="Hours,Days,Weeks,Months"/>
-											</td>
-										</tr>
-									</obsgroup>
-								</template>
-								<render medId="1"/>
-								<render medId="2"/>
-								<render medId="3"/>
-							</repeat>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</td>
-</tr>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159857AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Danger signs" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="156277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Family planning" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="HIV" style="checkbox"/>
+														<br />
+													</div>
+												</td>
+												<td>
+													<div style="float: left; padding-right: 50px">
+														 <obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159854AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Supplimental feeding"
+															 style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="159856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Breast care" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Infant feeding" style="checkbox"/>
+														<br />
+														<obs conceptId="159853AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerConceptId="1381AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+															 answerLabel="Insectiside treated nets" style="checkbox"/>
+														<br />
+													</div>
+												</td>
+											</tr>
+										</obsgroup>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+   </tr>
 <tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Referrals </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Referred from? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
+						<td>Referred to? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+							<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 style="dropdown"
+								 answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								 answerLabels="Another Health Facility,Community Unit,N/A"/>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<fieldset>
+				<legend>Next Appointment </legend>
+				<table align="center" width="100%" class="tb1">
+					<tr>
+						<td>Next appointment date:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;
+
+						<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="returnVisitDate" />
+							<span style="color:red;"><strong>*</strong></span>
+						</td>
+					</tr>
+				</table>
+				<table id="showNumberBooked" class="simple-table">
+					<tr>
+						<td> <span class="ke-flagtag">Number of patients already booked for MCH consultation on the date selected </span></td>
+						<td><span class="ke-flagtag" id="showBookedResult"></span></td></tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
 	<td colspan="2">
 		<legend>Clinical Notes</legend>
 		<table align="center" width="100%" class="tb1">
 			<tr>
 				<td>
-					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="10" cols="150"
+					<obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
 						 style="textarea"/>
 				</td>
 			</tr>

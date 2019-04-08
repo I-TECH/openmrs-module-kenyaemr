@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
@@ -22,7 +17,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.page.PageModel;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -43,11 +37,16 @@ public class FacilityDashboardFragmentController {
 	public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-		Integer allPatients = 0,  patientsOnArt = 0,
+		Integer htsTested = 0,htsPositive = 0, htsLinked = 0, allPatients = 0,  patientsOnArt = 0,
 				patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
 				suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
 				checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0,
-				htsTested =0, htsPositive = 0, htsLinked = 0;
+				htsTestedFamily =0,htsTestedPartners =0,htsTestedIDU =0, htsPositiveFamily = 0,htsPositivePartner = 0,
+				htsPositiveIDU = 0, htsUnknownStatusFamily = 0,htsUnknownStatusPartner = 0, htsUnknownStatusIDU = 0,htsLinkedFamily = 0,
+				htsLinkedPartner = 0, htsLinkedIDU = 0, unstableUnder15 = 0, unstableFemales15Plus = 0, unstableMales15Plus = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
+				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
+				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
+				currInCareOnARTOver15F = 0, undocumentedStability = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -112,6 +111,92 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> htsTotalLinked = DashBoardCohorts.htsTotalLinked(evaluationContext).getMemberIds();
 		htsLinked = htsTotalLinked != null? htsTotalLinked.size(): 0;
 
+		Set<Integer> htsTotalTestedFamily = DashBoardCohorts.htsTotalTestedFamily(evaluationContext).getMemberIds();
+		htsTestedFamily = htsTotalTestedFamily != null? htsTotalTestedFamily.size(): 0;
+
+		Set<Integer> htsTotalPositiveFamily = DashBoardCohorts.htsTotalPositiveFamily(evaluationContext).getMemberIds();
+		htsPositiveFamily = htsTotalPositiveFamily != null? htsTotalPositiveFamily.size(): 0;
+
+		Set<Integer> htsUnknownStatusFamilyContact = DashBoardCohorts.htsUnknownStatusFamily(evaluationContext).getMemberIds();
+		htsUnknownStatusFamily = htsUnknownStatusFamilyContact != null? htsUnknownStatusFamilyContact.size(): 0;
+
+		Set<Integer> htsTotalLinkedFamily = DashBoardCohorts.htsTotalLinkedFamily(evaluationContext).getMemberIds();
+		htsLinkedFamily = htsTotalLinkedFamily != null? htsTotalLinkedFamily.size(): 0;
+
+		Set<Integer> htsTotalTestedPartners = DashBoardCohorts.htsTotalTestedPartner(evaluationContext).getMemberIds();
+		htsTestedPartners = htsTotalTestedPartners != null? htsTotalTestedPartners.size(): 0;
+
+		Set<Integer> htsPositivePartners = DashBoardCohorts.htsTotalPositivePartner(evaluationContext).getMemberIds();
+		htsPositivePartner = htsPositivePartners != null? htsPositivePartners.size(): 0;
+
+		Set<Integer> htsUnknownStatusPartnerContact = DashBoardCohorts.htsUnknownStatusPartner(evaluationContext).getMemberIds();
+		htsUnknownStatusPartner = htsUnknownStatusPartnerContact != null? htsUnknownStatusPartnerContact.size(): 0;
+
+		Set<Integer> htsTotalLinkedPartners = DashBoardCohorts.htsTotalLinkedPartners(evaluationContext).getMemberIds();
+		htsLinkedPartner = htsTotalLinkedPartners != null? htsTotalLinkedPartners.size(): 0;
+
+		Set<Integer> htsTestedIDUs = DashBoardCohorts.htsTotalTestedIDU(evaluationContext).getMemberIds();
+		htsTestedIDU = htsTestedIDUs != null? htsTestedIDUs.size(): 0;
+
+		Set<Integer> htsPositiveIDUs = DashBoardCohorts.htsTotalPositiveIDU(evaluationContext).getMemberIds();
+		htsPositiveIDU = htsPositiveIDUs != null? htsPositiveIDUs.size(): 0;
+
+		Set<Integer> htsUnknownStatusIDUs = DashBoardCohorts.htsUnknownStatusIDU(evaluationContext).getMemberIds();
+		htsUnknownStatusIDU = htsUnknownStatusIDUs != null? htsUnknownStatusIDUs.size(): 0;
+
+		Set<Integer> htsLinkedIDUs = DashBoardCohorts.htsTotalLinkedIDU(evaluationContext).getMemberIds();
+		htsLinkedIDU = htsLinkedIDUs != null? htsLinkedIDUs.size(): 0;
+
+
+		Set<Integer> stableOver4monthsTca = DashBoardCohorts.stableOver4Monthstca(evaluationContext).getMemberIds();
+		stableOver4mtca = stableOver4monthsTca != null? stableOver4monthsTca.size(): 0;
+
+		Set<Integer> stableUnder4monthsTca = DashBoardCohorts.stableUnder4Monthstca(evaluationContext).getMemberIds();
+		stableUnder4mtca = stableUnder4monthsTca != null? stableUnder4monthsTca.size(): 0;
+
+		Set<Integer> unstablePatientsUnder15 = DashBoardCohorts.unstablePatientsUnder15(evaluationContext).getMemberIds();
+		unstableUnder15 = unstablePatientsUnder15 != null? unstablePatientsUnder15.size(): 0;
+
+		Set<Integer> unstableFemalePatients15Plus = DashBoardCohorts.unstableFemalePatients15Plus(evaluationContext).getMemberIds();
+		unstableFemales15Plus = unstableFemalePatients15Plus != null? unstableFemalePatients15Plus.size(): 0;
+
+		Set<Integer> unstableMalePatients15Plus = DashBoardCohorts.unstableMalePatients15Plus(evaluationContext).getMemberIds();
+		unstableMales15Plus = unstableMalePatients15Plus != null? unstableMalePatients15Plus.size(): 0;
+
+		Set<Integer> currentInCareOnART = DashBoardCohorts.currentInCareOnART(evaluationContext).getMemberIds();
+		currInCareOnART = currentInCareOnART != null? currentInCareOnART.size(): 0;
+
+		Set<Integer> stableOver4mtcaBelow15y = DashBoardCohorts.stableOver4MonthstcaUnder15(evaluationContext).getMemberIds();
+		stableOver4mtcaBelow15 = stableOver4mtcaBelow15y != null? stableOver4mtcaBelow15y.size(): 0;
+
+		Set<Integer> stableOver4mtcaOver15yM = DashBoardCohorts.stableOver4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		stableOver4mtcaOver15M = stableOver4mtcaOver15yM != null? stableOver4mtcaOver15yM.size(): 0;
+
+		Set<Integer> stableOver4mtcaOver15yF = DashBoardCohorts.stableOver4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		stableOver4mtcaOver15F = stableOver4mtcaOver15yF != null? stableOver4mtcaOver15yF.size(): 0;
+
+		Set<Integer> stableUnder4mtcaBelow15y = DashBoardCohorts.stableUnder4MonthstcaUnder15(evaluationContext).getMemberIds();
+		stableUnder4mtcaBelow15 = stableUnder4mtcaBelow15y != null? stableUnder4mtcaBelow15y.size(): 0;
+
+		Set<Integer> stableUnder4mtcaOver15My = DashBoardCohorts.stableUnder4MonthstcaOver15Male(evaluationContext).getMemberIds();
+		stableUnder4mtcaOver15M = stableUnder4mtcaOver15My != null? stableUnder4mtcaOver15My.size(): 0;
+
+		Set<Integer> stableUnder4mtcaOver15yF = DashBoardCohorts.stableUnder4MonthstcaOver15Female(evaluationContext).getMemberIds();
+		stableUnder4mtcaOver15F = stableUnder4mtcaOver15yF != null? stableUnder4mtcaOver15yF.size(): 0;
+
+		Set<Integer> currInCareOnARTUnder15y = DashBoardCohorts.currentInCareOnARTUnder15(evaluationContext).getMemberIds();
+		currInCareOnARTUnder15 = currInCareOnARTUnder15y != null? currInCareOnARTUnder15y.size(): 0;
+
+		Set<Integer> currInCareOnARTOver15yM = DashBoardCohorts.currentInCareOnARTOver15Male(evaluationContext).getMemberIds();
+		currInCareOnARTOver15M = currInCareOnARTOver15yM != null? currInCareOnARTOver15yM.size(): 0;
+
+		Set<Integer> currInCareOnARTOver15yF = DashBoardCohorts.currentInCareOnARTOver15Female(evaluationContext).getMemberIds();
+		currInCareOnARTOver15F = currInCareOnARTOver15yF != null? currInCareOnARTOver15yF.size(): 0;
+
+
+		Set<Integer> undocumentedPatientStability = DashBoardCohorts.undocumentedPatientStability(evaluationContext).getMemberIds();
+		undocumentedStability = undocumentedPatientStability != null? undocumentedPatientStability.size(): 0;
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -128,6 +213,34 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("htsTested", htsTested);
 		model.addAttribute("htsPositive", htsPositive);
 		model.addAttribute("htsLinked", htsLinked);
+		model.addAttribute("htsTestedFamily", htsTestedFamily);
+		model.addAttribute("htsPositiveFamily", htsPositiveFamily);
+		model.addAttribute("htsUnknownStatusFamily", htsUnknownStatusFamily);
+		model.addAttribute("htsLinkedFamily", htsLinkedFamily);
+		model.addAttribute("htsTestedPartners", htsTestedPartners);
+		model.addAttribute("htsPositivePartner", htsPositivePartner);
+		model.addAttribute("htsUnknownStatusPartner", htsUnknownStatusPartner);
+		model.addAttribute("htsLinkedPartner", htsLinkedPartner);
+		model.addAttribute("htsTestedIDU", htsTestedIDU);
+		model.addAttribute("htsPositiveIDU", htsPositiveIDU);
+		model.addAttribute("htsUnknownStatusIDU", htsUnknownStatusIDU);
+		model.addAttribute("htsLinkedIDU", htsLinkedIDU);
+		model.addAttribute("stableOver4mtca", stableOver4mtca);
+		model.addAttribute("stableUnder4mtca", stableUnder4mtca);
+		model.addAttribute("unstableUnder15", unstableUnder15);
+		model.addAttribute("unstableFemales15Plus", unstableFemales15Plus);
+		model.addAttribute("unstableMales15Plus", unstableMales15Plus);
+		model.addAttribute("currInCareOnART", currInCareOnART);
+		model.addAttribute("stableOver4mtcaBelow15", stableOver4mtcaBelow15);
+		model.addAttribute("stableOver4mtcaOver15M", stableOver4mtcaOver15M);
+		model.addAttribute("stableOver4mtcaOver15F", stableOver4mtcaOver15F);
+		model.addAttribute("stableUnder4mtcaBelow15", stableUnder4mtcaBelow15);
+		model.addAttribute("stableUnder4mtcaOver15M", stableUnder4mtcaOver15M);
+		model.addAttribute("stableUnder4mtcaOver15F", stableUnder4mtcaOver15F);
+		model.addAttribute("currInCareOnARTUnder15", currInCareOnARTUnder15);
+		model.addAttribute("currInCareOnARTOver15M", currInCareOnARTOver15M);
+		model.addAttribute("currInCareOnARTOver15F", currInCareOnARTOver15F);
+		model.addAttribute("undocumentedStability", undocumentedStability);
 
 		return null;
 	}

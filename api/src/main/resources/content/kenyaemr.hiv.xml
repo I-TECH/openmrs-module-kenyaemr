@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <!--suppress SpringFacetInspection -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,13 +22,21 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForHivProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.hiv.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.hiv.form.completion" />
+		<property name="patientForms">
+			<set>
+				<ref bean="kenyaemr.hiv.form.treatmentPreparation" />
+			</set>
+		</property>
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
-				<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />
+				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening" />
+				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
+				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
+				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
 				<ref bean="kenyaemr.common.form.tbScreening" />
-				<ref bean="kenyaemr.common.form.geneXpert" />
 				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
+				<ref bean="kenyaemr.hiv.form.cccDefaulterTracing"/>
 			</set>
 		</property>
 		<property name="reports">
@@ -31,7 +50,8 @@
 				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
-				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
+				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
+				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -80,9 +100,62 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivGreenCard.html" />
-		<property name="order" value="201010" />
+		<property name="order" value="200011" />
 	</bean>
 
+	<!-- HIV treatment preparation  -->
+	<bean id="kenyaemr.hiv.form.treatmentPreparation" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="782a4263-3ac9-4ce8-b316-534571233f12"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/treatmentPreparation.html"/>
+		<property name="order" value="400"/>
+	</bean>
+	<!-- Gender based violence screening  -->
+	<bean id="kenyaemr.hiv.form.genderBasedViolenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="03767614-1384-4ce3-aea9-27e2f4e67d01"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/genderBasedViolenceScreening.html"/>
+		<property name="order" value="200001"/>
+	</bean>
+	<!-- Alcohol and Drug abuse screening  -->
+	<bean id="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/alcoholAndDrugAbuseScreening.html"/>
+		<property name="order" value="200005"/>
+	</bean>
+
+	 <!--Enhanced adherence screening  -->
+	<bean id="kenyaemr.hiv.form.enhancedAdherenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="c483f10f-d9ee-4b0d-9b8c-c24c1ec24701"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/enhancedAdherenceScreening.html"/>
+		<property name="order" value="200007"/>
+	</bean>
 	<!-- Clinical Encounter - HIV Addendum -->
 	<bean id="kenyaemr.hiv.form.clinicalEncounterAddendum" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="bd598114-4ef4-47b1-a746-a616180ccfc0" />
@@ -167,7 +240,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
-		<property name="order" value="201080" />
+		<property name="order" value="200014" />
 	</bean>
 
 	<!-- Clinical Encounter - Gene Xpert Form -->
@@ -181,7 +254,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
-		<property name="order" value="201090" />
+		<property name="order" value="201100" />
 	</bean>
 
 	<!-- Art Fast Track Form -->
@@ -196,6 +269,23 @@
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
+		<property name="order" value="201090" />
+	</bean>
+
+	<!-- CCC defaulter tracing form -->
+	<bean id="kenyaemr.hiv.form.cccDefaulterTracing" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="a1a62d1e-2def-11e9-b210-d663bd873d93" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.defaultertracing" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+<!--
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation" />
+-->
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/cccDefaulterTracing.html" />
 		<property name="order" value="201090" />
 	</bean>
 
@@ -286,11 +376,24 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
-		<property name="name" value="Viral Suppression Report" />
-		<property name="description" value="Current in Care - Viral Suppression status" />
+	<!-- Enhanced Adherence register-->
+	<bean id="kenyaemr.hiv.report.enhancedAdherenceRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="d08b075f-7a16-46c6-8211-cc9e8a73d93c" />
+		<property name="name" value="Enhanced Adherence Register" />
+		<property name="description" value="Enhanced adherence Register" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/enhancedAdherenceTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:5,dataset:EnhancedAdherenceRegister" />
+	</bean>
+
+	<!-- HIV Treatment preparation-->
+	<bean id="kenyaemr.hiv.report.artPrepRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="67f57664-d061-4dce-888a-072090e3b227" />
+		<property name="name" value="ART Preparation Register" />
+		<property name="description" value="ART Preparation Register" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/artPreparationRegisterTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:5,dataset:ARTPrepRegister" />
 	</bean>
 
 </beans>

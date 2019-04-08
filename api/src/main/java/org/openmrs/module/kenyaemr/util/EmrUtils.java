@@ -1,25 +1,28 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+import org.openmrs.CareSetting;
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
@@ -28,11 +31,13 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -145,6 +150,16 @@ public class EmrUtils {
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 
+	public static Encounter lastEncounter(Patient patient, EncounterType type, Form form) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
+	public static List<Encounter> AllEncounters(Patient patient, EncounterType type, Form form) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), Collections.singleton(type), null, null, null, false);
+		return encounters;
+	}
+
 	/**
 	 * Finds the first encounter during the program enrollment with the given encounter type
 	 *
@@ -185,4 +200,49 @@ public class EmrUtils {
 				);
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
+
+	/**
+	 *
+	 * @param patient
+	 * @param careSetting
+	 * @return
+	 */
+	public static List<DrugOrder> drugOrdersFromOrders(Patient patient, CareSetting careSetting) {
+
+		OrderType drugOrderType = Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+		List<Order> allDrugOrders = null;
+		if (careSetting == null) {
+			allDrugOrders = Context.getOrderService().getAllOrdersByPatient(patient);
+		} else {
+			allDrugOrders = Context.getOrderService().getOrders(patient, careSetting, drugOrderType, false);
+		}
+
+		List<DrugOrder> drugOrdersOnly = new ArrayList<DrugOrder>();
+		for (Order o:allDrugOrders) {
+			DrugOrder order = null;
+			if (o.getOrderType().equals(drugOrderType)) {
+				order = (DrugOrder)o;
+				drugOrdersOnly.add(order);
+			}
+
+		}
+		return drugOrdersOnly;
+	}
+
+	public static ObjectNode getDatasetMappingForReport(String reportName, String mappingString) throws IOException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode conf = (ArrayNode) mapper.readTree(mappingString);
+
+		for (Iterator<JsonNode> it = conf.iterator(); it.hasNext(); ) {
+			ObjectNode node = (ObjectNode) it.next();
+			if (node.get("reportName").asText().equals(reportName)) {
+				return node;
+			}
+		}
+
+		return null;
+	}
+
+
 }

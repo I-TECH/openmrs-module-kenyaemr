@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
 				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
@@ -146,6 +157,17 @@
 			inner join form f on f.form_id = e.form_id and f.uuid = "8f5b3ba5-1677-450f-8445-33b9a38107ae"
 			) t on e.encounter_id = t.encounter_id
 			set e.encounter_type = (select encounter_type_id from encounter_type where uuid = "a0034eee-1940-4e35-847f-97537a35d05e");
+		</sql>
+	</changeSet>
+
+	<changeSet id="${project.parent.artifactId}-20190114-1044" author="aojwang">
+		<comment>
+			Restore VL results that were originally LDL and were erroneously updated to default VL value of 50
+		</comment>
+		<sql>
+			update obs
+			set concept_id=1305, value_numeric=NULL
+			where concept_id=856 and value_numeric is not null and value_coded=1302;
 		</sql>
 	</changeSet>
 

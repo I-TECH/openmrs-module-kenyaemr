@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import java.util.Collection;
@@ -18,14 +27,13 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInIptProgramCalculation;
 
 import java.util.Set;
 
 /**
  * Calculates whether patients are (alive and) in the TB program
  * Eligibility criteria include:
- * Is currently active in tb program
+ * Is currently active in TB program
  *
  */
 public class PatientInTbProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
@@ -39,18 +47,12 @@ public class PatientInTbProgramCalculation extends AbstractPatientCalculation im
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 
-//        Set<Integer> currentInIPT = CalculationUtils.patientsThatPass(calculate(new PatientInIptProgramCalculation(), cohort, context));
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId: cohort){
 
             boolean tbPatient = false;
             boolean patientInTbProgram = false;
-
-//            if (currentInIPT.contains(ptId)) {
-//                patientInTbProgram = false;
-//                log.info("In IPT ==>");
-//            }
 
             if (inTbProgram.contains(ptId)) {
                 tbPatient = true;
@@ -63,7 +65,6 @@ public class PatientInTbProgramCalculation extends AbstractPatientCalculation im
         return ret;
         }
 
-   //log.info("In Tb program ==>"+patientInTbProgram);
     @Override
     public String getFlagMessage() {
         return "On TB";
