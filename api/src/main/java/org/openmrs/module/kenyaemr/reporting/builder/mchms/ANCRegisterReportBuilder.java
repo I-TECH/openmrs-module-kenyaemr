@@ -99,8 +99,8 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
+        dsd.addColumn("ANC Number", new ANCNumberDataDefinition(),"");
         dsd.addColumn("Visit Number", new ANCVisitNumberDataDefinition(),"");
-        dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("First ANC Visit", new FirstANCVisitDataDefinition(),"");
         dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");

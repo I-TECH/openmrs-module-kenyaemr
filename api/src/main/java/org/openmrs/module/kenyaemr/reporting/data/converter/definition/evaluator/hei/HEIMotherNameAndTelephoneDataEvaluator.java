@@ -35,13 +35,13 @@ public class HEIMotherNameAndTelephoneDataEvaluator implements PersonDataEvaluat
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select  e.patient_id,\n" +
-                "  concat_ws('\\r\\n',(CONCAT(d.given_name,\n" +
+                "  concat_ws('\\r\\n',(CONCAT(d.given_name,\" \",\n" +
                 "         d.middle_name,\" \",\n" +
                 "         d.family_name)), d.phone_number) as mothersNameTelephone\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  INNER JOIN kenyaemr_etl.etl_hei_enrollment e\n" +
-                "    on e.patient_id = d.patient_id\n" +
-                "GROUP BY e.patient_id;";
+                "    on e.parent_ccc_number = d.unique_patient_no\n" +
+                "   GROUP BY e.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

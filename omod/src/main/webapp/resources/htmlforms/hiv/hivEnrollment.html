@@ -211,7 +211,7 @@
             }
 
             var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-            if(tsTelephone != "" &amp;&amp; !tsTelephone.match(phoneno)) {
+            if((tsTelephone != "" || tsTelephone != "") &amp;&amp; !tsTelephone.match(phoneno)) {
                 getField('ts-telephone.error').html('Phone number should contain only digits').show();
                 return false;
             }
@@ -425,7 +425,7 @@
             if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
                 var bmi = weightKg / (heightM * heightM);
                 if (isNaN(bmi) || bmi &lt; 10 || bmi &gt; 50) {
-                    display = 'Abnormal value. Were height and height entered correctly?';
+                    display = 'Abnormal value. Were weight and height entered correctly?';
                 }
                 else {
                     display = bmi.toFixed(2);

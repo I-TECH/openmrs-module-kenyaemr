@@ -372,8 +372,7 @@
             var gestation = getValue('gestation.value');
             var encounterDate = getValue('encounter-date.value');
             var tca_date = getValue('returnVisitDate.value');
-
-            if (gestation != null) {
+             if (gestation != null) {
                 var gestationValue = parseFloat(gestation);
                 if (gestationValue &lt; 20.0 || gestationValue &gt; 43.0) {
                     getField('gestation.error').html('Gestation must be between 20 and 43 weeks.').show();

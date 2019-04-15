@@ -35,9 +35,10 @@ public class ANCNumberOfVisitsDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "v.encounter_id,\n" +
-                "max(v.anc_visit_number) as number_of_visits\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "    v.encounter_id,\n" +
+                "    max(v.anc_visit_number) as number_of_visits\n" +
+                "    from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "    GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

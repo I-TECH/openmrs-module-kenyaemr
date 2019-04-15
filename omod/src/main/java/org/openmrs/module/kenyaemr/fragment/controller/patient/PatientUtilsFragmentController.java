@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
@@ -378,6 +379,115 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 		return obj;
 	}
 	/**
+	 * Check hei prepopulations from mothers delivery
+	 * @param patient
+	 * @param now
+	 * @return list of gestation, birth weight, birth height
+	 */
+	public SimpleObject heiDetailsFromDelivery(@RequestParam("patientId") Patient patient, @RequestParam("now") Date now, @SpringBean EmrUiUtils kenyaEmrUi, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+
+		 Double gestation = 0.0;
+		 Double birthWeight = 0.0;
+		 String birthLocation ="";
+		 String birthType ="";
+		 String birthOutcome ="";
+		 Obs gestationStatus;
+		 Obs birthWeightStatus;
+		 Obs deliveryType;
+		 Obs deliveryOutcome;
+		 Obs deliveryPlace;
+
+		String WEIGHT_AT_BIRTH = "5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String DELIVERY_OUTCOME = "159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String DELIVERY_TYPE = "5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String LOCATION_OF_BIRTH = "1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String PREGNANCY_DURATION_AMOUNT = "1789AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		SimpleObject obj = new SimpleObject();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+
+						Integer personId = relationship.getPersonB().getPersonId();
+						if (Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+
+							gestationStatus = getLatestObs(mother, PREGNANCY_DURATION_AMOUNT);
+							if (gestationStatus != null) {
+								gestation = gestationStatus.getValueNumeric();
+							}
+							birthWeightStatus = getLatestObs(mother, WEIGHT_AT_BIRTH);
+							if (birthWeightStatus != null) {
+								birthWeight = birthWeightStatus.getValueNumeric();
+							}
+							deliveryPlace = getLatestObs(mother, LOCATION_OF_BIRTH);
+							if (deliveryPlace != null) {
+								birthLocation = deliveryPlace.getValueCoded().getName().getName();
+							}
+							deliveryOutcome = getLatestObs(mother, DELIVERY_OUTCOME);
+							if (deliveryOutcome != null) {
+								birthOutcome = deliveryOutcome.getValueCoded().getName().getName();
+							}
+							deliveryType = getLatestObs(mother, DELIVERY_TYPE);
+							if (deliveryType != null) {
+								birthType = deliveryType.getValueCoded().getName().getName();
+							}
+							obj = SimpleObject.create(
+									"gestation", gestation != null? gestation : "",
+									"birthWeight", birthWeight != null? birthWeight : "",
+									"birthLocation", birthLocation != null? birthLocation : "",
+									"birthOutcome",  birthOutcome != null? birthOutcome : "",
+									"birthType",  birthType != null? birthType : ""
+							);
+						}
+					}
+				}
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("F")) {
+					if (!relationship.getPersonA().isDead()) {
+						Integer personId = relationship.getPersonB().getPersonId();
+						if (Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+
+							gestationStatus = getLatestObs(mother, PREGNANCY_DURATION_AMOUNT);
+							if (gestationStatus != null) {
+								gestation = gestationStatus.getValueNumeric();
+							}
+							birthWeightStatus = getLatestObs(mother, WEIGHT_AT_BIRTH);
+							if (birthWeightStatus != null) {
+								birthWeight = birthWeightStatus.getValueNumeric();
+							}
+							deliveryPlace = getLatestObs(mother, LOCATION_OF_BIRTH);
+							if (deliveryPlace != null) {
+								birthLocation = deliveryPlace.getValueCoded().getName().getName();
+							}
+							deliveryOutcome = getLatestObs(mother, DELIVERY_OUTCOME);
+							if (deliveryOutcome != null) {
+								birthOutcome = deliveryOutcome.getValueCoded().getName().getName();
+							}
+							deliveryType = getLatestObs(mother, DELIVERY_TYPE);
+							if (deliveryType != null) {
+								birthType = deliveryType.getValueCoded().getName().getName();
+							}
+							obj = SimpleObject.create(
+									"gestation", gestation != null? gestation : "",
+									"birthWeight", birthWeight != null? birthWeight : "",
+									"birthLocation", birthLocation != null? birthLocation : "",
+									"birthOutcome", birthOutcome != null? birthOutcome : "",
+									"birthType",  birthType != null? birthType : ""
+
+							);
+						}
+
+					}
+				}
+			}
+		}
+		return obj;
+	}
+	/**
 	 * Gets a patient by their id
 	 * @param patientId the patient
 	 * @param ui the UI utils
@@ -390,5 +500,14 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 			givenName = patients.get(0).getGivenName();
 		}
 		return givenName;
+	}
+	private Obs getLatestObs(Patient patient, String conceptIdentifier) {
+		Concept concept = Dictionary.getConcept(conceptIdentifier);
+		List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(patient, concept);
+		if (obs.size() > 0) {
+			// these are in reverse chronological order
+			return obs.get(0);
+		}
+		return null;
 	}
 }
