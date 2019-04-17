@@ -78,7 +78,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_DRUG_ORDER,
 				EmrConstants.APP_LAB_ORDER,
 				EmrConstants.APP_DEFAULTER_TRACING,
-				EmrConstants.APP_HIV_TESTING
+				EmrConstants.APP_HIV_TESTING,
+				EmrConstants.APP_PREP
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -110,7 +111,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
-						app(EmrConstants.APP_DEFAULTER_TRACING)
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP)
 				)
 		));
 
@@ -123,6 +125,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -143,6 +146,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -161,6 +165,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
 						_Privilege.MANAGE_DRUG_ORDERS,
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
@@ -178,6 +183,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -202,6 +208,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_HIV_TESTING),
+						app(EmrConstants.APP_PREP),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
