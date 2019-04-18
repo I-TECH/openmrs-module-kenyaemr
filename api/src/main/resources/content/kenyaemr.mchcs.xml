@@ -242,7 +242,7 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/hei_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:8,dataset:HEIRegister" />
+		<property name="repeatingSection" value="sheet:1,row:11,dataset:HEIRegister" />
 	</bean>
 
 </beans>

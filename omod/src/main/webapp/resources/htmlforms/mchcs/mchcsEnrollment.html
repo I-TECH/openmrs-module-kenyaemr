@@ -77,6 +77,12 @@
             includeFathersNames();
             //include the guardian details if any
             includeGuardiansNames();
+            includeBirthGestation();
+            includeBirthWeight();
+            includeBirthLocation();
+            includeBirthType();
+            includeBirthOutcome();
+
             //disable arv prophylaxis when a child is NOT exposed and enable whenever they are exposed
             jq('#hiv-exposed-child input').click(heiInfants);
 
@@ -259,6 +265,88 @@
                 jq('#guardian-name-list').html(guardianName);
             });
         }
+        //Birth gestation
+        function includeBirthGestation() {
+            var encounterDate = getValue('encounter-date.value');
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
+                .done(function(data) {
+                    var msg = data.gestation;
+                    console.log("Gestation ==>"+msg);
+                    if(msg != ""){
+                        getField('gestation.value').val(msg);
+                    }else{
+                        getField('gestation.value').val("");
+                    }
+                });
+        }
+        //Birth weight
+        function includeBirthWeight() {
+            var encounterDate = getValue('encounter-date.value');
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
+                .done(function(data) {
+                    var msg = data.birthWeight;
+                    if(msg != ""){
+                        getField('weight.value').val(msg);
+                    }else{
+                        getField('weight.value').val("");
+                    }
+                });
+        }
+        //Birth location
+        function includeBirthLocation() {
+            var encounterDate = getValue('encounter-date.value');
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
+                .done(function(data) {
+                    var msg = data.birthLocation;
+                    console.log("Location ==>"+msg);
+                    if(msg == 'HOME' ){
+                        getField('birth-place.value').prop("selectedIndex", 2);
+                    }
+                    else if(msg == 'Other' ){
+                        getField('birth-place.value').prop("selectedIndex", 3);
+                    }
+                    else if(msg == ''){
+                        getField('birth-place.value').prop("selectedIndex", 0);
+					}
+                    else{
+                        getField('birth-place.value').prop("selectedIndex", 1);
+                    }
+                 });
+        }
+        //Birth type
+        function includeBirthOutcome() {
+            var encounterDate = getValue('encounter-date.value');
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
+                .done(function(data) {
+                    var msg = data.birthOutcome;
+                    if(msg == 'singleton' ){
+                        getField('birth-outcome.value').prop("selectedIndex", 1);
+                    }
+                    if(msg == 'Twins' ){
+                        getField('birth-outcome.value').prop("selectedIndex", 2);
+                    }
+                    if(msg == 'triplets' ){
+                        getField('birth-outcome.value').prop("selectedIndex", 3);
+                    }
+                    if(msg == '' ){
+                        getField('birth-outcome.value').prop("selectedIndex", 0);
+                    }
+                });
+        }
+        //Birth type
+        function includeBirthType() {
+            var encounterDate = getValue('encounter-date.value');
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
+                .done(function(data) {
+                    var msg = data.birthType;
+                    if(msg == 'Spontaneous vaginal delivery'){
+                        jq("#birth-type input[value=1070]").prop("checked", true);
+                    }else{
+                        jq("#birth-type input[value=1071]").prop("checked", true);
+                    }
+                });
+        }
+
         function heiInfants() {
             var heixposedStatus = getValue('hiv-exposed-child.value');
             if (getValue('hiv-exposed-child.value') == '') {
@@ -437,9 +525,9 @@
 						</tr>
 						<tr>
 							<td>Gestation at birth(weeks)</td>
-							<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> </td>
+							<td><obs conceptId="1409AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="gestation"/> </td>
 							<td>Birth Weight: (kg)</td>
-							<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+							<td><obs conceptId="5916AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="weight"/></td>
 							<td>Birth length in cm </td>
 							<td><obs conceptId="1503AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 						</tr>
@@ -447,14 +535,14 @@
 							<td>Birth Order in Family (1,2,3) </td>
 							<td><obs conceptId="163460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
 							<td>Birth type: </td>
-							<td><obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="dropdown"/></td>
+							<td><obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113450AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Single,Twins,Triplets,Quadruplets,Quintuplets" style="dropdown" id="birth-outcome"/></td>
 							<td>Place of delivery</td>
 							<td>
-								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" style="dropdown"/>							  </td>
+								<obs conceptId="1572AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Facility,Home,Other" id="birth-place" style="dropdown"/>							  </td>
 						</tr>
 						<tr>
 							<td>Mode of Delivery  </td>
-							<td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" style="radio"/></td>
+							<td><obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="SVD,C-Section" id="birth-type" style="radio"/></td>
 							<td colspan="4"></td>
 						</tr>
 					</table>					</td>

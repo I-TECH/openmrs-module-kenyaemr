@@ -10,7 +10,9 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -18,6 +20,7 @@ import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -31,23 +34,25 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {
 
-        Concept returnVisitDateConcept = Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE);
-
-        CalculationResultMap returnVisitDateMap = Calculations.lastObs(returnVisitDateConcept, cohort, context);
-
+        Integer latestTCA = 5096;
         CalculationResultMap ret = new CalculationResultMap();
 
         for (Integer ptId : cohort) {
             Date returnVisitDate = null;
 
-            Obs returnVisitDateFromLastDate = EmrCalculationUtils.obsResultForPatient(returnVisitDateMap, ptId);
+            Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid("a0034eee-1940-4e35-847f-97537a35d05e"));   //last greencard hiv followup form
+            if (lastFollowUpEncounter != null) {
+                for (Obs obs : lastFollowUpEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(latestTCA)) {
 
-            if (returnVisitDateFromLastDate != null) {
-                returnVisitDate = returnVisitDateFromLastDate.getValueDatetime();
+                        returnVisitDate = obs.getValueDatetime();
+                        ret.put(ptId, new SimpleResult(returnVisitDate, this));
+                    }
+                }
             }
-                ret.put(ptId, new SimpleResult(returnVisitDate, this));
-            }
-
-            return ret;
         }
+        return ret;
+    }
+
 }
+

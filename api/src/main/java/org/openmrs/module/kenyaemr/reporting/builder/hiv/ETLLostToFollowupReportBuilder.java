@@ -69,7 +69,7 @@ public class ETLLostToFollowupReportBuilder extends AbstractHybridReportBuilder 
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-		dsd.addSortCriteria("Last Appointment date", SortCriteria.SortDirection.DESC);
+		dsd.addSortCriteria("Number of days late", SortCriteria.SortDirection.ASC);
 		dsd.setName("lostToFollowup");
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");

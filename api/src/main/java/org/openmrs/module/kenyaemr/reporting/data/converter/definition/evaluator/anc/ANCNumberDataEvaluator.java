@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCGestationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCVisitNumberDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- *Evaluates a ANC Gestation in weeks
+ * ANC Number
  */
-@Handler(supports=ANCGestationDataDefinition.class, order=50)
-public class ANCGestationDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=ANCNumberDataDefinition.class, order=50)
+public class ANCNumberDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -36,8 +37,9 @@ public class ANCGestationDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "  v.encounter_id,\n" +
-                "  LEAST(round(DATEDIFF(v.visit_date,e.lmp)/7),42) as gestation_in_weeks\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id;";
+                "  e.anc_number\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
+                "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
