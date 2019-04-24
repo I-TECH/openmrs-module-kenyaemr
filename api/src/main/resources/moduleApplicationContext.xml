@@ -64,7 +64,7 @@
 		<constructor-arg value="Prep" />
 		<constructor-arg value="kenyaemr/prep/prepHome.page"/>
 		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
-		<constructor-arg value="550" />
+		<constructor-arg value="350" />
 	</bean>
 
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">

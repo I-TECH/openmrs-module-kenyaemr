@@ -117,6 +117,7 @@
 			<set>
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
+
 			</set>
 		</property>
 
@@ -152,6 +153,7 @@
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
