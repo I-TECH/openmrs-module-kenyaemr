@@ -59,6 +59,15 @@
 		<constructor-arg value="300" />
 	</bean>
 
+<<<<<<< HEAD
+	<!--<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">-->
+		<!--<constructor-arg value="kenyaemr.prep" />-->
+		<!--<constructor-arg value="Prep" />-->
+		<!--<constructor-arg value="kenyaemr/prep/prepHome.page"/>-->
+		<!--<constructor-arg value="kenyaui:apps/facilityDashboard.png" />-->
+		<!--<constructor-arg value="350" />-->
+	<!--</bean>-->
+=======
 	<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.prep" />
 		<constructor-arg value="Prep" />
@@ -66,6 +75,8 @@
 		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
 		<constructor-arg value="350" />
 	</bean>
+>>>>>>> KEMR-862-Configure Triage form as an available form in PrEP module
+
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.defaultertracing" />
 		<constructor-arg value="Defaulter Tracing" />
