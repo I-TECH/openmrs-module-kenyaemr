@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.program;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -17,6 +19,7 @@ import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyaemr.EmrActivator;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -32,6 +35,7 @@ import java.util.List;
  * Patient program history fragment
  */
 public class ProgramHistoryFragmentController {
+	protected static final Log log = LogFactory.getLog(EmrActivator.class);
 
 	public void controller(FragmentModel model,
 						   @FragmentParam("patient") Patient patient,
@@ -47,6 +51,11 @@ public class ProgramHistoryFragmentController {
 
 		ProgramDescriptor descriptor = programManager.getProgramDescriptor(program);
 		boolean patientIsEligible = programManager.isPatientEligibleFor(patient, program);
+
+		log.info("Program ==> "+program);
+		log.info("Programs descriptor ==> "+descriptor);
+		log.info("Programs patientIsEligible ==> "+patientIsEligible);
+		log.info("Current app ==> "+currentApp);
 
 		PatientProgram currentEnrollment = null;
 
