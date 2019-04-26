@@ -40,6 +40,10 @@
 		<aware_of_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</aware_of_module>
 	</aware_of_modules>-->
 
+	<!--<aware_of_modules>-->
+		<!--<aware_of_module version="${prepVersion}">org.openmrs.module.prep</aware_of_module>-->
+	<!--</aware_of_modules>-->
+
 	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
 
 	<advice>
