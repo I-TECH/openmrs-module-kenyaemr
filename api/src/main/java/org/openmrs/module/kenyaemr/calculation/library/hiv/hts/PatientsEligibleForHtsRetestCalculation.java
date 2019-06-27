@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
@@ -22,8 +23,10 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.util.HtsConstants;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +57,7 @@ public class PatientsEligibleForHtsRetestCalculation extends AbstractPatientCalc
                     null,
                     null,
                     null,
-                    Arrays.asList(Context.getEncounterService().getEncounterTypeByUuid("de78a6be-bfc5-4634-adc3-5f1a280455cc")),
+                    Arrays.asList(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT)),
                     null,
                     null,
                     null,

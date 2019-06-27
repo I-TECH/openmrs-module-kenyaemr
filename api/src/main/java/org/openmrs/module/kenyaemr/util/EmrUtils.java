@@ -248,15 +248,12 @@ public class EmrUtils {
 	public static boolean encounterThatPassCodedAnswer(Encounter enc, Concept question, Concept answer) {
 		boolean passed = false;
 		for (Obs obs : enc.getAllObs()) {
-			System.out.println("Looping through obs: " + obs);
 			if (obs.getConcept().getConceptId().intValue() == question.getConceptId().intValue()
 					&& obs.getValueCoded().getConceptId().intValue() == answer.getConceptId().intValue()) {
 				passed = true;
-				System.out.println("Found value: Encounter passed the test");
 				break;
 			}
 		}
-		System.out.println("Final result: ============================================> " + passed);
 		return passed;
 	}
 
