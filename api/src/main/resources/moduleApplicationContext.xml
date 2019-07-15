@@ -66,6 +66,7 @@
 		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
 		<constructor-arg value="350" />
 	</bean>
+
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.defaultertracing" />
 		<constructor-arg value="Defaulter Tracing" />
