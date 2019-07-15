@@ -51,12 +51,6 @@ public class ProgramHistoryFragmentController {
 
 		ProgramDescriptor descriptor = programManager.getProgramDescriptor(program);
 		boolean patientIsEligible = programManager.isPatientEligibleFor(patient, program);
-
-		log.info("Program ==> "+program);
-		log.info("Programs descriptor ==> "+descriptor);
-		log.info("Programs patientIsEligible ==> "+patientIsEligible);
-		log.info("Current app ==> "+currentApp);
-
 		PatientProgram currentEnrollment = null;
 
 		// Gather all program enrollments for this patient and program

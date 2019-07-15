@@ -83,7 +83,6 @@
 					Find/Create Patient
 				</a>
 			</li>
-
 			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("kenyaemrpsmart", "kenyaemrpsmarthome", [patientId: currentPatient.patientId]) }" class="float-left">
 					<i class="fa fa-plus-square fa-2x"></i>
