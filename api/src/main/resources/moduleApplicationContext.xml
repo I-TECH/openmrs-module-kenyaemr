@@ -61,8 +61,9 @@
 
 	<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.prep" />
-		<constructor-arg value="PrEP" />
+		<constructor-arg value="Prep" />
 		<constructor-arg value="kenyaemr/prep/prepHome.page"/>
+
 		<constructor-arg value="kenyaui:apps/prep.png" />
 		<constructor-arg value="350" />
 	</bean>
