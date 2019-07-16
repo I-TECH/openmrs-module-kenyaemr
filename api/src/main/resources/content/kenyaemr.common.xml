@@ -34,6 +34,7 @@
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
+				<ref bean="prep.prep.form.behaviorRiskAssessment"/>
 			</set>
 		</property>
 	</bean>
@@ -274,6 +275,7 @@
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsInitialTestCalculation" />
@@ -291,6 +293,7 @@
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsRetestCalculation" />
@@ -308,6 +311,7 @@
 				<ref bean="kenyaemr.app.clinician" />
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation" />
@@ -315,6 +319,22 @@
 		<property name="htmlform" value="kenyaemr:hts/referralAndLinkage.html" />
 		<property name="order" value="201002" />
 	</bean>
+
+	<!-- Prep behavior risk assessment form -->
+	<bean id="prep.prep.form.behaviorRiskAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="40374909-05fc-4af8-b789-ed9c394ac785" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration"/>
+				<ref bean="kenyaemr.app.intake"/>
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.prep" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="prep:prep/behaviorRiskAssessment.html" />
+	</bean>
+
 
 	<!-- ===================== Reports ===================== -->
 
