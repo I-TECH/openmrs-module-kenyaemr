@@ -30,7 +30,7 @@ import java.util.List;
  * Fragment to display completed forms for a given visit
  */
 public class VisitCompletedFormsFragmentController {
-	
+
 	public void controller(@FragmentParam("visit") Visit visit,
 						   FragmentModel model,
 						   PageRequest request,
