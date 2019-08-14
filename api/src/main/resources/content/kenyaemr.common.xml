@@ -35,7 +35,7 @@
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 				<ref bean="kenyaemr.common.form.htsLinkage"/>
 				<!--<ref bean="prep.prep.form.behaviorRiskAssessment"/>-->
-				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
+				<!--<ref bean="kenyaemr.common.form.referralAndLinkage"/>-->
 				<ref bean="prep.prep.form.behaviorRiskAssessment"/>
 				<ref bean="kenyaemr_hiv_testing.common.form.htsScreeningForm"/>
 			</set>
@@ -397,23 +397,6 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="prep:prep/behaviorRiskAssessment.html" />
 	</bean>-->
-
-	<!-- HTS screening form -->
-	<bean id="kenyaemr_hiv_testing.common.form.htsScreeningForm" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="04295648-7606-11e8-adc0-fa7ae01bbebc" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.registration" />
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-				<ref bean="kenyaemr.app.hts" />
-			</set>
-		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsScreeningCalculation" />
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="hivtestingservices:hts/htsscreeningform.html" />
-		<property name="order" value="200055" />
-	</bean>
 
 	<!-- ===================== Reports ===================== -->
 
