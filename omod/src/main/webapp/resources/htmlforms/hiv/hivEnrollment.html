@@ -211,7 +211,7 @@
             }
 
             var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-            if((tsTelephone != "" || tsTelephone != "") &amp;&amp; !tsTelephone.match(phoneno)) {
+            if((tsTelephone != "" || tsTelephone != null) &amp;&amp; !tsTelephone.match(phoneno)) {
                 getField('ts-telephone.error').html('Phone number should contain only digits').show();
                 return false;
             }
@@ -967,7 +967,7 @@
 				</table>
 			</fieldset>
 		</includeIf>
-		<includeIf velocityTest="$patient.age &gt; 18">
+		<includeIf velocityTest="$patient.age &gt; 17">
 			<fieldset id="treatment-supporter-fieldset" >
 				<legend>Treatment Supporter</legend>
 				<table id="treatment-supporter" style="width: 70%;" border="0">
