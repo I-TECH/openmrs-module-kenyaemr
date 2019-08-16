@@ -17,6 +17,7 @@
 				<td width="55%" valign="top" style="padding-left: 5px">
 
 					${ ui.includeFragment("kenyaemr", "visitMenu", [ patient: currentPatient, visit: activeVisit ]) }
+					${ ui.includeFragment("prep", "program/prepEligibilitySummary", [ patient: currentPatient ]) }
 
 					<% if (activeVisit) { %>
 					${ ui.includeFragment("kenyaemr", "visitAvailableForms", [ visit: activeVisit ]) }
