@@ -103,8 +103,8 @@ public class Moh510ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Date first seen", new ObsForPersonDataDefinition("Date first seen", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.DATE_FIRST_SEEN), null, null), "", new ObsValueDatetimeConverter());
-        dsd.addColumn("Fathers full name", new CalculationDataDefinition("Father's full name", new ParentCalculation("Father")), "", new RDQACalculationResultConverter());       
-        dsd.addColumn("Mothers full name", new CalculationDataDefinition("Mother's full name", new ParentCalculation("Mother")), "", new RDQACalculationResultConverter());       
+        dsd.addColumn("Mothers full name", new CalculationDataDefinition("Mother's full name", new ParentCalculation("Mother")), "", new RDQACalculationResultConverter());
+        dsd.addColumn("Fathers full name", new CalculationDataDefinition("Father's full name", new ParentCalculation("Father")), "", new RDQACalculationResultConverter());
         dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
         dsd.addColumn("Telephone Number", new CalculationDataDefinition("Telephone Number", new PersonAttributeCalculation("Telephone contact")), "", new RDQACalculationResultConverter());
 

@@ -60,18 +60,13 @@
         var WHO_STAGES_ADULT = [ WHO_STAGE_1_ADULT_CONCEPT_ID, WHO_STAGE_2_ADULT_CONCEPT_ID, WHO_STAGE_3_ADULT_CONCEPT_ID, WHO_STAGE_4_ADULT_CONCEPT_ID ];
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
-        var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
-        var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var PATIENT_HAS_BEEN_ON_ART = GREENCARD_VELOCITY.split(",")[3].split(":")[1];
         var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
         var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
-        var VL_RESULT = GREENCARD_VELOCITY.split(",")[6].split(":")[1];
-        var LDL_RESULT = GREENCARD_VELOCITY.split(",")[7].split(":")[1];
-        var IPT_COMPLETED = GREENCARD_VELOCITY.split(",")[8].split(":")[1];
-        var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
-        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
-        var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
+
+ var PATIENT_STABLE = "<lookup expression="fn.latestObs(1855).getValueCoded()"/>";
+
     //Start on jq onready
   jq(function() {
             jq('#person-present input').click(onPersonPresentChange);
@@ -121,17 +116,39 @@
             jq('#male-fp-status :input[type=radio]').change(maleFpOptionsSelected);
             onWeightOrHeightChange();
             onEncounterDateChange();
+            returnReasonSelected();
             viralLoadValidation();
             onPersonPresentChange();
+
             //Differentiated care
-//            var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
-//            if(PATIENT_STABLE =="true") {
-//                jq('#fast-track').show();
-//                jq('#standard-care').hide();
-//            }else{
-//                jq('#standard-care').show();
-//                jq('#fast-track').hide();
-//            }
+        //Stability assessment
+              jq("#stability").change(stabilitySelected);       //boolean
+              jq("#returnVisitReason select").change(returnReasonSelected);       //non boolean
+              jq("#tbl-standard").show();
+              jq("#tbl-fast-track").hide();
+              jq("#refill-label").hide();
+              jq("#refill-date").hide();
+              jq('#standard select').prop('disabled', true);
+              jq('#fast-track select').prop('disabled', true);
+
+      //Differentiated care
+          //console.log("PAtient stable ==>"+PATIENT_STABLE);
+            if(PATIENT_STABLE == 1) {
+                jq("#tbl-fast-track").show();
+                jq("#tbl-standard").hide();
+                jq('#fast-track select').prop('disabled', false);
+                jq('#standard select').prop('disabled', true);
+                jq("#refill-date").show();
+                jq("#refill-label").show();
+                // clearHiddenSections([refillDate]);
+            }else {
+                jq("#tbl-standard").show();
+                jq("#tbl-fast-track").hide();
+                jq("#refill-label").hide();
+                jq("#refill-date").hide();
+                jq('#standard select').prop('disabled', false);
+                jq('#fast-track select').prop('disabled', true);
+            }
 
             // Because of bug HTML-469, we need a hack to set the right property accessor for datetime obs
             var realId = jq('span#pregdate-abmc input[type=hidden]').attr('name');
@@ -347,12 +364,49 @@
          }else{
              jq('#current-regimen').html("None");
              jq('#current-regimen-time').html("");
-         }
+           }
       jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/age.action', { patientId: patientId, now: encDate })
                 .done(function(data) {
                     onPatientAgeUpdate(data.age);
                 });
         }
+     //stability selected
+     var stabilitySelected = function() {
+         var stabilityStatus = getValue('stability.value');
+         var tca_reason = getField('returnVisitReason.value').val();
+         var refillDate = jq("#refill-date").hide();
+         if (stabilityStatus == "false" || stabilityStatus == 1066){
+             jq("#tbl-standard").show();
+             jq("#tbl-fast-track").hide();
+             jq("#refill-label").hide();
+             jq("#refill-date").hide();
+             jq('#standard select').prop('disabled', false);
+             jq('#fast-track select').prop('disabled', true);
+             // clearHiddenSections([refillDate]);
+         }else {
+             jq("#tbl-fast-track").show();
+             jq("#tbl-standard").hide();
+             jq('#fast-track select').prop('disabled', false);
+             jq('#standard select').prop('disabled', true);
+         }
+     }
+
+     var returnReasonSelected = function() {
+         var stabilityStatus = getValue('stability.value');
+         var tca_reason = getField('returnVisitReason.value').val();
+         if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521){
+             jq("#refill-label").show();
+             jq("#refill-date").show();
+             jq('#refill-label input').prop('disabled', false);
+             jq('#refill-date input').prop('disabled', false);
+         }else {
+             jq("#refill-label").hide();
+             jq("#refill-date").hide();
+             jq('#refill-label input').prop('disabled', true);
+             jq('#refill-date input').prop('disabled', true);
+         }
+     }
+
      function onPatientAgeUpdate(age) {    //Updates the form due to a patient age change
             isPediatric = (age &lt; 16);
             jq('#whostage select option').each(function() {
@@ -657,6 +711,7 @@
             var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
             var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
             var dodDate = new Date(getValue('pregdate-no.value')).getTime();
+            var stabilityStatus= getValue('stability.value');
 
             if (complaintsToday == false &amp;&amp; personPresent == SELF) {
                 getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
@@ -677,6 +732,12 @@
             if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
                 getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
                 return false;
+            }
+            if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
+                getField('stability.error').html('Please specify stability status.').show();
+                return false;
+            }else{
+                getField('stability.error').html('Please specify stability status.').hide();
             }
             if (pAge &lt; 16 === true) {
                 var fpStatus = getValue('fp-status.value');
@@ -1516,9 +1577,20 @@
                     </table>
                 </td>
             </tr>
+            <tr class="patient-details" >
+                         <th colspan="3">Stability assessment</th>
+                         <td>(ag)</td>
+                         <td colspan="2">
+                             <br />
+                                Is the patient stable?  &#160;&#160;&#160;&#160;
+                                         <obs conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
+                                             id="stability"/>
+                                         <span style="color:red;"><strong>*</strong></span>
+                         </td>
+            </tr>
             <tr>
                 <th colspan="3">Return visit date</th>
-                <td>(ag)</td>
+                <td>(ah)</td>
                 <td>Date:
                     <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"  id="returnVisitDate" required="true" />
                     Reason:
@@ -1526,22 +1598,33 @@
                          answerConceptIds="160523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1283AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159382AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160521AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerLabels="Follow up,Lab tests,Counseling,Pharmacy Refill,Other,"
                          style="dropdown"  />
+                    <br/>  <br/>
+                <div id="refill-label">Refill Date:&#160;&#160;</div>
+                <div id="refill-date"><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="refillVisitDate" /></div>
                 </td>
                 <td>
-                    <!--<div id="standard-care">-->
-                         <!--Differentiated Care-->
-                             <!--<obs conceptId="164947" id="standard"-->
-                                  <!--answerConceptIds="164942"-->
-                                  <!--style="dropdown"-->
-                                  <!--answerLabels="Standard Care"/>-->
-                    <!--</div>-->
-                     <div id="fast-track">
-                         Differentiated Care
-                             <obs conceptId="164947" id="fast-track"
-                                  answerConceptIds="164942,164943,164944,164945,164946"
-                                  style="dropdown"
-                                  answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"/>
-                     </div>
+                    <table>
+                        <tr id="tbl-fast-track">
+                            <td>Differentiated Care</td>
+                            <td>
+                                <obs conceptId="164947" id="fast-track"
+                                     answerConceptIds="164942,164943,164944,164945,164946"
+                                     style="dropdown"
+                                     answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
+                                />
+                            </td>
+                        </tr>
+                        <tr id="tbl-standard">
+                            <td>Differentiated Care</td>
+                            <td>
+                                <obs conceptId="164947" id="standard"
+                                     answerConceptIds="164942"
+                                     style="dropdown"
+                                     answerLabels="Standard Care"
+                                />
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
