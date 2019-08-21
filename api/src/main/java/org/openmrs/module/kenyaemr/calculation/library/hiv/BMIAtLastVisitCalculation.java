@@ -19,41 +19,50 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 /**
- * Calculate the date of enrollment into HIV Program
+ * Calculate the bmi at last visit
  */
-public class DateConfirmedHivPositiveCalculation extends AbstractPatientCalculation {
+public class BMIAtLastVisitCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		EncounterService encService = Context.getEncounterService();
 		PatientService patientService = Context.getPatientService();
-		EncounterType et = encService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		String dateConfirmedPositiveConcept = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		EncounterType et = encService.getEncounterTypeByUuid(CommonMetadata._EncounterType.TRIAGE);
+		String heightConcept = "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String weightConcept = "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 
-			Encounter firstHivEnrollment = EmrUtils.firstEncounter(patientService.getPatient(ptId), et);
-			Date dateConfirmed = null;
-			if (firstHivEnrollment != null) {
-				for (Obs o : firstHivEnrollment.getObs()) {
-					if (o.getConcept().getUuid().equals(dateConfirmedPositiveConcept)) {
-						dateConfirmed = o.getValueDatetime();
-						break;
+			Double visitWeight = null;
+			Double visitHeight = null;
+			String bmiStr = null;
+
+			Encounter lastTriageEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), et);
+			if (lastTriageEncounter != null) {
+				for (Obs o : lastTriageEncounter.getObs()) {
+					if (o.getConcept().getUuid().equals(heightConcept)) {
+						visitHeight = o.getValueNumeric();
+					} else if (o.getConcept().getUuid().equals(weightConcept)) {
+						visitWeight = o.getValueNumeric();
 					}
 				}
 			}
-			ret.put(ptId, new SimpleResult(dateConfirmed, this, context));
+			if (visitHeight != null && visitWeight != null) {
+				Double bmi = visitWeight / ((visitHeight/100) * (visitHeight/100));
+				bmiStr = String.format("%.2f", bmi);
+			}
+
+			ret.put(ptId, new SimpleResult(bmiStr, this, context));
 
 		}
 

@@ -11,6 +11,8 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -19,6 +21,8 @@ import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,22 +40,22 @@ public class InitialArtRegimenCalculation extends BaseEmrCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
-		Concept arvs = Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_DRUGS);
-		CalculationResultMap initialARVDrugOrders = firstDrugOrders(arvs, cohort, context);
-
+		String regimenName = null;
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			ListResult patientDrugOrders = (ListResult) initialARVDrugOrders.get(ptId);
+			Encounter firstDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getFirstEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
 
-			if (patientDrugOrders != null) {
-				RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(CalculationUtils.<DrugOrder>extractResultValues(patientDrugOrders)));
-				ret.put(ptId, new SimpleResult(regimen, this, context));
-			}
-			else {
-				ret.put(ptId, null);
+			if (firstDrugRegimenEditorEncounter != null) {
+				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstDrugRegimenEditorEncounter.getAllObs(), firstDrugRegimenEditorEncounter);
+				regimenName = o.get("regimenShortDisplay").toString();
+
+				if (regimenName != null) {
+					ret.put(ptId, new SimpleResult(regimenName, this, context));
+				} else {
+					ret.put(ptId, null);
+				}
 			}
 		}
-
 		return ret;
 	}
 }

@@ -9,51 +9,84 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.ui.framework.SimpleObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Calculate the date of enrollment into HIV Program
  */
-public class DateConfirmedHivPositiveCalculation extends AbstractPatientCalculation {
+public class SecondLastVLCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		EncounterService encService = Context.getEncounterService();
-		PatientService patientService = Context.getPatientService();
-		EncounterType et = encService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
+		ObsService obsService = Context.getObsService();
+		PersonService patientService = Context.getPersonService();
 		String dateConfirmedPositiveConcept = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 		CalculationResultMap ret = new CalculationResultMap();
-		for (Integer ptId : cohort) {
+		List<Concept> vlConcepts = new ArrayList<Concept>();
+		vlConcepts.add(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE));
+		vlConcepts.add(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
 
-			Encounter firstHivEnrollment = EmrUtils.firstEncounter(patientService.getPatient(ptId), et);
-			Date dateConfirmed = null;
-			if (firstHivEnrollment != null) {
-				for (Obs o : firstHivEnrollment.getObs()) {
-					if (o.getConcept().getUuid().equals(dateConfirmedPositiveConcept)) {
-						dateConfirmed = o.getValueDatetime();
-						break;
-					}
+
+		for (Integer ptId : cohort) {
+			List<Obs> vlObs = obsService.getObservations(
+					Collections.singletonList(patientService.getPerson(ptId)),
+					null,
+					vlConcepts,
+					null,
+					null,
+					null,
+					null,
+					2,
+					null,
+					null,
+					null,
+					false,
+					null
+					);
+			Obs secondLastVL = null;
+			SimpleObject object = null;
+			if (vlObs != null && vlObs.size() > 0) {
+				if (vlObs.size() > 1) {
+					secondLastVL = vlObs.get(1);
+				} else {
+					secondLastVL = vlObs.get(0);
+				}
+
+				if(secondLastVL.getConcept().equals(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
+					object = SimpleObject.create("vl", secondLastVL.getValueNumeric()+" copies/ml", "vlDate", secondLastVL.getObsDatetime());
+				}
+				else {
+					object = SimpleObject.create("vl", "LDL", "vlDate", secondLastVL.getObsDatetime());
 				}
 			}
-			ret.put(ptId, new SimpleResult(dateConfirmed, this, context));
+			ret.put(ptId, new SimpleResult(object, this, context));
 
 		}
 
