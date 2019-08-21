@@ -35,7 +35,6 @@
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
 				<ref bean="prep.prep.form.behaviorRiskAssessment"/>
-				<ref bean="kenyaemr_hiv_testing.common.form.htsScreeningForm"/>
 			</set>
 		</property>
 	</bean>
