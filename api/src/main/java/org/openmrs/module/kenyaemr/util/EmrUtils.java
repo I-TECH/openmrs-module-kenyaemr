@@ -21,6 +21,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -242,6 +243,18 @@ public class EmrUtils {
 		}
 
 		return null;
+	}
+
+	public static boolean encounterThatPassCodedAnswer(Encounter enc, Concept question, Concept answer) {
+		boolean passed = false;
+		for (Obs obs : enc.getAllObs()) {
+			if (obs.getConcept().getConceptId().intValue() == question.getConceptId().intValue()
+					&& obs.getValueCoded().getConceptId().intValue() == answer.getConceptId().intValue()) {
+				passed = true;
+				break;
+			}
+		}
+		return passed;
 	}
 
 
