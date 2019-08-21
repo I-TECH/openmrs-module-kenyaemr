@@ -42,13 +42,14 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 
-		Date startDate = null;
-		Date dateTiStartedArt = null;
+
 		CalculationResultMap ret = new CalculationResultMap();
 		CalculationResultMap tiArtStartDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_TREATMENT_START_DATE), cohort, context);
 
 		for (Integer ptId : cohort) {
 
+			Date startDate = null;
+			Date dateTiStartedArt = null;
 			Obs tiStartDate = EmrCalculationUtils.obsResultForPatient(tiArtStartDate, ptId);
 			if (tiStartDate != null) {
 				dateTiStartedArt = tiStartDate.getValueDatetime();
