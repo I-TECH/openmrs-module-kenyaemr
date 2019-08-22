@@ -45,8 +45,6 @@ public class SecondLastVLCalculation extends AbstractPatientCalculation {
 
 		ObsService obsService = Context.getObsService();
 		PersonService patientService = Context.getPersonService();
-		String dateConfirmedPositiveConcept = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-
 
 		CalculationResultMap ret = new CalculationResultMap();
 		List<Concept> vlConcepts = new ArrayList<Concept>();
@@ -80,7 +78,7 @@ public class SecondLastVLCalculation extends AbstractPatientCalculation {
 				}
 
 				if(secondLastVL.getConcept().equals(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
-					object = SimpleObject.create("vl", secondLastVL.getValueNumeric()+" copies/ml", "vlDate", secondLastVL.getObsDatetime());
+					object = SimpleObject.create("vl", secondLastVL.getValueNumeric(), "vlDate", secondLastVL.getObsDatetime());
 				}
 				else {
 					object = SimpleObject.create("vl", "LDL", "vlDate", secondLastVL.getObsDatetime());

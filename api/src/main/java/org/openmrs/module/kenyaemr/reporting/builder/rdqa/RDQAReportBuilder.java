@@ -60,6 +60,8 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortD
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.TBScreeningConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.TBScreeningAtLastVisitDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
@@ -236,13 +238,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
-        Concept cd4Concept = Dictionary.getConcept(Dictionary.CD4_COUNT);
         Concept startIptConcept = Dictionary.getConcept("1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         Concept iptOutcomeConcept = Dictionary.getConcept("160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-        InitialArtStartDateCalculation artStartDate = new InitialArtStartDateCalculation();
-        PatientCalculation hybridCalc = new ValueAtDateOfOtherPatientCalculationCalculation(artStartDate, cd4Concept);
-
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
@@ -257,11 +254,13 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Initial ART Regimen", new CalculationDataDefinition("Initial ART Regimen", new InitialArtRegimenCalculation()), "", null);
         dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
         dsd.addColumn("BMI at last visit", new CalculationDataDefinition("BMI at last visit", new BMIAtLastVisitCalculation()), "", null);
+        dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
+        dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
 
         dsd.addColumn("IPT Start Date", new ObsForPersonDataDefinition("IPT Start Date", TimeQualifier.LAST, startIptConcept, null, null), "", new ObsDatetimeConverter());
-        dsd.addColumn("IPT Status", new ObsForPersonDataDefinition("IPT Status", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsValueConverter());
+        /*dsd.addColumn("IPT Status", new ObsForPersonDataDefinition("IPT Status", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsValueConverter());
         dsd.addColumn("IPT outcome Date", new ObsForPersonDataDefinition("IPT outcome Date", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsDatetimeConverter());
-
+*/
         dsd.addColumn("Second last Viral Load Result", new CalculationDataDefinition("Second last Viral Load Result", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Second last Viral Load Result Date", new CalculationDataDefinition("Second last Viral Load Result Date", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("date"));
 
@@ -289,6 +288,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        Concept startIptConcept = Dictionary.getConcept("1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
@@ -300,32 +300,39 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Unique Patient No", identifierDef, "");
-        dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
-        dsd.addColumn("Date confirmed positive", new CalculationDataDefinition("Date confirmed positive", new DateConfirmedHivPositiveCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-
-
+        dsd.addColumn("Date confirmed positive", new CalculationDataDefinition("Date confirmed positive", new DateConfirmedHivPositiveCalculation()), "", new DateArtStartDateConverter());
+        dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Art Start Date", new CalculationDataDefinition("Art Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Initial ART Regimen", new CalculationDataDefinition("Initial ART Regimen", new InitialArtRegimenCalculation()), "", null);
+        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
+        dsd.addColumn("BMI at last visit", new CalculationDataDefinition("BMI at last visit", new BMIAtLastVisitCalculation()), "", null);
+        dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
+        dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
+
+        dsd.addColumn("IPT Start Date", new ObsForPersonDataDefinition("IPT Start Date", TimeQualifier.LAST, startIptConcept, null, null), "", new ObsDatetimeConverter());
+        /*dsd.addColumn("IPT Status", new ObsForPersonDataDefinition("IPT Status", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsValueConverter());
+        dsd.addColumn("IPT outcome Date", new ObsForPersonDataDefinition("IPT outcome Date", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsDatetimeConverter());
+*/
+        dsd.addColumn("Second last Viral Load Result", new CalculationDataDefinition("Second last Viral Load Result", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("data"));
+        dsd.addColumn("Second last Viral Load Result Date", new CalculationDataDefinition("Second last Viral Load Result Date", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("date"));
 
         dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
 
-        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
 
         EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
         EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-        EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
         EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
-        List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
+        List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation);
 
         definition.setWhich(TimeQualifier.LAST);
         definition.setTypes(encounterTypes);
-        dsd.addColumn("Last encounter date in the blue card", definition, "", new EncounterDatetimeConverter());
+        dsd.addColumn("Last clinical encounter date", definition, "", new EncounterDatetimeConverter());
+        dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
 
-        dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
         return dsd;
     }
 
