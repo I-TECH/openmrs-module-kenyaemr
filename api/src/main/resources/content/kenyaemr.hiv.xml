@@ -52,6 +52,7 @@
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
 				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
+				<ref bean="kenyaemr.common.report.enrollmentTracker" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -394,6 +395,16 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hiv/artPreparationRegisterTemplate.xls" />
 		<property name="repeatingSection" value="sheet:1,row:5,dataset:ARTPrepRegister" />
+	</bean>
+
+	<!-- Enrollment Tracker Tool -->
+	<bean id="kenyaemr.common.report.enrollmentTracker" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="19d6371e-7376-4496-a0b5-497b9a90ad3e" />
+		<property name="name" value="Enrollment Tracker Report" />
+		<property name="description" value="Enrollment tracker tool" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hts/Enrollment_Tracker.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:allPatients" />
 	</bean>
 
 </beans>
