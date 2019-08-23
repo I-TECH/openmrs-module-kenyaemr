@@ -157,6 +157,7 @@ Green Card follow-up visit form
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
             getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+            jq("#enrollInIptProgram").click(enrollPatientToIPTProgram);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -211,10 +212,9 @@ Green Card follow-up visit form
             jq("#tb-screening-tab").hide();
             jq("#tbl-ever-on-ipt").hide();
             //IPT OUTCOME
-            jq("#tbl-ipt-outcome").hide();
-            jq("#reason-for-discontinuation").hide();
-            getField('ipt-event-type.value').change(iptEventSelected);
-            jq("#bt-ipt-outcome").click(onRecordIPTOutcome);
+
+
+
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
@@ -287,6 +287,7 @@ Green Card follow-up visit form
                 jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
                 jq("#adherence-1").change(adherenceAssessment);
             });
+
             jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -581,6 +582,83 @@ function getPatientsBookedOnDate() {
     });
 }
 
+//----------------------------------- IPT handlers ------------------------
+
+// enroll patient in IPT program
+
+function enrollPatientToIPTProgram() {
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId }, function(data) {
+        if (data.enrolledInIpt != null) {
+            jq("#enrollInIptProgram").attr("disabled", true);
+            jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in IPT Program");
+        } else {
+            jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in IPT Program");
+        }
+
+
+    });
+}
+
+
+jq("#btnShowIptOutcomeDialog").click(function(e){
+    e.preventDefault();
+    jq("#dlgIptOutcome").dialog({bgiframe: true, height: 300, width: 900, modal: true });
+});
+
+jq("#btnCompleteIpt").click(function (e) {
+
+    e.preventDefault();
+    var selIptDisReason = jq("#iptDiscReason").val();
+    var txtDiscAction = jq("#iptDiscAction").val();
+
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', { completionDate: encDate, patientId: patientId, event: selIptDisReason, action: txtDiscAction }, function(data) {
+        if (data.discontinueInIpt != null) {
+            jq("#dlgIptOutcome").dialog('close');
+            jq("#lblIptCompletionState").text("IPT completed successfully");
+            jq("#btnShowIptOutcomeDialog").attr("disabled", true);
+        } else {
+            jq("#lblIptCompletionState").text("There was a problem discontinuing patient in IPT Program");
+        }
+
+    });
+});
+
+
+// Complete in IPT program
+
+function completeIPTProgram() {
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId }, function(data) {
+        if (data.enrolledInIpt != null) {
+            jq("#enrollInIptProgram").attr("disabled", true);
+            jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in IPT Program");
+        } else {
+            jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in IPT Program");
+        }
+
+
+    });
+}
+// ------------------------------------ end of ipt handlers -----------------------
+
+
 function onWeightOrHeightChange() {
     var display = '';
     var weightKg = parseFloat(getValue('weight.value'));
@@ -847,9 +925,7 @@ function onVisitScheduledChange() {
         jq('#greencard').smartWizard('enableFinish', true);
     }
 }
-function onRecordIPTOutcome() {
-    jq("#tbl-ipt-outcome").toggle();
-}
+
 function onParityChange() {
     var gravida = '';
     var parityTerm = parseInt(getValue('parity-term.value'));
@@ -1510,16 +1586,7 @@ var startAntiTbAction  = function () {
         jq('#tb-enrollment').hide();
     }
 }
-//IPT EVENT SELECTED
-var iptEventSelected  = function () {
-    var iptEvent = getValue('ipt-event-type.value');
-    if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
-        jq("#reason-for-discontinuation").show();
-    }
-    else{
-        jq("#reason-for-discontinuation").hide();
-    }
-}
+
 //Prophylaxis selected
 var prophylaxisSelected  = function () {
     var prophylaxisUsed = getValue('prophylaxis-used.value');
@@ -2803,6 +2870,10 @@ beforeSubmit.push(function() {
                                     <hr />
                                 </td>
                             </tr>
+                            <tr>
+                                <td><input type="button" id="enrollInIptProgram" value="Start IPT" style="background-color: #00cc00"/></td>
+                                <td><label style="background-color: #E9E4CC" id="lblIptEnrollmentStatus" /></td>
+                            </tr>
                         </table>
                     </div>
                 </fieldset>
@@ -2839,21 +2910,41 @@ beforeSubmit.push(function() {
                         </tr>
                     </table>
                     <br />
-                    <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
-                    <table id="tbl-ipt-outcome">
-                        <tr>
-                            <td>Event/Date:</td>
-                            <td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=" "  showDate="true"/></td>
-                        </tr>
-                        <tr id="reason-for-discontinuation">
-                            <td>Reason for discontinuation</td>
-                            <td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Action Taken</td>
-                            <td><obs id="action-taken" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="45" rows="1" /></td>
-                        </tr>
-                    </table>
+                    <br/>
+                    <button id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button>
+                    <br/>
+                    <br/>
+                    <div><label id="lblIptCompletionState" style="background-color: #dddddd"></label></div>
+                    <div id="dlgIptOutcome" style="display: none">
+                        <table>
+                            <tr>
+                                <td>Outcome</td>
+                                <td>
+                                    <select id="iptDiscReason">
+                                        <option>Select reason</option>
+                                        <option value="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">Completed</option>
+                                        <option value="5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">Lost to followup</option>
+                                        <option value="159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">Discontinue</option>
+                                        <option value="160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">Died</option>
+                                        <option value="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">Transferred out</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Action taken</td>
+                                <td><textarea rows="5" cols="40" id="iptDiscAction"></textarea></td>
+                            </tr>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr>
+                                <td></td>
+                                <td><button id="btnCompleteIpt" style="background-color:#151a2c;color: white">Save outcome</button></td>
+                            </tr>
+
+                        </table>
+
+                    </div>
                 </fieldset>
        <!-- Known allergies   -->
         <fieldset class="patient-details">
