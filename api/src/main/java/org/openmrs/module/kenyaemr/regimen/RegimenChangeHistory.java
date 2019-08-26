@@ -132,7 +132,7 @@ public class RegimenChangeHistory {
 		EncounterService encounterService = Context.getEncounterService();
 		Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
 		if (lastEnc != null) {
-			 encounterService.voidEncounter(lastEnc, "Just Testing");
+			 encounterService.voidEncounter(lastEnc, "undo last regimen change");
 		}
 		/*RegimenChange lastChange = getLastChange();
 		if (lastChange == null) {
