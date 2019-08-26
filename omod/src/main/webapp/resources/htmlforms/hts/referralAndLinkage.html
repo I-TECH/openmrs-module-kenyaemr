@@ -33,7 +33,8 @@
                 jq("#linkage").hide()
             }
             //Default location
-            jq('#default-location').click(defaultLocationChange);
+            jq('#default-location').click(defaultLocationChange);//Default location
+            jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
 
         });
         function linkStatusSelected() {
@@ -135,6 +136,17 @@
                 clearHiddenSections(jq('#default-location'));
             }
         }
+        //Ckeckbox to prepopulate default referrals location
+        var defaultReferralLocationChange = function () {
+            var val = jq(this).val();
+            var default_referral_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('referred-facility.value').val(default_referral_location);
+            }else{
+                getField('referred-facility.value').val("");
+                clearHiddenSections(jq('#location-referred'));
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
@@ -180,17 +192,17 @@
     </div>
 
     <div class="ke-form-content">
-        <fieldset>
-            <legend>Patient Referral</legend>
-
-            <table id="patient-referral" style="display: inline-block">
+        <fieldset id="referral">
+            <legend>Client Referral</legend>
+            <table id="tbl-referral">
                 <tr>
-                    <td><strong>Facility referred to: </strong>
-                        <obs id="facility-to-be-referred-to" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="text" />
-                    </td><td></td>
-                    <td><strong>Date to be enrolled : </strong>&#160;&#160;
-                        <obs class="to-be-enrolled--date" conceptId="161560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="true"
-                        />
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility referred to: </td>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="referred-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td><td>  <input type="checkbox" name="facility-referred" id="location-referred" /> This facility</td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Date referred : </td>
+                    <td>
+                        <obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-referred"   allowFutureDates="true" />
                     </td>
                 </tr>
             </table>
