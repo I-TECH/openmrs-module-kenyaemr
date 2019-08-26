@@ -678,8 +678,8 @@ function recordIptFollowupInformation() {
         iptRash: iptRash,
         iptAdherence: iptAdherence,
         iptActionTaken: iptActionTaken}, function(data) {
-        console.log("level 2 confirmation");
-        if (data.discontinueInIpt != null) {
+
+        if (data.followupEncounter != null) {
             jq("#dlgIptFollowup").dialog('close');
             jq("#lblIptCompletionState").text("IPT followup information saved successfully");
             jq("#btnShowIptFollowupDialog").attr("disabled", true);
@@ -2947,11 +2947,10 @@ clearHiddenSections = function(parentObj) {
                     <table border="0">
                         <tr>
                             <td><button id="btnShowIptFollowupDialog" style="background-color:greenyellow">Record IPT Followup Details</button></td>
-                            <td><label id="lblIptFollowupState" style="color: darkgreen"/></td>
+                            <td><button id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button></td>
                         </tr>
                         <tr>
-                            <td><button id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button></td>
-                            <td><label id="lblIptCompletionState" style="color: darkgreen"/></td>
+                            <td colspan="2" align="left"><label id="lblIptCompletionState" style="color: darkgreen"/></td>
                         </tr>
                     </table>
 

@@ -535,7 +535,7 @@ public class EmrUtilsFragmentController {
 
 		assignToVisit(enc, Context.getVisitService().getVisitTypeByUuid(CommonMetadata._VisitType.OUTPATIENT));
 		Encounter e = encounterService.saveEncounter(enc);
-		return SimpleObject.create("enrolledInIpt", e != null ? enc.getEncounterId() : null);
+		return SimpleObject.create("followupEncounter", e != null ? enc.getEncounterId() : null);
 
 	}
 
