@@ -72,21 +72,14 @@
                 $("#kit-name-2 option[value='164960']").remove();
                 $("#kit-name-2 option[value='165351']").remove();
             }
-            if (val == 164961 ){   //Determine kit selected
+            if (val == 164961 ){   //First response kit selected
                 jq('#dual-results-1').hide();
                 $("#kit-name-2 option[value='164960']").add();
-                $("#kit-name-2 option[value='165351']").add();
+                $("#kit-name-2 option[value='165351']").remove();
                 $("#kit-name-2 option[value='164961']").remove();
             }
         }
-        var kit2Selected = function () {
-            var val = jq(this).val();
-            if (val == 165351 ){   //Dual kit selected
-                jq('#dual-results-2').show();
-            }else{
-                jq('#dual-results-2').hide();
-            }
-        }
+
         var prevTestSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
@@ -300,7 +293,6 @@
             //hiv test123    hide second test by default
             //kit selected
             jq('#kit-name-1 select').change(kit1Selected);
-            jq('#kit-name-2 select').change(kit2Selected);
 
             jq("#hiv-test2").hide();
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
@@ -566,12 +558,8 @@
                                     $("#kit-name-2 option[value='164961']").remove();
                                 }
                                 var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
-                                var syphylisTest2Results = getField("syphilis-test-results-2.value").val();
                                 if(syphylisTest1Results != ""){
                                     jq('#dual-results-1').show();
-                                }
-                                if(syphylisTest2Results != ""){
-                                    jq('#dual-results-2').show();
                                 }
                             });
                         </script>
@@ -804,14 +792,6 @@
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
-                        </td>
-                        <td>
-                            <div id="dual-results-2" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
-                                <obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     id="syphilis-test-results-2"
-                                     answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Negative,Positive"/>
-                            </div>
                         </td>
                     </tr>
                 </obsgroup>
