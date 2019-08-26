@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -21,8 +22,9 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Relationship;
 import org.openmrs.User;
 import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.VisitType;
-import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
@@ -30,6 +32,9 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.form.FormDescriptor;
+import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
@@ -50,11 +55,12 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
-import org.openmrs.util.PrivilegeConstants;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -412,126 +418,261 @@ public class EmrUtilsFragmentController {
 
 	}
 
-	public SimpleObject addIptFollowup(@RequestParam("patientId") Patient patient, @RequestParam("outcomeConcept") Concept outcome, @RequestParam("encounterDate") Date encounterDate) {
+	public SimpleObject addIptFollowup(@RequestParam("patientId") Patient patient,
+									   @RequestParam("userId") User loggedInUser,
+									   @RequestParam("encounterDate") Date encounterDate,
+									   @RequestParam("iptDueDate") Date iptDueDate,
+									   @RequestParam("iptCollectionDate") Date iptCollectionDate,
+									   @RequestParam("iptHepatoxicity") Concept hepatoxicity,
+									   @RequestParam("iptNeuropathy") Concept neuropathy,
+									   @RequestParam("iptRash") Concept rash,
+									   @RequestParam("iptAdherence") Concept adherence,
+									   @RequestParam("iptActionTaken") String actionTaken) {
+
+		Integer iptDueDateConcept = 164073;
+		Integer iptCollectionDateConcept = 164074;
+		String hepatoxicityConcept = "159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String neuropathyConcept = "118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String rashConcept = "512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String adherenceConcept = "164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		Integer actionTakenConcept = 160632;
+		ConceptService conceptService = Context.getConceptService();
+
 		Encounter enc = new Encounter();
 		enc.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
 		EncounterService encounterService = Context.getEncounterService();
 		enc.setEncounterType(encounterService.getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_FOLLOWUP));
 		enc.setEncounterDatetime(encounterDate);
 		enc.setPatient(patient);
-		enc.addProvider(encounterService.getEncounterRole(1), Context.getProviderService().getProvider(1));
 		enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_FOLLOWUP));
-		Visit v = getActiveVisit(patient);
-		if (v != null) {
-			enc.setVisit(v);
-			encounterService.saveEncounter(enc);
-			return SimpleObject.create("enrolledInIpt", enc != null ? enc.getEncounterId() : null);
+		enc.setCreator(loggedInUser);
+
+		// set obs
+
+		if (iptDueDate != null) {
+			Obs iptDueDateObs = new Obs(); // build reason obs
+			iptDueDateObs.setConcept(conceptService.getConcept(iptDueDateConcept));
+			iptDueDateObs.setDateCreated(new Date());
+			iptDueDateObs.setCreator(loggedInUser);
+			iptDueDateObs.setLocation(enc.getLocation());
+			iptDueDateObs.setObsDatetime(enc.getEncounterDatetime());
+			iptDueDateObs.setPerson(patient);
+			iptDueDateObs.setValueDatetime(iptDueDate);
+			enc.addObs(iptDueDateObs);
 		}
 
-		return SimpleObject.create("enrolledInIpt", "There was a problem adding IPT follow-up details");
+		if (iptCollectionDate != null) {
+			Obs iptCollectionDateObs = new Obs(); // build reason obs
+			iptCollectionDateObs.setConcept(conceptService.getConcept(iptCollectionDateConcept));
+			iptCollectionDateObs.setDateCreated(new Date());
+			iptCollectionDateObs.setCreator(loggedInUser);
+			iptCollectionDateObs.setLocation(enc.getLocation());
+			iptCollectionDateObs.setObsDatetime(enc.getEncounterDatetime());
+			iptCollectionDateObs.setPerson(patient);
+			iptCollectionDateObs.setValueDatetime(iptCollectionDate);
+			enc.addObs(iptCollectionDateObs);
+		}
+
+		if (hepatoxicity != null) {
+			Obs hepatoxicityObs = new Obs(); // build hepatoxicity obs
+			hepatoxicityObs.setConcept(conceptService.getConceptByUuid(hepatoxicityConcept));
+			hepatoxicityObs.setDateCreated(new Date());
+			hepatoxicityObs.setCreator(loggedInUser);
+			hepatoxicityObs.setLocation(enc.getLocation());
+			hepatoxicityObs.setObsDatetime(enc.getEncounterDatetime());
+			hepatoxicityObs.setPerson(patient);
+			hepatoxicityObs.setValueCoded(hepatoxicity);
+			enc.addObs(hepatoxicityObs);
+		}
+
+		if (neuropathy != null) {
+			Obs neuropathyObs = new Obs(); // build hepatoxicity obs
+			neuropathyObs.setConcept(conceptService.getConceptByUuid(neuropathyConcept));
+			neuropathyObs.setDateCreated(new Date());
+			neuropathyObs.setCreator(loggedInUser);
+			neuropathyObs.setLocation(enc.getLocation());
+			neuropathyObs.setObsDatetime(enc.getEncounterDatetime());
+			neuropathyObs.setPerson(patient);
+			neuropathyObs.setValueCoded(neuropathy);
+			enc.addObs(neuropathyObs);
+		}
+
+		if (rash != null) {
+			Obs rashObs = new Obs(); // build hepatoxicity obs
+			rashObs.setConcept(conceptService.getConceptByUuid(rashConcept));
+			rashObs.setDateCreated(new Date());
+			rashObs.setCreator(loggedInUser);
+			rashObs.setLocation(enc.getLocation());
+			rashObs.setObsDatetime(enc.getEncounterDatetime());
+			rashObs.setPerson(patient);
+			rashObs.setValueCoded(rash);
+			enc.addObs(rashObs);
+		}
+
+		if (adherence != null) {
+			Obs adherenceObs = new Obs(); // build adherence obs
+			adherenceObs.setConcept(conceptService.getConceptByUuid(adherenceConcept));
+			adherenceObs.setDateCreated(new Date());
+			adherenceObs.setCreator(loggedInUser);
+			adherenceObs.setLocation(enc.getLocation());
+			adherenceObs.setObsDatetime(enc.getEncounterDatetime());
+			adherenceObs.setPerson(patient);
+			adherenceObs.setValueCoded(adherence);
+			enc.addObs(adherenceObs);
+		}
+
+		if (actionTaken != null) {
+			Obs actionTakenObs = new Obs(); // build action taken obs
+			actionTakenObs.setConcept(conceptService.getConcept(actionTakenConcept));
+			actionTakenObs.setDateCreated(new Date());
+			actionTakenObs.setCreator(loggedInUser);
+			actionTakenObs.setLocation(enc.getLocation());
+			actionTakenObs.setObsDatetime(enc.getEncounterDatetime());
+			actionTakenObs.setPerson(patient);
+			actionTakenObs.setValueText(actionTaken);
+			enc.addObs(actionTakenObs);
+		}
+
+		assignToVisit(enc, Context.getVisitService().getVisitTypeByUuid(CommonMetadata._VisitType.OUTPATIENT));
+		Encounter e = encounterService.saveEncounter(enc);
+		return SimpleObject.create("enrolledInIpt", e != null ? enc.getEncounterId() : null);
 
 	}
 
 	/**
-	 * Gets the active visit for the given patient
-	 * @param patient the patient
-	 * @return the active visit
+	 * Does the actual assignment of the encounter to a visit
+	 * @param encounter the encounter
+	 * @param newVisitType the type of the new visit if one is created
 	 */
-	protected Visit getActiveVisit(Patient patient) {
-		try {
-			List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-			if (activeVisits.size() > 0) {
-				return activeVisits.get(0);
-			} else {
-				Visit newVisit = new Visit();
-				newVisit.setPatient(patient);
-				newVisit.setStartDatetime(new Date());
-				newVisit.setVisitType(MetadataUtils.existing(VisitType.class, CommonMetadata._VisitType.OUTPATIENT));
-				return Context.getVisitService().saveVisit(newVisit);
-			}
+	protected void assignToVisit(Encounter encounter, VisitType newVisitType) {
+		// Do nothing if the encounter already belongs to a visit and can't be moved
+		if (encounter.getVisit() != null && newVisitType == null) {
+			return;
 		}
-		catch (APIAuthenticationException ex) {
-			return null; // Swallow API authentication exceptions
+
+		// Try using an existing visit
+		if (!useExistingVisit(encounter)) {
+			if (newVisitType != null) {
+				useNewVisit(encounter, newVisitType, encounter.getForm());
+			}
 		}
 	}
 
-	private void setEncounterObs(Encounter enc) {
+	/**
+	 * Uses an existing a visit for the given encounter
+	 * @param encounter the encounter
+	 * @return true if a suitable visit was found
+	 */
+	protected boolean useExistingVisit(Encounter encounter) {
+		// If encounter has time, then we need an exact fit for an existing visit
+		if (EmrUtils.dateHasTime(encounter.getEncounterDatetime())) {
+			List<Visit> visits = Context.getVisitService().getVisits(null, Collections.singletonList(encounter.getPatient()), null, null, null,
+					encounter.getEncounterDatetime(), null, null, null, true, false);
 
-		Integer finalHivTestResultConcept = 159427;
-		Integer testTypeConcept = 162084;
-		Integer testStrategyConcept = 164956;
-		Integer healthProviderConcept = 1473;
-		Integer healthFacilityNameConcept = 162724;
-		Integer healthProviderIdentifierConcept = 163161;
-		// test result
-		/*Obs o = new Obs();
-		o.setConcept(conceptService.getConcept(finalHivTestResultConcept));
-		o.setDateCreated(new Date());
-		o.setCreator(Context.getUserService().getUser(1));
-		o.setLocation(enc.getLocation());
-		o.setObsDatetime(enc.getEncounterDatetime());
-		o.setPerson(this.patient);
-		o.setValueCoded(hivTest.getResult());
+			for (Visit visit : visits) {
+				// Skip visits which ended before the encounter date
+				if (visit.getStopDatetime() != null && visit.getStopDatetime().before(encounter.getEncounterDatetime())) {
+					continue;
+				}
 
-		// test type
-		Obs o1 = new Obs();
-		o1.setConcept(conceptService.getConcept(testTypeConcept));
-		o1.setDateCreated(new Date());
-		o1.setCreator(Context.getUserService().getUser(1));
-		o1.setLocation(enc.getLocation());
-		o1.setObsDatetime(enc.getEncounterDatetime());
-		o1.setPerson(this.patient);
-		o1.setValueCoded(testTypeConverter(hivTest.getType().trim()));
+				if (checkLocations(visit, encounter)) {
+					setVisitOfEncounter(visit, encounter);
+					return true;
+				}
+			}
+		}
+		// If encounter does not have time, we can move it to fit any visit that day
+		else {
+			List<Visit> existingVisitsOnDay = Context.getService(KenyaEmrService.class).getVisitsByPatientAndDay(encounter.getPatient(), encounter.getEncounterDatetime());
+			if (existingVisitsOnDay.size() > 0) {
+				Visit visit = existingVisitsOnDay.get(0);
 
-		// test strategy
-		Obs o2 = new Obs();
-		o2.setConcept(conceptService.getConcept(testStrategyConcept));
-		o2.setDateCreated(new Date());
-		o2.setCreator(Context.getUserService().getUser(1));
-		o2.setLocation(enc.getLocation());
-		o2.setObsDatetime(enc.getEncounterDatetime());
-		o2.setPerson(this.patient);
-		o2.setValueCoded(hivTest.getStrategy());
+				if (checkLocations(visit, encounter)) {
+					setVisitOfEncounter(visit, encounter);
 
-		// test provider
-		// only do this if provider details is not null
+					// Adjust encounter start if its before visit start
+					if (encounter.getEncounterDatetime().before(visit.getStartDatetime())) {
+						encounter.setEncounterDatetime(visit.getStartDatetime());
+					}
 
-		Obs o3 = new Obs();
-		o3.setConcept(conceptService.getConcept(healthProviderConcept));
-		o3.setDateCreated(new Date());
-		o3.setCreator(Context.getUserService().getUser(1));
-		o3.setLocation(enc.getLocation());
-		o3.setObsDatetime(enc.getEncounterDatetime());
-		o3.setPerson(this.patient);
-		o3.setValueText(hivTest.getProviderName().trim());
+					return true;
+				}
+			}
+		}
 
-		// test provider id
-		Obs o5 = new Obs();
-		o5.setConcept(conceptService.getConcept(healthProviderIdentifierConcept));
-		o5.setDateCreated(new Date());
-		o5.setCreator(Context.getUserService().getUser(1));
-		o5.setLocation(enc.getLocation());
-		o5.setObsDatetime(enc.getEncounterDatetime());
-		o5.setPerson(this.patient);
-		o5.setValueText(hivTest.getProviderId().trim());
+		return false;
+	}
 
-		// test facility
-		Obs o4 = new Obs();
-		o4.setConcept(conceptService.getConcept(healthFacilityNameConcept));
-		o4.setDateCreated(new Date());
-		o4.setCreator(Context.getUserService().getUser(1));
-		o4.setLocation(enc.getLocation());
-		o4.setObsDatetime(enc.getEncounterDatetime());
-		o4.setPerson(this.patient);
-		o4.setValueText(hivTest.getFacility().trim());
+	/**
+	 * Uses a new visit for the given encounter
+	 * @param encounter the encounter
+	 * @param type the visit type
+	 * @param sourceForm the source form
+	 */
+	protected static void useNewVisit(Encounter encounter, VisitType type, Form sourceForm) {
+		Visit visit = new Visit();
+		visit.setStartDatetime(OpenmrsUtil.firstSecondOfDay(encounter.getEncounterDatetime()));
+		visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(encounter.getEncounterDatetime()));
+		visit.setLocation(encounter.getLocation());
+		visit.setPatient(encounter.getPatient());
+		visit.setVisitType(type);
 
+		VisitAttribute sourceAttr = new VisitAttribute();
+		sourceAttr.setAttributeType(MetadataUtils.existing(VisitAttributeType.class, CommonMetadata._VisitAttributeType.SOURCE_FORM));
+		sourceAttr.setOwner(visit);
+		sourceAttr.setValue(sourceForm);
+		visit.addAttribute(sourceAttr);
 
-		enc.addObs(o);
-		enc.addObs(o1);
-		enc.addObs(o2);
-		enc.addObs(o3);
-		enc.addObs(o4);
-		enc.addObs(o5);
-		encounterService.saveEncounter(enc);*/
+		Context.getVisitService().saveVisit(visit);
+
+		setVisitOfEncounter(visit, encounter);
+	}
+
+	/**
+	 * Gets an auto-create visit type if there is one for the form used to create the encounter
+	 * @param encounter the encounter
+	 * @return the visit type
+	 */
+	protected static VisitType getAutoCreateVisitType(Encounter encounter) {
+		if (encounter.getForm() != null) {
+			FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
+
+			FormDescriptor fd = formManager.getFormDescriptor(encounter.getForm());
+
+			if (fd != null && fd.getAutoCreateVisitTypeUuid() != null) {
+				return MetadataUtils.existing(VisitType.class, fd.getAutoCreateVisitTypeUuid());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Convenience method to check whether the location of a visit and an encounter are compatible
+	 * @param visit the visit
+	 * @param encounter the encounter
+	 * @return true if locations won't conflict
+	 */
+	protected static boolean checkLocations(Visit visit, Encounter encounter) {
+		return visit.getLocation() == null || Location.isInHierarchy(encounter.getLocation(), visit.getLocation());
+	}
+
+	/**
+	 * Sets the visit of an encounter, updating the both the old visit and the new visit. This is used rather than just
+	 * encounter.setVisit(...) so that we don't have to reload the visit objects to update their set of encounters
+	 * @param visit the visit
+	 * @param encounter the encounter
+	 */
+	protected static void setVisitOfEncounter(Visit visit, Encounter encounter) {
+		// Remove from old visit
+		if (encounter.getVisit() != null) {
+			encounter.getVisit().getEncounters().remove(encounter);
+		}
+
+		// Set to new visit
+		encounter.setVisit(visit);
+
+		if (visit != null) {
+			visit.addEncounter(encounter);
+		}
 	}
 }
