@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
 import org.openmrs.Relationship;
+import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIAuthenticationException;
@@ -49,6 +50,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
@@ -337,32 +339,32 @@ public class EmrUtilsFragmentController {
 	/**
 	 * completes IPT program
 	 * @param patient
-	 * @param event i.e. discontinued, ltfu, completed, etc
+	 * @param reason i.e. discontinued, ltfu, completed, etc
 	 * @param completionDate
 	 * @return
 	 */
 	public SimpleObject discontinueIptProgram(@RequestParam("patientId") Patient patient,
-										   @RequestParam("event") Concept event,
 										   @RequestParam("reason") Concept reason,
 										   @RequestParam("action") String action,
+										   @RequestParam("userId") User loggedInUser,
 										   @RequestParam("completionDate") Date completionDate) {
+
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
 		List<PatientProgram> iptProgramEnrollments = programWorkflowService.getPatientPrograms(patient, programWorkflowService.getProgramByUuid(IPTMetadata._Program.IPT), null, null, null, null, false );
 		ConceptService conceptService = Context.getConceptService();
-		String discontinuationEventConcept = "160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		String discontinuationReasonConcept = "1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String discontinuationReasonConcept = "161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		String actionTakenConcept = "160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 		boolean successful = false;
 
 		PatientProgram lastEnrollment = null;
 		if (iptProgramEnrollments != null && iptProgramEnrollments.size() > 0) {
-			lastEnrollment = iptProgramEnrollments.get(0);
+			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
 		}
 		if (lastEnrollment != null) {
 			lastEnrollment.setDateCompleted(completionDate);
-			lastEnrollment.setOutcome(event);
-			programWorkflowService.savePatientProgram(lastEnrollment);
+			lastEnrollment.setOutcome(reason);
+
 
 			// add outcome encounter
 
@@ -372,26 +374,16 @@ public class EmrUtilsFragmentController {
 			enc.setEncounterType(encounterService.getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));
 			enc.setEncounterDatetime(completionDate);
 			enc.setPatient(patient);
-			enc.addProvider(encounterService.getEncounterRole(1), Context.getProviderService().getProvider(1));
+			enc.setCreator(loggedInUser);
 			enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_OUTCOME));
 
 			// build discontinuation observations
-			if (event != null) {
-				Obs o = new Obs(); // build event obs
-				o.setConcept(conceptService.getConcept(discontinuationEventConcept));
-				o.setDateCreated(new Date());
-				o.setCreator(Context.getAuthenticatedUser());
-				o.setLocation(enc.getLocation());
-				o.setObsDatetime(enc.getEncounterDatetime());
-				o.setPerson(patient);
-				o.setValueCoded(event);
-				enc.addObs(o);
-			}
+
 			if (reason != null) {
 				Obs discReason = new Obs(); // build reason obs
-				discReason.setConcept(conceptService.getConcept(discontinuationReasonConcept));
+				discReason.setConcept(conceptService.getConceptByUuid(discontinuationReasonConcept));
 				discReason.setDateCreated(new Date());
-				discReason.setCreator(Context.getAuthenticatedUser());
+				discReason.setCreator(loggedInUser);
 				discReason.setLocation(enc.getLocation());
 				discReason.setObsDatetime(enc.getEncounterDatetime());
 				discReason.setPerson(patient);
@@ -401,9 +393,9 @@ public class EmrUtilsFragmentController {
 
 			if (action != null) {
 				Obs discAction = new Obs(); // build reason obs
-				discAction.setConcept(conceptService.getConcept(actionTakenConcept));
+				discAction.setConcept(conceptService.getConceptByUuid(actionTakenConcept));
 				discAction.setDateCreated(new Date());
-				discAction.setCreator(Context.getAuthenticatedUser());
+				discAction.setCreator(loggedInUser);
 				discAction.setLocation(enc.getLocation());
 				discAction.setObsDatetime(enc.getEncounterDatetime());
 				discAction.setPerson(patient);
@@ -411,9 +403,11 @@ public class EmrUtilsFragmentController {
 				enc.addObs(discAction);
 			}
 			Encounter discEnc = encounterService.saveEncounter(enc);
+			programWorkflowService.savePatientProgram(lastEnrollment);
 			successful = discEnc.getEncounterId() != null ? true : false;
 
 		}
+
 		return SimpleObject.create("discontinueInIpt", successful ? lastEnrollment.getPatientProgramId() : null);
 
 	}
