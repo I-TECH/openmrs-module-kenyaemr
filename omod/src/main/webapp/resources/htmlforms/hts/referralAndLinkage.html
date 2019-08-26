@@ -125,7 +125,7 @@
                 clearHiddenSections(jq('.remarks'));
             }
         }
-        //Ckeckbox to prepopulate default location
+        //Checkbox to prepopulate default location
         var defaultLocationChange = function () {
             var val = jq(this).val();
             var default_location = "<lookup expression="kenyaemr.location()" />";
@@ -136,7 +136,7 @@
                 clearHiddenSections(jq('#default-location'));
             }
         }
-        //Ckeckbox to prepopulate default referrals location
+        //Checkbox to prepopulate default referrals location
         var defaultReferralLocationChange = function () {
             var val = jq(this).val();
             var default_referral_location = "<lookup expression="kenyaemr.location()" />";
@@ -193,7 +193,7 @@
 
     <div class="ke-form-content">
         <fieldset id="referral">
-            <legend>Client Referral</legend>
+            <legend>Referral</legend>
             <table id="tbl-referral">
                 <tr>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility referred to: </td>
@@ -208,7 +208,7 @@
             </table>
         </fieldset>
         <fieldset>
-            <legend>Patient Tracing</legend>
+            <legend>Tracing</legend>
 
             <table id="tracing-patient" style="display: inline-block">
 
