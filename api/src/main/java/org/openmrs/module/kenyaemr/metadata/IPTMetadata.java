@@ -61,9 +61,9 @@ public class IPTMetadata extends AbstractMetadataBundle {
 		install(form("IPT Outcome", null, _EncounterType.IPT_OUTCOME, "1", _Form.IPT_OUTCOME));
 		install(form("IPT FollowUp" ,null, _EncounterType.IPT_FOLLOWUP, "1", _Form.IPT_FOLLOWUP));
 
-		install(patientIdentifierType("District Registration Number", "Assigned to every TB patient",
+		/*install(patientIdentifierType("District Registration Number", "Assigned to every TB patient",
 				null, null, null,
-				LocationBehavior.NOT_USED, false, _PatientIdentifierType.DISTRICT_REG_NUMBER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.DISTRICT_REG_NUMBER));*/
 
 		install(program("IPT", "Isoniazid Preventive Therapy (IPT)", Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM, _Program.IPT));
 	}

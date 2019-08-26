@@ -31,7 +31,7 @@
 						});
 					</script>
 				</ifMode>
-				<td>Date Started on IPT: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Date Started on IPT: <encounterDate id="encounter-date" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
 		  </tr>
 		</table>
@@ -48,60 +48,6 @@
 		            </tr>
 	        </table>
 		</fieldset>
-		<includeIf velocityTest = "$patient.age &gt; 14" >
-		  <fieldset style="display:block">
-		  <legend>ART Status</legend>
-
-		    <table>
-		        <tr>
-		            <td>On Art</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression="
-		                #set($latestARTStatus = $fn.latestObs('160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'))
-		                #if ($latestARTStatus.valueCoded.equals($fn.getConcept('160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')))
-		                	Yes
-		                #else
-		                	No
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		        <tr>
-		            <td>Date Started on ART if on ART</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression = "
-		                #set($latestARVDate = $fn.latestObs('159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA').getValueAsString(en))
-		                #if ($latestARVDate)
-		                	$latestARVDate
-		                #else
-		                	N/A
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		    </table>
-
-		  </fieldset>
-		</includeIf>
-
-		<includeIf velocityTest = "$patient.age &lt; 15" >
-		  <fieldset>
-		      <legend>Indication for IPT</legend>
-
-		      <table>
-		          <tr>
-		            <td>Indication for IPT</td>
-		            <td>
-		                <obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
-		            </td>
-		          </tr>
-		      </table>
-		  </fieldset>
-		</includeIf>
 	</div>
 
 	<enrollInProgram programId="335517a1-04bc-438b-9843-1ba49fb7fcd9" />
