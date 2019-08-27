@@ -19,12 +19,16 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -34,6 +38,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -54,7 +59,7 @@ import java.util.List;
 public class RegimenUtilFragmentController {
 
 	protected static final Log log = LogFactory.getLog(RegimenUtilFragmentController.class);
-
+	private Date enrollmentDate = null;
 	/**
 	 * Changes the patient's current regimen
 	 * @param command the command object
@@ -185,6 +190,7 @@ public class RegimenUtilFragmentController {
 			encounterService.saveEncounter(encounter);
 
 		}
+
 	}
 
 	/**
@@ -301,6 +307,17 @@ public class RegimenUtilFragmentController {
 				if (OpenmrsUtil.compare(changeDate, new Date()) > 0) {
 					errors.rejectValue("changeDate", "Change date can't be in the future");
 				}
+				ProgramWorkflowService service = Context.getProgramWorkflowService();
+				Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+				List<PatientProgram> programs = service.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
+				 if (programs.size() > 0) {
+					 enrollmentDate = programs.get(0).getDateEnrolled();
+				 }
+				// Don't allow regimen start date to be before enrollment date
+				if(changeDate.before(enrollmentDate) ) {
+					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
+				}
+
 			}
 
 			// Validate the regimen
