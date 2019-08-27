@@ -15,9 +15,7 @@
 	
 	<script type="text/javascript">
 		jQuery(function($){
-			getField("encounter-date.value").change(function(){
-				setValue("date-started-on-ipt.value", getValue("encounter-date.value"));
-			});
+
 		});
 	</script>
 
@@ -38,15 +36,17 @@
 	</div>
 
 	<div class="ke-form-content">
-		<fieldset style="display:none">
-	        <table>
-		            <tr>
-		                <td>Date started on IPT</td>
-		                <td>
-		                    <obs id="date-started-on-ipt" conceptId="162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
-		                </td>
-		            </tr>
-	        </table>
+		<fieldset>
+			<legend>Indication for IPT</legend>
+
+			<table>
+				<tr>
+					<td>Indication for IPT</td>
+					<td>
+						<obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
+					</td>
+				</tr>
+			</table>
 		</fieldset>
 	</div>
 

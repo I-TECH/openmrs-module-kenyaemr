@@ -269,14 +269,14 @@ Green Card follow-up visit form
             //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
-                jq('.showModal').show();
+                jq('.dlgAdherenceScreening').show();
             }
             else{
                 jq('.on-art').hide();
-                jq('.showModal').hide();
+                jq('.dlgAdherenceScreening').hide();
             }
              // Morisky ART adherence assessment Modal
-            jq(".showModal").click(function(e){
+            jq(".dlgAdherenceScreening").click(function(e){
                 //Defaults
                 var adherenceResponses1=jq('#adherence-1');
                 var adherenceResponses2=jq('#adherence-2');
@@ -935,7 +935,7 @@ function onPersonPresentChange() {
         chronicIllnessesSelected();
         adverseReactionSelected();
         jq(".on-art").hide();
-        jq('.showModal').hide();
+        jq('.dlgAdherenceScreening').hide();
         jq("#tbl-phdp").hide();
         jq("#tbl-ctx-adherence").hide();
         jq("#tbl-dap-adherence").hide();
@@ -2946,8 +2946,8 @@ clearHiddenSections = function(parentObj) {
                     <br/>
                     <table border="0">
                         <tr>
-                            <td><button id="btnShowIptFollowupDialog" style="background-color:greenyellow">Record IPT Followup Details</button></td>
-                            <td><button id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button></td>
+                            <td><button type="button" id="btnShowIptFollowupDialog" style="background-color:greenyellow">Record IPT Followup Details</button></td>
+                            <td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button></td>
                         </tr>
                         <tr>
                             <td colspan="2" align="left"><label id="lblIptCompletionState" style="color: darkgreen"/></td>
@@ -2957,6 +2957,7 @@ clearHiddenSections = function(parentObj) {
                     <br/>
                     <br/>
                     <div id="dlgIptFollowup" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                         <table>
                             <tr>
                                 <td>IPT Due Date</td>
@@ -3008,6 +3009,7 @@ clearHiddenSections = function(parentObj) {
                     </div>
 
                     <div id="dlgIptOutcome" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                         <table>
                             <tr>
                                 <td>Reason</td>
@@ -3778,7 +3780,7 @@ clearHiddenSections = function(parentObj) {
                                 <table class = "on-art">
                                     <!--Adherence Modal  -->
                                     <tr>
-                                        <button class="showModal">Adherence Assessment*</button>
+                                        <button type="button" class="dlgAdherenceScreening">Adherence Assessment*</button>
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
                                             <div id="adherence-1">
                                                 1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
