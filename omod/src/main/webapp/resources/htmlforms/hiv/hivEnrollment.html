@@ -172,11 +172,18 @@
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
                 return false;
             }
+
+            if ((transferStatus == NO_CONCEPT_ID || transferStatus == YES_CONCEPT_ID) &amp;&amp; confirmedPveDate =="") {
+                getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be empty').show();
+                return false;
+            }
+
             var isBirthdateBeforeEnrollment = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
             if (isBirthdateBeforeEnrollment) {
                 getField('encounter-date.error').html('Enrollment date, should  be later than birth Date').show();
                 return false;
             }
+
             var isBirthdateBeforeConfirmedPve = moment(moment(moment(confirmedPveDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(birthDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
             if (isBirthdateBeforeConfirmedPve) {
                 getField('confirmed-positive-date.error').html('Confirmed HIV+ date, should not be later than birth Date').show();
@@ -211,9 +218,14 @@
             }
 
             var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-            if((tsTelephone != "" || tsTelephone != "") &amp;&amp; !tsTelephone.match(phoneno)) {
-                getField('ts-telephone.error').html('Phone number should contain only digits').show();
-                return false;
+
+            if(transferStatus == NO_CONCEPT_ID || transferStatus == YES_CONCEPT_ID) {
+                if (tsTelephone != "") {
+                    if (/^(?:\+254|0|254)(\d{9})$/.test(tsTelephone) === false) {
+                        getField('ts-telephone.error').html('Phone number should contain only 10 digits').show();
+                        return false;
+                    }
+                }
             }
 
             return true;
@@ -246,6 +258,7 @@
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             var transferDetails = jq('#transfer-details');
+            var treatmentSupporter = jq('#treatment-supporter-fieldset');
             var dateConfirmedPositive = jq('#confirmed-positive-date');
             var facilityConfirmedPositive = jq('#facility-confirmed');
             var whoAdult = jq('#whoAdult');
@@ -268,7 +281,7 @@
                 jq('#baseline-assessment1').show();
                 jq('#baseline-assessment2').show();
                 jq('#baseline-assessment3').show();
-                jq('#treatment-supporter').show();
+                jq('#treatment-supporter-fieldset').show();
 
                 jq('#cd4-count :input').prop('disabled', true);
                 jq('#cd4-date :input').prop('disabled', true);
@@ -311,7 +324,7 @@
                 jq('#baseline-assessment1').show();
                 jq('#baseline-assessment2').show();
                 jq('#baseline-assessment3').show();
-                jq('#treatment-supporter').show();
+                jq('#treatment-supporter-fieldset').show();
 
                 jq('#cd4-count :input').prop('disabled', false);
                 jq('#cd4-date :input').prop('disabled', false);
@@ -585,7 +598,9 @@
 			<table>
 				<tr>
 					<td>Date patient was confirmed HIV+</td>
-					<td><obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="confirmed-positive-date" /></td>
+					<td><obs conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="confirmed-positive-date" />
+					<span style="color:red;"><strong>*</strong></span>
+					</td>
 				</tr>
 				<tr>
 					<td>Facility where confirmation done</td>
@@ -923,8 +938,8 @@
 				</tr>
 			</table>
 		</fieldset>
+		<fieldset id ="treatment-supporter-fieldset">
 		<includeIf velocityTest="$patient.age &lt; 18">
-			<fieldset id ="underage">
 				<legend>Under 18 Years</legend>
 				<table id="underage-details" style="width: 70%;" border="0">
 					<tr>
@@ -965,10 +980,8 @@
 
 					</repeat>
 				</table>
-			</fieldset>
 		</includeIf>
-		<includeIf velocityTest="$patient.age &gt; 18">
-			<fieldset id="treatment-supporter-fieldset" >
+		<includeIf velocityTest="$patient.age &gt; 17">
 				<legend>Treatment Supporter</legend>
 				<table id="treatment-supporter" style="width: 70%;" border="0">
 					<tr>
@@ -1000,8 +1013,8 @@
 						<render n="2" concept="Treatment Supporter"/>
 					</repeat>
 				</table>
-			</fieldset>
 		</includeIf>
+		</fieldset>
 		<enrollInProgram programId="dfdc6d40-2f2f-463d-ba90-cc97350441a8"/>
 	</div>
 

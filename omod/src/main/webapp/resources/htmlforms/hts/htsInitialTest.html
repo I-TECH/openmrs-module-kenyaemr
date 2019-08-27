@@ -56,6 +56,30 @@
                 getField('hts-entry-point.value').prop("selectedIndex", 8);
             }
         }
+
+        var kit1Selected = function () {
+            var val = jq(this).val();
+            if (val == 165351 ){   //Dual kit selected
+                jq('#dual-results-1').show();
+                $("#kit-name-2 option[value='164961']").add();
+                $("#kit-name-2 option[value='164960']").remove();
+                $("#kit-name-2 option[value='165351']").remove();
+            }
+
+            if (val == 164960 ){   //Determine kit selected
+                jq('#dual-results-1').hide();
+                $("#kit-name-2 option[value='164961']").add();
+                $("#kit-name-2 option[value='164960']").remove();
+                $("#kit-name-2 option[value='165351']").remove();
+            }
+            if (val == 164961 ){   //First response kit selected
+                jq('#dual-results-1').hide();
+                $("#kit-name-2 option[value='164960']").add();
+                $("#kit-name-2 option[value='165351']").remove();
+                $("#kit-name-2 option[value='164961']").remove();
+            }
+        }
+
         var prevTestSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
@@ -252,6 +276,7 @@
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
+
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
                     getField('hts-entry-point.value').prop("selectedIndex", 9);
@@ -266,6 +291,9 @@
             //couple testing
             jq("#couple-testing input").change(coupleTestedAction);
             //hiv test123    hide second test by default
+            //kit selected
+            jq('#kit-name-1 select').change(kit1Selected);
+
             jq("#hiv-test2").hide();
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
@@ -509,6 +537,30 @@
                                     jq("#priority-population").show();
                                     jq("#key-population").hide();
                                 }
+
+                                //show syphilis results if they exist
+                               var testKit1 = getField('kit-name-1.value').val();
+                                if (testKit1 == 165351 ){   //Dual kit selected
+                                    jq('#dual-results-1').show();
+                                    $("#kit-name-2 option[value='164961']").add();
+                                    $("#kit-name-2 option[value='164960']").remove();
+                                    $("#kit-name-2 option[value='165351']").remove();
+                                }
+
+                                if (testKit1 == 164960 ){   //Determine kit selected
+                                    $("#kit-name-2 option[value='164961']").add();
+                                    $("#kit-name-2 option[value='164960']").remove();
+                                    $("#kit-name-2 option[value='165351']").remove();
+                                }
+                                if (testKit1 == 164961 ){   //Determine kit selected
+                                    $("#kit-name-2 option[value='164960']").add();
+                                    $("#kit-name-2 option[value='165351']").add();
+                                    $("#kit-name-2 option[value='164961']").remove();
+                                }
+                                var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
+                                if(syphylisTest1Results != ""){
+                                    jq('#dual-results-1').show();
+                                }
                             });
                         </script>
                     </ifMode>
@@ -635,8 +687,8 @@
                         <obs class="hts-strategy"
                              id="strategy"
                              conceptId="164956"
-                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
+                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,PNS,Other"
                         />
                     </td>
                 </tr>
@@ -688,10 +740,9 @@
                             <obs class="kit-name"
                                  id="kit-name-1"
                                  conceptId="164962"
-                                 answerConceptIds="164960,164961"
-                                 style="dropdown" answerLabels="Determine,First Response"
+                                 answerConceptIds="164960,164961,165351"
+                                 style="dropdown" answerLabels="Determine,First Response,Dual Kit"
                             />
-
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
                             <obs
@@ -699,11 +750,18 @@
                                  id="lot-number-1"
                                  conceptId="164964"
                             />
-
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
+                        </td>
+                        <td>
+                        <div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
+                            <obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 id="syphilis-test-results-1"
+                                 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Negative,Positive"/>
+                        </div>
                         </td>
                     </tr>
                 </obsgroup>
@@ -719,8 +777,8 @@
                             <obs class="kit-name2"
                                  id="kit-name-2"
                                  conceptId="164962"
-                                 answerConceptIds="164960,164961"
-                                 style="dropdown" answerLabels="Determine,First Response"
+                                 answerConceptIds="164960,164961,165351"
+                                 style="dropdown" answerLabels="Determine,First Response,Dual Kit"
                             />
 
                         </td>
