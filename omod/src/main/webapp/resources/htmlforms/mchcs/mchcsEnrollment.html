@@ -87,6 +87,8 @@
             jq('#hiv-exposed-child input').click(heiInfants);
 
             beforeSubmit.push(function() {
+                var pcn = jq('#pcn-id input[type=text]').val();
+
                 if (getValue('hiv-exposed-child.value') == "") {
                     jq('#child-status-required').show();
                     jq('#child-status-required').html('Please specify the condition of the child');
@@ -95,6 +97,10 @@
                 if (getValue('hiv-exposed-child.value') == EXPOSURE_TO_HIV_ID &amp;&amp; jq('#hei-id :input').val() == "") {
                     jq('#child-status-required').show();
                     jq('#child-status-required').html('HEI Unique Number Required');
+                    return false;
+                }
+                if(/^[\d]{5,}$/.test(pcn) === false) {
+                    alert("Invalid Patient Clinic Number Format! Should be at least 5 digits for new enrollments");
                     return false;
                 }
                 if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
@@ -571,7 +577,11 @@
 						<td>Health facility name:</td>
 						<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						<td>Patient Clinic No. </td>
-						<td><patient field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="false" /></td>
+
+						<td>
+							<span id="pcn-id"><patient id="pcn" field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="false" /></span>
+							<span id="pcnError" class="error"></span>
+						</td>
 						<td></td>
 						<td></td>
 					</tr>

@@ -149,7 +149,6 @@
         }
         //Before Submit
         beforeSubmit.push(function() {
-            var PATIENT_UPN = "<lookup expression="patient.getPatientIdentifier(3)"/>";
             var upn = jq('#hiv-id input').val();
 
             if(upn != null &amp;&amp; upn != "") {
@@ -199,10 +198,16 @@
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility referred to: </td>
                     <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="referred-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td><td>  <input type="checkbox" name="facility-referred" id="location-referred" /> This facility</td>
+                        <span class="value"><recentObs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="facility-referred" id="location-referred" />
+                        This facility
+                    </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Date to be enrolled : </td>
                     <td>
                         <obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-referred"   allowFutureDates="true" />
+                        <span class="value"><recentObs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                     </td>
                 </tr>
             </table>
