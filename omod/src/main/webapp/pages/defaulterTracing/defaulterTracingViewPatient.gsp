@@ -22,6 +22,7 @@
 					${ ui.includeFragment("kenyaemr", "patient/patientRelationships", [ patient: currentPatient ]) }
 				</td>
 				<td width="70%" valign="top" style="padding-left: 5px">
+					<% if(hasHivEnrollment) { %>
 					<div class="ke-panel-frame">
 						<div class="ke-panel-heading">CCC Defaulter Tracing History</div>
 						<div class="ke-panel-content" style="background-color: #F3F9FF">
@@ -40,6 +41,7 @@
 
 						</div>
 					</div>
+					<% } else if (!hasHivEnrollment && hasHtsEncounters) { %>
 					<div class="ke-panel-frame">
 						<div class="ke-panel-heading">HTS Tracing History</div>
 						<div class="ke-panel-content" style="background-color: #F3F9FF">
@@ -50,14 +52,17 @@
 										extra: "",
 										iconProvider: "kenyaui",
 										icon: "buttons/visit_retrospective.png",
-										href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: cccDefaulterTracingformUuid, returnUrl: ui.thisUrl() ])
+										href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: htsTracingformUuid, returnUrl: ui.thisUrl() ])
 								]) }
 							</div>
 							<br />
-							${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: cccDefaulterTracingEncounters, onEncounterClick: onEncounterClick ]) }
+							${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: htsTracingEncounters, onEncounterClick: onEncounterClick ]) }
 
 						</div>
 					</div>
+					<% } else { %>
+					<div>The patient has no history of HIV and HTS services</div>
+					<% } %>
 				</td>
 			</tr>
 		</table>
