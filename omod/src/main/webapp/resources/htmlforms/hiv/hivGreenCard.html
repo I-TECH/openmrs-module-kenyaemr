@@ -225,7 +225,6 @@ Green Card follow-up visit form
             iptClientWorkupTab.hide();
             iptFollowup.hide();
             iptInitiationTab.hide();
-            jq("#tbl-ipt-ever-outcome").hide();
             ageGroup();
             displayRecentBmi();
             //Prophylaxis section
@@ -644,6 +643,7 @@ function discontinuePatientInIpt() {
             jq("#dlgIptOutcome").dialog('close');
             jq("#lblIptCompletionState").text("IPT completed successfully");
             jq("#btnShowIptOutcomeDialog").attr("disabled", true);
+            jq("#btnShowIptFollowupDialog").attr("disabled", true);
         } else {
             jq("#lblIptCompletionState").text("There was a problem discontinuing patient in IPT Program");
         }
@@ -1180,14 +1180,12 @@ var everOnIPT = function () {
     var iptClientWorkupTab = jq('#ipt-client-workup');
     var actionTakenTab = jq('#action-taken');
     var iptInitiationTab = jq('#ipt-initiation');
-    var iptEverOnIPTTab = jq('#tbl-ipt-ever-outcome');
     if(val == 1066) {
         // show TB screening, TB results and IPT workup forms
         tbScreeningTab.show();
         tbScreeningResults.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
-        iptEverOnIPTTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
     if(val == 1065) {
@@ -1196,7 +1194,6 @@ var everOnIPT = function () {
         tbScreeningTab.show();
         actionTakenTab.hide();
         iptInitiationTab.hide();
-        iptEverOnIPTTab.show();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
@@ -2761,12 +2758,6 @@ clearHiddenSections = function(parentObj) {
                             <td>
                             </td>
                         </tr>
-                        <tr id="tbl-ipt-ever-outcome">
-                            <td>Last IPT outcome status and date:</td>
-                            <td><obs id="ipt-ever-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" labelText=" "  showDate="true"/></td>
-                        </tr>
                     </table>
                     <br/>
                     <fieldset id="tb-screening-tab">
@@ -2927,14 +2918,8 @@ clearHiddenSections = function(parentObj) {
                     <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
                         <table>
                             <tr>
-                                <td colspan="2">
-                                    <obs id="ipt-result-status" conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting IPT Action:" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="IPT Started,IPT Not Started" />
-                                    <hr />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="button" id="enrollInIptProgram" value="Start IPT" style="background-color: #00cc00"/></td>
-                                <td><label style="background-color: #E9E4CC" id="lblIptEnrollmentStatus"></label></td>
+                                <td><button type="button" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px" id="enrollInIptProgram">Start IPT</button></td>
+                                <td><label style="background-color: #E9E4CC;font-size: 16pt;font-weight: 600;" id="lblIptEnrollmentStatus"></label></td>
                             </tr>
                         </table>
                     </div>
@@ -2946,11 +2931,12 @@ clearHiddenSections = function(parentObj) {
                     <br/>
                     <table border="0">
                         <tr>
-                            <td><button type="button" id="btnShowIptFollowupDialog" style="background-color:greenyellow">Record IPT Followup Details</button></td>
-                            <td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:greenyellow">Record IPT Outcome</button></td>
+                            <td><button type="button" id="btnShowIptFollowupDialog" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Followup Details</button></td>
+                            <td></td>
+                            <td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:seagreen;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Outcome</button></td>
                         </tr>
                         <tr>
-                            <td colspan="2" align="left"><label id="lblIptCompletionState" style="color: darkgreen"/></td>
+                            <td colspan="3"  align="left"><label id="lblIptCompletionState" style="font-size: 16pt;font-weight: 600;color:darkgreen"/></td>
                         </tr>
                     </table>
 
@@ -2998,8 +2984,9 @@ clearHiddenSections = function(parentObj) {
                                     <span class="error field-error" style="display: none" id="rdoAdherence"></span>
                                 </td>
                             </tr>
+                            <tr><td colspan="2"></td></tr>
                             <tr>
-                                <td>Action taken</td>
+                                <td><strong>Action taken</strong></td>
                                 <td> </td>
                             </tr>
                             <tr>

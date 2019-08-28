@@ -15,6 +15,8 @@
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
 
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+
         //Resulting TB status for Ordered test
         var testOrdered  = function () {
             var val = jq(this).val();
@@ -312,7 +314,100 @@
 
         }
 
-		jQuery(function($) {
+        // action when button to discontinue in ipt program is clicked
+
+        function discontinuePatientInIpt() {
+            var selIptDisReason = jq("#iptDiscReason").val();
+            var txtDiscAction = jq("#iptDiscAction").val();
+            var patientId = <lookup expression="patient.patientId"/>;
+            var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', { completionDate: encDate, patientId: patientId, reason: selIptDisReason, action: txtDiscAction, userId: userId }, function(data) {
+                if (data.discontinueInIpt != null) {
+                    jq("#dlgIptOutcome").dialog('close');
+                    jq("#lblIptCompletionState").text("IPT completed successfully");
+                    jq("#btnShowIptOutcomeDialog").attr("disabled", true);
+                } else {
+                    jq("#lblIptCompletionState").text("There was a problem discontinuing patient in IPT Program");
+                }
+
+            });
+        }
+
+        function recordIptFollowupInformation() {
+            var iptDueDate = jq("#txtIptDueDate").val();
+            var iptCollectionDate = jq("#txtIptCollectionDate").val();
+            var iptHepatoxicity = jq("[name='rdoHepatoxicity']").val();;
+            var iptNeuropathy = jq("[name='rdoNeuropathy']").val();;
+            var iptRash = jq("[name='rdoRash']").val();;
+            var iptAdherence = jq("[name='rdoAdherence']").val();;
+            var iptActionTaken = jq("#txtActionTaken").val();;
+
+            var patientId = <lookup expression="patient.patientId"/>;
+            var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/addIptFollowup.action', {
+                encounterDate: encDate,
+                patientId: patientId,
+                userId: userId,
+                iptDueDate: iptDueDate,
+                iptCollectionDate: iptCollectionDate,
+                iptHepatoxicity: iptHepatoxicity,
+                iptNeuropathy: iptNeuropathy,
+                iptRash: iptRash,
+                iptAdherence: iptAdherence,
+                iptActionTaken: iptActionTaken}, function(data) {
+
+                if (data.followupEncounter != null) {
+                    jq("#dlgIptFollowup").dialog('close');
+                    jq("#lblIptCompletionState").text("IPT followup information saved successfully");
+                    jq("#btnShowIptFollowupDialog").attr("disabled", true);
+                } else {
+                    jq("#lblIptCompletionState").text("There was a problem saving IPT followup information");
+                }
+
+            });
+        }
+
+        //----------------------------------- IPT handlers ------------------------
+
+        // enroll patient in IPT program
+
+        function enrollPatientToIPTProgram() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId }, function(data) {
+                if (data.enrolledInIpt != null) {
+                    jq("#enrollInIptProgram").attr("disabled", true);
+                    jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in IPT Program");
+                } else {
+                    jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in IPT Program");
+                }
+
+
+            });
+        }
+
+
+
+
+
+        // ------------------------------------ end of ipt handlers -----------------------
+
+
+        jQuery(function($) {
 			var valbirthdate = "<lookup  expression="patient.birthdate" />"
 			var valChangedToDateFormat = new Date(valbirthdate).getTime();
             var actionTakenTab = jq('#action-taken');
@@ -501,6 +596,49 @@
 			showHideTabs();
 			showHideIPTInitiationTab();
 
+            // --------------------------------------------- adding ipt handlers ---------------------------------
+
+            jq("#txtIptDueDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "yy-mm-dd"
+            });
+            jq("#txtIptCollectionDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "yy-mm-dd"
+            });
+
+            jq("#btnShowIptFollowupDialog").click(function(e){ // ipt followup
+                e.preventDefault();
+                jq("#dlgIptFollowup").dialog({bgiframe: true,
+                    title : "Record IPT follow-up information",
+                    buttons: {
+                        "Save": recordIptFollowupInformation,
+                        "Cancel": function () {
+                            jq("#dlgIptFollowup").dialog("close");
+                        }
+                    },
+                    height: 450,
+                    width: 970,
+                    modal: true });
+            });
+
+            jq("#btnShowIptOutcomeDialog").click(function(e){ // ipt outcome
+                e.preventDefault();
+                jq("#dlgIptOutcome").dialog({bgiframe: true,
+                    title : "Discontinue patient in IPT program",
+                    buttons: {
+                        "Discontinue IPT": discontinuePatientInIpt,
+                        "Cancel": function () {
+                            jq("#dlgIptOutcome").dialog("close");
+                        }
+                    },
+                    height: 300,
+                    width: 900,
+                    modal: true });
+            });
+
 		});
 	</script>
 
@@ -673,10 +811,8 @@
 			<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
 				<table>
 					<tr>
-						<td colspan="2">
-							<obs id="ipt-result-status" conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting IPT Action:" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="IPT Started,IPT Not Started" />
-							<hr />
-						</td>
+						<td><button type="button" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px" id="enrollInIptProgram">Start IPT</button></td>
+						<td><label style="background-color: #E9E4CC;font-size: 16pt;font-weight: 600;" id="lblIptEnrollmentStatus"></label></td>
 					</tr>
 				</table>
 			</div>
@@ -685,70 +821,113 @@
 		<fieldset id="ipt-followup">
 			<legend>IPT Followup</legend>
 
-			<table>
-				<tr>
-					<td>IPT Due Date</td>
-					<td><obs conceptId="164073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
-				</tr>
-				<tr>
-					<td>Date collected IPT</td>
-					<td><obs conceptId="164074" allowFutureDates="true" /></td>
-				</tr>
-				<tr>
-					<td>Weight</td>
-					<td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-				</tr>
-				<tr>
-					<td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
-					<td><obs conceptId="159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-				</tr>
-				<tr>
-					<td>Peripheral Neuropathy  &lt;/br&gt; Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
-					<td><obs conceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-				</tr>
-				<tr>
-					<td>Does the patient have Rash?	</td>
-					<td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-				</tr>
-				<tr>
-					<td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
-					<td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-				</tr>
-			</table>
 			<br />
-			<div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
-			<table id="tbl-ipt-outcome">
-
+			<br/>
+			<table border="0">
 				<tr>
-					<td>Event:</td>
-					<td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=""  showDate="true"/></td>
-				</tr>
-				<tr id="reason-for-discontinuation">
-					<td>Reason for discontinuation</td>
-					<td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
+					<td><button type="button" id="btnShowIptFollowupDialog" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Followup Details</button></td>
+					<td></td>
+					<td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:seagreen;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Outcome</button></td>
 				</tr>
 				<tr>
-					<td>Action Taken</td>
-					<td><obs id="action-taken" conceptId="160632" cols="45" rows="1" /></td>
+					<td colspan="3"  align="left"><label id="lblIptCompletionState" style="font-size: 16pt;font-weight: 600;color:darkgreen"/></td>
 				</tr>
 			</table>
 
-		</fieldset>
+			<br/>
+			<br/>
+			<div id="dlgIptFollowup" style="display: none">
+				<span class="ui-helper-hidden-accessible"><input type="text"/></span>
+				<table>
+					<tr>
+						<td>IPT Due Date</td>
+						<td><input type="text" size="10" id="txtIptDueDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errortxtIptDueDate"></span></td>
+					</tr>
+					<tr>
+						<td>Date collected IPT</td>
+						<td><input type="text" size="10" id="txtIptCollectionDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errtxtIptCollectionDate"></span></td>
+					</tr>
+					<tr>
+						<td>Hepatotoxity?  <br/> (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
+						<td><input type="radio" name="rdoHepatoxicity" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+							<input type="radio" name="rdoHepatoxicity" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+							<span class="error field-error" style="display: none" id="rdoHepatoxicity"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>Peripheral Neuropathy  <br/> Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
+						<td>
+							<input type="radio" name="rdoNeuropathy" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+							<input type="radio" name="rdoNeuropathy" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+							<span class="error field-error" style="display: none" id="rdoNeuropathy"></span>
+						</td>
+					</tr>
+					<tr>
+						<td>Does the patient have Rash?	</td>
+						<td>
+							<input type="radio" name="rdoRash" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+							<input type="radio" name="rdoRash" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+							<span class="error field-error" style="display: none" id="rdoRash"></span></td>
+					</tr>
+					<tr>
+						<td>Adherence Measurement <br/>Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
+						<td>
+							<input type="radio" name="rdoAdherence" value="159405" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Good</label>
+							<input type="radio" name="rdoAdherence" value="159406" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Fair</label>
+							<input type="radio" name="rdoAdherence" value="159407" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Poor</label>
+							<span class="error field-error" style="display: none" id="rdoAdherence"></span>
+						</td>
+					</tr>
+					<tr><td colspan="2"></td></tr>
+					<tr>
+						<td><strong>Action taken</strong></td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td colspan="2"><textarea id="txtActionTaken" rows="5" cols="80"></textarea></td>
+					</tr>
+				</table>
+			</div>
 
-		<fieldset id="ipt-uptake">
-			<legend>IPT Uptake History</legend>
+			<div id="dlgIptOutcome" style="display: none">
+				<span class="ui-helper-hidden-accessible"><input type="text"/></span>
+				<table>
+					<tr>
+						<td>Reason</td>
+						<td>
+							<select id="iptDiscReason">
+								<option>Select reason</option>
+								<option value="1267">Completed</option>
+								<option value="5240">Lost to followup</option>
+								<option value="159836">Discontinue</option>
+								<option value="160034">Died</option>
+								<option value="159492">Transferred out</option>
+								<option value="112141">TB infected</option>
+								<option value="102">Drug toxicity</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Action taken</td>
+						<td><textarea rows="5" cols="40" id="iptDiscAction"></textarea></td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<fieldset id="ipt-uptake">
+					<legend>IPT Uptake History</legend>
 
-			<table>
-				<tr>
-					<th>IPT Due Date</th>
-					<th>Date collected IPT</th>
-					<th>Weight(Kg)</th>
-					<th>Hepatotoxicity</th>
-					<th>Peripheral Neuropathy</th>
-					<th>Rash?</th>
-					<th>Adherence Measurement</th>
-				</tr>
-				<lookup complexExpression="
+					<table>
+						<tr>
+							<th>IPT Due Date</th>
+							<th>Date collected IPT</th>
+							<th>Weight(Kg)</th>
+							<th>Hepatotoxicity</th>
+							<th>Peripheral Neuropathy</th>
+							<th>Rash?</th>
+							<th>Adherence Measurement</th>
+						</tr>
+						<lookup complexExpression="
 			#foreach($encounter in $fn.allEncounters('aadeafbe-a3b1-4c57-bc76-8461b778ebd6'))
 				&lt;tr&gt;
 				#set($iptDueDate='')
@@ -808,7 +987,9 @@
 				&lt;/td&gt;
 				&lt;/tr&gt;
 			#end"/>
-			</table>
+					</table>
+				</fieldset>
+			</div>
 		</fieldset>
 	</div>
 	<div class="ke-form-footer">
