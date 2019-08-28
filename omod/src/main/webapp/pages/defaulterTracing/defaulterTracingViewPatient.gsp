@@ -23,23 +23,38 @@
 				</td>
 				<td width="70%" valign="top" style="padding-left: 5px">
 					<div class="ke-panel-frame">
-						<div class="ke-panel-heading">Tracing History</div>
+						<div class="ke-panel-heading">CCC Defaulter Tracing History</div>
 						<div class="ke-panel-content" style="background-color: #F3F9FF">
 
 							<div align="center">
 								${ ui.includeFragment("kenyaui", "widget/button", [
-										label: "Add Tracing information",
+										label: "Add HIV defaulter tracing information",
 										extra: "",
 										iconProvider: "kenyaui",
 										icon: "buttons/visit_retrospective.png",
-										href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: formUuid, returnUrl: ui.thisUrl() ])
+										href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: cccDefaulterTracingformUuid, returnUrl: ui.thisUrl() ])
 								]) }
 							</div>
 							<br />
-							${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: pastEncounters, onEncounterClick: onEncounterClick ]) }
+							${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: cccDefaulterTracingEncounters, onEncounterClick: onEncounterClick ]) }
 
+						</div>
+					</div>
+					<div class="ke-panel-frame">
+						<div class="ke-panel-heading">HTS Tracing History</div>
+						<div class="ke-panel-content" style="background-color: #F3F9FF">
 
-
+							<div align="center">
+								${ ui.includeFragment("kenyaui", "widget/button", [
+										label: "Add HTS tracing information",
+										extra: "",
+										iconProvider: "kenyaui",
+										icon: "buttons/visit_retrospective.png",
+										href: ui.pageLink("kenyaemr", "enterForm", [ appId: currentApp.id, patientId: currentPatient, formUuid: cccDefaulterTracingformUuid, returnUrl: ui.thisUrl() ])
+								]) }
+							</div>
+							<br />
+							${ ui.includeFragment("kenyaemr", "widget/encounterStack", [ encounters: cccDefaulterTracingEncounters, onEncounterClick: onEncounterClick ]) }
 
 						</div>
 					</div>

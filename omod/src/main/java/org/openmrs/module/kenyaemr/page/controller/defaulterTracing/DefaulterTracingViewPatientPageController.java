@@ -12,9 +12,14 @@ package org.openmrs.module.kenyaemr.page.controller.defaulterTracing;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.api.ProgramWorkflowService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -27,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * View patient page for defaulter tracing app
+ * View patient page for tracing app
  */
 @AppPage(EmrConstants.APP_DEFAULTER_TRACING)
 public class DefaulterTracingViewPatientPageController {
@@ -40,7 +45,28 @@ public class DefaulterTracingViewPatientPageController {
 		Form defaulterTracingForm = MetadataUtils.existing(Form.class, HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		List<Encounter> defaulterTracingEncounters = patientWrapper.allEncounters(defaulterTracingForm);
 		Collections.reverse(defaulterTracingEncounters);
-		model.put("pastEncounters", defaulterTracingEncounters);
-		model.put("formUuid", "a1a62d1e-2def-11e9-b210-d663bd873d93");
+
+		boolean everEnrolledInHiv = false;
+		boolean hasHtsHistory = false;
+
+		// check if a patient has HIV enrollments
+		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
+		List<PatientProgram> hivProgramEnrollments = programWorkflowService.getPatientPrograms(patient, programWorkflowService.getProgramByUuid(HivMetadata._Program.HIV), null, null, null, null, false );
+
+		if (hivProgramEnrollments.size() > 0) {
+			everEnrolledInHiv = true;
+		} else { // for hts clients. check if they have at least hts initial test
+			Form hivInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
+			List<Encounter> htsEncounters = patientWrapper.allEncounters(hivInitialForm);
+			if (htsEncounters.size() > 0) {
+				hasHtsHistory = true;
+			}
+
+
+		}
+
+
+		model.put("cccDefaulterTracingEncounters", defaulterTracingEncounters);
+		model.put("cccDefaulterTracingformUuid", "a1a62d1e-2def-11e9-b210-d663bd873d93");
 	}
 }
