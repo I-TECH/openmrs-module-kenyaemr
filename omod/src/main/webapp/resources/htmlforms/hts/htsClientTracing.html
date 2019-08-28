@@ -1,0 +1,280 @@
+
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script type="text/javascript">
+
+        jQuery(function () {
+            var contacted_linked = "<lookup expression="fn.latestObs(159811).getValueCoded()"/>";
+            //linked status selected
+            jq('#contact-status select').change(linkStatusSelected);
+            jq('#contact-type select').change(linkTypeSelected);
+            jq("#contactedAndLinked").hide();
+            //Reasons for not contacted
+            jq("#reasons_not_contacted_phone").hide();
+            jq("#reasons_not_contacted_physical").hide();
+
+            //Auto populate if previously contacted
+            if (contacted_linked == 1065) {
+                jq("#contactedAndLinked").show();
+            }else{
+                jq("#contactedAndLinked").hide()
+            }
+            //Default location
+            jq('#default-location').click(defaultLocationChange);//Default location
+            jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
+
+        });
+        function linkStatusSelected() {
+            var linkStatusSelected = getField('contact-status.value').val();
+            var linkTypeSelected = getField('contact-type.value').val();
+            if (linkStatusSelected == 1065 ){
+                jq("#contactedAndLinked").show();
+                jq("#reasons_not_contacted_phone").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-phone.value').val("");
+                getField('reasons-physical.value').val("");
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 1650 ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-physical.value').val("");
+                jq("#reasons_not_contacted_phone").show();
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 164965 ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_phone").hide();
+                getField('reasons-phone.value').val("");
+                jq("#reasons_not_contacted_physical").show();
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected =="" ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_phone").hide();
+                getField('reasons-phone.value').val("");
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-physical.value').val("");
+            }
+            if (linkStatusSelected == 1066){
+                jq("#contactedAndLinked").hide()
+                jq("#reasons_not_contacted_phone").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-phone.value').val("");
+                getField('reasons-physical.value').val("");
+                clearHiddenSections(jq('#facility'));
+                clearHiddenSections(jq('.upn'));
+                clearHiddenSections(jq('.remarks'));
+            }
+        }
+        function linkTypeSelected() {
+            var linkStatusSelected = getField('contact-status.value').val();
+            var linkTypeSelected = getField('contact-type.value').val();
+            if (linkStatusSelected == 1065 ){
+                jq("#contactedAndLinked").show();
+                jq("#reasons_not_contacted_phone").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-phone.value').val("");
+                getField('reasons-physical.value').val("");
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 1650 ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-physical.value').val("");
+                jq("#reasons_not_contacted_phone").show();
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 164965 ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_phone").hide();
+                getField('reasons-phone.value').val("");
+                jq("#reasons_not_contacted_physical").show();
+            }
+            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected =="" ){
+                jq("#contactedAndLinked").hide();
+                jq("#reasons_not_contacted_phone").hide();
+                getField('reasons-phone.value').val("");
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-physical.value').val("");
+            }
+            if (linkStatusSelected == 1066){
+                jq("#contactedAndLinked").hide()
+                jq("#reasons_not_contacted_phone").hide();
+                jq("#reasons_not_contacted_physical").hide();
+                getField('reasons-phone.value').val("");
+                getField('reasons-physical.value').val("");
+                clearHiddenSections(jq('#facility'));
+                clearHiddenSections(jq('.upn'));
+                clearHiddenSections(jq('.remarks'));
+            }
+        }
+        //Checkbox to prepopulate default location
+        var defaultLocationChange = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('facility.value').val(default_location);
+            }else{
+                getField('facility.value').val("");
+                clearHiddenSections(jq('#default-location'));
+            }
+        }
+        //Checkbox to prepopulate default referrals location
+        var defaultReferralLocationChange = function () {
+            var val = jq(this).val();
+            var default_referral_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('referred-facility.value').val(default_referral_location);
+            }else{
+                getField('referred-facility.value').val("");
+                clearHiddenSections(jq('#location-referred'));
+            }
+        }
+        //Before Submit
+        beforeSubmit.push(function() {
+            var upn = jq('#hiv-id input').val();
+
+            if(upn != null &amp;&amp; upn != "") {
+                if ((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
+                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
+                    return false;
+                }
+            }
+            return true;
+        });
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
+    </script>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>Tracing</legend>
+
+            <table id="tracing-patient" style="display: inline-block">
+
+                    <tr>
+                        <td>Contact type:
+                            <obs id="contact-type" conceptId="164966"
+                                 answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   164965"
+                                 answerLabels="Phone tracing,
+                                               Physical tracing"
+                                 style="dropdown" />
+                        </td>
+                     <td> &#160;&#160;&#160;Status : &#160;&#160;&#160;
+                            <obs id="contact-status"
+                                 conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Contacted and linked,
+                                               Contacted but not linked,
+                                               Not contacted"
+                                 style="dropdown" />
+                        </td>
+                        <td>&#160;&#160;&#160; </td>
+                        <td>
+                            <table id="reasons_not_contacted_phone">
+                                <tr>
+                                    <td>
+                                        Reason not contacted :
+                                        <obs id="reasons-phone"
+                                             conceptId="1779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="165073,
+                                                                165072,
+                                                                1567,
+                                                                160034,
+                                                                5622"
+                                             answerLabels="No locator information,
+                                                           Incorrect locator information,
+                                                           Calls not going through,
+                                                           Died,
+                                                           Others"
+                                             style="dropdown" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <table id="reasons_not_contacted_physical">
+                                <tr>
+                                    <td>
+                                        Reason not contacted :
+                                        <obs id="reasons-physical"
+                                             conceptId="1779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="165073,
+                                                                165072,
+                                                                160415,
+                                                                1706,
+                                                                1567,
+                                                                160034,
+                                                                5622"
+                                             answerLabels="No locator information,
+                                                           Incorrect locator information,
+                                                           Migrated,
+                                                           Not found at home,
+                                                           Died,
+                                                           Others"
+                                             style="dropdown" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td id="contactedAndLinked">
+                            <div style="color: lightsalmon"><b>Please fill Referral and linkage form</b></div>
+                        </td>
+                    </tr>
+
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Remarks </legend>
+            <table id="tbl-remarks">
+                <tr>
+                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="remarks" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+</htmlform>

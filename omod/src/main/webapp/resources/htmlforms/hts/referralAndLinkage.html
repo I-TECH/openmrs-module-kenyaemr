@@ -17,114 +17,12 @@
     <script type="text/javascript">
 
         jQuery(function () {
-            var contacted_linked = "<lookup expression="fn.latestObs(159811).getValueCoded()"/>";
-            //linked status selected
-            jq('#contact-status select').change(linkStatusSelected);
-            jq('#contact-type select').change(linkTypeSelected);
-            jq("#linkage").hide();
-            //Reasons for not contacted
-            jq("#reasons_not_contacted_phone").hide();
-            jq("#reasons_not_contacted_physical").hide();
 
-            //Auto populate if previously contacted
-            if (contacted_linked == 1065) {
-                jq("#linkage").show();
-            }else{
-                jq("#linkage").hide()
-            }
             //Default location
             jq('#default-location').click(defaultLocationChange);//Default location
             jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
 
         });
-        function linkStatusSelected() {
-            var linkStatusSelected = getField('contact-status.value').val();
-            var linkTypeSelected = getField('contact-type.value').val();
-            if (linkStatusSelected == 1065 ){
-                jq("#linkage").show();
-                jq("#reasons_not_contacted_phone").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-phone.value').val("");
-                getField('reasons-physical.value').val("");
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 1650 ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-physical.value').val("");
-                jq("#reasons_not_contacted_phone").show();
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 164965 ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_phone").hide();
-                getField('reasons-phone.value').val("");
-                jq("#reasons_not_contacted_physical").show();
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected =="" ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_phone").hide();
-                getField('reasons-phone.value').val("");
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-physical.value').val("");
-            }
-            if (linkStatusSelected == 1066){
-                jq("#linkage").hide()
-                jq("#reasons_not_contacted_phone").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-phone.value').val("");
-                getField('reasons-physical.value').val("");
-                clearHiddenSections(jq('#facility'));
-                clearHiddenSections(jq('.upn'));
-                clearHiddenSections(jq('.hcw-handedto'));
-                clearHiddenSections(jq('.hcw-cadre'));
-                clearHiddenSections(jq('.linkage-date'));
-                clearHiddenSections(jq('.art-date'));
-                clearHiddenSections(jq('.remarks'));
-            }
-        }
-        function linkTypeSelected() {
-            var linkStatusSelected = getField('contact-status.value').val();
-            var linkTypeSelected = getField('contact-type.value').val();
-            if (linkStatusSelected == 1065 ){
-                jq("#linkage").show();
-                jq("#reasons_not_contacted_phone").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-phone.value').val("");
-                getField('reasons-physical.value').val("");
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 1650 ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-physical.value').val("");
-                jq("#reasons_not_contacted_phone").show();
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected == 164965 ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_phone").hide();
-                getField('reasons-phone.value').val("");
-                jq("#reasons_not_contacted_physical").show();
-            }
-            else if (linkStatusSelected == 1118 &amp;&amp; linkTypeSelected =="" ){
-                jq("#linkage").hide();
-                jq("#reasons_not_contacted_phone").hide();
-                getField('reasons-phone.value').val("");
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-physical.value').val("");
-            }
-            if (linkStatusSelected == 1066){
-                jq("#linkage").hide()
-                jq("#reasons_not_contacted_phone").hide();
-                jq("#reasons_not_contacted_physical").hide();
-                getField('reasons-phone.value').val("");
-                getField('reasons-physical.value').val("");
-                clearHiddenSections(jq('#facility'));
-                clearHiddenSections(jq('.upn'));
-                clearHiddenSections(jq('.hcw-handedto'));
-                clearHiddenSections(jq('.hcw-cadre'));
-                clearHiddenSections(jq('.linkage-date'));
-                clearHiddenSections(jq('.art-date'));
-                clearHiddenSections(jq('.remarks'));
-            }
-        }
         //Checkbox to prepopulate default location
         var defaultLocationChange = function () {
             var val = jq(this).val();
@@ -210,81 +108,6 @@
                         <span class="value"><recentObs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                     </td>
                 </tr>
-            </table>
-        </fieldset>
-        <fieldset>
-            <legend>Tracing</legend>
-
-            <table id="tracing-patient" style="display: inline-block">
-
-                    <tr>
-                        <td>Contact type:
-                            <obs id="contact-type" conceptId="164966"
-                                 answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                   164965"
-                                 answerLabels="Phone tracing,
-                                               Physical tracing"
-                                 style="dropdown" />
-                        </td>
-                     <td> &#160;&#160;&#160;Status : &#160;&#160;&#160;
-                            <obs id="contact-status"
-                                 conceptId="159811AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                   1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                   1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabels="Contacted and linked,
-                                               Contacted but not linked,
-                                               Not contacted"
-                                 style="dropdown" />
-                        </td>
-                        <td>&#160;&#160;&#160; </td>
-                        <td>
-                            <table id="reasons_not_contacted_phone">
-                                <tr>
-                                    <td>
-                                        Reason not contacted :
-                                        <obs id="reasons-phone"
-                                             conceptId="1779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="165073,
-                                                                165072,
-                                                                1567,
-                                                                160034,
-                                                                5622"
-                                             answerLabels="No locator information,
-                                                           Incorrect locator information,
-                                                           Calls not going through,
-                                                           Died,
-                                                           Others"
-                                             style="dropdown" />
-                                    </td>
-                                </tr>
-                            </table>
-                            <table id="reasons_not_contacted_physical">
-                                <tr>
-                                    <td>
-                                        Reason not contacted :
-                                        <obs id="reasons-physical"
-                                             conceptId="1779AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerConceptIds="165073,
-                                                                165072,
-                                                                160415,
-                                                                1706,
-                                                                1567,
-                                                                160034,
-                                                                5622"
-                                             answerLabels="No locator information,
-                                                           Incorrect locator information,
-                                                           Migrated,
-                                                           Not found at home,
-                                                           Died,
-                                                           Others"
-                                             style="dropdown" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
             </table>
         </fieldset>
         <fieldset id="linkage">
