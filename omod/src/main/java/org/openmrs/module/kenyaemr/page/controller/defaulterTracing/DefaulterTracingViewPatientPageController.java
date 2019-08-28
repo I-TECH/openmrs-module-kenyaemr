@@ -28,6 +28,7 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,9 @@ public class DefaulterTracingViewPatientPageController {
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 		Form defaulterTracingForm = MetadataUtils.existing(Form.class, HivMetadata._Form.CCC_DEFAULTER_TRACING);
+		Form htsClientTracingForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CLIENT_TRACING);
 		List<Encounter> defaulterTracingEncounters = patientWrapper.allEncounters(defaulterTracingForm);
+		List<Encounter> htsTracingEncounters = new ArrayList<Encounter>();
 		Collections.reverse(defaulterTracingEncounters);
 
 		boolean everEnrolledInHiv = false;
@@ -60,13 +63,19 @@ public class DefaulterTracingViewPatientPageController {
 			List<Encounter> htsEncounters = patientWrapper.allEncounters(hivInitialForm);
 			if (htsEncounters.size() > 0) {
 				hasHtsHistory = true;
+				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
+				if (recordedTracingHistory.size() > 0) {
+					htsTracingEncounters = recordedTracingHistory;
+					Collections.reverse(htsTracingEncounters);
+				}
 			}
-
-
 		}
 
-
 		model.put("cccDefaulterTracingEncounters", defaulterTracingEncounters);
-		model.put("cccDefaulterTracingformUuid", "a1a62d1e-2def-11e9-b210-d663bd873d93");
+		model.put("cccDefaulterTracingformUuid", HivMetadata._Form.CCC_DEFAULTER_TRACING);
+		model.put("htsTracingEncounters", htsTracingEncounters);
+		model.put("htsTracingformUuid", CommonMetadata._Form.HTS_CLIENT_TRACING);
+		model.put("hasHivEnrollment", everEnrolledInHiv);
+		model.put("hasHtsEncounters", hasHtsHistory);
 	}
 }
