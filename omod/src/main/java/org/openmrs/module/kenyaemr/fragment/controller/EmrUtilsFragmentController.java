@@ -319,8 +319,21 @@ public class EmrUtilsFragmentController {
 	 * @return simple object with patient program id
 	 */
 	public SimpleObject enrollInIptProgram(@RequestParam("patientId") Patient patient, @RequestParam("enrollmentDate") Date enrollmentDate) {
-		PatientProgram iptEnrollment = new PatientProgram();
+
+		// check if there is no active enrollment
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
+		List<PatientProgram> iptProgramEnrollments = programWorkflowService.getPatientPrograms(patient, programWorkflowService.getProgramByUuid(IPTMetadata._Program.IPT), null, null, null, null, false );
+
+
+		PatientProgram lastEnrollment = null;
+		if (iptProgramEnrollments != null && iptProgramEnrollments.size() > 0) {
+			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
+		}
+		if (lastEnrollment != null && lastEnrollment.getActive()) {
+			return SimpleObject.create("enrolledInIpt", "The patient has an active enrollment");
+		}
+
+		PatientProgram iptEnrollment = new PatientProgram();
 		iptEnrollment.setProgram(programWorkflowService.getProgramByUuid(IPTMetadata._Program.IPT));
 		iptEnrollment.setPatient(patient);
 		iptEnrollment.setDateEnrolled(enrollmentDate);
@@ -367,7 +380,7 @@ public class EmrUtilsFragmentController {
 		if (iptProgramEnrollments != null && iptProgramEnrollments.size() > 0) {
 			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
 		}
-		if (lastEnrollment != null) {
+		if (lastEnrollment != null && lastEnrollment.getActive()) {
 			lastEnrollment.setDateCompleted(completionDate);
 			lastEnrollment.setOutcome(reason);
 
