@@ -34,7 +34,7 @@
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
-				<ref bean="prep.prep.form.behaviorRiskAssessment"/>
+				<!--<ref bean="prep.prep.form.behaviorRiskAssessment"/>-->
 			</set>
 		</property>
 	</bean>
@@ -320,7 +320,7 @@
 	</bean>
 
 	<!-- Prep behavior risk assessment form -->
-	<bean id="prep.prep.form.behaviorRiskAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!--<bean id="prep.prep.form.behaviorRiskAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="40374909-05fc-4af8-b789-ed9c394ac785" />
 		<property name="apps">
 			<set>
@@ -332,7 +332,7 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="prep:prep/behaviorRiskAssessment.html" />
-	</bean>
+	</bean>-->
 
 	<!-- HTS screening form -->
 	<bean id="kenyaemr_hiv_testing.common.form.htsScreeningForm" class="org.openmrs.module.kenyacore.form.FormDescriptor">
