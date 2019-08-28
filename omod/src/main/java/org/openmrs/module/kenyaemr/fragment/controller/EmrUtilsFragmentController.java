@@ -318,19 +318,23 @@ public class EmrUtilsFragmentController {
 	 * @param enrollmentDate date to be enrolled
 	 * @return simple object with patient program id
 	 */
-	public SimpleObject enrollInIptProgram(@RequestParam("patientId") Patient patient, @RequestParam("enrollmentDate") Date enrollmentDate) {
+	public SimpleObject enrollInIptProgram(@RequestParam("patientId") Patient patient,
+										   @RequestParam("enrollmentDate") Date enrollmentDate,
+										   @RequestParam("indicationForIpt") Concept indicationForIpt,
+										   @RequestParam("userId") User loggedInUser) {
 
 		// check if there is no active enrollment
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
 		List<PatientProgram> iptProgramEnrollments = programWorkflowService.getPatientPrograms(patient, programWorkflowService.getProgramByUuid(IPTMetadata._Program.IPT), null, null, null, null, false );
-
+		ConceptService conceptService = Context.getConceptService();
+		String indicationForIptConcept = "162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 		PatientProgram lastEnrollment = null;
 		if (iptProgramEnrollments != null && iptProgramEnrollments.size() > 0) {
 			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
 		}
 		if (lastEnrollment != null && lastEnrollment.getActive()) {
-			return SimpleObject.create("enrolledInIpt", "The patient has an active enrollment");
+			return SimpleObject.create("status", "Error","message","The patient is already initiated in the IPT program");
 		}
 
 		PatientProgram iptEnrollment = new PatientProgram();
@@ -349,9 +353,24 @@ public class EmrUtilsFragmentController {
 		enc.setPatient(patient);
 		enc.addProvider(encounterService.getEncounterRole(1), Context.getProviderService().getProvider(1));
 		enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_INITIATION));
-		encounterService.saveEncounter(enc);
 
-		return SimpleObject.create("enrolledInIpt", enrolled != null ? enrolled.getPatientProgramId() : null);
+		if (indicationForIpt != null) {
+			Obs iptIndication = new Obs(); // build indication for ipt obs
+			iptIndication.setConcept(conceptService.getConceptByUuid(indicationForIptConcept));
+			iptIndication.setDateCreated(new Date());
+			iptIndication.setCreator(loggedInUser);
+			iptIndication.setLocation(enc.getLocation());
+			iptIndication.setObsDatetime(enc.getEncounterDatetime());
+			iptIndication.setPerson(patient);
+			iptIndication.setValueCoded(indicationForIpt);
+			enc.addObs(iptIndication);
+		}
+		try {
+			encounterService.saveEncounter(enc);
+			return SimpleObject.create("status", "Success","message","The patient has been successfully initiated in IPT");
+		} catch (Exception e) {
+			return SimpleObject.create("status", "Error","message","There was an error initiating the patient in IPT");
+		}
 
 	}
 
@@ -374,60 +393,63 @@ public class EmrUtilsFragmentController {
 		String discontinuationReasonConcept = "161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		String actionTakenConcept = "160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-		boolean successful = false;
-
 		PatientProgram lastEnrollment = null;
 		if (iptProgramEnrollments != null && iptProgramEnrollments.size() > 0) {
 			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
 		}
 		if (lastEnrollment != null && lastEnrollment.getActive()) {
-			lastEnrollment.setDateCompleted(completionDate);
-			lastEnrollment.setOutcome(reason);
+			try {
+				lastEnrollment.setDateCompleted(completionDate);
+				lastEnrollment.setOutcome(reason);
 
+				// add outcome encounter
 
-			// add outcome encounter
+				Encounter enc = new Encounter();
+				enc.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+				EncounterService encounterService = Context.getEncounterService();
+				enc.setEncounterType(encounterService.getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));
+				enc.setEncounterDatetime(completionDate);
+				enc.setPatient(patient);
+				enc.setCreator(loggedInUser);
+				enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_OUTCOME));
 
-			Encounter enc = new Encounter();
-			enc.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
-			EncounterService encounterService = Context.getEncounterService();
-			enc.setEncounterType(encounterService.getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));
-			enc.setEncounterDatetime(completionDate);
-			enc.setPatient(patient);
-			enc.setCreator(loggedInUser);
-			enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_OUTCOME));
+				// build discontinuation observations
 
-			// build discontinuation observations
+				if (reason != null) {
+					Obs discReason = new Obs(); // build reason obs
+					discReason.setConcept(conceptService.getConceptByUuid(discontinuationReasonConcept));
+					discReason.setDateCreated(new Date());
+					discReason.setCreator(loggedInUser);
+					discReason.setLocation(enc.getLocation());
+					discReason.setObsDatetime(enc.getEncounterDatetime());
+					discReason.setPerson(patient);
+					discReason.setValueCoded(reason);
+					enc.addObs(discReason);
+				}
 
-			if (reason != null) {
-				Obs discReason = new Obs(); // build reason obs
-				discReason.setConcept(conceptService.getConceptByUuid(discontinuationReasonConcept));
-				discReason.setDateCreated(new Date());
-				discReason.setCreator(loggedInUser);
-				discReason.setLocation(enc.getLocation());
-				discReason.setObsDatetime(enc.getEncounterDatetime());
-				discReason.setPerson(patient);
-				discReason.setValueCoded(reason);
-				enc.addObs(discReason);
+				if (action != null) {
+					Obs discAction = new Obs(); // build reason obs
+					discAction.setConcept(conceptService.getConceptByUuid(actionTakenConcept));
+					discAction.setDateCreated(new Date());
+					discAction.setCreator(loggedInUser);
+					discAction.setLocation(enc.getLocation());
+					discAction.setObsDatetime(enc.getEncounterDatetime());
+					discAction.setPerson(patient);
+					discAction.setValueText(action);
+					enc.addObs(discAction);
+				}
+
+				programWorkflowService.savePatientProgram(lastEnrollment);
+				encounterService.saveEncounter(enc);
+
+				return SimpleObject.create("status", "Success","message","The patient has been successfully discontinued in IPT");
+			} catch (Exception e) {
+				return SimpleObject.create("status", "Error","message","There was an error while discontinuing the patient in IPT");
 			}
-
-			if (action != null) {
-				Obs discAction = new Obs(); // build reason obs
-				discAction.setConcept(conceptService.getConceptByUuid(actionTakenConcept));
-				discAction.setDateCreated(new Date());
-				discAction.setCreator(loggedInUser);
-				discAction.setLocation(enc.getLocation());
-				discAction.setObsDatetime(enc.getEncounterDatetime());
-				discAction.setPerson(patient);
-				discAction.setValueText(action);
-				enc.addObs(discAction);
-			}
-			Encounter discEnc = encounterService.saveEncounter(enc);
-			programWorkflowService.savePatientProgram(lastEnrollment);
-			successful = discEnc.getEncounterId() != null ? true : false;
 
 		}
 
-		return SimpleObject.create("discontinueInIpt", successful ? lastEnrollment.getPatientProgramId() : null);
+		return SimpleObject.create("status", "Error","message","The patient is not initiated in IPT");
 
 	}
 
@@ -547,9 +569,12 @@ public class EmrUtilsFragmentController {
 		}
 
 		assignToVisit(enc, Context.getVisitService().getVisitTypeByUuid(CommonMetadata._VisitType.OUTPATIENT));
-		Encounter e = encounterService.saveEncounter(enc);
-		return SimpleObject.create("followupEncounter", e != null ? enc.getEncounterId() : null);
-
+		try{
+			encounterService.saveEncounter(enc);
+			return SimpleObject.create("status", "Success","message","IPT followup details saved successfully");
+		} catch (Exception e) {
+			return SimpleObject.create("status", "Error","message","There was an error updating IPT followup details");
+		}
 	}
 
 	/**

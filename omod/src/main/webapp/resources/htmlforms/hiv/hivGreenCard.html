@@ -29,6 +29,7 @@ Green Card follow-up visit form
             border:2px solid darkgray;
             padding: inherit;
         }
+
         /* The Modal  */
         .modal {
             display: none; /* Hidden by default */
@@ -71,28 +72,9 @@ Green Card follow-up visit form
         }
     /* .Modal  */
 
-        .simple-table {
-            border: solid 1px #06031b;
-            border-collapse: collapse;
-            border-spacing: 0;
-            font: normal 15px Arial, sans-serif;
-        }
-        .simple-table th {
-            background-color: #DDEFEF;
-            border: solid 1px #DDEEEE;
-            color: #336B6B;
-            padding: 10px;
-            text-align: left;
-            text-shadow: 1px 1px 1px #fff;
-        }
-        .simple-table td {
-            border: solid 1px #DDEEEE;
-            color: #333;
-            padding: 8px;
-            text-shadow: 1px 1px 1px #fff;
-        }
     </style>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_extras.css"></link>
     <!--Wizard plugins-->
     <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
@@ -157,7 +139,6 @@ Green Card follow-up visit form
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
             getField("returnVisitDate.value").change(getPatientsBookedOnDate);
-            jq("#enrollInIptProgram").click(enrollPatientToIPTProgram);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -613,6 +594,21 @@ Green Card follow-up visit form
                     width: 900,
                     modal: true });
             });
+
+            jq("#btnEnrollInIptProgram").click(function(e){ // ipt outcome
+                e.preventDefault();
+                jq("#dlgIptInitiation").dialog({bgiframe: true,
+                    title : "Initiate patient in IPT",
+                    buttons: {
+                        "Confirm IPT Initiation": enrollPatientToIPTProgram,
+                        "Cancel": function () {
+                            jq("#dlgIptInitiation").dialog("close");
+                        }
+                    },
+                    height: 300,
+                    width: 900,
+                    modal: true });
+            });
         });   //End of JQuery onReady function
 
 
@@ -626,7 +622,7 @@ function getPatientsBookedOnDate() {
     });
 }
 
-// action when button to discontinue in ipt program is clicked
+//----------------------------------- IPT handlers ------------------------
 
 function discontinuePatientInIpt() {
     var selIptDisReason = jq("#iptDiscReason").val();
@@ -639,13 +635,13 @@ function discontinuePatientInIpt() {
     }
 
     jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', { completionDate: encDate, patientId: patientId, reason: selIptDisReason, action: txtDiscAction, userId: userId }, function(data) {
-        if (data.discontinueInIpt != null) {
+        if (data.status == "Success") {
             jq("#dlgIptOutcome").dialog('close');
-            jq("#lblIptCompletionState").text("IPT completed successfully");
+            jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
             jq("#btnShowIptOutcomeDialog").attr("disabled", true);
             jq("#btnShowIptFollowupDialog").attr("disabled", true);
         } else {
-            jq("#lblIptCompletionState").text("There was a problem discontinuing patient in IPT Program");
+            jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
         }
 
     });
@@ -654,11 +650,11 @@ function discontinuePatientInIpt() {
 function recordIptFollowupInformation() {
     var iptDueDate = jq("#txtIptDueDate").val();
     var iptCollectionDate = jq("#txtIptCollectionDate").val();
-    var iptHepatoxicity = jq("[name='rdoHepatoxicity']").val();;
-    var iptNeuropathy = jq("[name='rdoNeuropathy']").val();;
-    var iptRash = jq("[name='rdoRash']").val();;
-    var iptAdherence = jq("[name='rdoAdherence']").val();;
-    var iptActionTaken = jq("#txtActionTaken").val();;
+    var iptHepatoxicity = jq("[name='rdoHepatoxicity']").val();
+    var iptNeuropathy = jq("[name='rdoNeuropathy']").val();
+    var iptRash = jq("[name='rdoRash']").val();
+    var iptAdherence = jq("[name='rdoAdherence']").val();
+    var iptActionTaken = jq("#txtActionTaken").val();
 
     var patientId = <lookup expression="patient.patientId"/>;
     var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
@@ -679,37 +675,38 @@ function recordIptFollowupInformation() {
         iptAdherence: iptAdherence,
         iptActionTaken: iptActionTaken}, function(data) {
 
-        if (data.followupEncounter != null) {
+        if (data.status == "Success") {
             jq("#dlgIptFollowup").dialog('close');
-            jq("#lblIptCompletionState").text("IPT followup information saved successfully");
+            jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
             jq("#btnShowIptFollowupDialog").attr("disabled", true);
         } else {
-            jq("#lblIptCompletionState").text("There was a problem saving IPT followup information");
+            jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
         }
 
     });
 }
 
-//----------------------------------- IPT handlers ------------------------
 
 // enroll patient in IPT program
 
 function enrollPatientToIPTProgram() {
     var patientId = <lookup expression="patient.patientId"/>;
     var encDate = getValue('encounter-date.value');
+    var indicationForIpt = jq("#indicationForIpt").val();
+    var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+
     if(encDate == null) {
         encDate = new Date();
     }
 
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId }, function(data) {
-        if (data.enrolledInIpt != null) {
+    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId, indicationForIpt: indicationForIpt, userId: userId }, function(data) {
+        if (data.status == "Success") {
             jq("#enrollInIptProgram").attr("disabled", true);
-            jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in IPT Program");
+            jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-success-label");
+            jq("#dlgIptInitiation").dialog("close");
         } else {
-            jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in IPT Program");
+            jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-error-label");
         }
-
-
     });
 }
 
@@ -2918,8 +2915,24 @@ clearHiddenSections = function(parentObj) {
                     <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
                         <table>
                             <tr>
-                                <td><button type="button" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px" id="enrollInIptProgram">Start IPT</button></td>
-                                <td><label style="background-color: #E9E4CC;font-size: 16pt;font-weight: 600;" id="lblIptEnrollmentStatus"></label></td>
+                                <td><button type="button" class="ke-program-followup-button" id="btnEnrollInIptProgram">Start IPT</button></td>
+                                <td><label id="lblIptEnrollmentStatus"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="dlgIptInitiation" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                        <table>
+                            <tr>
+                                <td>Indication for IPT</td>
+                                <td>
+                                    <select id="indicationForIpt">
+                                        <option value="" selected="true">Select indication</option>
+                                        <option value="138571">HIV Positive</option>
+                                        <option value="162277">In prison</option>
+                                        <option value="162278">Child exposed to tuberculosis</option>
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -2929,14 +2942,12 @@ clearHiddenSections = function(parentObj) {
 
                     <br />
                     <br/>
-                    <table border="0">
+                    <table border="0" style="border-spacing: 8px">
                         <tr>
-                            <td><button type="button" id="btnShowIptFollowupDialog" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Followup Details</button></td>
-                            <td></td>
-                            <td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:seagreen;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Outcome</button></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"  align="left"><label id="lblIptCompletionState" style="font-size: 16pt;font-weight: 600;color:darkgreen"/></td>
+                            <td><button type="button" id="btnShowIptFollowupDialog" class="ke-program-followup-button">Record IPT Followup Details</button></td>
+                            <td><button type="button" id="btnShowIptOutcomeDialog" class="ke-program-outcome-button">Record IPT Outcome</button></td>
+                            <td  align="left"><label id="lblIptCompletionState"/></td>
+
                         </tr>
                     </table>
 
@@ -3769,6 +3780,7 @@ clearHiddenSections = function(parentObj) {
                                     <tr>
                                         <button type="button" class="dlgAdherenceScreening">Adherence Assessment*</button>
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
+                                            <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                                             <div id="adherence-1">
                                                 1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -3817,7 +3829,7 @@ clearHiddenSections = function(parentObj) {
                                                 <br/>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" id="btnCloseARVAssessment" style="float: right;" >Save</button>
+                                                <button type="button" id="btnCloseARVAssessment" class="ke-program-followup-button" >Save</button>
                                             </div>
                                         </div>
                                     </tr>      <!--.Modal   -->
