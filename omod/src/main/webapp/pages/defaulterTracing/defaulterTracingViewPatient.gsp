@@ -72,16 +72,15 @@
                 </div>
                 <% } else { %>
                 <div class="ke-panel-frame">
-                    <div class="ke-panel-heading">Patient history</div>
+                    <div class="ke-panel-heading">Tracing history</div>
 
                     <div class="ke-panel-content" style="background-color: #F3F9FF">
-                        <div>The patient is ineligible for HTS/CCC tracing</div>
+                        <div>No tracing needs found for this patient. </div>
+                        ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: htsTracingEncounters, onEncounterClick: onEncounterClick])}
                     </div>
                 </div>
                 <% } %>
             </td>
         </tr>
     </table>
-    <!--</div>-->
-
 </div>

@@ -20,24 +20,19 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.mchms.OnHaartCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.HtsConstants;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,14 +65,24 @@ public class DefaulterTracingViewPatientPageController {
 			Cohort c = new Cohort();
 			c.addMember(patient.getPatientId());
 			CalculationResultMap resultMap = new PatientsEligibleForHtsLinkageAndReferralCalculation().evaluate(c.getMemberIds(), null, Context.getService(PatientCalculationService.class).createCalculationContext());
-			boolean hasLastPositiveHtsResult = (Boolean) resultMap.get(patient.getPatientId()).getValue();
+			boolean eligibleForLinkage = (Boolean) resultMap.get(patient.getPatientId()).getValue();
 
-			if (hasLastPositiveHtsResult) {
+			if (eligibleForLinkage) {
 				hasHtsHistory = true;
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
 				if (recordedTracingHistory.size() > 0) {
 					htsTracingEncounters = recordedTracingHistory;
 					Collections.reverse(htsTracingEncounters);
+				}
+			} else {
+				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
+				if (recordedTracingHistory.size() > 0) {
+					Encounter lastLinkageEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsLinkageForm);
+					if (lastLinkageEnc != null) {
+						htsTracingEncounters.add(lastLinkageEnc); // show the linkage encounter as the first encounter
+					}
+					Collections.reverse(recordedTracingHistory);
+					htsTracingEncounters.addAll(recordedTracingHistory);// add tracing encounters
 				}
 			}
 		}
