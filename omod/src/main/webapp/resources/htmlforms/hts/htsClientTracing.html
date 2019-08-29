@@ -32,9 +32,6 @@
             }else{
                 jq("#contactedAndLinked").hide()
             }
-            //Default location
-            jq('#default-location').click(defaultLocationChange);//Default location
-            jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
 
         });
         function linkStatusSelected() {
@@ -117,28 +114,7 @@
                 clearHiddenSections(jq('.remarks'));
             }
         }
-        //Checkbox to prepopulate default location
-        var defaultLocationChange = function () {
-            var val = jq(this).val();
-            var default_location = "<lookup expression="kenyaemr.location()" />";
-            if (jq(this).is(':checked')){
-                getField('facility.value').val(default_location);
-            }else{
-                getField('facility.value').val("");
-                clearHiddenSections(jq('#default-location'));
-            }
-        }
-        //Checkbox to prepopulate default referrals location
-        var defaultReferralLocationChange = function () {
-            var val = jq(this).val();
-            var default_referral_location = "<lookup expression="kenyaemr.location()" />";
-            if (jq(this).is(':checked')){
-                getField('referred-facility.value').val(default_referral_location);
-            }else{
-                getField('referred-facility.value').val("");
-                clearHiddenSections(jq('#location-referred'));
-            }
-        }
+
         //Before Submit
         beforeSubmit.push(function() {
             var upn = jq('#hiv-id input').val();
@@ -172,7 +148,24 @@
     <div class="ke-form-header">
         <table style="width: 100%">
             <tr>
-                <td align="left">Date:
+                <td align="left">
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+                                var phoneReasons = getField("reasons-phone.value").val();
+                                if(phoneReasons != ""){
+                                    jq('#reasons_not_contacted_phone').show();
+                                }
+                                var phoneReasons = getField("reasons-physical.value").val();
+                                if(phoneReasons != ""){
+                                    jq('#reasons_not_contacted_physical').show();
+                                }
+
+                            });
+                        </script>
+                    </ifMode>
+
+                    Date:
                     <encounterDate id="encounter-date" showTime="true"/>
                 </td>
                 <td align="right">Location:
