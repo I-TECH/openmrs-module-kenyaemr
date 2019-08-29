@@ -47,8 +47,8 @@
                     <div class="ke-panel-heading">HTS Tracing History</div>
 
                     <div class="ke-panel-content" style="background-color: #F3F9FF">
-
                         <div align="center">
+                            <% if(!hasHtsSuccessfulTrace) {%>
                             ${ui.includeFragment("kenyaui", "widget/button", [
                                     label       : "Add HTS tracing information",
                                     extra       : "",
@@ -56,6 +56,7 @@
                                     icon        : "buttons/visit_retrospective.png",
                                     href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsTracingformUuid, returnUrl: ui.thisUrl()])
                             ])}
+                            <% } %>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             ${ui.includeFragment("kenyaui", "widget/button", [
                                     label       : "Add Referral and Linkage information",

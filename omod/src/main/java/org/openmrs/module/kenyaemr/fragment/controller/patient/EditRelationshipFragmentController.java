@@ -108,12 +108,15 @@ public class EditRelationshipFragmentController {
 				errors.rejectValue("person", "Can't be the patient");
 			}
 			Date today = new Date();
-			if(startDate.after(today)) {
+			if(startDate != null && startDate.after(today)) {
 				errors.rejectValue("startDate", "Relationship start date can't be in the future");
 			}
 
-			if(endDate.before(startDate)) {
+			if(endDate != null && startDate != null && endDate.before(startDate)) {
 				errors.rejectValue("endDate", "Relationship end date can't be before start date");
+			}
+			if(endDate != null && endDate.after(today)) {
+				errors.rejectValue("endDate", "Relationship end date can't be in the future");
 			}
 		}
 
