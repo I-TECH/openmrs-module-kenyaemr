@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.page.controller.defaulterTracing;
 
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
@@ -49,11 +50,14 @@ public class DefaulterTracingViewPatientPageController {
 		Form defaulterTracingForm = MetadataUtils.existing(Form.class, HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		Form htsClientTracingForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CLIENT_TRACING);
 		List<Encounter> defaulterTracingEncounters = patientWrapper.allEncounters(defaulterTracingForm);
+		Encounter lastHtsTrace = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsTracingForm);
+
 		List<Encounter> htsTracingEncounters = new ArrayList<Encounter>();
 		Collections.reverse(defaulterTracingEncounters);
 
 		boolean everEnrolledInHiv = false;
 		boolean hasHtsHistory = false;
+		boolean hasSuccessfullTrace = false;
 
 		// check if a patient has HIV enrollments
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
@@ -70,6 +74,10 @@ public class DefaulterTracingViewPatientPageController {
 			if (eligibleForLinkage) {
 				hasHtsHistory = true;
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
+				Concept tracingQuestion = Context.getConceptService().getConcept(HtsConstants.HTS_TRACING_OUTCOME_QUESTION_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
+				Concept tracingOutcome = Context.getConceptService().getConcept(HtsConstants.HTS_SUCCESSFULL_TRACING_OUTCOME_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
+
+				hasSuccessfullTrace = lastHtsTrace != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsTrace, tracingQuestion, tracingOutcome) : false;
 				if (recordedTracingHistory.size() > 0) {
 					htsTracingEncounters = recordedTracingHistory;
 					Collections.reverse(htsTracingEncounters);
@@ -94,5 +102,6 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("htsLinkageAndReferralformUuid", CommonMetadata._Form.REFERRAL_AND_LINKAGE);
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
+		model.put("hasHtsSuccessfulTrace", hasSuccessfullTrace);
 	}
 }
