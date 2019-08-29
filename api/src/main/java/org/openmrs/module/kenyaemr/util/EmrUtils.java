@@ -257,5 +257,22 @@ public class EmrUtils {
 		return passed;
 	}
 
+	/**
+	 * a helper method that checks if an encounter has obs for a concept
+	 * @param enc
+	 * @param question
+	 * @return
+	 */
+	public static boolean encounterHasObsForConcept(Encounter enc, Concept question) {
+		boolean passed = false;
+		for (Obs obs : enc.getAllObs()) {
+			if (obs.getConcept().getConceptId().intValue() == question.getConceptId().intValue()) {
+				passed = true;
+				break;
+			}
+		}
+		return passed;
+	}
+
 
 }

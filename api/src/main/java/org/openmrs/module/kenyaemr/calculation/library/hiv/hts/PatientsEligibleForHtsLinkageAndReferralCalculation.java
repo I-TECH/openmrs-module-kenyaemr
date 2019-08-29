@@ -88,11 +88,12 @@ public class PatientsEligibleForHtsLinkageAndReferralCalculation extends Abstrac
             ConceptService cs = Context.getConceptService();
             Concept htsFinalTestQuestion = cs.getConcept(HtsConstants.HTS_FINAL_TEST_CONCEPT_ID);
             Concept htsPositiveResult = cs.getConcept(HtsConstants.HTS_POSITIVE_RESULT_CONCEPT_ID);
-            Concept linkageQuestion = cs.getConcept(HtsConstants.HTSLINKAGE_QUESTION_CONCEPT_ID);
-            Concept linkageSuccessful = cs.getConcept(HtsConstants.SUCCESSFUL_LINKAGE_CONCEPT_ID);
+            //Concept linkageQuestion = cs.getConcept(HtsConstants.HTSLINKAGE_QUESTION_CONCEPT_ID);
+            Concept linkageSuccessful = cs.getConcept(HtsConstants.HTS_UPN_QUESTION_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 
             boolean patientHasPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
-            boolean patientHasSuccessfulLinkage = lastLinkageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastLinkageEnc, linkageQuestion, linkageSuccessful) : false;
+            boolean patientHasSuccessfulLinkage = lastLinkageEnc != null ? EmrUtils.encounterHasObsForConcept(lastLinkageEnc, linkageSuccessful) : false;
+            //boolean patientHasSuccessfulLinkage = lastLinkageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastLinkageEnc, linkageQuestion, linkageSuccessful) : false;
 
             if(enrollmentEncounters.size() <= 0 && htsEncounters.size() > 0 && patientHasPositiveTestResult && !patientHasSuccessfulLinkage) {
                 notEnrolled = true;
