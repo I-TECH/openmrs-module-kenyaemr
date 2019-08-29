@@ -30,6 +30,7 @@
             }
             if(val == 164928){
                 jq("#key-population").hide();
+                jq("#priority-population").hide();
                 clearHiddenSections(keypop);
                 clearHiddenSections(pripop);
             }
@@ -245,12 +246,21 @@
             }
         }
 
-        var expiryDateSelected  = function () {
+        var kit1ExpiryDateSelected  = function () {
             var encounterDate = getValue('encounter-date.value');
-            var testKitExpiryDate = getValue('expiry-date.value');
-            var isTestKitExpiryBeforeEncounterDate = moment(moment(moment(testKitExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
-            if (isTestKitExpiryBeforeEncounterDate) {
-                getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').show();
+            var testKit1ExpiryDate = getValue('expiry-date.value');
+            var isTestKit1ExpiryBeforeEncounterDate = moment(moment(moment(testKit1ExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isTestKit1ExpiryBeforeEncounterDate) {
+                getField('expiry-date.error').html('HIV Test Kit 1 expiry date should not be earlier than encounter Date').show();
+            }
+        }
+
+        var kit2ExpiryDateSelected  = function () {
+            var encounterDate = getValue('encounter-date.value');
+            var testKit2ExpiryDate = getValue('expiry-date2.value');
+            var isTestKit2ExpiryBeforeEncounterDate = moment(moment(moment(testKit2ExpiryDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isTestKit2ExpiryBeforeEncounterDate) {
+                getField('expiry-date2.error').html('HIV Test Kit 2 expiry date should not be earlier than encounter Date').show();
             }
         }
 
@@ -349,7 +359,8 @@
             jq("#hiv-test2-result select").change(secondTestSelected);
             //jq("#hiv-final-result select").change(finalTestSelected);
             //test kit expiry
-            jq("#expiry-date input").change(expiryDateSelected);
+            jq("#expiry-date input").change(kit1ExpiryDateSelected);
+            jq("#expiry-date2 input").change(kit2ExpiryDateSelected);
             //jq('#ccc-no :input').prop('readonly', true);
             //On Load defaults
             var everTested = getField("hiv-test1-result.value").val();
@@ -846,7 +857,7 @@
 
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
-                            <obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
+                            <obs id="expiry-date2" conceptId="162501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
                         </td>
                         <td>

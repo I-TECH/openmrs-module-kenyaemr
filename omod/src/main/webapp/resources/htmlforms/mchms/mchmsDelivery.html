@@ -86,7 +86,6 @@
             // HIV Test validation
             //kit selected
             jq('#kit-name-1 select').change(kit1Selected);
-            jq('#kit-name-2 select').change(kit2Selected);
 
             jq('#tbl-known-positive').hide();
             jq("#hiv-test2").hide();
@@ -379,16 +378,8 @@
             if (val == 164961 ){   //Determine kit selected
                 jq('#dual-results-1').hide();
                 $("#kit-name-2 option[value='164960']").add();
-                $("#kit-name-2 option[value='165351']").add();
+                $("#kit-name-2 option[value='165351']").remove();
                 $("#kit-name-2 option[value='164961']").remove();
-            }
-        }
-        var kit2Selected = function () {
-            var val = jq(this).val();
-            if (val == 165351 ){   //Dual kit selected
-                jq('#dual-results-2').show();
-            }else{
-                jq('#dual-results-2').hide();
             }
         }
 
@@ -556,17 +547,14 @@
                             }
                             if (testKit1 == 164961 ){   //Determine kit selected
                                 $("#kit-name-2 option[value='164960']").add();
-                                $("#kit-name-2 option[value='165351']").add();
+                                $("#kit-name-2 option[value='165351']").remove();
                                 $("#kit-name-2 option[value='164961']").remove();
                             }
                             var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
-                            var syphylisTest2Results = getField("syphilis-test-results-2.value").val();
                             if(syphylisTest1Results != ""){
                                 jq('#dual-results-1').show();
                             }
-                            if(syphylisTest2Results != ""){
-                                jq('#dual-results-2').show();
-                            }
+
                         });
 					</script>
 				</ifMode>
@@ -637,9 +625,16 @@
 						<tr>
 							<td>Mode of Delivery:</td>
 							<td>
-								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="Normal delivery,Cesarean section,Breech delivery,Assisted vaginal delivery"
+								<obs conceptId="5630AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="delivery-mode"
+									 answerConceptIds="1170AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           1171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           1172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           118159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Spontaneous vaginal delivery(SVD),
+                                                       Cesarean section(CS),
+                                                       Breech delivery,
+                                                       Assisted vaginal delivery(AVD)"
+									 style="dropdown"
 								/>
 							</td>
 							<td>Date and time of Delivery:</td>
@@ -1054,14 +1049,6 @@
 												<td>&#160;&#160;&#160;&#160;Expiry Date
 													<obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
 													/>
-												</td>
-												<td>
-													<div id="dual-results-2" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
-														<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-															 id="syphilis-test-results"
-															 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-															 answerLabels="Negative,Positive"/>
-													</div>
 												</td>
 											</tr>
 										</obsgroup>
