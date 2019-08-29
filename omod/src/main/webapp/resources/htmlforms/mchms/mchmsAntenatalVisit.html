@@ -59,13 +59,12 @@
     //Start on ready
 	jq(function () {
         jq('#anc-counselling').hide();
-		jq('#counselled input').click(onANCCounselChange);
+		jq('#counselled input').change(onANCCounselChange);
         jq('.syphilis-treated').hide();
         jq('#syphilis-test-results select').change(onSyphilisResultChange);
         jq('#partner-tested select').change(onPartnerTestedChange);
         jq('#cacx-screening select').change(onCacxResultChange);
         jq('#chronic-illness').change(onCacxResultChange);
-		getField('counselled.value').change(onANCCounselChange);
 		getField('weight.value').change(onWeightOrHeightChange);
 		getField('height.value').change(onWeightOrHeightChange);
 		onWeightOrHeightChange();
@@ -273,12 +272,10 @@
         }
     }
     function onANCCounselChange() {
-        var subjectCounselled = jq('#subject select').val('');
         if (getValue('counselled.value') == 1065) {
             jq('#anc-counselling').show();
         }else{
             jq('#anc-counselling').hide();
-            getField('subject.value').val("");
         }
     }
     function onSyphilisResultChange() {
@@ -1195,16 +1192,14 @@
 								conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								answerConceptIds="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 								answerLabels="Cotrimoxazole,Dapsone,None"
-								style="radio" id="prophylaxis-used" required="true"/>
-							<span style="color:red;"><strong>*</strong></span>
+								style="radio" id="prophylaxis-used"/>
 						</td>
 					</tr>
 					<tr id="tbl-haart-given">
 						<td>HAART given to mother during this visit?</td>
 						<td><obs
 								conceptId="5576AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
-							     id="haart-given" required="true"/>
-							<span style="color:red;"><strong>*</strong></span>
+							     id="haart-given"/>
 						</td>
 						<td>HAART start date : </td>
 						<td><obs id="haart-start-date"
