@@ -9,14 +9,21 @@
  */
 package org.openmrs.module.kenyaemr.page.controller.defaulterTracing;
 
+import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.OnHaartCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
@@ -30,6 +37,7 @@ import org.openmrs.ui.framework.page.PageModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,10 +66,13 @@ public class DefaulterTracingViewPatientPageController {
 
 		if (hivProgramEnrollments.size() > 0) {
 			everEnrolledInHiv = true;
-		} else { // for hts clients. check if they have at least hts initial test
-			Form hivInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
-			List<Encounter> htsEncounters = patientWrapper.allEncounters(hivInitialForm);
-			if (htsEncounters.size() > 0) {
+		} else { // for hts clients. check if the client has positive test result and has no successful linkage information
+			Cohort c = new Cohort();
+			c.addMember(patient.getPatientId());
+			CalculationResultMap resultMap = new PatientsEligibleForHtsLinkageAndReferralCalculation().evaluate(c.getMemberIds(), null, Context.getService(PatientCalculationService.class).createCalculationContext());
+			boolean hasLastPositiveHtsResult = (Boolean) resultMap.get(patient.getPatientId()).getValue();
+
+			if (hasLastPositiveHtsResult) {
 				hasHtsHistory = true;
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
 				if (recordedTracingHistory.size() > 0) {
@@ -75,6 +86,7 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("cccDefaulterTracingformUuid", HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		model.put("htsTracingEncounters", htsTracingEncounters);
 		model.put("htsTracingformUuid", CommonMetadata._Form.HTS_CLIENT_TRACING);
+		model.put("htsLinkageAndReferralformUuid", CommonMetadata._Form.REFERRAL_AND_LINKAGE);
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
 	}

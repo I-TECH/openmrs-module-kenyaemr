@@ -69,7 +69,7 @@
 
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.defaultertracing" />
-		<constructor-arg value="Defaulter Tracing" />
+		<constructor-arg value="Patient Tracing" />
 		<constructor-arg value="kenyaemr/defaulterTracing/defaulterTracingHome.page" />
 		<constructor-arg value="kenyaui:apps/defaulter_tracing.png" />
 		<constructor-arg value="399" />

@@ -19,6 +19,7 @@ public class HtsConstants {
     public static final Integer HTS_POSITIVE_RESULT_CONCEPT_ID = 703;
     public static final Integer HTS_NEGATIVE_RESULT_CONCEPT_ID = 664;
     public static final Integer HTSLINKAGE_QUESTION_CONCEPT_ID = 159811;
+    public static final Integer HTS_UPN_QUESTION_CONCEPT_ID = 162053;
     public static final Integer SUCCESSFUL_LINKAGE_CONCEPT_ID = 1065;
 
     public static final Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
