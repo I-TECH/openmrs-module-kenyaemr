@@ -17,7 +17,6 @@
     <script type="text/javascript">
 
         jQuery(function () {
-            var contacted_linked = "<lookup expression="fn.latestObs(159811).getValueCoded()"/>";
             //linked status selected
             jq('#contact-status select').change(linkStatusSelected);
             jq('#contact-type select').change(linkTypeSelected);
@@ -26,13 +25,9 @@
             jq("#reasons_not_contacted_phone").hide();
             jq("#reasons_not_contacted_physical").hide();
 
-            //Auto populate if previously contacted
-            if (contacted_linked == 1065) {
-                jq("#contactedAndLinked").show();
-            }else{
-                jq("#contactedAndLinked").hide()
-            }
-
+            //Default location
+            jq('#default-location').click(defaultLocationChange);//Default location
+            jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
         });
         function linkStatusSelected() {
             var linkStatusSelected = getField('contact-status.value').val();
@@ -117,6 +112,10 @@
 
         //Before Submit
         beforeSubmit.push(function() {
+            var linkStatusNotContacted = getField('contact-status.value').val();
+            var contactTypeSelected = getField('contact-type.value').val();
+            var reasonNotContactedPhone = getField('reasons-phone.value').val();
+            var reasonNotContactedPhysical = getField('reasons-physical.value').val();
             var upn = jq('#hiv-id input').val();
 
             if(upn != null &amp;&amp; upn != "") {
@@ -124,6 +123,20 @@
                     alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
                     return false;
                 }
+            }
+
+            if(linkStatusNotContacted ==1118 &amp;&amp; contactTypeSelected== 1650 &amp;&amp; reasonNotContactedPhone =="") {
+                getField('reasons-phone.error').html('Reason for not contacted can not be empty.').show();
+                return false;
+            }else {
+                getField('reasons-phone.error').html('Reason for not contacted can not be empty.').hide();
+            }
+
+            if(linkStatusNotContacted ==1118 &amp;&amp; contactTypeSelected== 164965 &amp;&amp; reasonNotContactedPhysical =="") {
+                getField('reasons-physical.error').html('Reason for not contacted can not be empty.').show();
+                return false;
+            }else {
+                getField('reasons-phone.error').html('Reason for not contacted can not be empty.').hide();
             }
             return true;
         });
@@ -188,7 +201,7 @@
                                                    164965"
                                  answerLabels="Phone tracing,
                                                Physical tracing"
-                                 style="dropdown" />
+                                 style="dropdown" required="true" />
                         </td>
                      <td> &#160;&#160;&#160;Status : &#160;&#160;&#160;
                             <obs id="contact-status"
@@ -199,7 +212,7 @@
                                  answerLabels="Contacted and linked,
                                                Contacted but not linked,
                                                Not contacted"
-                                 style="dropdown" />
+                                 style="dropdown"  required="true"/>
                         </td>
                         <td>&#160;&#160;&#160; </td>
                         <td>
@@ -251,7 +264,7 @@
                             <div style="color: lightsalmon;font-weight: 700"><b>Please remember to fill referral and linkage form after saving this form</b></div>
                         </td>
                     </tr>
-
+                
             </table>
         </fieldset>
 
