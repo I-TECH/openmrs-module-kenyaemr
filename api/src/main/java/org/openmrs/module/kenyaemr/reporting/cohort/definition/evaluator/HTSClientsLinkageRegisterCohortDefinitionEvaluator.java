@@ -23,13 +23,16 @@ import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Evaluator for patients for HTS Register - linkage and referral
+ * returns patients who tested positive and either were directly enrolled in HIV program
+ * or had referral and linkage form filled with the linkage details
  */
 @Handler(supports = {HTSClientsLinkageRegisterCohortDefinition.class})
-public class HTSLinkageRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
+public class HTSClientsLinkageRegisterCohortDefinitionEvaluator implements EncounterQueryEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -39,13 +42,28 @@ public class HTSLinkageRegisterCohortDefinitionEvaluator implements EncounterQue
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT l.encounter_id from kenyaemr_etl.etl_hts_referral_and_linkage l \n" +
-				"inner join patient pt on pt.patient_id=l.patient_id and pt.voided=0 inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type=1 and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
-				"inner join kenyaemr_etl.etl_hts_test c on c.patient_id=l.patient_id and c.test_type=2 and c.final_test_result='Positive' and c.voided=0 and c.visit_date <=l.visit_date inner join person p on p.person_id=l.patient_id and p.voided=0 where l.voided=0\n" +
-				"order by l.patient_id";
+		String qry = "(SELECT l.encounter_id\n" +
+				"from kenyaemr_etl.etl_hts_referral_and_linkage l\n" +
+				"inner join kenyaemr_etl.etl_patient_demographics pt on pt.patient_id=l.patient_id and pt.voided=0\n" +
+				"inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type in(1,2) and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
+				"where l.ccc_number is not null and facility_linked_to is not null and date(l.visit_date) BETWEEN date(:startDate) AND date(:endDate)\n" +
+				")\n" +
+				"union\n" +
+				"( SELECT t.encounter_id\n" +
+				"FROM kenyaemr_etl.etl_hts_test t\n" +
+				"INNER JOIN kenyaemr_etl.etl_patient_demographics pt ON pt.patient_id=t.patient_id AND pt.voided=0\n" +
+				"INNER JOIN kenyaemr_etl.etl_hiv_enrollment e ON e.patient_id=t.patient_id AND e.voided=0\n" +
+				"LEFT JOIN kenyaemr_etl.etl_hts_referral_and_linkage l ON l.patient_id=t.patient_id\n" +
+				"WHERE t.test_type IN (1, 2) AND t.final_test_result='Positive' AND t.voided=0 AND l.patient_id IS NULL\n" +
+				"  AND date(e.visit_date) BETWEEN date(:startDate) AND date(:endDate)\n" +
+				")";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
 
 		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
 		queryResult.getMemberIds().addAll(results);
