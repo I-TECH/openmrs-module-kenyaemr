@@ -43,21 +43,24 @@ public class HTSClientsTestedPositiveNotLinkedCohortDefinitionEvaluator implemen
 			return null;
 
 		Cohort newCohort = new Cohort();
-		String qry=" SELECT clientTested from (\n" +
-				"SELECT t.patient_id clientTested, l.patient_id hasLinkageRecord, l.tracing_status, p.patient_id enrolledInHiv\n" +
+		String qry=" select t.patient_id\n" +
 				"from kenyaemr_etl.etl_hts_test t\n" +
-				"left join patient_program p on p.patient_id = t.patient_id and p.voided=0 and p.program_id not in (select program_id from program where uuid='dfdc6d40-2f2f-463d-ba90-cc97350441a8')\n" +
-				"left join \n" +
-				"(select l.patient_id, mid(max(concat(l.visit_date, l.tracing_status)), 11) tracing_status  \n" +
-				"from kenyaemr_etl.etl_hts_referral_and_linkage l \n" +
-				"where l.voided=0\n" +
-				"group by l.patient_id\n" +
-				") l on l.patient_id=t.patient_id\n" +
-				"where t.final_test_result = 'Positive' and t.voided = 0 and t.test_type=2 and datediff(curdate(), t.visit_date) div 365.25 < 1\n" +
-				") a \n" +
-				"where (hasLinkageRecord is null and enrolledInHiv is null) \n" +
-				"or (tracing_status = 'Contacted but not linked' and enrolledInHiv is null) \n" +
-				"or (tracing_status is null and enrolledInHiv is null);";
+				"  left join\n" +
+				"((SELECT l.patient_id\n" +
+				" from kenyaemr_etl.etl_hts_referral_and_linkage l\n" +
+				"   inner join kenyaemr_etl.etl_patient_demographics pt on pt.patient_id=l.patient_id and pt.voided=0\n" +
+				"   inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type in(1,2) and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
+				" where (l.ccc_number is not null or facility_linked_to is not null)\n" +
+				")\n" +
+				"union\n" +
+				"( SELECT t.patient_id\n" +
+				"  FROM kenyaemr_etl.etl_hts_test t\n" +
+				"    INNER JOIN kenyaemr_etl.etl_patient_demographics pt ON pt.patient_id=t.patient_id AND pt.voided=0\n" +
+				"    INNER JOIN kenyaemr_etl.etl_hiv_enrollment e ON e.patient_id=t.patient_id AND e.voided=0\n" +
+				"  WHERE t.test_type IN (1, 2) AND t.final_test_result='Positive' AND t.voided=0\n" +
+				")) l on l.patient_id = t.patient_id\n" +
+				"where t.final_test_result = 'Positive' and t.voided = 0 and t.test_type=2 and l.patient_id is null\n" +
+				";";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
