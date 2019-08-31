@@ -785,8 +785,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition htsNumberTestedPositive() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and final_test_result ='Positive' and visit_date between :startDate and :endDate";
+        String sqlQuery = "select t.patient_id from  kenyaemr_etl.etl_hts_test t\n" +
+                "                                inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id=t.patient_id\n" +
+                "                        where t.voided=0 and date(t.visit_date) between date(:startDate) and date(:endDate) and t.test_type=2 and t.final_test_result='Positive'\n" +
+                "                        group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositive");
         cd.setQuery(sqlQuery);
@@ -798,8 +800,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition htsNumberTestedNegative() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and final_test_result ='Negative' and visit_date between :startDate and :endDate";
+        String sqlQuery = "select t.patient_id from  kenyaemr_etl.etl_hts_test t\n" +
+                "                                inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id=t.patient_id\n" +
+                "                        where t.voided=0 and date(t.visit_date) between date(:startDate) and date(:endDate) and t.test_type=1 and t.final_test_result='Negative'\n" +
+                "                        group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedNegative");
         cd.setQuery(sqlQuery);
