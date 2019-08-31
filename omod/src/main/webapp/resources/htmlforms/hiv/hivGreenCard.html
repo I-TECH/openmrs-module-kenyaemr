@@ -634,26 +634,41 @@ function discontinuePatientInIpt() {
         encDate = new Date();
     }
 
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', { completionDate: encDate, patientId: patientId, reason: selIptDisReason, action: txtDiscAction, userId: userId }, function(data) {
-        if (data.status == "Success") {
-            jq("#dlgIptOutcome").dialog('close');
-            jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
-            jq("#btnShowIptOutcomeDialog").attr("disabled", true);
-            jq("#btnShowIptFollowupDialog").attr("disabled", true);
-        } else {
-            jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
-        }
+    if(selIptDisReason == null || selIptDisReason == "") {
+        jq('#iptDiscontinueReason').text('IPT discontinuation reason required').addClass("ke-error-label");
 
-    });
+    } else if (txtDiscAction == null || txtDiscAction == "") {
+        jq('#iptDiscActionTaken').text('Action taken required').addClass("ke-error-label");
+
+    }else {
+
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', {
+            completionDate: encDate,
+            patientId: patientId,
+            reason: selIptDisReason,
+            action: txtDiscAction,
+            userId: userId
+        }, function (data) {
+            if (data.status == "Success") {
+                jq("#dlgIptOutcome").dialog('close');
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
+                jq("#btnShowIptOutcomeDialog").attr("disabled", true);
+                jq("#btnShowIptFollowupDialog").attr("disabled", true);
+            } else {
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
+            }
+
+        });
+    }
 }
 
 function recordIptFollowupInformation() {
     var iptDueDate = jq("#txtIptDueDate").val();
     var iptCollectionDate = jq("#txtIptCollectionDate").val();
-    var iptHepatoxicity = jq("[name='rdoHepatoxicity']").val();
-    var iptNeuropathy = jq("[name='rdoNeuropathy']").val();
-    var iptRash = jq("[name='rdoRash']").val();
-    var iptAdherence = jq("[name='rdoAdherence']").val();
+    var iptHepatoxicity = jq("input[name='rdoHepatoxicity']:checked").val();
+    var iptNeuropathy = jq("input[name='rdoNeuropathy']:checked").val();
+    var iptRash = jq("input[name='rdoRash']:checked").val();
+    var iptAdherence = jq("input[name='rdoAdherence']:checked").val();
     var iptActionTaken = jq("#txtActionTaken").val();
 
     var patientId = <lookup expression="patient.patientId"/>;
@@ -662,28 +677,48 @@ function recordIptFollowupInformation() {
     if(encDate == null) {
         encDate = new Date();
     }
+    if(iptCollectionDate =="" ||iptCollectionDate == null ) {
+        jq('#collectedDate').text('IPT collection date required').addClass("ke-error-label");
+    }
+    else if(iptDueDate =="" ||iptDueDate ==null ) {
+        jq('#ipt-due-date').text('IPT due date required').addClass("ke-error-label");
+    }
+    else if(iptHepatoxicity =="" ||iptHepatoxicity == null ) {
+        jq('#hepatotoxity').text('IPT hepatotoxity required').addClass("ke-error-label");
+    }
+    else if(iptNeuropathy =="" ||iptNeuropathy == null ) {
+        jq('#neuropathy-peripheral').text(' Neuropathy required').addClass("ke-error-label");
+    }
+    else if(iptRash =="" ||iptRash == null ) {
+        jq('#patient-rash').text('Rash required').addClass("ke-error-label");
+    }
+    else if(iptAdherence =="" ||iptAdherence == null ) {
+        jq('#adherencemes').text('IPT adherence measurement required').addClass("ke-error-label");
+    }else {
 
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/addIptFollowup.action', {
-        encounterDate: encDate,
-        patientId: patientId,
-        userId: userId,
-        iptDueDate: iptDueDate,
-        iptCollectionDate: iptCollectionDate,
-        iptHepatoxicity: iptHepatoxicity,
-        iptNeuropathy: iptNeuropathy,
-        iptRash: iptRash,
-        iptAdherence: iptAdherence,
-        iptActionTaken: iptActionTaken}, function(data) {
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/addIptFollowup.action', {
+            encounterDate: encDate,
+            patientId: patientId,
+            userId: userId,
+            iptDueDate: iptDueDate,
+            iptCollectionDate: iptCollectionDate,
+            iptHepatoxicity: iptHepatoxicity,
+            iptNeuropathy: iptNeuropathy,
+            iptRash: iptRash,
+            iptAdherence: iptAdherence,
+            iptActionTaken: iptActionTaken
+        }, function (data) {
 
-        if (data.status == "Success") {
-            jq("#dlgIptFollowup").dialog('close');
-            jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
-            jq("#btnShowIptFollowupDialog").attr("disabled", true);
-        } else {
-            jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
-        }
+            if (data.status == "Success") {
+                jq("#dlgIptFollowup").dialog('close');
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
+                jq("#btnShowIptFollowupDialog").attr("disabled", true);
+            } else {
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
+            }
 
-    });
+        });
+    }
 }
 
 
@@ -698,16 +733,27 @@ function enrollPatientToIPTProgram() {
     if(encDate == null) {
         encDate = new Date();
     }
+    if(indicationForIpt != null &amp;&amp; indicationForIpt != "") {
 
-    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId, indicationForIpt: indicationForIpt, userId: userId }, function(data) {
-        if (data.status == "Success") {
-            jq("#enrollInIptProgram").attr("disabled", true);
-            jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-success-label");
-            jq("#dlgIptInitiation").dialog("close");
-        } else {
-            jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-error-label");
-        }
-    });
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', {
+            enrollmentDate: encDate,
+            patientId: patientId,
+            indicationForIpt: indicationForIpt,
+            userId: userId
+        }, function (data) {
+            if (data.status == "Success") {
+                jq("#enrollInIptProgram").attr("disabled", true);
+                jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-success-label");
+                jq("#dlgIptInitiation").dialog("close");
+                jq("#btnEnrollInIptProgram").attr("disabled", true);
+            } else {
+                jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-error-label");
+            }
+        });
+    }else {
+        jq('#lblIptIndicationOptions').text('Indication for IPT is required.').addClass("ke-error-label");
+
+    }
 }
 
 
@@ -2933,6 +2979,7 @@ clearHiddenSections = function(parentObj) {
                                         <option value="162278">Child exposed to tuberculosis</option>
                                     </select>
                                 </td>
+                                <td><label id="lblIptIndicationOptions"></label></td>
                             </tr>
                         </table>
                     </div>
@@ -2959,10 +3006,12 @@ clearHiddenSections = function(parentObj) {
                             <tr>
                                 <td>IPT Due Date</td>
                                 <td><input type="text" size="10" id="txtIptDueDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errortxtIptDueDate"></span></td>
+                                <td><label id="ipt-due-date"></label></td>
                             </tr>
                             <tr>
                                 <td>Date collected IPT</td>
                                 <td><input type="text" size="10" id="txtIptCollectionDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errtxtIptCollectionDate"></span></td>
+                                <td><label id="collectedDate"></label></td>
                             </tr>
                             <tr>
                                 <td>Hepatotoxity?  <br/> (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
@@ -2970,6 +3019,7 @@ clearHiddenSections = function(parentObj) {
                                     <input type="radio" name="rdoHepatoxicity" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
                                     <span class="error field-error" style="display: none" id="rdoHepatoxicity"></span>
                                 </td>
+                                <td><label id="hepatotoxity"></label></td>
                             </tr>
                             <tr>
                                 <td>Peripheral Neuropathy  <br/> Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
@@ -2978,6 +3028,7 @@ clearHiddenSections = function(parentObj) {
                                     <input type="radio" name="rdoNeuropathy" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
                                     <span class="error field-error" style="display: none" id="rdoNeuropathy"></span>
                                 </td>
+                                <td><label id="neuropathy-peripheral"></label></td>
                             </tr>
                             <tr>
                                 <td>Does the patient have Rash?	</td>
@@ -2985,6 +3036,7 @@ clearHiddenSections = function(parentObj) {
                                     <input type="radio" name="rdoRash" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
                                     <input type="radio" name="rdoRash" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
                                     <span class="error field-error" style="display: none" id="rdoRash"></span></td>
+                                <td><label id="patient-rash"></label></td>
                             </tr>
                             <tr>
                                 <td>Adherence Measurement <br/>Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
@@ -2994,6 +3046,7 @@ clearHiddenSections = function(parentObj) {
                                     <input type="radio" name="rdoAdherence" value="159407" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Poor</label>
                                     <span class="error field-error" style="display: none" id="rdoAdherence"></span>
                                 </td>
+                                <td><label id="adherencemes"></label></td>
                             </tr>
                             <tr><td colspan="2"></td></tr>
                             <tr>
@@ -3013,7 +3066,7 @@ clearHiddenSections = function(parentObj) {
                                 <td>Reason</td>
                                 <td>
                                     <select id="iptDiscReason">
-                                        <option>Select reason</option>
+                                        <option value="" selected="true">Select reason</option>
                                         <option value="1267">Completed</option>
                                         <option value="5240">Lost to followup</option>
                                         <option value="159836">Discontinue</option>
@@ -3023,10 +3076,12 @@ clearHiddenSections = function(parentObj) {
                                         <option value="102">Drug toxicity</option>
                                     </select>
                                 </td>
+                                <td><label id="iptDiscontinueReason"></label></td>
                             </tr>
                             <tr>
                                 <td>Action taken</td>
                                 <td><textarea rows="5" cols="40" id="iptDiscAction"></textarea></td>
+                                <td><label id="iptDiscActionTaken"></label></td>
                             </tr>
                         </table>
                     </div>
