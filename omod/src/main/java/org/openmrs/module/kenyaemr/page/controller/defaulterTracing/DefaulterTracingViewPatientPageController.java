@@ -99,9 +99,11 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("cccDefaulterTracingformUuid", HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		model.put("htsTracingEncounters", htsTracingEncounters);
 		model.put("htsTracingformUuid", CommonMetadata._Form.HTS_CLIENT_TRACING);
-		model.put("htsLinkageAndReferralformUuid", CommonMetadata._Form.REFERRAL_AND_LINKAGE);
+		model.put("htsLinkageformUuid", CommonMetadata._Form.HTS_LINKAGE);
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
 		model.put("hasHtsSuccessfulTrace", hasSuccessfullTrace);
+		model.put("htsReferralformUuid", CommonMetadata._Form.HTS_REFERRAL);
+
 	}
 }

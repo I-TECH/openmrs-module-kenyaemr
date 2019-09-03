@@ -47,7 +47,7 @@ public class HtsHistoryFragmentController {
 
 		Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
 		Form htsRetestForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CONFIRMATORY_TEST);
-		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.REFERRAL_AND_LINKAGE);
+		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_LINKAGE);
 
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsInitialForm, htsRetestForm), null, null, null, null, false);
 		List<Encounter> linkageEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsLinkageForm), null, null, null, null, false);
