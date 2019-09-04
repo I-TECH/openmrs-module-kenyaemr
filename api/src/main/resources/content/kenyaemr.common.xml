@@ -33,7 +33,7 @@
 				<ref bean="kenyaemr.common.form.progressNote" />
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
-				<ref bean="kenyaemr.common.form.referralAndLinkage"/>
+				<ref bean="kenyaemr.common.form.htsLinkage"/>
 				<!--<ref bean="prep.prep.form.behaviorRiskAssessment"/>-->
 			</set>
 		</property>
@@ -302,8 +302,8 @@
 		<property name="order" value="201001" />
 	</bean>
 
-	<!-- HTS linkage and referral form -->
-	<bean id="kenyaemr.common.form.referralAndLinkage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+	<!-- HTS linkage form -->
+	<bean id="kenyaemr.common.form.htsLinkage" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="050a7f12-5c52-4cad-8834-863695af335d" />
 		<property name="apps">
 			<set>
@@ -316,7 +316,7 @@
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:hts/referralAndLinkage.html" />
+		<property name="htmlform" value="kenyaemr:hts/htsLinkage.html" />
 		<property name="order" value="201002" />
 	</bean>
 
@@ -332,6 +332,20 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/htsClientTracing.html" />
 		<property name="order" value="201003" />
+	</bean>
+
+	<!-- HTS Client Referral form -->
+	<bean id="kenyaemr.common.form.htsReferral" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="9284828e-ce55-11e9-a32f-2a2ae2dbcce4" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.defaultertracing" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hts/htsReferral.html" />
+		<property name="order" value="201004" />
 	</bean>
 
 	<!-- Prep behavior risk assessment form -->

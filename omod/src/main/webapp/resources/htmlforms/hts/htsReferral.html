@@ -110,7 +110,7 @@
                 <tr>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility referred to: </td>
                     <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="referred-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs id="referred-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
                     </td>
                     <td>
                         <input type="checkbox" name="facility-referred" id="location-referred" />
@@ -118,54 +118,7 @@
                     </td>
                     <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Date to be enrolled : </td>
                     <td>
-                        <obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-referred"   allowFutureDates="true" />
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset id="linkage">
-            <legend>Linkage to care</legend>
-            <table id="tbl-care-status">
-                <tr>
-                    <td>&#160;&#160;&#160;&#160;&#160;&#160;Facility linked to: </td>
-                    <td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs id="facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
-                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC number:
-                    <td>
-                    <span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false"/></span>
-                    <span id="upnError" class="error"></span>
-                    <div style="display:none"> <obs class="upn" conceptId="162053" id="upn-concept" /></div>
-                </td>
-                    </td>
-                </tr>
-                <td></td>
-            </table>
-            <table id="tbl-hts-provider">
-                <tr>
-                    <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Cadre of health worker : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Employee,Other"
-                             style="dropdown"
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Date enrolled : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
-                        />
-                    </td>
-                </tr> <tr>
-                    <td><strong>ART start date : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false"
-                        />
+                        <obs conceptId="161561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-referred"   allowFutureDates="true" required="true" />
                     </td>
                 </tr>
             </table>

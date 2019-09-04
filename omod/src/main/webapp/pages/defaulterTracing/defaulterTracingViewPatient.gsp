@@ -59,11 +59,19 @@
                             <% } %>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             ${ui.includeFragment("kenyaui", "widget/button", [
-                                    label       : "Add Referral and Linkage information",
+                                    label       : "Add Linkage information",
                                     extra       : "",
                                     iconProvider: "kenyaui",
                                     icon        : "buttons/visit_retrospective.png",
-                                    href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsLinkageAndReferralformUuid, returnUrl: ui.thisUrl()])
+                                    href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsLinkageformUuid, returnUrl: ui.thisUrl()])
+                            ])}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            ${ui.includeFragment("kenyaui", "widget/button", [
+                                    label       : "Add Referral information",
+                                    extra       : "",
+                                    iconProvider: "kenyaui",
+                                    icon        : "buttons/visit_retrospective.png",
+                                    href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsReferralformUuid, returnUrl: ui.thisUrl()])
                             ])}
                         </div>
                         <br/>
