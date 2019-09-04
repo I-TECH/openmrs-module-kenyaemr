@@ -51,6 +51,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
     ColumnParameters maleInfants = new ColumnParameters(null, "<1, Male", "gender=M|age=<1");
     ColumnParameters femaleInfants = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
 
+    ColumnParameters children_0_to_9 = new ColumnParameters(null, "1-9", "age=0-9");
     ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
     ColumnParameters adult_10_to_14 = new ColumnParameters(null, "10-14", "age=10-14");
     ColumnParameters adult_15_to_19 = new ColumnParameters(null, "15-19", "age=15-19");
@@ -87,7 +88,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
             m_20_to_24, f_20_to_24, m_25_and_above, f_25_and_above , colTotal);
 
     List<ColumnParameters> standardAgeOnlyDisaggregation = Arrays.asList(
-            children_1_to_9,  adult_10_to_14, adult_15_to_19,
+            children_0_to_9,  adult_10_to_14, adult_15_to_19,
             adult_20_to_24, adult_25_and_above , colTotal);
 
     List<ColumnParameters> standardAgeOnlyDisaggregationWithInfants = Arrays.asList(
@@ -96,6 +97,10 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
 
     List<ColumnParameters> standardDisaggregationWithoutInfants = Arrays.asList(
             children_1_to_9,  m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
+            m_20_to_24,f_20_to_24,m_25_and_above, f_25_and_above , colTotal);
+
+    List<ColumnParameters> disaggregationWithInfants = Arrays.asList(
+            children_0_to_9,  m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
             m_20_to_24,f_20_to_24,m_25_and_above, f_25_and_above , colTotal);
 
     List<ColumnParameters> allAgeDisaggregation = Arrays.asList(
@@ -285,7 +290,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
         // 3.1 HIV testing and counseling
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(moh731GreenCardIndicators.htsNumberTested(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Tested", ReportUtils.map(moh731GreenCardIndicators.htsNumberTested(), indParams), disaggregationWithInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
         cohortDsd.addColumn("HV01-11", "Tested Facility", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAtFacility(), indParams),"");
         cohortDsd.addColumn("HV01-12", "Tested Community", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAtCommunity(), indParams),"");
         cohortDsd.addColumn("HV01-13", "Tested New", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedNew(), indParams),"");
@@ -293,7 +298,7 @@ public class ETLMOH731GreenCardReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV01-15", "Tested Couples", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedAsCouple(), indParams),"");
         cohortDsd.addColumn("HV01-16", "Tested Key Pop", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedKeyPopulation(), indParams),"");
 
-        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositive(), indParams), standardDisaggregationWithoutInfants, Arrays.asList("17", "18", "19", "20", "21", "22", "23", "24", "25", "26"));
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Positive", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositive(), indParams), disaggregationWithInfants, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
         cohortDsd.addColumn("HV01-27", "Negative Total", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedNegative(), indParams),"");
         cohortDsd.addColumn("HV01-28", "Discordant", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedDiscordant(), indParams),"");
         cohortDsd.addColumn("HV01-29", "Positive Key Pop", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedKeypopPositive(), indParams),"");
