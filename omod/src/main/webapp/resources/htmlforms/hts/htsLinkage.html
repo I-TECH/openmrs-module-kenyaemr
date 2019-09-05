@@ -50,6 +50,7 @@
                    if ((/^[0-9]{10}$/.test(upnEntered) === false) &amp;&amp; (/^[0-9]{11}$/.test(upnEntered) === false)) {
                        jq('#upnError').text("Invalid CCC Number Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing CCC");
                        jq('#upnError').show();
+                       getField('upn-concept.value').val(upnEntered);
                    } else {
                        getField('upn-concept.value').val(upnEntered);
                    }
