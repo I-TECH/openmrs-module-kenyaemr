@@ -62,22 +62,25 @@
             var val = jq(this).val();
             if (val == 165351 ){   //Dual kit selected
                 jq('#dual-results-1').show();
-                $("#kit-name-2 option[value='164961']").add();
-                $("#kit-name-2 option[value='164960']").remove();
-                $("#kit-name-2 option[value='165351']").remove();
+                getField("kit-name-2.value").val("");
+                jq("#kit-name-2 option[value='164961']").show();
+                jq("#kit-name-2 option[value='164960']").hide();
+                jq("#kit-name-2 option[value='165351']").hide();
             }
 
-            if (val == 164960 ){   //Determine kit selected
+            else if (val == 164960 ){   //Determine kit selected
                 jq('#dual-results-1').hide();
-                $("#kit-name-2 option[value='164961']").add();
-                $("#kit-name-2 option[value='164960']").remove();
-                $("#kit-name-2 option[value='165351']").remove();
+                getField("kit-name-2.value").val("");
+                jq("#kit-name-2 option[value='164961']").show();
+                jq("#kit-name-2 option[value='164960']").hide();
+                jq("#kit-name-2 option[value='165351']").hide();
             }
-            if (val == 164961 ){   //Determine kit selected
+            else if (val == 164961 ){   //First response kit selected
                 jq('#dual-results-1').hide();
-                $("#kit-name-2 option[value='164960']").add();
-                $("#kit-name-2 option[value='165351']").add();
-                $("#kit-name-2 option[value='164961']").remove();
+                getField("kit-name-2.value").val("");
+                jq("#kit-name-2 option[value='164960']").show();
+                jq("#kit-name-2 option[value='165351']").hide();
+                jq("#kit-name-2 option[value='164961']").hide();
             }
         }
         var kit2Selected = function () {
@@ -602,20 +605,25 @@
                                 var testKit1 = getField('kit-name-1.value').val();
                                 if (testKit1 == 165351 ){   //Dual kit selected
                                     jq('#dual-results-1').show();
-                                    $("#kit-name-2 option[value='164961']").add();
-                                    $("#kit-name-2 option[value='164960']").remove();
-                                    $("#kit-name-2 option[value='165351']").remove();
+                                    getField("kit-name-2.value").val("");
+                                    jq("#kit-name-2 option[value='164961']").show();
+                                    jq("#kit-name-2 option[value='164960']").hide();
+                                    jq("#kit-name-2 option[value='165351']").hide();
                                 }
 
-                                if (testKit1 == 164960 ){   //Determine kit selected
-                                    $("#kit-name-2 option[value='164961']").add();
-                                    $("#kit-name-2 option[value='164960']").remove();
-                                    $("#kit-name-2 option[value='165351']").remove();
+                                else if (testKit1 == 164960 ){   //Determine kit selected
+                                    jq('#dual-results-1').hide();
+                                    getField("kit-name-2.value").val("");
+                                    jq("#kit-name-2 option[value='164961']").show();
+                                    jq("#kit-name-2 option[value='164960']").hide();
+                                    jq("#kit-name-2 option[value='165351']").hide();
                                 }
-                                if (testKit1 == 164961 ){   //Determine kit selected
-                                    $("#kit-name-2 option[value='164960']").add();
-                                    $("#kit-name-2 option[value='165351']").add();
-                                    $("#kit-name-2 option[value='164961']").remove();
+                                else if (testKit1 == 164961 ){   //First response kit selected
+                                    jq('#dual-results-1').hide();
+                                    getField("kit-name-2.value").val("");
+                                    jq("#kit-name-2 option[value='164960']").show();
+                                    jq("#kit-name-2 option[value='165351']").hide();
+                                    jq("#kit-name-2 option[value='164961']").hide();
                                 }
                                 var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
                                 var syphylisTest2Results = getField("syphilis-test-results-2.value").val();
