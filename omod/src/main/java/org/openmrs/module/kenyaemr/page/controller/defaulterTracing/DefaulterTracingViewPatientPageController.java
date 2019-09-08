@@ -49,6 +49,7 @@ public class DefaulterTracingViewPatientPageController {
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 		Form defaulterTracingForm = MetadataUtils.existing(Form.class, HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		Form htsClientTracingForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CLIENT_TRACING);
+		Form htsReferralForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_REFERRAL);
 		List<Encounter> defaulterTracingEncounters = patientWrapper.allEncounters(defaulterTracingForm);
 		Encounter lastHtsTrace = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsTracingForm);
 
@@ -58,6 +59,7 @@ public class DefaulterTracingViewPatientPageController {
 		boolean everEnrolledInHiv = false;
 		boolean hasHtsHistory = false;
 		boolean hasSuccessfullTrace = false;
+		boolean hasReferral = false;
 
 		// check if a patient has HIV enrollments
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
@@ -70,6 +72,8 @@ public class DefaulterTracingViewPatientPageController {
 			c.addMember(patient.getPatientId());
 			CalculationResultMap resultMap = new PatientsEligibleForHtsLinkageAndReferralCalculation().evaluate(c.getMemberIds(), null, Context.getService(PatientCalculationService.class).createCalculationContext());
 			boolean eligibleForLinkage = (Boolean) resultMap.get(patient.getPatientId()).getValue();
+			Encounter lastReferralEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsReferralForm);
+
 
 			if (eligibleForLinkage) {
 				hasHtsHistory = true;
@@ -78,10 +82,16 @@ public class DefaulterTracingViewPatientPageController {
 				Concept tracingOutcome = Context.getConceptService().getConcept(HtsConstants.HTS_SUCCESSFULL_TRACING_OUTCOME_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 
 				hasSuccessfullTrace = lastHtsTrace != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsTrace, tracingQuestion, tracingOutcome) : false;
-				if (recordedTracingHistory.size() > 0) {
-					htsTracingEncounters = recordedTracingHistory;
-					Collections.reverse(htsTracingEncounters);
+				if (lastReferralEnc != null) {
+					hasReferral = true;
+					htsTracingEncounters.add(lastReferralEnc);
 				}
+
+				if (recordedTracingHistory.size() > 0) {
+					Collections.reverse(recordedTracingHistory);
+					htsTracingEncounters.addAll(recordedTracingHistory);
+				}
+
 			} else {
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
 				if (recordedTracingHistory.size() > 0) {
@@ -89,6 +99,11 @@ public class DefaulterTracingViewPatientPageController {
 					if (lastLinkageEnc != null) {
 						htsTracingEncounters.add(lastLinkageEnc); // show the linkage encounter as the first encounter
 					}
+					if (lastReferralEnc != null) {
+						hasReferral = true;
+						htsTracingEncounters.add(lastReferralEnc);
+					}
+
 					Collections.reverse(recordedTracingHistory);
 					htsTracingEncounters.addAll(recordedTracingHistory);// add tracing encounters
 				}
@@ -102,6 +117,7 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("htsLinkageformUuid", CommonMetadata._Form.HTS_LINKAGE);
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
+		model.put("hasReferral", hasReferral);
 		model.put("hasHtsSuccessfulTrace", hasSuccessfullTrace);
 		model.put("htsReferralformUuid", CommonMetadata._Form.HTS_REFERRAL);
 

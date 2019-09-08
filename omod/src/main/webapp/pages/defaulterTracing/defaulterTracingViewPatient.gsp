@@ -66,6 +66,7 @@
                                     href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsLinkageformUuid, returnUrl: ui.thisUrl()])
                             ])}
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <% if(!hasReferral) { %>
                             ${ui.includeFragment("kenyaui", "widget/button", [
                                     label       : "Add Referral information",
                                     extra       : "",
@@ -73,6 +74,7 @@
                                     icon        : "buttons/visit_retrospective.png",
                                     href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsReferralformUuid, returnUrl: ui.thisUrl()])
                             ])}
+                            <% } %>
                         </div>
                         <br/>
                         ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: htsTracingEncounters, onEncounterClick: onEncounterClick])}
@@ -84,7 +86,7 @@
                     <div class="ke-panel-heading">Tracing history</div>
 
                     <div class="ke-panel-content" style="background-color: #F3F9FF">
-                        <div>No tracing needs found for this patient. </div>
+                        <div>This patient is ineligible for HTS/HIV defaulter tracing</div>
                         ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: htsTracingEncounters, onEncounterClick: onEncounterClick])}
                     </div>
                 </div>
