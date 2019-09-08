@@ -72,22 +72,26 @@ public class DefaulterTracingViewPatientPageController {
 			c.addMember(patient.getPatientId());
 			CalculationResultMap resultMap = new PatientsEligibleForHtsLinkageAndReferralCalculation().evaluate(c.getMemberIds(), null, Context.getService(PatientCalculationService.class).createCalculationContext());
 			boolean eligibleForLinkage = (Boolean) resultMap.get(patient.getPatientId()).getValue();
+			Encounter lastReferralEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsReferralForm);
+
 
 			if (eligibleForLinkage) {
 				hasHtsHistory = true;
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
-				List<Encounter> referrals = patientWrapper.allEncounters(htsReferralForm);
 				Concept tracingQuestion = Context.getConceptService().getConcept(HtsConstants.HTS_TRACING_OUTCOME_QUESTION_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 				Concept tracingOutcome = Context.getConceptService().getConcept(HtsConstants.HTS_SUCCESSFULL_TRACING_OUTCOME_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 
 				hasSuccessfullTrace = lastHtsTrace != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsTrace, tracingQuestion, tracingOutcome) : false;
-				if (recordedTracingHistory.size() > 0) {
-					htsTracingEncounters = recordedTracingHistory;
-					Collections.reverse(htsTracingEncounters);
-				}
-				if (referrals.size() > 0) {
+				if (lastReferralEnc != null) {
 					hasReferral = true;
+					htsTracingEncounters.add(lastReferralEnc);
 				}
+
+				if (recordedTracingHistory.size() > 0) {
+					Collections.reverse(recordedTracingHistory);
+					htsTracingEncounters.addAll(recordedTracingHistory);
+				}
+
 			} else {
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
 				if (recordedTracingHistory.size() > 0) {
@@ -95,6 +99,11 @@ public class DefaulterTracingViewPatientPageController {
 					if (lastLinkageEnc != null) {
 						htsTracingEncounters.add(lastLinkageEnc); // show the linkage encounter as the first encounter
 					}
+					if (lastReferralEnc != null) {
+						hasReferral = true;
+						htsTracingEncounters.add(lastReferralEnc);
+					}
+
 					Collections.reverse(recordedTracingHistory);
 					htsTracingEncounters.addAll(recordedTracingHistory);// add tracing encounters
 				}

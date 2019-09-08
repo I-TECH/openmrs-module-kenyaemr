@@ -86,7 +86,7 @@
                     <div class="ke-panel-heading">Tracing history</div>
 
                     <div class="ke-panel-content" style="background-color: #F3F9FF">
-                        <div>No tracing needs found for this patient. </div>
+                        <div>This patient is ineligible for HTS/HIV defaulter tracing</div>
                         ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: htsTracingEncounters, onEncounterClick: onEncounterClick])}
                     </div>
                 </div>
