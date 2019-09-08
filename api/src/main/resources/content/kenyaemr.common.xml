@@ -46,7 +46,7 @@
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
 				<!--<ref bean="kenyaemr.common.report.moh731" />-->
-				<ref bean="kenyaemr.etl.common.report.moh731"/>
+				<!--<ref bean="kenyaemr.etl.common.report.moh731"/>-->
 				<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />

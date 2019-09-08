@@ -128,12 +128,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
 		install(form("HTS Initial Form", "Form for HTS testing services ", _EncounterType.HTS, "1", _Form.HTS_INITIAL_TEST));
 		install(form("HTS Retest Form", "Form for HTS retest Services", _EncounterType.HTS, "1", _Form.HTS_CONFIRMATORY_TEST));
-		install(form("HTS Linkage Form", "Form for referrals and linkages", _EncounterType.HTS, "1", _Form.HTS_LINKAGE));
+		install(form("HTS Linkage Form", "Form for HTS linkage", _EncounterType.HTS, "1", _Form.HTS_LINKAGE));
 		install(form("Contact Listing Form", "Lists all contacts for a patient", _EncounterType.HTS, "1", _Form.CONTACT_LISTING));
 		install(form("Registration Form", "Initial data collection for a patient/client, not specific to any program", _EncounterType.REGISTRATION, "1", _Form.BASIC_REGISTRATION));
 		install(form("Drug Regimen Editor", null, _EncounterType.DRUG_REGIMEN_EDITOR, "1", _Form.DRUG_REGIMEN_EDITOR));
 		install(form("HTS Client Tracing Form", "Form for tracing hts clients", _EncounterType.HTS, "1", _Form.HTS_CLIENT_TRACING));
-		install(form("HTS Client Referral Form", "Form for referring hts clients", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
+		install(form("HTS Client Referral Form", "Form for HTS linkage referral", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
 
 
 

@@ -49,6 +49,7 @@ public class DefaulterTracingViewPatientPageController {
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 		Form defaulterTracingForm = MetadataUtils.existing(Form.class, HivMetadata._Form.CCC_DEFAULTER_TRACING);
 		Form htsClientTracingForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CLIENT_TRACING);
+		Form htsReferralForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_REFERRAL);
 		List<Encounter> defaulterTracingEncounters = patientWrapper.allEncounters(defaulterTracingForm);
 		Encounter lastHtsTrace = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsTracingForm);
 
@@ -58,6 +59,7 @@ public class DefaulterTracingViewPatientPageController {
 		boolean everEnrolledInHiv = false;
 		boolean hasHtsHistory = false;
 		boolean hasSuccessfullTrace = false;
+		boolean hasReferral = false;
 
 		// check if a patient has HIV enrollments
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
@@ -74,6 +76,7 @@ public class DefaulterTracingViewPatientPageController {
 			if (eligibleForLinkage) {
 				hasHtsHistory = true;
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
+				List<Encounter> referrals = patientWrapper.allEncounters(htsReferralForm);
 				Concept tracingQuestion = Context.getConceptService().getConcept(HtsConstants.HTS_TRACING_OUTCOME_QUESTION_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 				Concept tracingOutcome = Context.getConceptService().getConcept(HtsConstants.HTS_SUCCESSFULL_TRACING_OUTCOME_CONCEPT_ID);// this assumes a successful linkage must record unique patient number
 
@@ -81,6 +84,9 @@ public class DefaulterTracingViewPatientPageController {
 				if (recordedTracingHistory.size() > 0) {
 					htsTracingEncounters = recordedTracingHistory;
 					Collections.reverse(htsTracingEncounters);
+				}
+				if (referrals.size() > 0) {
+					hasReferral = true;
 				}
 			} else {
 				List<Encounter> recordedTracingHistory = patientWrapper.allEncounters(htsClientTracingForm);
@@ -102,6 +108,7 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("htsLinkageformUuid", CommonMetadata._Form.HTS_LINKAGE);
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
+		model.put("hasReferral", hasReferral);
 		model.put("hasHtsSuccessfulTrace", hasSuccessfullTrace);
 		model.put("htsReferralformUuid", CommonMetadata._Form.HTS_REFERRAL);
 
