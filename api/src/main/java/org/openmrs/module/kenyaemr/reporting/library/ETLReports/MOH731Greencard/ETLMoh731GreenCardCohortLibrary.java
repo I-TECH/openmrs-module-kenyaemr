@@ -974,8 +974,8 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition startedOnIPT() {
         String sqlQuery = "select patient_id \n" +
-                "from kenyaemr_etl.etl_ipt_screening \n" +
-                "where visit_date between :startDate and :endDate and ipt_started=1065 " +
+                "from kenyaemr_etl.etl_ipt_initiation \n" +
+                "where visit_date between date(:startDate) and date(:endDate) and voided=0 " +
                 " ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("startedOnIPT");
@@ -992,10 +992,9 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition completedIPT12Months() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select f.patient_id \n" +
-                "from kenyaemr_etl.etl_ipt_follow_up f\n" +
-                "inner join kenyaemr_etl.etl_ipt_screening s on s.visit_date = DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and s.ipt_started=1065 and f.patient_id = s.patient_id\n" +
-                "where f.visit_date between DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and date(:endDate) and f.outcome=1267 " +
+        String sqlQuery = "select patient_id \n" +
+                "from kenyaemr_etl.etl_patient_program \n" +
+                "where program='IPT' and date_completed between date(:startDate) and date(:endDate) and date_enrolled  between DATE_SUB(date(:startDate), INTERVAL 1 YEAR) and DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and outcome=1267 " +
                 ";";
         cd.setName("completedIPT12Months");
         cd.setQuery(sqlQuery);
