@@ -89,18 +89,78 @@ public class RegimenUtilFragmentController {
 		encounter.setForm(regimenEditor);
 		Concept con = cs.getConceptByUuid(command.getRegimenConceptRef());
 		Encounter enc = EncounterBasedRegimenUtils.getLastEncounterForCategory(command.getPatient(), command.getCategory());
-
+		Concept conNonstandard = cs.getConceptByUuid(command.getRegimenConceptNonStandardRef());
+		Concept conNonstandard1 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefOne());
+		Concept conNonstandard2 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefTwo());
+		Concept conNonstandard3 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefThree());
+		Concept conNonstandard4 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefFour());
 
 
 		//create an obs for regimen
-		Obs o = new Obs();
-		o.setConcept(cs.getConcept(1193));
-		o.setDateCreated(new Date());
-		o.setCreator(Context.getAuthenticatedUser());
-		o.setObsDatetime(command.getChangeDate());
-		o.setPerson(command.getPatient());
-		o.setValueCoded(con);
-		encounter.addObs(o);
+		if(con != null) {
+			Obs o = new Obs();
+			o.setConcept(cs.getConcept(1193));
+			o.setDateCreated(new Date());
+			o.setCreator(Context.getAuthenticatedUser());
+			o.setObsDatetime(command.getChangeDate());
+			o.setPerson(command.getPatient());
+			o.setValueCoded(con);
+			encounter.addObs(o);
+		}
+		if (conNonstandard != null) {
+			Obs non0 = new Obs();
+            non0.setConcept(cs.getConcept(1088));
+            non0.setDateCreated(new Date());
+            non0.setCreator(Context.getAuthenticatedUser());
+            non0.setObsDatetime(command.getChangeDate());
+            non0.setPerson(command.getPatient());
+            non0.setValueCoded(conNonstandard);
+			encounter.addObs(non0);
+
+		}
+
+		if (conNonstandard1 != null) {
+			Obs non1 = new Obs();
+            non1.setConcept(cs.getConcept(1088));
+            non1.setDateCreated(new Date());
+            non1.setCreator(Context.getAuthenticatedUser());
+            non1.setObsDatetime(command.getChangeDate());
+            non1.setPerson(command.getPatient());
+            non1.setValueCoded(conNonstandard1);
+			encounter.addObs(non1);
+
+		}
+        if (conNonstandard2 != null) {
+            Obs non2 = new Obs();
+            non2.setConcept(cs.getConcept(1088));
+            non2.setDateCreated(new Date());
+            non2.setCreator(Context.getAuthenticatedUser());
+            non2.setObsDatetime(command.getChangeDate());
+            non2.setPerson(command.getPatient());
+            non2.setValueCoded(conNonstandard2);
+            encounter.addObs(non2);
+
+        }
+        if (conNonstandard3 != null) {
+            Obs non3 = new Obs();
+            non3.setConcept(cs.getConcept(1088));
+            non3.setDateCreated(new Date());
+            non3.setCreator(Context.getAuthenticatedUser());
+            non3.setObsDatetime(command.getChangeDate());
+            non3.setPerson(command.getPatient());
+            non3.setValueCoded(conNonstandard3);
+            encounter.addObs(non3);
+        }
+        if (conNonstandard4 != null) {
+            Obs non4 = new Obs();
+            non4.setConcept(cs.getConcept(1088));
+            non4.setDateCreated(new Date());
+            non4.setCreator(Context.getAuthenticatedUser());
+            non4.setObsDatetime(command.getChangeDate());
+            non4.setPerson(command.getPatient());
+            non4.setValueCoded(conNonstandard4);
+            encounter.addObs(non4);
+        }
 
 		//create  obs for Change reason coded
 		Obs o2 = new Obs();
@@ -251,6 +311,11 @@ public class RegimenUtilFragmentController {
 		private Regimen regimen;
 
 		private String regimenConceptRef;
+		private String regimenConceptNonStandardRef;
+		private String regimenConceptNonStandardRefOne;
+		private String regimenConceptNonStandardRefTwo;
+        private String regimenConceptNonStandardRefThree;
+		private String regimenConceptNonStandardRefFour;
 
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
@@ -281,10 +346,10 @@ public class RegimenUtilFragmentController {
 				}
 			}
 			
-			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE
+			/*if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE
 					|| changeType == RegimenChangeType.RESTART) {
 				require(errors, "regimenConceptRef");
-			}
+			}*/
 
 			if (category != null && changeDate != null) {
 				// Get patient regimen history
@@ -507,6 +572,47 @@ public class RegimenUtilFragmentController {
 		public void setRegimenConceptRef(String regimenConceptRef) {
 			this.regimenConceptRef = regimenConceptRef;
 		}
+
+
+		// None standard regimen getters and setters
+
+		public String getRegimenConceptNonStandardRef() {
+			return regimenConceptNonStandardRef;
+		}
+
+		public void setRegimenConceptNonStandardRef(String regimenConceptRef) {
+			this.regimenConceptNonStandardRef = regimenConceptRef;
+		}
+
+		public String getRegimenConceptNonStandardRefOne() {
+			return regimenConceptNonStandardRefOne;
+		}
+
+		public void setRegimenConceptNonStandardRefOne(String regimenConceptRef) {
+			this.regimenConceptNonStandardRefOne = regimenConceptRef;
+		}
+        public String getRegimenConceptNonStandardRefTwo() {
+            return regimenConceptNonStandardRefTwo;
+        }
+
+        public void setRegimenConceptNonStandardRefTwo(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefTwo = regimenConceptRef;
+        }
+
+        public String getRegimenConceptNonStandardRefThree() {
+            return regimenConceptNonStandardRefThree;
+        }
+        public void setRegimenConceptNonStandardRefThree(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefThree = regimenConceptRef;
+        }
+        public String getRegimenConceptNonStandardRefFour() {
+            return regimenConceptNonStandardRefFour;
+        }
+        public void setRegimenConceptNonStandardRefFour(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefFour = regimenConceptRef;
+        }
+
+
 
 
 	}

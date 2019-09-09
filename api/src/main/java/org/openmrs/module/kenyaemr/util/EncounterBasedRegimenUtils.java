@@ -20,6 +20,7 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -138,6 +139,7 @@ public class EncounterBasedRegimenUtils {
         String REASON_REGIMEN_STOPPED_CODED = "1252AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 
@@ -149,6 +151,8 @@ public class EncounterBasedRegimenUtils {
         String startDate = e != null? DATE_FORMAT.format(e.getEncounterDatetime()) : "";
         Set<String> changeReason = new HashSet<String>();
 
+        StringBuilder nonstandardRegimen = new StringBuilder();
+        StringBuilder nonstandardRegimenShort = new StringBuilder();
 
         for(Obs obs:obsList) {
 
@@ -161,7 +165,13 @@ public class EncounterBasedRegimenUtils {
                     e1.printStackTrace();
                 }
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
-            } else if (obs.getConcept().getUuid().equals(REASON_REGIMEN_STOPPED_CODED)) {
+            } else if (obs.getConcept().getUuid().equals(CURRENT_DRUG_NON_STANDARD) ) {
+                nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+                nonstandardRegimenShort.append(obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
+                regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
+            }
+
+            else if (obs.getConcept().getUuid().equals(REASON_REGIMEN_STOPPED_CODED)) {
                 String reason = obs.getValueCoded() != null ?  obs.getValueCoded().getName().getName() : "";
                 if (reason != null)
                     changeReason.add(reason);
@@ -172,7 +182,23 @@ public class EncounterBasedRegimenUtils {
             } else if (obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
                 endDate = DATE_FORMAT.format(obs.getValueDatetime());
             }
+
+
         }
+        if(nonstandardRegimen.length() > 0 || nonstandardRegimenShort.length() > 0) {
+            return SimpleObject.create(
+                    "startDate", startDate,
+                    "endDate", endDate != null? endDate : "",
+                    "regimenShortDisplay", (nonstandardRegimenShort.toString()).substring(0,nonstandardRegimenShort.length() - 1),
+                    "regimenLine", regimenLine != null ? regimenLine : "",
+                    "regimenLongDisplay", (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1),
+                    "changeReasons", changeReason,
+                    "regimenUuid", regimenUuid,
+                    "current",endDate != null ? false : true
+
+            );
+        }
+
         if(regimen != null) {
             return SimpleObject.create(
                     "startDate", startDate,
