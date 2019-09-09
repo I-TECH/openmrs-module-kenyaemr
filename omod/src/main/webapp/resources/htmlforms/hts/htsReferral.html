@@ -18,23 +18,11 @@
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         jQuery(function () {
 
-            //Default location
-            jq('#default-location').click(defaultLocationChange);//Default location
+            //Referral location
             jq('#location-referred').click(defaultReferralLocationChange);      //Default referred locations
-            jq("#hiv-id input[type=text]").blur(checkForExistingPatientIdentifiers);
 
         });
-        //Checkbox to prepopulate default location
-        var defaultLocationChange = function () {
-            var val = jq(this).val();
-            var default_location = "<lookup expression="kenyaemr.location()" />";
-            if (jq(this).is(':checked')){
-                getField('facility.value').val(default_location);
-            }else{
-                getField('facility.value').val("");
-                clearHiddenSections(jq('#default-location'));
-            }
-        }
+
         //Checkbox to prepopulate default referrals location
         var defaultReferralLocationChange = function () {
             var val = jq(this).val();
@@ -47,28 +35,7 @@
             }
         }
 
-        function checkForExistingPatientIdentifiers() {
-            var upnEntered = jq('#hiv-id input[type=text]').val();
-            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: upnEntered }, function(data) {
-                jq('#upnError').hide();
-                if (data.upnExists === true) {
 
-                    jq('#upnError').text("A patient with similar CCC already exists. Please correct before proceeding");
-                    jq('#upnError').show();
-                    jq('#hiv-id input[type=text]').focus();
-                }
-
-               if(upnEntered != null &amp;&amp; upnEntered != "") {
-                   if ((/^[0-9]{10}$/.test(upnEntered) === false) &amp;&amp; (/^[0-9]{11}$/.test(upnEntered) === false)) {
-                       jq('#upnError').text("Invalid CCC Number Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing CCC");
-                       jq('#upnError').show();
-                       getField('upn-concept.value').val(upnEntered);
-                   } else {
-                       getField('upn-concept.value').val(upnEntered);
-                   }
-               }
-            });
-        }
         //Before Submit
         beforeSubmit.push(function() {
             return true;
