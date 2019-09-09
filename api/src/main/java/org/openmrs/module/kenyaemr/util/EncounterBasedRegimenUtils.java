@@ -167,7 +167,11 @@ public class EncounterBasedRegimenUtils {
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             } else if (obs.getConcept().getUuid().equals(CURRENT_DRUG_NON_STANDARD) ) {
                 nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
-                nonstandardRegimenShort.append(obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
+                if( obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null) {
+                    nonstandardRegimenShort.append(obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
+                }else {
+                    nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+                }
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             }
 
@@ -189,7 +193,8 @@ public class EncounterBasedRegimenUtils {
             return SimpleObject.create(
                     "startDate", startDate,
                     "endDate", endDate != null? endDate : "",
-                    "regimenShortDisplay", (nonstandardRegimenShort.toString()).substring(0,nonstandardRegimenShort.length() - 1),
+                    "regimenShortDisplay",nonstandardRegimenShort != null? (nonstandardRegimenShort.toString()).substring(0,nonstandardRegimenShort.length() - 1):
+                            (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1) ,
                     "regimenLine", regimenLine != null ? regimenLine : "",
                     "regimenLongDisplay", (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1),
                     "changeReasons", changeReason,
