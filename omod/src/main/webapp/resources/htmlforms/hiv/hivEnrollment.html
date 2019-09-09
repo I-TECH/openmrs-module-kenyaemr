@@ -159,12 +159,12 @@
 
             if (PATIENT_HAS_UPN) {
                 if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
-                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)");
+                    jq("#upnError").text("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)").show();
                     return false;
                 }
             } else {
                 if(/^[0-9]{10}$/.test(upn) === false) {
-                    alert("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments");
+                    jq("#upnError").text("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits for new enrollments").show();
                     return false;
                 }
             }
