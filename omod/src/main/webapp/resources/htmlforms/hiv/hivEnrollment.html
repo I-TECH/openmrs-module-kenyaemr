@@ -145,12 +145,16 @@
         beforeSubmit.push(function() {
             var birthDate = "<lookup expression="patient.birthdate" />";
             var encounterDate = getValue('encounter-date.value');
-            var confirmedPveDate = getValue('confirmed-positive-date.value');
+            var confirmedPveDate = jq('#confirmed-positive-date input[type=text]').val();
             var transferInDate = getValue('transfer-in-date.value');
             var entryPointStatus = getValue('transfer-in-status.value');
             var firstEnrolledDate = getValue('first-enrolled-date.value');
             var artStartDate = getValue('art-start-date.value');
-            var tsTelephone = getValue('ts-telephone.value');
+            var tsTelephone = jq('#ts-telephone input[type=text]').val();
+            var orphan = getValue('is-orphan.value');
+            var schooling = getValue('in-school.value');
+            var guardian = jq('#guardian-name input[type=text]').val();
+
             var upn = jq('#hiv-id input[type=text]').val();
 
             if (PATIENT_HAS_UPN) {
@@ -217,9 +221,19 @@
                 return false;
             }
 
-            var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-
             if(entryPointStatus == NEW_CLIENT || entryPointStatus == TRANSFER_IN) {
+                if (orphan == "") {
+                        getField('is-orphan.error').html('Orphan status should not be empty').show();
+                        return false;
+                }
+                if (schooling == "") {
+                    getField('in-school.error').html('Schooling status should not be empty').show();
+                    return false;
+                }
+                if (guardian == "") {
+                    getField('guardian-name.error').html('Guardian name should not be empty').show();
+                    return false;
+                }
                 if (tsTelephone != "") {
                     if (/^(?:\+254|0|254)(\d{9})$/.test(tsTelephone) === false) {
                         getField('ts-telephone.error').html('Phone number should contain only 10 digits').show();
@@ -945,15 +959,15 @@
 					<tr>
 						<td>In school :
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-							<obs conceptId="5629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 style="yes_no" required = "true"/>
+							<obs conceptId="5629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="in-school"
+								 style="yes_no" /><span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
 
 					<tr>
 						<td>Child is an orphan?
 							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no" required = "true" id="guardian-name"/>
+							<obs conceptId="1174AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"  id="is-orphan"/><span style="color:red;"><strong>*</strong></span>
 						</td>
 					</tr>
 				</table>
@@ -968,7 +982,7 @@
 							<obsgroup groupingConceptId="161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 								<tr>
 									<td>
-										<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required = "true"/>
+										<obs conceptId="160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="guardian-name" /><span style="color:red;"><strong>*</strong></span>
 									</td>
 									<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="ts-telephone"/></td>
 									<td><obs conceptId="160641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
