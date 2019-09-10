@@ -200,12 +200,14 @@ Green Card follow-up visit form
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
             var iptInitiationTab = jq('#ipt-initiation');
+            var iptEnrollmentTab = jq('#ipt-enrollment');
             var tbInitiationTab = jq('#tb-enrollment');
             tbInitiationTab.hide();
             actionTakenTab.hide();
             iptClientWorkupTab.hide();
             iptFollowup.hide();
             iptInitiationTab.hide();
+            iptEnrollmentTab.hide();
             ageGroup();
             displayRecentBmi();
             //Prophylaxis section
@@ -249,14 +251,14 @@ Green Card follow-up visit form
             //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
-                jq('.dlgAdherenceScreening').show();
+                jq('#dlgAdherenceScreening').show();
             }
             else{
                 jq('.on-art').hide();
-                jq('.dlgAdherenceScreening').hide();
+                jq('#dlgAdherenceScreening').hide();
             }
              // Morisky ART adherence assessment Modal
-            jq(".dlgAdherenceScreening").click(function(e){
+            jq("#dlgAdherenceScreening").click(function(e){
                 //Defaults
                 var adherenceResponses1=jq('#adherence-1');
                 var adherenceResponses2=jq('#adherence-2');
@@ -491,7 +493,7 @@ Green Card follow-up visit form
                 if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         tbScreeningResults.show();
-                        iptFollowup.show();
+                        iptFollowup.hide();
                         iptClientWorkupTab.hide();
                         clearRadios([iptClientWorkupTab, tbScreeningResultsStatus]);
                     }
@@ -978,7 +980,7 @@ function onPersonPresentChange() {
         chronicIllnessesSelected();
         adverseReactionSelected();
         jq(".on-art").hide();
-        jq('.dlgAdherenceScreening').hide();
+        jq('#dlgAdherenceScreening').hide();
         jq("#tbl-phdp").hide();
         jq("#tbl-ctx-adherence").hide();
         jq("#tbl-dap-adherence").hide();
@@ -1162,6 +1164,7 @@ var onAntiTbDrugs = function(){
     var iptFollowup = jq('#ipt-followup');
     var tbScreeningQuestionsTab = jq("#tb-screening-tab");
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     var tbInitiationTab = jq('#tb-enrollment');
     everOnIPTSelected = null;
     patientCurrentlyOnIPT = null;
@@ -1180,6 +1183,7 @@ var onAntiTbDrugs = function(){
         iptFollowup.hide();
         tbScreeningQuestionsTab.hide();
         iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
         tbInitiationTab.hide();
     }
 }
@@ -1193,17 +1197,11 @@ var onIPT = function(){
     var iptFollowup = jq('#ipt-followup');
     var tbScreeningQuestionsTab = jq("#tb-screening-tab");
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     var tbScreeningResult = jq("#tb-screening-result");
     var tbScreeningResultsStatus = jq("#tb-result-status");
-    if(val == 1066) {
-        jq("#tbl-ever-on-ipt").show();
-        iptFollowup.hide();
-        actionTakenTab.hide();
-        tbScreeningQuestionsTab.hide();
-        tbScreeningResult.hide();
-        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult, tbScreeningResultsStatus]);
-    }
-     if(val == 1065) {
+
+     if(val == 1065 &amp;&amp; PATIENT_ON_IPT == 'true') {
         jq("#tbl-ever-on-ipt").hide();
         jq("#ipt-followup").show();
         tbScreeningQuestionsTab.show();
@@ -1211,7 +1209,29 @@ var onIPT = function(){
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
         iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
         clearRadios([iptClientWorkupTab, actionTakenTab, tbScreeningResultsStatus]);
+    }
+    if(val == 1065 &amp;&amp; PATIENT_ON_IPT == 'false') {
+        jq("#tbl-ever-on-ipt").hide();
+        jq("#ipt-followup").hide();
+        tbScreeningQuestionsTab.show();
+        tbScreeningResult.hide();
+        iptClientWorkupTab.hide();
+        actionTakenTab.hide();
+        iptInitiationTab.hide();
+        iptEnrollmentTab.show();
+        clearRadios([iptClientWorkupTab, actionTakenTab, tbScreeningResultsStatus]);
+    }
+    if(val == 1066) {
+        jq("#tbl-ever-on-ipt").show();
+        iptFollowup.hide();
+        actionTakenTab.hide();
+        tbScreeningQuestionsTab.hide();
+        tbScreeningResult.hide();
+        iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
+        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult, tbScreeningResultsStatus]);
     }
 }
 var everOnIPT = function () {
@@ -1223,6 +1243,7 @@ var everOnIPT = function () {
     var iptClientWorkupTab = jq('#ipt-client-workup');
     var actionTakenTab = jq('#action-taken');
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     if(val == 1066) {
         // show TB screening, TB results and IPT workup forms
         tbScreeningTab.show();
@@ -1237,6 +1258,7 @@ var everOnIPT = function () {
         tbScreeningTab.show();
         actionTakenTab.hide();
         iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
@@ -1672,6 +1694,7 @@ var startAntiTbAction  = function () {
         jq('#tb-enrollment').show();
         jq('#ipt-client-workup').hide();
         jq('#ipt-initiation').hide();
+        jq('#ipt-enrollment').hide();
         jq('#ipt-result-status').hide();
         //set TB RX date to todays date
         var encounterDate = getValue('encounter-date.value');
@@ -2984,6 +3007,11 @@ clearHiddenSections = function(parentObj) {
                         </table>
                     </div>
                 </fieldset>
+
+
+
+                <div id="ipt-enrollment" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Kindly Enroll in IPT Program to Record Followup Details</span> </div>
+
                 <fieldset id="ipt-followup">
                     <legend>IPT Followup</legend>
 
@@ -3833,26 +3861,27 @@ clearHiddenSections = function(parentObj) {
                                 <table class = "on-art">
                                     <!--Adherence Modal  -->
                                     <tr>
-                                        <button type="button" class="dlgAdherenceScreening">Adherence Assessment*</button>
+                                        <button type="button" id="dlgAdherenceScreening" class="ke-program-followup-button">Adherence Assessment*</button>
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
                                             <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                                             <div id="adherence-1">
                                                 1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                            <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
                                                                                            <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
 
                                                 2. Are you careless at times about taking your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                             <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
                                                                                             <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
 
-                                                3.Sometimes if you feel worse when you take the medicine, do you stop taking it? <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                                3.Sometimes if you feel worse when you take the medicine, do you stop taking it? &#160;&#160;
+                                                                                            <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
                                                                                             <input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>
 
                                                 4.When you feel better do you sometimes stop taking your medicine?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                             <input type="radio" name="question-4" class="question-4" value="1065"/> Yes
                                                                                            <input type="radio" name="question-4" class="question-4" value="1066"/> No <br/><br/>
                                             </div>
@@ -3869,10 +3898,10 @@ clearHiddenSections = function(parentObj) {
                                                 <input type="radio" name="question-6" class="question-6" value="1065"/> Yes
                                                 <input type="radio" name="question-6" class="question-6" value="1066"/> No <br/><br/>
                                                 3.Taking medication every day is a real inconvenience for some people.<br/>  &#160;&#160; Do you feel under pressure about sticking to your treatment plan?
-                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-7" class="question-7" value="1065"/> Yes
                                                 <input type="radio" name="question-7" class="question-7" value="1066"/> No <br/><br/>
-                                                4.How often do you have difficulty remembering to take all your medications?&#160;&#160;
+                                                4.How often do you have difficulty remembering to take all your medications?&#160;&#160;&#160;
                                                   <select name="question-8" class="question-8">
                                                       <option value="1066">Select</option>
                                                       <option value="1090">Never/Rarely</option>
