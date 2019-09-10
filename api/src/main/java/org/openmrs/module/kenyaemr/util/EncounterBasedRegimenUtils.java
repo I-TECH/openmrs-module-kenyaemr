@@ -170,7 +170,7 @@ public class EncounterBasedRegimenUtils {
                 if( obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null) {
                     nonstandardRegimenShort.append(obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
                 }else {
-                    nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+                    nonstandardRegimenShort.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
                 }
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             }
