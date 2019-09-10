@@ -47,7 +47,7 @@
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
 				<!--<ref bean="kenyaemr.common.report.moh731" />-->
 				<!--<ref bean="kenyaemr.etl.common.report.moh731"/>-->
-				<ref bean="kenyaemr.etl.common.report.moh731GreenCard"/>
+				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
 				<ref bean="kenyaemr.common.report.recordedDeceased" />
 				<ref bean="kenyaemr.common.report.allPatients" />
@@ -382,12 +382,6 @@
 
 	<!-- ===================== Reports ===================== -->
 
-	<!--<bean id="kenyaemr.common.report.missedAppointment" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
-		<property name="targetUuid" value="d1e3d16f-74d8-47c7-9475-849e9d82408b" />
-		<property name="name" value="Patients who missed their last appointment" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissedLastAppointmentCalculation" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-	</bean>-->
 	<bean id="kenyaemr.common.report.etlMissedAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="9a254c29-2c8a-4966-83ba-66595eee4695" />
 		<property name="name" value="Missed Appointments" />
@@ -410,59 +404,19 @@
 		</property>
 	</bean>
 
-
-	<!-- the report has since been removed -->
-	<!--	<bean id="kenyaemr.common.report.moh711" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="c546b523-83f8-43ba-a979-e0631f0a5364" />
-		<property name="name" value="MOH 711" />
-		<property name="description" value="National Integrated Form for Reproductive Health, HIV/AIDS, Malaria, TB and Child Nutrition" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-	</bean>-->
-
-	<bean id="kenyaemr.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="dcd7d647-ea54-45a9-9d56-f56fc37c2b87" />
+	<bean id="kenyaemr.etl.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="a66bf454-2a11-4e51-b28d-3d7ece76aa13" />
 		<property name="name" value="MOH 731" />
 		<property name="description" value="Comprehensive HIV/AIDS Facility Reporting Form - NASCOP" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:moh731.xls" />
-	</bean>
-
-	<bean id="kenyaemr.etl.common.report.moh731" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="b90e5c71-4e7b-4996-b8b8-b2278d5929af" />
-		<property name="name" value="MOH 731 Report" />
-		<property name="description" value="MOH 731 Report based on ETL tables" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set></property>
-		<property name="template" value="kenyaemr:moh731.xls" />
-	</bean>
-
-	<bean id="kenyaemr.etl.common.report.moh731GreenCard" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="a66bf454-2a11-4e51-b28d-3d7ece76aa13" />
-		<property name="name" value="MOH 731 Report" />
-		<property name="description" value="MOH 731 Report" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<!--<property name="template" value="kenyaemr:moh731_greencard_template.xls" />-->
-		<property name="template" value="kenyaemr:moh731_Greencard_Revised_Template.xls" />
+		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
 
-	<!-- introduction of viral load alert-->
-	<!--<bean id="kenyaemr.etl.common.report.datim" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
-		<property name="targetUuid" value="ed84df22-6f07-486e-8f64-749decb08365" />
-		<property name="name" value="DATIM Report" />
-		<property name="description" value="DATIM Report" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set></property>
-		<property name="template" value="kenyaemr:datim_report_template.xls" />
-	</bean>-->
-
-	<!-- Datim Revised report-->
+	<!-- Datim report-->
 	<bean id="kenyaemr.etl.common.report.datim" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d6e5dd4c-e3f5-11e8-9f32-f2801f1b9fd1" />
 		<property name="name" value="Datim Report" />
