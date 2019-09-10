@@ -345,11 +345,11 @@ public class RegimenUtilFragmentController {
 					}
 				}
 			}
-			
-			/*if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE
-					|| changeType == RegimenChangeType.RESTART) {
+
+			if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
 				require(errors, "regimenConceptRef");
-			}*/
+				require(errors, "regimenConceptNonStandardRef");
+			}
 
 			if (category != null && changeDate != null) {
 				// Get patient regimen history
@@ -364,7 +364,7 @@ public class RegimenUtilFragmentController {
 				}
 
 				// Changes must be in order
-				if (lastChange != null && OpenmrsUtil.compare(changeDate, lastChange.getDate()) <= 0) {
+				if (lastEnc != null && OpenmrsUtil.compare(changeDate, lastEnc.getEncounterDatetime()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
 				}
 
@@ -611,9 +611,7 @@ public class RegimenUtilFragmentController {
         public void setRegimenConceptNonStandardRefFour(String regimenConceptRef) {
             this.regimenConceptNonStandardRefFour = regimenConceptRef;
         }
-
-
-
+        
 
 	}
 
