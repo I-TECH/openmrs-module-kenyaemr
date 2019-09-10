@@ -69,6 +69,14 @@ public class ArtIndicatorLibrary {
 	}
 
 	/**
+	 * Number of patients having the given ART regimen
+	 * @return indicator
+	 */
+	public CohortIndicator onRegimen(String regimen) {
+		return cohortIndicator("", map(artCohorts.patientsOnRegimen(regimen), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
 	 * Number of patients who started ART
 	 * @return the indicator
 	 */
