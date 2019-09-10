@@ -37,6 +37,7 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.QiPaedsCohortLib
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -431,6 +432,44 @@ public class ArtCohortLibrary {
 		cd.addSearch("startedArt", ReportUtils.map(startedArt(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}"));
 		cd.addSearch("withWhoStage", ReportUtils.map(whoStageAtArtStart(stage)));
 		cd.setCompositionString("startedArt AND withWhoStage");
+		return cd;
+	}
+
+	public  CohortDefinition patientsOnRegimen(String regimenName) {
+		String sqlQuery="SELECT d.patient_id\n" +
+		"from kenyaemr_etl.etl_drug_event d\n" +
+				"  inner join (\n" +
+				"    select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+				"                                          max(fup.visit_date) as latest_vis_date,\n" +
+				"                                          mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+				"                                          max(d.visit_date) as date_discontinued,\n" +
+				"                                          d.patient_id as disc_patient,\n" +
+				"                                          de.patient_id as started_on_drugs\n" +
+				"    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+				"      join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+				"      join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+				"      left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+				"      left outer JOIN\n" +
+				"      (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+				"      where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+				"      group by patient_id\n" +
+				"      ) d on d.patient_id = fup.patient_id\n" +
+				"    where fup.visit_date <= date(:endDate)\n" +
+				"    group by patient_id\n" +
+				"    having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
+				"      ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
+				"    )\n" +
+				"    ) onArt on d.patient_id=onArt.patient_id\n" +
+				" where d.program=\"HIV\" and (d.voided is null or d.voided=0) and d.regimen_name=':regimenName'\n" +
+				"      and d.date_started <= date(:endDate) and (d.date_discontinued is null or d.date_discontinued > date(:endDate));  ";
+
+		sqlQuery = sqlQuery.replaceAll(":regimenName", regimenName);
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("patientsOnRegimen");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.setDescription("Patients on a particular Regimen");
 		return cd;
 	}
 }
