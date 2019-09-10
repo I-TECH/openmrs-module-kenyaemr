@@ -20,7 +20,6 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -152,8 +151,6 @@ public class EncounterBasedRegimenUtils {
         Set<String> changeReason = new HashSet<String>();
 
         StringBuilder nonstandardRegimen = new StringBuilder();
-        StringBuilder nonstandardRegimenShort = new StringBuilder();
-
         for(Obs obs:obsList) {
 
             if (obs.getConcept().getUuid().equals(CURRENT_DRUGS) ) {
@@ -167,11 +164,6 @@ public class EncounterBasedRegimenUtils {
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             } else if (obs.getConcept().getUuid().equals(CURRENT_DRUG_NON_STANDARD) ) {
                 nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
-                if( obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null) {
-                    nonstandardRegimenShort.append(obs.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
-                }else {
-                    nonstandardRegimenShort.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
-                }
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             }
 
@@ -189,12 +181,11 @@ public class EncounterBasedRegimenUtils {
 
 
         }
-        if(nonstandardRegimen.length() > 0 || nonstandardRegimenShort.length() > 0) {
+        if(nonstandardRegimen.length() > 0) {
             return SimpleObject.create(
                     "startDate", startDate,
                     "endDate", endDate != null? endDate : "",
-                    "regimenShortDisplay",nonstandardRegimenShort != null? (nonstandardRegimenShort.toString()).substring(0,nonstandardRegimenShort.length() - 1):
-                            (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1) ,
+                    "regimenShortDisplay", (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1) ,
                     "regimenLine", regimenLine != null ? regimenLine : "",
                     "regimenLongDisplay", (nonstandardRegimen.toString()).substring(0,nonstandardRegimen.length() - 1),
                     "changeReasons", changeReason,
