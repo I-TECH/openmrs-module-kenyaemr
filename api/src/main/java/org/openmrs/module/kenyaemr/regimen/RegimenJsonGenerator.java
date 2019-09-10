@@ -63,7 +63,6 @@ public class RegimenJsonGenerator {
                         .getFormService().getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR));
         ArrayNode components = JsonNodeFactory.instance.arrayNode();
         StringBuilder nonstandardRegimenShort = new StringBuilder();
-        StringBuilder nonstandardRegimen = new StringBuilder();
         String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String nonStandard = null;
 
@@ -76,7 +75,7 @@ public class RegimenJsonGenerator {
                     if(o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null) {
                         nonstandardRegimenShort.append(o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
                     }else {
-                        nonstandardRegimen.append(o.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+                        nonstandardRegimenShort.append(o.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
 
                     }
                     regimenComponent.put("name", o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null ? o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName()
