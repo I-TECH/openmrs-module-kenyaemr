@@ -163,7 +163,7 @@ public class EncounterBasedRegimenUtils {
                 }
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             } else if (obs.getConcept().getUuid().equals(CURRENT_DRUG_NON_STANDARD) ) {
-                nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+                nonstandardRegimen.append(obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName().toUpperCase() + "/");
                 regimenUuid = obs.getValueCoded() != null ? obs.getValueCoded().getUuid() : "";
             }
 
