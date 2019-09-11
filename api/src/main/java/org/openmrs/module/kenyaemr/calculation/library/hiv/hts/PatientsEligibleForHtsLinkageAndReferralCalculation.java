@@ -95,7 +95,7 @@ public class PatientsEligibleForHtsLinkageAndReferralCalculation extends Abstrac
             boolean patientHasSuccessfulLinkage = lastLinkageEnc != null ? EmrUtils.encounterHasObsForConcept(lastLinkageEnc, linkageSuccessful) : false;
             //boolean patientHasSuccessfulLinkage = lastLinkageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastLinkageEnc, linkageQuestion, linkageSuccessful) : false;
 
-            if(enrollmentEncounters.size() <= 0 && htsEncounters.size() > 0 && patientHasPositiveTestResult && !patientHasSuccessfulLinkage) {
+            if(htsEncounters.size() > 0 && patientHasPositiveTestResult && !patientHasSuccessfulLinkage) {
                 notEnrolled = true;
             }
 
