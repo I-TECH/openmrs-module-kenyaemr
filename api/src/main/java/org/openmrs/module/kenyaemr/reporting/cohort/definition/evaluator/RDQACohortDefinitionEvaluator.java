@@ -47,11 +47,10 @@ public class RDQACohortDefinitionEvaluator implements CohortDefinitionEvaluator 
 
 		Cohort newCohort = new Cohort();
 
-		String qry = "select FLOOR(1 + (RAND() * 999999)) as index_no, patient_id " +
-				" from patient p " +
-				"	inner join patient_identifier pi " +
-				"	using(patient_id) " +
-				" where identifier_type = 3 and p.voided = 0  ";
+		String qry = " SELECT FLOOR(1 + (RAND() * 999999)) as index_no, patient_id\n" +
+				" from kenyaemr_etl.etl_patient_program\n" +
+				" where voided=0 and program='HIV' \n" +
+				"  group by patient_id";
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		TreeMap<Double, Integer> dataMapFromSQL = (TreeMap<Double, Integer>) makePatientDataMapFromSQL(qry, m);
