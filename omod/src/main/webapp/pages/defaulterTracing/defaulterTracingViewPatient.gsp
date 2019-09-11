@@ -29,6 +29,16 @@
                     <div class="ke-panel-content" style="background-color: #F3F9FF">
 
                         <div align="center">
+                            <%if(eligibleForLinkage) { %>
+                            ${ui.includeFragment("kenyaui", "widget/button", [
+                                    label       : "Add Linkage information",
+                                    extra       : "",
+                                    iconProvider: "kenyaui",
+                                    icon        : "buttons/visit_retrospective.png",
+                                    href        : ui.pageLink("kenyaemr", "enterForm", [appId: currentApp.id, patientId: currentPatient, formUuid: htsLinkageformUuid, returnUrl: ui.thisUrl()])
+                            ])}
+
+                            <% } %>
                             ${ui.includeFragment("kenyaui", "widget/button", [
                                     label       : "Add HIV defaulter tracing information",
                                     extra       : "",

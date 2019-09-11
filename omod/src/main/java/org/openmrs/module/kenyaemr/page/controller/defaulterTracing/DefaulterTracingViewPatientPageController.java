@@ -60,6 +60,7 @@ public class DefaulterTracingViewPatientPageController {
 		boolean hasHtsHistory = false;
 		boolean hasSuccessfullTrace = false;
 		boolean hasReferral = false;
+		boolean eligibleForLinkage = false;
 
 		// check if a patient has HIV enrollments
 		ProgramWorkflowService programWorkflowService = Context.getProgramWorkflowService();
@@ -71,7 +72,7 @@ public class DefaulterTracingViewPatientPageController {
 			Cohort c = new Cohort();
 			c.addMember(patient.getPatientId());
 			CalculationResultMap resultMap = new PatientsEligibleForHtsLinkageAndReferralCalculation().evaluate(c.getMemberIds(), null, Context.getService(PatientCalculationService.class).createCalculationContext());
-			boolean eligibleForLinkage = (Boolean) resultMap.get(patient.getPatientId()).getValue();
+			eligibleForLinkage = (Boolean) resultMap.get(patient.getPatientId()).getValue();
 			Encounter lastReferralEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsReferralForm);
 
 
@@ -118,6 +119,7 @@ public class DefaulterTracingViewPatientPageController {
 		model.put("hasHivEnrollment", everEnrolledInHiv);
 		model.put("hasHtsEncounters", hasHtsHistory);
 		model.put("hasReferral", hasReferral);
+		model.put("eligibleForLinkage", eligibleForLinkage);
 		model.put("hasHtsSuccessfulTrace", hasSuccessfullTrace);
 		model.put("htsReferralformUuid", CommonMetadata._Form.HTS_REFERRAL);
 
