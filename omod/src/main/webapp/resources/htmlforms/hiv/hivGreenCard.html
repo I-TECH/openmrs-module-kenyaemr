@@ -673,6 +673,7 @@ function recordIptFollowupInformation() {
     var iptAdherence = jq("input[name='rdoAdherence']:checked").val();
     var iptActionTaken = jq("#txtActionTaken").val();
 
+
     var patientId = <lookup expression="patient.patientId"/>;
     var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
     var encDate = getValue('encounter-date.value');

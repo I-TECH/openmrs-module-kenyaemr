@@ -462,7 +462,7 @@ public class EmrUtilsFragmentController {
 									   @RequestParam("iptNeuropathy") Concept neuropathy,
 									   @RequestParam("iptRash") Concept rash,
 									   @RequestParam("iptAdherence") Concept adherence,
-									   @RequestParam("iptActionTaken") String actionTaken) {
+									   @RequestParam(value = "iptActionTaken", required = false) String actionTaken) {
 
 		Integer iptDueDateConcept = 164073;
 		Integer iptCollectionDateConcept = 164074;
@@ -556,7 +556,7 @@ public class EmrUtilsFragmentController {
 			enc.addObs(adherenceObs);
 		}
 
-		if (actionTaken != null) {
+		if (actionTaken != null && actionTaken !="") {
 			Obs actionTakenObs = new Obs(); // build action taken obs
 			actionTakenObs.setConcept(conceptService.getConcept(actionTakenConcept));
 			actionTakenObs.setDateCreated(new Date());
