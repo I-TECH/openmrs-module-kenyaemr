@@ -25,9 +25,10 @@
         var RE_ENROLL=159833;
         var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         //On Ready
         jq(function() {
-            //var PATIENT_IS_ENROLLED_HIV = "<lookup expression="kenyaemr.hasHivUniquePatientNumber()" />";
             var confirmed_positive = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
             var date_confirmed_positive = "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
             var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getObsDatetime()"/>";
@@ -78,13 +79,13 @@
             if (pAge &lt; 2 || getValue('pregnant.value') == 1065) {
                 jq('.muac').show();
             }
-            //UPN Validation
+            //Enrolled client Validation to use enrollment status instead of UPN
             var hasUPN = jq('#hiv-id input[type=text]').val();
-            if(hasUPN == "")
+            if (ENROLLED_IN_HIV == 'false')
             {
                 jq("#transfer-in-status input[value=159833]").prop("disabled", true);
             }
-            if(hasUPN != "")
+            if (ENROLLED_IN_HIV == 'true')
             {
                 jq("#transfer-in-status input[value=164144]").prop("disabled", true);
             }
