@@ -14,7 +14,11 @@
 <htmlform>
 
 	<script type="text/javascript">
-		var value1;
+
+		var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
+		var artStartDate = Discontinuation_VELOCITY.split(",")[0].split(":")[1];
+		var enrollmentDate = Discontinuation_VELOCITY.split(",")[1].split(":")[1];
+
 		jq(document).ready(function(){
 			if ((getValue('idReason.value')) == 160034) {
 				jq('#pdied :input').prop('disabled', false);
@@ -51,10 +55,21 @@
 				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
 
 				if(discontinueDate &lt; pbirthdate){
-					getField('discontinueDate.error').html('Discontinue date, should not be earlier than Birth date').show();
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Birth date').show();
 					return false;
 				}
-				// alert(pbirthdate+" and "+discontinueDate);
+				if(discontinueDate &lt; artStartDate){
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than art start date').show();
+					return false;
+				}
+				if(discontinueDate &lt; enrollmentDate){
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
+				}
+
 				return true;
 			});
 		});

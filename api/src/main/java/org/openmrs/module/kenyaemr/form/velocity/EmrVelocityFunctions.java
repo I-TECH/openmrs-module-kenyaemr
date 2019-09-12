@@ -25,6 +25,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
@@ -159,6 +160,14 @@ public class EmrVelocityFunctions {
 
 		CalculationResult greenCardVelocity = EmrCalculationUtils.evaluateForPatient(GreenCardVelocityCalculation.class, null,session.getPatient());
 		return 	(String) greenCardVelocity.getValue();
+
+
+	}
+
+	public String DiscontinuationVelocityCalculation() {
+
+		CalculationResult discontinuationVelocity = EmrCalculationUtils.evaluateForPatient(DiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) discontinuationVelocity.getValue();
 
 
 	}
