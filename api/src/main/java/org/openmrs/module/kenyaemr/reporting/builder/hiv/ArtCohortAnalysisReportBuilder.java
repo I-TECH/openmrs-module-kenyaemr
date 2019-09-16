@@ -9,7 +9,9 @@
  */
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
+import org.openmrs.Concept;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.kenyacore.report.CohortReportDescriptor;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
@@ -17,33 +19,34 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IsTransferInAndHasDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfFirstCTXCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.HeightAtArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.WeightAtArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ArtCohortRegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ChangeInCd4Converter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.MedicallyEligibleConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenLineConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.TransferInAndDateConverter;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4ValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -84,24 +87,51 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
     protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
 
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-        DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), new IdentifierConverter());
+        PatientIdentifierType tbRegNo = MetadataUtils.existing(PatientIdentifierType.class, TbMetadata._PatientIdentifierType.DISTRICT_REG_NUMBER);
+        DataDefinition identifierDef_upn = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), new IdentifierConverter());
+        DataDefinition identifierDef_tb = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), tbRegNo), new IdentifierConverter());
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+        PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
+        Concept startIptConcept = Dictionary.getConcept("1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        Concept startTbRxDateConcept = Dictionary.getConcept("1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
         dsd.setName("artCohortAnalysis");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
+        dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
+        dsd.addColumn("UPN", identifierDef_upn, "");
         dsd.addColumn("Name", nameDef, "");
-        dsd.addColumn("UPN", identifierDef, "");
-        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());
-        dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
-        dsd.addColumn("DOB approx", new CalculationDataDefinition("DOB approx", new IsBirthDateApproximatedCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
+        dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
+        dsd.addColumn("Age", new AgeDataDefinition(), "");
+        dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
+        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), "");
+        dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), "");
+        dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
+        dsd.addColumn("Latest CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
+        dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
+        dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
+        dsd.addColumn("CTX Start Date", new CalculationDataDefinition("Weight at Art Start", new DateOfFirstCTXCalculation()), "", new ArtCohortStartMonthYearDateConverter());
+        dsd.addColumn("IPT Start Date", new ObsForPersonDataDefinition("IPT Start Date", TimeQualifier.FIRST, startIptConcept, null, null), "", new ArtCohortStartMonthYearDateConverter());
+        dsd.addColumn("TBRx Start Date", new ObsForPersonDataDefinition("TB Treatment Start Date", TimeQualifier.FIRST, startTbRxDateConcept, null, null), "", new ArtCohortStartMonthYearDateConverter());
+        dsd.addColumn("TB Reg", identifierDef_tb, "");
+
+
+
+
+
+
+
+        //artCohortAnalysis
+        dsd.addColumn("Enrollment into care date", hivProgramEnrollment(), "onDate=${endDate}", new CalculationResultConverter());       dsd.addColumn("Age at ART initiation", new CalculationDataDefinition("Age at ART initiation", new AgeAtARTInitiationCalculation()), "", new CalculationResultConverter());
+
         dsd.addColumn("TI", ti(), "", new TransferInAndDateConverter("state"));
+
         dsd.addColumn("Date TI", ti(), "", new TransferInAndDateConverter("date"));
         dsd.addColumn("TO", to(report), "onDate=${endDate}", new TransferInAndDateConverter("state"));
         dsd.addColumn("Date TO", to(report), "onDate=${endDate}", new TransferInAndDateConverter("date"));
-        dsd.addColumn("ARV Start Date", new CalculationDataDefinition("ARV Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
+
         dsd.addColumn("Days from enrollment in care to ART Initiation", new CalculationDataDefinition("Days from enrollment in care to ART Initiation", new DaysFromEnrollmentToArtInitiationCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Days from ART eligibility to ART Initiation", fromEligibilityToArtStart(report), "onDate=${endDate}", new CalculationResultConverter());
         dsd.addColumn("Date first medically eligible for ART", dateAndReasonFirstMedicallyEligibleForArtCalculation(report), "onDate=${endDate}", new MedicallyEligibleConverter("date"));
