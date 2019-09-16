@@ -18,7 +18,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
 
 /**
- * Homepage for the clinician app
+ * Homepage for the Hiv Testing app
  */
 @AppPage(EmrConstants.APP_HIV_TESTING)
 public class HtsHomePageController {
