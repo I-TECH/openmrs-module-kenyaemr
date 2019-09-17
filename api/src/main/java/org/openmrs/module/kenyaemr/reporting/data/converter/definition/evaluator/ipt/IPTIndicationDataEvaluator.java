@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.BMIZScoreMUACDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.IPTDiscontinuationReasonDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.IPTIndicationDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates BMIZScoreMUACDataDefinition
+ * Evaluates IPTIndicationDataDefinition
  */
-@Handler(supports= BMIZScoreMUACDataDefinition.class, order=50)
-public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= IPTIndicationDataDefinition.class, order=50)
+public class IPTIndicationDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,7 @@ public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
+        String qry = "select init.patient_id,init.ipt_indication from kenyaemr_etl.etl_ipt_initiation init;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

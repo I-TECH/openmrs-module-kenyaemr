@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a PersonDataDefinition
+ * Evaluates Month18TBStatusDateDataDefinition
  */
 @Handler(supports= Month18TBStatusDateDataDefinition.class, order=50)
 public class Month18TBStatusDateDataEvaluator implements PersonDataEvaluator {

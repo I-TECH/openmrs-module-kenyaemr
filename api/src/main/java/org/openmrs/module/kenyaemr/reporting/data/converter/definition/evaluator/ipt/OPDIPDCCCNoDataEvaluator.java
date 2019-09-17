@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.BMIZScoreMUACDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.VTBDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates BMIZScoreMUACDataDefinition
+ * Evaluates a OPDIPDCCCNoDataDefinition
  */
-@Handler(supports= BMIZScoreMUACDataDefinition.class, order=50)
-public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= VTBDataDefinition.class, order=50)
+public class OPDIPDCCCNoDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,8 @@ public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
+        String qry = "select init.patient_id,coalesce(d.unique_patient_no,d.hei_no) as ccc_hei_no from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d\n" +
+                "     on init.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

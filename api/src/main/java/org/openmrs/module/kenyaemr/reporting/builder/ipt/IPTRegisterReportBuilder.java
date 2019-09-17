@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.builder.tb;
+package org.openmrs.module.kenyaemr.reporting.builder.ipt;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
@@ -52,7 +52,7 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         CohortDefinition cd = new HEIRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("IPT Patients");
+        cd.setName("IPTPatients");
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
@@ -88,12 +88,14 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
+		DataDefinition addressDef = new ConvertedPersonDataDefinition("identifier", new PreferredAddressDataDefinition(), identifierFormatter);
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
+
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Sub County Registration", new RegistrationSubcountyDataDefinition(), "");
-		dsd.addColumn("OPD or IPD and CCC Number", identifierDef, "");
+		dsd.addColumn("OPD or IPD and CCC Number", new OPDIPDCCCNoDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");

@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a PersonDataDefinition
+ * Evaluates Month5DrugCollectionDateDataDefinition
  */
 @Handler(supports= Month5DrugCollectionDateDataDefinition.class, order=50)
 public class Month5DrugCollectionDateDataEvaluator implements PersonDataEvaluator {

@@ -11,9 +11,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.WeightAtStartDataDefinition;
-import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -23,18 +23,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a VisitIdDataDefinition to produce a VisitData
+ * Evaluates a WeightAtStartDataDefinition
  */
 @Handler(supports= WeightAtStartDataDefinition.class, order=50)
-public class WeightAtStartDataEvaluator implements EncounterDataEvaluator {
+public class WeightAtStartDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
-
-        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
+    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+        String qry = "select init.patient_id,mid(min(concat(ifup.visit_date,ifup.weight)),11) as supporter_phone_number from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_ipt_follow_up ifup\n" +
+                "      on init.patient_id = ifup.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
