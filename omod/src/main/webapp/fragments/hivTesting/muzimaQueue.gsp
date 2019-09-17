@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Registration</td>
+                    <td>Potential Registration duplicates</td>
                     <td>${registrationErrors}</td>
                     <td><button onclick="ui.navigate('/' + OPENMRS_CONTEXT_PATH + '/module/muzimacore/view.list#/duplicates')">View Errors</button> </td>
                 </tr>

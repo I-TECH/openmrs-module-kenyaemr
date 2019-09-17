@@ -14,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.text.SimpleDateFormat;
 
@@ -24,6 +25,7 @@ public class MuzimaQueueFragmentController {
 
 	public void controller(FragmentModel model) {
 
+		Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 
 		String regStr = "select count(*) from muzima_error_data where discriminator='json-registration';";
 		String allErrors = "select count(*) from muzima_error_data;";
@@ -36,6 +38,7 @@ public class MuzimaQueueFragmentController {
 		model.put("totalErrors", totalErrors.intValue());
 		model.put("registrationErrors", registrationErrors.intValue());
 		model.put("queueData", queueDataTotal.intValue());
+		Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 
 	}
 
