@@ -28,7 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for enrollment tracker cohort - those tested and linked
+ * Evaluator for DAR (Daily Activity Register)
+ * Includes patients who are enrolled in HIV program and either had a clinical or treatment preparation encounters
  */
 @Handler(supports = {DARCohortDefinition.class})
 public class DARCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -48,11 +49,11 @@ public class DARCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
 		Cohort newCohort = new Cohort();
 
-		String qry = "SELECT f.patient_id\n" +
-				"FROM kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"inner join kenyaemr_etl.etl_hiv_enrollment e on e.patient_id = f.patient_id and e.voided=0\n" +
-				"where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
-				";";
+		String qry = "SELECT e.patient_id\n" +
+				"FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
+				"         left join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) between date(:startDate) and date(:endDate) and f.voided = 0\n" +
+				"         left join kenyaemr_etl.etl_ART_preparation artPrep on artPrep.patient_id = e.patient_id and  date(artPrep.visit_date) between date(:startDate) and date(:endDate)\n" +
+				"where e.voided = 0 and (f.patient_id is not null or artPrep.patient_id is not null);\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
