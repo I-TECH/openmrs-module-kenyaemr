@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Evaluator for DAR (Daily Activity Register)
- * Includes patients who are enrolled in HIV program and either had a clinical or treatment preparation encounters
+ * Includes patients who are enrolled in HIV program and either had a HIV followup or treatment preparation encounters
  */
 @Handler(supports = {DARCohortDefinition.class})
 public class DARCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
