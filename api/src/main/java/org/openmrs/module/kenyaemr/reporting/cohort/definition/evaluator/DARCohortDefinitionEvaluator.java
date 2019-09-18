@@ -51,15 +51,13 @@ public class DARCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
 		String qry = "SELECT e.patient_id\n" +
 				"FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
-				"         left join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) between date(:startDate) and date(:endDate) and f.voided = 0\n" +
-				"         left join kenyaemr_etl.etl_ART_preparation artPrep on artPrep.patient_id = e.patient_id and  date(artPrep.visit_date) between date(:startDate) and date(:endDate)\n" +
+				"         left join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
+				"         left join kenyaemr_etl.etl_ART_preparation artPrep on artPrep.patient_id = e.patient_id and  date(artPrep.visit_date) = date(:startDate) \n" +
 				"where e.voided = 0 and (f.patient_id is not null or artPrep.patient_id is not null);\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
 		Date startDate = (Date)context.getParameterValue("startDate");
-		Date endDate = (Date)context.getParameterValue("endDate");
-		builder.addParameter("endDate", endDate);
 		builder.addParameter("startDate", startDate);
 
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
