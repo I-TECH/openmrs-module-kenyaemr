@@ -35,7 +35,7 @@ public class IPTDiscontinuationReasonDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
+        String qry = "select init.patient_id,d.discontinuation_reason from  kenyaemr_etl.etl_ipt_initiation init left outer join kenyaemr_etl.etl_patient_program_discontinuation d on init.patient_id = d.patient_id and d.program_name = \"IPT\";";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

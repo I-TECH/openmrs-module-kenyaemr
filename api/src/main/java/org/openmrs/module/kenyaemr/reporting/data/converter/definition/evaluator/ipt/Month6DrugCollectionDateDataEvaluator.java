@@ -35,9 +35,7 @@ public class Month6DrugCollectionDateDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "SELECT t.patient_id, t.visit_date\n" +
-                "from kenyaemr_etl.etl_hts_test t\n" +
-                "where t.final_test_result = 'Positive' and t.voided = 0 and t.test_type=2 group by patient_id";
+        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

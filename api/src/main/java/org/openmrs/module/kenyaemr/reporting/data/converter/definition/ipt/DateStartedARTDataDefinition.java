@@ -14,25 +14,27 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+import java.util.Date;
+
 /**
- * Visit ID Column
+ * DateStartedARTDataDefinition
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PreventiveTherapyDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class DateStartedARTDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PreventiveTherapyDataDefinition() {
+    public DateStartedARTDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PreventiveTherapyDataDefinition(String name) {
+    public DateStartedARTDataDefinition(String name) {
         super(name);
     }
 
@@ -42,6 +44,6 @@ public class PreventiveTherapyDataDefinition extends BaseDataDefinition implemen
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Double.class;
+        return Date.class;
     }
 }

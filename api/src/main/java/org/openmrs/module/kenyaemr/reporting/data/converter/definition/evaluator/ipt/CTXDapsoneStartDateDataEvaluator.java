@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month6TBStatusDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.CTXDapsoneStartDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.HIVTestDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Month6TBStatusDateDataDefinition
+ * Evaluates HIVTestDateDataDefinition
  */
-@Handler(supports= Month6TBStatusDateDataDefinition.class, order=50)
-public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= CTXDapsoneStartDateDataDefinition.class, order=50)
+public class CTXDapsoneStartDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,9 @@ public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
+        String qry = "select init.patient_id, date(o.date_activated) CTX_Dapsone_start_date from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
+                "                                                                                                              left join  openmrs.drug_order do on o.order_number = do.order_id\n" +
+                "where do.drug_inventory_id in (1571,1572,1573) and o.order_type_id = 2 group by init.patient_id having min(do.order_id);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

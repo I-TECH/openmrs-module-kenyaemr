@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month6TBStatusDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.OnARTDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.VTBDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Month6TBStatusDateDataDefinition
+ * Evaluates a OnARTDataDefinition
  */
-@Handler(supports= Month6TBStatusDateDataDefinition.class, order=50)
-public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= OnARTDataDefinition.class, order=50)
+public class OnARTDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,7 @@ public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
+        String qry = "select init.patient_id,(select case when exists(Select cic.patient_id from kenyaemr_etl.etl_current_in_care cic where cic.started_on_drugs is not null) then \"Y\" else \"N\" end ) as on_ART from kenyaemr_etl.etl_ipt_initiation init left join kenyaemr_etl.etl_drug_event de on init.patient_id = de.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

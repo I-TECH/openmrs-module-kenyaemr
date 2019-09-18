@@ -15,24 +15,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Visit IPT Dose
+ * VisitDapsone/Cotrimoxazole
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class IPTDoseDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class DapsoneCotrimoxazoleDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public IPTDoseDataDefinition() {
+    public DapsoneCotrimoxazoleDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public IPTDoseDataDefinition(String name) {
+    public DapsoneCotrimoxazoleDataDefinition(String name) {
         super(name);
     }
 

@@ -34,7 +34,7 @@ public class IPTOutcomeDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select o.patient_id,o.outcome from kenyaemr_etl.etl_ipt_outcome o;";
+        String qry = "select init.patient_id,o.outcome from kenyaemr_etl.etl_ipt_initiation init left outer join kenyaemr_etl.etl_ipt_outcome o on init.patient_id = o.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

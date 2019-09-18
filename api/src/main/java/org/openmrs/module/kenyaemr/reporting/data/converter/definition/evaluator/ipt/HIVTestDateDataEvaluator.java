@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month6TBStatusDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.HIVTestDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Month6TBStatusDateDataDefinition
+ * Evaluates HIVTestDateDataDefinition
  */
-@Handler(supports= Month6TBStatusDateDataDefinition.class, order=50)
-public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= HIVTestDateDataDefinition.class, order=50)
+public class HIVTestDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,9 @@ public class Month6TBStatusDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
+        String qry = "select init.patient_id,t.visit_date from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "                       left outer join kenyaemr_etl.etl_hts_test t on init.patient_id = t.patient_id\n" +
+                "group by init.patient_id having mid(max(concat(t.visit_date,t.final_test_result)),11);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

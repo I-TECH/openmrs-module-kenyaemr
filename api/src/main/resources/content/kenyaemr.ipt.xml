@@ -31,7 +31,7 @@
 			<set>
 				<ref bean="kenyaemr.ipt.report.onIpt" />
 				<ref bean="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" />
-				<ref bean="kenyaemr.ipt.report.ipt" />
+				<ref bean="kenyaemr.ipt.report.iptRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -113,7 +113,7 @@
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
-	<bean id="kenyaemr.ipt.report.ipt" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+	<bean id="kenyaemr.ipt.report.iptRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="e36d4a1e-b3ff-4c59-9d07-dbb61800c80f" />
 		<property name="name" value="IPT Register" />
 		<property name="description" value="Register for Patients on IPT" />

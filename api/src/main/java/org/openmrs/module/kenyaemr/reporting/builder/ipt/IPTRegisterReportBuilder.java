@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.tb.report.iptRegister"})
+@Builds({"kenyaemr.ipt.report.iptRegister"})
 public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
@@ -95,13 +95,15 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Sub County Registration", new RegistrationSubcountyDataDefinition(), "");
+		dsd.addColumn("Sub County Registration Date", new RegistrationSubcountyDataDefinition(), "");
 		dsd.addColumn("OPD or IPD and CCC Number", new OPDIPDCCCNoDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
 		dsd.addColumn("Nationality", new NationalityDataDefinition(), "");
 		dsd.addColumn("Physical Address", new PhysicalAddressDataDefinition(), "");
-		dsd.addColumn("Patient and Supporter Phone number", new SupporterPhoneNumberDataDefinition(), "");
+		dsd.addColumn("Patient Phone number", new PhoneNumberDataDefinition(), "");
+		dsd.addColumn("Supporter Phone number", new SupporterPhoneNumberDataDefinition(), "");
 		dsd.addColumn("WeightAtStart", new WeightAtStartDataDefinition(), "");
 		dsd.addColumn("Height", new HeightDataDefinition(), "");
 		dsd.addColumn("BMI or Z Score or MUAC", new BMIZScoreMUACDataDefinition(), "");
@@ -115,7 +117,7 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Month 5 drug collection date", new Month5DrugCollectionDateDataDefinition(),"");
 		dsd.addColumn("Month 6 drug collection date", new Month6DrugCollectionDateDataDefinition(),"");
 		dsd.addColumn("HIV Status", new HIVStatusDataDefinition(),"");
-		dsd.addColumn("Started Cotrimoxazole preventive Therapy or Dapsone", new PreventiveTherapyDataDefinition(),"");
+		dsd.addColumn("Started Cotrimoxazole preventive Therapy or Dapsone", new DapsoneCotrimoxazoleDataDefinition(),"");
 		dsd.addColumn("Started ART", new StartedARTDataDefinition(),"");
 		dsd.addColumn("IPT Outcome", new IPTOutcomeDataDefinition(),"");
 		dsd.addColumn("Reasons for IPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(),"");
