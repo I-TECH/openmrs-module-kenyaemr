@@ -29,6 +29,9 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DARCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarEnrolledInCareDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarOnTreatmentPreparationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarStartingArtDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -59,9 +62,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
-                new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)
+                new Parameter("startDate", "Start Date", Date.class)
         );
     }
 
@@ -78,9 +79,8 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
     protected Mapped<CohortDefinition> allPatientsCohort() {
         CohortDefinition cd = new DARCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("All Patient Visits");
-        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
+        return ReportUtils.map(cd, "startDate=${startDate}");
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DataSetDefinition allPatientsDSD = allVisits;
 
         return Arrays.asList(
-                ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(allPatientsDSD, "startDate=${startDate}")
         );
     }
 
@@ -99,7 +99,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
 
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        String defParam = "startDate=${startDate}";
 
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
@@ -112,6 +112,54 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Unique Patient No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        // enrolled in care
+        dsd.addColumn("Enrolled in Care(<1 yrs)", mapEnrolledInCareDataDefinition("Enrolled in Care(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("Enrolled in Care(1-9 yrs)", mapEnrolledInCareDataDefinition("Enrolled in Care(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("Enrolled in Care(10-14 yrs(M))", mapEnrolledInCareDataDefinition("Enrolled in Care(10-14 yrs(M))", 10, 14, "M"), defParam, null);
+        dsd.addColumn("Enrolled in Care(10-14 yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(10-14 yrs(F))", 10, 14, "F"), defParam, null);
+        dsd.addColumn("Enrolled in Care(15-19 yrs(M))", mapEnrolledInCareDataDefinition("Enrolled in Care(15-19 yrs(M))", 15, 19, "M"), defParam, null);
+        dsd.addColumn("Enrolled in Care(15-19 yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(15-19 yrs(F))", 15, 19, "F"), defParam, null);
+        dsd.addColumn("Enrolled in Care(20-24 yrs(M))", mapEnrolledInCareDataDefinition("Enrolled in Care(20-24 yrs(M))", 20, 24, "M"), defParam, null);
+        dsd.addColumn("Enrolled in Care(20-24 yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(20-24 yrs(F))", 20, 24, "F"), defParam, null);
+        dsd.addColumn("Enrolled in Care(25+ yrs(M))", mapEnrolledInCareDataDefinition("Enrolled in Care(25+ yrs(M))", 25, null, "M"), defParam, null);
+        dsd.addColumn("Enrolled in Care(25+ yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(25+ yrs(F))", 25, null, "F"), defParam, null);
+
+        // on treatment preparation
+        dsd.addColumn("On treatment preparation(0-14 yrs)", mapOnTreatmentPreparationDataDefinition("On treatment preparation(0-14 yrs)", 0, 14, null), defParam, null);
+        dsd.addColumn("On treatment preparation(15+ yrs)", mapOnTreatmentPreparationDataDefinition("On treatment preparation(15+ yrs)", 15, null, null), defParam, null);
+        //starting art
+        dsd.addColumn("Starting ART(<1 yrs)", mapDarStartingArtDataDefinition("Starting ART(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("Starting ART(1-9 yrs)", mapDarStartingArtDataDefinition("Starting ART(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("Starting ART(10-14 yrs(M))", mapDarStartingArtDataDefinition("Starting ART(10-14 yrs(M))", 10, 14, "M"), defParam, null);
+        dsd.addColumn("Starting ART(10-14 yrs(F)", mapDarStartingArtDataDefinition("Starting ART(10-14 yrs(F))", 10, 14, "F"), defParam, null);
+        dsd.addColumn("Starting ART(15-19 yrs(M))", mapDarStartingArtDataDefinition("Starting ART(15-19 yrs(M))", 15, 19, "M"), defParam, null);
+        dsd.addColumn("Starting ART(15-19 yrs(F)", mapDarStartingArtDataDefinition("Starting ART(15-19 yrs(F))", 15, 19, "F"), defParam, null);
+        dsd.addColumn("Starting ART(20-24 yrs(M))", mapDarStartingArtDataDefinition("Starting ART(20-24 yrs(M))", 20, 24, "M"), defParam, null);
+        dsd.addColumn("Starting ART(20-24 yrs(F)", mapDarStartingArtDataDefinition("Starting ART(20-24 yrs(F))", 20, 24, "F"), defParam, null);
+        dsd.addColumn("Starting ART(25+ yrs(M))", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(M))", 25, null, "M"), defParam, null);
+        dsd.addColumn("Starting ART(25+ yrs(F)", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(F))", 25, null, "F"), defParam, null);
+
         return dsd;
+    }
+
+    private DarStartingArtDataDefinition mapDarStartingArtDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarStartingArtDataDefinition newOnArtDef = new DarStartingArtDataDefinition(name, minAge, maxAge, sex);
+        newOnArtDef.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return newOnArtDef;
+
+    }
+
+    private DarEnrolledInCareDataDefinition mapEnrolledInCareDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarEnrolledInCareDataDefinition enrolledInCareDataDefinition = new DarEnrolledInCareDataDefinition(name, minAge, maxAge, sex);
+        enrolledInCareDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return enrolledInCareDataDefinition;
+
+    }
+
+    private DarOnTreatmentPreparationDataDefinition mapOnTreatmentPreparationDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarOnTreatmentPreparationDataDefinition onTreatmentPrepDataDefinition = new DarOnTreatmentPreparationDataDefinition(name, minAge, maxAge, sex);
+        onTreatmentPrepDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return onTreatmentPrepDataDefinition;
+
     }
 }
