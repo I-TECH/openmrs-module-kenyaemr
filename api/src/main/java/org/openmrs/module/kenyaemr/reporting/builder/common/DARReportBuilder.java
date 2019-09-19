@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DARCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarCurrentOnArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarEnrolledInCareDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarOnTreatmentPreparationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarStartingArtDataDefinition;
@@ -139,6 +140,18 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Starting ART(25+ yrs(M))", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(M))", 25, null, "M"), defParam, null);
         dsd.addColumn("Starting ART(25+ yrs(F)", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(F))", 25, null, "F"), defParam, null);
 
+        //current on art
+        dsd.addColumn("Current on ART(<1 yrs)", mapCurrentOnArtDataDefinition("Current on ART(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("Current on ART(1-9 yrs)", mapCurrentOnArtDataDefinition("Current on ART(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("Current on ART(10-14 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(M))", 10, 14, "M"), defParam, null);
+        dsd.addColumn("Current on ART(10-14 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(F))", 10, 14, "F"), defParam, null);
+        dsd.addColumn("Current on ART(15-19 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(M))", 15, 19, "M"), defParam, null);
+        dsd.addColumn("Current on ART(15-19 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(F))", 15, 19, "F"), defParam, null);
+        dsd.addColumn("Current on ART(20-24 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(M))", 20, 24, "M"), defParam, null);
+        dsd.addColumn("Current on ART(20-24 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(F))", 20, 24, "F"), defParam, null);
+        dsd.addColumn("Current on ART(25+ yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(M))", 25, null, "M"), defParam, null);
+        dsd.addColumn("Current on ART(25+ yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(F))", 25, null, "F"), defParam, null);
+
         return dsd;
     }
 
@@ -160,6 +173,13 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DarOnTreatmentPreparationDataDefinition onTreatmentPrepDataDefinition = new DarOnTreatmentPreparationDataDefinition(name, minAge, maxAge, sex);
         onTreatmentPrepDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return onTreatmentPrepDataDefinition;
+
+    }
+
+    private DarCurrentOnArtDataDefinition mapCurrentOnArtDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarCurrentOnArtDataDefinition currentOnArtDataDefinition = new DarCurrentOnArtDataDefinition(name, minAge, maxAge, sex);
+        currentOnArtDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return currentOnArtDataDefinition;
 
     }
 }
