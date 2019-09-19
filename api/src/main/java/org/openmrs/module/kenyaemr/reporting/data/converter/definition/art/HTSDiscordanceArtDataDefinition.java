@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.art;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -19,21 +19,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class HTSDiscordanceDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class HTSDiscordanceArtDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public HTSDiscordanceDataDefinition() {
+    public HTSDiscordanceArtDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public HTSDiscordanceDataDefinition(String name) {
+    public HTSDiscordanceArtDataDefinition(String name) {
         super(name);
     }
 
