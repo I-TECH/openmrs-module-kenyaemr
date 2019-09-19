@@ -157,6 +157,27 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("CTX/Dapsone(20-24 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(20-24 yrs)", 20, 24, null), defParam, null);
         dsd.addColumn("CTX/Dapsone(25+ yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(25+ yrs)", 25, null, null), defParam, null);
 
+        //TB Screening and Results
+        dsd.addColumn("TB Screening(<1 yrs)", mapTbScreeningDataDefinition("TB Screening(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("TB Screening(1-9 yrs)", mapTbScreeningDataDefinition("TB Screening(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("TB Screening(10-14 yrs)", mapTbScreeningDataDefinition("TB Screening(10-14 yrs)", 10, 14, null), defParam, null);
+        dsd.addColumn("TB Screening(15-19 yrs)", mapTbScreeningDataDefinition("TB Screening(15-19 yrs)", 15, 19, null), defParam, null);
+        dsd.addColumn("TB Screening(20-24 yrs)", mapTbScreeningDataDefinition("TB Screening(20-24 yrs)", 20, 24, null), defParam, null);
+        dsd.addColumn("TB Screening(25+ yrs)", mapTbScreeningDataDefinition("TB Screening(25+ yrs)", 25, null, null), defParam, null);
+
+        DarTbScreeningResultDataDefinition tbResult = new DarTbScreeningResultDataDefinition("Presumed TB");
+        tbResult.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+        dsd.addColumn("Presumed TB", tbResult, defParam, null);
+
+        //IPT Initiation
+        dsd.addColumn("Started on IPT(<1 yrs)", mapIptInitiationDataDefinition("Started on IPT(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("Started on IPT(1-9 yrs)", mapIptInitiationDataDefinition("Started on IPT(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("Started on IPT(10-14 yrs)", mapIptInitiationDataDefinition("Started on IPT(10-14 yrs)", 10, 14, null), defParam, null);
+        dsd.addColumn("Started on IPT(15-19 yrs)", mapIptInitiationDataDefinition("Started on IPT(15-19 yrs)", 15, 19, null), defParam, null);
+        dsd.addColumn("Started on IPT(20-24 yrs)", mapIptInitiationDataDefinition("Started on IPT(20-24 yrs)", 20, 24, null), defParam, null);
+        dsd.addColumn("Started on IPT(25+ yrs)", mapIptInitiationDataDefinition("Started on IPT(25+ yrs)", 25, null, null), defParam, null);
+
         return dsd;
     }
 
@@ -192,6 +213,20 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DarCtxDapsoneDataDefinition onCtxDapsone = new DarCtxDapsoneDataDefinition(name, minAge, maxAge, sex);
         onCtxDapsone.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return onCtxDapsone;
+
+    }
+
+    private DarTbScreeningDataDefinition mapTbScreeningDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarTbScreeningDataDefinition tbScreeningDataDefinition = new DarTbScreeningDataDefinition(name, minAge, maxAge, sex);
+        tbScreeningDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return tbScreeningDataDefinition;
+
+    }
+
+    private DarStartedIptDataDefinition mapIptInitiationDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarStartedIptDataDefinition iptInitiationDataDefinition = new DarStartedIptDataDefinition(name, minAge, maxAge, sex);
+        iptInitiationDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return iptInitiationDataDefinition;
 
     }
 }
