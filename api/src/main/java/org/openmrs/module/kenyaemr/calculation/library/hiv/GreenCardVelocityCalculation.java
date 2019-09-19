@@ -15,11 +15,11 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
+import org.openmrs.*;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.FormService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -32,9 +32,11 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -43,12 +45,7 @@ import org.openmrs.ui.framework.SimpleObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -216,8 +213,17 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             }
 
             //Currently in HIV
-            if (inHivProgram.contains(ptId)) {
-                patientInHivProgram = true;
+            EncounterService encounterService = Context.getEncounterService();
+            FormService formService = Context.getFormService();
+            PatientService patientService = Context.getPatientService();
+            EncounterType et = encounterService.getEncounterTypeByUuid("de78a6be-bfc5-4634-adc3-5f1a280455cc");
+            Form form = formService.getFormByUuid(HivMetadata._Form.HIV_ENROLLMENT);
+            Patient pt = patientService.getPatient(ptId);
+            List<Encounter> encounters = EmrUtils.AllEncounters(pt, et, form);
+            if (encounters != null ) {
+                if(encounters.size() > 0) {
+                    patientInHivProgram = true;
+                }
             }
 
             //have completed 6 months IPT
