@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -38,6 +39,10 @@ public class DateStartedARTDataEvaluator implements PersonDataEvaluator {
         String qry = "select init.patient_id, concat_ws('\\r\\n',de.date_started,de.regimen) as art_start_date_regimen from kenyaemr_etl.etl_ipt_initiation init left outer join  kenyaemr_etl.etl_drug_event de on init.patient_id = de.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

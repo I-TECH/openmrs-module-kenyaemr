@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -40,6 +41,10 @@ public class Month18TBStatusDateDataEvaluator implements PersonDataEvaluator {
                 "                    where d.program_name = \"IPT\" and timestampdiff(DAY ,COALESCE(fup.visit_date,tbs.visit_date),d.visit_date) between 510 and 570;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

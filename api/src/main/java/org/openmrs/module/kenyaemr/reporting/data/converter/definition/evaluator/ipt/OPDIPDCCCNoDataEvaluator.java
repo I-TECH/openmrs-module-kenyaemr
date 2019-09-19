@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.OPDIPDCCCNoDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.VTBDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -20,12 +21,13 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Evaluates a OPDIPDCCCNoDataDefinition
  */
-@Handler(supports= VTBDataDefinition.class, order=50)
+@Handler(supports= OPDIPDCCCNoDataDefinition.class, order=50)
 public class OPDIPDCCCNoDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
@@ -38,6 +40,10 @@ public class OPDIPDCCCNoDataEvaluator implements PersonDataEvaluator {
                 "     on init.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

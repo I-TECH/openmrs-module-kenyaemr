@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -38,6 +39,10 @@ public class OnARTDataEvaluator implements PersonDataEvaluator {
         String qry = "select init.patient_id,(select case when exists(Select cic.patient_id from kenyaemr_etl.etl_current_in_care cic where cic.started_on_drugs is not null) then \"Y\" else \"N\" end ) as on_ART from kenyaemr_etl.etl_ipt_initiation init left join kenyaemr_etl.etl_drug_event de on init.patient_id = de.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

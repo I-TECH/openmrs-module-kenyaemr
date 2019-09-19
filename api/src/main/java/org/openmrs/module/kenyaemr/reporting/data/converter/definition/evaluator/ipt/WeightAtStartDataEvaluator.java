@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -33,13 +34,18 @@ public class WeightAtStartDataEvaluator implements PersonDataEvaluator {
 
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-        String qry = "select init.patient_id,mid(min(concat(ifup.visit_date,ifup.weight)),11) as supporter_phone_number from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_ipt_follow_up ifup\n" +
-                "      on init.patient_id = ifup.patient_id;";
+        String qry = "select init.patient_id,t.weight as weight_at_IPT_start from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
+                "where init.visit_date = t.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
+
         return c;
     }
 }

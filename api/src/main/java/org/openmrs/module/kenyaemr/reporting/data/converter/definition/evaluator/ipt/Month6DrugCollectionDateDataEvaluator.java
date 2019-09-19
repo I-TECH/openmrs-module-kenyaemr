@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,9 +36,16 @@ public class Month6DrugCollectionDateDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
+        String qry = "select init.patient_id, o.date_activated from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
+                "                                                                                   left join  openmrs.drug_order do on o.order_number = do.order_id\n" +
+                "where do.drug_inventory_id in (1800,1801,1802,1803,1804,1805,1806,1807,1808) and o.order_type_id = 2 and o.date_activated between date_add(o.date_activated,INTERVAL 151 DAY) and date_add(o.date_activated,INTERVAL 180 DAY)\n" +
+                "group by init.patient_id having max(do.order_id);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

@@ -88,11 +88,12 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
-		DataDefinition addressDef = new ConvertedPersonDataDefinition("identifier", new PreferredAddressDataDefinition(), identifierFormatter);
+		/*DataDefinition addressDef = new ConvertedPersonDataDefinition("identifier", new PreferredAddressDataDefinition(), identifierFormatter);*/
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+		dsd.addColumn("Unique Patient No", identifierDef, "");
 		dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Sub County Registration", new RegistrationSubcountyDataDefinition(), "");
 		dsd.addColumn("Sub County Registration Date", new RegistrationSubcountyDataDefinition(), "");
@@ -107,6 +108,7 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("WeightAtStart", new WeightAtStartDataDefinition(), "");
 		dsd.addColumn("Height", new HeightDataDefinition(), "");
 		dsd.addColumn("BMI or Z Score or MUAC", new BMIZScoreMUACDataDefinition(), "");
+		dsd.addColumn("Indication for IPT", new IPTIndicationDataDefinition(), "");
 		dsd.addColumn("INH Dose(Mg)", new INHDataDefinition(), "");
 		dsd.addColumn("VTB 6(Pyridoxine)Dose", new VTBDataDefinition(), "");
 		dsd.addColumn("Treatment start date", new TreatmentStartDateDataDefinition(),"");
@@ -117,9 +119,13 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Month 5 drug collection date", new Month5DrugCollectionDateDataDefinition(),"");
 		dsd.addColumn("Month 6 drug collection date", new Month6DrugCollectionDateDataDefinition(),"");
 		dsd.addColumn("HIV Status", new HIVStatusDataDefinition(),"");
+		dsd.addColumn("HIV Test Date", new HIVTestDateDataDefinition(),"");
 		dsd.addColumn("Started Cotrimoxazole preventive Therapy or Dapsone", new DapsoneCotrimoxazoleDataDefinition(),"");
+		dsd.addColumn("Date started CTX", new CTXDapsoneStartDateDataDefinition(),"");
 		dsd.addColumn("Started ART", new StartedARTDataDefinition(),"");
+		dsd.addColumn("ART Start Date and Regimen", new DateStartedARTDataDefinition(),"");
 		dsd.addColumn("IPT Outcome", new IPTOutcomeDataDefinition(),"");
+		dsd.addColumn("IPT Outcome Date", new IPTOutcomeDateDataDefinition(),"");
 		dsd.addColumn("Reasons for IPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(),"");
 		dsd.addColumn("M6 TB Status and Date", new Month6TBStatusDateDataDefinition(),"");
 		dsd.addColumn("M12 TB Status and Date", new Month12TBStatusDateDataDefinition(),"");
