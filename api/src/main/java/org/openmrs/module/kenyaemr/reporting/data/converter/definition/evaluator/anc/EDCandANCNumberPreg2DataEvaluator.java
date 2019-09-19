@@ -40,7 +40,7 @@ public class EDCandANCNumberPreg2DataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  e.patient_id,\n" +
-                "  CONCAT_WS('\\\\r\\\\n',DATE_ADD(e.lmp, INTERVAL 280 DAY), e.anc_number) as EDC_ANC\n" +
+                "  CONCAT_WS('\\r\\n',DATE_ADD(e.lmp, INTERVAL 280 DAY), e.anc_number) as EDC_ANC\n" +
                 "from  (SELECT patient_id,\n" +
                 "              mid(max(concat(visit_date,lmp)),11) as lmp,\n" +
                 "              mid(max(concat(visit_date,anc_number)),11) as anc_number,\n" +
