@@ -29,10 +29,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DARCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarCurrentOnArtDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarEnrolledInCareDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarOnTreatmentPreparationDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.DarStartingArtDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -152,6 +149,14 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Current on ART(25+ yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(M))", 25, null, "M"), defParam, null);
         dsd.addColumn("Current on ART(25+ yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(F))", 25, null, "F"), defParam, null);
 
+        //On Ctx/Dapsone
+        dsd.addColumn("CTX/Dapsone(<1 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(<1 yrs)", null, 0, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(1-9 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(1-9 yrs)", 1, 9, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(10-14 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(10-14 yrs)", 10, 14, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(15-19 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(15-19 yrs)", 15, 19, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(20-24 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(20-24 yrs)", 20, 24, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(25+ yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(25+ yrs)", 25, null, null), defParam, null);
+
         return dsd;
     }
 
@@ -180,6 +185,13 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DarCurrentOnArtDataDefinition currentOnArtDataDefinition = new DarCurrentOnArtDataDefinition(name, minAge, maxAge, sex);
         currentOnArtDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return currentOnArtDataDefinition;
+
+    }
+
+    private DarCtxDapsoneDataDefinition mapCtxDapsoneDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
+        DarCtxDapsoneDataDefinition onCtxDapsone = new DarCtxDapsoneDataDefinition(name, minAge, maxAge, sex);
+        onCtxDapsone.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return onCtxDapsone;
 
     }
 }
