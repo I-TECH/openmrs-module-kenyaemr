@@ -122,7 +122,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
         dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
         dsd.addColumn("Population Type", new PopulationTypeArtDataDefinition(), "");
-        dsd.addColumn("coupleDiscordant", new HTSDiscordanceArtDataDefinition(), "");
+        dsd.addColumn("Discordance", new ObsForPersonDataDefinition("Discordance", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.DISCORDANT_COUPLE), null, null), "", new DiscordanceDataConverter());
         dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
         dsd.addColumn("Latest CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
