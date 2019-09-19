@@ -28,7 +28,7 @@ public class PrepHomePageController {
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 
 		if (patient != null) {
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "prep/prepHome", SimpleObject.create("patientId", patient.getId()));
+			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "prep/prepViewPatient", SimpleObject.create("patientId", patient.getId()));
 		} else {
 			return null;
 		}
