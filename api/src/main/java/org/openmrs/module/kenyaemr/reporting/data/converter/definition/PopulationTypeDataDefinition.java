@@ -15,7 +15,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Visit ID Column
+ * Population Type Data Definition
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class PopulationTypeDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
@@ -30,7 +30,7 @@ public class PopulationTypeDataDefinition extends BaseDataDefinition implements 
     }
 
     /**
-     * Constructor to populate name only
+     * Constructor to populate population type only
      */
     public PopulationTypeDataDefinition(String name) {
         super(name);
