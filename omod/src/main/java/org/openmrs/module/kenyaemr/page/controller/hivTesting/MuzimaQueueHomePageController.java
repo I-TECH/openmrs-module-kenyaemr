@@ -21,16 +21,10 @@ import org.openmrs.ui.framework.page.PageModel;
  * Homepage for the Hiv Testing app
  */
 @AppPage(EmrConstants.APP_HIV_TESTING)
-public class HtsHomePageController {
+public class MuzimaQueueHomePageController {
 
 	public String controller(UiUtils ui, PageModel model) {
 
-		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-
-		if (patient != null) {
-			return "redirect:" + ui.pageLink(EmrConstants.MODULE_ID, "hivTesting/htsViewPatient", SimpleObject.create("patientId", patient.getId()));
-		} else {
-			return null;
-		}
+		return null;
 	}
 }
