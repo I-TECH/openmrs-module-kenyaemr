@@ -9,36 +9,24 @@
  */
 package org.openmrs.module.kenyaemr.reporting.builder.common;
 
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.*;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DARCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.DarAppointmentPeriodConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.dar.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -107,9 +95,13 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
-        dsd.addColumn("Unique Patient No", identifierDef, "");
+        dsd.addColumn("CCC No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        DarVisitDateDataDefinition visitDateDataDefinition= new DarVisitDateDataDefinition();
+        visitDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+        dsd.addColumn("Date", visitDateDataDefinition, defParam, new DateConverter(DATE_FORMAT));
         // enrolled in care
         dsd.addColumn("Enrolled in Care(<1 yrs)", mapEnrolledInCareDataDefinition("Enrolled in Care(<1 yrs)", null, 0, null), defParam, null);
         dsd.addColumn("Enrolled in Care(1-9 yrs)", mapEnrolledInCareDataDefinition("Enrolled in Care(1-9 yrs)", 1, 9, null), defParam, null);
@@ -138,32 +130,32 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Starting ART(25+ yrs(F)", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(F))", 25, null, "F"), defParam, null);
 
         //current on art
-        dsd.addColumn("Current on ART(<1 yrs)", mapCurrentOnArtDataDefinition("Current on ART(<1 yrs)", null, 0, null), defParam, null);
-        dsd.addColumn("Current on ART(1-9 yrs)", mapCurrentOnArtDataDefinition("Current on ART(1-9 yrs)", 1, 9, null), defParam, null);
-        dsd.addColumn("Current on ART(10-14 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(M))", 10, 14, "M"), defParam, null);
-        dsd.addColumn("Current on ART(10-14 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(F))", 10, 14, "F"), defParam, null);
-        dsd.addColumn("Current on ART(15-19 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(M))", 15, 19, "M"), defParam, null);
-        dsd.addColumn("Current on ART(15-19 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(F))", 15, 19, "F"), defParam, null);
-        dsd.addColumn("Current on ART(20-24 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(M))", 20, 24, "M"), defParam, null);
-        dsd.addColumn("Current on ART(20-24 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(F))", 20, 24, "F"), defParam, null);
-        dsd.addColumn("Current on ART(25+ yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(M))", 25, null, "M"), defParam, null);
-        dsd.addColumn("Current on ART(25+ yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(F))", 25, null, "F"), defParam, null);
+        dsd.addColumn("Current on ART(<1 yrs)", mapCurrentOnArtDataDefinition("Current on ART(<1 yrs)", null, 0, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(1-9 yrs)", mapCurrentOnArtDataDefinition("Current on ART(1-9 yrs)", 1, 9, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(10-14 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(M))", 10, 14, "M"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(10-14 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(10-14 yrs(F))", 10, 14, "F"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(15-19 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(M))", 15, 19, "M"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(15-19 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(15-19 yrs(F))", 15, 19, "F"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(20-24 yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(M))", 20, 24, "M"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(20-24 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(F))", 20, 24, "F"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(25+ yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(M))", 25, null, "M"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(25+ yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(F))", 25, null, "F"), defParam, new DarAppointmentPeriodConverter());
 
         //On Ctx/Dapsone
-        dsd.addColumn("CTX/Dapsone(<1 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(<1 yrs)", null, 0, null), defParam, null);
-        dsd.addColumn("CTX/Dapsone(1-9 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(1-9 yrs)", 1, 9, null), defParam, null);
-        dsd.addColumn("CTX/Dapsone(10-14 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(10-14 yrs)", 10, 14, null), defParam, null);
-        dsd.addColumn("CTX/Dapsone(15-19 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(15-19 yrs)", 15, 19, null), defParam, null);
-        dsd.addColumn("CTX/Dapsone(20-24 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(20-24 yrs)", 20, 24, null), defParam, null);
-        dsd.addColumn("CTX/Dapsone(25+ yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(25+ yrs)", 25, null, null), defParam, null);
+        dsd.addColumn("CTX/Dapsone(<1 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(<1 yrs)", null, 0, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("CTX/Dapsone(1-9 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(1-9 yrs)", 1, 9, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("CTX/Dapsone(10-14 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(10-14 yrs)", 10, 14, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("CTX/Dapsone(15-19 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(15-19 yrs)", 15, 19, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("CTX/Dapsone(20-24 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(20-24 yrs)", 20, 24, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("CTX/Dapsone(25+ yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(25+ yrs)", 25, null, null), defParam, new DarAppointmentPeriodConverter());
 
         //TB Screening and Results
-        dsd.addColumn("TB Screening(<1 yrs)", mapTbScreeningDataDefinition("TB Screening(<1 yrs)", null, 0, null), defParam, null);
-        dsd.addColumn("TB Screening(1-9 yrs)", mapTbScreeningDataDefinition("TB Screening(1-9 yrs)", 1, 9, null), defParam, null);
-        dsd.addColumn("TB Screening(10-14 yrs)", mapTbScreeningDataDefinition("TB Screening(10-14 yrs)", 10, 14, null), defParam, null);
-        dsd.addColumn("TB Screening(15-19 yrs)", mapTbScreeningDataDefinition("TB Screening(15-19 yrs)", 15, 19, null), defParam, null);
-        dsd.addColumn("TB Screening(20-24 yrs)", mapTbScreeningDataDefinition("TB Screening(20-24 yrs)", 20, 24, null), defParam, null);
-        dsd.addColumn("TB Screening(25+ yrs)", mapTbScreeningDataDefinition("TB Screening(25+ yrs)", 25, null, null), defParam, null);
+        dsd.addColumn("TB Screening(<1 yrs)", mapTbScreeningDataDefinition("TB Screening(<1 yrs)", null, 0, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("TB Screening(1-9 yrs)", mapTbScreeningDataDefinition("TB Screening(1-9 yrs)", 1, 9, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("TB Screening(10-14 yrs)", mapTbScreeningDataDefinition("TB Screening(10-14 yrs)", 10, 14, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("TB Screening(15-19 yrs)", mapTbScreeningDataDefinition("TB Screening(15-19 yrs)", 15, 19, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("TB Screening(20-24 yrs)", mapTbScreeningDataDefinition("TB Screening(20-24 yrs)", 20, 24, null), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("TB Screening(25+ yrs)", mapTbScreeningDataDefinition("TB Screening(25+ yrs)", 25, null, null), defParam, new DarAppointmentPeriodConverter());
 
         DarTbScreeningResultDataDefinition tbResult = new DarTbScreeningResultDataDefinition("Presumed TB");
         tbResult.addParameter(new Parameter("startDate", "Start Date", Date.class));
