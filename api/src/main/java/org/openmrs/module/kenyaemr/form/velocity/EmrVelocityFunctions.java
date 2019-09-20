@@ -25,12 +25,15 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.DiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.ipt.IptDiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -159,6 +162,29 @@ public class EmrVelocityFunctions {
 
 		CalculationResult greenCardVelocity = EmrCalculationUtils.evaluateForPatient(GreenCardVelocityCalculation.class, null,session.getPatient());
 		return 	(String) greenCardVelocity.getValue();
+
+
+	}
+
+	public String DiscontinuationVelocityCalculation() {
+
+		CalculationResult discontinuationVelocity = EmrCalculationUtils.evaluateForPatient(DiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) discontinuationVelocity.getValue();
+
+
+	}
+
+	public String IptDiscontinuationVelocityCalculation() {
+
+		CalculationResult iptDiscontinuationVelocity = EmrCalculationUtils.evaluateForPatient(IptDiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) iptDiscontinuationVelocity.getValue();
+
+
+	}
+	public String TbDiscontinuationVelocityCalculation() {
+
+		CalculationResult tbDiscontinuationVelocity = EmrCalculationUtils.evaluateForPatient(TbDiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) tbDiscontinuationVelocity.getValue();
 
 
 	}
