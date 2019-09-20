@@ -16,8 +16,9 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.IPTRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.*;
+import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -32,6 +33,7 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -43,13 +45,16 @@ import java.util.List;
 public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
+	@Autowired
+	private CommonDimensionLibrary commonDimensions;
+
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		return allPatientsCohort();
 	}
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
-        CohortDefinition cd = new HEIRegisterCohortDefinition();
+        CohortDefinition cd = new IPTRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("IPTPatients");
@@ -135,4 +140,20 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 
 		return dsd;
 	}
+/*
+	protected DataSetDefinition iptRegisterAggregates() {
+		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+		cohortDsd.setName("cohortIndicator");
+		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+		String indParams = "";
+
+		cohortDsd.addColumn("totalNumberOnIPT", "Total Number on IPT", ReportUtils.map(ipt.adolescentsKnownPositive_10_19_AtANC(), indParams), "");
+		cohortDsd.addColumn("adolescentsTestedPositive", "Adolescents Tested Positive", ReportUtils.map(ipt.adolescentsTestedPositive_10_19_AtANC(), indParams), "");
+		cohortDsd.addColumn("adolescentsStartedHaartAnc", "Adolescents Started Haart ANC", ReportUtils.map(ipt.adolescentsStartedHaart_10_19_AtANC(), indParams), "");
+		EmrReportingUtils.addRow(cohortDsd, "totalNumberOnIPT", "Total Number on IPT", ReportUtils.map(ipt.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
+
+		return cohortDsd;
+	}*/
 }

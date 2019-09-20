@@ -35,7 +35,7 @@ public class VTBDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,\"NL\" from kenyaemr_etl.etl_ipt_initiation init;";
+        String qry = "select init.patient_id,\"-\" from kenyaemr_etl.etl_ipt_initiation init;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
