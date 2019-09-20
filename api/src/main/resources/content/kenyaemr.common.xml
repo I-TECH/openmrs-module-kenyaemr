@@ -68,6 +68,7 @@
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.etl.common.report.diffcarestability" />
+				<ref bean="kenyaemr.common.report.cccDar" />
 			</set>
 		</property>
 	</bean>
@@ -612,6 +613,18 @@
 		<property name="name" value="Differentiated care report for Current in Care Patients" />
 		<property name="description" value="Current in Care - stability report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.common.report.cccDar" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="351ac318-d875-11e9-8a34-2a2ae2dbcce4" />
+		<property name="name" value="DAR Register" />
+		<property name="description" value="CCC Daily Activity Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:ccc_dar.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
 	</bean>
 
 </beans>
