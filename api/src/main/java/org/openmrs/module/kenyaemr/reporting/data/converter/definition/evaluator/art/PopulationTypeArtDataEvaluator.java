@@ -38,7 +38,19 @@ public class PopulationTypeArtDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, if(population_type=\"Key Population\",CONCAT_WS('\\n', population_type, key_population_type),population_type) from kenyaemr_etl.etl_hts_test ";
+        String qry = "select\n" +
+                "fup.patient_id,\n" +
+                "  CONCAT_WS('\\r\\n',fup.population_type,fup.key_population_type) as Population_Type\n" +
+                "from  (SELECT patient_id,\n" +
+                "         mid(min(concat(visit_date,(case population_type\n" +
+                "                                    when 164928 then \"General Population\"\n" +
+                "                                    when 164929 then \"Key Population\" else \"\" end), \"\" )),11) as population_type,\n" +
+                "         mid(min(concat(visit_date,(case key_population_type\n" +
+                "                                    when 105 then \"People who inject drugs\"\n" +
+                "                                    when 160578 then \"Men who have sex with men\"\n" +
+                "                                    when 160579 then \"Female sex Worker\" else \"\" end), \"\" )),11) as key_population_type\n" +
+                "        FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup\n" +
+                "GROUP BY fup.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
