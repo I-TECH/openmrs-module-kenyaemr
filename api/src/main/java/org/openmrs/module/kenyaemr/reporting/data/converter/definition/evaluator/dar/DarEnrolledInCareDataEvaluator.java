@@ -44,12 +44,12 @@ public class DarEnrolledInCareDataEvaluator implements PersonDataEvaluator {
             qry = "SELECT e.patient_id, 'X' enrolled\n" +
                     "FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
                     "         inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 and p.Gender = ':sex' \n" +
-                    "where date(e.visit_date) = date(:startDate) and e.voided = 0 ";
+                    "where e.entry_point <> 160563 and (e.patient_type not in (160563, 164931, 159833) or e.patient_type is null ) and e.transfer_in_date is null and date(e.visit_date) = date(:startDate) and e.voided = 0 ";
         } else {
             qry = "SELECT e.patient_id, 'X' enrolled\n" +
                     "FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
                     "         inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 \n" +
-                    "where date(e.visit_date) = date(:startDate) and e.voided = 0 ";
+                    "where e.entry_point <> 160563  and e.transfer_in_date is null and (e.patient_type not in (160563, 164931, 159833) or e.patient_type is null ) and date(e.visit_date) = date(:startDate) and e.voided = 0 ";
         }
         String ageConditionString = "";
         if (minAge != null && maxAge != null) {
