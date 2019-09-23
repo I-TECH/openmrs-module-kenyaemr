@@ -40,27 +40,51 @@ public class DarStartingArtDataEvaluator implements PersonDataEvaluator {
         String sex = def.getSex();
         String qry = "";
         if (sex != null) {
-            qry = "SELECT e.patient_id, 'X' hasFollowupVisit\n" +
-                    "FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
-                    "         inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 and p.Gender = ':sex' \n" +
-                    "         inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
-                    "         inner join kenyaemr_etl.etl_drug_event d on d.patient_id = e.patient_id and  date(d.date_started) = date(:startDate) and ifnull(d.voided,0)= 0\n" +
-                    "where e.voided = 0 ";
+            qry = "select patient_id, 'X' as newOnArt\n" +
+                    "from \n" +
+                    "(select e.patient_id,\n" +
+                    "        e.date_started,\n" +
+                    "        p.DOB as DOB,\n" +
+                    " max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art\n" +
+                    " from\n" +
+                    "      (select e.patient_id, min(e.date_started) as date_started\n" +
+                    "        from kenyaemr_etl.etl_drug_event e\n" +
+                    "        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                    "        where e.program = 'HIV'\n" +
+                    "        group by e.patient_id) e\n" +
+                    " inner join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+                    " inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 and p.Gender = ':sex'\n" +
+                    " inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
+                    " where date(e.date_started) = date(:startDate) \n" +
+                    " group by e.patient_id\n" +
+                    " having TI_on_art=0) a ";
         } else {
-            qry = "SELECT e.patient_id, 'X' hasFollowupVisit\n" +
-                    "FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
-                    "         inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 \n" +
-                    "         inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
-                    "         inner join kenyaemr_etl.etl_drug_event d on d.patient_id = e.patient_id and  date(d.date_started) = date(:startDate) and ifnull(d.voided,0)= 0\n" +
-                    "where e.voided = 0 ";
+            qry = "select patient_id, 'X' as newOnArt\n" +
+                    "from \n" +
+                    "(select e.patient_id,\n" +
+                    "        e.date_started,\n" +
+                    "        p.DOB as DOB,\n" +
+                    " max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art\n" +
+                    " from\n" +
+                    "      (select e.patient_id, min(e.date_started) as date_started\n" +
+                    "        from kenyaemr_etl.etl_drug_event e\n" +
+                    "        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                    "        where e.program = 'HIV'\n" +
+                    "        group by e.patient_id) e\n" +
+                    " inner join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+                    " inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0 \n" +
+                    " inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
+                    " where date(e.date_started) = date(:startDate) \n" +
+                    " group by e.patient_id\n" +
+                    " having TI_on_art=0) a ";
         }
         String ageConditionString = "";
         if (minAge != null && maxAge != null) {
-            ageConditionString = " and TIMESTAMPDIFF(YEAR, date(p.DOB), date(:startDate)) between :minAge and :maxAge ";
+            ageConditionString = " WHERE  TIMESTAMPDIFF(YEAR, date(DOB), date(:startDate)) between :minAge and :maxAge ";
         } else if (minAge != null) {
-            ageConditionString = " and TIMESTAMPDIFF(YEAR, date(p.DOB), date(:startDate)) >= :minAge ";
+            ageConditionString = " WHERE TIMESTAMPDIFF(YEAR, date(DOB), date(:startDate)) >= :minAge ";
         } else if (maxAge != null) {
-            ageConditionString = " and TIMESTAMPDIFF(YEAR, date(p.DOB), date(:startDate)) <= :maxAge ";
+            ageConditionString = " WHERE TIMESTAMPDIFF(YEAR, date(DOB), date(:startDate)) <= :maxAge ";
         }
         qry = qry.concat(ageConditionString);
 
