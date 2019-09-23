@@ -36,10 +36,10 @@ public class Month2DrugCollectionDateDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, o.date_activated from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                                   left join  openmrs.drug_order do on o.order_number = do.order_id\n" +
-                "where do.drug_inventory_id in (1800,1801,1802,1803,1804,1805,1806,1807,1808) and o.order_type_id = 2 and o.date_activated between date_add(o.date_activated,INTERVAL 31 DAY) and date_add(o.date_activated,INTERVAL 60 DAY)\n" +
-                "group by init.patient_id having max(do.order_id);";
+        String qry = "select init.patient_id, date(o.date_activated) as month2_refill from kenyaemr_etl.etl_ipt_initiation init left outer join orders o on init.patient_id = o.patient_id\n" +
+                "       inner join drug_order do on o.order_id = do.order_id\n" +
+                "where o.concept_id = 78280 and o.date_activated between date_add(o.date_activated,INTERVAL 31 DAY) and date_add(o.date_activated,INTERVAL 60 DAY)\n" +
+                "group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
