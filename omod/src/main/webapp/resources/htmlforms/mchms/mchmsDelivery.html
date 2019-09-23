@@ -78,7 +78,7 @@
             }
             //Show number of clients already booked on tca date
             jq('#showNumberBooked').hide();
-            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+            jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
             //partner testing
             jq('#partner-hiv-status select').prop("disabled", true);
@@ -421,7 +421,7 @@
         }
         // get count of patients booked on a date
         function getPatientsBookedOnDate() {
-            var tca_date = getValue('returnVisitDate.value');
+            var tca_date = jq('#returnVisitDate input[type=hidden]').val();
             jq('#showNumberBooked').hide();
             jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
                 jq('#showBookedResult').text(data.bookingsOnDate);
