@@ -16,8 +16,11 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.IPTRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.*;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.ipt.IPTIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -28,6 +31,7 @@ import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -48,12 +52,21 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 	@Autowired
 	private CommonDimensionLibrary commonDimensions;
 
+	@Autowired
+	private IPTIndicatorLibrary iptIndicators;
+
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
 		return allPatientsCohort();
 	}
 
-    protected Mapped<CohortDefinition> allPatientsCohort() {
+	ColumnParameters children_0_to_14 = new ColumnParameters(null, "0-14", "age=0-14");
+	ColumnParameters adult_15_and_above = new ColumnParameters(null, "15+", "age=15+");
+	ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
+
+	List<ColumnParameters> iptAgeDisaggregation = Arrays.asList(children_0_to_14,  adult_15_and_above , colTotal);
+
+	protected Mapped<CohortDefinition> allPatientsCohort() {
         CohortDefinition cd = new IPTRegisterCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -68,9 +81,9 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         iptPatients.addRowFilter(allPatientsCohort());
         DataSetDefinition iptPatientsDSD = iptPatients;
 
-
         return Arrays.asList(
-                ReportUtils.map(iptPatientsDSD, "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(iptPatientsDSD, "startDate=${startDate},endDate=${endDate}"),
+				ReportUtils.map(iptRegisterSummaryDataSet(),"startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -140,20 +153,22 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 
 		return dsd;
 	}
-/*
-	protected DataSetDefinition iptRegisterAggregates() {
+	protected DataSetDefinition iptRegisterSummaryDataSet() {
 		CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
 		cohortDsd.setName("cohortIndicator");
 		cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.moh731GreenCardAgeGroups(), "onDate=${endDate}"));
+		cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		String indParams = "";
-
-		cohortDsd.addColumn("totalNumberOnIPT", "Total Number on IPT", ReportUtils.map(ipt.adolescentsKnownPositive_10_19_AtANC(), indParams), "");
-		cohortDsd.addColumn("adolescentsTestedPositive", "Adolescents Tested Positive", ReportUtils.map(ipt.adolescentsTestedPositive_10_19_AtANC(), indParams), "");
-		cohortDsd.addColumn("adolescentsStartedHaartAnc", "Adolescents Started Haart ANC", ReportUtils.map(ipt.adolescentsStartedHaart_10_19_AtANC(), indParams), "");
-		EmrReportingUtils.addRow(cohortDsd, "totalNumberOnIPT", "Total Number on IPT", ReportUtils.map(ipt.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
+		EmrReportingUtils.addRow(cohortDsd, "numberOnIPT", "No of Clients", ReportUtils.map(iptIndicators.numberOnIPT(), indParams), iptAgeDisaggregation, Arrays.asList("01", "02", "03"));
+		cohortDsd.addColumn("plhiv", "HIV+ on IPT", ReportUtils.map(iptIndicators.plhivOnIPT(), indParams), "");
+		cohortDsd.addColumn("prisoners", "Prisoners on IPT", ReportUtils.map(iptIndicators.prisonersOnIPT(), indParams), "");
+		cohortDsd.addColumn("hcw", "Health Care Workers on IPT", ReportUtils.map(iptIndicators.hcwOnIPT(), indParams), "");
+		cohortDsd.addColumn("childrenExposedTB", "Children Exposed to TB", ReportUtils.map(iptIndicators.childrenExposedTB(), indParams), "");
+		cohortDsd.addColumn("completedIPT", "Completed IPT", ReportUtils.map(iptIndicators.completedIPT(), indParams), "");
 
 		return cohortDsd;
-	}*/
+	}
 }
