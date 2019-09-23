@@ -142,6 +142,18 @@
 				<component drugCode="LPV" />
 				<component drugCode="RTV" />
 			</regimen>
+			<regimen name="ABC/3TC/LPV/r" conceptRef="162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="07040910-04c9-4007-801f-66c7f7e981c6">
+				<component drugCode="ABC"  />
+				<component drugCode="3TC"  />
+				<component drugCode="LPV"  />
+				<component drugCode="RTV" />
+			</regimen>
+			<regimen name="ABC/3TC/ATV/r" conceptRef="dddd9cf2-2b9c-4c52-84b3-38cfe652529a" orderSetRef="842aa06a-8120-11e9-bc42-526af7764f64">
+				<component drugCode="ABC" />
+				<component drugCode="3TC" />
+				<component drugCode="ATV" />
+				<component drugCode="RTV" />
+			</regimen>
 		</group>
 
 		<!-- Child first line: dosages and units to be entered manually by clinician -->
