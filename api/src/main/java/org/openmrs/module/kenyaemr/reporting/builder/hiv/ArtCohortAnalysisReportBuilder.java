@@ -120,8 +120,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
         dsd.addColumn("Population Type", new PopulationTypeArtDataDefinition(), "");
         dsd.addColumn("Discordance", new HTSDiscordanceArtDataDefinition(),"");
-       // dsd.addColumn("First WHO Stage", new WHOStageArtDataDefinition(), "", new WHOStageDataConverter());
-        dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
+        dsd.addColumn("First WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Latest CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
         dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
         dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
@@ -137,7 +136,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("ART Second Sub", new ARTSecondSubstitutionDataDefinition(),"");
         dsd.addColumn("ART First Switch", new ARTFirstSwitchDataDefinition(),"");
         dsd.addColumn("ART Second Switch", new ARTSecondSwitchDataDefinition(),"");
-        dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "", new ObsValueNumericConverter());
+        dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
         dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));

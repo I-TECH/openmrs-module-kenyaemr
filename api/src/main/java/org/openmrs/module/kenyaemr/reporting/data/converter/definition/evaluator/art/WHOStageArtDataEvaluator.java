@@ -36,7 +36,15 @@ public class WHOStageArtDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "  mid(min(concat(visit_date,who_stage)),11) as who_stage from kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "  mid(min(concat(visit_date,(case who_stage\n" +
+                "                             when 1204 then \"1\"\n" +
+                "                             when 1220 then \"1\"\n" +
+                "                             when 1205 then \"2\"\n" +
+                "                             when 1221 then \"2\"\n" +
+                "                             when 1206 then \"3\"\n" +
+                "                             when 1222 then \"3\"\n" +
+                "                             when 1207 then \"4\"\n" +
+                "                             when 1223 then \"4\"  else \"\" end), \"\" )),11) as who_stage from kenyaemr_etl.etl_patient_hiv_followup\n" +
                 "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
