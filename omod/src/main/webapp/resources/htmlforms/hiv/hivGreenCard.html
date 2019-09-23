@@ -138,7 +138,7 @@ Green Card follow-up visit form
             onEncounterDateChange();
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
-            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+            jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -616,7 +616,7 @@ Green Card follow-up visit form
 
 // get count of patients booked on a date
 function getPatientsBookedOnDate() {
-    var tca_date = getValue('returnVisitDate.value');
+    var tca_date = jq('#returnVisitDate input[type=hidden]').val();
     jq('#showNumberBooked').hide();
     jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForHivConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
         jq('#showBookedResult').text(data.bookingsOnDate);

@@ -90,7 +90,8 @@
         jq("#expiry-date input").change(expiryDateSelected);
         //Show number of clients already booked on tca date
         jq('#showNumberBooked').hide();
-        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+        jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
+
 		//Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-known-positive').show();
@@ -239,7 +240,7 @@
 	});
     // get count of patients booked on a date
     function getPatientsBookedOnDate() {
-        var tca_date = getValue('returnVisitDate.value');
+        var tca_date = jq('#returnVisitDate input[type=hidden]').val();
         jq('#showNumberBooked').hide();
         jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
             jq('#showBookedResult').text(data.bookingsOnDate);
