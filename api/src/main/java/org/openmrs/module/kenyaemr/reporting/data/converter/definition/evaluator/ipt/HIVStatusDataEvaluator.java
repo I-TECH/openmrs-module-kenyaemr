@@ -37,6 +37,7 @@ public class HIVStatusDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select init.patient_id,t.final_test_result from kenyaemr_etl.etl_ipt_initiation init\n" +
                 "                       left outer join kenyaemr_etl.etl_hts_test t on init.patient_id = t.patient_id\n" +
+                "                    where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0\n" +
                 "group by init.patient_id having mid(max(concat(t.visit_date,t.final_test_result)),11);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

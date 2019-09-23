@@ -37,7 +37,7 @@ public class PhoneNumberDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,d.phone_number as phone_number from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "                                                                                     on init.patient_id = d.patient_id;";
+                "                                                                                     on init.patient_id = d.patient_id where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

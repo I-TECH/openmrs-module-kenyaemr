@@ -36,7 +36,7 @@ public class SupporterPhoneNumberDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,hiv.treatment_supporter_telephone as supporter_phone_number from kenyaemr_etl.etl_ipt_initiation init left join kenyaemr_etl.etl_hiv_enrollment hiv\n" +
-                "                                                               on init.patient_id = hiv.patient_id;";
+                "                                                               on init.patient_id = hiv.patient_id where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

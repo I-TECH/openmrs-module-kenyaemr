@@ -34,8 +34,8 @@ public class WeightAtStartDataEvaluator implements PersonDataEvaluator {
 
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
-        String qry = "select init.patient_id,t.weight as weight_at_IPT_start from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
-                "where init.visit_date = t.visit_date;";
+        String qry = "select init.patient_id,t.weight as weight_at_IPT_start from kenyaemr_etl.etl_ipt_initiation init left join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
+                "where init.visit_date = t.visit_date and date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

@@ -36,7 +36,9 @@ public class IPTDiscontinuationReasonDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,(case d.discontinuation_reason when 102 then \"ADR\" when 112141 then \"ATB\" when 159598 then \"PA\" else \"OTR\" end) as discontinuation_reason from  kenyaemr_etl.etl_ipt_initiation init left outer join kenyaemr_etl.etl_patient_program_discontinuation d on init.patient_id = d.patient_id and d.program_name = \"IPT\";";
+        String qry = "select init.patient_id,(case d.discontinuation_reason when 102 then \"ADR\" when 112141 then \"ATB\" when 159598 then \"PA\" else \"OTR\" end) as discontinuation_reason from  kenyaemr_etl.etl_ipt_initiation init\n" +
+                "                                                                      INNER join kenyaemr_etl.etl_patient_program_discontinuation d on init.patient_id = d.patient_id and d.program_name = \"IPT\"\n" +
+                "where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0  group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

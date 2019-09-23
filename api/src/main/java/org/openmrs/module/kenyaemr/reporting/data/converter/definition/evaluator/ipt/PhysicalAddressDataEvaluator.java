@@ -35,8 +35,8 @@ public class PhysicalAddressDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,a.land_mark as physical_address from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_person_address a\n" +
-                "                                                             on init.patient_id = a.patient_id;";
+        String qry = "select init.patient_id,a.land_mark as physical_address from kenyaemr_etl.etl_ipt_initiation init left outer  join kenyaemr_etl.etl_person_address a\n" +
+                "                                                             on init.patient_id = a.patient_id where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

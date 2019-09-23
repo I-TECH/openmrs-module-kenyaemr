@@ -51,7 +51,7 @@ public class IPTRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 
 		String qry = "select init.patient_id from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d on init.patient_id = d.patient_id and init.voided = 0 and d.voided = 0\n" +
-				"where init.visit_date between date(:startDate) and date(:endDate);";
+				"where date(init.visit_date) between date(:startDate) and date(:endDate);";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

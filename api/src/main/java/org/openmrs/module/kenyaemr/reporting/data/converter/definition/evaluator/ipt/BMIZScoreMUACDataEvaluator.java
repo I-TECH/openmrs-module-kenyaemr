@@ -36,7 +36,7 @@ public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,Coalesce(t.weight/(t.height * t.height),t.muac) as BMI_MUAC from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
-                "where init.visit_date = t.visit_date;";
+                "where init.visit_date = t.visit_date and date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

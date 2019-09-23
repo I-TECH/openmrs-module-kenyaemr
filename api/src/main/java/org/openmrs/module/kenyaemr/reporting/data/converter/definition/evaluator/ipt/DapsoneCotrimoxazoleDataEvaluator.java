@@ -35,8 +35,10 @@ public class DapsoneCotrimoxazoleDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,if (init.patient_id = x.patient_id,\"Y\",\"N\")  from kenyaemr_etl.etl_ipt_initiation init left outer join (select o.patient_id from orders o inner join drug_order do on o.order_id = do.order_id\n" +
-                "where o.concept_id in (105281,74250) group by o.patient_id) x on init.patient_id = x.patient_id;";
+        String qry = "select init.patient_id,if (init.patient_id = x.patient_id,\"Y\",\"N\") as on_ctx from etl_ipt_initiation init\n" +
+                "                      left outer join (select o.patient_id from openmrs.orders o inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
+                "where o.concept_id in (105281,74250) group by o.patient_id) x on init.patient_id = x.patient_id\n" +
+                "where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

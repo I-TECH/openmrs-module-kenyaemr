@@ -37,7 +37,7 @@ public class OPDIPDCCCNoDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,coalesce(d.unique_patient_no,d.hei_no) as ccc_hei_no from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "     on init.patient_id = d.patient_id;";
+                "     on init.patient_id = d.patient_id where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

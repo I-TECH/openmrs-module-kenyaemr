@@ -36,9 +36,10 @@ public class Month4DrugCollectionDateDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, date(o.date_activated) as month4_refill from kenyaemr_etl.etl_ipt_initiation init left outer join orders o on init.patient_id = o.patient_id\n" +
-                "                                                                                                          inner join drug_order do on o.order_id = do.order_id\n" +
+        String qry = "select init.patient_id, date(o.date_activated) as month4_refill from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
+                "                                                                                                          inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
                 "where o.concept_id = 78280 and o.date_activated between date_add(o.date_activated,INTERVAL 91 DAY) and date_add(o.date_activated,INTERVAL 120 DAY)\n" +
+                "  and date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0\n" +
                 "group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

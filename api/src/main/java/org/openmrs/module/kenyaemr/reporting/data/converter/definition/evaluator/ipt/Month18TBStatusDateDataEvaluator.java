@@ -35,10 +35,12 @@ public class Month18TBStatusDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "Select d.patient_id,COALESCE(concat_ws('\\r\\n',fup.tb_status,fup.visit_date),concat_ws('\\r\\n',tbs.resulting_tb_status,tbs.visit_date)) as tb_status_date_m6 from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "                    left outer join kenyaemr_etl.etl_tb_screening tbs on d.patient_id = tbs.patient_id\n" +
-                "                    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on d.patient_id = fup.patient_id\n" +
-                "                    where d.program_name = \"IPT\" and timestampdiff(DAY ,COALESCE(fup.visit_date,tbs.visit_date),d.visit_date) between 510 and 570;";
+        String qry = "Select init.patient_id,COALESCE(concat_ws('\\r\\n',fup.tb_status,max(fup.visit_date)),concat_ws('\\r\\n',tbs.resulting_tb_status,max(tbs.visit_date))) as tb_status_date_m6 from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on init.patient_id = d.patient_id\n" +
+                "    left outer join kenyaemr_etl.etl_tb_screening tbs on init.patient_id = tbs.patient_id\n" +
+                "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on init.patient_id = fup.patient_id\n" +
+                "where d.program_name = \"IPT\"  and timestampdiff(DAY ,COALESCE(fup.visit_date,tbs.visit_date),d.visit_date) between 510 and 570\n" +
+                "group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

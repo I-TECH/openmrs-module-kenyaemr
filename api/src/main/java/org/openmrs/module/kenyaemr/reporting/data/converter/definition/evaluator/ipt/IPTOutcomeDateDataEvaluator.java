@@ -35,7 +35,9 @@ public class IPTOutcomeDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,o.visit_date as ipt_outcome_date from kenyaemr_etl.etl_ipt_initiation init left outer join kenyaemr_etl.etl_ipt_outcome o on init.patient_id = o.patient_id;";
+        String qry = "select init.patient_id,o.visit_date as ipt_outcome_date from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "                                                               left outer join kenyaemr_etl.etl_ipt_outcome o on init.patient_id = o.patient_id\n" +
+                "where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
