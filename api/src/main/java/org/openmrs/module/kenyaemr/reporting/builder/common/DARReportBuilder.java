@@ -113,6 +113,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Enrolled in Care(20-24 yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(20-24 yrs(F))", 20, 24, "F"), defParam, null);
         dsd.addColumn("Enrolled in Care(25+ yrs(M))", mapEnrolledInCareDataDefinition("Enrolled in Care(25+ yrs(M))", 25, null, "M"), defParam, null);
         dsd.addColumn("Enrolled in Care(25+ yrs(F)", mapEnrolledInCareDataDefinition("Enrolled in Care(25+ yrs(F))", 25, null, "F"), defParam, null);
+        dsd.addColumn("Enrolled in Care(Key Population)", mapKpDataDefinition("Enrolled in Care(Key Population)", "Enrollment"), defParam, null);
 
         // on treatment preparation
         dsd.addColumn("On treatment preparation(0-14 yrs)", mapOnTreatmentPreparationDataDefinition("On treatment preparation(0-14 yrs)", 0, 14, null), defParam, null);
@@ -128,6 +129,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Starting ART(20-24 yrs(F)", mapDarStartingArtDataDefinition("Starting ART(20-24 yrs(F))", 20, 24, "F"), defParam, null);
         dsd.addColumn("Starting ART(25+ yrs(M))", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(M))", 25, null, "M"), defParam, null);
         dsd.addColumn("Starting ART(25+ yrs(F)", mapDarStartingArtDataDefinition("Starting ART(25+ yrs(F))", 25, null, "F"), defParam, null);
+        dsd.addColumn("Starting ART(Key Population)", mapKpDataDefinition("Starting ART(Key Population)", "Starting ART"), defParam, null);
 
         //current on art
         dsd.addColumn("Current on ART(<1 yrs)", mapCurrentOnArtDataDefinition("Current on ART(<1 yrs)", null, 0, null), defParam, new DarAppointmentPeriodConverter());
@@ -140,6 +142,7 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Current on ART(20-24 yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(20-24 yrs(F))", 20, 24, "F"), defParam, new DarAppointmentPeriodConverter());
         dsd.addColumn("Current on ART(25+ yrs(M))", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(M))", 25, null, "M"), defParam, new DarAppointmentPeriodConverter());
         dsd.addColumn("Current on ART(25+ yrs(F)", mapCurrentOnArtDataDefinition("Current on ART(25+ yrs(F))", 25, null, "F"), defParam, new DarAppointmentPeriodConverter());
+        dsd.addColumn("Current on ART(Key Population)", mapKpDataDefinition("Current on ART(Key Population)", "On ART"), defParam, null);
 
         //On Ctx/Dapsone
         dsd.addColumn("CTX/Dapsone(<1 yrs)", mapCtxDapsoneDataDefinition("CTX/Dapsone(<1 yrs)", null, 0, null), defParam, new DarAppointmentPeriodConverter());
@@ -217,6 +220,13 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
 
     private DarStartedIptDataDefinition mapIptInitiationDataDefinition(String name, Integer minAge, Integer maxAge, String sex) {
         DarStartedIptDataDefinition iptInitiationDataDefinition = new DarStartedIptDataDefinition(name, minAge, maxAge, sex);
+        iptInitiationDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return iptInitiationDataDefinition;
+
+    }
+
+    private DarKeyPopulationDataDefinition mapKpDataDefinition(String name, String section) {
+        DarKeyPopulationDataDefinition iptInitiationDataDefinition = new DarKeyPopulationDataDefinition(name, section);
         iptInitiationDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return iptInitiationDataDefinition;
 
