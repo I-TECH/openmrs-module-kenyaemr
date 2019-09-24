@@ -172,6 +172,9 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Started on IPT(15-19 yrs)", mapIptInitiationDataDefinition("Started on IPT(15-19 yrs)", 15, 19, null), defParam, null);
         dsd.addColumn("Started on IPT(20-24 yrs)", mapIptInitiationDataDefinition("Started on IPT(20-24 yrs)", 20, 24, null), defParam, null);
         dsd.addColumn("Started on IPT(25+ yrs)", mapIptInitiationDataDefinition("Started on IPT(25+ yrs)", 25, null, null), defParam, null);
+        // Cacx screening for F 18+
+        dsd.addColumn("Screened for Cervical Cancer F 18+", mapCacxScreeningDataDefinition("Screened for Cervical Cancer F 18+"), defParam, null);
+        dsd.addColumn("Female 15+ on Modern FP", mapOnModernFpDataDefinition("Female 15+ on Modern FP"), defParam, null);
 
         return dsd;
     }
@@ -229,6 +232,20 @@ public class DARReportBuilder extends AbstractHybridReportBuilder {
         DarKeyPopulationDataDefinition iptInitiationDataDefinition = new DarKeyPopulationDataDefinition(name, section);
         iptInitiationDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return iptInitiationDataDefinition;
+
+    }
+
+    private DarCacxScreeningDataDefinition mapCacxScreeningDataDefinition(String name) {
+        DarCacxScreeningDataDefinition cacxScreeningDataDefinition = new DarCacxScreeningDataDefinition(name);
+        cacxScreeningDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return cacxScreeningDataDefinition;
+
+    }
+
+    private DarOnModernFPDataDefinition mapOnModernFpDataDefinition(String name) {
+        DarOnModernFPDataDefinition onModernFPDataDefinition = new DarOnModernFPDataDefinition(name);
+        onModernFPDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        return onModernFPDataDefinition;
 
     }
 }

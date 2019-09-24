@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class HTSDiscordanceDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class HTSDiscordanceDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
