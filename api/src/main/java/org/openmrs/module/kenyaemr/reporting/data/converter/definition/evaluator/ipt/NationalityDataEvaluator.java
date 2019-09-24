@@ -39,7 +39,7 @@ public class NationalityDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,d.citizenship as nationality from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "                                                                                     on init.patient_id = d.patient_id where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
+                "                                                                                     on init.patient_id = d.patient_id where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
