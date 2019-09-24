@@ -36,7 +36,7 @@ public class RegistrationSubcountyDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select encounter_id, final_test_result from kenyaemr_etl.etl_hts_test ";
+        String qry = "select init.patient_id,init.sub_county_reg_number as sub_county_reg_num from kenyaemr_etl.etl_ipt_initiation init where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

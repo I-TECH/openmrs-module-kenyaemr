@@ -112,9 +112,9 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
 
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
+		dsd.addColumn("Patient Number", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Sub County Registration", new RegistrationSubcountyDataDefinition(), "");
-		dsd.addColumn("Sub County Registration Date", new RegistrationSubcountyDataDefinition(), "");
+		dsd.addColumn("Sub County Registration Date", new SubcountyRegistrationDateDataDefinition(), "");
 		dsd.addColumn("OPD or IPD and CCC Number", new OPDIPDCCCNoDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
