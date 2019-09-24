@@ -334,6 +334,16 @@ public class EncounterBasedRegimenUtils {
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/LPV/r\",\n" +
                 "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/ATV/r\",\n" +
+                "    \"conceptRef\": \"dddd9cf2-2b9c-4c52-84b3-38cfe652529a\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/LPV/r\",\n" +
+                "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
                 "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
