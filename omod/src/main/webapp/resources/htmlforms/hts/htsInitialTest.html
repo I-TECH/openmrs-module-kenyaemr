@@ -708,8 +708,8 @@
                         <obs class="hts-strategy"
                              id="strategy"
                              conceptId="164956"
-                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,PNS,Other"
+                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Provider Initiated Testing(PITC),Client Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
                         />
                     </td>
                 </tr>
@@ -752,12 +752,8 @@
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
-                        <td>HIV Test 1 Results:
-                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
-                        </td>
-                        <td>&#160;&#160;&#160;&#160; Kit Name
+
+                        <td> Kit Name
                             <obs class="kit-name"
                                  id="kit-name-1"
                                  conceptId="164962"
@@ -777,6 +773,12 @@
                             />
                         </td>
                         <td>
+                        <td>&#160;&#160;&#160;&#160;HIV Test 1 Results:
+                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
+                        </td>
+                        <td>
                         <div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
                             <obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  id="syphilis-test-results-1"
@@ -784,17 +786,14 @@
                                  answerLabels="Negative,Positive"/>
                         </div>
                         </td>
+
                     </tr>
                 </obsgroup>
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr id="hiv-test2">
 
-                        <td>HIV Test 2 Results:
-                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
-                        </td>
-                        <td>&#160;&#160;&#160;&#160; Kit Name
+
+                        <td>Kit Name
                             <obs class="kit-name2"
                                  id="kit-name-2"
                                  conceptId="164962"
@@ -813,6 +812,11 @@
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date2" conceptId="162501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
+                        </td>
+                        <td>&#160;&#160;&#160;&#160; HIV Test 2 Results:
+                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
                         </td>
                     </tr>
                 </obsgroup>
