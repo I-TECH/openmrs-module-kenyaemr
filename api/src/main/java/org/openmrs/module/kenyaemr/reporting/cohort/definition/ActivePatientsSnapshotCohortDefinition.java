@@ -18,7 +18,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * RDQA cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.RDQACohortDefinition")
-public class DARCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.ActivePatientsSnapshotCohortDefinition")
+public class ActivePatientsSnapshotCohortDefinition extends BaseCohortDefinition {
 
 }

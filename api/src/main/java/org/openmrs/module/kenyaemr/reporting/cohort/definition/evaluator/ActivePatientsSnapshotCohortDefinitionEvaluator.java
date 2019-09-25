@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DARCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -28,10 +28,11 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for DAR (Daily Activity Register)
- * Includes patients who are enrolled in HIV program and either had a HIV followup or treatment preparation encounters
+ * Evaluator for ActivePatientsSnapshotCohortDefinition
+ * Includes patients who are active on ART.
+ * Provides a snapshot of a patient with regard to the last visit
  */
-@Handler(supports = {DARCohortDefinition.class})
+@Handler(supports = {ActivePatientsSnapshotCohortDefinition.class})
 public class ActivePatientsSnapshotCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
@@ -42,23 +43,45 @@ public class ActivePatientsSnapshotCohortDefinitionEvaluator implements CohortDe
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		DARCohortDefinition definition = (DARCohortDefinition) cohortDefinition;
+		ActivePatientsSnapshotCohortDefinition definition = (ActivePatientsSnapshotCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;
 
 		Cohort newCohort = new Cohort();
 
-		String qry = "SELECT e.patient_id\n" +
-				"FROM kenyaemr_etl.etl_hiv_enrollment e\n" +
-				"         left join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = e.patient_id and  date(f.visit_date) = date(:startDate) and f.voided = 0\n" +
-				"         left join kenyaemr_etl.etl_ART_preparation artPrep on artPrep.patient_id = e.patient_id and  date(artPrep.visit_date) = date(:startDate) \n" +
-				"where e.voided = 0 and (f.patient_id is not null or artPrep.patient_id is not null);\n";
+		String qry=" select e.patient_id\n" +
+				"from (\n" +
+				"select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+				"    max(fup.visit_date) as latest_vis_date,\n" +
+				"    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+				"    max(d.visit_date) as date_discontinued,\n" +
+				"    d.patient_id as disc_patient,\n" +
+				"  de.patient_id as started_on_drugs,\n" +
+				"  de.program as hiv_program\n" +
+				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+				"left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
+				"left outer JOIN\n" +
+				"(select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+				"where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+				"group by patient_id\n" +
+				") d on d.patient_id = fup.patient_id\n" +
+				"where de.program = 'HIV' and fup.visit_date <= date(:endDate)\n" +
+				"group by patient_id\n" +
+				"having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+				"(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
+				"(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
+				") e\n" +
+				";";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
 		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
 		builder.addParameter("startDate", startDate);
+		builder.addParameter("endDate", endDate);
 
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
