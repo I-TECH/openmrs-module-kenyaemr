@@ -45,29 +45,26 @@
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
-				<!--<ref bean="kenyaemr.common.report.moh731" />-->
-				<!--<ref bean="kenyaemr.etl.common.report.moh731"/>-->
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
-				<!--<ref bean="kenyaemr.common.report.dhis2" />-->
-				<ref bean="kenyaemr.common.report.recordedDeceased" />
-				<ref bean="kenyaemr.common.report.allPatients" />
-                <ref bean="kenyaemr.common.report.rdqaReport" />
-				<ref bean="kenyaemr.common.report.clients.died" />
-				<ref bean="kenyaemr.common.report.clients.transferred.in" />
-				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsLinkageRegister"/>
+				<ref bean="kenyaemr.common.report.recordedDeceased" />
+				<ref bean="kenyaemr.common.report.allPatients" />
+				<ref bean="kenyaemr.etl.common.report.diffcarestability" />
+				<ref bean="kenyaemr.common.report.activePatientsLinelist" />
+                <ref bean="kenyaemr.common.report.rdqaReport" />
+				<ref bean="kenyaemr.common.report.clients.died" />
+				<ref bean="kenyaemr.common.report.clients.transferred.in" />
+				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
-
 				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
-				<ref bean="kenyaemr.etl.common.report.diffcarestability" />
 				<ref bean="kenyaemr.common.report.cccDar" />
 			</set>
 		</property>
@@ -625,6 +622,18 @@
 			</set></property>
 		<property name="template" value="kenyaemr:ccc_dar.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.activePatientsLinelist" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="60bb7db3-df1e-4e3a-9a77-2aaa079dff1b" />
+		<property name="name" value="Active Patients Linelist" />
+		<property name="description" value="A comprehensive line list of active patients, with details as per a patient's last visit" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:active_on_art_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:activePatients" />
 	</bean>
 
 </beans>

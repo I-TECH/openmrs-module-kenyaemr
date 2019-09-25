@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Calculates the last date when IPT was started
+ * Calculates the last date when IPT outcome was recorded
  */
-public class IPTStartDateCalculation extends AbstractPatientCalculation {
+public class IPTOutcomeDateCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -42,7 +42,7 @@ public class IPTStartDateCalculation extends AbstractPatientCalculation {
 			ListResult listResult = (ListResult) enrolledHere.get(ptId);
 			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
 			if(patientProgram.size() > 0){
-				enrollmentDate = patientProgram.get(patientProgram.size()-1).getDateEnrolled(); // get the last program enrollment
+				enrollmentDate = patientProgram.get(patientProgram.size()-1).getDateCompleted(); // get the last program enrollment
 				ret.put(ptId, new SimpleResult(enrollmentDate, this, context));
 			}
 		}
