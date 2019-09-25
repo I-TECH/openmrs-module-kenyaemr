@@ -627,13 +627,13 @@
 	<bean id="kenyaemr.common.report.activePatientsLinelist" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="60bb7db3-df1e-4e3a-9a77-2aaa079dff1b" />
 		<property name="name" value="Active Patients Linelist" />
-		<property name="description" value="A linelist of active patients, with details as per a patient's last visit" />
+		<property name="description" value="A comprehensive line list of active patients, with details as per a patient's last visit" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
-		<property name="template" value="kenyaemr:ccc_dar.xls" />
-		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
+		<property name="template" value="kenyaemr:active_on_art_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:activePatients" />
 	</bean>
 
 </beans>

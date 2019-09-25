@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
@@ -19,41 +20,40 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 /**
- * Calculate the date a client was confirmed HIV positive
+ * Calculates the last IPT outcome
  */
-public class DateConfirmedHivPositiveCalculation extends AbstractPatientCalculation {
+public class IPTOutcomeCalculation extends AbstractPatientCalculation {
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
 		EncounterService encService = Context.getEncounterService();
 		PatientService patientService = Context.getPatientService();
-		EncounterType et = encService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
-		String dateConfirmedPositiveConcept = "160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		EncounterType et = encService.getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME);
+		String iptOutcomeConcept = "161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 
-			Encounter firstHivEnrollment = EmrUtils.firstEncounter(patientService.getPatient(ptId), et);
-			Date dateConfirmed = null;
-			if (firstHivEnrollment != null) {
-				for (Obs o : firstHivEnrollment.getObs()) {
-					if (o.getConcept().getUuid().equals(dateConfirmedPositiveConcept)) {
-						dateConfirmed = o.getValueDatetime();
+			Encounter lastIptOutcome = EmrUtils.lastEncounter(patientService.getPatient(ptId), et);
+			Concept codedOutcome = null;
+			if (lastIptOutcome != null) {
+				for (Obs o : lastIptOutcome.getObs()) {
+					if (o.getConcept().getUuid().equals(iptOutcomeConcept)) {
+						codedOutcome = o.getValueCoded();
 						break;
 					}
 				}
 			}
-			ret.put(ptId, new SimpleResult(dateConfirmed, this, context));
+			ret.put(ptId, new SimpleResult(codedOutcome, this, context));
 
 		}
 
