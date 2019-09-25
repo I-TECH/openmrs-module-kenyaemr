@@ -36,8 +36,32 @@ public class DateStartedARTDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, concat_ws('\\r\\n',de.date_started,de.regimen) as art_start_date_regimen from kenyaemr_etl.etl_ipt_initiation init left outer join  kenyaemr_etl.etl_drug_event de on init.patient_id = de.patient_id\n" +
-                "where init.voided = 0;";
+        String qry = "select  init.patient_id,concat_ws('\\r\\n',net.date_started,net.regimen) as art_start_date_regimen from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "                                                                                           left outer join\n" +
+                "                                                                                             (\n" +
+                "                                                                                             select e.patient_id,e.date_started,\n" +
+                "                                                                                                    e.gender,\n" +
+                "                                                                                                    e.dob,\n" +
+                "                                                                                                    d.visit_date as dis_date,\n" +
+                "                                                                                                    if(d.visit_date is not null, 1, 0) as TOut,\n" +
+                "                                                                                                    e.regimen, e.regimen_line, e.alternative_regimen,\n" +
+                "                                                                                                    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                                                                                                    max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
+                "                                                                                                    max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
+                "                                                                                                    max(fup.visit_date) as latest_vis_date\n" +
+                "                                                                                             from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
+                "                                                                                                          mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
+                "                                                                                                          mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
+                "                                                                                                          max(if(discontinued,1,0))as alternative_regimen\n" +
+                "                                                                                                   from kenyaemr_etl.etl_drug_event e\n" +
+                "                                                                                                          join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "                                                                                                   group by e.patient_id) e\n" +
+                "                                                                                                    left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
+                "                                                                                                    left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+                "                                                                                                    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
+                "                                                                                             group by e.patient_id\n" +
+                "                                                                                             having TI_on_art=0\n" +
+                "                                                                                             )net on init.patient_id = net.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

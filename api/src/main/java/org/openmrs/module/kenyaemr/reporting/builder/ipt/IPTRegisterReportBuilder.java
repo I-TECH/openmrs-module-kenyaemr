@@ -139,7 +139,7 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Month 6 Drug collection date", mapMonthlyDrugCollectionDateDataDefinition("Drug collection date - Month 6",5,6), defParam, null);
         dsd.addColumn("HIV Status", new HIVStatusDataDefinition(), "");
         dsd.addColumn("HIV Test Date", new HIVTestDateDataDefinition(), "");
-        dsd.addColumn("Started Cotrimoxazole preventive Therapy or Dapsone", new DapsoneCotrimoxazoleDataDefinition(), "");
+        dsd.addColumn("Started CTX or Dapsone", new DapsoneCotrimoxazoleDataDefinition(), "");
         dsd.addColumn("Date started CTX", new CTXDapsoneStartDateDataDefinition(), "");
         dsd.addColumn("Started ART", new StartedARTDataDefinition(), "");
         dsd.addColumn("ART Start Date and Regimen", new DateStartedARTDataDefinition(), "");
