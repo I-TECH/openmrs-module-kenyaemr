@@ -10,8 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month2DrugCollectionDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month3DrugCollectionDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.MonthlyDrugCollectionDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,30 +24,37 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates Month3DrugCollectionDateDataDefinition
+ * Evaluates Month1DrugCollectionDateDataDefinition
  */
-@Handler(supports= Month3DrugCollectionDateDataDefinition.class, order=50)
-public class Month3DrugCollectionDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports = MonthlyDrugCollectionDateDataDefinition.class, order = 50)
+public class MonthlyDrugCollectionDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+        MonthlyDrugCollectionDateDataDefinition mdef = (MonthlyDrugCollectionDateDataDefinition) definition;
+        Integer maxMonth = mdef.getMaxMonth();
+        Integer minMonth = mdef.getMinMonth();
 
-        String qry = "select init.patient_id, o.date_activated from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                                   left join  openmrs.drug_order do on o.order_number = do.order_id\n" +
-                "where do.drug_inventory_id in (1800,1801,1802,1803,1804,1805,1806,1807,1808) and o.order_type_id = 2 and o.date_activated between date_add(o.date_activated,INTERVAL 61 DAY) and date_add(o.date_activated,INTERVAL 90 DAY)\n" +
-                "group by init.patient_id having max(do.order_id);";
+
+    String qry = "select init.patient_id, date(o.date_activated) as month1_refill from kenyaemr_etl.etl_ipt_initiation init\n" +
+            "                                                                       left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
+            "                                                                       inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
+            "where o.concept_id = 78280 and timestampdiff(Month,o.date_activated,init.visit_date) between :minMonth and :maxMonth group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
         Date endDate = (Date)context.getParameterValue("endDate");
         queryBuilder.addParameter("endDate", endDate);
         queryBuilder.addParameter("startDate", startDate);
+        queryBuilder.addParameter("minMonth", minMonth);
+        queryBuilder.addParameter("maxMonth", maxMonth);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
+
     }
 }

@@ -10,8 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.ipt;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month3DrugCollectionDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.Month4DrugCollectionDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.MonthlyDrugCollectionDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.PostIPTTBStatusDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,30 +25,39 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates Month4DrugCollectionDateDataDefinition
+ * Evaluates Month1DrugCollectionDateDataDefinition
  */
-@Handler(supports= Month4DrugCollectionDateDataDefinition.class, order=50)
-public class Month4DrugCollectionDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports = PostIPTTBStatusDateDataDefinition.class, order = 50)
+public class PostIPTTBStatusDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+        PostIPTTBStatusDateDataDefinition mdef = (PostIPTTBStatusDateDataDefinition) definition;
+        Integer maxMonth = mdef.getMaxMonth();
+        Integer minMonth = mdef.getMinMonth();
 
-        String qry = "select init.patient_id, o.date_activated from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                                   left join  openmrs.drug_order do on o.order_number = do.order_id\n" +
-                "where do.drug_inventory_id in (1800,1801,1802,1803,1804,1805,1806,1807,1808) and o.order_type_id = 2 and o.date_activated between date_add(o.date_activated,INTERVAL 91 DAY) and date_add(o.date_activated,INTERVAL 120 DAY)\n" +
-                "group by init.patient_id having max(do.order_id);";
+
+    String qry = "Select init.patient_id,COALESCE(concat_ws('\\r\\n',fup.tb_status,max(fup.visit_date)),concat_ws('\\r\\n',tbs.resulting_tb_status,max(tbs.visit_date))) as tb_status_date_m6 from kenyaemr_etl.etl_ipt_initiation init\n" +
+            "                                                                                  left outer join kenyaemr_etl.etl_patient_program_discontinuation d on init.patient_id = d.patient_id\n" +
+            "                                                                                  left outer join kenyaemr_etl.etl_tb_screening tbs on init.patient_id = tbs.patient_id\n" +
+            "                                                                                  left outer join kenyaemr_etl.etl_patient_hiv_followup fup on init.patient_id = fup.patient_id\n" +
+            "where d.program_name = \"IPT\" and timestampdiff(DAY ,COALESCE(fup.visit_date,tbs.visit_date),d.visit_date)  between :minMonth and :maxMonth\n" +
+            "group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
         Date endDate = (Date)context.getParameterValue("endDate");
         queryBuilder.addParameter("endDate", endDate);
         queryBuilder.addParameter("startDate", startDate);
+        queryBuilder.addParameter("minMonth", minMonth);
+        queryBuilder.addParameter("maxMonth", maxMonth);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
+
     }
 }
