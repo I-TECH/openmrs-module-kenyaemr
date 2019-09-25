@@ -38,7 +38,7 @@ public class CTXDapsoneStartDateDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select init.patient_id, date(o.date_activated) as date_started_ctx_dapsone from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
                 "                                                                                         inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
-                "where o.concept_id  in (105281,74250) and date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0 group by init.patient_id having min(o.date_activated);";
+                "where o.concept_id  in (105281,74250) and init.voided = 0 group by init.patient_id having min(o.date_activated);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

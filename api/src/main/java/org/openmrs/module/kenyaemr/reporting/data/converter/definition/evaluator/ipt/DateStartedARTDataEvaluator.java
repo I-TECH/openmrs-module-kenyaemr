@@ -37,7 +37,7 @@ public class DateStartedARTDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id, concat_ws('\\r\\n',de.date_started,de.regimen) as art_start_date_regimen from kenyaemr_etl.etl_ipt_initiation init left outer join  kenyaemr_etl.etl_drug_event de on init.patient_id = de.patient_id\n" +
-                "where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
+                "where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

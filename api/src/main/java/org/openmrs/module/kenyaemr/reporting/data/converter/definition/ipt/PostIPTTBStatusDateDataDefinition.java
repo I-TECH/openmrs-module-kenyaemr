@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
@@ -20,25 +21,55 @@ import java.util.Date;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class Month1DrugCollectionDateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class PostIPTTBStatusDateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+
+    @ConfigurationProperty
+    private Integer minMonth;
+
+
+    @ConfigurationProperty
+    private Integer maxMonth;
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public Month1DrugCollectionDateDataDefinition() {
+    public PostIPTTBStatusDateDataDefinition() {
         super();
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**
      * Constructor to populate name only
      */
-    public Month1DrugCollectionDateDataDefinition(String name) {
+    public PostIPTTBStatusDateDataDefinition(String name, Integer minMonth, Integer maxMonth) {
         super(name);
+        this.minMonth = minMonth;
+        this.maxMonth = maxMonth;
     }
 
     //***** INSTANCE METHODS *****
+
+
+    public Integer getMinMonth() {
+        return minMonth;
+    }
+
+    public void setMinMonth(Integer minMonth) {
+        this.minMonth = minMonth;
+    }
+
+    public Integer getMaxMonth() {
+        return maxMonth;
+    }
+
+    public void setMaxMonth(Integer maxMonth) {
+        this.maxMonth = maxMonth;
+    }
 
     /**
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()

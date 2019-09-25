@@ -36,7 +36,7 @@ public class HeightDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select init.patient_id,t.height as height_at_IPT_start from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
-                "where init.visit_date = t.visit_date and date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
+                "where init.visit_date = t.visit_date and init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
