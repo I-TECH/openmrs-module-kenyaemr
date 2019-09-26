@@ -35,7 +35,7 @@ public class BMIZScoreMUACDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,Coalesce(ROUND(t.weight/(t.height * t.height),2),t.muac) as BMI_MUAC from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
+        String qry = "select init.patient_id,Coalesce(ROUND(t.weight/(t.height * t.height)*10000,1),t.muac) as BMI_MUAC from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_triage t on init.patient_id = t.patient_id\n" +
                 "              where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
