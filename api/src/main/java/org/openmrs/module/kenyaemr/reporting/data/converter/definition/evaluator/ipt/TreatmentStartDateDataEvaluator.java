@@ -35,9 +35,7 @@ public class TreatmentStartDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, date(o.date_activated) from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                          inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
-                "where o.concept_id = 78280 and init.voided = 0 group by init.patient_id having min(o.date_activated);";
+        String qry = "select init.patient_id,init.visit_date as treatment_start_date from kenyaemr_etl.etl_ipt_initiation init where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

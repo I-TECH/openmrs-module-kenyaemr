@@ -179,8 +179,8 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         return drugCollDateDef;
     }
 
-    private PostIPTTBStatusDateDataDefinition mapPostIPTTBStatusDateDateDataDefinition(String name,Integer minMonth, Integer maxMonth) {
-        PostIPTTBStatusDateDataDefinition postIPTTBStatusDateDef = new PostIPTTBStatusDateDataDefinition(name,minMonth,maxMonth);
+    private PostIPTTBStatusDateDataDefinition mapPostIPTTBStatusDateDateDataDefinition(String name,Integer minDays, Integer maxDays) {
+        PostIPTTBStatusDateDataDefinition postIPTTBStatusDateDef = new PostIPTTBStatusDateDataDefinition(name,minDays,maxDays);
         postIPTTBStatusDateDef.addParameter(new Parameter("startDate", "Start Date", Date.class));
         return postIPTTBStatusDateDef;
     }

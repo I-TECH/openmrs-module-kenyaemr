@@ -24,11 +24,11 @@ import java.util.Date;
 public class PostIPTTBStatusDateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     @ConfigurationProperty
-    private Integer minMonth;
+    private Integer minDays;
 
 
     @ConfigurationProperty
-    private Integer maxMonth;
+    private Integer maxDays;
 
     public static final long serialVersionUID = 1L;
 
@@ -46,29 +46,29 @@ public class PostIPTTBStatusDateDataDefinition extends BaseDataDefinition implem
     /**
      * Constructor to populate name only
      */
-    public PostIPTTBStatusDateDataDefinition(String name, Integer minMonth, Integer maxMonth) {
+    public PostIPTTBStatusDateDataDefinition(String name, Integer minDays, Integer maxMonth) {
         super(name);
-        this.minMonth = minMonth;
-        this.maxMonth = maxMonth;
+        this.minDays = minDays;
+        this.maxDays = maxMonth;
     }
 
     //***** INSTANCE METHODS *****
 
 
-    public Integer getMinMonth() {
-        return minMonth;
+    public Integer getMinDays() {
+        return minDays;
     }
 
-    public void setMinMonth(Integer minMonth) {
-        this.minMonth = minMonth;
+    public void setMinDays(Integer minMonth) {
+        this.minDays = minMonth;
     }
 
-    public Integer getMaxMonth() {
-        return maxMonth;
+    public Integer getMaxDays() {
+        return maxDays;
     }
 
-    public void setMaxMonth(Integer maxMonth) {
-        this.maxMonth = maxMonth;
+    public void setMaxDays(Integer maxMonth) {
+        this.maxDays = maxMonth;
     }
 
     /**

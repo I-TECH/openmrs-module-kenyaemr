@@ -36,9 +36,9 @@ public class CTXDapsoneStartDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, date(o.date_activated) as date_started_ctx_dapsone from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
+        String qry = "select init.patient_id, date(o.date_stopped) as date_started_ctx_dapsone from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
                 "                                                                                         inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
-                "where o.concept_id  in (105281,74250) and init.voided = 0 group by init.patient_id having min(o.date_activated);";
+                "where o.concept_id  in (105281,74250) and init.voided = 0 group by init.patient_id having min(o.date_stopped);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
