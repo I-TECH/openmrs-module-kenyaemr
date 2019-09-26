@@ -626,7 +626,7 @@
 
 	<bean id="kenyaemr.common.report.activePatientsLinelist" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="60bb7db3-df1e-4e3a-9a77-2aaa079dff1b" />
-		<property name="name" value="Active Patients Linelist" />
+		<property name="name" value="Active on ART Patients Linelist" />
 		<property name="description" value="A comprehensive line list of active patients, with details as per a patient's last visit" />
 		<property name="apps">
 			<set>
