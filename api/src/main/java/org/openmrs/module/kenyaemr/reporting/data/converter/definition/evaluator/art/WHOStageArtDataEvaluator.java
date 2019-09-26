@@ -36,7 +36,7 @@ public class WHOStageArtDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "  mid(min(concat(visit_date,(case who_stage\n" +
+                "  mid(max(concat(visit_date,(case who_stage\n" +
                 "                             when 1204 then \"1\"\n" +
                 "                             when 1220 then \"1\"\n" +
                 "                             when 1205 then \"2\"\n" +

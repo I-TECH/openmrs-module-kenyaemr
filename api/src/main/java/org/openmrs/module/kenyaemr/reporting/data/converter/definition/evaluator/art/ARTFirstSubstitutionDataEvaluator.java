@@ -53,7 +53,7 @@ public class ARTFirstSubstitutionDataEvaluator implements PersonDataEvaluator {
                 "                             when 1754 then \"Drugs out of stock\"\n" +
                 "                             else \"\" end), \"\" )),11) as reasonDiscontinued,\n" +
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
-                "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"Adult first line\" GROUP BY patient_id  HAVING p_id = 2) fdr\n" +
+                "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"First line\" GROUP BY patient_id  HAVING p_id = 2) fdr\n" +
                 "GROUP BY fdr.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
