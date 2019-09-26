@@ -40,7 +40,7 @@ public class ARTSecondSubstitutionDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  sdr.patient_id,\n" +
-                "  CONCAT_WS('\\r\\n',sdr.secondSubstitution,sdr.dateStarted,sdr.reasonDiscontinued) as Substitutions\n" +
+                "  CONCAT_WS('\\r\\n',sdr.secondSubstitution,sdr.dateStarted,CAST(sdr.reasonDiscontinued AS CHAR CHARACTER SET utf8)) as Substitutions\n" +
                 "  from  (SELECT  patient_id,\n" +
                 "         mid(max(concat(visit_date,regimen)),11) as secondSubstitution,\n" +
                 "         mid(max(concat(visit_date,date_started)),11) as dateStarted,\n" +

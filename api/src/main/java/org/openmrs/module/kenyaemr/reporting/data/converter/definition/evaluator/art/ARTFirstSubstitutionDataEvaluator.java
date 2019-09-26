@@ -40,7 +40,7 @@ public class ARTFirstSubstitutionDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
         String qry = "select\n" +
                 "  fdr.patient_id,\n" +
-                "  CONCAT_WS('\\r\\n',fdr.firstSubstitution,fdr.dateStarted,fdr.reasonDiscontinued) as Substitutions\n" +
+                "  CONCAT_WS('\\r\\n',fdr.firstSubstitution,fdr.dateStarted,CAST(fdr.reasonDiscontinued AS CHAR CHARACTER SET utf8)) as Substitutions\n" +
                 "from  (SELECT\n" +
                 "         mid(max(concat(visit_date,encounter_id)),11) as patient_id,\n" +
                 "         mid(max(concat(visit_date,regimen)),11) as firstSubstitution,\n" +
