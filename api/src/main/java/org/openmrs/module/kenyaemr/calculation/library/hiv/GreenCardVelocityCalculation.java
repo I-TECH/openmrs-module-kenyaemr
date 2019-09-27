@@ -209,24 +209,21 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             EncounterService encounterService = Context.getEncounterService();
             FormService formService = Context.getFormService();
             PatientService patientService = Context.getPatientService();
-            EncounterType et = encounterService.getEncounterTypeByUuid("de78a6be-bfc5-4634-adc3-5f1a280455cc");
+            EncounterType et = encounterService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
             Form form = formService.getFormByUuid(HivMetadata._Form.HIV_ENROLLMENT);
             Patient pt = patientService.getPatient(ptId);
-            List<Encounter> encounters = EmrUtils.AllEncounters(pt, et, form);
-            if (encounters != null ) {
-                if(encounters.size() > 0) {
+            Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(pt, et);
+            if (lastHivEnrollmentEncounter != null ) {
                     patientInHivProgram = true;
-                }
             }
 
             //Completed IPT 6 months cycle
             ConceptService cs = Context.getConceptService();
             Concept IptOutcomeQuestionConcept = cs.getConcept(iptOutcomeQuestion);
             Concept IptCompletionOutcomeConcept = cs.getConcept(iptCompletionAnswer);
-            Form iptOutcomeForm = formService.getFormByUuid(IPTMetadata._Form.IPT_OUTCOME);
 
             Encounter lastIptOutcomeEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));   //last ipt outcome encounter
-            boolean patientHasCompletedIPTOutcome = lastIptOutcomeEncounter != null ? EmrUtils.encounterThatPassCodedAnswer(lastIptOutcomeEncounter, IptOutcomeQuestionConcept, IptCompletionOutcomeConcept) : true;
+            boolean patientHasCompletedIPTOutcome = lastIptOutcomeEncounter != null ? EmrUtils.encounterThatPassCodedAnswer(lastIptOutcomeEncounter, IptOutcomeQuestionConcept, IptCompletionOutcomeConcept) : false;
 
             if(patientHasCompletedIPTOutcome) {
                 completed6MonthsIPT = true;
