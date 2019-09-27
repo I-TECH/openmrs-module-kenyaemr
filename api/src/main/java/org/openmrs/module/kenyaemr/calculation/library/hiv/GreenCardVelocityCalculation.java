@@ -120,7 +120,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Date currentDate =new Date();
             boolean inIptProgram = false;
             boolean completed6MonthsIPT = false;
-            boolean patientInHivProgram = false;
+            boolean patientEverInHivProgram = false;
             boolean goodAdherence6Months = false;
             boolean isPregnant = false;
             boolean isBreastFeeding = false;
@@ -214,7 +214,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Patient pt = patientService.getPatient(ptId);
             Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(pt, et);
             if (lastHivEnrollmentEncounter != null ) {
-                    patientInHivProgram = true;
+                    patientEverInHivProgram = true;
             }
 
             //Completed IPT 6 months cycle
@@ -277,7 +277,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("goodAdherence:").append(goodAdherence6Months).append(",");
             sb.append("isPregnant:").append(isPregnant).append(",");
             sb.append("isBreastFeeding:").append(isBreastFeeding).append(",");
-            sb.append("isEnrolledInHIV:").append(patientInHivProgram);
+            sb.append("isEnrolledInHIV:").append(patientEverInHivProgram);
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             // sb.append("artStartDate:").append(artStartDate).append(",");
 
