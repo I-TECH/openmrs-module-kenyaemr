@@ -24,13 +24,25 @@ public class IPTOutcomeDataConverter implements DataConverter {
 
 	public IPTOutcomeDataConverter() {}
 
+	private String report;
+
+	public IPTOutcomeDataConverter(String report) {
+		this.report = report;
+	}
+
+	public String getReport() {
+		return report;
+	}
+
+	public void setReport(String report) {
+		this.report = report;
+	}
+
 	/**
-	 * @should return a pre-established labels for patient entry point
+	 * @should return a pre-established labels for IPT outcome
 	 */
 	@Override
 	public Object convert(Object original) {
-
-
 
 		if (original == null) {
 			return "";
@@ -46,15 +58,11 @@ public class IPTOutcomeDataConverter implements DataConverter {
 
 		if (answer == null)
 			return "";
-//	answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-//	102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-//	answerLabels="Completed, Lost to followup, Discontinued, Died, Transferred Out, TB infected, Drug toxicity" style="dropdown" labelText=""  showDate="true"/></td>
+
 		String label = "";
+		if (report.equals("rdqa")){
+			label = "Missing";
+		}
 		switch (answer){
 			case 1267:
 				label = "Completed";
@@ -79,7 +87,6 @@ public class IPTOutcomeDataConverter implements DataConverter {
 				break;
 			default:
 				label = "";
-
 		}
 
 		return label;

@@ -9,18 +9,14 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -33,11 +29,9 @@ public class BMIAtLastVisitCalculation extends AbstractPatientCalculation {
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		EncounterService encService = Context.getEncounterService();
-		PatientService patientService = Context.getPatientService();
-		EncounterType et = encService.getEncounterTypeByUuid(CommonMetadata._EncounterType.TRIAGE);
-		String heightConcept = "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-		String weightConcept = "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		CalculationResultMap weightMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.WEIGHT_KG), cohort, context);
+		CalculationResultMap heightMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.HEIGHT_CM), cohort, context);
+
 
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -47,23 +41,16 @@ public class BMIAtLastVisitCalculation extends AbstractPatientCalculation {
 			Double visitHeight = null;
 			String bmiStr = null;
 
-			Encounter lastTriageEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), et);
-			if (lastTriageEncounter != null) {
-				for (Obs o : lastTriageEncounter.getObs()) {
-					if (o.getConcept().getUuid().equals(heightConcept)) {
-						visitHeight = o.getValueNumeric();
-					} else if (o.getConcept().getUuid().equals(weightConcept)) {
-						visitWeight = o.getValueNumeric();
-					}
-				}
-			}
-			if (visitHeight != null && visitWeight != null) {
+			Obs lastWeightObs = EmrCalculationUtils.obsResultForPatient(weightMap, ptId);
+			Obs lastHeightObs = EmrCalculationUtils.obsResultForPatient(heightMap, ptId);
+
+			if (lastHeightObs !=null && lastWeightObs != null) {
+				visitHeight = lastHeightObs.getValueNumeric();
+				visitWeight = lastWeightObs.getValueNumeric();
 				Double bmi = visitWeight / ((visitHeight/100) * (visitHeight/100));
 				bmiStr = String.format("%.2f", bmi);
+				ret.put(ptId, new SimpleResult(bmiStr, this, context));
 			}
-
-			ret.put(ptId, new SimpleResult(bmiStr, this, context));
-
 		}
 
 		return  ret;
