@@ -226,12 +226,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Form iptOutcomeForm = formService.getFormByUuid(IPTMetadata._Form.IPT_OUTCOME);
 
             Encounter lastIptOutcomeEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));   //last ipt outcome encounter
-
-            List<Encounter> iptOutcomeEncounters = Context.getEncounterService().getEncounters(Context.getPatientService().getPatient(ptId), null, null, null, Arrays.asList(iptOutcomeForm), null, null, null, null, false);
-
             boolean patientHasCompletedIPTOutcome = lastIptOutcomeEncounter != null ? EmrUtils.encounterThatPassCodedAnswer(lastIptOutcomeEncounter, IptOutcomeQuestionConcept, IptCompletionOutcomeConcept) : true;
 
-            if(iptOutcomeEncounters.size() > 0 && patientHasCompletedIPTOutcome) {
+            if(patientHasCompletedIPTOutcome) {
                 completed6MonthsIPT = true;
             }
 
