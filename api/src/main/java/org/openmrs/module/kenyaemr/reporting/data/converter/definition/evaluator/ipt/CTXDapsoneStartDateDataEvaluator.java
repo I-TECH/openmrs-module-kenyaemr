@@ -36,9 +36,12 @@ public class CTXDapsoneStartDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, date(o.date_activated) as date_started_ctx_dapsone from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                                         inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
-                "where o.concept_id  in (105281,74250) and init.voided = 0 group by init.patient_id having min(o.date_activated);";
+        String qry = "select init.patient_id,coalesce(date(fup.visit_date),date(o.date_stopped)) as date_started_ctx_dapsone from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on init.patient_id = fup.patient_id\n" +
+                "                    and (fup.ctx_dispensed =105281 or fup.ctx_dispensed = 1065 or fup.dapsone_dispensed = 74250 or fup.dapsone_dispensed = 1065)\n" +
+                "                    left outer join orders o on init.patient_id = o.patient_id\n" +
+                "                    inner join drug_order do on o.order_id = do.order_id and o.concept_id in (105281,74250)\n" +
+                "                where init.voided = 0  and (date(fup.visit_date) <= date(init.visit_date) or date(o.date_stopped) <= date(init.visit_date)) group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
