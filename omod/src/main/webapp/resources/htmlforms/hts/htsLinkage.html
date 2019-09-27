@@ -16,9 +16,11 @@
 
     <script type="text/javascript">
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var patientId = <lookup expression="patient.patientId"/>;
         jQuery(function () {
 
             //Default location
+            includePatientsCccNumberIfExists();
             jq('#default-location').click(defaultLocationChange);//Default location
             jq('#upnError').hide();
             jq("#upn-concept input[type=text]").blur(validatePatientIdentifiers);
@@ -69,6 +71,18 @@
                 jq('#hiv-id input[type=text]').val("");
                 getField('upn-concept.value').val("");
             }
+        }
+
+        //CCC Number
+        function includePatientsCccNumberIfExists() {
+            var cccNumber;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientUniquePatientNumber.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    cccNumber = data;
+                    getField('upn-concept.value').val(cccNumber);
+                    getField('upn-concept.value').prop("readonly", true);
+                  }
+            });
         }
         //Before Submit
         beforeSubmit.push(function() {

@@ -17,6 +17,7 @@ import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
 import org.openmrs.Relationship;
@@ -32,6 +33,8 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.calculation.result.CalculationResult;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
@@ -41,6 +44,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -153,6 +157,26 @@ public class EmrUtilsFragmentController {
 				"clinicNumberExists", clinicNoExists,
 				"cwcNoExists", cwcNoExists
 				);
+	}
+
+	/**
+	 * Get patients CCC number
+	 * @param patient
+	 * @param now
+	 * @return ccc number
+	 * */
+
+	public String getPatientUniquePatientNumber(@RequestParam(value = "patientId", required = false) Integer patientId) {
+		String cccNumber = "";
+		PatientService patientService = Context.getPatientService();
+		if (patientId != null) {
+
+			    PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+				PatientIdentifier cccObject =  patientService.getPatient(patientId).getPatientIdentifier(pit);
+				 cccNumber = cccObject.getIdentifier();
+				}
+
+			return cccNumber;
 	}
 
 	/**

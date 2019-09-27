@@ -40,7 +40,7 @@ public class ARTFirstSwitchDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select\n" +
                 "  fdr.patient_id,\n" +
-                "  CONCAT_WS('\\r\\n',fdr.firstSwitch,fdr.dateStarted,fdr.reasonDiscontinued) as Substitutions\n" +
+                "  CONCAT_WS('\\r\\n',fdr.firstSwitch,fdr.dateStarted,CAST(fdr.reasonDiscontinued AS CHAR CHARACTER SET utf8)) as Substitutions\n" +
                 "from  (SELECT  patient_id,\n" +
                 "         mid(max(concat(visit_date,regimen)),11) as firstSwitch,\n" +
                 "         mid(max(concat(visit_date,date_started)),11) as dateStarted,\n" +
@@ -52,7 +52,7 @@ public class ARTFirstSwitchDataEvaluator implements PersonDataEvaluator {
                 "                                    when 1754 then \"Drugs out of stock\"\n" +
                 "                                    else \"\" end), \"\" )),11) as reasonDiscontinued,\n" +
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
-                "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"Adult second line\" GROUP BY patient_id  HAVING p_id > 0) fdr\n" +
+                "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"Second line\" GROUP BY patient_id  HAVING p_id > 0) fdr\n" +
                 "GROUP BY fdr.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
