@@ -15,11 +15,17 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Program;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -32,7 +38,6 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -45,7 +50,13 @@ import org.openmrs.ui.framework.SimpleObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -79,17 +90,12 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         CalculationResultMap tbCurrent = Calculations.lastObs(OnAntiTbQuestion, cohort, context);
         CalculationResultMap tbStarted = Calculations.lastObs(StartAntiTbQuestion, cohort, context);
 
-        //Check whether completed 6 months ipt program
-        Concept IptCompletionQuestion = Context.getConceptService().getConcept(161555);
-
          //Viral load
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
         Concept LDLQuestion = Context.getConceptService().getConcept(1305);
         Concept LDLAnswer = Context.getConceptService().getConcept(1302);
         //Checking adherence
         Concept AdherenceQuestion = Context.getConceptService().getConcept(1658);
-
-        CalculationResultMap iptCompleted = Calculations.lastObs(IptCompletionQuestion, cohort, context);
 
         CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram, context);
         CalculationResultMap lastLDLObs = Calculations.lastObs(LDLQuestion, inHivProgram, context);
@@ -110,26 +116,18 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             boolean patientDueForTBEnrollment = false;
             boolean patientOnART = false;
             boolean hasBeenOnART = false;
-            //IPT Calculation
-            Date iptStartObsDate = null;
-            Date iptStopObsDate = null;
-            Date iptStartDate = null;
-            Date tbStartObsDate = null;
-            Date tbStopObsDate = null;
             Date adherenceObsDate = null;
             Date currentDate =new Date();
             boolean inIptProgram = false;
             boolean completed6MonthsIPT = false;
             boolean patientInHivProgram = false;
-            boolean currentInIPT = false;
-            boolean patientInIPT6Months = false;
             boolean goodAdherence6Months = false;
             boolean isPregnant = false;
             boolean isBreastFeeding = false;
-            Integer iptStartStopDiff = 0;
-            Integer iptCompletionDays = 0;
             Integer adherenceDiffDays = 0;
             Integer  goodAdherenceAnswer = 159405;
+            Integer  iptOutcomeQuestion = 161555;
+            Integer  iptCompletionAnswer = 1267;
             //ART calculations
             String artStartObsDate = null;
             Date artStartDate = null;
@@ -143,9 +141,6 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 //Patient with current on anti tb drugs and/or anti tb start dates
             Obs tbCurrentObs = EmrCalculationUtils.obsResultForPatient(tbCurrent, ptId);
             Obs tbStartObs = EmrCalculationUtils.obsResultForPatient(tbStarted, ptId);
-
-            //Patient with IPT start date and now less than complete date
-            Obs iptQuestionObs = EmrCalculationUtils.obsResultForPatient(iptCompleted, ptId);
 
             //Viral Load
             Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
@@ -210,8 +205,6 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
-
-
             //Currently in HIV
             EncounterService encounterService = Context.getEncounterService();
             FormService formService = Context.getFormService();
@@ -227,12 +220,21 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             }
 
             //Completed IPT 6 months cycle
-            //have completed 6 months IPT
-            if (iptQuestionObs != null){
-                if(iptQuestionObs.getValueCoded().getConceptId().equals(1267)) {
-                    completed6MonthsIPT = true;
-                }
+            ConceptService cs = Context.getConceptService();
+            Concept IptOutcomeQuestionConcept = cs.getConcept(iptOutcomeQuestion);
+            Concept IptCompletionOutcomeConcept = cs.getConcept(iptCompletionAnswer);
+            Form iptOutcomeForm = formService.getFormByUuid(IPTMetadata._Form.IPT_OUTCOME);
+
+            Encounter lastIptOutcomeEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid(IPTMetadata._EncounterType.IPT_OUTCOME));   //last ipt outcome encounter
+
+            List<Encounter> iptOutcomeEncounters = Context.getEncounterService().getEncounters(Context.getPatientService().getPatient(ptId), null, null, null, Arrays.asList(iptOutcomeForm), null, null, null, null, false);
+
+            boolean patientHasCompletedIPTOutcome = lastIptOutcomeEncounter != null ? EmrUtils.encounterThatPassCodedAnswer(lastIptOutcomeEncounter, IptOutcomeQuestionConcept, IptCompletionOutcomeConcept) : true;
+
+            if(iptOutcomeEncounters.size() > 0 && patientHasCompletedIPTOutcome) {
+                completed6MonthsIPT = true;
             }
+
 
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
