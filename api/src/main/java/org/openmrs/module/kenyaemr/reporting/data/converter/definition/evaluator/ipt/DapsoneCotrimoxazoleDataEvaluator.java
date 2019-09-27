@@ -35,10 +35,11 @@ public class DapsoneCotrimoxazoleDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,if (init.patient_id = x.patient_id,\"Y\",\"N\") as on_ctx from kenyaemr_etl.etl_ipt_initiation init\n" +
-                "                          left outer join (select o.patient_id from openmrs.orders o inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
-                "    where o.concept_id in (105281,74250) and o.date_stopped is not null group by o.patient_id) x on init.patient_id = x.patient_id\n" +
-                "    where init.voided = 0;";
+        String qry = "select init.patient_id,if ((init.patient_id = x.patient_id or fup.ctx_dispensed =105281 or fup.ctx_dispensed = 1065 or fup.dapsone_dispensed = 74250 or fup.dapsone_dispensed = 1065  ),\"Y\",\"N\") as on_ctx from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "    left outer join kenyaemr_etl.etl_patient_hiv_followup fup on init.patient_id = fup.patient_id\n" +
+                "                      left outer join (select o.patient_id from orders o inner join drug_order do on o.order_id = do.order_id\n" +
+                "                      where o.concept_id in (105281,74250) and o.date_activated is not null group by o.patient_id) x on init.patient_id = x.patient_id\n" +
+                "                      where init.voided = 0 group by init.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

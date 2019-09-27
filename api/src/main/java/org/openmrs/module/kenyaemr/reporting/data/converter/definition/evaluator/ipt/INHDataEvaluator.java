@@ -35,8 +35,8 @@ public class INHDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id, do.dose from kenyaemr_etl.etl_ipt_initiation init left outer join openmrs.orders o on init.patient_id = o.patient_id\n" +
-                "                                                                          inner join openmrs.drug_order do on o.order_id = do.order_id\n" +
+        String qry = "select init.patient_id, do.dose from kenyaemr_etl.etl_ipt_initiation init left outer join orders o on init.patient_id = o.patient_id\n" +
+                "                                                                          inner join drug_order do on o.order_id = do.order_id\n" +
                 "where o.concept_id = 78280 and init.voided = 0 group by init.patient_id having max(o.date_stopped);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
