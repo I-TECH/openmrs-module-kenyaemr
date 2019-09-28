@@ -1,3 +1,4 @@
+
 <!--
   ~ The contents of this file are subject to the OpenMRS Public License
   ~ Version 1.0 (the "License"); you may not use this file except in
@@ -188,12 +189,13 @@
 									<td rowspan="2">Age <br/>(Wks/Mths)</td>
 									<td rowspan="2">MUAC</td>
 									<td rowspan="2">Infant <br/> Feeding</td>
-									<td colspan="3">Medication Given<br /> <i>If HIV Exposed</i></td>
+									<td colspan="4">Medication Given<br /> <i>If HIV Exposed</i></td>
 									<td rowspan="2">TB <br />Assessment <br/> Outcome</td>
 									<td rowspan="2">Date of Next <br/>Appointment</td>
 								</tr>
 
 								<tr>
+									<td>AZT <br/> (mls)</td>
 									<td>NVP <br/> (mls)</td>
 									<td>CTX <br/>(mls/mg)</td>
 									<td>M/vit</td>
@@ -209,17 +211,26 @@
 									<td>(g)</td>
 									<td>(h)</td>
 									<td>(i)</td>
+									<td>(j)</td>
 								</tr>
-
 								<tr>
 									<td><encounterDate id="encounter-date" showTime="true" /><br /><br />
-									Revisit this year? <obs conceptId="164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" />									</td>
+									Revisit this year? <obs conceptId="164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" />
+										<br /><br />
+										Primary care give ?
+										<obs
+												id="primary-caregiver" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
+												answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												answerLabels="Mother,Grandparent,Sibling,Guardian,Other"
+										/>
+									</td>
 									<td><div id="age" class="value"></div></td>
 									<td>  <obs conceptId="160908AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="160909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127778AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Green,Yellow,Red" answerSeparator="&lt;br/&gt;" /></td>
 									<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /><br /><br />
 									Exclusive breastfeeding 0-6 Months <obs conceptId="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/><br />
 									Stunted? <obs conceptId="164088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="164085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>									</td>
 									<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
+									<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>

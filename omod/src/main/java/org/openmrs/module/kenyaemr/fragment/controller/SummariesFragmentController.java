@@ -1,5 +1,16 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.openmrs.Concept;
@@ -27,7 +38,16 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WeightAtArtInitiationCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientSummary;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
@@ -39,13 +59,23 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by codehub on 10/30/15.
  * A fragment controller for a patient summary details
  */
 public class SummariesFragmentController {
+    protected static final Log log = LogFactory.getLog(SummariesFragmentController.class);
 
     public void controller(@FragmentParam("patient") Patient patient,
                            FragmentModel model){
@@ -67,16 +97,11 @@ public class SummariesFragmentController {
         //gender
         patientSummary.setGender(patient.getGender());
 
-
-
-
         PatientIdentifierType type = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         List<PatientIdentifier> upn = patientService.getPatientIdentifiers(null, Arrays.asList(type), null, Arrays.asList(patient), false);
         if(upn.size() > 0){
             patientSummary.setUpn(upn.get(0).getIdentifier());
         }
-
-
 
         PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
         context.setNow(new Date());
@@ -353,35 +378,26 @@ public class SummariesFragmentController {
         Set<Integer> ios = new HashSet<Integer>();
         String iosResults = "";
         List<Integer> iosIntoList = new ArrayList<Integer>();
-        for(Obs obs:problemsAddedListObs) {
-            ios.add(obs.getValueCoded().getConceptId());
-        }
-        iosIntoList.addAll(ios);
-        if(iosIntoList.size() == 1) {
-            iosResults = ios(iosIntoList.get(0));
-        }
-        else {
-            for(Integer values : iosIntoList){
-                if(values != 1107) {
-                    iosResults += ios(values) + " ";
+            for (Obs obs : problemsAddedListObs) {
+                    ios.add(obs.getValueCoded().getConceptId());
+                  }
+            iosIntoList.addAll(ios);
+            if (iosIntoList.size() == 1) {
+                iosResults = ios(iosIntoList.get(0));
+            } else {
+                for (Integer values : iosIntoList) {
+                    if (values != 1107) {
+                        iosResults += ios(values) + " ";
+                    }
                 }
             }
-        }
+
         //current art regimen
         CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
         if(currentRegimenResults != null) {
-            RegimenOrder roCurrent = (RegimenOrder) currentRegimenResults.getValue();
-            List<String> componentsCurrent = new ArrayList<String>();
-
+            String roCurrent = currentRegimenResults.toString();
             if (roCurrent != null) {
-                for (DrugOrder drugOrder : roCurrent.getDrugOrders()) {
-                    ConceptName cnn = drugOrder.getConcept().getPreferredName(CoreConstants.LOCALE);
-                    if (cnn == null) {
-                        cnn = drugOrder.getConcept().getName(CoreConstants.LOCALE);
-                    }
-                    componentsCurrent.add(cnn.getName());
-                }
-                patientSummary.setCurrentArtRegimen(getRegimenName(standardRegimens(), componentsCurrent));
+                patientSummary.setCurrentArtRegimen(roCurrent);
             }
         }
         else {
@@ -549,6 +565,16 @@ public class SummariesFragmentController {
         else {
             toDate = formatDate((Date) totResults.getValue());
         }
+       //transfer out to facility
+        String toFacility;
+        CalculationResultMap transferOutFacilty = Calculations.lastObs(Dictionary.getConcept("159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        Obs transferOutFacilityObs = EmrCalculationUtils.obsResultForPatient(transferOutFacilty, patient.getPatientId());
+        if(transferOutFacilityObs != null){
+            toFacility = transferOutFacilityObs.getValueText();
+        }
+        else {
+            toFacility = "N/A";
+        }
 
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
@@ -564,6 +590,7 @@ public class SummariesFragmentController {
         model.addAttribute("deadDeath", dead);
         model.addAttribute("returnVisitDate", patientSummary.getNextAppointmentDate());
         model.addAttribute("toDate", toDate);
+        model.addAttribute("toFacility", toFacility);
         model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
         model.addAttribute("iosResults", iosResults);

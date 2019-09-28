@@ -1,13 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License Version 1.0 (the "License"); you may not use this
- * file except in compliance with the License. You may obtain a copy of the License at http://license.openmrs.org
- * <p/>
- * Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
- * express or implied. See the License for the specific language governing rights and limitations under the License.
- * <p/>
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.page.controller.dialog;
 
 import org.openmrs.Cohort;
@@ -25,7 +24,9 @@ import org.openmrs.module.kenyacore.report.ReportManager;
 import org.openmrs.module.kenyaemr.api.impl.CsvMaker;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -36,6 +37,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.FileDownload;
 import org.openmrs.ui.framework.page.PageRequest;
@@ -98,6 +100,9 @@ public class CohortDownloadPageController {
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
         CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
+        LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
+        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+
 
         List<Object> data = new ArrayList<Object>();
         List<Object> headerRow = new ArrayList<Object>();
@@ -105,9 +110,11 @@ public class CohortDownloadPageController {
         header.add("Name");
         header.add("Age");
         header.add("Gender");
-        header.add("UPN");
+        header.add("UPN/Patient Clinic Number");
         header.add("Enrollment Date");
-        header.add("ART Initialization Date");
+        header.add("ART Initiation Date");
+        header.add("Last VL");
+        header.add("Last VL Date");
         headerRow.add(header.toArray());
         for (Patient patient : patients) {
             List<Object> row = new ArrayList<Object>();
@@ -130,21 +137,40 @@ public class CohortDownloadPageController {
             }
             row.add(artInitializationDate);
 
+            String lastVlResult = null;
+            String lastVLResultDate = null;
+            CalculationResult lastvlresult = lastVlResults.get(patient.getId());
+            if (lastvlresult != null && lastvlresult.getValue() != null) {
+                Object lastVl =  lastvlresult.getValue();
+                SimpleObject res = (SimpleObject) lastVl;
+                lastVlResult = res.get("lastVl").toString();
+                lastVLResultDate = DATE_FORMAT.format((Date) res.get("lastVlDate"));
+            }
+            row.add(lastVlResult);
+            row.add(lastVLResultDate);
+
             data.add(row.toArray());
         }
-
-        System.out.println("");
-        FileDownload fileDownload = new FileDownload("Cohort.csv", "text/csv", csvMaker.createCsv(data, header));
+        String filename =  dataSetColumn !=null && dataSetColumn.getName() != null ? dataSetColumn.getName().replaceAll(" ", "_") + "_Cohort.csv" : "Cohort.csv";
+        FileDownload fileDownload = new FileDownload(filename, "text/csv", csvMaker.createCsv(data, header));
         return fileDownload;
     }
 
     private PatientIdentifier getUpn(Patient patient) {
-        PatientIdentifierType upnIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+        PatientIdentifierType clinicNoIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+        PatientIdentifierType upnIdType = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+
         for (PatientIdentifier patientIdentifier : patient.getIdentifiers()) {
             if (patientIdentifier.getIdentifierType().equals(upnIdType)) {
                 return patientIdentifier;
             }
         }
-        return null;
-    }
+
+        for (PatientIdentifier patientIdentifier : patient.getIdentifiers()) {
+            if (patientIdentifier.getIdentifierType().equals(clinicNoIdType)) {
+                return patientIdentifier;
+            }
+        }
+            return null;
+        }
 }

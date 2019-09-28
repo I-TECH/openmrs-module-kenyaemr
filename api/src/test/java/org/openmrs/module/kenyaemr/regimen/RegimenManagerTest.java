@@ -1,23 +1,19 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.regimen;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
+import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -27,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * Tests for {@link RegimenManager}
@@ -74,13 +70,13 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals("regimen1", regimen1.getName());
 		Assert.assertEquals(new Integer(86663), regimen1.getComponents().get(0).getDrugRef().getConcept().getConceptId()); // zidovudine
 		Assert.assertEquals(300d, regimen1.getComponents().get(0).getDose(), 0d);
-		Assert.assertEquals("mg", regimen1.getComponents().get(0).getUnits());
-		Assert.assertEquals("OD", regimen1.getComponents().get(0).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen1.getComponents().get(0).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160862), regimen1.getComponents().get(0).getFrequency().getConceptId()); // OD equivalent
 
 		Assert.assertEquals(new Integer(78643), regimen1.getComponents().get(1).getDrugRef().getConcept().getConceptId()); // lamivudine
 		Assert.assertEquals(150d, regimen1.getComponents().get(1).getDose(), 0d);
-		Assert.assertEquals("mg", regimen1.getComponents().get(1).getUnits());
-		Assert.assertEquals("BD", regimen1.getComponents().get(1).getFrequency());
+		Assert.assertEquals(new Integer(50), regimen1.getComponents().get(1).getUnits().getConceptId()); // 50 corresponds to mg in test-concepts
+		Assert.assertEquals(new Integer(160858), regimen1.getComponents().get(1).getFrequency().getConceptId());
 
 		Assert.assertEquals("regimen2", regimen2.getName());
 
@@ -94,7 +90,7 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 
 		Assert.assertEquals(new Integer(84309), regimen3.getComponents().get(0).getDrugRef().getConcept().getConceptId());
 		Assert.assertNull(regimen3.getComponents().get(0).getDose());
-		Assert.assertEquals("tab", regimen3.getComponents().get(0).getUnits());
+		Assert.assertEquals(new Integer(51), regimen3.getComponents().get(0).getUnits().getConceptId()); // 51 corresponds to tabs in test-concepts
 		Assert.assertNull(regimen3.getComponents().get(0).getFrequency());
 	}
 
@@ -104,16 +100,25 @@ public class RegimenManagerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void findDefinitions_shouldFindDefinitionsForRegimen() {
 		// Create regimen that matches the regimen2 definition exactly
+		OrderFrequency of = new OrderFrequency();
+		of.setConcept(Context.getConceptService().getConcept(160862));
+		Context.getOrderService().saveOrderFrequency(of);
+
+		OrderFrequency ofBD = new OrderFrequency();
+		ofBD.setConcept(Context.getConceptService().getConcept(160858));
+		Context.getOrderService().saveOrderFrequency(ofBD);
+
 		DrugOrder lamivudine = new DrugOrder();
 		lamivudine.setConcept(Context.getConceptService().getConcept(78643));
 		lamivudine.setDose(150d);
-		lamivudine.setUnits("mg");
-		lamivudine.setFrequency("BD");
+		lamivudine.setDoseUnits(Context.getConceptService().getConcept(50));
+		lamivudine.setFrequency(ofBD);
+
 		DrugOrder stavudine = new DrugOrder();
 		stavudine.setConcept(Context.getConceptService().getConcept(84309));
 		stavudine.setDose(30d);
-		stavudine.setUnits("mg");
-		stavudine.setFrequency("OD");
+		stavudine.setDoseUnits(Context.getConceptService().getConcept(50));
+		stavudine.setFrequency(of);
 		RegimenOrder regimen = new RegimenOrder(new HashSet<DrugOrder>(Arrays.asList(lamivudine, stavudine)));
 
 		// Test exact match

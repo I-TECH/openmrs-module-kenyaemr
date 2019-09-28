@@ -1,20 +1,17 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.converter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.kenyaemr.regimen.DrugReference;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenComponent;
@@ -37,7 +34,7 @@ public class StringToRegimenConverter implements Converter<String, Regimen> {
 	 * @see org.springframework.core.convert.converter.Converter#convert(Object)
 	 */
 	@Override
-    public Regimen convert(String source) {
+	public Regimen convert(String source) {
 		String[] tokens = source.split("\\|", -1);
 		Queue<String> tokenQueue = new LinkedList<String>(Arrays.asList(tokens));
 
@@ -49,14 +46,15 @@ public class StringToRegimenConverter implements Converter<String, Regimen> {
 			String units = tokenQueue.remove().trim();
 			String frequency = tokenQueue.remove().trim();
 
+			ConceptService conceptService = org.openmrs.api.context.Context.getConceptService();
 			DrugReference drugRef = StringUtils.isNotEmpty(drugRefStr) ? drugReferenceConverter.convert(drugRefStr) : null;
 			Double dose = StringUtils.isNotEmpty(doseStr) ? Double.parseDouble(doseStr) : null;
-			units = StringUtils.isNotEmpty(units) ? units : null;
-			frequency = StringUtils.isNotEmpty(frequency) ? frequency : null;
+			Concept funits = StringUtils.isNotEmpty(units) ? conceptService.getConcept(units) : null;
+			Concept ffrequency = StringUtils.isNotEmpty(frequency) ? conceptService.getConcept(frequency) : null;
 
-			regimen.getComponents().add(new RegimenComponent(drugRef, dose, units, frequency));
+			regimen.getComponents().add(new RegimenComponent(drugRef, dose, funits, ffrequency));
 		}
 
 		return regimen;
-    }
+	}
 }

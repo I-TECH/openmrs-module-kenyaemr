@@ -17,11 +17,11 @@
  */
 
 import org.openmrs.api.context.Context
-import org.openmrs.module.ModuleFactory
 import org.openmrs.util.OpenmrsClassLoader
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
-import org.springframework.core.type.filter.RegexPatternTypeFilter
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.type.filter.RegexPatternTypeFilter
+
 import java.util.regex.Pattern
 
 /**

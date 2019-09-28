@@ -1,34 +1,28 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyacore.test.TestUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,7 +62,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
 
 		//set the birthdate of #6 to be this year
-		TestUtils.getPatient(6).setBirthdate(TestUtils.date(2014, 1, 1));
+		TestUtils.getPatient(6).setBirthdate(TestUtils.date(2013, 6, 1));
 
 		// Enroll patients #6 and  #7 in the mchcs Program
 		TestUtils.enrollInProgram(TestUtils.getPatient(6), mchcsProgram, TestUtils.date(2015, 1, 1));
@@ -97,7 +91,7 @@ public class NeedsAntibodyTestCalculationTest extends BaseModuleContextSensitive
 		context.setNow(TestUtils.date(2015, 6 ,1));
 
 		CalculationResultMap resultMap = new NeedsAntibodyTestCalculation().evaluate(ptIds, null, context);
-		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and is 9 months<= age >=18 months
+		Assert.assertTrue((Boolean) resultMap.get(6).getValue()); // HEI and has null antibody and  age >=18 months
 		Assert.assertFalse((Boolean) resultMap.get(7).getValue()); //has antibody 1
 		Assert.assertFalse((Boolean) resultMap.get(8).getValue()); // has antibody 2
 	}

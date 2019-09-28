@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:p="http://www.springframework.org/schema/p"
@@ -12,7 +23,7 @@
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
 	<import resource="content/kenyaemr.cohort.analysis.xml" />
-	<import resource="content/kenyaemr.ipt.xml" />
+	<!--<import resource="content/kenyaemr.ipt.xml" />-->
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -32,12 +43,36 @@
 		<constructor-arg value="200" />
 	</bean>
 
+	<bean id="kenyaemr.app.hts" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.hivtesting" />
+		<constructor-arg value="HIV Testing Services" />
+		<constructor-arg value="kenyaemr/hivTesting/htsHome.page" />
+		<constructor-arg value="kenyaui:apps/hts.png" />
+		<constructor-arg value="250" />
+	</bean>
+
 	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.medicalEncounter" />
 		<constructor-arg value="Clinician" />
 		<constructor-arg value="kenyaemr/clinician/clinicianHome.page" />
 		<constructor-arg value="kenyaui:apps/clinician.png" />
 		<constructor-arg value="300" />
+	</bean>
+
+	<!--<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">-->
+		<!--<constructor-arg value="kenyaemr.prep" />-->
+		<!--<constructor-arg value="Prep" />-->
+		<!--<constructor-arg value="kenyaemr/prep/prepHome.page"/>-->
+		<!--<constructor-arg value="kenyaui:apps/facilityDashboard.png" />-->
+		<!--<constructor-arg value="350" />-->
+	<!--</bean>-->
+
+	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.defaultertracing" />
+		<constructor-arg value="Defaulter Tracing" />
+		<constructor-arg value="kenyaemr/defaulterTracing/defaulterTracingHome.page" />
+		<constructor-arg value="kenyaui:apps/defaulter_tracing.png" />
+		<constructor-arg value="399" />
 	</bean>
 
 	<bean id="kenyaemr.app.chart" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
@@ -56,7 +91,15 @@
 		<constructor-arg value="500" />
 	</bean>
 
-	<bean id="kenyaemr.app.directory" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+	<bean id="kenyaemr.app.facilityDashboard" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.facilityDashboard" />
+		<constructor-arg value="Facility Dashboard" />
+		<constructor-arg value="kenyaemr/facilityDashboard/facilityDashboardHome.page" />
+		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
+		<constructor-arg value="510" />
+	</bean>
+
+		<bean id="kenyaemr.app.directory" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.directory" />
 		<constructor-arg value="Directory" />
 		<constructor-arg value="kenyaemr/directory/directoryHome.page" />

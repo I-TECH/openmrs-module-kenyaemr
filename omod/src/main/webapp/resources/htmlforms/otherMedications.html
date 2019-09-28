@@ -12,9 +12,40 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
+	<script>
+        var LabOrderList =[];
+        var drugs_added = 0;
+        var onDrugDispensed = function() {
 
+            var table = document.getElementById('tbl-medication');
+            for (var i = 0, row; row = table.rows[i]; i++) {
+                var drug_dispensed = jq(this).closest('tr').find(".drug-prescribed input").val();
+                drugs_added = jQuery.inArray("" + drug_dispensed + "", LabOrderList);
+                if (drugs_added > -1) {
+                    getField('drug-dispensed.error').html('This drug already exists').show();
+                    jq(this).closest('tr').find('.drug-prescribed input').val("");
+                    return false;
+                }
+                LabOrderList.push(drug_dispensed);
+                return true;
+            }
+        }
+
+        //On ready
+        jQuery(function () {
+
+            jq("#drug-dispensed input").change(onDrugDispensed);
+            beforeSubmit.push(function() {
+            });
+        });
+	</script>
+	<style>
+		.alignLeft {
+			text-align: left;
+		}
+	</style>
 	<div class="ke-form-header">
-		<table width="100%">
+		<table width="100%" id="table">
 			<tr>
 				<td>Date: <encounterDate id="encounter-date" showTime="true"/></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
@@ -23,34 +54,34 @@
 	</div>
 
 	<div class="ke-form-content">
-		<table width="100%">
+		<table width="100%" id="tbl-medication">
 			<tr>
-				<th>Drug Prescribed</th>
-				<th>Dose Prescribed</th>
-				<th>Dispensed Units</th>
-				<th>Frequency Prescribed</th>
-				<th>Duration</th>
-				<th>Duration Units</th>
+				<th class="alignLeft">Drug Prescribed</th>
+				<th class="alignLeft">Dose Prescribed</th>
+				<th class="alignLeft">Dispensed Units</th>
+				<th class="alignLeft">Frequency Prescribed</th>
+				<th class="alignLeft">Duration</th>
+				<th class="alignLeft">Duration Units</th>
 			</tr>
 			<repeat>
 				<template>
 					<obsgroup groupingConceptId="1442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 						<tr>
-							<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug"/></td>
+							<td><obs class ="drug-prescribed" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="autocomplete" answerClasses="Drug" id="drug-dispensed" /></td>
 							<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labetText=""/></td>
 							<td><obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
 							<td>
 								<obs
-									conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
+										conceptId="160855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160863AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160864AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160865AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Once daily,Once daily at bedtime,Once daily in the evening,Once daily in the morning,Twice daily,Thrice daily,Four times daily"
 								/>
 							</td>
 							<td><obs conceptId="159368AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="10" /></td>
 							<td>
 								<obs conceptId="1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								answerLabels="Hours,Days,Weeks,Months" />
+									 answerConceptIds="1822AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1072AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1074AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="Hours,Days,Weeks,Months" />
 							</td>
 						</tr>
 					</obsgroup>
@@ -67,9 +98,11 @@
 				<render />
 			</repeat>
 		</table>
+		<br/><br />
 		<table>
 			<tr>
-				<th colspan="2">Nutirional Support</th>
+				<th colspan="2">Nutritional Support</th>
+				<hr />
 			</tr>
 			<tr>
 				<td>Therapeutic feeds</td>
@@ -80,19 +113,19 @@
 			<tr>
 				<td>Vitamin A</td>
 				<td>
-					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />					
+					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />
 				</td>
 			</tr>
 			<tr>
 				<td>Pyridoxine</td>
 				<td>
-					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />					
+					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="82913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />
 				</td>
 			</tr>
 			<tr>
 				<td>Supplementary foods</td>
 				<td>
-					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="161542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />					
+					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="161542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" labelText="" />
 				</td>
 			</tr>
 		</table>

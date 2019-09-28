@@ -1,5 +1,21 @@
+<script type="text/javascript">
+    function openPatientChart() {
+        kenyaui.openPanelDialog({ templateId: 'patient-chart', width: 85, height: 70, scrolling: true });
+    }
+
+    function openPatientSummary() {
+        kenyaui.openPanelDialog({ templateId: 'patient-summary', width: 85, height: 70, scrolling: true });
+    }
+
+    function openVisitSummary() {
+        kenyaui.openPanelDialog({ templateId: 'visit-summary', width: 85, height: 70, scrolling: true });
+    }
+
+</script>
+
 <div class="ke-panelbar" style="text-align: right">
 	<% if (visit) { %>
+	<button type="button" onclick="openVisitSummary();"><img src="${ ui.resourceLink("kenyaui", "images/buttons/summary.png") }" /> Visit Summary</button>
 	<%= ui.includeFragment("kenyaui", "widget/dialogForm", [
 			buttonConfig: [ label: "Check out of visit", iconProvider: "kenyaui", icon: "buttons/visit_end.png" ],
 			dialogConfig: [ heading: "Check Out", width: 50, height: 30 ],
@@ -42,3 +58,26 @@
 	]) %>
 	<% } %>
 </div>
+
+<div id="patient-chart" title="Patient Overview" style="display: none">
+	${ ui.includeFragment("kenyaemr", "program/programCarePanels", [ patient: currentPatient, complete: true, activeOnly: false ]) }
+	<div align="center">
+		<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Close</button>
+	</div>
+</div>
+
+<div id="patient-summary" title="" style="display: none">
+	${ ui.includeFragment("kenyaemr", "summaries", [ patient: currentPatient ]) }
+	<br/>
+	<br/>
+	<div align="center">
+		<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Close</button>
+	</div>
+</div>
+
+<div id="visit-summary" title="Visit Summary" style="display: none">
+	${ ui.includeFragment("kenyaemr", "patient/currentVisitSummary", [ patient: currentPatient, visit: visit]) }
+	<div align="center">
+		<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Close</button>
+	</div>
+	</div>

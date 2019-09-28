@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.util;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -104,7 +99,8 @@ public class EmrUiUtils {
 				boolean hasDecimals = Math.floor(o.getDose()) != o.getDose();
 				String dose = hasDecimals ? ui.format(o.getDose()) : ui.format(o.getDose().intValue());
 
-				sb.append(" " + dose + o.getUnits());
+				//sb.append(" " + dose + o.getUnits());
+				sb.append(" " + dose + o.getDoseUnits().getShortNameInLocale(CoreConstants.LOCALE).getName());
 			}
 			if (o.getFrequency() != null) {
 				sb.append(" " + o.getFrequency());
@@ -166,11 +162,11 @@ public class EmrUiUtils {
 			boolean current = OpenmrsUtil.compare(startDate, now) <= 0 && (endDate == null || OpenmrsUtil.compare(endDate, now) > 0);
 
 			ret.add(SimpleObject.create(
-				"startDate", kenyaUi.formatDate(startDate),
-				"endDate", kenyaUi.formatDate(endDate),
-				"regimen", simpleRegimen(regimen, ui),
-				"changeReasons", changeReasons,
-				"current", current
+					"startDate", kenyaUi.formatDate(startDate),
+					"endDate", kenyaUi.formatDate(endDate),
+					"regimen", simpleRegimen(regimen, ui),
+					"changeReasons", changeReasons,
+					"current", current
 			));
 		}
 
@@ -185,7 +181,15 @@ public class EmrUiUtils {
 	 */
 	public List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
 		return SimpleObject.fromCollection(definitions, ui,
+				"name", "group.code", "components.drugRef", "components.dose"
+		);
+	}
+
+	/*
+	* public List<SimpleObject> simpleRegimenDefinitions(Collection<RegimenDefinition> definitions, UiUtils ui) {
+		return SimpleObject.fromCollection(definitions, ui,
 				"name", "group.code", "components.drugRef", "components.dose", "components.units", "components.frequency"
 		);
 	}
+	* */
 }

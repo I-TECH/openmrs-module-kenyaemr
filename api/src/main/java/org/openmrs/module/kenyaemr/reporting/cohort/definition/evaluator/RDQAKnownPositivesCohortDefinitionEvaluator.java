@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
@@ -5,8 +14,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAKnownPositivesCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.shared.mchms.MchmsCohortLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -17,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Evaluator for patients eligible for RDQA
@@ -26,21 +37,24 @@ public class RDQAKnownPositivesCohortDefinitionEvaluator implements CohortDefini
 
     private final Log log = LogFactory.getLog(this.getClass());
     @Autowired
-    private MchmsCohortLibrary mchmsCohortLibrary;
+    private ETLPmtctCohortLibrary pmtctCohortLibrary;
 
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
         RDQAKnownPositivesCohortDefinition definition = (RDQAKnownPositivesCohortDefinition) cohortDefinition;
-        CohortDefinition cd = mchmsCohortLibrary.testedForHivBeforeOrDuringMchms();//, "onOrAfter=${startDate},onOrBefore=${endDate}"
-        Calendar now = Calendar.getInstance();
-        Date today = now.getTime();
+        CohortDefinition cd = pmtctCohortLibrary.mchKnownPositiveTotal();
 
-        now.set(2002,1,1);
-        Date startDate = now.getTime();
+        Calendar calendar = Calendar.getInstance();
+        int thisMonth = calendar.get(calendar.MONTH);
 
-        context.addParameterValue("onOrAfter", startDate);
-        context.addParameterValue("onOrBefore", today);
+        Map<String, Date> dateMap = EmrReportingUtils.getReportDates(thisMonth - 1);
+        Date startDate = dateMap.get("startDate");
+        Date endDate = dateMap.get("endDate");
+
+        context.addParameterValue("startDate", startDate);
+        context.addParameterValue("endDate", endDate);
+
 
         Cohort knownPositives = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 

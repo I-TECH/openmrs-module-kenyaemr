@@ -23,14 +23,8 @@ def includeLocales = [ "en" ]
 
 /* ================ End configuration ================== */
 
-import org.openmrs.Concept
-import org.openmrs.ConceptAnswer
-import org.openmrs.ConceptName
-import org.openmrs.ConceptNumeric
-import org.openmrs.ConceptSet
+import org.openmrs.*
 import org.openmrs.api.context.Context
-import groovy.util.Node
-import groovy.util.XmlNodePrinter
 
 def svc = Context.conceptService;
 

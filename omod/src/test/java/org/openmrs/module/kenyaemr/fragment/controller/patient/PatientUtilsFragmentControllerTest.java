@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.junit.Assert;
@@ -32,7 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Tests for {@link PatientUtilsFragmentController}
@@ -141,4 +140,22 @@ public class PatientUtilsFragmentControllerTest extends BaseModuleWebContextSens
 		Assert.assertThat(fathers, arrayWithSize(1));
 		Assert.assertThat(fathers[0], hasEntry("id", (Object) (6)));
 	}
+	/**
+	 * @see PatientUtilsFragmentController#getGuardians(org.openmrs.Patient, org.openmrs.ui.framework.UiUtils)
+	 *
+	@Test
+	public void getGuardians_shouldReturnAllGuardiansOfPatient() {
+		Patient guardian = TestUtils.getPatient(6); // male in standardTestDataset.xml
+		Patient child = TestUtils.getPatient(2);
+
+		// Save guardian-child relationship between patient #2 and #7
+		TestUtils.saveRelationship(guardian, Context.getPersonService().getRelationshipType(2), child);
+
+		SimpleObject[] guardians = controller.getGuardians(child, ui);
+
+		// Check patient #6 is returned as sole guardian
+		Assert.assertThat(guardian, arrayWithSize(1));
+		Assert.assertThat(guardians[0], hasEntry("id", (Object) (6)));
+	}
+	*/
 }

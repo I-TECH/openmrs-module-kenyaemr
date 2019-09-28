@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.reporting.builder.rdqa;
 
 import org.openmrs.Concept;
@@ -29,6 +24,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimen
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfLastCTXCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.LastCD4OrVLResultCalculation;
@@ -50,12 +46,15 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientEntryP
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WHOStageDataConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -77,11 +76,13 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -91,6 +92,13 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 
     @Autowired
     private RDQAIndicatorLibrary rdqa;
+
+    @Autowired
+    private ETLPmtctIndicatorLibrary pmtctIndicators;
+
+    @Autowired
+    private ETLMoh731IndicatorLibrary hivIndicators;
+
 
 	/**
 	 *
@@ -136,7 +144,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Last WHO Stage", new ObsForPersonDataDefinition("Last WHO Stage", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
 		dsd.addColumn("Last WHO Stage Date", new ObsForPersonDataDefinition("Last WHO Stage Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
 
-		dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
+		dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
 
 		dsd.addColumn("Transfer In Date", new CalculationDataDefinition("Transfer In Date", new TransferInDateCalculation()), "", new CustomDateConverter());
 		dsd.addColumn("Transfer Out Date", new CalculationDataDefinition("Transfer Out Date", new TransferOutDateCalculation()), "", new CustomDateConverter());
@@ -209,7 +217,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, ""),
                 ReportUtils.map(activePatientsDSD, ""),
-                ReportUtils.map(careAndTreatmentDataSet(), "")
+               ReportUtils.map(careAndTreatmentDataSet(), "")
         );
     }
 
@@ -252,7 +260,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Last WHO Stage", new ObsForPersonDataDefinition("Last WHO Stage", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
         dsd.addColumn("Last WHO Stage Date", new ObsForPersonDataDefinition("Last WHO Stage Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
 
-        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
+        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
 
         dsd.addColumn("Transfer In Date", new CalculationDataDefinition("Transfer In Date", new TransferInDateCalculation()), "", new CustomDateConverter());
         dsd.addColumn("Transfer Out Date", new CalculationDataDefinition("Transfer Out Date", new TransferOutDateCalculation()), "", new CustomDateConverter());
@@ -272,30 +280,17 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Last encounter date in the blue card", definition, "", new EncounterDatetimeConverter());
 
         dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
-        dsd.addColumn("Number of visits in paper bluecards", new CalculationDataDefinition("Total Visits", new VisitsForAPatientCalculation()), "", new DataConverter() {
-            @Override
-            public Class<?> getInputDataType() {
-                return Integer.class;
-            }
-
-            @Override
-            public Class<?> getDataType() {
-                return Integer.class;
-            }
-
-            @Override
-            public Object convert(Object input) {
-                return input;
-            }
-        });
-
-        dsd.addColumn("Patient checked-out", new CalculationDataDefinition("Checked Out", new PatientCheckOutStatusCalculation()), "", new RDQACalculationResultConverter());
         return dsd;
     }
 
     protected PatientDataSetDefinition rdqaActiveDataSetDefinition(String datasetName) {
 
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
+
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
@@ -327,17 +322,18 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Last CD4 Count", new CalculationDataDefinition("Last CD4 Count", new LastCD4OrVLResultCalculation()), "", new Cd4OrVLValueAndDateConverter("value"));
         dsd.addColumn("Last CD4 Count Date", new CalculationDataDefinition("Last CD4 Count Date", new LastCD4OrVLResultCalculation()), "", new Cd4OrVLValueAndDateConverter("date"));
 
-        dsd.addColumn("First Viral Load Result", new ObsForPersonDataDefinition("First Viral Load Result", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "", new ObsValueNumericConverter(1));
-        dsd.addColumn("First Viral Load Result Date", new ObsForPersonDataDefinition("First Viral Load Result Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "", new ObsDatetimeConverter());
-        dsd.addColumn("Recent Viral Load Result", new ObsForPersonDataDefinition("Recent Viral Load Result", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "", new ObsValueNumericConverter(1));
-        dsd.addColumn("Recent Viral Load Result Date", new ObsForPersonDataDefinition("Recent Viral Load Result Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null), "", new ObsDatetimeConverter());
+        dsd.addColumn("First Viral Load Result", new CalculationDataDefinition("First Viral Load Result", new ViralLoadResultCalculation("first")), "", new RDQASimpleObjectRegimenConverter("data"));
+        dsd.addColumn("First Viral Load Result Date", new CalculationDataDefinition("First Viral Load Result Date", new ViralLoadResultCalculation("first")), "", new RDQASimpleObjectRegimenConverter("date"));
+
+        dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
+        dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
 
         dsd.addColumn("First WHO Stage", new ObsForPersonDataDefinition("First WHO Stage", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
         dsd.addColumn("First WHO Stage Date", new ObsForPersonDataDefinition("First WHO Stage Date", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
         dsd.addColumn("Last WHO Stage", new ObsForPersonDataDefinition("Last WHO Stage", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new WHOStageDataConverter());
         dsd.addColumn("Last WHO Stage Date", new ObsForPersonDataDefinition("Last WHO Stage Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), null, null), "", new ObsDatetimeConverter());
 
-        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", new RegimenConverter());
+        dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
 
         dsd.addColumn("Transfer In Date", new CalculationDataDefinition("Transfer In Date", new TransferInDateCalculation()), "", new CustomDateConverter());
         dsd.addColumn("CTX/Dapsone last, documentation date", new CalculationDataDefinition("CTX/Dapsone last, documentation date", new DateOfLastCTXCalculation()), "", new RDQACalculationResultConverter());
@@ -354,24 +350,6 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Last encounter date in the blue card", definition, "", new EncounterDatetimeConverter());
 
         dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
-        dsd.addColumn("Number of visits in paper bluecards", new CalculationDataDefinition("Total Visits", new VisitsForAPatientCalculation()), "", new DataConverter() {
-            @Override
-            public Class<?> getInputDataType() {
-                return Integer.class;
-            }
-
-            @Override
-            public Class<?> getDataType() {
-                return Integer.class;
-            }
-
-            @Override
-            public Object convert(Object input) {
-                return input;
-            }
-        });
-
-        dsd.addColumn("Patient checked-out", new CalculationDataDefinition("Checked Out", new PatientCheckOutStatusCalculation()), "", new RDQACalculationResultConverter());
         return dsd;
     }
 
@@ -382,7 +360,7 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         String indParams = "";
 
         cohortDsd.addColumn("ctx", "On CTX Prophylaxis", ReportUtils.map(rdqa.patientsOnCTX(), indParams), "");
-        cohortDsd.addColumn("enrolledInCare", "Enrolled in care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
+        cohortDsd.addColumn("newOncare", "New on care", ReportUtils.map(rdqa.enrolledInCare(), indParams), "");
         cohortDsd.addColumn("currentInCare", "Currently in care", ReportUtils.map(rdqa.currentInCare(), indParams), "");
         cohortDsd.addColumn("currentOnART", "Currently on ART", ReportUtils.map(rdqa.currentOnART(), indParams), "");
         cohortDsd.addColumn("cumulativeOnART", "Cumulative ever on ART", ReportUtils.map(rdqa.cumulativeOnART(), indParams), "");
