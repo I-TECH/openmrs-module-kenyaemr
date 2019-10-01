@@ -57,6 +57,21 @@ public class CommonDimensionLibrary {
      * Dimension of age between
      * @return Dimension
      */
+    public CohortDefinitionDimension artRegisterAgeGroups() {
+        CohortDefinitionDimension dim = new CohortDefinitionDimension();
+
+        dim.setName("fine age between(<9, btw 10 and 19, 25+");
+        dim.addParameter(new Parameter("onDate", "Date", Date.class));
+        dim.addCohortDefinition("<9", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("9-19", map(commonCohortLibrary.agedAtLeastAgedAtMost(9, 19), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("20+", map(commonCohortLibrary.agedAtLeast(20), "effectiveDate=${onDate}"));
+         return dim;
+    }
+
+    /**
+     * Dimension of age between
+     * @return Dimension
+     */
     public CohortDefinitionDimension datimAgeGroups() {
         CohortDefinitionDimension dim = new CohortDefinitionDimension();
         dim.setName("standard age between(<1, btw 1 and 9, btw 10 and 14, btw 15 and 19, btw 20 and 24, btw 25 and 49, 50+");
