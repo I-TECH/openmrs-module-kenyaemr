@@ -60,7 +60,7 @@ public class IPTOutcomeDataConverter implements DataConverter {
 			return "";
 
 		String label = "";
-		if (report.equals("rdqa")){
+		if (report != null && report.equals("rdqa")){
 			label = "Missing";
 		}
 		switch (answer){
