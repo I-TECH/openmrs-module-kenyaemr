@@ -41,6 +41,7 @@
 		</property>
 		<property name="reports">
 			<set>
+				<ref bean="kenyaemr.common.report.cccDar" />
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
 				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
@@ -405,6 +406,18 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hts/Enrollment_Tracker.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:allPatients" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.cccDar" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="351ac318-d875-11e9-8a34-2a2ae2dbcce4" />
+		<property name="name" value="DAR Register" />
+		<property name="description" value="CCC Daily Activity Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:ccc_dar.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
 	</bean>
 
 </beans>
