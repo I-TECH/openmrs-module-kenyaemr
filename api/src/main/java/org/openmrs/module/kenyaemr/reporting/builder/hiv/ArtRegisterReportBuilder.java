@@ -17,10 +17,10 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
@@ -33,9 +33,9 @@ import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ArtCohortStartMonthYearDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.HeightConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueNumericConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
@@ -58,14 +58,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.Popul
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.TbStartDateArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WeightAtArtDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.art.ETLArtRegisterIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
@@ -76,6 +74,7 @@ import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -98,26 +97,14 @@ import java.util.List;
 @Builds({"kenyaemr.hiv.report.artRegister"})
 public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
 
-    @Autowired
-    private ArtCohortLibrary artCohortLibrary;
-    @Autowired
+     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
-    @Autowired
-    private HivIndicatorLibrary hivIndicators;
-
-    @Autowired
+     @Autowired
     private ETLArtRegisterIndicatorLibrary etlArtIndicators;
-
-    @Autowired
-    private ETLMoh731GreenCardIndicatorLibrary moh731GreencardIndicators;
 
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
-    /**
-     *
-     * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(org.openmrs.module.kenyacore.report.CohortReportDescriptor, PatientDataSetDefinition)
-     */
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
@@ -157,7 +144,7 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
 
     protected PatientDataSetDefinition artRegisterDataSetDefinition() {
 
-        PatientDataSetDefinition dsd = new PatientDataSetDefinition("artRegister");
+        PatientDataSetDefinition dsd = new PatientDataSetDefinition("ARTRegister");
         dsd.addSortCriteria("DOBAndAge", SortCriteria.SortDirection.DESC);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -170,7 +157,6 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
-        dsd.setName("artCohortRegister");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
         dsd.addColumn("UPN", identifierDef_upn, "");
@@ -183,7 +169,7 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Population Type", new PopulationTypeArtDataDefinition(), "");
         dsd.addColumn("Discordance", new HTSDiscordanceArtDataDefinition(),"");
         dsd.addColumn("First WHO Stage", new WHOStageArtDataDefinition(), "");
-       // dsd.addColumn("Latest CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
+        dsd.addColumn("First CD4 Count", new ObsForPersonDataDefinition("First CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
         dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
         dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
         dsd.addColumn("CTX Start Date", new CalculationDataDefinition("Weight at Art Start", new DateOfFirstCTXCalculation()), "", new ArtCohortStartMonthYearDateConverter());
@@ -202,7 +188,7 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-        //dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("ART Outcomes", patientOutComes(), "onDate=${endDate}", new CalculationResultConverter());
 
         return dsd;
     }
@@ -245,20 +231,13 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
 
     }
 
-    private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
-        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
+    private DataDefinition patientOutComes() {
+        //int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
-        cd.addCalculationParameter("outcomePeriod", months);
+        cd.addCalculationParameter("outcomePeriod", 1);
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
 
-    }
-
-    private DataDefinition currentCd4Count(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("currentCd4", new LastCd4Calculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
     }
 
 }
