@@ -51,6 +51,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.EDCan
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.EDCandANCNumberPreg3DataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTFirstSubstitutionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTFirstSwitchDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTPatientOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTSecondSubstitutionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTSecondSwitchDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.HTSDiscordanceArtDataDefinition;
@@ -188,7 +189,7 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-        dsd.addColumn("ART Outcomes", patientOutComes(), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("ART Outcomes", new ARTPatientOutcomeDataDefinition(),"");
 
         return dsd;
     }
