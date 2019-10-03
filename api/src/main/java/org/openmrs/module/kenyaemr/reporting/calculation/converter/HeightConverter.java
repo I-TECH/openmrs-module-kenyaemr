@@ -17,12 +17,12 @@ public class HeightConverter implements DataConverter{
 	public Object convert(Object obj) {
 
 		if (obj == null) {
-			return "Missing";
+			return "Adult";
 		}
 
 		Object value = ((CalculationResult) obj).getValue();
 		if (value == null){
-			return "Missing";
+			return "Adult";
 		}
 		return value;
 	}

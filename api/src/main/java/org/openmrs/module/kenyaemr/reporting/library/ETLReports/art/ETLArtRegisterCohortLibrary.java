@@ -29,6 +29,7 @@ import java.util.Date;
 public class ETLArtRegisterCohortLibrary {
 
     public  CohortDefinition originalArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select patient_id\n" +
                 "from\n" +
                 "(select e.patient_id,\n" +
@@ -46,7 +47,7 @@ public class ETLArtRegisterCohortLibrary {
                 " where date(e.date_started) between date(:startDate) and date(:endDate)\n" +
                 " group by e.patient_id\n" +
                 " having TI_on_art=0) a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("originalARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -56,6 +57,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition transferInArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select patient_id\n" +
                 "from\n" +
                 "(select e.patient_id,\n" +
@@ -73,7 +75,7 @@ public class ETLArtRegisterCohortLibrary {
                 " where date(enr.date_started_art_at_transferring_facility) between date(:startDate) and date(:endDate)\n" +
                 " group by e.patient_id\n" +
                 " having TI_on_art=1) a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("originalARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -83,6 +85,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition transferOutArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select patient_id\n" +
                 "from\n" +
                 "  (select e.patient_id,\n" +
@@ -101,7 +104,7 @@ public class ETLArtRegisterCohortLibrary {
                 "     inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0\n" +
                 "   where  e.lastDiscontinuationsReason = 159492 and (date(e.date_started) between date(:startDate) and date(:endDate) or date(enr.date_started_art_at_transferring_facility) between date(:startDate) and date(:endDate))\n" +
                 "   group by e.patient_id) a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("originalARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -111,6 +114,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition originalFirstLineArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select\n" +
                 "  fdr.patient_id\n" +
                 "from  (SELECT patient_id,\n" +
@@ -119,7 +123,7 @@ public class ETLArtRegisterCohortLibrary {
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
                 "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"First line\" GROUP BY patient_id  HAVING p_id = 1) fdr\n" +
                 "GROUP BY fdr.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("originalFirstLineARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -129,6 +133,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition alternateFirstLineArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select\n" +
                 "  fdr.patient_id\n" +
                 "from  (SELECT patient_id,\n" +
@@ -137,7 +142,7 @@ public class ETLArtRegisterCohortLibrary {
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
                 "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"First line\" GROUP BY patient_id  HAVING p_id = 2) fdr\n" +
                 "GROUP BY fdr.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("alternateFirstLineARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -147,6 +152,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition secondLineArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select\n" +
                 "  fdr.patient_id\n" +
                 "from  (SELECT  patient_id,\n" +
@@ -155,7 +161,7 @@ public class ETLArtRegisterCohortLibrary {
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
                 "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"Second line\" GROUP BY patient_id  HAVING p_id > 0) fdr\n" +
                 "GROUP BY fdr.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("secondFirstLineARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -165,6 +171,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition thirdLineArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select\n" +
                 "  fdr.patient_id\n" +
                 "from  (SELECT  patient_id,\n" +
@@ -173,7 +180,7 @@ public class ETLArtRegisterCohortLibrary {
                 "         mid(max(concat(visit_date,regimen_line)),11) as regimenLine,\n" +
                 "         COUNT(patient_id) as p_id FROM kenyaemr_etl.etl_drug_event WHERE regimen_line=\"Third line\" GROUP BY patient_id  HAVING p_id > 0) fdr\n" +
                 "GROUP BY fdr.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("secondFirstLineARTCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -183,6 +190,7 @@ public class ETLArtRegisterCohortLibrary {
     }
 
     public  CohortDefinition withVlResultsArtCohort() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select patient_id\n" +
                 "from\n" +
                 "  (select e.patient_id,\n" +
@@ -200,7 +208,7 @@ public class ETLArtRegisterCohortLibrary {
                 "   where date(e.date_started) between date(:startDate) and date(:endDate) and (lb.visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate)\n" +
                 "         and (lb.lab_test in (856, 1305))\n" +
                 "   group by e.patient_id) a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+
         cd.setName("ARTCohortWithVLResilts");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

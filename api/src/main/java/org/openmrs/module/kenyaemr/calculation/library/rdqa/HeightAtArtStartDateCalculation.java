@@ -18,14 +18,16 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 
 import java.util.*;
 
 /**
- * Returns height at art start date
+ * Returns height at art start date for adult
  */
 public class HeightAtArtStartDateCalculation extends AbstractPatientCalculation {
 
@@ -34,25 +36,33 @@ public class HeightAtArtStartDateCalculation extends AbstractPatientCalculation 
 
 		CalculationResultMap dataForOtherCalculation = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap questionEvaluationData = evaluateQuestion(cohort, parameterValues, context);
+		CalculationResultMap artStartDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptid : cohort) {
 			Double ans = null;
-			SimpleResult baseResult = (SimpleResult) dataForOtherCalculation.get(ptid);
+			Integer ageAtARTStart = null;
+			Date birthDate = Context.getPatientService().getPatient(ptid).getBirthdate();
+			Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDateMap, ptid);
+			if (artStartDate != null && birthDate != null) {
+				ageAtARTStart = ageInYearsAtDate(birthDate, artStartDate);
 
-			ListResult result = (ListResult) questionEvaluationData.get(ptid);
-			List<Obs> obs = CalculationUtils.extractResultValues(result);
+				SimpleResult baseResult = (SimpleResult) dataForOtherCalculation.get(ptid);
 
-			if (baseResult !=null) {
-				Date baseDate = (Date) baseResult.getValue();
+				ListResult result = (ListResult) questionEvaluationData.get(ptid);
+				List<Obs> obs = CalculationUtils.extractResultValues(result);
 
-				for (Obs o : obs) {
-					if (baseDate != null) {
-						if (obs.size() > 0 && o != null  ) {
+				if (baseResult != null && ageAtARTStart < 18) {
+					Date baseDate = (Date) baseResult.getValue();
 
-							if (setCalendarTime(o.getObsDatetime()).equals(setCalendarTime(baseDate))) {
-								ans = o.getValueNumeric();
+					for (Obs o : obs) {
+						if (baseDate != null) {
+							if (obs.size() > 0 && o != null) {
+
+								if (setCalendarTime(o.getObsDatetime()).equals(setCalendarTime(baseDate))) {
+									ans = o.getValueNumeric();
+								}
 							}
 						}
 					}
@@ -81,6 +91,11 @@ public class HeightAtArtStartDateCalculation extends AbstractPatientCalculation 
 		cal.clear(Calendar.MILLISECOND);
 		return cal;
 
+	}
+	private Integer ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
+		Age age = new Age(birthDate, artInitiationDate);
+
+		return age.getFullYears();
 	}
 
 }

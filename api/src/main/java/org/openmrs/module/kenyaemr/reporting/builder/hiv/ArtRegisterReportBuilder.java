@@ -17,10 +17,10 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
@@ -30,10 +30,12 @@ import org.openmrs.module.kenyaemr.calculation.library.rdqa.WeightAtArtStartDate
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.ArtCohortStartMonthYearDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CurrentCd4Converter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.HeightConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueNumericConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
@@ -49,6 +51,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.EDCan
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.EDCandANCNumberPreg3DataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTFirstSubstitutionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTFirstSwitchDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTPatientOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTSecondSubstitutionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ARTSecondSwitchDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.HTSDiscordanceArtDataDefinition;
@@ -56,14 +59,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.Popul
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.TbStartDateArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WeightAtArtDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.art.ETLArtRegisterIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
@@ -74,11 +75,15 @@ import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -87,25 +92,24 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by pwangoo on 02/10/19.
+ * Created by pwangoo on 1/10/19.
  */
 @Component
-@Builds({"kenyaemr.hiv.report.art.cohort.analysis.art.6","kenyaemr.hiv.report.art.cohort.analysis.art.12","kenyaemr.hiv.report.art.cohort.analysis.art.24","kenyaemr.hiv.report.art.cohort.analysis.art.36","kenyaemr.hiv.report.art.cohort.analysis.art.48","kenyaemr.hiv.report.art.cohort.analysis.art.60"})
-public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
+@Builds({"kenyaemr.hiv.report.artRegister"})
+public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
 
-       public static final String DATE_FORMAT = "dd/MM/yyyy";
+     @Autowired
+    private CommonDimensionLibrary commonDimensions;
 
-    /**
-     *
-     * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(org.openmrs.module.kenyacore.report.CohortReportDescriptor, org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition)
-     */
+     @Autowired
+    private ETLArtRegisterIndicatorLibrary etlArtIndicators;
+
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
+
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
         return artCohortPatients();
-//        Integer period = Integer.parseInt(descriptor.getId().split("\\.")[7]);
-//        CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(period);
-//        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
     protected Mapped<CohortDefinition> artCohortPatients() {
@@ -116,16 +120,32 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
+    @Override
+    protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
+
+        PatientDataSetDefinition artPatients = artRegisterDataSetDefinition();
+        artPatients.addRowFilter(artCohortPatients());
+        DataSetDefinition artPatientsDSD = artPatients;
+
+        return Arrays.asList(
+                   ReportUtils.map(artPatientsDSD, "startDate=${startDate},endDate=${endDate}"),
+                  ReportUtils.map(artRegisterSummaryDataset(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
+
+
      @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class)
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)  //Determines whether to add start and end date
         );
     }
 
-    protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
+    protected PatientDataSetDefinition artRegisterDataSetDefinition() {
 
+        PatientDataSetDefinition dsd = new PatientDataSetDefinition("ARTRegister");
         dsd.addSortCriteria("DOBAndAge", SortCriteria.SortDirection.DESC);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -138,7 +158,6 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
-        dsd.setName("artCohortRegister");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
         dsd.addColumn("UPN", identifierDef_upn, "");
@@ -151,7 +170,7 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Population Type", new PopulationTypeArtDataDefinition(), "");
         dsd.addColumn("Discordance", new HTSDiscordanceArtDataDefinition(),"");
         dsd.addColumn("First WHO Stage", new WHOStageArtDataDefinition(), "");
-        dsd.addColumn("Initial CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
+        dsd.addColumn("First CD4 Count", new ObsForPersonDataDefinition("First CD4 Count", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.CD4_COUNT), null, null), "", new ObsValueNumericConverter(1));
         dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
         dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
         dsd.addColumn("CTX Start Date", new CalculationDataDefinition("Weight at Art Start", new DateOfFirstCTXCalculation()), "", new ArtCohortStartMonthYearDateConverter());
@@ -170,24 +189,56 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-        dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
+        dsd.addColumn("ART Outcomes", new ARTPatientOutcomeDataDefinition(),"");
+
+        return dsd;
+    }
+
+    /**
+     * Creates the ART `Cohort summary data set
+     * @return the data set
+     */
+    protected DataSetDefinition artRegisterSummaryDataset() {
+
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("artCohortIndicator");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.artRegisterAgeGroups(), "onDate=${endDate}"));
+        String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        ColumnParameters children_0_to_8 = new ColumnParameters(null, "<9", "age=<9");
+        ColumnParameters adult_9_to_19 = new ColumnParameters(null, "9-19", "age=9-19");
+        ColumnParameters adult_20_and_above = new ColumnParameters(null, "20+", "age=20+");
+        ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
+
+        List<ColumnParameters> artCohortAgeDisaggregation = Arrays.asList(children_0_to_8,  adult_9_to_19 , adult_20_and_above, colTotal);
+
+        EmrReportingUtils.addRow(cohortDsd, "originalArtCohort", "Original ART Cohort", ReportUtils.map(etlArtIndicators.originalArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03","04"));
+        EmrReportingUtils.addRow(cohortDsd, "transferInArtCohort", "Transfer In ART Cohort", ReportUtils.map(etlArtIndicators.transferINArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "transferOutArtCohort", "Transfer Out ART Cohort", ReportUtils.map(etlArtIndicators.transferOUTArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "originalFirstLineArtCohort", "On Original First Line ART Cohort", ReportUtils.map(etlArtIndicators.onOriginalFirstLineArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "alternateFirstLineArtCohort", "On Alternate First Line ART Cohort", ReportUtils.map(etlArtIndicators.onAlternateFirstLineArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "secondLineArtCohort", "On Second Line ART Cohort", ReportUtils.map(etlArtIndicators.onSecondLineArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "thirdLineArtCohort", "On Third Line ART Cohort", ReportUtils.map(etlArtIndicators.onThirdLineArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "artCohortWithVL", "ART Cohort with VL", ReportUtils.map(etlArtIndicators.withViralLoadResultsArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "artCohortWithSuppresedVL", "ART Cohort with suppressed VL", ReportUtils.map(etlArtIndicators.withSuppressedViralLoadResultsArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "stoppedArtCohort", "ART Cohort stopped ART", ReportUtils.map(etlArtIndicators.stoppedArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "missedAppointmentArtCohort", "Missed Appointment ART", ReportUtils.map(etlArtIndicators.defaulterArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "deadArtCohort", "Dead ART Cohort", ReportUtils.map(etlArtIndicators.deadOnArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "ltfuArtCohort", "Ltfu ART Cohort", ReportUtils.map(etlArtIndicators.ltfuOnArtCohort(), indParams), artCohortAgeDisaggregation, Arrays.asList("01", "02", "03", "04"));
+
+        return cohortDsd;
 
     }
 
-     private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
-        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
+    private DataDefinition patientOutComes() {
+        //int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
         CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
-        cd.addCalculationParameter("outcomePeriod", months);
+        cd.addCalculationParameter("outcomePeriod", 1);
         cd.addParameter(new Parameter("onDate", "On Date", Date.class));
         return cd;
 
-    }
-
-    private DataDefinition currentCd4Count(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("currentCd4", new LastCd4Calculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
     }
 
 }
