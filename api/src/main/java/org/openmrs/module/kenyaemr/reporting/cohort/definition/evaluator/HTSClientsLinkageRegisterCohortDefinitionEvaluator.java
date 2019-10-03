@@ -54,7 +54,7 @@ public class HTSClientsLinkageRegisterCohortDefinitionEvaluator implements Encou
 				"INNER JOIN kenyaemr_etl.etl_patient_demographics pt ON pt.patient_id=t.patient_id AND pt.voided=0\n" +
 				"INNER JOIN kenyaemr_etl.etl_hiv_enrollment e ON e.patient_id=t.patient_id AND e.voided=0\n" +
 				"LEFT JOIN kenyaemr_etl.etl_hts_referral_and_linkage l ON l.patient_id=t.patient_id\n" +
-				"WHERE t.test_type IN (1, 2) AND t.final_test_result='Positive' AND t.voided=0 AND l.patient_id IS NULL\n" +
+				"WHERE t.test_type = 1 AND t.final_test_result='Positive' AND t.voided=0 AND l.patient_id IS NULL\n" +
 				"  AND date(e.visit_date) BETWEEN date(:startDate) AND date(:endDate)\n" +
 				")";
 
