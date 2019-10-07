@@ -494,7 +494,8 @@ public class RegimenUtilFragmentController {
 				for (DrugOrder o : toStart) {
 					o.setPatient(patient);
 					o.setDateActivated(changeDate);
-					o.setOrderType(os.getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+					// ORDERTYPE_DRUG = 2
+					o.setOrderType(os.getOrderType(2));
 					os.saveOrder(o, null);
 				}
 			}

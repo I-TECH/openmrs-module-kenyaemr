@@ -176,7 +176,8 @@ public class SearchFragmentController {
 
 		// Add first 20 results of search by name
 		if (StringUtils.isNotBlank(query)) {
-			results.addAll(svc.getLocations(query, true, 0, 20));
+			// results.addAll(svc.getLocations(query, true, 0, 20));
+			results.addAll(svc.getLocations(query));
 		}
 
 		// Convert to simple objects

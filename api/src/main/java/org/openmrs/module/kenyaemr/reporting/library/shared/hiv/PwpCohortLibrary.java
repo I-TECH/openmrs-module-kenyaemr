@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -40,7 +40,7 @@ public class PwpCohortLibrary {
 		cd.setName("condoms provided");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(condomsProvided);
 		cd.setValueList(Collections.singletonList(yes));
 		cd.setOperator(SetComparator.IN);
@@ -63,7 +63,7 @@ public class PwpCohortLibrary {
 		cd.setName("modern contraceptives provided");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(methodOfFamilyPlanning);
 		cd.setValueList(Arrays.asList(naturalFamilyPlanning, sexualAbstinence, notApplicable, otherNonCoded, none));
 		cd.setOperator(SetComparator.NOT_IN);

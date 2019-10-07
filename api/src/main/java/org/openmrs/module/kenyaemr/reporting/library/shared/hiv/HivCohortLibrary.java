@@ -12,7 +12,8 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+// import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
@@ -64,7 +65,7 @@ public class HivCohortLibrary {
 		cd.setName("referred from");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(methodOfEnrollment);
 		cd.setValueList(Arrays.asList(entryPoints));
 		cd.setOperator(SetComparator.IN);
@@ -85,7 +86,7 @@ public class HivCohortLibrary {
 		cd.setName("referred not from");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(methodOfEnrollment);
 		cd.setValueList(Arrays.asList(entryPoints));
 		cd.setOperator(SetComparator.NOT_IN);
@@ -180,7 +181,7 @@ public class HivCohortLibrary {
 		onCtx.setName("on CTX prophylaxis");
 		onCtx.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		onCtx.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		onCtx.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		onCtx.setTimeModifier(TimeModifier.LAST);
 		onCtx.setQuestion(Dictionary.getConcept(Dictionary.COTRIMOXAZOLE_DISPENSED));
 		onCtx.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
 		onCtx.setOperator(SetComparator.IN);

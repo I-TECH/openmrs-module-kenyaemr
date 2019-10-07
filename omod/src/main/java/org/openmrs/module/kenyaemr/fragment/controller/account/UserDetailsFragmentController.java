@@ -75,10 +75,10 @@ public class UserDetailsFragmentController {
 
 		if (user.getUserId() == null) {
 			// New users can be saved with a password
-			Context.getUserService().saveUser(user, newPassword);
+			Context.getUserService().createUser(user, newPassword);
 		}
 		else {
-			Context.getUserService().saveUser(user, null);
+			// Context.getUserService().createUser(user, null);
 
 			// To save a password for an original user, have to call changePassword
 			if (newPassword != null) {
@@ -132,7 +132,7 @@ public class UserDetailsFragmentController {
 				this.username = original.getUsername();
 				this.password = PLACEHOLDER;
 				this.confirmPassword = PLACEHOLDER;
-				this.secretQuestion = original.getSecretQuestion();
+				this.secretQuestion = Context.getUserService().getSecretQuestion(original);
 				this.secretAnswer = PLACEHOLDER;
 				this.roles = original.getRoles();
 			}
@@ -187,8 +187,8 @@ public class UserDetailsFragmentController {
 
 			// Check if user changed secret question but not the answer as well - not allowed
 			if (original != null
-					&& !(command.getSecretQuestion().equals("") && original.getSecretQuestion() == null)
-					&& !command.getSecretQuestion().equals(original.getSecretQuestion())
+					&& !(command.getSecretQuestion().equals("") && Context.getUserService().getSecretQuestion(original) == null)
+					&& !command.getSecretQuestion().equals(Context.getUserService().getSecretQuestion(original))
 					&& PLACEHOLDER.equals(command.getSecretAnswer())) {
 				errors.rejectValue("secretAnswer", "kenyaemr.error.secretAnswerNotChangedWithQuestion");
 			}

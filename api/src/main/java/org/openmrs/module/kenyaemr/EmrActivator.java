@@ -75,7 +75,7 @@ public class EmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		Context.getService(ReportService.class).deleteOldReportRequests();
+		// Context.getService(ReportService.class).deleteOldReportRequests();
 		log.info("KenyaEMR started");
 	}
 

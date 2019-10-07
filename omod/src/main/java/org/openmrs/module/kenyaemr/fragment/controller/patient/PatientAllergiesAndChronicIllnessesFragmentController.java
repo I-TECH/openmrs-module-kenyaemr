@@ -49,7 +49,9 @@ public class PatientAllergiesAndChronicIllnessesFragmentController {
 				Context.getFormService().getFormByUuid("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259")
 		);
 
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingAllergies, null, null,false);
+		// List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, formsCollectingAllergies, null, null,false);
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient,null,null,null,
+				formsCollectingAllergies,null,null,null,null,false);
 		List<Person> patients = new ArrayList<Person>();
 		patients.add(patient);
 

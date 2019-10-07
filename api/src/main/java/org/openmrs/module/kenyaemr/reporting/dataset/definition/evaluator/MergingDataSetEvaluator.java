@@ -112,11 +112,11 @@ public class MergingDataSetEvaluator implements DataSetEvaluator {
 	 * @return the data value
 	 */
 	private Object getDataSetData(MapDataSet dataSet, DataSetColumn column) {
-		if (dataSet.getRowMap().containsKey(new Integer(0))) {
-			return dataSet.getColumnValue(0, column.getName());
-		}
-		else {
+//		if (dataSet.getRowMap().containsKey(new Integer(0))) {
+//			return dataSet.getColumnValue(0, column.getName());
+//		}
+//		else {
 			return dataSet.getData(column);
-		}
+		//}
 	}
 }

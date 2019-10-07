@@ -12,7 +12,10 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+//// import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
@@ -164,7 +167,7 @@ public class CommonCohortLibrary {
 		cd.setName("has obs between dates");
 		cd.setQuestion(question);
 		cd.setOperator(SetComparator.IN);
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (answers.length > 0) {
@@ -200,7 +203,7 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.setName("transferred out between dates");
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		cd.setQuestion(reasonForDiscontinue);
 		cd.setOperator(SetComparator.IN);
 		cd.setValueList(Collections.singletonList(transferredOut));
@@ -290,7 +293,7 @@ public class CommonCohortLibrary {
 		cd.setName("dispensed medication between");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS));
 		cd.setValueList(Arrays.asList(concepts));
 		cd.setOperator(SetComparator.IN);

@@ -39,6 +39,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenDefinition;
 import org.openmrs.module.kenyaemr.regimen.RegimenDefinitionGroup;
 import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reportingcompatibility.service.ReportService;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -366,7 +367,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
     }
 
     protected Set<Integer> getPatientsWithOrders() {
-        Cohort patientsHavingDrugOrder = Context.getPatientSetService().getPatientsHavingDrugOrder(null, null, null, null, null, null, null, null);
+        Cohort patientsHavingDrugOrder =  Context.getService(ReportService.class).getPatientsHavingDrugOrder(null, null, null, null, null, null, null, null);
         return patientsHavingDrugOrder.getMemberIds();
     }
 

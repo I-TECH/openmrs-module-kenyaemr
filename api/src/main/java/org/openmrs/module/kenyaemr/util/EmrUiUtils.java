@@ -91,7 +91,7 @@ public class EmrUiUtils {
 			sb.append(cn.getName());
 
 			if (o.getDrug() != null) {
-				sb.append(" " + o.getDrug().getDoseStrength() + o.getDrug().getUnits());
+				sb.append(" " + o.getDrug().getStrength() + o.getDrug().getIngredients());
 			}
 
 			if (o.getDose() != null) {

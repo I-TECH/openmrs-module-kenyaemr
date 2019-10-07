@@ -13,7 +13,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
@@ -102,7 +102,7 @@ public class QiEmtctCohortLibrary {
 		cd.setName("Women delivered in a facility");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(placeOfBirth);
 		cd.setValueList(Arrays.asList(home, other, unknown, enrouteToHealthFacility));
 		cd.setOperator(SetComparator.NOT_IN);
@@ -238,7 +238,7 @@ public class QiEmtctCohortLibrary {
 		cdVl.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cdVl.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cdVl.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cdVl.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVl.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Hiv infected, pregnant women or lactating on ART and VL in the last 6 months");
@@ -311,7 +311,7 @@ public class QiEmtctCohortLibrary {
 		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
 		cdVlLess1000.setOperator1(RangeComparator.LESS_THAN);
 		cdVlLess1000.setValue1(1000.0);
-		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVlLess1000.setTimeModifier(TimeModifier.LAST);
 
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -336,7 +336,7 @@ public class QiEmtctCohortLibrary {
 		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cdVlLess1000.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVlLess1000.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("pregnant and on art 6 months ago");

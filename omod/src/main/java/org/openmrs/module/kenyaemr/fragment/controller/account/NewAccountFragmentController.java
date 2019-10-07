@@ -225,7 +225,7 @@ public class NewAccountFragmentController {
 			Context.getPersonService().savePerson(person);
 
 			if (user != null) {
-				Context.getUserService().saveUser(user, getPassword());
+				Context.getUserService().createUser(user, getPassword());
 			}
 			if (provider != null) {
 				Context.getProviderService().saveProvider(provider);

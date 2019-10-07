@@ -67,7 +67,7 @@ public class ForgotPasswordPageController {
 				User user = null;
 
 				try {
-					Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
 
 					// Only search if they actually put in a username
 					if (!StringUtils.isEmpty(username)) {
@@ -75,17 +75,17 @@ public class ForgotPasswordPageController {
 					}
 				}
 				finally {
-					Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
 				}
 
 				if (user == null) {
 					// Client might be trying to guess a username
 					IPAccessSecurity.registerFailedAccess(ipAddress);
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
-				} else if (StringUtils.isEmpty(user.getSecretQuestion())) {
+				} else if (StringUtils.isEmpty(Context.getUserService().getSecretQuestion(user))) {
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
 				} else {
-					model.addAttribute("secretQuestion", user.getSecretQuestion());
+					model.addAttribute("secretQuestion", Context.getUserService().getSecretQuestion(user));
 				}
 
 			} else {
@@ -94,17 +94,17 @@ public class ForgotPasswordPageController {
 				User user = null;
 
 				try {
-					Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
 					user = Context.getUserService().getUserByUsername(username);
 				}
 				finally {
-					Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
 				}
 
 				// Check the secret question again in case the user got here "illegally"
-				if (user == null || StringUtils.isEmpty(user.getSecretQuestion())) {
+				if (user == null || StringUtils.isEmpty(Context.getUserService().getSecretQuestion(user))) {
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
-				} else if (user.getSecretQuestion() != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
+				} else if (Context.getUserService().getSecretQuestion(user) != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
 
 					String randomPassword = randomPassword();
 
@@ -125,7 +125,7 @@ public class ForgotPasswordPageController {
 					return "redirect:/" + EmrConstants.MODULE_ID + "/profile.page";
 				} else {
 					kenyaUi.notifyError(httpSession, "auth.answer.invalid");
-					model.addAttribute("secretQuestion", user.getSecretQuestion());
+					model.addAttribute("secretQuestion", Context.getUserService().getSecretQuestion(user));
 					IPAccessSecurity.registerFailedAccess(ipAddress);
 				}
 			}

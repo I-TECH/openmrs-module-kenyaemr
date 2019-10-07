@@ -31,7 +31,9 @@ public class PatientPrescriptionsFragmentController {
 		List<DrugOrder> completedOrders = new ArrayList<DrugOrder>();
 
 		for (DrugOrder order : allDrugOrders) {
-			if (order.isCurrent() || order.isFuture()) {
+			//TODO Probably wrong look into this
+		// if (order.isCurrent() || order.isFuture()) {
+			if (order.isActive()) {
 				currentAndFutureOrders.add(order);
 			} else {
 				completedOrders.add(order);

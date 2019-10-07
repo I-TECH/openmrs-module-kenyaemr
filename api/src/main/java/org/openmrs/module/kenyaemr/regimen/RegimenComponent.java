@@ -134,7 +134,7 @@ public class RegimenComponent {
 		OrderFrequency orderFrequency = new OrderFrequency();
 		orderFrequency.setConcept(frequency);
 		orderFrequency.setFrequencyPerDay(dose);
-		order.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+		order.setOrderType(Context.getOrderService().getOrderType(2));
 		order.setPatient(patient);
 		order.setDateActivated(start);
 		order.setConcept(drugRef.getConcept());

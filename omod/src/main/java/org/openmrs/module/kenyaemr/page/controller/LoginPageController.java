@@ -24,7 +24,9 @@ import java.net.URLEncoder;
 public class LoginPageController {
 
 	public void controller(@RequestParam(value = "redirect", required = false) String redirect, PageModel model) {
-		String loginServletUrl = "/" + WebConstants.CONTEXT_PATH + "/loginServlet";
+		String loginServletUrl = "/" + WebConstants.CONTEXT_PATH + "/ms/legacyui/loginServlet";
+				//String loginServletUrl = "/" + WebConstants.CONTEXT_PATH + "/loginServlet";
+
 
 		if (StringUtils.isNotEmpty(redirect)) {
 			// Prepend context path to application URLs as LoginServlet expects this

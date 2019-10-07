@@ -36,6 +36,7 @@ import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reportingcompatibility.service.ReportingCompatibilityService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -97,7 +98,8 @@ public class PatientUtilsFragmentController {
 	public List<SimpleObject> getScheduled(@RequestParam("date") Date date, UiUtils ui) {
 		// Run the calculations to get patients with scheduled visits
 		PatientCalculationService cs = Context.getService(PatientCalculationService.class);
-		Set<Integer> allPatients = Context.getPatientSetService().getAllPatients().getMemberIds();
+		// Set<Integer> allPatients = Context.getPatientSetService().getAllPatients().getMemberIds();
+		Set<Integer> allPatients = Context.getService(ReportingCompatibilityService.class).getAllPatients().getMemberIds();
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("date", date);
@@ -107,7 +109,7 @@ public class PatientUtilsFragmentController {
 		CalculationResultMap actual = cs.evaluate(scheduled, new VisitsOnDayCalculation(), params, calcContext);
 
 		// Sort patients and convert to simple objects
-		List<Patient> scheduledPatients = Context.getPatientSetService().getPatients(scheduled);
+		List<Patient> scheduledPatients =Context.getService(ReportingCompatibilityService.class).getPatients(scheduled);
 		Collections.sort(scheduledPatients, new PersonByNameComparator());
 
 		List<SimpleObject> simplified = new ArrayList<SimpleObject>();
