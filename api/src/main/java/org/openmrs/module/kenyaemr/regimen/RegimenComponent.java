@@ -13,6 +13,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.OrderFrequency;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
@@ -134,7 +135,7 @@ public class RegimenComponent {
 		OrderFrequency orderFrequency = new OrderFrequency();
 		orderFrequency.setConcept(frequency);
 		orderFrequency.setFrequencyPerDay(dose);
-		order.setOrderType(Context.getOrderService().getOrderType(2));
+		order.setOrderType(Context.getOrderService().getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID));
 		order.setPatient(patient);
 		order.setDateActivated(start);
 		order.setConcept(drugRef.getConcept());

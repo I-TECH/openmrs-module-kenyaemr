@@ -86,8 +86,6 @@ public class CohortDialogPageController {
             cohort = (Cohort) result;
         }
 
-        // List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
-
         List<Patient> patients = Context.getService(ReportingCompatibilityService.class).getPatients(cohort.getMemberIds());
 
         PatientCalculationService calculationService = Context.getService(PatientCalculationService.class);

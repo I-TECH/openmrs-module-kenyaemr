@@ -110,13 +110,10 @@ public class MergingDataSetEvaluator implements DataSetEvaluator {
 	 * @param dataSet the data set
 	 * @param column the column
 	 * @return the data value
+	 *
+	 * updating to MapDataSet.getData since REPORT-491 was fixed
 	 */
 	private Object getDataSetData(MapDataSet dataSet, DataSetColumn column) {
-//		if (dataSet.getRowMap().containsKey(new Integer(0))) {
-//			return dataSet.getColumnValue(0, column.getName());
-//		}
-//		else {
 			return dataSet.getData(column);
-		//}
 	}
 }
