@@ -72,7 +72,6 @@ public class SystemUtilsFragmentController {
 	@SharedAction({EmrConstants.APP_ADMIN, DqConstants.APP_DATAMANAGER})
 	public List<SimpleObject> getDatabaseSummary() {
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
-		// points.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getCountOfPatients()));
 		points.add(SimpleObject.create("label", "Total patients", "value", Context.getService(ReportingCompatibilityService.class).getCountOfPatients()));
 		points.add(SimpleObject.create("label", "Total providers", "value", Context.getProviderService().getAllProviders().size()));
 		points.add(SimpleObject.create("label", "Total users", "value", Context.getUserService().getAllUsers().size()));

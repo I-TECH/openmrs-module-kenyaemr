@@ -78,7 +78,7 @@ public class UserDetailsFragmentController {
 			Context.getUserService().createUser(user, newPassword);
 		}
 		else {
-			// Context.getUserService().createUser(user, null);
+			Context.getUserService().saveUser(user);
 
 			// To save a password for an original user, have to call changePassword
 			if (newPassword != null) {
