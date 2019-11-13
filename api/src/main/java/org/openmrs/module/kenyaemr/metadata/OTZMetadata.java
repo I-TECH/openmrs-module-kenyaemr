@@ -54,8 +54,8 @@ public class OTZMetadata extends AbstractMetadataBundle {
 		install(encounterType("OTZ Discontinuation", "Discontinuation from TB program", _EncounterType.OTZ_DISCONTINUATION));
 		install(encounterType("OTZ Activity", "Consultation in TB Program", _EncounterType.OTZ_ACTIVITY));
 
-		install(form("OTZ Enrollment", null, _EncounterType.OTZ_ENROLLMENT, "1", _Form.OTZ_ENROLLMENT_FORM));
-		install(form("OTZ Discontinuation", null, _EncounterType.OTZ_DISCONTINUATION, "1", _Form.OTZ_DISCONTINUATION_FORM));
+		install(form("OTZ Enrollment Form", null, _EncounterType.OTZ_ENROLLMENT, "1", _Form.OTZ_ENROLLMENT_FORM));
+		install(form("OTZ Discontinuation Form", null, _EncounterType.OTZ_DISCONTINUATION, "1", _Form.OTZ_DISCONTINUATION_FORM));
 		install(form("OTZ Activity Form" ,null, _EncounterType.OTZ_ACTIVITY, "1", _Form.OTZ_ACTIVITY_FORM));
 
 
