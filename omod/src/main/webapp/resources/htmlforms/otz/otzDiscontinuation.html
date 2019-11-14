@@ -31,6 +31,30 @@
 			});
 		});
 	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
 
 
 
@@ -46,14 +70,23 @@
 		<fieldset>
 			<legend>Discontinue OTZ</legend>
 
-			<table>
+			<table class="simple-table">
 				<tr>
+					<td>Discontinuation date:</td>
+					<td>
+						<obs  conceptId="164881AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discontinuation-date"
+							 allowFutureDates="false" required="true"/>
+					</td>
+				</tr>
+				<tr>
+
 					<td>Reason for discontinuation:</td>
-					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" dateLabel="Date:"
-							 answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							 159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							 answerLabels="Completed, Lost to followup, Discontinued, Died, Transferred Out"
-							 style="dropdown" labelText=""  showDate="true"/></td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discontinuation-reason"
+							 answerConceptIds="5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111"
+							 answerLabels=" Lost to followup, Opt out of OTZ, Died, Transferred Out,Transition to Adult Care"
+							 style="dropdown" labelText=""  required="true" /></td>
 				</tr>
 			</table>
 		</fieldset>
