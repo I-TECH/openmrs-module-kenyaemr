@@ -25,6 +25,7 @@
 	<import resource="content/kenyaemr.cohort.analysis.xml" />
 	<import resource="content/kenyaemr.ipt.xml" />
 	<import resource="content/kenyaemr.otz.xml" />
+	<import resource="content/kenyaemr.ovc.xml" />
 
 	<!-- ===================== App descriptors ===================== -->
 

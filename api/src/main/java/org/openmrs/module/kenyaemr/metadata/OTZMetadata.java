@@ -50,9 +50,9 @@ public class OTZMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
-		install(encounterType("OTZ Enrollment", "Enrollment onto TB program", _EncounterType.OTZ_ENROLLMENT));
-		install(encounterType("OTZ Discontinuation", "Discontinuation from TB program", _EncounterType.OTZ_DISCONTINUATION));
-		install(encounterType("OTZ Activity", "Consultation in TB Program", _EncounterType.OTZ_ACTIVITY));
+		install(encounterType("OTZ Enrollment", "Enrollment onto OTZ program", _EncounterType.OTZ_ENROLLMENT));
+		install(encounterType("OTZ Discontinuation", "Discontinuation from OTZ program", _EncounterType.OTZ_DISCONTINUATION));
+		install(encounterType("OTZ Activity", "Consultation in OTZ Program", _EncounterType.OTZ_ACTIVITY));
 
 		install(form("OTZ Enrollment Form", null, _EncounterType.OTZ_ENROLLMENT, "1", _Form.OTZ_ENROLLMENT_FORM));
 		install(form("OTZ Discontinuation Form", null, _EncounterType.OTZ_DISCONTINUATION, "1", _Form.OTZ_DISCONTINUATION_FORM));
