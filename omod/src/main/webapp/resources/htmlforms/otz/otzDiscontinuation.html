@@ -13,6 +13,8 @@
   -->
 <htmlform>
 	<script type="text/javascript">
+		var otzDiscontinuation_VELOCITY = "<lookup expression="kenyaemr.OtzDiscontinuationVelocityCalculation()" />";
+		var enrollmentDate = otzDiscontinuation_VELOCITY.split(",")[0].split(":")[1];
 
 		jq(document).ready(function(){
 
@@ -20,11 +22,19 @@
 			var discontinueDate;
 
 			beforeSubmit.push(function() {
-				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
+				discontinueDate = new Date(getValue('discontinuation-date.value')).getTime();
 
 				if(discontinueDate &lt; pbirthdate){
-					getField('encounter-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Birth date').show();
 					return false;
+				}
+
+				if(discontinueDate &lt; enrollmentDate){
+					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
 				}
 
 				return true;
