@@ -31,6 +31,8 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalcula
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.ipt.IptDiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.otz.OtzDiscontinuationVelocityCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.ovc.OvcDiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiscontinuationVelocityCalculation;
@@ -187,6 +189,18 @@ public class EmrVelocityFunctions {
 		return 	(String) tbDiscontinuationVelocity.getValue();
 
 
+	}
+
+	public String OtzDiscontinuationVelocityCalculation() {
+
+		CalculationResult otzDiscontinuationVelocity = EmrCalculationUtils.evaluateForPatient(OtzDiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) otzDiscontinuationVelocity.getValue();
+	}
+
+	public String OvcDiscontinuationVelocityCalculation() {
+
+		CalculationResult ovcDiscontinuationVelocity = EmrCalculationUtils.evaluateForPatient(OvcDiscontinuationVelocityCalculation.class, null,session.getPatient());
+		return 	(String) ovcDiscontinuationVelocity.getValue();
 	}
 	/**
 		 * Fetches a global property value by property name
