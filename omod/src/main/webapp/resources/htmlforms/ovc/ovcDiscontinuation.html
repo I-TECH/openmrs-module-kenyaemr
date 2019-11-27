@@ -22,18 +22,18 @@
 			var discontinueDate;
 
 			beforeSubmit.push(function() {
-				discontinueDate = new Date(getValue('discontinuation-date.value')).getTime();
+				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
 
 				if(discontinueDate &lt; pbirthdate){
-					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Birth date').show();
 					return false;
 				}
 
 				if(discontinueDate &lt; enrollmentDate){
-					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
 					return false;
 				}else {
-					getField('discontinuation-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
 
 				}
 
@@ -81,13 +81,6 @@
 			<legend>Discontinue OVC</legend>
 
 			<table class="simple-table">
-				<tr>
-					<td>Exit date:</td>
-					<td>
-						<obs  conceptId="164881AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discontinuation-date"
-							 allowFutureDates="false" required="true"/>
-					</td>
-				</tr>
 				<tr>
 
 					<td>Exit Reasons</td>

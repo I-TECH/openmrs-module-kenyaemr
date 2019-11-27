@@ -15,15 +15,39 @@
 	
 	<script type="text/javascript">
 		var patientId = <lookup expression="patient.patientId"/>;
+		var careGiverEnrolled = "<lookup expression="fn.latestObs(163777).getValueCoded()"/>"
+		var cpIdentifier = "<lookup expression="fn.latestObs(163766).getValueCoded()"/>"
+
 
 		jQuery(function($){
-			jq('#care-giver-in-facility').hide();
-			jq('#care-giver-in-facility-phone').hide();
-			jq('#care-givers-name').hide();
-			jq('#care-givers-phone').hide();
-			jq('#care-giver-not-enrolled').hide();
-			jq('#cpims-identifier-label').hide();
-			jq('#cpims-field').hide();
+            jq('#care-giver-in-facility').hide();
+            jq('#care-giver-in-facility-phone').hide();
+            jq('#care-givers-name').hide();
+            jq('#care-givers-phone').hide();
+            jq('#care-giver-not-enrolled').hide();
+
+
+            if(careGiverEnrolled == 1066 &amp;&amp; jq('#enrolled-in-this-facility input[value=1066]:checked').length > 0) {
+				jq('#care-giver-not-enrolled').show();
+			}
+
+            if(careGiverEnrolled == 1065 &amp;&amp; jq('#enrolled-in-this-facility input[value=1065]:checked').length > 0) {
+                jq('#care-giver-not-enrolled').hide();
+                jq('#care-giver-in-facility').show();
+                jq('#care-giver-in-facility-phone').show();
+                jq('#care-givers-name').show();
+                jq('#care-givers-phone').show();
+            }
+
+			if(cpIdentifier == 1065 &amp;&amp; jq('#enrolled-cpims input[value=1065]:checked').length > 0){
+				jq('#cpims-identifier-label').show();
+				jq('#cpims-field').show();
+			}else {
+				jq('#cpims-identifier-label').hide();
+				jq('#cpims-field').hide();
+			}
+
+
 
 			includeCareGiversNames();
 			jq('#enrolled-in-this-facility :input[type=radio]').click(isCaregiverEnrolledInThisFacility);
@@ -62,6 +86,10 @@
 				}
 
 			}else {
+                jq('#care-giver-name :input').val('');
+                jq('#telephone-number :input').val('');
+                jq('#gender input[type=radio]').attr('checked',false);
+                jq('#relationship select').val('');
 				jq('#care-giver-in-facility').hide();
 				jq('#care-giver-in-facility-phone').hide();
 				jq('#care-givers-name').hide();
@@ -77,6 +105,7 @@
 				jq('#cpims-field').show();
 
 			}else {
+				jq('#cpims :input').val('');
 				jq('#cpims-identifier-label').hide();
 				jq('#cpims-field').hide();
 			}
