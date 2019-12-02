@@ -27,6 +27,12 @@
 			</set>
 		</property>
 
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.etl.common.report.otz"/>
+			</set>
+		</property>
+
 		<property name="fragments">
 			<map>
 				<entry key="enrollment-summary" value="kenyaemr:program/otz/otzEnrollmentSummary" />
@@ -83,5 +89,16 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.etl.common.report.otz" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="4bda61d2-efec-4c94-8804-fd0b06c8f873" />
+		<property name="name" value="OTZ Report" />
+		<property name="description" value="OTZ Monthly site level report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<!--<property name="template" value="kenyaemr:otzReport.xls" />-->
+	</bean>
 
 </beans>

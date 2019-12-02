@@ -66,6 +66,7 @@
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.otz.report.otzRegister"/>
+
 			</set>
 		</property>
 	</bean>
@@ -413,6 +414,9 @@
 		<!--<property name="template" value="kenyaemr:moh731_greencard_template.xls" />-->
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
+
+
+
 
 	<!-- Datim report-->
 	<bean id="kenyaemr.etl.common.report.datim" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
