@@ -35,19 +35,20 @@ public class FirstVLPostOTZEnrolmentDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select n.patient_id, concat_ws('\\r\\n',n.test_result,n.visit_date)as Vl_post_enr from kenyaemr_etl.etl_otz_enrollment e  join\n" +
-                "                                                                                                  (select t.patient_id,t.test_result,t.visit_date\n" +
-                "                                                                                                   from (select t.*,\n" +
-                "                                                                                                                (@rn := if(@v = patient_id, @rn + 1,\n" +
-                "                                                                                                                           if(@v := patient_id, 1, 1)\n" +
-                "                                                                                                                    )\n" +
-                "                                                                                                                    ) as rn\n" +
-                "                                                                                                         from kenyaemr_etl.etl_laboratory_extract t cross join\n" +
-                "                                                                                                                  (select @v := -1, @rn := 0) params\n" +
-                "                                                                                                         where t.lab_test in (1305, 856)\n" +
-                "                                                                                                         order by t.patient_id, t.visit_date asc\n" +
-                "                                                                                                        ) t\n" +
-                "                                                                                                   where rn=1)n on n.patient_id= e.patient_id and e.visit_date <= n.visit_date;";
+        String qry = "select f.patient_id, f.Vl_post_enr from\n" +
+                "(select n.patient_id, concat_ws('\\r\\n',n.test_result,n.visit_date)as Vl_post_enr,n.visit_date from kenyaemr_etl.etl_otz_enrollment e  join\n" +
+                "                                                                                         (select t.patient_id,t.test_result,t.visit_date\n" +
+                "                                                                                          from (select t.*,\n" +
+                "                                                                                                       (@rn := if(@v = patient_id, @rn + 1,\n" +
+                "                                                                                                                  if(@v := patient_id, 1, 1)\n" +
+                "                                                                                                           )\n" +
+                "                                                                                                           ) as rn\n" +
+                "                                                                                                from kenyaemr_etl.etl_laboratory_extract t cross join\n" +
+                "                                                                                                         (select @v := -1, @rn := 0) params\n" +
+                "                                                                                                where t.lab_test in (1305, 856)\n" +
+                "                                                                                                order by t.patient_id, t.visit_date asc\n" +
+                "                                                                                               ) t\n" +
+                "                                                                                          where rn=2)n on n.patient_id= e.patient_id group by e.patient_id having max(date(e.visit_date)) <= date(n.visit_date))f;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

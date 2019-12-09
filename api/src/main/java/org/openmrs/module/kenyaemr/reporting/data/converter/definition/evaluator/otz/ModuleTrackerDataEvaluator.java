@@ -35,8 +35,8 @@ public class ModuleTrackerDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select e.patient_id,a.modules_completed from kenyaemr_etl.etl_otz_enrollment e join  (select patient_id,concat_ws(',',if(a.orientation = 'Yes',1,null),if(a.leadership = 'Yes',2,null),if(a.participation = 'Yes',3,null),if(a.treatment_literacy = 'Yes',4,null),if(a.transition_to_adult_care = 'Yes',5,null),if(a.making_decision_future = 'Yes',6,null),if(a.srh = 'Yes',7,null),if(a.beyond_third_ninety = 'Yes',8,null)) as modules_completed\n" +
-                "                                                                  from kenyaemr_etl.etl_otz_activity a group by patient_id)a on e.patient_id = a.patient_id;";
+        String qry = "select e.patient_id,concat_ws(',',if(coalesce(e.orientation,a.orientation) = 'Yes',1,null),if(coalesce(e.leadership,a.leadership) = 'Yes',2,null),if(coalesce(e.participation,a.participation) = 'Yes',3,null),if(coalesce(e.treatment_literacy,a.treatment_literacy) = 'Yes',4,null),if(coalesce(e.transition_to_adult_care,a.transition_to_adult_care) = 'Yes',5,null),if(coalesce(e.making_decision_future,a.making_decision_future) = 'Yes',6,null),if(a.srh = 'Yes',7,null),if(coalesce(e.beyond_third_ninety,a.beyond_third_ninety) = 'Yes',8,null)) as modules_completed\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e join kenyaemr_etl.etl_otz_activity a on e.patient_id = a.patient_id group by e.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

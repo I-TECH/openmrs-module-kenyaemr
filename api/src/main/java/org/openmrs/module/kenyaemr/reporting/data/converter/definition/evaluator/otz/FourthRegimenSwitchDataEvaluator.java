@@ -35,18 +35,18 @@ public class FourthRegimenSwitchDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select n.patient_id, n.regimen from kenyaemr_etl.etl_otz_enrollment e  join\n" +
-                "                                                                                   (select t.patient_id,t.date_started,t.regimen\n" +
-                "from (select t.*,\n" +
-                "             (@rn := if(@v = patient_id, @rn + 1,\n" +
-                "                        if(@v := patient_id, 1, 1)\n" +
-                "                 )\n" +
-                "                 ) as rn\n" +
-                "      from etl_drug_event t cross join\n" +
-                "               (select @v := -1, @rn := 0) params\n" +
-                "      order by t.patient_id, t.date_started asc\n" +
-                "     ) t\n" +
-                "where rn=5)n on n.patient_id= e.patient_id;";
+        String qry = "select f.patient_id,f.regimen from(select n.patient_id, n.regimen,e.visit_date,n.date_started from kenyaemr_etl.etl_otz_enrollment e  join\n" +
+                "                                        (select t.patient_id,t.date_started,t.regimen\n" +
+                "                                         from (select t.*,\n" +
+                "                                                      (@rn := if(@v = patient_id, @rn + 1,\n" +
+                "                                                                 if(@v := patient_id, 1, 1)\n" +
+                "                                                          )\n" +
+                "                                                          ) as rn\n" +
+                "                                               from kenyaemr_etl.etl_drug_event t cross join\n" +
+                "                                                        (select @v := -1, @rn := 0) params\n" +
+                "                                               order by t.patient_id, t.date_started asc\n" +
+                "                                              ) t\n" +
+                "                                         where rn=5)n on n.patient_id= e.patient_id group by e.patient_id having date(n.date_started) >= max(date(e.visit_date)))f;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

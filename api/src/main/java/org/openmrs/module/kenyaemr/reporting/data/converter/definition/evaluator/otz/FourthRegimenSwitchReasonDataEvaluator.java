@@ -36,21 +36,22 @@ public class FourthRegimenSwitchReasonDataEvaluator implements PersonDataEvaluat
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select n.patient_id, n.reason from kenyaemr_etl.etl_otz_enrollment e  join\n" +
-                "              (select t.patient_id,t.date_started,t.regimen,coalesce( (case t.reason_discontinued when 102 then \"Drug toxicity\" when 160567 then \"New diagnosis of Tuberculosis\"  when 160569 then \"Virologic failure\"\n" +
-                "                       when 159598 then \"Non-compliance with treatment or therapy\" when 1754 then \"Medications unavailable\"\n" +
-                "                       when 1434 then \"Currently pregnant\"  when 1253 then \"Completed PMTCT\"  when 843 then \"Regimen failure\"\n" +
-                "                       when 5622 then \"Other\"else \"\" end),t.reason_discontinued_other) as reason\n" +
-                "                                     from (select t.*,\n" +
-                "                                                  (@rn := if(@v = patient_id, @rn + 1,\n" +
-                "                                                             if(@v := patient_id, 1, 1)\n" +
-                "                                                      )\n" +
-                "                                                      ) as rn\n" +
-                "                                           from etl_drug_event t cross join\n" +
-                "                                                    (select @v := -1, @rn := 0) params\n" +
-                "                                           order by t.patient_id, t.date_started asc\n" +
-                "                                          ) t\n" +
-                "                                     where rn=5)n on n.patient_id= e.patient_id;";
+        String qry = "select f.patient_id, f.reason from\n" +
+                "(select n.patient_id, n.reason, n.date_started from kenyaemr_etl.etl_otz_enrollment e  join\n" +
+                "          (select t.patient_id,t.date_started,t.regimen,coalesce( (case t.reason_discontinued when 102 then \"Drug toxicity\" when 160567 then \"New diagnosis of Tuberculosis\"  when 160569 then \"Virologic failure\"\n" +
+                "    when 159598 then \"Non-compliance with treatment or therapy\" when 1754 then \"Medications unavailable\"\n" +
+                "                   when 1434 then \"Currently pregnant\"  when 1253 then \"Completed PMTCT\"  when 843 then \"Regimen failure\"\n" +
+                "    when 5622 then \"Other\"else \"\" end),t.reason_discontinued_other) as reason\n" +
+                "    from (select t.*,\n" +
+                "    (@rn := if(@v = patient_id, @rn + 1,\n" +
+                "    if(@v := patient_id, 1, 1)\n" +
+                "    )\n" +
+                "    ) as rn\n" +
+                "    from kenyaemr_etl.etl_drug_event t cross join\n" +
+                "    (select @v := -1, @rn := 0) params\n" +
+                "    order by t.patient_id, t.date_started asc\n" +
+                "    ) t\n" +
+                "    where rn=5)n on n.patient_id= e.patient_id group by e.patient_id having date(n.date_started) >= max(date(e.visit_date)))f;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
