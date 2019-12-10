@@ -627,7 +627,7 @@
 		<bean id="kenyaemr.otz.report.otzRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="aedb1715-b6dd-43c6-b8d6-af6df4775396" />
 		<property name="name" value="OTZ Register" />
-		<property name="description" value="Register for OTZ Clients" />
+		<property name="description" value="Register For OTZ Clients" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
