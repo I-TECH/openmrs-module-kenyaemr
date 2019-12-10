@@ -65,7 +65,6 @@
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
-				<ref bean="kenyaemr.otz.report.otzRegister"/>
 
 			</set>
 		</property>
@@ -628,16 +627,6 @@
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:activePatients" />
 	</bean>
 	
-		<bean id="kenyaemr.otz.report.otzRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="aedb1715-b6dd-43c6-b8d6-af6df4775396" />
-		<property name="name" value="OTZ Register" />
-		<property name="description" value="Register For OTZ Clients" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set></property>
-		<property name="template" value="kenyaemr:OTZ_REGISTER.xls" />
-		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
-	</bean>
+
 
 </beans>
