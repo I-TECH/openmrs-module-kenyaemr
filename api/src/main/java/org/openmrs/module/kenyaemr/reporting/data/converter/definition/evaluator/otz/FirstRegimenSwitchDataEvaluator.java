@@ -43,7 +43,7 @@ public class FirstRegimenSwitchDataEvaluator implements PersonDataEvaluator {
                 "                        if(@v := patient_id, 1, 1)\n" +
                 "                 )\n" +
                 "                 ) as rn\n" +
-                "      from etl_drug_event t cross join\n" +
+                "      from kenyaemr_etl.etl_drug_event t cross join\n" +
                 "               (select @v := -1, @rn := 0) params\n" +
                 "      order by t.patient_id, t.date_started asc\n" +
                 "     ) t\n" +
