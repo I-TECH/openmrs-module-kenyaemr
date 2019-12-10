@@ -110,7 +110,7 @@
 			<set>
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
-		<property name="template" value="kenyaemr:OTZ_REGISTER.xls" />
+		<property name="template" value="kenyaemr:otz/OTZ_REGISTER.xls" />
 		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
 	</bean>
 
