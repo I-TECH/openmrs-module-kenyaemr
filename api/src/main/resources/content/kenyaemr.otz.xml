@@ -27,6 +27,14 @@
 			</set>
 		</property>
 
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.etl.common.report.otz"/>
+				<ref bean="kenyaemr.otz.report.otzRegister"/>
+
+			</set>
+		</property>
+
 		<property name="fragments">
 			<map>
 				<entry key="enrollment-summary" value="kenyaemr:program/otz/otzEnrollmentSummary" />
@@ -83,5 +91,27 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.etl.common.report.otz" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="4bda61d2-efec-4c94-8804-fd0b06c8f873" />
+		<property name="name" value="OTZ Report" />
+		<property name="description" value="OTZ Monthly site level report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<!--<property name="template" value="kenyaemr:otzReport.xls" />-->
+	</bean>
+	<bean id="kenyaemr.otz.report.otzRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="aedb1715-b6dd-43c6-b8d6-af6df4775396" />
+		<property name="name" value="OTZ Register" />
+		<property name="description" value="Register For OTZ Clients" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:OTZ_REGISTER.xls" />
+		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
+	</bean>
 
 </beans>
