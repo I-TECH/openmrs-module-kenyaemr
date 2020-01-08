@@ -41,7 +41,7 @@ public class ArtStartDateRegimenDataEvaluator implements PersonDataEvaluator {
                 "                           (\n" +
                 "                           select e.patient_id,\n" +
                 "                                  if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                                                                 if(max(enr.date_started_art_at_transferring_facility) is not null,concat_ws('\\r\\n',(mid(max(concat(enr.date_started_art_at_transferring_facility,e.regimen_name)),11)),max(e.date_started)),concat_ws('\\r\\n',mid(max(concat(e.date_started,e.regimen_name)),11),max(e.date_started))) as art_start_date_regimen\n" +
+                "                                                                 if(max(enr.date_started_art_at_transferring_facility) is not null,concat_ws('\\r\\n',max(e.date_started),(mid(max(concat(enr.date_started_art_at_transferring_facility,e.regimen_name)),11))),concat_ws('\\r\\n',max(e.date_started),mid(max(concat(e.date_started,e.regimen_name)),11))) as art_start_date_regimen\n" +
                 "                                                                 from (select e.patient_id,max(e.date_started) as date_started,\n" +
                 "                                     max(e.regimen_name) as regimen_name,\n" +
                 "                                     max(e.regimen_line) as regimen_line\n" +

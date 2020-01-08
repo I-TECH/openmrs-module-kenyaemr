@@ -48,7 +48,7 @@ public class FourthVLPostOTZEnrolmentDataEvaluator implements PersonDataEvaluato
                 "                                                                                                where t.lab_test in (1305, 856)\n" +
                 "                                                                                                order by t.patient_id, t.visit_date asc\n" +
                 "                                                                                               ) t\n" +
-                "                                                                                          where rn=5)n on n.patient_id= e.patient_id group by e.patient_id having max(date(e.visit_date)) <= date(n.visit_date))f;";
+                "                                                                                          where rn=4)n on n.patient_id= e.patient_id group by e.patient_id having max(date(e.visit_date)) <= date(n.visit_date))f;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

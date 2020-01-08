@@ -38,7 +38,7 @@ public class TransitionDataEvaluator implements PersonDataEvaluator {
         String qry = "select e.patient_id,concat_ws('\\r\\n', case d.discontinuation_reason when 5240 then 'Lost to Followup' when 159836 then 'Opt out of OTZ' when 159492 then 'Transfer Out' when 160034\n" +
                 "                               then 'Died' when 165363 then 'Transition to Adult Care' else '' end,d.disc_date) as otz_outome\n" +
                 "from kenyaemr_etl.etl_otz_enrollment e left join\n" +
-                "                                                       (select d.patient_id,d.discontinuation_reason,d.program_name,max(d.visit_date) as disc_date from kenyaemr_etl.etl_patient_program_discontinuation d where d.program_name='OTZ' group by d.patient_id)d\n" +
+                "                                                       (select d.patient_id,d.discontinuation_reason,d.program_name,max(date(d.visit_date)) as disc_date from kenyaemr_etl.etl_patient_program_discontinuation d where d.program_name='OTZ' group by d.patient_id)d\n" +
                 "                                                       on e.patient_id = d.patient_id  group by e.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
