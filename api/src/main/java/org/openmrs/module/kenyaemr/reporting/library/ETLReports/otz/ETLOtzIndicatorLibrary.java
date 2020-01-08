@@ -10,6 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.otz;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.*;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,33 +56,33 @@ public class ETLOtzIndicatorLibrary {
         return cohortIndicator("Attended Support Group", ReportUtils.map(otzCohorts.attendedSupportGroup(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    public CohortIndicator transferout() {
-        return cohortIndicator("Transfer Out", ReportUtils.map(otzCohorts.transferredOut(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator ltfu(Integer month) {
+        return cohortIndicator("Lost Follow up", ReportUtils.<CohortDefinition>map(new OTZLtfuCohortDefinition(month), ""));
     }
-    public CohortIndicator ltfu() {
-        return cohortIndicator("Lost Follow up", ReportUtils.map(otzCohorts.otzLostToFollowup(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    public CohortIndicator adultCare() {
-        return cohortIndicator("Transitioned to adult care", ReportUtils.map(otzCohorts.transitionedToAdultCare(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator adultCare(Integer month) {
+        return cohortIndicator("Transitioned to adult care", ReportUtils.<CohortDefinition>map(new OTZTransitionedToAdultCareCohortDefinition(month), ""));
+
     }
 
-    public CohortIndicator dead() {
-        return cohortIndicator("Reported dead", ReportUtils.map(otzCohorts.reportedDead(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator dead(Integer month) {
+        return cohortIndicator("Dead", ReportUtils.<CohortDefinition>map(new OTZReportedDeadCohortDefinition(month), ""));
     }
-    public CohortIndicator optOut() {
-        return cohortIndicator("Opt Out", ReportUtils.map(otzCohorts.optedOutOfOtz(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator optOut(Integer month) {
+        return cohortIndicator("Opt Out", ReportUtils.<CohortDefinition>map(new OTZOptedOutCohortDefinition(month), ""));
     }
 
     public CohortIndicator appointmentsHonored() {
         return cohortIndicator("Honored Appointments", ReportUtils.map(otzCohorts.honoredAppointments(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    public CohortIndicator adolecentsInProgram() {
-        return cohortIndicator("Adolescents In program", ReportUtils.map(otzCohorts.numberOfAdolescentsInotzProgram(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator adolecentsInProgram(Integer month) {
+        return cohortIndicator("Person age 20-24 still in OTZ program", ReportUtils.<CohortDefinition>map(new OTZPatinetAged20To24StillinProgramCohortDefinition(month), ""));
+
     }
 
-    public CohortIndicator exitedPostotz() {
-        return cohortIndicator("Exited Post OTZ", ReportUtils.map(otzCohorts.exitedPostOtz(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator exitedPostotz(Integer month) {
+        return cohortIndicator("Exited Post OTZ", ReportUtils.<CohortDefinition>map(new OTZExitedPostOtzCohortDefinition(month), ""));
+
     }
 
     public CohortIndicator adolescentsAdherenceGood() {
@@ -91,17 +93,109 @@ public class ETLOtzIndicatorLibrary {
         return cohortIndicator("Booked Appointments", ReportUtils.map(otzCohorts.bookedForAppointmentInTheMonth(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    public CohortIndicator patientsWithValidVLOnReportingPeriod() {
-        return cohortIndicator("Valid VL", ReportUtils.map(otzCohorts.patientWithValidVL(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator patientsWithValidVLOnReportingPeriod(Integer month) {
+        return cohortIndicator("Valid VL on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatientWithValidVLonReportingPeriodCohortDefinition(month), ""));
+
     }
 
-    public CohortIndicator patientsWithValidVLLess1000() {
-        return cohortIndicator("Valid VL less 1000", ReportUtils.map(otzCohorts.patientWithValidVLLess1000(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator patientsWithValidVLLess1000(Integer month) {
+        return cohortIndicator("Valid VL Less 1000 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLLess1000CohortDefinition(month), ""));
+
+
     }
 
-    public CohortIndicator patientsWithValidVLLess400() {
-        return cohortIndicator("Valid VL Less 400", ReportUtils.map(otzCohorts.patientWithValidVLLess400(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator patientsWithValidVLLess400(Integer month) {
+        return cohortIndicator("Valid VL Less 400 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLLess400CohortDefinition(month), ""));
     }
+
+    public CohortIndicator patientsSwithedToSecondlineArt(Integer month) {
+        return cohortIndicator("Switch to second line ART", ReportUtils.<CohortDefinition>map(new OTZSwitchedToSecondLineARTCohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientsSwithedToThirdlineArt(Integer month) {
+        return cohortIndicator("Switch to third line ART", ReportUtils.<CohortDefinition>map(new OTZSwitchedToThirdLineARTCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRepeatVLasLDL(Integer month) {
+        return cohortIndicator("Patient with Repeat LV as LDL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRepeatVLasLDLCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRepeatVLResults(Integer month) {
+        return cohortIndicator("Patient with Repeat VL results", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRepeatVLasLDLCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRepeatVLMoreThan1000(Integer month) {
+        return cohortIndicator("Repeat VL less than 1000 copies/ml", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRepeatVLLess1000CohortDefinition(month), ""));
+
+    }
+    public CohortIndicator patientWithRepeatVLLessThan1000(Integer month) {
+        return cohortIndicator("Repeat VL less than 1000 copies/ml",ReportUtils.<CohortDefinition>map(new OTZPatientsWithRepeatVLMore1000CohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRepeatVLLessThan400(Integer month) {
+        return cohortIndicator("Repeat VL less than 400 copies/ml", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRepeatVLLess400CohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientWithRoutineFollowupVLLessThan400(Integer month) {
+        return cohortIndicator("Routine Follow up VL less than 400 copies/ml", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRoutineFollowupVLLess400CohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientWithRoutineFollowupVLLessThan1000(Integer month) {
+        return cohortIndicator("Routine Follow up VL less than 1000 copies/ml", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRoutineFollowupVLLess1000CohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientWithRoutineFollowupVLGreaterThan1000(Integer month) {
+        return cohortIndicator("Routine Follow up VL more or equal to 1000 copies/ml", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRoutineFollowupVLGreaterThan1000CohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRoutineFollowupVL(Integer month) {
+        return cohortIndicator("Patient with Routine Follow up VL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRoutineFollowupVLCohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientSamplesTakenForRoutineVL(Integer month) {
+        return cohortIndicator("Patients sample taken for Routine VL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithSamplesTakenForRoutineVLCohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientEligibleForRoutineVL(Integer month) {
+        return cohortIndicator("Patients Eligible for Routine VL", ReportUtils.<CohortDefinition>map(new OTZPatientsEligibleForRoutineVLCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithRoutineVLResultsLDL(Integer month) {
+        return cohortIndicator("Patients with Routine VL Results as LDL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithRoutineVLResultLDLCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator patientWithVLMoreThan1000AtEnrollment(Integer month) {
+        return cohortIndicator("Patients with VL Results more than 1000 copies at enrollment", ReportUtils.<CohortDefinition>map(new OTZPatientsWithVLMoreThan1000AtEnrollmentCohortDefinition(month), ""));
+    }
+
+    public CohortIndicator otzMembersWhoCompletedAllModules(Integer month) {
+        return cohortIndicator("Patients who completed all the 8 OTZ modules", ReportUtils.<CohortDefinition>map(new OTZPatientsCompletedAllModulesCohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientWithValidVLasLDL(Integer month) {
+        return cohortIndicator("Patients with valid vl reported as LDL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLasLDLCohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientWithValidVLGreaterThan1000(Integer month) {
+        return cohortIndicator("Patients with valid vl greater than or equals to 1000 copies", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLGreaterThan1000CohortDefinition(month), ""));
+
+    }
+
+    public CohortIndicator patientTransferredOut(Integer month) {
+        return cohortIndicator("patients Transferred out of OTZ", ReportUtils.<CohortDefinition>map(new OTZTransferOutCohortDefinition(month), ""));
+    }
+
+
+
+
 
 
 

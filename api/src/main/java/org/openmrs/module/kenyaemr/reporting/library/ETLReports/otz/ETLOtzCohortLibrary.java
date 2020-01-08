@@ -65,7 +65,7 @@ public class ETLOtzCohortLibrary {
                 "    from kenyaemr_etl.etl_patient_program_discontinuation dis\n" +
                 "    join kenyaemr_etl.etl_otz_enrollment en on en.patient_id=dis.patient_id\n" +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id = dis.patient_id and  p.voided=0\n" +
-                "      where dis.discontinuation_reason=159492 and dis.visit_date between date(:startDate) and date(:endDate);";
+                "      where dis.discontinuation_reason=159492 and dis.visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate);\n";
         cd.setName("TransferOut");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -90,7 +90,7 @@ public class ETLOtzCohortLibrary {
                 "                  inner join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id and  p.voided = 0\n" +
                 "                  inner join kenyaemr_etl.etl_patient_program_discontinuation pd on pd.patient_id = e.patient_id\n" +
                 "                  inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id=e.patient_id\n" +
-                "                where date(e.date_started) between date(:startDate) and date(:endDate) and pd.discontinuation_reason=5240\n" +
+                "                where date(e.date_started) between date_sub(:endDate , interval :month MONTH) and date(:endDate) and pd.discontinuation_reason=5240\n" +
                 "                group by e.patient_id) a;\n";
         cd.setName("Lftu");
         cd.setQuery(sqlQuery);
@@ -109,7 +109,7 @@ public class ETLOtzCohortLibrary {
                 "       from kenyaemr_etl.etl_patient_program pp\n" +
                 "              join kenyaemr_etl.etl_patient_program_discontinuation pd on pd.patient_id=pp.patient_id\n" +
                 "              join kenyaemr_etl.etl_patient_demographics p on p.patient_id=pp.patient_id and p.voided=0\n" +
-                "         where pp.program='OTZ' and pp.date_completed between date(:startDate) and date(:endDate)\n" +
+                "         where pp.program='OTZ' and pp.date_completed between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
                 "           and pd.discontinuation_reason in(165363,5240,159836,159492,160034)) disc ;";
         cd.setName("ExitedPostOtz");
         cd.setQuery(sqlQuery);
@@ -125,7 +125,7 @@ public class ETLOtzCohortLibrary {
         String sqlQuery = "select pp.patient_id\n" +
                 "  from kenyaemr_etl.etl_patient_program pp\n" +
                 "         join kenyaemr_etl.etl_patient_demographics p on p.patient_id=pp.patient_id and p.voided=0\n" +
-                "        where program='OTZ' and date_completed is null;";
+                "        where program='OTZ' and date_completed  between date_sub(:endDate , interval :month MONTH) and date(:endDate) is null;";
         cd.setName("Adolescents");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -143,7 +143,7 @@ public class ETLOtzCohortLibrary {
                 "               join kenyaemr_etl.etl_patient_demographics p on p.patient_id=ot.patient_id and p.voided=0\n" +
                 "               left join kenyaemr_etl.etl_patient_program_discontinuation dis on dis.patient_id =ot.patient_id\n" +
                 "               where (p.dead=1 or dis.discontinuation_reason=160034) and (p.death_date between date(:startDate) and date(:endDate)\n" +
-                "               or dis.visit_date between date(:startDate) and date(:endDate)))d;";
+                "               or dis.visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)))d;";
         cd.setName("Dead");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -180,7 +180,7 @@ public class ETLOtzCohortLibrary {
                 "          from kenyaemr_etl.etl_patient_program pp\n" +
                 "               join kenyaemr_etl.etl_patient_program_discontinuation pd on pd.patient_id=pp.patient_id\n" +
                 "               join kenyaemr_etl.etl_patient_demographics p on p.patient_id=pp.patient_id and p.voided=0\n" +
-                "            where pp.program='OTZ' and pp.date_completed between date(:startDate) and date(:endDate)  and pd.discontinuation_reason=159836) disc ;\n";
+                "            where pp.program='OTZ' and pp.date_completed between date_sub(:endDate , interval :month MONTH) and date(:endDate)  and pd.discontinuation_reason=159836) disc ;\n";
         cd.setName("OptedOut");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -269,7 +269,7 @@ public class ETLOtzCohortLibrary {
                 "       inner JOIN(select patient_id, visit_date from kenyaemr_etl.etl_otz_enrollment\n" +
                 "                 where visit_date <= date(:endDate)\n" +
                 "                 group by patient_id) ot on ot.patient_id = e.patient_id\n" +
-                "where e.program = 'HIV'\n" +
+                "where e.program = 'HIV' and vl_result.visit_date <= ot.visit_date\n" +
                 "group by e.patient_id;";
         cd.setName("VLLast6months");
         cd.setQuery(sqlQuery);
@@ -302,7 +302,7 @@ public class ETLOtzCohortLibrary {
                 "       inner JOIN(select patient_id, visit_date from kenyaemr_etl.etl_otz_enrollment\n" +
                 "  where visit_date <= date(:endDate)\n" +
                 "  group by patient_id) ot on ot.patient_id = e.patient_id\n" +
-                "  where e.program = 'HIV'\n" +
+                "  where e.program = 'HIV' and vl_result.visit_date <= ot.visit_date\n" +
                 "  group by e.patient_id\n" +
                 "  having  mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;\n";
         cd.setName("VLLessThan1000");
@@ -336,7 +336,7 @@ public class ETLOtzCohortLibrary {
                 "       inner JOIN(select patient_id, visit_date from kenyaemr_etl.etl_otz_enrollment\n" +
                 "  where visit_date <= date(:endDate)\n" +
                 "  group by patient_id) ot on ot.patient_id = e.patient_id\n" +
-                "  where e.program = 'HIV'\n" +
+                "  where e.program = 'HIV' and vl_result.visit_date <= ot.visit_date\n" +
                 "  group by e.patient_id\n" +
                 "  having  mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<400;";
         cd.setName("VLLessThan400");
@@ -394,7 +394,7 @@ public class ETLOtzCohortLibrary {
                 "                      if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
                 "                urgency\n" +
                 "         from kenyaemr_etl.etl_laboratory_extract\n" +
-                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
                 "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
                 "        inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id =e.patient_id\n" +
                 "       left JOIN\n" +
@@ -425,7 +425,7 @@ public class ETLOtzCohortLibrary {
                 "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
                 "         urgency\n" +
                 "       from kenyaemr_etl.etl_laboratory_extract\n" +
-                "         where lab_test in (1305, 856) and(test_result=1302 or test_result<400)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "         where lab_test in (1305, 856) and(test_result=1302 or test_result<400)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
                 "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
                 "       inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id =e.patient_id\n" +
                 "       left JOIN\n" +
@@ -456,7 +456,7 @@ public class ETLOtzCohortLibrary {
                 "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
                 "         urgency\n" +
                 "       from kenyaemr_etl.etl_laboratory_extract\n" +
-                "         where lab_test in (1305, 856) and(test_result=1302 or test_result<1000)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "         where lab_test in (1305, 856) and(test_result=1302 or test_result<1000)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
                 "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
                 "       inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id =e.patient_id\n" +
                 "       left JOIN\n" +
@@ -474,6 +474,477 @@ public class ETLOtzCohortLibrary {
 
         return cd;
     }
+
+    public CohortDefinition patientWithValidVLGreaterThan1000(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in ( 856) and( test_result >= 1000)\n" +
+                "              and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id =e.patient_id\n" +
+                "       left JOIN\n" +
+                "     (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "      where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "      group by patient_id\n" +
+                "     ) d on d.patient_id = e.patient_id\n" +
+                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
+                "group by e.patient_id;";
+        cd.setName("ValidVLMore1000");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with Valid VL > 1000");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithValidVLasLDL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "         where lab_test in (1305) and(test_result=1302)\n" +
+                "              and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "       inner join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id =e.patient_id\n" +
+                "       left JOIN\n" +
+                "     (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "       where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "       group by patient_id\n" +
+                "     ) d on d.patient_id = e.patient_id\n" +
+                "  where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
+                "  group by e.patient_id;";
+        cd.setName("ValidVLASLDL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with Valid VL as LDL");
+
+        return cd;
+    }
+
+
+
+
+    public CohortDefinition patientEligibleForRoutineVL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "";
+        cd.setName("EligibleForRoutineVL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient eligible for vl during reporting period");
+
+        return cd;
+    }
+
+    public CohortDefinition patientSamplesTakenForRoutineVL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select  patient_id\n" +
+                "          from (\n" +
+                "                 select ot.patient_id,o.encounter_id as encounter\n" +
+                "                 from kenyaemr_etl.etl_otz_enrollment ot\n" +
+                "                        join openmrs.encounter e on e.patient_id=ot.patient_id\n" +
+                "                        join openmrs.orders o on o.encounter_id = e.encounter_id\n" +
+                "                        where o.order_type_id = 3 and o.order_reason=161236 and o.date_activated \n" +
+                "                        between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "                 group by ot.patient_id\n" +
+                "                       \n" +
+                "                )d;";
+        cd.setName("SamplesTakenForRoutineVL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient samples taken for routine vl");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRoutineFollowupVL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason=161236\n" +
+                "group by e.patient_id;";
+        cd.setName("PatientWithRoutineFollowupVL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with routine followup vl end of reporting period");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRoutineFollowupVLGreaterThan1000(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason=161236\n" +
+                "group by e.patient_id\n" +
+                "having  mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)>=1000;";
+        cd.setName("PatientWithRoutineFollowupVLMore1000");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with routine followup vl greater than 1000 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRoutineFollowupVLLessThan1000(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason=161236\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
+        cd.setName("PatientWithRoutineFollowupVLLess1000");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with routine followup vl less than 1000 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRoutineFollowupVLLessThan400(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason=161236\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<400;";
+        cd.setName("PatientWithRoutineFollowupVLLess400");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with routine followup vl less than 400 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRoutineVLResultsLDL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason=161236\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\";";
+        cd.setName("PatientWithRoutineVLResultsLDL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with routine vl results reported as LDL");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRepeatVLLessThan1000(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason in(843,163523)\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
+        cd.setName("PatientWithRepeatVLLessThan1000");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with repeat vl less than 1000 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRepeatVLMoreThan1000(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason in(843,163523)\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)>=1000;";
+        cd.setName("PatientWithRepeatVLMoreThan1000");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with repeat vl more than 1000 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRepeatVLLessThan400(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason in(843,163523)\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<400;";
+        cd.setName("PatientWithRepeatVLLessThan400");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with repeat vl less than 400 copies/ml");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRepeatVLResults(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id,vl_result\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reasonin(843,163523)\n" +
+                "group by e.patient_id\n";
+        cd.setName("PatientWithRepeatVLResults");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with repeat vl Results");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithRepeatVLasLDL(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct e.patient_id\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "         urgency,order_id\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test in (1305, 856)  and visit_date between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "     inner join orders o on o.order_id =vl_result.order_id\n" +
+                "     where vl_result.order_id is not null and o.order_reason in(843,163523)\n" +
+                "group by e.patient_id\n" +
+                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\"\n";
+        cd.setName("PatientWithRepeatVLasLDL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with repeat vl as LDL");
+
+        return cd;
+    }
+
+    public CohortDefinition patientSwitchToSecondLineART(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct patient_id\n" +
+                "from (\n" +
+                "       select f1.patient_id,max(f1.visit_date) as visit_date\n" +
+                "       from kenyaemr_etl.etl_drug_event f1\n" +
+                "              join kenyaemr_etl.etl_drug_event f2 on f1.visit_date>f2.visit_date\n" +
+                "         and f1.patient_id=f2.patient_id\n" +
+                "               join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=f1.patient_id\n" +
+                "               join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id=f1.patient_id\n" +
+                "       where date(f1.visit_date) between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "         and f1.regimen_line=\"Second line\" and f2.regimen_line=\"First line\" and f1.discontinued is null\n" +
+                "\n" +
+                "       group by f1.patient_id, f1.visit_date)vis;";
+        cd.setName("PatientSwitchToSecondLine");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient switch to second line");
+
+        return cd;
+    }
+
+    public CohortDefinition patientSwitchToThirdLineART(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select distinct patient_id\n" +
+                "from (\n" +
+                "       select f1.patient_id,max(f1.visit_date) as visit_date\n" +
+                "       from kenyaemr_etl.etl_drug_event f1\n" +
+                "              join kenyaemr_etl.etl_drug_event f2 on f1.visit_date>f2.visit_date\n" +
+                "         and f1.patient_id=f2.patient_id\n" +
+                "              join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=f1.patient_id\n" +
+                "              join kenyaemr_etl.etl_otz_enrollment ot on ot.patient_id=f1.patient_id\n" +
+                "       where date(f1.visit_date) between date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "         and f1.regimen_line=\"Third line\" and f2.regimen_line=\"Second line\" and f1.discontinued is null\n" +
+                "\n" +
+                "       group by f1.patient_id, f1.visit_date)vis;";
+        cd.setName("PatientSwitchToThirdLineART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient switch to third line");
+
+        return cd;
+    }
+
+    public CohortDefinition patientWithVLMoreThan1000AtEnrollment(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_drug_event e\n" +
+                "       inner join\n" +
+                "     (\n" +
+                "       select\n" +
+                "         patient_id,\n" +
+                "         visit_date,\n" +
+                "         if(lab_test = 856, test_result, \"\") as vl_result,\n" +
+                "         urgency\n" +
+                "       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "       where lab_test = 856 and visit_date between  date_sub(:endDate , interval :month MONTH) and date(:endDate)\n" +
+                "     ) vl_result on vl_result.patient_id = e.patient_id\n" +
+                "       left JOIN\n" +
+                "     (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "      where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "      group by patient_id\n" +
+                "     ) d on d.patient_id = e.patient_id\n" +
+                "       inner JOIN(select patient_id, visit_date from kenyaemr_etl.etl_otz_enrollment\n" +
+                "                  where date(visit_date) <= date(:endDate)\n" +
+                "                  group by patient_id) ot on ot.patient_id = e.patient_id\n" +
+                "where e.program = 'HIV' and vl_result.visit_date <= ot.visit_date\n" +
+                "group by e.patient_id\n" +
+                "having  mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)>1000;";
+        cd.setName("patientWithVLMoreThan1000AtEnrollment");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patient with VL results more 1000 copies/ml at enrollment");
+
+        return cd;
+    }
+
+
+    public CohortDefinition otzMembersWhoCompletedAllModules(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_otz_enrollment e join  (select patient_id, min(a.visit_date) as firstVisitDate,\n" +
+                "   group_concat(\n" +
+                "       concat_ws(',',if(a.orientation = 'Yes',1,null),if(a.leadership = 'Yes',2,null),if(a.participation = 'Yes',3,null),\n" +
+                "                 if(a.treatment_literacy = 'Yes',4,null),if(a.transition_to_adult_care = 'Yes',5,null),\n" +
+                "                 if(a.making_decision_future = 'Yes',6,null),if(a.srh = 'Yes',7,null),if(a.beyond_third_ninety = 'Yes',8,null)\n" +
+                "         )) as modules_completed\n" +
+                "        from kenyaemr_etl.etl_otz_activity a group by patient_id)a on e.patient_id = a.patient_id\n" +
+                "where length(a.modules_completed)>=15\n" +
+                "  and firstVisitDate between date_sub(:endDate , interval :month MONTH) and date(:endDate);";
+        cd.setName("OtzMembersWhoCompletedAllModules");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of OTZ members 10-19 yrs who completed 8 modules");
+
+        return cd;
+    }
+
 
 
 
