@@ -1,5 +1,7 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [ heading: "HIV Care" ])
+	def currentRegimen = lastEnc && lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
+	def dateLabel = lastEnc && lastEnc.startDate && !lastEnc.endDate ? "Started" : "Stopped"
 
 	def dataPoints = []
 
@@ -66,14 +68,17 @@
 	<% } %>
 
 	<%
-		if (lastEnc) {
+		if (lastEnc && !lastEnc.endDate) {
 			def lastChange = lastEnc
-			def regimen = lastEnc && lastEnc.regimenShortDisplay ? lastEnc.regimenShortDisplay : ui.message("general.none")
-			def dateLabel = lastEnc && lastEnc.startDate ? "Started" : "Stopped"
 	%>
-	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: regimen ]) }
+	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: currentRegimen ]) }
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: dateLabel, value: lastEnc.startDate, showDateInterval: true ]) }
+	<% } else if(lastEnc && lastEnc.endDate) { %>
+	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: currentRegimen ]) }
+	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: dateLabel, value: lastEnc.endDate, showDateInterval: true ]) }
+
 	<% } else { %>
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: ui.message("kenyaemr.neverOnARVs") ]) }
+
 	<% } %>
 </div>

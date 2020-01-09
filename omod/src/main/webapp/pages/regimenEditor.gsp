@@ -2,8 +2,8 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ patient: currentPatient, layout: "sidebar" ])
 
 	def allowNew = !regimenFromObs
-	def allowChange = regimenFromObs && lastEnc.startDate
-	def allowRestart = regimenFromObs && lastEnc.endDate
+	def allowChange = regimenFromObs && lastEnc.startDate && !(regimenEvent == "STOP ALL")
+	def allowRestart = regimenFromObs && lastEnc.endDate && (regimenEvent == "STOP ALL")
 	def allowUndo = regimenFromObs && regimenFromObs.size() > 0
 	def isManager = isManager
 
@@ -83,8 +83,8 @@
 
 			<% if (allowChange) { %>
 			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_change.png", label: "Change", extra: "the current regimen", onClick: "choseAction('change-regimen')" ]) }
-
 			${ ui.includeFragment("kenyaui", "widget/button", [ iconProvider: "kenyaui", icon: "buttons/regimen_stop.png", label: "Stop", extra: "the current regimen", onClick: "choseAction('stop-regimen')" ]) }
+
 			<% } %>
 
 			<% if (allowRestart) { %>

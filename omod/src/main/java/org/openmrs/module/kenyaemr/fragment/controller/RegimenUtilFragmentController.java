@@ -52,6 +52,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * Various actions for regimen related functions
@@ -346,9 +348,11 @@ public class RegimenUtilFragmentController {
 				}
 			}
 
-			if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
+			if(changeType == RegimenChangeType.CHANGE || changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART ) {
+				if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
 				require(errors, "regimenConceptRef");
 				require(errors, "regimenConceptNonStandardRef");
+			   }
 			}
 
 			if (category != null && changeDate != null) {
@@ -358,11 +362,12 @@ public class RegimenUtilFragmentController {
 				RegimenChange lastChange = history.getLastChange();
 				Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null && lastEnc !=null;
+
 				// Can't start if already started
-				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
+				/*if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
-
+*/
 				// Changes must be in order
 				if (lastEnc != null && OpenmrsUtil.compare(changeDate, lastEnc.getEncounterDatetime()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
@@ -379,7 +384,7 @@ public class RegimenUtilFragmentController {
 					 enrollmentDate = programs.get(0).getDateEnrolled();
 				 }
 				// Don't allow regimen start date to be before enrollment date
-				if(changeDate.before(enrollmentDate) ) {
+				if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(enrollmentDate, Calendar.DAY_OF_MONTH)) ) {
 					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
 				}
 
