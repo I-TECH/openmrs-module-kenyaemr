@@ -123,12 +123,12 @@ public class OTZRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("4th Regimen Switch", new FourthRegimenSwitchDataDefinition(), "");
         dsd.addColumn("4th Regimen Switch Date", new FourthRegimenSwitchDateDataDefinition(), "");
         dsd.addColumn("4th Regimen Switch Reason", new FourthRegimenSwitchReasonDataDefinition(), "");
-        dsd.addColumn("First Vl post OTZ enrolment", new FirstVLPostOTZEnrolmentDataDefinition(), "");
-        dsd.addColumn("Second Vl post OTZ enrolment", new SecondVLPostOTZEnrolmentDataDefinition(), "");
-        dsd.addColumn("Third Vl post OTZ enrolment", new ThirdVLPostOTZEnrolmentDataDefinition(), "");
-        dsd.addColumn("Fourth Vl post OTZ enrolment", new FourthVLPostOTZEnrolmentDataDefinition(), "");
-        dsd.addColumn("Fifth Vl post OTZ enrolment", new FifthVLPostOTZEnrolmentDataDefinition(), "");
-        dsd.addColumn("Sixth Vl post OTZ enrolment", new SixthVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("First VL post OTZ enrolment", new FirstVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("Second VL post OTZ enrolment", new SecondVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("Third VL post OTZ enrolment", new ThirdVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("Fourth VL post OTZ enrolment", new FourthVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("Fifth VL post OTZ enrolment", new FifthVLPostOTZEnrolmentDataDefinition(), "");
+        dsd.addColumn("Sixth VL post OTZ enrolment", new SixthVLPostOTZEnrolmentDataDefinition(), "");
         dsd.addColumn("Transition", new TransitionDataDefinition(), "");
         dsd.addColumn("Module Completed", new ModuleTrackerDataDefinition(), "");
         dsd.addColumn("Remarks", new OTZRemarksDataDefinition(), "");

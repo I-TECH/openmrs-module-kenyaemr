@@ -49,7 +49,7 @@ public class HTSPositiveIDUContactsCohortDefinitionEvaluator implements CohortDe
 
 		String qry="select id from (select c.id\n" +
 				"                from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-				"                where t.voided=0 and c.relationship_type =157351 and t.test_type=2 and t.final_test_result = \"Positive\"\n" +
+				"                where t.voided=0 and c.voided = 0 and c.relationship_type =157351 and t.test_type=2 and t.final_test_result = \"Positive\"\n" +
 				"                group by c.id ) t;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();

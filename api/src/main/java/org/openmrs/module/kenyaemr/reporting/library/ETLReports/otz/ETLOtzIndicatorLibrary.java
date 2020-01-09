@@ -55,7 +55,13 @@ public class ETLOtzIndicatorLibrary {
     public CohortIndicator attendSupportGroup() {
         return cohortIndicator("Attended Support Group", ReportUtils.map(otzCohorts.attendedSupportGroup(), "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * Number of patients who are due for VL
+     * @return the indicator
+     */
+    public CohortIndicator dueForVL() {
+        return cohortIndicator("patients due for VL", ReportUtils.map(otzCohorts.dueForVl(), "startDate=${startDate},endDate=${endDate}"));
+    }
     public CohortIndicator ltfu(Integer month) {
         return cohortIndicator("Lost Follow up", ReportUtils.<CohortDefinition>map(new OTZLtfuCohortDefinition(month), ""));
     }
@@ -192,16 +198,6 @@ public class ETLOtzIndicatorLibrary {
     public CohortIndicator patientTransferredOut(Integer month) {
         return cohortIndicator("patients Transferred out of OTZ", ReportUtils.<CohortDefinition>map(new OTZTransferOutCohortDefinition(month), ""));
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }
