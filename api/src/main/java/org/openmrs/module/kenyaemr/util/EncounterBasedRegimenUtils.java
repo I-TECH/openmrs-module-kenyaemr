@@ -175,8 +175,10 @@ public class EncounterBasedRegimenUtils {
                 String reason = obs.getValueText();
                 if (reason != null)
                     changeReason.add(reason);
-            } else if (obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
-                endDate = DATE_FORMAT.format(obs.getValueDatetime());
+            } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
+                if(obs.getValueDatetime() != null){
+                    endDate = DATE_FORMAT.format(obs.getValueDatetime());
+                }
             }
 
 
