@@ -16,7 +16,6 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
@@ -55,13 +54,7 @@ public class ETLOtzIndicatorLibrary {
     public CohortIndicator attendSupportGroup() {
         return cohortIndicator("Attended Support Group", ReportUtils.map(otzCohorts.attendedSupportGroup(), "startDate=${startDate},endDate=${endDate}"));
     }
-    /**
-     * Number of patients who are due for VL
-     * @return the indicator
-     */
-    public CohortIndicator dueForVL() {
-        return cohortIndicator("patients due for VL", ReportUtils.map(otzCohorts.dueForVl(), "startDate=${startDate},endDate=${endDate}"));
-    }
+
     public CohortIndicator ltfu(Integer month) {
         return cohortIndicator("Lost Follow up", ReportUtils.<CohortDefinition>map(new OTZLtfuCohortDefinition(month), ""));
     }

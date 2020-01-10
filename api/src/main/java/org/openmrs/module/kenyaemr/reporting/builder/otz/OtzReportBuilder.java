@@ -124,7 +124,6 @@ public class OtzReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Honored Appointments(came on/before the scheduled date)", ReportUtils.map(otzIndicators.appointmentsHonored(), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("13", "14"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Good Adherence(adherence > 95%)", ReportUtils.map(otzIndicators.adolescentsAdherenceGood(), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("15", "16"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Attended support Group", ReportUtils.map(otzIndicators.attendSupportGroup(), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("17", "18"));
-        EmrReportingUtils.addRow(cohortDsd, "DUEVL", "Due for Vl", ReportUtils.map(otzIndicators.dueForVL(), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("17", "18"));
 
         return cohortDsd;
 
@@ -141,7 +140,7 @@ public class OtzReportBuilder extends AbstractReportBuilder {
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-        // EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("19", "20"));
+        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("19", "20"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ whose samples taken for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientSamplesTakenForRoutineVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("21", "22"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ with routine follow up VL results at the end of the (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("23", "24"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with follow up VL > 1000 copies/ml (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLGreaterThan1000(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("25", "26"));
@@ -149,7 +148,7 @@ public class OtzReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine follow up VL < 400 copies/ml (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLLessThan400(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("29", "30"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine VL results reported as LDL (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineVLResultsLDL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("31", "32"));
 
-        // EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("33", "34"));
+        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("33", "34"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ whose samples taken for routine viral load testing (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientSamplesTakenForRoutineVL(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("35", "36"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ with routine follow up VL results (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVL(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("37", "38"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with follow up VL > 1000 copies/ml (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLGreaterThan1000(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("39", "40"));
@@ -157,7 +156,7 @@ public class OtzReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine follow up VL < 400 copies/ml (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLLessThan400(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("43", "44"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine VL results reported as LDL (cohort reporting month 12)", ReportUtils.map(otzIndicators.patientWithRoutineVLResultsLDL(12), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("45", "46"));
 
-        //  EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("47", "48"));
+        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("47", "48"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ whose samples taken for routine viral load testing (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientSamplesTakenForRoutineVL(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("49", "50"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ with routine follow up VL results (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVL(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("51", "52"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with follow up VL > 1000 copies/ml (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLGreaterThan1000(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("53", "54"));
@@ -165,7 +164,7 @@ public class OtzReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine follow up VL < 400 copies/ml (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLLessThan400(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("57", "58"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with routine VL results reported as LDL (cohort reporting month 18)", ReportUtils.map(otzIndicators.patientWithRoutineVLResultsLDL(18), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("59", "60"));
 
-        //  EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 24)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(24), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("61", "62"));
+        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 24)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(24), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("61", "62"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ whose samples taken for routine viral load testing (cohort reporting month 24)", ReportUtils.map(otzIndicators.patientSamplesTakenForRoutineVL(24), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("63", "64"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ with routine follow up VL results (cohort reporting month 24)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVL(24), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("65", "66"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with follow up VL > 1000 copies/ml (cohort reporting month 24)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLGreaterThan1000(24), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("67", "68"));
