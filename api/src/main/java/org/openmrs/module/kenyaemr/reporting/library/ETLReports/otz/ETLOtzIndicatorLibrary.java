@@ -16,7 +16,6 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
@@ -192,16 +191,6 @@ public class ETLOtzIndicatorLibrary {
     public CohortIndicator patientTransferredOut(Integer month) {
         return cohortIndicator("patients Transferred out of OTZ", ReportUtils.<CohortDefinition>map(new OTZTransferOutCohortDefinition(month), ""));
     }
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.otz;
 
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.otz.NeedsViralLoadTestForOtzCalculation;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -540,17 +542,11 @@ public class ETLOtzCohortLibrary {
     }
 
 
-
-
     public CohortDefinition patientEligibleForRoutineVL(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
-        cd.setName("EligibleForRoutineVL");
-        cd.setQuery(sqlQuery);
+        CalculationCohortDefinition cd = new CalculationCohortDefinition(new NeedsViralLoadTestForOtzCalculation());
+        cd.setName("due for VL Test");
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patient eligible for vl during reporting period");
-
         return cd;
     }
 
