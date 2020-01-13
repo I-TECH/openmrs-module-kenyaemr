@@ -156,6 +156,11 @@ public class EmrUtils {
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 
+	public static Encounter lastEncounter(Patient patient, EncounterType type, List<Form> forms) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, forms, Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
 	public static List<Encounter> AllEncounters(Patient patient, EncounterType type, Form form) {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), Collections.singleton(type), null, null, null, false);
 		return encounters;
