@@ -17,6 +17,6 @@
 
 	<label class="ke-field-label">ID or name (3 chars min)</label>
 	<span class="ke-field-content">
-		<input type="text" name="query" ng-model="query" ng-change="delayOnChange(updateSearch, 2000)" style="width: 260px" />
+		<input type="text" name="query" ng-model="query" ng-change="delayOnChange(updateSearch, 1000)" style="width: 260px" />
 	</span>
 </form>
