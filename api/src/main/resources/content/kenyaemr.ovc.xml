@@ -29,6 +29,12 @@
 				<entry key="completion-summary" value="kenyaemr:program/ovc/ovcOutcomeSummary" />
 			</map>
 		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.ovc.report.enrolledInOVC"/>
+
+			</set>
+		</property>
 		<property name="order" value="306" />
 	</bean>
 
@@ -65,5 +71,12 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.ovc.report.enrolledInOVC" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="bf960342-35d4-11ea-850d-2e728ce88125" />
+		<property name="name" value="Patients currently on OVC" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 
 </beans>
