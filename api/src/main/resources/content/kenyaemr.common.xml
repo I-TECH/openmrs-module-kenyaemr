@@ -346,6 +346,7 @@
 				<ref bean="kenyaemr.app.prep" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="prep:prep/behaviorRiskAssessment.html" />
 	</bean>
