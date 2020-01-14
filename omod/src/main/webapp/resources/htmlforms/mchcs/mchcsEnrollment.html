@@ -87,6 +87,8 @@
             jq('#hiv-exposed-child input').click(heiInfants);
 
             beforeSubmit.push(function() {
+                var pcn = jq('#pcn-id input[type=text]').val();
+
                 if (getValue('hiv-exposed-child.value') == "") {
                     jq('#child-status-required').show();
                     jq('#child-status-required').html('Please specify the condition of the child');
@@ -96,6 +98,12 @@
                     jq('#child-status-required').show();
                     jq('#child-status-required').html('HEI Unique Number Required');
                     return false;
+                }
+                if(pcn != "" || pcn != null) {
+                    if (/^[\d]{1,15}$/.test(pcn) === false) {
+                        alert("Invalid Patient Clinic Number Format! Should be at most 15 digits for new enrollments");
+                        return false;
+                    }
                 }
                 if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
                     jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getMothersUniquePatientNumber.action', {patientId: patientId}, function (data) {
@@ -112,6 +120,20 @@
             });
 
         });
+
+        function checkForExistingPatientIdentifiers() {
+            var upnEntered = jq('#hiv-id input[type=text]').val();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: upnEntered }, function(data) {
+                jq('#upnError').hide();
+                if (data.upnExists === true) {
+
+                    jq('#upnError').text("A patient with similar UPN already exists. Please correct before proceeding");
+                    jq('#upnError').show();
+                    jq('#hiv-id input[type=text]').focus();
+                }
+            });
+        }
+
         //End on ready
         function onTransferStatusChange() {
             if (getValue('transfer-status.value') == NO_CONCEPT_ID) {
@@ -571,14 +593,17 @@
 						<td>Health facility name:</td>
 						<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						<td>Patient Clinic No. </td>
-						<td><patient field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="false" /></td>
+						<td>
+							<span id="pcn-id"><patient id="pcn" field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" /></span>
+							<span id="pcnError" class="error"></span>
+						</td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>CWC No <br />
 							Format:(CWC-MFL code-serial number) e.g <strong>CWC-15007-00001 </strong> </td>
-						<td><span id="cwc-id"><patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" required="false" /></span>
+						<td><span id="cwc-id"><patient field="identifier" identifierTypeId="1dc8b419-35f2-4316-8d68-135f0689859b" /></span>
 						</td>
 						<td>Permanent Register Number </td>
 						<td><obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -633,11 +658,11 @@
 					</tr>
 					<tr>
 						<td>Alternative contact's name  </td><br />
-						<td><obs conceptId="162729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/></td>
+						<td><obs conceptId="162729AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/></td>
 						<td></td>
 						<td></td>
 						<td>Contacts: </td>
-						<td><obs conceptId="159635AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/></td>
+						<td><obs conceptId="159635AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/></td>
 					</tr>
 				</table></td>
 			</tr>

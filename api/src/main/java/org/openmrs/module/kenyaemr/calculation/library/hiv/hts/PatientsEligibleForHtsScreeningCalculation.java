@@ -11,9 +11,11 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.hts;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
-import org.openmrs.Form;
+import org.openmrs.EncounterType;
 import org.openmrs.Patient;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -21,7 +23,9 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.HtsConstants;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;
@@ -42,15 +46,10 @@ public class PatientsEligibleForHtsScreeningCalculation extends AbstractPatientC
         EncounterService encounterService = Context.getEncounterService();
         PatientService patientService = Context.getPatientService();
 
-        Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
-        Form htsRetestForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CONFIRMATORY_TEST);
-        Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.REFERRAL_AND_LINKAGE);
-
-
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId: cohort){
             Patient patient = patientService.getPatient(ptId);
-            boolean notEnrolled = false;
+            boolean eligible = false;
 
             List<Encounter> enrollmentEncounters = encounterService.getEncounters(
                     Context.getPatientService().getPatient(ptId),
@@ -58,20 +57,41 @@ public class PatientsEligibleForHtsScreeningCalculation extends AbstractPatientC
                     null,
                     null,
                     null,
-                    Arrays.asList(Context.getEncounterService().getEncounterTypeByUuid("de78a6be-bfc5-4634-adc3-5f1a280455cc")),
+                    Arrays.asList(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT)),
                     null,
                     null,
                     null,
                     false
             );
 
-            List<Encounter> linkageEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsLinkageForm), null, null, null, null, false);
+            Encounter lastHtsInitialEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsInitialForm);
+            Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
+            Encounter lastLinkageEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsLinkageForm);
+            Encounter lastHtsEnc = null;
 
-            if(enrollmentEncounters.size() <= 0 && linkageEncounters.size() <= 0) {
-                notEnrolled = true;
+            if (lastHtsInitialEnc != null && lastHtsRetestEnc == null) {
+                lastHtsEnc = lastHtsInitialEnc;
+            } else if (lastHtsInitialEnc == null && lastHtsRetestEnc != null) {
+                lastHtsEnc = lastHtsRetestEnc;
+            } else if (lastHtsInitialEnc != null && lastHtsRetestEnc != null) {
+                if (lastHtsInitialEnc.getEncounterDatetime().after(lastHtsRetestEnc.getEncounterDatetime())) {
+                    lastHtsEnc = lastHtsInitialEnc;
+                } else {
+                    lastHtsEnc = lastHtsRetestEnc;
+                }
             }
 
-            ret.put(ptId, new BooleanResult(notEnrolled, this));
+            ConceptService cs = Context.getConceptService();
+            Concept htsFinalTestQuestion = cs.getConcept(HtsConstants.HTS_FINAL_TEST_CONCEPT_ID);
+            Concept htsPositiveResult = cs.getConcept(HtsConstants.HTS_POSITIVE_RESULT_CONCEPT_ID);
+
+            boolean patientHasPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
+
+            if(enrollmentEncounters.size() <= 0 && !patientHasPositiveTestResult && lastLinkageEnc == null) {
+                eligible = true;
+            }
+
+            ret.put(ptId, new BooleanResult(eligible, this));
         }
         return ret;
     }

@@ -41,6 +41,7 @@
 		</property>
 		<property name="reports">
 			<set>
+				<ref bean="kenyaemr.common.report.cccDar" />
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
 				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
@@ -52,6 +53,8 @@
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
 				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
+				<ref bean="kenyaemr.common.report.enrollmentTracker" />
+				<ref bean="kenyaemr.hiv.report.artRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -394,6 +397,42 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hiv/artPreparationRegisterTemplate.xls" />
 		<property name="repeatingSection" value="sheet:1,row:5,dataset:ARTPrepRegister" />
+	</bean>
+
+	<!-- Enrollment Tracker Tool -->
+	<bean id="kenyaemr.common.report.enrollmentTracker" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="19d6371e-7376-4496-a0b5-497b9a90ad3e" />
+		<property name="name" value="Enrollment Tracker Report" />
+		<property name="description" value="Enrollment tracker tool" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hts/Enrollment_Tracker.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:allPatients" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.cccDar" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="351ac318-d875-11e9-8a34-2a2ae2dbcce4" />
+		<property name="name" value="DAR Register" />
+		<property name="description" value="CCC Daily Activity Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:ccc_dar.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
+	</bean>
+
+	<!-- Art Register -->
+	<bean id="kenyaemr.hiv.report.artRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="e0c4994f-6bee-4894-a1f2-1c84deaf0408" />
+		<property name="name" value="ART Register" />
+		<property name="description" value="ART register based on art initiation date" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set>
+		</property>
+		<property name="template" value="kenyaemr:art/artRegister.xls" />
+		<property name="repeatingSection" value="sheet:1,row:18,dataset:ARTRegister" />
 	</bean>
 
 </beans>

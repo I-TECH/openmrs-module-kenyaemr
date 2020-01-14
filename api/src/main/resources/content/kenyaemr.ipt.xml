@@ -24,7 +24,6 @@
 		<property name="visitForms" >
 			<set>
 				<ref bean="kenyaemr.ipt.form.followup" />
-				<ref bean="kenyaemr.common.form.geneXpert" />
 			</set>
 		</property>
 	
@@ -32,6 +31,7 @@
 			<set>
 				<ref bean="kenyaemr.ipt.report.onIpt" />
 				<ref bean="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" />
+				<ref bean="kenyaemr.ipt.report.iptRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -97,20 +97,6 @@
 		<property name="htmlform" value="kenyaemr:ipt/iptFollowUp.html" />
 	</bean>
 
-	<!-- Clinical Encounter - Gene Xpert Form -->
-	<bean id="kenyaemr.common.form.geneXpert" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="f1eaceeb-c865-4e23-b68e-6523de403ac7" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbGeneXpert.html" />
-		<property name="order" value="201090" />
-	</bean>
-
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.ipt.report.onIpt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
@@ -127,5 +113,15 @@
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
-
+	<bean id="kenyaemr.ipt.report.iptRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="e36d4a1e-b3ff-4c59-9d07-dbb61800c80f" />
+		<property name="name" value="IPT Register" />
+		<property name="description" value="Register for Patients on IPT" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:IPTRegisterTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:IPTRegister" />
+	</bean>
 </beans>

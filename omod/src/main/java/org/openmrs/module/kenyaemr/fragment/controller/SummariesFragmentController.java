@@ -320,21 +320,7 @@ public class SummariesFragmentController {
             firstRegimen = "";
         }
         else {
-            RegimenOrder ro = (RegimenOrder) firstRegimenResults.getValue();
-            List<String> components = new ArrayList<String>();
-            if(ro.getDrugOrders() == null || ro.getDrugOrders().isEmpty()){
-                firstRegimen = "";
-            }
-            else {
-                for (DrugOrder o : ro.getDrugOrders()) {
-                    ConceptName cn = o.getConcept().getPreferredName(CoreConstants.LOCALE);
-                    if (cn == null) {
-                        cn = o.getConcept().getName(CoreConstants.LOCALE);
-                    }
-                    components.add(cn.getName());
-                }
-                firstRegimen = getRegimenName(standardRegimens(), components);
-            }
+            firstRegimen = firstRegimenResults.getValue().toString();
         }
         //previous drugs/regimens and dates
         String regimens = "";

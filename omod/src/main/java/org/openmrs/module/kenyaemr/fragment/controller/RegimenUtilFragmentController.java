@@ -19,12 +19,16 @@ import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -34,6 +38,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.BindParams;
 import org.openmrs.ui.framework.annotation.MethodParam;
@@ -47,6 +52,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * Various actions for regimen related functions
@@ -54,7 +61,7 @@ import java.util.List;
 public class RegimenUtilFragmentController {
 
 	protected static final Log log = LogFactory.getLog(RegimenUtilFragmentController.class);
-
+	private Date enrollmentDate = null;
 	/**
 	 * Changes the patient's current regimen
 	 * @param command the command object
@@ -84,18 +91,78 @@ public class RegimenUtilFragmentController {
 		encounter.setForm(regimenEditor);
 		Concept con = cs.getConceptByUuid(command.getRegimenConceptRef());
 		Encounter enc = EncounterBasedRegimenUtils.getLastEncounterForCategory(command.getPatient(), command.getCategory());
-
+		Concept conNonstandard = cs.getConceptByUuid(command.getRegimenConceptNonStandardRef());
+		Concept conNonstandard1 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefOne());
+		Concept conNonstandard2 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefTwo());
+		Concept conNonstandard3 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefThree());
+		Concept conNonstandard4 = cs.getConceptByUuid(command.getRegimenConceptNonStandardRefFour());
 
 
 		//create an obs for regimen
-		Obs o = new Obs();
-		o.setConcept(cs.getConcept(1193));
-		o.setDateCreated(new Date());
-		o.setCreator(Context.getAuthenticatedUser());
-		o.setObsDatetime(command.getChangeDate());
-		o.setPerson(command.getPatient());
-		o.setValueCoded(con);
-		encounter.addObs(o);
+		if(con != null) {
+			Obs o = new Obs();
+			o.setConcept(cs.getConcept(1193));
+			o.setDateCreated(new Date());
+			o.setCreator(Context.getAuthenticatedUser());
+			o.setObsDatetime(command.getChangeDate());
+			o.setPerson(command.getPatient());
+			o.setValueCoded(con);
+			encounter.addObs(o);
+		}
+		if (conNonstandard != null) {
+			Obs non0 = new Obs();
+            non0.setConcept(cs.getConcept(1088));
+            non0.setDateCreated(new Date());
+            non0.setCreator(Context.getAuthenticatedUser());
+            non0.setObsDatetime(command.getChangeDate());
+            non0.setPerson(command.getPatient());
+            non0.setValueCoded(conNonstandard);
+			encounter.addObs(non0);
+
+		}
+
+		if (conNonstandard1 != null) {
+			Obs non1 = new Obs();
+            non1.setConcept(cs.getConcept(1088));
+            non1.setDateCreated(new Date());
+            non1.setCreator(Context.getAuthenticatedUser());
+            non1.setObsDatetime(command.getChangeDate());
+            non1.setPerson(command.getPatient());
+            non1.setValueCoded(conNonstandard1);
+			encounter.addObs(non1);
+
+		}
+        if (conNonstandard2 != null) {
+            Obs non2 = new Obs();
+            non2.setConcept(cs.getConcept(1088));
+            non2.setDateCreated(new Date());
+            non2.setCreator(Context.getAuthenticatedUser());
+            non2.setObsDatetime(command.getChangeDate());
+            non2.setPerson(command.getPatient());
+            non2.setValueCoded(conNonstandard2);
+            encounter.addObs(non2);
+
+        }
+        if (conNonstandard3 != null) {
+            Obs non3 = new Obs();
+            non3.setConcept(cs.getConcept(1088));
+            non3.setDateCreated(new Date());
+            non3.setCreator(Context.getAuthenticatedUser());
+            non3.setObsDatetime(command.getChangeDate());
+            non3.setPerson(command.getPatient());
+            non3.setValueCoded(conNonstandard3);
+            encounter.addObs(non3);
+        }
+        if (conNonstandard4 != null) {
+            Obs non4 = new Obs();
+            non4.setConcept(cs.getConcept(1088));
+            non4.setDateCreated(new Date());
+            non4.setCreator(Context.getAuthenticatedUser());
+            non4.setObsDatetime(command.getChangeDate());
+            non4.setPerson(command.getPatient());
+            non4.setValueCoded(conNonstandard4);
+            encounter.addObs(non4);
+        }
 
 		//create  obs for Change reason coded
 		Obs o2 = new Obs();
@@ -185,6 +252,7 @@ public class RegimenUtilFragmentController {
 			encounterService.saveEncounter(encounter);
 
 		}
+
 	}
 
 	/**
@@ -245,6 +313,11 @@ public class RegimenUtilFragmentController {
 		private Regimen regimen;
 
 		private String regimenConceptRef;
+		private String regimenConceptNonStandardRef;
+		private String regimenConceptNonStandardRefOne;
+		private String regimenConceptNonStandardRefTwo;
+        private String regimenConceptNonStandardRefThree;
+		private String regimenConceptNonStandardRefFour;
 
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
@@ -274,10 +347,12 @@ public class RegimenUtilFragmentController {
 					}
 				}
 			}
-			
-			if (changeType == RegimenChangeType.START || changeType == RegimenChangeType.CHANGE
-					|| changeType == RegimenChangeType.RESTART) {
+
+			if(changeType == RegimenChangeType.CHANGE || changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART ) {
+				if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
 				require(errors, "regimenConceptRef");
+				require(errors, "regimenConceptNonStandardRef");
+			   }
 			}
 
 			if (category != null && changeDate != null) {
@@ -287,13 +362,14 @@ public class RegimenUtilFragmentController {
 				RegimenChange lastChange = history.getLastChange();
 				Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null && lastEnc !=null;
+
 				// Can't start if already started
-				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
+				/*if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
-
+*/
 				// Changes must be in order
-				if (lastChange != null && OpenmrsUtil.compare(changeDate, lastChange.getDate()) <= 0) {
+				if (lastEnc != null && OpenmrsUtil.compare(changeDate, lastEnc.getEncounterDatetime()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
 				}
 
@@ -301,6 +377,17 @@ public class RegimenUtilFragmentController {
 				if (OpenmrsUtil.compare(changeDate, new Date()) > 0) {
 					errors.rejectValue("changeDate", "Change date can't be in the future");
 				}
+				ProgramWorkflowService service = Context.getProgramWorkflowService();
+				Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+				List<PatientProgram> programs = service.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
+				 if (programs.size() > 0) {
+					 enrollmentDate = programs.get(0).getDateEnrolled();
+				 }
+				// Don't allow regimen start date to be before enrollment date
+				if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(enrollmentDate, Calendar.DAY_OF_MONTH)) ) {
+					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
+				}
+
 			}
 
 			// Validate the regimen
@@ -491,6 +578,45 @@ public class RegimenUtilFragmentController {
 			this.regimenConceptRef = regimenConceptRef;
 		}
 
+
+		// None standard regimen getters and setters
+
+		public String getRegimenConceptNonStandardRef() {
+			return regimenConceptNonStandardRef;
+		}
+
+		public void setRegimenConceptNonStandardRef(String regimenConceptRef) {
+			this.regimenConceptNonStandardRef = regimenConceptRef;
+		}
+
+		public String getRegimenConceptNonStandardRefOne() {
+			return regimenConceptNonStandardRefOne;
+		}
+
+		public void setRegimenConceptNonStandardRefOne(String regimenConceptRef) {
+			this.regimenConceptNonStandardRefOne = regimenConceptRef;
+		}
+        public String getRegimenConceptNonStandardRefTwo() {
+            return regimenConceptNonStandardRefTwo;
+        }
+
+        public void setRegimenConceptNonStandardRefTwo(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefTwo = regimenConceptRef;
+        }
+
+        public String getRegimenConceptNonStandardRefThree() {
+            return regimenConceptNonStandardRefThree;
+        }
+        public void setRegimenConceptNonStandardRefThree(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefThree = regimenConceptRef;
+        }
+        public String getRegimenConceptNonStandardRefFour() {
+            return regimenConceptNonStandardRefFour;
+        }
+        public void setRegimenConceptNonStandardRefFour(String regimenConceptRef) {
+            this.regimenConceptNonStandardRefFour = regimenConceptRef;
+        }
+        
 
 	}
 

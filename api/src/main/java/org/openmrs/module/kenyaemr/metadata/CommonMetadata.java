@@ -53,10 +53,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TRIAGE = Metadata.Form.TRIAGE;
 		public static final String HTS_INITIAL_TEST = "402dc5d7-46da-42d4-b2be-f43ea4ad87b0";
 		public static final String HTS_CONFIRMATORY_TEST = "b08471f6-0892-4bf7-ab2b-bf79797b8ea4";
-		public static final String REFERRAL_AND_LINKAGE = "050a7f12-5c52-4cad-8834-863695af335d";
+		public static final String HTS_LINKAGE = "050a7f12-5c52-4cad-8834-863695af335d";
 		public static final String CONTACT_LISTING = "d4493a7c-49fc-11e8-842f-0ed5f89f718b";
 		public static final String BASIC_REGISTRATION = "add7abdc-59d1-11e8-9c2d-fa7ae01bbebc";
 		public static final String DRUG_REGIMEN_EDITOR = "da687480-e197-11e8-9f32-f2801f1b9fd1";
+		public static final String HTS_CLIENT_TRACING = "15ed03d2-c972-11e9-a32f-2a2ae2dbcce4";
+		public static final String HTS_REFERRAL = "9284828e-ce55-11e9-a32f-2a2ae2dbcce4";
 	}
 
 	public static final class _OrderType {
@@ -126,10 +128,13 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
 		install(form("HTS Initial Form", "Form for HTS testing services ", _EncounterType.HTS, "1", _Form.HTS_INITIAL_TEST));
 		install(form("HTS Retest Form", "Form for HTS retest Services", _EncounterType.HTS, "1", _Form.HTS_CONFIRMATORY_TEST));
-		install(form("Referral and Linkage Form", "Form for referrals and linkages", _EncounterType.HTS, "1", _Form.REFERRAL_AND_LINKAGE));
+		install(form("HTS Linkage Form", "Form for HTS linkage", _EncounterType.HTS, "1", _Form.HTS_LINKAGE));
 		install(form("Contact Listing Form", "Lists all contacts for a patient", _EncounterType.HTS, "1", _Form.CONTACT_LISTING));
 		install(form("Registration Form", "Initial data collection for a patient/client, not specific to any program", _EncounterType.REGISTRATION, "1", _Form.BASIC_REGISTRATION));
 		install(form("Drug Regimen Editor", null, _EncounterType.DRUG_REGIMEN_EDITOR, "1", _Form.DRUG_REGIMEN_EDITOR));
+		install(form("HTS Client Tracing Form", "Form for tracing hts clients", _EncounterType.HTS, "1", _Form.HTS_CLIENT_TRACING));
+		install(form("HTS Client Referral Form", "Form for HTS linkage referral", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
+
 
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
@@ -148,7 +153,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationBehavior.REQUIRED, true, _PatientIdentifierType.OPENMRS_ID));
 		install(patientIdentifierType("Patient Clinic Number", "Assigned to the patient at a clinic service (not globally unique)",
 				".{1,15}", "At most 15 characters long", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 		install(patientIdentifierType("National ID", "Kenyan national identity card number",
 				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
@@ -157,7 +162,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER));
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
-				LocationBehavior.REQUIRED, false, _PatientIdentifierType.CWC_NUMBER));
+				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
 		
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));

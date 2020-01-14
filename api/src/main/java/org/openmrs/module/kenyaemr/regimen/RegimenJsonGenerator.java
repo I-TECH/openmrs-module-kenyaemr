@@ -26,6 +26,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.OrderSetService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -57,18 +58,68 @@ public class RegimenJsonGenerator {
     }
 
     public String generateRegimenJsonFromRegimensConfigFile() {
-        for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
-            try {
-                ClassLoader loader = configuration.getClassLoader();
-                InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
+        Encounter lastRegimenEncounter = EmrUtils.lastEncounter(patient,
+                Context.getEncounterService().getEncounterTypeByUuid(CommonMetadata._EncounterType.DRUG_REGIMEN_EDITOR), Context
+                        .getFormService().getFormByUuid(CommonMetadata._Form.DRUG_REGIMEN_EDITOR));
+        ArrayNode components = JsonNodeFactory.instance.arrayNode();
+        StringBuilder nonstandardRegimenShort = new StringBuilder();
+        String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String nonStandard = null;
 
-                return loadDefinitionsFromXML(stream, patient).toString();
+        if (lastRegimenEncounter != null) {
+            for (Obs o : lastRegimenEncounter.getObs()) {
+                ObjectNode regimenComponent = JsonNodeFactory.instance.objectNode();
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
+                if (o.getConcept().getConceptId() == 1088) {
+                    nonStandard = o.getConcept().getUuid();
+                    if(o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null) {
+                        nonstandardRegimenShort.append(o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName() + "/");
+                    }else {
+                        nonstandardRegimenShort.append(o.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() + "/");
+
+                    }
+                    regimenComponent.put("name", o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE) != null ? o.getValueCoded().getShortNameInLocale(CoreConstants.LOCALE).getName()
+                            : o.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName());
+                    regimenComponent.put("drug_id", getDrugForConceptId(o.getValueCoded().getConceptId()));
+                    components.add(regimenComponent);
+                }
+
+            }
+            ObjectNode regimenEntryNoneStandard = JsonNodeFactory.instance.objectNode();
+            ArrayNode regimensNoneStandard = JsonNodeFactory.instance.arrayNode();
+            if(nonstandardRegimenShort.length() > 0) {
+                regimenEntryNoneStandard.put("regimenName", (nonstandardRegimenShort.toString()).substring(0, nonstandardRegimenShort.length() - 1));
+            }
+            regimenEntryNoneStandard.put("program", "ARV");
+            regimenEntryNoneStandard.put("groupCodeName", "");
+            regimenEntryNoneStandard.put("conceptRef", "");
+            regimenEntryNoneStandard.put("orderSetComponents", components);
+            regimensNoneStandard.add(regimenEntryNoneStandard);
+
+            if(CURRENT_DRUG_NON_STANDARD.equalsIgnoreCase(nonStandard)) {
+                return regimensNoneStandard.toString();
+            }else {
+                for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
+                    try {
+                        ClassLoader loader = configuration.getClassLoader();
+                        InputStream stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
+                        if(stream != null) {
+                            return loadDefinitionsFromXML(stream, patient).toString();
+                        } else {
+
+                        }
+
+
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), ex);
+                    }
+                }
+
             }
         }
+
         return "";
     }
 
@@ -270,7 +321,6 @@ public class RegimenJsonGenerator {
             });
             changeEncounters.put("TB", tbEncounters.get(0));
         }
-
         return changeEncounters;
     }
 
@@ -354,5 +404,28 @@ public class RegimenJsonGenerator {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    private Integer getDrugForConceptId(Integer conceptId) {
+
+        Map<Integer, Integer> drugForConcept = new HashMap<Integer, Integer>();
+        drugForConcept.put(84309, 2135);
+        drugForConcept.put(86663, 2209);
+        drugForConcept.put(84795, 2153);
+        drugForConcept.put(78643, 1815);
+        drugForConcept.put(70057, 1324);
+        drugForConcept.put(75628, 1645);
+        drugForConcept.put(74807, 1605);
+        drugForConcept.put(80586, 1940);
+        drugForConcept.put(75523, 1641);
+        drugForConcept.put(79040, 1859);
+        drugForConcept.put(83412, 2102);
+        drugForConcept.put(71648, 1431);
+        drugForConcept.put(159810, 2211);
+        drugForConcept.put(154378, 2214);
+        drugForConcept.put(74258, 2219);
+        drugForConcept.put(164967, 2223);
+
+        return drugForConcept.get(conceptId);
     }
 }

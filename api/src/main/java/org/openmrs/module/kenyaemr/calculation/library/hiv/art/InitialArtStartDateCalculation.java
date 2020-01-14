@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
@@ -41,9 +42,19 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	                                     PatientCalculationContext context) {
 
-		Date startDate = null;
+
 		CalculationResultMap ret = new CalculationResultMap();
+		CalculationResultMap tiArtStartDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.ANTIRETROVIRAL_TREATMENT_START_DATE), cohort, context);
+
 		for (Integer ptId : cohort) {
+
+			Date startDate = null;
+			Date dateTiStartedArt = null;
+			Obs tiStartDate = EmrCalculationUtils.obsResultForPatient(tiArtStartDate, ptId);
+			if (tiStartDate != null) {
+				dateTiStartedArt = tiStartDate.getValueDatetime();
+			}
+
 			Encounter firstDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getFirstEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
 
 			if (firstDrugRegimenEditorEncounter != null) {
@@ -53,11 +64,22 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				if (startDate != null) {
+			}
+
+			if (startDate != null && dateTiStartedArt != null) {
+				if (startDate.after(dateTiStartedArt)) {
+					ret.put(ptId, new SimpleResult(dateTiStartedArt, this, context));
+				} else if (startDate.before(dateTiStartedArt)) {
 					ret.put(ptId, new SimpleResult(startDate, this, context));
 				} else {
-					ret.put(ptId, null);
+					ret.put(ptId, new SimpleResult(startDate, this, context));
 				}
+			} else if (startDate != null && dateTiStartedArt == null) {
+				ret.put(ptId, new SimpleResult(startDate, this, context));
+			} else if (dateTiStartedArt != null && startDate == null) {
+				ret.put(ptId, new SimpleResult(dateTiStartedArt, this, context));
+			} else {
+				ret.put(ptId, null);
 			}
 		}
 		return ret;

@@ -34,14 +34,28 @@ public class HEIPCRResultsStatusDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  (case dna_pcr_result when 1138 then \"INDETERMINATE\" when 664 then \"NEGATIVE\" when 703 then \"POSITIVE\" when 1304 then \"POOR SAMPLE QUALITY\" else \"\" end) as dna_pcr_result\n" +
-                "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "   f.patient_id = d.patient_id\n" +
+        String qry = "select f.patient_id,\n" +
+                "       (case dna_pcr_result when 1138 then \"INDETERMINATE\" when 664 then \"NEGATIVE\" when 703 then \"POSITIVE\" when 1304 then \"POOR SAMPLE QUALITY\" else \"\"  end) as dna_pcr_result\n" +
+                "from  (\n" +
+                "        select t.patient_id, left(max(concat(t.visit_date, t.dna_pcr_result)),10) visit_date, mid(max(concat(t.visit_date, t.dna_pcr_result)),11) dna_pcr_result\n" +
+                "        from\n" +
+                "          (\n" +
+                "            (select patient_id, visit_date, test_result dna_pcr_result\n" +
+                "             from kenyaemr_etl.etl_laboratory_extract\n" +
+                "             where lab_test = 1030\n" +
+                "            )\n" +
+                "            union\n" +
+                "            (\n" +
+                "              select patient_id, visit_date, dna_pcr_result\n" +
+                "              from kenyaemr_etl.etl_hei_follow_up_visit\n" +
+                "              where dna_pcr_result is not null\n" +
+                "            )\n" +
+                "          ) t\n" +
+                "        group by t.patient_id\n" +
+                "        ) f\n" +
+                "        INNER JOIN kenyaemr_etl.etl_patient_demographics d ON f.patient_id = d.patient_id\n" +
                 "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) BETWEEN 0 AND 6\n" +
-                "GROUP BY f.patient_id";
+                "GROUP BY f.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

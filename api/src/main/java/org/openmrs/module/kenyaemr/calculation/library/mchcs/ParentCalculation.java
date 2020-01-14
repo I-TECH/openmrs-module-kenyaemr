@@ -44,9 +44,9 @@ public class ParentCalculation extends AbstractPatientCalculation {
 		String parentGender = null;
 
 		if (this.parentToSearch.equals("Father")) {
-			parentGender = "F";
-		} else if (this.parentToSearch.equals("Mother")) {
 			parentGender = "M";
+		} else if (this.parentToSearch.equals("Mother")) {
+			parentGender = "F";
 		}
 
 		if (parentGender != null) {

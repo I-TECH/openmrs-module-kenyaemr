@@ -716,7 +716,8 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     // HIV testing cohort. includes those who tested during the reporting period
     public CohortDefinition htsNumberTested() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 and visit_date between :startDate and :endDate";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = t.patient_id where test_type =1 and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTested");
         cd.setQuery(sqlQuery);
@@ -784,8 +785,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition htsNumberTestedPositive() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and final_test_result ='Positive' and visit_date between :startDate and :endDate";
+        String sqlQuery = "select t.patient_id from  kenyaemr_etl.etl_hts_test t\n" +
+                "                                inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id=t.patient_id\n" +
+                "                        where t.voided=0 and date(t.visit_date) between date(:startDate) and date(:endDate) and t.test_type=2 and t.final_test_result='Positive'\n" +
+                "                        group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositive");
         cd.setQuery(sqlQuery);
@@ -797,8 +800,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition htsNumberTestedNegative() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and final_test_result ='Negative' and visit_date between :startDate and :endDate";
+        String sqlQuery = "select t.patient_id from  kenyaemr_etl.etl_hts_test t\n" +
+                "                                inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id=t.patient_id\n" +
+                "                        where t.voided=0 and date(t.visit_date) between date(:startDate) and date(:endDate) and t.test_type=1 and t.final_test_result='Negative'\n" +
+                "                        group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedNegative");
         cd.setQuery(sqlQuery);
@@ -969,8 +974,8 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition startedOnIPT() {
         String sqlQuery = "select patient_id \n" +
-                "from kenyaemr_etl.etl_ipt_screening \n" +
-                "where visit_date between :startDate and :endDate and ipt_started=1065 " +
+                "from kenyaemr_etl.etl_ipt_initiation \n" +
+                "where visit_date between date(:startDate) and date(:endDate) and voided=0 " +
                 " ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("startedOnIPT");
@@ -987,10 +992,9 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition completedIPT12Months() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select f.patient_id \n" +
-                "from kenyaemr_etl.etl_ipt_follow_up f\n" +
-                "inner join kenyaemr_etl.etl_ipt_screening s on s.visit_date = DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and s.ipt_started=1065 and f.patient_id = s.patient_id\n" +
-                "where f.visit_date between DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and date(:endDate) and f.outcome=1267 " +
+        String sqlQuery = "select patient_id \n" +
+                "from kenyaemr_etl.etl_patient_program \n" +
+                "where program='IPT' and date_completed between date(:startDate) and date(:endDate) and date_enrolled  between DATE_SUB(date(:startDate), INTERVAL 1 YEAR) and DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and outcome=1267 " +
                 ";";
         cd.setName("completedIPT12Months");
         cd.setQuery(sqlQuery);

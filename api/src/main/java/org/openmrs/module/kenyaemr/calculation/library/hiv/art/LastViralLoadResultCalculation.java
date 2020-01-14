@@ -41,7 +41,8 @@ public class LastViralLoadResultCalculation extends AbstractPatientCalculation {
 
         for(Integer ptId:cohort){
 
-            SimpleObject object = null;            Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
+            SimpleObject object = null;
+            Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
             Obs ldlVLObs = EmrCalculationUtils.obsResultForPatient(ldlViralLoadValues, ptId);
             if(numericVLObs != null && ldlVLObs == null){
                 object = SimpleObject.create("lastVl", numericVLObs.getValueNumeric()+" copies/ml", "lastVlDate", numericVLObs.getObsDatetime());

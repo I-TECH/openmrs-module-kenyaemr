@@ -15,9 +15,7 @@
 	
 	<script type="text/javascript">
 		jQuery(function($){
-			getField("encounter-date.value").change(function(){
-				setValue("date-started-on-ipt.value", getValue("encounter-date.value"));
-			});
+
 		});
 	</script>
 
@@ -38,70 +36,43 @@
 	</div>
 
 	<div class="ke-form-content">
-		<fieldset style="display:none">
-	        <table>
-		            <tr>
-		                <td>Date started on IPT</td>
-		                <td>
-		                    <obs id="date-started-on-ipt" conceptId="162320AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="" />
-		                </td>
-		            </tr>
-	        </table>
+		<fieldset>
+			<legend>Indication for IPT</legend>
+
+			<table>
+				<tr>
+					<td>Indication for IPT</td>
+					<td>
+						<obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  style="dropdown" answerLabels="HIV Positive,In Prison,Child exposed to Tuberculosis,Health Care Worker"/>
+					</td>
+				</tr>
+			</table>
 		</fieldset>
-		<includeIf velocityTest = "$patient.age &gt; 14" >
-		  <fieldset style="display:block">
-		  <legend>ART Status</legend>
+	</div>
 
-		    <table>
-		        <tr>
-		            <td>On Art</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression="
-		                #set($latestARTStatus = $fn.latestObs('160117AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'))
-		                #if ($latestARTStatus.valueCoded.equals($fn.getConcept('160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')))
-		                	Yes
-		                #else
-		                	No
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		        <tr>
-		            <td>Date Started on ART if on ART</td>
-		            <td>
-		                <span class="value">
-		                <lookup complexExpression = "
-		                #set($latestARVDate = $fn.latestObs('159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA').getValueAsString(en))
-		                #if ($latestARVDate)
-		                	$latestARVDate
-		                #else
-		                	N/A
-		                #end
-		                " />
-		                </span>
-		            </td>
-		        </tr>
-		    </table>
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Sub-County registration</legend>
 
-		  </fieldset>
-		</includeIf>
+			<table>
+				<tr>
+					<td>Registration Number:</td>
+					<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" required="false"/></td>
 
-		<includeIf velocityTest = "$patient.age &lt; 15" >
-		  <fieldset>
-		      <legend>Indication for IPT</legend>
+					<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Registration Date:&#160;&#160;&#160;
+						<obs class="reg-date" conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" required="false" allowFutureDates="false"
+						/>
+					</td>
 
-		      <table>
-		          <tr>
-		            <td>Indication for IPT</td>
-		            <td>
-		                <obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
-		            </td>
-		          </tr>
-		      </table>
-		  </fieldset>
-		</includeIf>
+
+
+				</tr>
+				<tr>
+					<td colspan="2"><div id="startOfTreatmentDateError" class="error"></div></td>
+				</tr>
+			</table>
+		</fieldset>
 	</div>
 
 	<enrollInProgram programId="335517a1-04bc-438b-9843-1ba49fb7fcd9" />

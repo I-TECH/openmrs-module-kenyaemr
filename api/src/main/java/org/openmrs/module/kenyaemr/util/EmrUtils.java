@@ -21,6 +21,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -155,6 +156,11 @@ public class EmrUtils {
 		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
 	}
 
+	public static Encounter lastEncounter(Patient patient, EncounterType type, List<Form> forms) {
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, forms, Collections.singleton(type), null, null, null, false);
+		return encounters.size() > 0 ? encounters.get(encounters.size() - 1) : null;
+	}
+
 	public static List<Encounter> AllEncounters(Patient patient, EncounterType type, Form form) {
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Collections.singleton(form), Collections.singleton(type), null, null, null, false);
 		return encounters;
@@ -242,6 +248,35 @@ public class EmrUtils {
 		}
 
 		return null;
+	}
+
+	public static boolean encounterThatPassCodedAnswer(Encounter enc, Concept question, Concept answer) {
+		boolean passed = false;
+		for (Obs obs : enc.getAllObs()) {
+			if (obs.getConcept().getConceptId().intValue() == question.getConceptId().intValue()
+					&& obs.getValueCoded().getConceptId().intValue() == answer.getConceptId().intValue()) {
+				passed = true;
+				break;
+			}
+		}
+		return passed;
+	}
+
+	/**
+	 * a helper method that checks if an encounter has obs for a concept
+	 * @param enc
+	 * @param question
+	 * @return
+	 */
+	public static boolean encounterHasObsForConcept(Encounter enc, Concept question) {
+		boolean passed = false;
+		for (Obs obs : enc.getAllObs()) {
+			if (obs.getConcept().getConceptId().intValue() == question.getConceptId().intValue()) {
+				passed = true;
+				break;
+			}
+		}
+		return passed;
 	}
 
 

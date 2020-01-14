@@ -30,13 +30,10 @@ import java.util.List;
 public class PrepViewPatientPageController {
 
 	public void controller(PageModel model) {
-		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);/*
-		Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
-		Form htsRetestForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CONFIRMATORY_TEST);
-		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.REFERRAL_AND_LINKAGE);
+		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 
-		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsInitialForm, htsRetestForm, htsLinkageForm), null, null, null, null, false);
+		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, null, null, null, null, null, false);
 
-		model.put("hasEncounters", encounters.size() > 0 ? true : false);*/
+		model.put("hasEncounters", encounters.size() > 0 ? true : false);
 	}
 }

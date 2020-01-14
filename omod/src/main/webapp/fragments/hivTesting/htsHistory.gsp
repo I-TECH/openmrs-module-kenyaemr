@@ -26,23 +26,31 @@
 
 
 <div>
-    <% if (linkageDetails) { %>
+
     <fieldset>
-        <legend>Linkage Information</legend>
+        <legend>Referral and Linkage History</legend>
+        <%if (linkageDetails) { %>
         <table class="simple-table">
-            <tr>
+
+        <tr>
             <th align="left">Date</th>
             <th align="left">Facility Linked to</th>
             <th align="left">Unique Patient Number</th>
-            </tr>
+        </tr>
+            <% linkageDetails.each { %>
             <tr>
-                <td>${linkageDetails.encDate}</td>
-                <td>${linkageDetails.facilityLinkedTo}</td>
-                <td>${linkageDetails.upn}</td>
+                <td>${it.encDate}</td>
+                <td>${it.facilityLinkedTo}</td>
+                <td>${it.upn}</td>
             </tr>
+            <% } %>
         </table>
+        <% } else {%>
+        <div>No linkage history</div>
+
+        <% } %>
     </fieldset>
-    <% } %>
+
 
     <br/>
     <fieldset>

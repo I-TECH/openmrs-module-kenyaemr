@@ -47,7 +47,7 @@ public class HtsHistoryFragmentController {
 
 		Form htsInitialForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_INITIAL_TEST);
 		Form htsRetestForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_CONFIRMATORY_TEST);
-		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.REFERRAL_AND_LINKAGE);
+		Form htsLinkageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.HTS_LINKAGE);
 
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsInitialForm, htsRetestForm), null, null, null, null, false);
 		List<Encounter> linkageEncounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(htsLinkageForm), null, null, null, null, false);
@@ -55,20 +55,21 @@ public class HtsHistoryFragmentController {
 		Collections.reverse(encounters);
 		Collections.reverse(linkageEncounters);
 
-		SimpleObject linkageDetails = null;
 		List<SimpleObject> encDetails = new ArrayList<SimpleObject>();
+		List<SimpleObject> linkageList = new ArrayList<SimpleObject>();
 		for (Encounter e : encounters) {
 			SimpleObject o = getEncDetails(e.getObs(), e);
 			encDetails.add(o);
 		}
 
-		// get last linkage encounter
-		if (linkageEncounters.size() > 0) {
-			Encounter e = linkageEncounters.get(0);
-			linkageDetails = getLinkageDetails(e.getObs(), e);
+		// get linkage encounters
+		for (Encounter e : linkageEncounters) {
+			SimpleObject o = getLinkageDetails(e.getObs(), e);
+			linkageList.add(o);
 		}
+
 		model.put("encounters", encDetails);
-		model.put("linkageDetails", linkageDetails);
+		model.put("linkageDetails", linkageList);
 	}
 
 	SimpleObject getLinkageDetails (Set<Obs> obsList, Encounter e) {

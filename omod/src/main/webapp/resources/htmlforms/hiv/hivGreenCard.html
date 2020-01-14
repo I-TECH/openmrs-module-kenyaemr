@@ -29,6 +29,7 @@ Green Card follow-up visit form
             border:2px solid darkgray;
             padding: inherit;
         }
+
         /* The Modal  */
         .modal {
             display: none; /* Hidden by default */
@@ -71,28 +72,9 @@ Green Card follow-up visit form
         }
     /* .Modal  */
 
-        .simple-table {
-            border: solid 1px #06031b;
-            border-collapse: collapse;
-            border-spacing: 0;
-            font: normal 15px Arial, sans-serif;
-        }
-        .simple-table th {
-            background-color: #DDEFEF;
-            border: solid 1px #DDEEEE;
-            color: #336B6B;
-            padding: 10px;
-            text-align: left;
-            text-shadow: 1px 1px 1px #fff;
-        }
-        .simple-table td {
-            border: solid 1px #DDEEEE;
-            color: #333;
-            padding: 8px;
-            text-shadow: 1px 1px 1px #fff;
-        }
     </style>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_extras.css"></link>
     <!--Wizard plugins-->
     <link rel="stylesheet" href="../moduleResources/kenyaemr/styles/smart_wizard.css" type="text/css" ></link>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/jquery.smartWizard.js"></script>
@@ -156,7 +138,7 @@ Green Card follow-up visit form
             onEncounterDateChange();
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
-            getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+            jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -211,21 +193,21 @@ Green Card follow-up visit form
             jq("#tb-screening-tab").hide();
             jq("#tbl-ever-on-ipt").hide();
             //IPT OUTCOME
-            jq("#tbl-ipt-outcome").hide();
-            jq("#reason-for-discontinuation").hide();
-            getField('ipt-event-type.value').change(iptEventSelected);
-            jq("#bt-ipt-outcome").click(onRecordIPTOutcome);
+
+
+
             var actionTakenTab = jq('#action-taken');
             var iptClientWorkupTab = jq('#ipt-client-workup');
             var iptFollowup = jq('#ipt-followup');
             var iptInitiationTab = jq('#ipt-initiation');
+            var iptEnrollmentTab = jq('#ipt-enrollment');
             var tbInitiationTab = jq('#tb-enrollment');
             tbInitiationTab.hide();
             actionTakenTab.hide();
             iptClientWorkupTab.hide();
             iptFollowup.hide();
             iptInitiationTab.hide();
-            jq("#tbl-ipt-ever-outcome").hide();
+            iptEnrollmentTab.hide();
             ageGroup();
             displayRecentBmi();
             //Prophylaxis section
@@ -269,14 +251,14 @@ Green Card follow-up visit form
             //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
                 jq('.on-art').show();
-                jq('.showModal').show();
+                jq('#dlgAdherenceScreening').show();
             }
             else{
                 jq('.on-art').hide();
-                jq('.showModal').hide();
+                jq('#dlgAdherenceScreening').hide();
             }
              // Morisky ART adherence assessment Modal
-            jq(".showModal").click(function(e){
+            jq("#dlgAdherenceScreening").click(function(e){
                 //Defaults
                 var adherenceResponses1=jq('#adherence-1');
                 var adherenceResponses2=jq('#adherence-2');
@@ -287,6 +269,7 @@ Green Card follow-up visit form
                 jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
                 jq("#adherence-1").change(adherenceAssessment);
             });
+
             jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
@@ -510,7 +493,7 @@ Green Card follow-up visit form
                 if(patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningYesResponses.length &gt; 0) {
                         actionTakenTab.show();
                         tbScreeningResults.show();
-                        iptFollowup.show();
+                        iptFollowup.hide();
                         iptClientWorkupTab.hide();
                         clearRadios([iptClientWorkupTab, tbScreeningResultsStatus]);
                     }
@@ -570,16 +553,218 @@ Green Card follow-up visit form
                         showHideIPTInitiationTab();
                     });
                        showHideIPTInitiationTab();
-        });   //End onReady
+
+            // --------------------------------------------- adding ipt handlers ---------------------------------
+
+            jq("#txtIptDueDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "yy-mm-dd"
+            });
+            jq("#txtIptCollectionDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "yy-mm-dd"
+            });
+
+            jq("#btnShowIptFollowupDialog").click(function(e){ // ipt followup
+                e.preventDefault();
+                jq("#dlgIptFollowup").dialog({bgiframe: true,
+                    title : "Record IPT follow-up information",
+                    buttons: {
+                        "Save": recordIptFollowupInformation,
+                        "Cancel": function () {
+                            jq("#dlgIptFollowup").dialog("close");
+                        }
+                    },
+                    height: 450,
+                    width: 970,
+                    modal: true });
+            });
+
+            jq("#btnShowIptOutcomeDialog").click(function(e){ // ipt outcome
+                e.preventDefault();
+                jq("#dlgIptOutcome").dialog({bgiframe: true,
+                    title : "Discontinue patient in IPT program",
+                    buttons: {
+                        "Discontinue IPT": discontinuePatientInIpt,
+                        "Cancel": function () {
+                            jq("#dlgIptOutcome").dialog("close");
+                        }
+                    },
+                    height: 300,
+                    width: 900,
+                    modal: true });
+            });
+
+            jq("#btnEnrollInIptProgram").click(function(e){ // ipt outcome
+                e.preventDefault();
+                jq("#dlgIptInitiation").dialog({bgiframe: true,
+                    title : "Initiate patient in IPT",
+                    buttons: {
+                        "Confirm IPT Initiation": enrollPatientToIPTProgram,
+                        "Cancel": function () {
+                            jq("#dlgIptInitiation").dialog("close");
+                        }
+                    },
+                    height: 300,
+                    width: 900,
+                    modal: true });
+            });
+        });   //End of JQuery onReady function
+
+
 // get count of patients booked on a date
 function getPatientsBookedOnDate() {
-    var tca_date = getValue('returnVisitDate.value');
+    var tca_date = jq('#returnVisitDate input[type=hidden]').val();
     jq('#showNumberBooked').hide();
     jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForHivConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
         jq('#showBookedResult').text(data.bookingsOnDate);
         jq('#showNumberBooked').show();
     });
 }
+
+//----------------------------------- IPT handlers ------------------------
+
+function discontinuePatientInIpt() {
+    var selIptDisReason = jq("#iptDiscReason").val();
+    var txtDiscAction = jq("#iptDiscAction").val();
+    var patientId = <lookup expression="patient.patientId"/>;
+    var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+
+    if(selIptDisReason == null || selIptDisReason == "") {
+        jq('#iptDiscontinueReason').text('IPT discontinuation reason required').addClass("ke-error-label");
+
+    } else if (txtDiscAction == null || txtDiscAction == "") {
+        jq('#iptDiscActionTaken').text('Action taken required').addClass("ke-error-label");
+
+    }else {
+
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', {
+            completionDate: encDate,
+            patientId: patientId,
+            reason: selIptDisReason,
+            action: txtDiscAction,
+            userId: userId
+        }, function (data) {
+            if (data.status == "Success") {
+                jq("#dlgIptOutcome").dialog('close');
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
+                jq("#btnShowIptOutcomeDialog").attr("disabled", true);
+                jq("#btnShowIptFollowupDialog").attr("disabled", true);
+            } else {
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
+            }
+
+        });
+    }
+}
+
+function recordIptFollowupInformation() {
+    var iptDueDate = jq("#txtIptDueDate").val();
+    var iptCollectionDate = jq("#txtIptCollectionDate").val();
+    var iptHepatoxicity = jq("input[name='rdoHepatoxicity']:checked").val();
+    var iptNeuropathy = jq("input[name='rdoNeuropathy']:checked").val();
+    var iptRash = jq("input[name='rdoRash']:checked").val();
+    var iptAdherence = jq("input[name='rdoAdherence']:checked").val();
+    var iptActionTaken = jq("#txtActionTaken").val();
+
+
+    var patientId = <lookup expression="patient.patientId"/>;
+    var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+    var encDate = getValue('encounter-date.value');
+    if(encDate == null) {
+        encDate = new Date();
+    }
+    if(iptCollectionDate =="" ||iptCollectionDate == null ) {
+        jq('#collectedDate').text('IPT collection date required').addClass("ke-error-label");
+    }
+    else if(iptDueDate =="" ||iptDueDate ==null ) {
+        jq('#ipt-due-date').text('IPT due date required').addClass("ke-error-label");
+    }
+    else if(iptHepatoxicity =="" ||iptHepatoxicity == null ) {
+        jq('#hepatotoxity').text('IPT hepatotoxity required').addClass("ke-error-label");
+    }
+    else if(iptNeuropathy =="" ||iptNeuropathy == null ) {
+        jq('#neuropathy-peripheral').text(' Neuropathy required').addClass("ke-error-label");
+    }
+    else if(iptRash =="" ||iptRash == null ) {
+        jq('#patient-rash').text('Rash required').addClass("ke-error-label");
+    }
+    else if(iptAdherence =="" ||iptAdherence == null ) {
+        jq('#adherencemes').text('IPT adherence measurement required').addClass("ke-error-label");
+    }else {
+
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/addIptFollowup.action', {
+            encounterDate: encDate,
+            patientId: patientId,
+            userId: userId,
+            iptDueDate: iptDueDate,
+            iptCollectionDate: iptCollectionDate,
+            iptHepatoxicity: iptHepatoxicity,
+            iptNeuropathy: iptNeuropathy,
+            iptRash: iptRash,
+            iptAdherence: iptAdherence,
+            iptActionTaken: iptActionTaken
+        }, function (data) {
+
+            if (data.status == "Success") {
+                jq("#dlgIptFollowup").dialog('close');
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-success-label");
+                jq("#btnShowIptFollowupDialog").attr("disabled", true);
+            } else {
+                jq("#lblIptCompletionState").text(data.message).addClass("ke-error-label");
+            }
+
+        });
+    }
+}
+
+
+// enroll patient in IPT program
+
+function enrollPatientToIPTProgram() {
+    var patientId = <lookup expression="patient.patientId"/>;
+    var encDate = getValue('encounter-date.value');
+    var indicationForIpt = jq("#indicationForIpt").val();
+    var userId = <lookup expression="user.userId"/>; // get logged in user. the discontinueIptProgram method doesn't seem to get access to Context.authenticatedUser()
+
+    if(encDate == null) {
+        encDate = new Date();
+    }
+    if(indicationForIpt != null &amp;&amp; indicationForIpt != "") {
+
+        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', {
+            enrollmentDate: encDate,
+            patientId: patientId,
+            indicationForIpt: indicationForIpt,
+            userId: userId
+        }, function (data) {
+            if (data.status == "Success") {
+                jq("#enrollInIptProgram").attr("disabled", true);
+                jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-success-label");
+                jq("#dlgIptInitiation").dialog("close");
+                jq("#btnEnrollInIptProgram").attr("disabled", true);
+            } else {
+                jq("#lblIptEnrollmentStatus").text(data.message).addClass("ke-error-label");
+            }
+        });
+    }else {
+        jq('#lblIptIndicationOptions').text('Indication for IPT is required.').addClass("ke-error-label");
+
+    }
+}
+
+
+
+
+
+// ------------------------------------ end of ipt handlers -----------------------
+
 
 function onWeightOrHeightChange() {
     var display = '';
@@ -796,7 +981,7 @@ function onPersonPresentChange() {
         chronicIllnessesSelected();
         adverseReactionSelected();
         jq(".on-art").hide();
-        jq('.showModal').hide();
+        jq('#dlgAdherenceScreening').hide();
         jq("#tbl-phdp").hide();
         jq("#tbl-ctx-adherence").hide();
         jq("#tbl-dap-adherence").hide();
@@ -847,9 +1032,7 @@ function onVisitScheduledChange() {
         jq('#greencard').smartWizard('enableFinish', true);
     }
 }
-function onRecordIPTOutcome() {
-    jq("#tbl-ipt-outcome").toggle();
-}
+
 function onParityChange() {
     var gravida = '';
     var parityTerm = parseInt(getValue('parity-term.value'));
@@ -982,6 +1165,7 @@ var onAntiTbDrugs = function(){
     var iptFollowup = jq('#ipt-followup');
     var tbScreeningQuestionsTab = jq("#tb-screening-tab");
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     var tbInitiationTab = jq('#tb-enrollment');
     everOnIPTSelected = null;
     patientCurrentlyOnIPT = null;
@@ -1000,6 +1184,7 @@ var onAntiTbDrugs = function(){
         iptFollowup.hide();
         tbScreeningQuestionsTab.hide();
         iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
         tbInitiationTab.hide();
     }
 }
@@ -1013,17 +1198,11 @@ var onIPT = function(){
     var iptFollowup = jq('#ipt-followup');
     var tbScreeningQuestionsTab = jq("#tb-screening-tab");
     var iptInitiationTab = jq('#ipt-initiation');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     var tbScreeningResult = jq("#tb-screening-result");
     var tbScreeningResultsStatus = jq("#tb-result-status");
-    if(val == 1066) {
-        jq("#tbl-ever-on-ipt").show();
-        iptFollowup.hide();
-        actionTakenTab.hide();
-        tbScreeningQuestionsTab.hide();
-        tbScreeningResult.hide();
-        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult, tbScreeningResultsStatus]);
-    }
-     if(val == 1065) {
+
+     if(val == 1065 &amp;&amp; PATIENT_ON_IPT == 'true') {
         jq("#tbl-ever-on-ipt").hide();
         jq("#ipt-followup").show();
         tbScreeningQuestionsTab.show();
@@ -1031,7 +1210,29 @@ var onIPT = function(){
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
         iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
         clearRadios([iptClientWorkupTab, actionTakenTab, tbScreeningResultsStatus]);
+    }
+    if(val == 1065 &amp;&amp; PATIENT_ON_IPT == 'false') {
+        jq("#tbl-ever-on-ipt").hide();
+        jq("#ipt-followup").hide();
+        tbScreeningQuestionsTab.show();
+        tbScreeningResult.hide();
+        iptClientWorkupTab.hide();
+        actionTakenTab.hide();
+        iptInitiationTab.hide();
+        iptEnrollmentTab.show();
+        clearRadios([iptClientWorkupTab, actionTakenTab, tbScreeningResultsStatus]);
+    }
+    if(val == 1066) {
+        jq("#tbl-ever-on-ipt").show();
+        iptFollowup.hide();
+        actionTakenTab.hide();
+        tbScreeningQuestionsTab.hide();
+        tbScreeningResult.hide();
+        iptInitiationTab.hide();
+        iptEnrollmentTab.hide();
+        clearRadios([everOnIpt, iptFollowup, actionTakenTab, tbScreeningQuestionsTab, tbScreeningResult, tbScreeningResultsStatus]);
     }
 }
 var everOnIPT = function () {
@@ -1043,14 +1244,13 @@ var everOnIPT = function () {
     var iptClientWorkupTab = jq('#ipt-client-workup');
     var actionTakenTab = jq('#action-taken');
     var iptInitiationTab = jq('#ipt-initiation');
-    var iptEverOnIPTTab = jq('#tbl-ipt-ever-outcome');
+    var iptEnrollmentTab = jq('#ipt-enrollment');
     if(val == 1066) {
         // show TB screening, TB results and IPT workup forms
         tbScreeningTab.show();
         tbScreeningResults.hide();
         iptClientWorkupTab.hide();
         actionTakenTab.hide();
-        iptEverOnIPTTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
     if(val == 1065) {
@@ -1059,7 +1259,7 @@ var everOnIPT = function () {
         tbScreeningTab.show();
         actionTakenTab.hide();
         iptInitiationTab.hide();
-        iptEverOnIPTTab.show();
+        iptEnrollmentTab.hide();
         clearRadios([iptClientWorkupTab, tbScreeningTab, actionTakenTab, tbScreeningResultsStatus]);
     }
 }
@@ -1495,6 +1695,7 @@ var startAntiTbAction  = function () {
         jq('#tb-enrollment').show();
         jq('#ipt-client-workup').hide();
         jq('#ipt-initiation').hide();
+        jq('#ipt-enrollment').hide();
         jq('#ipt-result-status').hide();
         //set TB RX date to todays date
         var encounterDate = getValue('encounter-date.value');
@@ -1510,16 +1711,7 @@ var startAntiTbAction  = function () {
         jq('#tb-enrollment').hide();
     }
 }
-//IPT EVENT SELECTED
-var iptEventSelected  = function () {
-    var iptEvent = getValue('ipt-event-type.value');
-    if(!isNaN(iptEvent) &amp;&amp; (iptEvent == 159836)){
-        jq("#reason-for-discontinuation").show();
-    }
-    else{
-        jq("#reason-for-discontinuation").hide();
-    }
-}
+
 //Prophylaxis selected
 var prophylaxisSelected  = function () {
     var prophylaxisUsed = getValue('prophylaxis-used.value');
@@ -1973,7 +2165,8 @@ clearHiddenSections = function(parentObj) {
                 return true;
             }
         }  //Step 4 validations substituted with before submit
-beforeSubmit.push(function() {
+
+    beforeSubmit.push(function() {
     //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
     var personPresent =getValue('person-present.value');
     var tca_date = getValue('returnVisitDate.value');
@@ -2632,12 +2825,6 @@ beforeSubmit.push(function() {
                             <td>
                             </td>
                         </tr>
-                        <tr id="tbl-ipt-ever-outcome">
-                            <td>Last IPT outcome status and date:</td>
-                            <td><obs id="ipt-ever-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" labelText=" "  showDate="true"/></td>
-                        </tr>
                     </table>
                     <br/>
                     <fieldset id="tb-screening-tab">
@@ -2798,62 +2985,135 @@ beforeSubmit.push(function() {
                     <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
                         <table>
                             <tr>
-                                <td colspan="2">
-                                    <obs id="ipt-result-status" conceptId="1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText="Resulting IPT Action:" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="IPT Started,IPT Not Started" />
-                                    <hr />
+                                <td><button type="button" class="ke-program-followup-button" id="btnEnrollInIptProgram">Start IPT</button></td>
+                                <td><label id="lblIptEnrollmentStatus"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="dlgIptInitiation" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                        <table>
+                            <tr>
+                                <td>Indication for IPT</td>
+                                <td>
+                                    <select id="indicationForIpt">
+                                        <option value="" selected="true">Select indication</option>
+                                        <option value="138571">HIV Positive</option>
+                                        <option value="162277">In prison</option>
+                                        <option value="162278">Child exposed to tuberculosis</option>
+                                    </select>
                                 </td>
+                                <td><label id="lblIptIndicationOptions"></label></td>
                             </tr>
                         </table>
                     </div>
                 </fieldset>
+
+
+
+                <div id="ipt-enrollment" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Kindly Enroll in IPT Program to Record Followup Details</span> </div>
+
                 <fieldset id="ipt-followup">
                     <legend>IPT Followup</legend>
-                    <table>
-                        <tr>
-                            <td>IPT Due Date</td>
-                            <td><obs conceptId="164073AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
-                        </tr>
-                        <tr>
-                            <td>Date collected IPT</td>
-                            <td><obs conceptId="164074" allowFutureDates="true" /></td>
-                        </tr>
-                        <tr>
-                            <td>Weight</td>
-                            <td><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                        </tr>
-                        <tr>
-                            <td>Hepatotoxity?  &lt;/br&gt; (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
-                            <td><obs conceptId="159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-                        </tr>
-                        <tr>
-                            <td>Peripheral Neuropathy  &lt;/br&gt; Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
-                            <td><obs conceptId="118983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-                        </tr>
-                        <tr>
-                            <td>Does the patient have Rash?	</td>
-                            <td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-                        </tr>
-                        <tr>
-                            <td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
-                            <td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
-                        </tr>
-                    </table>
+
                     <br />
-                    <div>  <button type="button" name="bt-ipt-outcome" id="bt-ipt-outcome">Record IPT Outcome</button> </div>
-                    <table id="tbl-ipt-outcome">
+                    <br/>
+                    <table border="0" style="border-spacing: 8px">
                         <tr>
-                            <td>Event/Date:</td>
-                            <td><obs id="ipt-event-type" conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText=" "  showDate="true"/></td>
-                        </tr>
-                        <tr id="reason-for-discontinuation">
-                            <td>Reason for discontinuation</td>
-                            <td><obs conceptId="1266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,112141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" labelText="" /></td>
-                        </tr>
-                        <tr>
-                            <td>Action Taken</td>
-                            <td><obs id="action-taken" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="45" rows="1" /></td>
+                            <td><button type="button" id="btnShowIptFollowupDialog" class="ke-program-followup-button">Record IPT Followup Details</button></td>
+                            <td><button type="button" id="btnShowIptOutcomeDialog" class="ke-program-outcome-button">Record IPT Outcome</button></td>
+                            <td  align="left"><label id="lblIptCompletionState"/></td>
+
                         </tr>
                     </table>
+
+                    <br/>
+                    <br/>
+                    <div id="dlgIptFollowup" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                        <table>
+                            <tr>
+                                <td>IPT Due Date</td>
+                                <td><input type="text" size="10" id="txtIptDueDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errortxtIptDueDate"></span></td>
+                                <td><label id="ipt-due-date"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Date collected IPT</td>
+                                <td><input type="text" size="10" id="txtIptCollectionDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errtxtIptCollectionDate"></span></td>
+                                <td><label id="collectedDate"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Hepatotoxity?  <br/> (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
+                                <td><input type="radio" name="rdoHepatoxicity" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+                                    <input type="radio" name="rdoHepatoxicity" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+                                    <span class="error field-error" style="display: none" id="rdoHepatoxicity"></span>
+                                </td>
+                                <td><label id="hepatotoxity"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Peripheral Neuropathy  <br/> Does client have any of the following in the limbs? Numbness, tingling or burning sensation</td>
+                                <td>
+                                    <input type="radio" name="rdoNeuropathy" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+                                    <input type="radio" name="rdoNeuropathy" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+                                    <span class="error field-error" style="display: none" id="rdoNeuropathy"></span>
+                                </td>
+                                <td><label id="neuropathy-peripheral"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Does the patient have Rash?	</td>
+                                <td>
+                                    <input type="radio" name="rdoRash" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+                                    <input type="radio" name="rdoRash" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+                                    <span class="error field-error" style="display: none" id="rdoRash"></span></td>
+                                <td><label id="patient-rash"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Adherence Measurement <br/>Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
+                                <td>
+                                    <input type="radio" name="rdoAdherence" value="159405" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Good</label>
+                                    <input type="radio" name="rdoAdherence" value="159406" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Fair</label>
+                                    <input type="radio" name="rdoAdherence" value="159407" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Poor</label>
+                                    <span class="error field-error" style="display: none" id="rdoAdherence"></span>
+                                </td>
+                                <td><label id="adherencemes"></label></td>
+                            </tr>
+                            <tr><td colspan="2"></td></tr>
+                            <tr>
+                                <td><strong>Action taken</strong></td>
+                                <td> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><textarea id="txtActionTaken" rows="5" cols="80"></textarea></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="dlgIptOutcome" style="display: none">
+                        <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                        <table>
+                            <tr>
+                                <td>Reason</td>
+                                <td>
+                                    <select id="iptDiscReason">
+                                        <option value="" selected="true">Select reason</option>
+                                        <option value="1267">Completed</option>
+                                        <option value="5240">Lost to followup</option>
+                                        <option value="159836">Discontinue</option>
+                                        <option value="160034">Died</option>
+                                        <option value="159492">Transferred out</option>
+                                        <option value="112141">TB infected</option>
+                                        <option value="102">Drug toxicity</option>
+                                    </select>
+                                </td>
+                                <td><label id="iptDiscontinueReason"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Action taken</td>
+                                <td><textarea rows="5" cols="40" id="iptDiscAction"></textarea></td>
+                                <td><label id="iptDiscActionTaken"></label></td>
+                            </tr>
+                        </table>
+                    </div>
                 </fieldset>
        <!-- Known allergies   -->
         <fieldset class="patient-details">
@@ -3602,25 +3862,27 @@ beforeSubmit.push(function() {
                                 <table class = "on-art">
                                     <!--Adherence Modal  -->
                                     <tr>
-                                        <button class="showModal">Adherence Assessment*</button>
+                                        <button type="button" id="dlgAdherenceScreening" class="ke-program-followup-button">Adherence Assessment*</button>
                                         <div id="modalContents" style="display:none;" title="ARV Adherence Assessment" footer="OK">
+                                            <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                                             <div id="adherence-1">
                                                 1. Do you ever forget to take your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                            <input type="radio" name="question-1" class="question-1" value="1065"/> Yes
                                                                                            <input type="radio" name="question-1" class="question-1" value="1066"/> No    <br/><br/>
 
                                                 2. Are you careless at times about taking your medicine? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                             <input type="radio" name="question-2" class="question-2" value="1065"/> Yes
                                                                                             <input type="radio" name="question-2" class="question-2" value="1066"/> No <br/><br/>
 
-                                                3.Sometimes if you feel worse when you take the medicine, do you stop taking it? <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
+                                                3.Sometimes if you feel worse when you take the medicine, do you stop taking it? &#160;&#160;
+                                                                                            <input type="radio" name="question-3" class="question-3" value="1065"/> Yes
                                                                                             <input type="radio" name="question-3" class="question-3" value="1066"/> No <br/><br/>
 
                                                 4.When you feel better do you sometimes stop taking your medicine?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                                                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                                                           &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                                                             <input type="radio" name="question-4" class="question-4" value="1065"/> Yes
                                                                                            <input type="radio" name="question-4" class="question-4" value="1066"/> No <br/><br/>
                                             </div>
@@ -3637,10 +3899,10 @@ beforeSubmit.push(function() {
                                                 <input type="radio" name="question-6" class="question-6" value="1065"/> Yes
                                                 <input type="radio" name="question-6" class="question-6" value="1066"/> No <br/><br/>
                                                 3.Taking medication every day is a real inconvenience for some people.<br/>  &#160;&#160; Do you feel under pressure about sticking to your treatment plan?
-                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                                 <input type="radio" name="question-7" class="question-7" value="1065"/> Yes
                                                 <input type="radio" name="question-7" class="question-7" value="1066"/> No <br/><br/>
-                                                4.How often do you have difficulty remembering to take all your medications?&#160;&#160;
+                                                4.How often do you have difficulty remembering to take all your medications?&#160;&#160;&#160;
                                                   <select name="question-8" class="question-8">
                                                       <option value="1066">Select</option>
                                                       <option value="1090">Never/Rarely</option>
@@ -3652,7 +3914,7 @@ beforeSubmit.push(function() {
                                                 <br/>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" id="btnCloseARVAssessment" style="float: right;" >Save</button>
+                                                <button type="button" id="btnCloseARVAssessment" class="ke-program-followup-button" >Save</button>
                                             </div>
                                         </div>
                                     </tr>      <!--.Modal   -->

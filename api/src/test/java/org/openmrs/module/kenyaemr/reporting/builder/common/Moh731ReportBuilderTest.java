@@ -20,6 +20,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
+import org.openmrs.module.kenyaemr.reporting.builder.hiv.Moh731ReportBuilder;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -31,7 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.Arrays;
 
 /**
- * Tests for {@link Moh731ReportBuilder}
+ * Tests for {@link org.openmrs.module.kenyaemr.reporting.builder.hiv.Moh731ReportBuilder}
  */
 public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 
@@ -51,7 +52,7 @@ public class Moh731ReportBuilderTest extends BaseModuleContextSensitiveTest {
 	private RegimenManager regimenManager;
 
 	@Autowired
-	@Qualifier("kenyaemr.common.report.moh731")
+	@Qualifier("kenyaemr.etl.common.report.moh731")
 	private ReportDescriptor report;
 
 	@Autowired

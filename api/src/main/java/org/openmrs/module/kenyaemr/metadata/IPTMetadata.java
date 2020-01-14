@@ -61,7 +61,7 @@ public class IPTMetadata extends AbstractMetadataBundle {
 		install(form("IPT Outcome", null, _EncounterType.IPT_OUTCOME, "1", _Form.IPT_OUTCOME));
 		install(form("IPT FollowUp" ,null, _EncounterType.IPT_FOLLOWUP, "1", _Form.IPT_FOLLOWUP));
 
-		install(patientIdentifierType("District Registration Number", "Assigned to every TB patient",
+		install(patientIdentifierType("Subcounty Registration Number", "Assigned to every IPT patient",
 				null, null, null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.DISTRICT_REG_NUMBER));
 

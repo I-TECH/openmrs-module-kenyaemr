@@ -23,7 +23,9 @@
 	<import resource="content/kenyaemr.mchcs.xml" />
 	<import resource="content/kenyaemr.tb.xml" />
 	<import resource="content/kenyaemr.cohort.analysis.xml" />
-	<!--<import resource="content/kenyaemr.ipt.xml" />-->
+	<import resource="content/kenyaemr.ipt.xml" />
+	<import resource="content/kenyaemr.otz.xml" />
+	<import resource="content/kenyaemr.ovc.xml" />
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -59,17 +61,17 @@
 		<constructor-arg value="300" />
 	</bean>
 
-	<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
-		<constructor-arg value="kenyaemr.prep" />
-		<constructor-arg value="Prep" />
-		<constructor-arg value="kenyaemr/prep/prepHome.page"/>
-		<constructor-arg value="kenyaui:apps/facilityDashboard.png" />
-		<constructor-arg value="550" />
-	</bean>
+	<!--<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">-->
+		<!--<constructor-arg value="kenyaemr.prep" />-->
+		<!--<constructor-arg value="Prep" />-->
+		<!--<constructor-arg value="kenyaemr/prep/prepHome.page"/>-->
+		<!--<constructor-arg value="kenyaui:apps/facilityDashboard.png" />-->
+		<!--<constructor-arg value="350" />-->
+	<!--</bean>-->
 
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.defaultertracing" />
-		<constructor-arg value="Defaulter Tracing" />
+		<constructor-arg value="Patient Tracing" />
 		<constructor-arg value="kenyaemr/defaulterTracing/defaulterTracingHome.page" />
 		<constructor-arg value="kenyaui:apps/defaulter_tracing.png" />
 		<constructor-arg value="399" />

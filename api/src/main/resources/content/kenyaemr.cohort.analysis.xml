@@ -96,8 +96,8 @@
         <property name="name" value="ART_cohort_12months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 12 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -105,8 +105,8 @@
         <property name="name" value="ART_cohort_6months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 6 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -114,8 +114,8 @@
         <property name="name" value="ART_cohort_24months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 24 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.36" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -123,8 +123,8 @@
         <property name="name" value="ART_cohort_36months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 36 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.48" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -132,8 +132,8 @@
         <property name="name" value="ART_cohort_48months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 48 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
     <bean id="kenyaemr.hiv.report.art.cohort.analysis.art.60" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
@@ -141,8 +141,8 @@
         <property name="name" value="ART_cohort_60months" />
         <property name="description" value="Cohort based upon shared month and year of ART initiation 60 months" />
         <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-        <property name="template" value="kenyaemr:art/artCohortAnalysis.xls" />
-        <property name="repeatingSection" value="sheet:1,row:4,dataset:artCohortAnalysis" />
+        <property name="template" value="kenyaemr:art/artCohortRegister.xls" />
+        <property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
     </bean>
 
 </beans>

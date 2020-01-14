@@ -38,6 +38,9 @@
 	var NEGATIVE = 664;
     var HIV_POSITIVE = 703;
 	var UNKNOWN = 1067;
+    var ANC_CLIENT = 1622;
+    var DELIVERY_CLIENT = 164835;
+    var PNC_CLIENT = 1623;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
@@ -49,6 +52,12 @@
 
     //Start on ready
 	jq(function () {
+	    //Service area validations
+        jq('#ancStar').hide();
+        jq('#lmpStar').hide();
+        jq('#hivStar').hide();
+
+        jq('#service-type input').change(onServiceTypeChange);
 	    //Gravida validations
         getField('parity-term.value').change(onParityChange);
         getField('parity-abortion.value').change(onParityChange);
@@ -90,6 +99,21 @@
         jq('#first-anc-today').click(defaultFirstAncDateChange);
 	});
 	//End on ready
+    function onServiceTypeChange() {
+        var serviceType = getValue('service-type.value');
+        //ANC
+        if (serviceType == ANC_CLIENT) {
+            jq('#ancStar').show();
+            jq('#lmpStar').show();
+            jq('#hivStar').show();
+
+           }else{
+            jq('#ancStar').hide();
+            jq('#lmpStar').hide();
+            jq('#hivStar').hide();
+		  }
+        }
+
     function onParityChange() {
         var gravida = '';
         var parityTerm = parseInt(getValue('parity-term.value'));
@@ -183,6 +207,23 @@
 		var parityTerm = getValue('parity-term.value');
 		var parityAbortion = getValue('parity-abortion.value');
 		var parity = parseInt(parityTerm, 10) + parseInt(parityAbortion, 10);
+        var serviceType = getValue('service-type.value');
+        var ancNumber = getValue('anc-number.value');
+        var lmpDate = getValue('lmp.value');
+        var patientHivStatus = getValue('patient-hiv-status.value');
+        //ANC
+        if (serviceType == ANC_CLIENT &amp;&amp; ancNumber == "") {
+            getField('anc-number.error').html('ANC Number should not be empty').show();
+            return false;
+        }
+        if (serviceType == ANC_CLIENT &amp;&amp; lmpDate == "") {
+            getField('lmp.error').html('LMP date should not be empty').show();
+            return false;
+        }
+        if (serviceType == ANC_CLIENT &amp;&amp; patientHivStatus == "") {
+            getField('lmp.error').html('HIV status should not be empty').show();
+            return false;
+        }
 		if (parity &gt; gravida) {
 			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 			return false;
@@ -331,9 +372,23 @@
 		<legend>Maternal/Antenatal Profile</legend>
 		<table align="center" width="100%" class="tb1">
 			<tr>
+				<td>Service Type:</td>
+				<td>
+					<obs
+							id="service-type" conceptId="160478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							style="radio"
+							answerConceptIds="1622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  164835AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  1623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="ANC, Delivery, PNC"
+							required="true"
+					/>
+				</td>
+			</tr>
+			<tr>
 				<td width="250">ANC No:</td>
 				<td>
-					<obs conceptId="163530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+					<obs conceptId="163530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-number"/> <span id="ancStar" style="color:red;"><strong>*</strong></span>
 					<i>(xxxx/yy)</i>
 				</td>
 				<td>Gestation in weeks:</td>
@@ -344,9 +399,9 @@
 			<tr>
 				<td>Parity:</td>
 				<td>
-					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
+					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="parity-term"/>
 					+
-					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="parity-abortion"/>
 				</td>
 				<td>EDD (Calculated from L.M.P):</td>
@@ -357,7 +412,7 @@
 			<tr>
 				<td>Gravida:</td>
 				<td>
-					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="gravida"/>
 				</td>
 
 				<td>EDD (Ultrasound):</td>
@@ -369,7 +424,7 @@
 			<tr>
 				<td width="250">Age at Menarche:</td>
 				<td>
-					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="menarche-age" required="false"/>
+					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="menarche-age" />
 				</td>
 				<td>TB Screening results:</td>
 				<td>
@@ -383,7 +438,7 @@
 			<tr>
 				<td>L.M.P:</td>
 				<td>
-					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
+					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp"/><span id="lmpStar" style="color:red;"><strong>*</strong></span>
 
 					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
 					Estimated
@@ -397,10 +452,11 @@
 			<tr>
 				<td>HIV Status before first ANC Visit:</td>
 				<td>
-					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="patient-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="Positive,Negative,Unknown"/>
+					<span id="hivStar" style="color:red;"><strong>*</strong></span>
 					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 				</td>
 				<td width="250">HIV Test Date:</td>
@@ -411,7 +467,7 @@
 			<tr>
 				<td>Partner HIV Status:</td>
 				<td>
-					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="partner-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Unknown"/>

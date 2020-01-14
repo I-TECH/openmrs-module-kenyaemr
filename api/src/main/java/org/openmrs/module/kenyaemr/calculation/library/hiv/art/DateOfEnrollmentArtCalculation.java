@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -18,6 +19,8 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -36,10 +39,18 @@ public class DateOfEnrollmentArtCalculation extends AbstractPatientCalculation {
 
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		CalculationResultMap enrolledHere = Calculations.allEnrollments(hivProgram, cohort, context);
+		CalculationResultMap tiEnrollmentDates = Calculations.firstObs(Dictionary.getConcept(Dictionary.DATE_ENROLLED_IN_HIV_CARE), cohort, context);
 
-		CalculationResultMap result = new CalculationResultMap();
+
+		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			Date enrollmentDate = null;
+			Date tiEnrollmentDate = null;
+			Obs tiEnrollmentDateObs = EmrCalculationUtils.obsResultForPatient(tiEnrollmentDates, ptId);
+			if (tiEnrollmentDateObs != null) {
+				tiEnrollmentDate = tiEnrollmentDateObs.getValueDatetime();
+			}
+
 			ListResult listResult = (ListResult) enrolledHere.get(ptId);
 			List<PatientProgram> patientProgram = CalculationUtils.extractResultValues(listResult);
 			if(patientProgram.size() > 0){
@@ -47,9 +58,24 @@ public class DateOfEnrollmentArtCalculation extends AbstractPatientCalculation {
 
 			}
 
-			result.put(ptId, new SimpleResult(enrollmentDate, this));
+			if (enrollmentDate != null && tiEnrollmentDate != null) {
+				if (enrollmentDate.after(tiEnrollmentDate)) {
+					ret.put(ptId, new SimpleResult(tiEnrollmentDate, this, context));
+				} else if (enrollmentDate.before(tiEnrollmentDate)) {
+					ret.put(ptId, new SimpleResult(enrollmentDate, this, context));
+				} else {
+					ret.put(ptId, new SimpleResult(enrollmentDate, this, context));
+				}
+			} else if (enrollmentDate != null && tiEnrollmentDate == null) {
+				ret.put(ptId, new SimpleResult(enrollmentDate, this, context));
+			} else if (tiEnrollmentDate != null && enrollmentDate == null) {
+				ret.put(ptId, new SimpleResult(tiEnrollmentDate, this, context));
+			} else {
+				ret.put(ptId, null);
+			}
+
 		}
 
-		return  result;
+		return  ret;
 	}
 }
