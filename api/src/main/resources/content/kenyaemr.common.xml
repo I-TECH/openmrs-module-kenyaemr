@@ -385,21 +385,6 @@
 		<property name="order" value="201004" />
 	</bean>
 
-	<!-- Prep behavior risk assessment form -->
-	<!--<bean id="prep.prep.form.behaviorRiskAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="40374909-05fc-4af8-b789-ed9c394ac785" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.registration"/>
-				<ref bean="kenyaemr.app.intake"/>
-				<ref bean="kenyaemr.app.chart" />
-				<ref bean="kenyaemr.app.prep" />
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="prep:prep/behaviorRiskAssessment.html" />
-	</bean>-->
-
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.etlMissedAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
