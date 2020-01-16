@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -52,6 +53,29 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("BF Currently on ART", ReportUtils.map(datimCohorts.bfCurrentOnArt(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * //Number of FSW with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator fswCurrentlyOnART(KPTypeDataDefinition fsw) {
+        return cohortIndicator("FSW Currently on ART", ReportUtils.map(datimCohorts.kpCurrentOnArt(fsw), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Number of MSM with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator msmCurrentlyOnART(KPTypeDataDefinition msm) {
+        return cohortIndicator("MSM Currently on ART", ReportUtils.map(datimCohorts.kpCurrentOnArt(msm), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Number PWID with HIV infection receiving antiretroviral therapy (ART
+     * @return the indicator
+     */
+    public CohortIndicator pwidCurrentlyOnART(KPTypeDataDefinition pwid) {
+        return cohortIndicator("PWID Currently on ART", ReportUtils.map(datimCohorts.kpCurrentOnArt(pwid), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of patients who were started on Art
      * @return the indicator
