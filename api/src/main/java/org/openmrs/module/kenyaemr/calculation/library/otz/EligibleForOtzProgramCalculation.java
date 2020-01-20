@@ -58,7 +58,7 @@ public class EligibleForOtzProgramCalculation extends AbstractPatientCalculation
 			if (activeVisit.size() > 0) {
 				for (Visit v : activeVisit) {
 					if (!DATE_FORMAT.format(v.getStartDatetime()).equalsIgnoreCase(DATE_FORMAT.format(currentDate))) {
-						if(inOtzProgram.contains(ptId) && patient.getAge() >= 10) {
+						if(inOtzProgram.contains(ptId) && patient.getAge() >= 10 && patient.getAge() <= 25) {
 							onOtz = true;
 						}
 
