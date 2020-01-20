@@ -47,7 +47,7 @@ public class KPTypeDataDefinition extends BaseDataDefinition implements PersonDa
 	}
 
 	/**
-	 * Constructor to populate name, minMonth, maxMonth
+	 * Constructor to populate name,concept id
 	 */
 	public KPTypeDataDefinition(String name, Integer kpType) {
 		super(name);

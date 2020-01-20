@@ -215,6 +215,22 @@ public class DatimIndicatorLibrary {
     public CohortIndicator infantsTestedForVirologyNoResult() {
         return cohortIndicator("Infants tested positive for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyNoResults(), "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * Number of Infants turned HIV Positive 12 months after birth
+     * @return the indicator
+     */
+    public CohortIndicator infantsTurnedHIVPositive() {
+        return cohortIndicator("Infants identified HIV+ within 12 months after birth", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of Infants turned HIV Positive 12 months after birth and started on ART
+     * @return the indicator
+     */
+    public CohortIndicator infantsTurnedHIVPositiveOnART() {
+        return cohortIndicator("Infants identified HIV+ within 12 months after birth and Started ART", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositiveOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of Mothers Already on ART at the start of current Pregnancy
      * @return the indicator

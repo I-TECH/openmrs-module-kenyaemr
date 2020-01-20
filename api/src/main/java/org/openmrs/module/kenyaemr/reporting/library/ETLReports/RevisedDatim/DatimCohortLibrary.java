@@ -523,6 +523,74 @@ public class DatimCohortLibrary {
         return cd;
 
     }
+
+    public CohortDefinition infantsTurnedHIVPositive() {
+
+        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
+                "                                                           kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "                                                inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
+                "                         group by e.patient_id)t\n" +
+                "where test_type in (162081,162083,162080) and\n" +
+                "    t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
+                "group by t.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTurnedHIVPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants Turned HIV+ within 12 months of birth");
+        return cd;
+
+    }
+
+    public CohortDefinition infantsTurnedHIVPositiveOnART() {
+
+        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
+                "                                                                                                                                                                                                                    kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "                                                                                                                                                                                                                                                  inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                          inner join (select net.patient_id\n" +
+                "                                      from (\n" +
+                "                                           select e.patient_id,e.date_started,\n" +
+                "                                                  e.gender,\n" +
+                "                                                  e.dob,\n" +
+                "                                                  d.visit_date as dis_date,\n" +
+                "                                                  if(d.visit_date is not null, 1, 0) as TOut,\n" +
+                "                                                  e.regimen, e.regimen_line, e.alternative_regimen,\n" +
+                "                                                  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                                                  max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
+                "                                                  max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
+                "                                                  max(fup.visit_date) as latest_vis_date\n" +
+                "                                           from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
+                "                                                        mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
+                "                                                        mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
+                "                                                        max(if(discontinued,1,0))as alternative_regimen\n" +
+                "                                                 from kenyaemr_etl.etl_drug_event e\n" +
+                "                                                        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "                                                 where e.program = 'HIV'\n" +
+                "                                                 group by e.patient_id) e\n" +
+                "                                                  left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
+                "                                                  left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+                "                                                  left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
+                "                                           #where date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
+                "                                           group by e.patient_id\n" +
+                "                                           having TI_on_art=0\n" +
+                "                                           )net) onart on e.patient_id = onart.patient_id\n" +
+                "                          where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
+                "                          group by e.patient_id)t\n" +
+                "where test_type in (162081,162083,162080) and\n" +
+                "      t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
+                "group by t.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTurnedHIVPositiveOnART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants Turned HIV+ within 12 months of birth and on ART");
+        return cd;
+
+    }
     public CohortDefinition infantVirologySampleTaken() {
 
         String sqlQuery = "select dm.patient_id from kenyaemr_etl.etl_patient_demographics  dm\n" +
