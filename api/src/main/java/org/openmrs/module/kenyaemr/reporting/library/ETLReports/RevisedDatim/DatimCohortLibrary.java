@@ -457,8 +457,12 @@ public class DatimCohortLibrary {
     //TODO subquery to get last enrollment
     public CohortDefinition newANCClients() {
 
-        String sqlQuery = "select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1 and av.visit_date\n" +
-                "    between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+        String sqlQuery = "select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = av.patient_id\n" +
+                "where av.anc_visit_number = 1 and av.visit_date\n" +
+                "                   between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by e.patient_id\n" +
+                "having max(e.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newANCClients");
         cd.setQuery(sqlQuery);
