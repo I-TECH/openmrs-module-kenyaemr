@@ -221,7 +221,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator infantsTurnedHIVPositive() {
-        return cohortIndicator("Infants identified HIV+ within 12 months after birth", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Infants identified HIV Positive within 12 months after birth", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
@@ -229,7 +229,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator infantsTurnedHIVPositiveOnART() {
-        return cohortIndicator("Infants identified HIV+ within 12 months after birth and Started ART", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositiveOnART(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Infants identified HIV Positive within 12 months after birth and Started ART", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositiveOnART(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Number of Mothers Already on ART at the start of current Pregnancy
