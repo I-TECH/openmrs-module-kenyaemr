@@ -37,9 +37,9 @@ import java.util.List;
 @Builds({"kenyaemr.etl.common.report.datim"})
 public class DatimReportBuilder extends AbstractReportBuilder {
 
-    public static final int FSW_CONCEPT = 160579;
-    public static final int MSM_CONCEPT = 160578;
-    public static final int PWID_CONCEPT = 105;
+    static final int FSW_CONCEPT = 160579;
+    static final int MSM_CONCEPT = 160578;
+    static final int PWID_CONCEPT = 105;
 
     @Autowired
     private CommonDimensionLibrary commonDimensions;
