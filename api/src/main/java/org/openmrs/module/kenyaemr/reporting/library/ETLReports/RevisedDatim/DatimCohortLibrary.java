@@ -2283,7 +2283,7 @@ public class DatimCohortLibrary {
                 "where date(visit_date) <= curdate()  and program_name='HIV'\n" +
                 "group by patient_id \n" +
                 ") d on d.patient_id = fup.patient_id\n" +
-                "where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
                 "(((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(:endDate, date(latest_tca)) > 0)\n" +
@@ -2317,7 +2317,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2353,7 +2353,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2390,7 +2390,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2427,7 +2427,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2464,7 +2464,7 @@ public class DatimCohortLibrary {
                 "                           group by patient_id\n" +
                 "                          ) d on d.patient_id = fup.patient_id\n" +
                 "            \n" +
-                "                 where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "                 where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "                 group by patient_id\n" +
                 "                 having (\n" +
                 "                            (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2500,7 +2500,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2537,7 +2537,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2574,7 +2574,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2611,7 +2611,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2647,7 +2647,7 @@ public class DatimCohortLibrary {
                 "                         group by patient_id\n" +
                 "                        ) d on d.patient_id = fup.patient_id\n" +
                 "          \n" +
-                "               where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "               where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "               group by patient_id\n" +
                 "               having (\n" +
                 "                          (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2683,7 +2683,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2721,7 +2721,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
