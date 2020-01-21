@@ -36,6 +36,11 @@ import java.util.List;
 @Component
 @Builds({"kenyaemr.etl.common.report.datim"})
 public class DatimReportBuilder extends AbstractReportBuilder {
+
+    public static final int FSW_CONCEPT = 160579;
+    public static final int MSM_CONCEPT = 160578;
+    public static final int PWID_CONCEPT = 105;
+
     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
@@ -194,13 +199,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - FSW
-        cohortDsd.addColumn("TX_CURR_FSW", "FSW with HIV receiving ART", ReportUtils.map(datimIndicators.fswCurrentlyOnART(mapKPType("FSW",160579)), indParams), "");
+        cohortDsd.addColumn("TX_CURR_FSW", "FSW with HIV receiving ART", ReportUtils.map(datimIndicators.fswCurrentlyOnART(mapKPType("FSW",FSW_CONCEPT)), indParams), "");
 
         //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - MSM
-        cohortDsd.addColumn("TX_CURR_MSM", "MSM with HIV receiving ART", ReportUtils.map(datimIndicators.msmCurrentlyOnART(mapKPType("MSM",160578)), indParams), "");
+        cohortDsd.addColumn("TX_CURR_MSM", "MSM with HIV receiving ART", ReportUtils.map(datimIndicators.msmCurrentlyOnART(mapKPType("MSM",MSM_CONCEPT)), indParams), "");
 
         //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - PWID
-        cohortDsd.addColumn("TX_CURR_PWID", "PWID with HIV receiving ART", ReportUtils.map(datimIndicators.pwidCurrentlyOnART(mapKPType("PWID",105)), indParams), "");
+        cohortDsd.addColumn("TX_CURR_PWID", "PWID with HIV receiving ART", ReportUtils.map(datimIndicators.pwidCurrentlyOnART(mapKPType("PWID",PWID_CONCEPT)), indParams), "");
 
         //Number of Adults with HIV infection receiving ART By Number of Months drugs dispensed Disagreggation
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
