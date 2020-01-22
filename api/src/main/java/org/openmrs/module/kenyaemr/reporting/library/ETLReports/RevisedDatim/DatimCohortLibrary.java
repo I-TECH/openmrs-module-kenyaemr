@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -456,8 +457,12 @@ public class DatimCohortLibrary {
     //TODO subquery to get last enrollment
     public CohortDefinition newANCClients() {
 
-        String sqlQuery = "select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1 and av.visit_date\n" +
-                "    between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+        String sqlQuery = "select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = av.patient_id\n" +
+                "where av.anc_visit_number = 1 and av.visit_date\n" +
+                "                   between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by e.patient_id\n" +
+                "having max(e.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newANCClients");
         cd.setQuery(sqlQuery);
@@ -519,6 +524,73 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Infants with Positive Virology test result");
+        return cd;
+
+    }
+
+    public CohortDefinition infantsTurnedHIVPositive() {
+
+        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
+                "                                                           kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "                                                inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
+                "                         group by e.patient_id)t\n" +
+                "where test_type in (162081,162083,162080) and\n" +
+                "    t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
+                "group by t.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTurnedHIVPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants Turned HIV Positive within 12 months of birth");
+        return cd;
+
+    }
+
+    public CohortDefinition infantsTurnedHIVPositiveOnART() {
+
+        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
+                "                                                                                                                                                                                                                                 kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "                                                                                                                                                                                                                                                               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                                       inner join (select net.patient_id\n" +
+                "                                                   from (\n" +
+                "                                                        select e.patient_id,e.date_started,\n" +
+                "                                                               e.gender,\n" +
+                "                                                               e.dob,\n" +
+                "                                                               d.visit_date as dis_date,\n" +
+                "                                                               if(d.visit_date is not null, 1, 0) as TOut,\n" +
+                "                                                               e.regimen, e.regimen_line, e.alternative_regimen,\n" +
+                "                                                               mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                                                               max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
+                "                                                               max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
+                "                                                               max(fup.visit_date) as latest_vis_date\n" +
+                "                                                        from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
+                "                                                                     mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
+                "                                                                     mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
+                "                                                                     max(if(discontinued,1,0))as alternative_regimen\n" +
+                "                                                              from kenyaemr_etl.etl_drug_event e\n" +
+                "                                                                     join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
+                "                                                              where e.program = 'HIV'\n" +
+                "                                                              group by e.patient_id) e\n" +
+                "                                                               left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
+                "                                                               left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
+                "                                                               left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
+                "                                                              group by e.patient_id\n" +
+                "                                            having TI_on_art=0\n" +
+                "                                            )net) onart on e.patient_id = onart.patient_id\n" +
+                "                           where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
+                "                           group by e.patient_id)t\n" +
+                " where t.test_type in (162081,162083,162080) and\n" +
+                "       t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
+                " group by t.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTurnedHIVPositiveOnART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants Turned HIV Positive within 12 months of birth and on ART");
         return cd;
 
     }
@@ -2215,7 +2287,7 @@ public class DatimCohortLibrary {
                 "where date(visit_date) <= curdate()  and program_name='HIV'\n" +
                 "group by patient_id \n" +
                 ") d on d.patient_id = fup.patient_id\n" +
-                "where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
                 "(((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(:endDate, date(latest_tca)) > 0)\n" +
@@ -2249,7 +2321,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2285,7 +2357,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2322,7 +2394,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2359,7 +2431,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2396,7 +2468,7 @@ public class DatimCohortLibrary {
                 "                           group by patient_id\n" +
                 "                          ) d on d.patient_id = fup.patient_id\n" +
                 "            \n" +
-                "                 where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "                 where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "                 group by patient_id\n" +
                 "                 having (\n" +
                 "                            (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2432,7 +2504,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2469,7 +2541,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2506,7 +2578,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2543,7 +2615,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2579,7 +2651,7 @@ public class DatimCohortLibrary {
                 "                         group by patient_id\n" +
                 "                        ) d on d.patient_id = fup.patient_id\n" +
                 "          \n" +
-                "               where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "               where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "               group by patient_id\n" +
                 "               having (\n" +
                 "                          (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2615,7 +2687,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -2653,7 +2725,7 @@ public class DatimCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "\n" +
-                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 6 MONTH) and :endDate)\n" +
+                "     where fup.visit_date <= :endDate and (:endDate BETWEEN date_sub(:endDate , interval 3 MONTH) and :endDate)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
                 "                (((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
@@ -3156,6 +3228,44 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Currently on ART and Breastfeeding");
+        return cd;
+    }
+    /**
+     * Patients currently on ART
+     * TX_Curr Datim indicator
+     * @return
+     */
+    public CohortDefinition kpCurrentOnArt(KPTypeDataDefinition type) {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+
+        String sqlQuery="select patient_id from(\n" +
+                "                      select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "                             max(fup.visit_date) as latest_vis_date,\n" +
+                "                             mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                             max(d.visit_date) as date_discontinued,\n" +
+                "                             d.patient_id as disc_patient,\n" +
+                "                             de.patient_id as started_on_drugs\n" +
+                "                      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "                             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "                             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "                             left outer JOIN\n" +
+                "                               (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "                                group by patient_id\n" +
+                "                               ) d on d.patient_id = fup.patient_id\n" +
+                "                      where fup.visit_date <= date(:endDate) and fup.key_population_type = "+type.getKpTypeConcept()+"\n" +
+                "                      group by patient_id\n" +
+                "                      having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+                "                          ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
+                "                          )\n" +
+                "                      ) t;";
+
+        cd.setName("TX_Curr_kp");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("currently on ART");
         return cd;
     }
 

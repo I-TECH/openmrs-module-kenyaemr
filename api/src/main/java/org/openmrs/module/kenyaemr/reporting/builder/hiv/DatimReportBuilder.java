@@ -15,6 +15,7 @@ import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -35,6 +36,11 @@ import java.util.List;
 @Component
 @Builds({"kenyaemr.etl.common.report.datim"})
 public class DatimReportBuilder extends AbstractReportBuilder {
+
+    static final int FSW_CONCEPT = 160579;
+    static final int MSM_CONCEPT = 160578;
+    static final int PWID_CONCEPT = 105;
+
     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
@@ -181,7 +187,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Newly Started ART While BreastFeeding
         cohortDsd.addColumn("TX_New_BF", "Newly Started ART While Breastfeeding", ReportUtils.map(datimIndicators.newlyStartedARTWhileBF(), indParams), "");
 
-
         //TX_CURR
 
         //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
@@ -191,6 +196,18 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_CURR_PREGNANT", "Pregnant women with HIV receiving ART", ReportUtils.map(datimIndicators.pregnantCurrentlyOnART(), indParams), "");
 
         //Number of Breastfeeding mothers with HIV infection receiving antiretroviral therapy (ART)
+        cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
+
+        //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - FSW
+        cohortDsd.addColumn("TX_CURR_FSW", "FSW with HIV receiving ART", ReportUtils.map(datimIndicators.fswCurrentlyOnART(mapKPType("FSW",FSW_CONCEPT)), indParams), "");
+
+        //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - MSM
+        cohortDsd.addColumn("TX_CURR_MSM", "MSM with HIV receiving ART", ReportUtils.map(datimIndicators.msmCurrentlyOnART(mapKPType("MSM",MSM_CONCEPT)), indParams), "");
+
+        //Number of Adults with HIV infection receiving ART By KP Type Disagreggation - PWID
+        cohortDsd.addColumn("TX_CURR_PWID", "PWID with HIV receiving ART", ReportUtils.map(datimIndicators.pwidCurrentlyOnART(mapKPType("PWID",PWID_CONCEPT)), indParams), "");
+
+        //Number of Adults with HIV infection receiving ART By Number of Months drugs dispensed Disagreggation
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //PMTCT_ART
@@ -214,6 +231,12 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Infant Virology with no results
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested for Virology with no results", ReportUtils.map(datimIndicators.infantsTestedForVirologyNoResult(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
 
+        //PMTCT_HEI_POS
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS", "Infants identified HIV Positive within 12 months after birth", ReportUtils.map(datimIndicators.infantsTurnedHIVPositive(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
+
+        //PMTCT_HEI_POS_ART
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS_ART", "Infants identified HIV Positive within 12 months after birth and Started ART", ReportUtils.map(datimIndicators.infantsTurnedHIVPositiveOnART(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02","03"));
+
         //PMTCT_STAT
         //Known positive before ANC
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_KNOWN_POSITIVE", "Positive HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithPositiveHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
@@ -228,7 +251,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_RECENT_NEGATIVE", "With Negative HIV status before ANC ", ReportUtils.map(datimIndicators.clientsWithNegativeHivStatusBeforeAnc1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //Newly enrolled to ANC
-        cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
+        //cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
+        EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
         //Number of clients with known HIV status at ANC
         //EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Known_Status", "Known HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
@@ -487,13 +511,16 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Tested Positive at PITC Other
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Other_Positive", "Tested Positive at PITC Other", ReportUtils.map(datimIndicators.testedPositiveAtPITCOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
-
-
         //HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection
         //EmrReportingUtils.addRow(cohortDsd, "HTS_RECENT", "Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection", ReportUtils.map(datimIndicators.recentHIVInfections(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
         return cohortDsd;
 
+    }
+
+    private KPTypeDataDefinition mapKPType(String name, Integer concept){
+        KPTypeDataDefinition kpType = new KPTypeDataDefinition(name,concept);
+        return kpType;
     }
 }
 
