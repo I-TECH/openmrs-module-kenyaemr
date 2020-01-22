@@ -1016,4 +1016,29 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Newly enrolled into PrEP
+     */
+
+    public CohortIndicator newlyEnrolledInPrEP() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Newly enrolled into PrEP
+     */
+
+    public CohortIndicator currentlyEnrolledInPrEP() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.currEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Previously enrolled on IPT and have completed during this reporting period
+     */
+
+    public CohortIndicator previouslyOnIPTCopleted() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCopleted(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
 }
