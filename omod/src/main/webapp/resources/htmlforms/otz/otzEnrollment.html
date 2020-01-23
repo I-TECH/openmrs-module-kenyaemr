@@ -15,6 +15,17 @@
 	
 	<script type="text/javascript">
 		var transfer = "<lookup expression="fn.latestObs(160563).getValueCoded()"/>"
+		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+		var enrollmentDate;
+		beforeSubmit.push(function() {
+			enrollmentDate = new Date(getValue('encounter-date.value')).getTime();
+
+			if(enrollmentDate &lt; pbirthdate){
+				getField('encounter-date.error').html('Enrollment date, should not be earlier than Birth date').show();
+				return false;
+			}
+			return true;
+		});
 
 
 		jQuery(function($){

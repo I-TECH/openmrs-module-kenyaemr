@@ -18,6 +18,18 @@
 		var careGiverEnrolled = "<lookup expression="fn.latestObs(163777).getValueCoded()"/>"
 		var cpIdentifier = "<lookup expression="fn.latestObs(163766).getValueCoded()"/>"
 
+		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+		var enrollmentDate;
+		beforeSubmit.push(function() {
+			enrollmentDate = new Date(getValue('encounter-date.value')).getTime();
+
+			if(enrollmentDate &lt; pbirthdate){
+				getField('encounter-date.error').html('Enrollment date, should not be earlier than Birth date').show();
+				return false;
+			}
+			return true;
+		});
+
 
 		jQuery(function($){
             jq('#care-giver-in-facility').hide();
