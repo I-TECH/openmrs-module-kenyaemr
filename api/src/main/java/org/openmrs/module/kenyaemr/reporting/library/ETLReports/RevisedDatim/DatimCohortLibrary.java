@@ -3272,7 +3272,7 @@ public class DatimCohortLibrary {
 
     /**
      * Create dis-aggregations by number of months of drugs dispensed
-     * TX_Curr_BF Datim indicator
+     * TX_CURR_MONTHS_DRUGS indicator
      * @return
      */
     public CohortDefinition drugDurationCurrentOnArt(DurationToNextAppointmentDataDefinition duration) {
@@ -3311,13 +3311,13 @@ public class DatimCohortLibrary {
 
     /**
      * Number of individuals who were newly enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
-     * TX_Curr_BF Datim indicator
+     * PrEP_NEWLY_ENROLLED indicator
      * @return
      */
     public CohortDefinition newlyEnrolledInPrEP() {
 
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
-        "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_patient_program_discontinuation d where d.program_name = 'PREP' ) d on d.patient_id = e.patient_id \n" +
+        "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
         "where e.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
         "group by e.patient_id;";
 
@@ -3333,13 +3333,13 @@ public class DatimCohortLibrary {
 
     /**
      * Number of individuals who were currently enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
-     * TX_Curr_BF Datim indicator
+     * PrEP_CURR_ENROLLED indicator
      * @return
      */
     public CohortDefinition currEnrolledInPrEP() {
 
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
-                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d where d.program_name = 'PREP' ) d on d.patient_id = e.patient_id \n" +
+                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
                 "where d.patient_id is null \n" +
                 "group by e.patient_id;";
 
@@ -3358,7 +3358,7 @@ public class DatimCohortLibrary {
      * TB_PREV_COM Datim indicator
      * @return
      */
-    public CohortDefinition previouslyOnIPTandCopleted() {
+    public CohortDefinition previouslyOnIPTandCompleted() {
 
         String sqlQuery = "\n" +
                 "select i.patient_id from\n" +

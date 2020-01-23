@@ -80,7 +80,7 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("PWID Currently on ART", ReportUtils.map(datimCohorts.kpCurrentOnArt(pwid), "startDate=${startDate},endDate=${endDate}"));
     }
 
-     * //One Month to next appointment
+     /**One Month to next appointment
      * @return the indicator
      */
     public CohortIndicator currentlyOnARTOneMonthDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
@@ -1037,7 +1037,7 @@ public class DatimIndicatorLibrary {
      */
 
     public CohortIndicator previouslyOnIPTCopleted() {
-        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCopleted(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }
 
 
