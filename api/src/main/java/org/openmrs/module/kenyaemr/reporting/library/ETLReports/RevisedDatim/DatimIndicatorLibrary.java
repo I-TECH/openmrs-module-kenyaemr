@@ -10,7 +10,10 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
+
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DurationToNextAppointmentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -76,6 +79,54 @@ public class DatimIndicatorLibrary {
     public CohortIndicator pwidCurrentlyOnART(KPTypeDataDefinition pwid) {
         return cohortIndicator("PWID Currently on ART", ReportUtils.map(datimCohorts.kpCurrentOnArt(pwid), "startDate=${startDate},endDate=${endDate}"));
     }
+
+     /**One Month to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTOneMonthDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART one Month Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Two Months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTTwoMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART two Months Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Three Months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTThreeMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART three Months Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Four months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTFourMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART Four Months Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Five months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTFiveMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART Five Months Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * //Six Months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTSixMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART six Month Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+
     /**
      * Number of patients who were started on Art
      * @return the indicator
@@ -964,5 +1015,30 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Persons aged ≥15 years newly diagnosed with HIV-1 infection", ReportUtils.<CohortDefinition>map(datimCohorts.recentHIVInfections(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * Newly enrolled into PrEP
+     */
+
+    public CohortIndicator newlyEnrolledInPrEP() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Newly enrolled into PrEP
+     */
+
+    public CohortIndicator currentlyEnrolledInPrEP() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.currEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Previously enrolled on IPT and have completed during this reporting period
+     */
+
+    public CohortIndicator previouslyOnIPTCopleted() {
+        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
 
 }
