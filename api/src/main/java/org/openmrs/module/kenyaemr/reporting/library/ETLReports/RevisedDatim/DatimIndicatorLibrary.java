@@ -1037,7 +1037,7 @@ public class DatimIndicatorLibrary {
      */
 
     public CohortIndicator previouslyOnIPTCompleted() {
-        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number of individuals who were previously on IPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
