@@ -8,8 +8,10 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
-
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DurationToNextAppointmentDataDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -3815,5 +3817,148 @@ public class DatimCohortLibrary {
     }
 
 
+    /**
+     * Create dis-aggregations by number of months of drugs dispensed
+     * TX_CURR_MONTHS_DRUGS indicator
+     * @return
+     */
+    public CohortDefinition drugDurationCurrentOnArt(DurationToNextAppointmentDataDefinition duration) {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery="select t.patient_id from(\n" +
+                "                      select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,fup.key_population_type as kp,\n" +
+                "                             max(fup.visit_date) as latest_vis_date,\n" +
+                "                             mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "                            timestampdiff(day,max(fup.visit_date),mid(max(concat(fup.visit_date,fup.next_appointment_date)),11)) as days_to_next_appointment,\n" +
+                "                             max(d.visit_date) as date_discontinued,\n" +
+                "                             d.patient_id as disc_patient,\n" +
+                "                             de.patient_id as started_on_drugs\n" +
+                "                      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "                             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "                             join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "                             left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "                             left outer JOIN\n" +
+                "                               (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "                                group by patient_id\n" +
+                "                               ) d on d.patient_id = fup.patient_id\n" +
+                "                      where fup.visit_date <= date(:endDate)\n" +
+                "                      group by patient_id\n" +
+                "                      having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+                "                          ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
+                "                          )\n" +
+                "and timestampdiff(day,max(fup.visit_date),mid(max(concat(fup.visit_date,fup.next_appointment_date)),11)) between "+duration.getDuration()+") t;";
+
+        cd.setName("TX_CURR_MONTHS_DRUGS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Currently on ART and Breastfeeding");
+        return cd;
+    }
+
+    /**
+     * Number of individuals who were newly enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
+     * PrEP_NEWLY_ENROLLED indicator
+     * @return
+     */
+    public CohortDefinition newlyEnrolledInPrEP() {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
+        "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
+        "where e.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
+        "group by e.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PrEP_NEWLY_ENROLLED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly enrolled on PrEP");
+        return cd;
+
+    }
+
+    /**
+     * Number of individuals who were currently enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
+     * PrEP_CURR_ENROLLED indicator
+     * @return
+     */
+    public CohortDefinition currEnrolledInPrEP() {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
+                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
+                "where d.patient_id is null \n" +
+                "group by e.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PrEP_CURR_ENROLLED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Currently enrolled on PrEP");
+        return cd;
+
+    }
+
+    /**
+     *Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
+     * TB_PREV_COM Datim indicator
+     * @return
+     */
+    public CohortDefinition previouslyOnIPTandCompleted() {
+
+        String sqlQuery = "\n" +
+                "select i.patient_id from\n" +
+                "(select i.patient_id, max(i.visit_date) as initiation_date,max(o.visit_date),o.outcome\n" +
+                "     from kenyaemr_etl.etl_ipt_initiation i join kenyaemr_etl.etl_ipt_outcome o\n" +
+                "         on o.patient_id =i.patient_id and o.outcome = 1267\n" +
+                "     group by i.patient_id\n" +
+                "            having max(i.visit_date) between date_sub(:startDate , interval 6 MONTH) and date_sub(:endDate, interval 6 MONTH)\n" +
+                "       and max(o.visit_date) between date(:startDate) and date(:endDate)) i\n" +
+                "  join(\n" +
+                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "       max(fup.visit_date) as latest_vis_date,\n" +
+                "       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "       max(d.visit_date) as date_discontinued,\n" +
+                "       d.patient_id as disc_patient,\n" +
+                "       de.patient_id as started_on_drugs\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "       join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "       left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "       left outer JOIN\n" +
+                "         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "          group by patient_id\n" +
+                "         ) d on d.patient_id = fup.patient_id\n" +
+                "group by patient_id\n" +
+                "having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+                "    ( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date(:endDate) ))\n" +
+                "    )\n" +
+                ") t\n" +
+                "on t.patient_id = i.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TB_PREV_ENROLLED_COMPLETED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("previously enrolled on IPT and have completed");
+        return cd;
+
+    }
+
+    /**
+     *Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
+     * DATIM_OVC_SERV Datim indicator
+     */
+    public CohortDefinition beneficiaryOfOVCProgram(){
+        CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOVCProgramCalculation());
+        cd.setName("DATIM_OVC_SERV");
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        return cd;
+    }
 
 }
