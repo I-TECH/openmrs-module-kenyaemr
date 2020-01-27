@@ -1721,6 +1721,39 @@ public class DatimCohortLibrary {
         return cd;
 
     }
+   //Number restarted Treatment during the reporting period
+    public CohortDefinition returnedToTreatment() {
+
+        String sqlQuery = "select  e.patient_id\n" +
+                "    from (\n" +
+                "          select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "           max(fup.visit_date) as latest_vis_date,\n" +
+                "           mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           d.patient_id as disc_patient\n" +
+                "          from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "          join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "          join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "                  left outer JOIN\n" +
+                "          (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "          where date(visit_date) <= date_sub(:startDate, INTERVAL 1 DAY)  and program_name='HIV'\n" +
+                "          group by patient_id -- check if this line is necessary\n" +
+                "          ) d on d.patient_id = fup.patient_id\n" +
+                "          where fup.visit_date <= date_sub(:startDate, INTERVAL 1 DAY)\n" +
+                "          group by patient_id\n" +
+                "          having (\n" +
+                "          (((date(latest_tca) < date_sub(:startDate, INTERVAL 1 DAY)) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(date_sub(:startDate, INTERVAL 1 DAY), date(latest_tca)) > 30)\n" +
+                "              ) e inner join kenyaemr_etl.etl_patient_hiv_followup r on r.patient_id=e.patient_id and date(r.visit_date) between date(:startDate) and date(:endDate);";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_RTT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number restarted Treatment during the reporting period");
+        return cd;
+
+    }
     /*Alive, Pregnant and on ART for last 12 months*/
     public CohortDefinition pregnantAliveOnARTLast12Months() {
 

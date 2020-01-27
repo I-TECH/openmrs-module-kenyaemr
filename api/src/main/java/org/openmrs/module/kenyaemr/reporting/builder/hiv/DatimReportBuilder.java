@@ -331,8 +331,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         // TB_ART Proportion of HIV-positive new and relapsed TB cases on ART during TB treatment
 
-        //TX_RTT
-
+        //TX_RTT Number of ART patients with no clinical contact (or ARV drug pick-up) for greater than 30 days since their last expected contact who restarted ARVs within the reporting period
+        EmrReportingUtils.addRow(cohortDsd, "TX_RTT", "Number restarted Treatment during the reporting period", ReportUtils.map(datimIndicators.returnedToTreatment(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
         //TX_TB -> Not Available
 
         //TX_TB(Denominator) -> Not Available

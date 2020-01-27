@@ -523,6 +523,14 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * TX_RTT Number restarted Treatment during the reporting period
+     * @return the indicator
+     */
+    public CohortIndicator returnedToTreatment() {
+        return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.returnedToTreatment(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * TX_RET Number of pregnant women who are still alive and on treatment at 12 months after initiating ART
      * @return the indicator
      */
