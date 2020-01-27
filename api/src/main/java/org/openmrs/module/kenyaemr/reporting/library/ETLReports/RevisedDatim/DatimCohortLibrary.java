@@ -8,6 +8,8 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
+import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DurationToNextAppointmentDataDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -3399,6 +3401,19 @@ public class DatimCohortLibrary {
         cd.setDescription("previously enrolled on IPT and have completed");
         return cd;
 
+    }
+
+    /**
+     *Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
+     * DATIM_OVC_SERV Datim indicator
+     */
+    public CohortDefinition beneficiaryOfOVCProgram(){
+        CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOVCProgramCalculation());
+        cd.setName("DATIM_OVC_SERV");
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        return cd;
     }
 
 }
