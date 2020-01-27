@@ -225,6 +225,51 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * HIV Positive women on ART screened Negative for cervical cancer 1st time
+     * @return the indicator
+     */
+    public CohortIndicator firstTimescreenedCXCANegative() {
+        return cohortIndicator("HIV Positive women on ART screened Negative for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV Positive women on ART screened Positive for cervical cancer 1st time
+     * @return the indicator
+     */
+    public CohortIndicator firstTimescreenedCXCAPositive() {
+        return cohortIndicator("HIV Positive women on ART screened Positive for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV Positive women on ART screened Negative for cervical cancer 1st time
+     * @return the indicator
+     */
+    public CohortIndicator firstTimescreenedCXCAPresumed() {
+        return cohortIndicator("HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART re-screened Negative for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCANegative() {
+        return cohortIndicator("HIV Positive Women on ART re-screened Negative for cervical cancere", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART re-screened Positive for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCAPositive() {
+        return cohortIndicator("HIV Positive women on ART re-screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART with presumed cervical cancer during re-screening
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCAPresumed() {
+        return cohortIndicator("HIV Positive women on ART with presumed cervical cancer during re-screening", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number of Infants turned HIV Positive 12 months after birth and started on ART
      * @return the indicator
      */
@@ -823,7 +868,37 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of individuals who were offered Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.offeredIndexServices(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * HTS_INDEX_CONTACTS_ELICITED_MALES_UNDER15
+     */
+    public CohortIndicator maleContactsUnder15() {
+        return cohortIndicator("Number of male contacts under 15 years elicited", ReportUtils.<CohortDefinition>map(datimCohorts.maleContactsUnder15(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
 
+    /**
+     * HTS_INDEX_CONTACTS_ELICITED_MALES_15+
+     */
+    public CohortIndicator maleContacts15AndAbove() {
+        return cohortIndicator("Number of male contacts over 15 years elicited", ReportUtils.<CohortDefinition>map(datimCohorts.maleContacts15AndAbove(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_INDEX_CONTACTS_ELICITED_FEMALES_UNDER15
+     */
+    public CohortIndicator femaleContactsUnder15() {
+        return cohortIndicator("Number of female contacts under 15 years elicited", ReportUtils.<CohortDefinition>map(datimCohorts.femaleContactsUnder15(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HTS_INDEX_CONTACTS_ELICITED_FEMALES_15+
+     */
+    public CohortIndicator femaleContacts15AndAbove() {
+        return cohortIndicator("Number of female contacts over 15 years elicited", ReportUtils.<CohortDefinition>map(datimCohorts.femaleContacts15AndAbove(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
      */
@@ -831,110 +906,110 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of individuals who accepted Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.acceptedIndexServices(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
+/*
+    *//**
      * HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15 HIV+ male contacts under 15 years
-     */
+     *//*
     public CohortIndicator positiveMaleContactsUnder15() {
         return cohortIndicator("Male Contacts under 15 years and HIV+", ReportUtils.<CohortDefinition>map(datimCohorts.positiveMaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      *HTS_INDEX_CONTACTS_MALE_POSITIVE_OVER15 HIV+ male contacts over 15 years
-     */
+     *//*
     public CohortIndicator positiveMaleContactsOver15() {
         return cohortIndicator("Male Contacts over 15 years and HIV+", ReportUtils.<CohortDefinition>map(datimCohorts.positiveMaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_MALE_NEGATIVE_UNDER15 HIV Negative male contacts under 15 years
-     */
+     *//*
     public CohortIndicator negativeMaleContactsUnder15() {
         return cohortIndicator("Male Contacts under 15 years and HIV negative", ReportUtils.<CohortDefinition>map(datimCohorts.negativeMaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_MALE_NEGATIVE_OVER15 HIV Negative male contacts over 15 years
-     */
+     *//*
     public CohortIndicator negativeMaleContactsOver15() {
         return cohortIndicator("Male Contacts over 15 years and HIV negative", ReportUtils.<CohortDefinition>map(datimCohorts.negativeMaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_MALE_UNKNOWN_UNDER15 HIV Unknown status male contacts under 15 years
-     */
+     *//*
     public CohortIndicator unknownStatusMaleContactsUnder15() {
         return cohortIndicator("Male Contacts under 15 years with Unknown HIV status", ReportUtils.<CohortDefinition>map(datimCohorts.unknownStatusMaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      *HTS_INDEX_CONTACTS_MALE_UNKNOWN_OVER15 HIV Unknown status male contacts Over 15 years
-     */
+     *//*
     public CohortIndicator unknownStatusMaleContactsOver15() {
         return cohortIndicator("Male Contacts over 15 years with Unknown HIV status", ReportUtils.<CohortDefinition>map(datimCohorts.unknownStatusMaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_FEMALE_POSITIVE_UNDER15 HIV+ female contacts under 15 years
-     */
+     *//*
     public CohortIndicator positiveFemaleContactsUnder15() {
         return cohortIndicator("Female Contacts under 15 years and HIV+", ReportUtils.<CohortDefinition>map(datimCohorts.positiveFemaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      *HTS_INDEX_CONTACTS_FEMALE_POSITIVE_OVER15 HIV+ female contacts over 15 years
-     */
+     *//*
     public CohortIndicator positiveFemaleContactsOver15() {
         return cohortIndicator("Female Contacts over 15 years and HIV+", ReportUtils.<CohortDefinition>map(datimCohorts.positiveFemaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_UNDER15 HIV Negative female contacts under 15 years
-     */
+     *//*
     public CohortIndicator negativeFemaleContactsUnder15() {
         return cohortIndicator("Female Contacts under 15 years and HIV negative", ReportUtils.<CohortDefinition>map(datimCohorts.negativeFemaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_FEMALE_NEGATIVE_OVER15 HIV Negative female contacts over 15 years
-     */
+     *//*
     public CohortIndicator negativeFemaleContactsOver15() {
         return cohortIndicator("Female Contacts over 15 years and HIV negative", ReportUtils.<CohortDefinition>map(datimCohorts.negativeFemaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15 HIV Unknown status female contacts under 15 years
-     */
+     *//*
     public CohortIndicator unknownStatusFemaleContactsUnder15() {
         return cohortIndicator("Female Contacts under 15 years with Unknown HIV status", ReportUtils.<CohortDefinition>map(datimCohorts.unknownStatusFemaleContactsUnder15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      *HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15 HIV Unknown status female contacts Over 15 years
-     */
+     *//*
     public CohortIndicator unknownStatusFemaleContactsOver15() {
         return cohortIndicator("Female Contacts over 15 years with Unknown HIV status", ReportUtils.<CohortDefinition>map(datimCohorts.unknownStatusFemaleContactsOver15(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
+    *//**
      * HTS_INDEX Number of individuals who were identified and tested using Index testing services and received their results
-     */
+     *//*
     public CohortIndicator testedThroughIndexServices() {
         return cohortIndicator("Number of individuals who were identified and tested using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactIndexTesting(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }
+    }*/
     /**
      * HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
      */

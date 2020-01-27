@@ -156,6 +156,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> datimPMTCTANCAgeDisaggregation =
                 Arrays.asList(funder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50,colTotal);
 
+        List<ColumnParameters> datimPMTCTCXCAAgeDisaggregation =
+                Arrays.asList(f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50,colTotal);
         List<ColumnParameters> datimOtherReportsAgeDisaggregation = Arrays.asList(all1_to9, all10_to14, all15_to19, all20_to24, allOver25);
 
         List<ColumnParameters> datimDCMAgeDisaggregation =
@@ -259,6 +261,24 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Number of clients with known HIV status at ANC
         //EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Unknown_status", "Unknown HIV status at ANC", ReportUtils.map(datimIndicators.clientsWithUnKnownHIVStatusAtANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10","11"));
 
+        //CXCA_SCRN_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_NEGATIVE", "HIV Positive women on ART screened Negative for cervical cancer 1st time", ReportUtils.map(datimIndicators.firstTimescreenedCXCANegative(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //CXCA_SCRN_POSITIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POSITIVE", "HIV Positive women on ART screened Positive for cervical cancer 1st time", ReportUtils.map(datimIndicators.firstTimescreenedCXCAPositive(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //CXCA_SCRN_PRESUMED
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_PRESUMED", "Women on ART with Presumed cervical cancer after re-screening", ReportUtils.map(datimIndicators.rescreenedCXCAPresumed(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //CXCA_RESCRN_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_RESCRN_NEGATIVE", "Women on ART re-screened Negative for cervical cancer", ReportUtils.map(datimIndicators.rescreenedCXCANegative(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //CXCA_RESCRN_POSITIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_RESCRN_POSITIVE", "Women on ART re-screened Positive for cervical cancer", ReportUtils.map(datimIndicators.rescreenedCXCAPositive(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
+        //CXCA_RESCRN_PRESUMED
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_RESCRN_PRESUMED", "HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.map(datimIndicators.firstTimescreenedCXCAPresumed(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07","08","09","10"));
+
         //TX_ML
         //TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.onARTMissedAppointmentDied(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
@@ -309,7 +329,9 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //HEI died with HIV-final status unknown
         cohortDsd.addColumn("PMTCT_FO_HEI_DIED_HIV_STATUS_UNKNOWN", "HEI died with unknown HIV Status", ReportUtils.map(datimIndicators.heiDiedWithunknownHIVStatus(), indParams), "");
 
-        // TB_ART -> Not Available
+        // TB_ART Proportion of HIV-positive new and relapsed TB cases on ART during TB treatment
+
+        //TX_RTT
 
         //TX_TB -> Not Available
 
@@ -398,6 +420,18 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //HTS_INDEX_ACCEPTED Index services
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Indexes who accepted Index testing services", ReportUtils.map(datimIndicators.acceptedIndexServices(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
+        //HTS_INDEX_CONTACTS_ELICITED_MALES_UNDER15
+        cohortDsd.addColumn("HTS_INDEX_ELICITED_MALE_CONTACTS_UNDER15", "Male Contacts under 15 years", ReportUtils.map(datimIndicators.maleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_ELICITED_MALES_ABOVE15
+        cohortDsd.addColumn("HTS_INDEX_ELICITED_MALE_CONTACTS_15+", "Male Contacts 15+ years", ReportUtils.map(datimIndicators.maleContacts15AndAbove(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_ELICITED_FEMALES_UNDER15
+        cohortDsd.addColumn("HTS_INDEX_ELICITED_FEMALE_CONTACTS_UNDER15", "Female Contacts under 15 years", ReportUtils.map(datimIndicators.femaleContactsUnder15(),indParams), "");
+
+        //HTS_INDEX_CONTACTS_ELICITED_MALES_ABOVE15
+        cohortDsd.addColumn("HTS_INDEX_ELICITED_FEMALE_CONTACTS_15+", "Female Contacts 15+ years", ReportUtils.map(datimIndicators.femaleContacts15AndAbove(),indParams), "");
+/*
         //HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15 HIV+ male contacts under 15 years
         cohortDsd.addColumn("HTS_INDEX_CONTACTS_MALE_POSITIVE_UNDER15", "Male Contacts under 15 years and HIV+", ReportUtils.map(datimIndicators.positiveMaleContactsUnder15(),indParams), "");
 
@@ -432,7 +466,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_UNDER15", "Female Contacts under 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusFemaleContactsUnder15(),indParams), "");
 
         //HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15 HIV Unknown status female contacts Over 15 years
-        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15", "Female Contacts over 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusFemaleContactsOver15(),indParams), "");
+        cohortDsd.addColumn("HTS_INDEX_CONTACTS_FEMALE_UNKNOWN_OVER15", "Female Contacts over 15 years with Unknown HIV status", ReportUtils.map(datimIndicators.unknownStatusFemaleContactsOver15(),indParams), "");*/
         //HTS_INDEX New Positives
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(),indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25"));
 
