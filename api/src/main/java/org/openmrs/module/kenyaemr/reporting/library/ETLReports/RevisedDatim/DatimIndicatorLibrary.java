@@ -299,6 +299,20 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * Number of OVC Current on ART reported to implementing partner
+     * @return the indicator
+     */
+    public CohortIndicator ovcOnART() {
+        return cohortIndicator("Number of OVC Current on ART reported to implementing partner", ReportUtils.<CohortDefinition>map(datimCohorts.ovcOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of OVC Not on ART reported to implementing partner
+     * @return the indicator
+     */
+    public CohortIndicator ovcNotOnART() {
+        return cohortIndicator("Number of OVC Not on ART reported to implementing partner", ReportUtils.<CohortDefinition>map(datimCohorts.ovcNotOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * HIV Positive women on ART re-screened Negative for cervical cancer
      * @return the indicator
      */
@@ -333,6 +347,20 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator mothersAlreadyOnARTAtStartOfCurrentPregnancy() {
         return cohortIndicator("Mothers Already on ART at the start of current Pregnancy", ReportUtils.<CohortDefinition>map(datimCohorts.alreadyOnARTAtBeginningOfPregnacy(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *TB_ART Proportion of HIV-positive new and relapsed TB cases New on ART during TB treatment
+     * @return the indicator
+     */
+    public CohortIndicator newOnARTTBInfected() {
+        return cohortIndicator("TB patients new on ART", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTTBInfected(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TB_ART Proportion of HIV-positive new and relapsed TB cases Already on ART during TB treatment
+     * @return the indicator
+     */
+    public CohortIndicator alreadyOnARTTBInfected() {
+        return cohortIndicator("TB patients already on ART", ReportUtils.<CohortDefinition>map(datimCohorts.alreadyOnARTTBInfected(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
