@@ -1134,7 +1134,20 @@ public class DatimIndicatorLibrary {
     public CohortIndicator newlyEnrolledInPrEP() {
         return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment
+     */
 
+    public CohortIndicator newlyEnrolledInPrEPHIVPos() {
+        return cohortIndicator("Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPHIVPos(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly eonrolled to prep with a recent HIV negative results within 3 months into enrolment
+     */
+
+    public CohortIndicator newlyEnrolledInPrEPHIVNeg() {
+        return cohortIndicator("Newly eonrolled to prep with a recent HIV negative results within 3 months into enrolment", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPHIVNeg(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Newly enrolled into PrEP
      */

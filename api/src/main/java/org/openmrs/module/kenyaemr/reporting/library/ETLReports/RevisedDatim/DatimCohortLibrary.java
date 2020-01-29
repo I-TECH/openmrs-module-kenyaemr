@@ -679,7 +679,7 @@ public class DatimCohortLibrary {
                 "                              from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                                     join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "                                     join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                                     left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program in ('HIV') and date(date_started) <= date(:startDate)\n" +
+                "                                     left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program in ('HIV') and date(date_started) <= date(:endDate)\n" +
                 "                                     left outer JOIN\n" +
                 "                                       (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                                        where date(visit_date) <= date(:endDate) and program_name in ('HIV','OVC')\n" +
@@ -702,7 +702,7 @@ public class DatimCohortLibrary {
     public CohortDefinition ovcNotOnART() {
 
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_ovc_enrolment e\n" +
-                "                           left join\n" +
+                "                         left  join\n" +
                 "                             (select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "                                     max(fup.visit_date) as latest_vis_date,\n" +
                 "                                     mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
@@ -712,7 +712,7 @@ public class DatimCohortLibrary {
                 "                              from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                                     join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "                                     join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                                     left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program in ('HIV') and date(date_started) <= date(:startDate)\n" +
+                "                                     left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program in ('HIV') and date(date_started) <= date(:endDate)\n" +
                 "                                     left outer JOIN\n" +
                 "                                       (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                                        where date(visit_date) <= date(:endDate) and program_name in ('HIV','OVC')\n" +
@@ -4001,10 +4001,10 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition newlyEnrolledInPrEP() {
 
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
-        "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
-        "where e.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
-        "group by e.patient_id;";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
+                "        left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
+                "group by e.patient_id\n" +
+                "        having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PrEP_NEWLY_ENROLLED");
@@ -4012,6 +4012,54 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Newly enrolled on PrEP");
+        return cd;
+
+    }
+    /**
+     * Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment
+     * PrEP_NEWLY_ENROLLED indicator
+     * @return
+     */
+    public CohortDefinition newlyEnrolledInPrEPHIVPos() {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
+                "                           left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
+                "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
+                "where e.voided = 0 and t.voided = 0\n" +
+                "group by e.patient_id\n" +
+                "having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
+                "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\";";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PrEP_NEWLY_ENROLLED_HIVPOS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly enrolled on PrEP HIV Positive 3 months after enrolment");
+        return cd;
+
+    }
+    /**
+     * Newly eonrolled to prep with a recent HIV Negative results within 3 months into enrolment
+     * PrEP_NEWLY_ENROLLED indicator
+     * @return
+     */
+    public CohortDefinition newlyEnrolledInPrEPHIVNeg() {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
+                "                           left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
+                "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
+                "where e.voided = 0 and t.voided = 0\n" +
+                "group by e.patient_id\n" +
+                "having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
+                "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\";";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PrEP_NEWLY_ENROLLED_HIVNEG");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Newly enrolled on PrEP HIV Negative 3 months after enrolment");
         return cd;
 
     }
