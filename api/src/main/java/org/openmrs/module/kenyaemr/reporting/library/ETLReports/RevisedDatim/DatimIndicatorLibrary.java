@@ -1171,6 +1171,70 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC program", ReportUtils.<CohortDefinition>map(datimCohorts.beneficiaryOfOVCProgram(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
+     */
+    public CohortIndicator newlyOnArtPatientScreenedNegativeForTB() {
+        return cohortIndicator("Number of people on art that tested negative to TB", ReportUtils.<CohortDefinition>map(datimCohorts.artPatientScreenedForTBandResultNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (positive).
+     */
+    public CohortIndicator newlyOnArtPatientScreenedPositiveForTB() {
+        return cohortIndicator("Number of people on art that tested positive to TB", ReportUtils.<CohortDefinition>map(datimCohorts.artPatientScreenedForTBResultPositive(), "startDate=${startDate},endDate=${endDate}"));
+
+    }
+
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
+     */
+    public CohortIndicator previouslyOnArtPatientScreenedNegativeForTB() {
+        return cohortIndicator("Number of people on art that tested negative to TB", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnArtPatientScreenedForTBandResultNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (positive).
+     */
+    public CohortIndicator previouslyOnArtPatientScreenedPositiveForTB() {
+        return cohortIndicator("Number of people on art that tested positive to TB", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnArtPatientScreenedForTBResultPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
+     */
+    public CohortIndicator PreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod() {
+        return cohortIndicator("Number of patients on art enrolled on tb previous reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.patientPreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
+     */
+    public CohortIndicator NewOnARTEnrolledOnTB_ThisReportingPeriod() {
+        return cohortIndicator("Number of patients new on art enrolled on tb this reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.patientNewOnARTEnrolledOnTB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease
+     */
+    public CohortIndicator totalPatientsWhoHadSpecimenSentToLab() {
+        return cohortIndicator("Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease", ReportUtils.<CohortDefinition>map(datimCohorts.patientsWhoHadSpecimenSentFor_TB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease
+     */
+    public CohortIndicator patientsWithPositiveResultForBacteriologicDiagnosis() {
+        return cohortIndicator("Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease", ReportUtils.<CohortDefinition>map(datimCohorts.patientsWhoHadPositiveResultForBacteriologicDiagnosis(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of patients whose specimens were sent for  Smear only
+     */
+    public CohortIndicator patientSWhoseSpecimenSentForSmearOnly() {
+        return cohortIndicator("Number of patients whose specimens were sent for  Smear only", ReportUtils.<CohortDefinition>map(datimCohorts.patientsSpecimenSentForSmearOnly(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
 
 
 }
