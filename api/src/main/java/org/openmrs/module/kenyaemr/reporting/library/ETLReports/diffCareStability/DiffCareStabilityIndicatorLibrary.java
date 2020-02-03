@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.diffCareStability;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.viralSuppression.ViralSuppressionCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,8 +28,8 @@ public class DiffCareStabilityIndicatorLibrary {
      * Number of stable patients in care with over 4 months prescription
      * @return the indicator
      */
-    public CohortIndicator stableOver4Monthstca() {
-        return cohortIndicator("Stable patients 4+ months prescription", ReportUtils.map(cohortLibrary.stableOver4Monthstca(), ""));
+    public CohortIndicator stableOver6Monthstca() {
+        return cohortIndicator("Stable patients 6+ months prescription", ReportUtils.map(cohortLibrary.stableOver6Monthstca(), ""));
     }
 
     /**
@@ -56,6 +55,14 @@ public class DiffCareStabilityIndicatorLibrary {
      */
     public CohortIndicator undocumentedStability() {
         return cohortIndicator("Undocumented stability" , ReportUtils.map(cohortLibrary.undocumentedStability(), ""));
+    }
+
+    /**
+     * Number of patients in care and have multi-month appointment
+     * @return the indicator
+     */
+    public CohortIndicator stablePatientsMultiMonthAppointments(Integer month) {
+        return cohortIndicator("Undocumented stability" , ReportUtils.map(cohortLibrary.stablePatientsMultiMonthAppointments(month), ""));
     }
 
 
