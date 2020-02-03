@@ -17,6 +17,24 @@
 		var enrollmentDate = ovcDiscontinuation_VELOCITY.split(",")[0].split(":")[1];
 
 		jq(document).ready(function(){
+			jq('#ptransferred').hide();
+			if((getValue('discontinuation-reason.value')) == 159492 || (getValue('discontinuation-reason.value')) == 160036) {
+				jq('#ptransferred :input').prop('disabled', false);
+			}
+			else {
+				jq('#ptransferred :input').prop('disabled', true);
+			}
+
+			jq("#discontinuation-reason select").change(function() {
+				 if((getValue('discontinuation-reason.value')) == 159492 || (getValue('discontinuation-reason.value')) == 160036) {
+					jq('#ptransferred').show();
+					jq('#ptransferred :input').prop('disabled', false);
+				}
+				else {
+					jq('#ptransferred').hide();
+					jq('#ptransferred :input').prop('disabled', true);
+				}
+			});
 
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var discontinueDate;
@@ -91,6 +109,12 @@
 											Exit without graduation, Graduated out of OVC"
 							 style="dropdown" labelText=""  required="true" /></td>
 
+				</tr>
+				<tr id="ptransferred">
+					<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+					<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					<td>Date Transferred Out<br /></td>
+					<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
 				</tr>
 			</table>
 		</fieldset>

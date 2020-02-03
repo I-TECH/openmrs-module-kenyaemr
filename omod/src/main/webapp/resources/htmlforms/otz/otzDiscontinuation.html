@@ -17,6 +17,41 @@
 		var enrollmentDate = otzDiscontinuation_VELOCITY.split(",")[0].split(":")[1];
 
 		jq(document).ready(function(){
+			jq('#pdied').hide();
+			jq('#ptransferred').hide();
+			if ((getValue('discontinuation-reason.value')) == 160034) {
+				jq('#pdied :input').prop('disabled', false);
+				jq('#ptransferred :input').prop('disabled', true);
+			}
+			else if((getValue('discontinuation-reason.value')) == 159492) {
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', false);
+			}
+			else {
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', true);
+			}
+
+			jq("#discontinuation-reason select").change(function() {
+				if ((getValue('discontinuation-reason.value')) == 160034) {
+					jq('#pdied').show();
+					jq('#ptransferred').hide();
+					jq('#pdied :input').prop('disabled', false);
+					jq('#ptransferred :input').prop('disabled', true);
+				}
+				else if((getValue('discontinuation-reason.value')) == 159492) {
+					jq('#ptransferred').show();
+					jq('#pdied').hide();
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', false);
+				}
+				else {
+					jq('#pdied').hide();
+					jq('#ptransferred').hide();
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', true);
+				}
+			});
 
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var discontinueDate;
@@ -90,6 +125,16 @@
 							 159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165363"
 							 answerLabels=" Lost to followup, Opt out of OTZ, Died, Transferred Out,Transition to Adult Care"
 							 style="dropdown" labelText=""  required="true" /></td>
+				</tr>
+				<tr id="pdied">
+					<td>If Patient Died, please provide Date of Death if Known:</td>
+					<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr id="ptransferred">
+					<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+					<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					<td>Date Transferred Out<br /></td>
+					<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
 				</tr>
 			</table>
 		</fieldset>
