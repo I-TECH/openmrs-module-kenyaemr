@@ -34,7 +34,7 @@ public class DiffCareStabilityCohortLibrary {
         return cd;
     }
 
-    public  CohortDefinition stableOver4Monthstca() {
+    public  CohortDefinition stableOver6Monthstca() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select patient_id from(\n" +
                 "                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca\n" +
@@ -42,10 +42,26 @@ public class DiffCareStabilityCohortLibrary {
                 "                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
                 "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
                 "                                                                                                          and cic.patient_present = 978\n" +
-                "                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) >=4;" ;
-        cd.setName("stableOver4Monthstca");
+                "                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) > 6;" ;
+        cd.setName("stableOver6Monthstca");
         cd.setQuery(sqlQuery);
-        cd.setDescription("Stable with 4+ months prescription");
+        cd.setDescription("Stable with 6+ months prescription");
+
+        return cd;
+    }
+
+    public  CohortDefinition stablePatientsMultiMonthAppointments(Integer month) {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery="select patient_id from(\n" +
+                "                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca\n" +
+                "                                    from kenyaemr_etl.etl_current_in_care c\n" +
+                "                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
+                "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
+                "                                                                                                          and cic.patient_present = 978\n" +
+                "                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) =" + month + ";" ;
+        cd.setName("multimonthTCA");
+        cd.setQuery(sqlQuery);
+        cd.setDescription("Stable with and monthly appointments");
 
         return cd;
     }

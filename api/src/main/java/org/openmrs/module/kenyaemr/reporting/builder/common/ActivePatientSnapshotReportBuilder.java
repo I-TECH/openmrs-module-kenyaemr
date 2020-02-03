@@ -23,6 +23,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.DateConfirmedHivPosit
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTOutcomeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTOutcomeDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -129,15 +130,15 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
         EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
         EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-        EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+        //EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
         EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
-        List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
+        List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation);
 
         definition.setWhich(TimeQualifier.LAST);
         definition.setTypes(encounterTypes);
         dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-        dsd.addColumn("Next Appointment Date", new ObsForPersonDataDefinition("Next Appointment Date", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), null, null), "", new ObsValueDatetimeConverter());
+        dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new SimpleResultDateConverter());
 
 
         return dsd;
