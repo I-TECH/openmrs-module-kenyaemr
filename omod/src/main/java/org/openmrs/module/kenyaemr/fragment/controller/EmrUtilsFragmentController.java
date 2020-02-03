@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -60,6 +61,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
@@ -186,7 +188,6 @@ public class EmrUtilsFragmentController {
 	 */
 	public SimpleObject clientsBookedForHivConsultationOnDate(@RequestParam(value = "appointmentDate") String tca) {
 
-		System.out.println("Date passed from browser: " + tca);
 		String appointmentQuery = "select count(patient_id) as bookings\n" +
 				"from (\n" +
 				"select\n" +
@@ -203,14 +204,16 @@ public class EmrUtilsFragmentController {
 				")t;";
 
 
-		Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
-
-		return SimpleObject.create(
-			"bookingsOnDate", bookings
-		);
-
-
-
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
+			return SimpleObject.create(
+					"bookingsOnDate", bookings
+			);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		}
 	}
 	/**
 	 * Checks whether provided identifier(s) is already assigned
@@ -236,12 +239,16 @@ public class EmrUtilsFragmentController {
 				"group by e.patient_id\n" +
 				")t;";
 
-
-		Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
-
-		return SimpleObject.create(
-				"bookingsOnDate", bookings
-		);
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			Long bookings = (Long) Context.getAdministrationService().executeSQL(appointmentQuery, true).get(0).get(0);
+			return SimpleObject.create(
+					"bookingsOnDate", bookings
+			);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		}
 	}
 /**
  * Checks whether provided identifier(s) is already assigned
@@ -260,13 +267,16 @@ public class EmrUtilsFragmentController {
 				"where o.concept_id in (164962,164964, 162502) and o.voided=0\n" +
 				"group by e.encounter_id ORDER BY e.encounter_id DESC limit 1 ;";
 
-		Long lastLotNumber = (Long) Context.getAdministrationService().executeSQL(getLastLotNumberQuery, true).get(0).get(0);
-
-		return SimpleObject.create(
-				"lastLotNumber", lastLotNumber
-		);
-
-
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			Long lastLotNumber = (Long) Context.getAdministrationService().executeSQL(getLastLotNumberQuery, true).get(0).get(0);
+			return SimpleObject.create(
+					"lastLotNumber", lastLotNumber
+			);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		}
 	}
 	/**
 	 * Voids the given relationship
