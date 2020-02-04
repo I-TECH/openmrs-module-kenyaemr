@@ -860,7 +860,21 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDied(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
+     */
+    public CohortIndicator onARTLTFUonDrugsUnder3Months() {
+        return cohortIndicator("LTFU patients who have been on drugs for less than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.onARTLTFUonDrugsUnder3Months(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
 
+    /**
+     * TX_ML LTFU ON DRUGS >3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for more than 3 months
+     */
+    public CohortIndicator onARTLTFUonDrugsOver3Months() {
+        return cohortIndicator("LTFU patients who have been on drugs for more than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.onARTLTFUonDrugsOver3Months(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * TX_ML_DIED_TB Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of TB
      */
