@@ -1236,5 +1236,13 @@ public class DatimIndicatorLibrary {
     }
 
 
+    /**
+     * Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).
+     */
+    public CohortIndicator patientSWhoseSpecimenSentForGeneExpert() {
+        return cohortIndicator("Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.<CohortDefinition>map(datimCohorts.patientsSpecimenSentForGeneExpert(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
 
 }

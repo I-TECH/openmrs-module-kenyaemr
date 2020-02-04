@@ -705,6 +705,12 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Number of patients whose specimens were sent for  Smear only
         cohortDsd.addColumn("TX_TB_SMEAR_SPECIMEN", "Number of patients whose specimens were sent for  Smear only", ReportUtils.map(datimIndicators.patientSWhoseSpecimenSentForSmearOnly(), indParams), "");
 
+
+        //Number of patients whose specimens were sent for  Smear only
+        cohortDsd.addColumn("TX_TB_GENE_XPERT_SPECIMEN", "Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.map(datimIndicators.patientSWhoseSpecimenSentForGeneExpert(), indParams), "");
+
+
+
         return cohortDsd;
     }
 
