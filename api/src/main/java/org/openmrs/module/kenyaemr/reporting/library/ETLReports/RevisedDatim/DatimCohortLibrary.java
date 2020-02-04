@@ -4516,15 +4516,15 @@ public class DatimCohortLibrary {
                 "                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
                 "                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                  inner join openmrs.encounter en on fup.patient_id = en.patient_id\n" +
-                "                  inner join openmrs.orders od on od.encounter_id = en.encounter_id\n" +
+                "                  inner join encounter en on fup.patient_id = en.patient_id\n" +
+                "                  inner join orders od on od.encounter_id = en.encounter_id\n" +
                 "                  left outer JOIN\n" +
                 "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
                 "                  group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "             where fup.visit_date between date_sub(date(:startDate) , interval 5 MONTH) and date(:endDate) and tb.visit_date between date_sub(:startDate , interval 5 MONTH) and date(:endDate) and\n" +
-                "                  (SELECT COUNT(x.concept_id) = 1 AS TestsOrderd from  openmrs.orders x join  openmrs.encounter en on  x.encounter_id = en.encounter_id\n" +
+                "                  (SELECT COUNT(x.concept_id) = 1 AS TestsOrderd from  orders x join  encounter en on  x.encounter_id = en.encounter_id\n" +
                 "                      where en.patient_id = fup.patient_id)=1 and  od.concept_id= 307\n" +
                 "             group by patient_id\n" +
                 "             having (\n" +
@@ -4563,8 +4563,8 @@ public class DatimCohortLibrary {
                 "                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
                 "                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                  inner join openmrs.encounter en on fup.patient_id = en.patient_id\n" +
-                "                  inner join openmrs.orders od on od.encounter_id = en.encounter_id\n" +
+                "                  inner join encounter en on fup.patient_id = en.patient_id\n" +
+                "                  inner join orders od on od.encounter_id = en.encounter_id\n" +
                 "                  left outer JOIN\n" +
                 "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
