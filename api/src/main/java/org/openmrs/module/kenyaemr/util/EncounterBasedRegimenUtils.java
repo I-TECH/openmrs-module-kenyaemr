@@ -210,7 +210,19 @@ public class EncounterBasedRegimenUtils {
 
             );
         }
-        return null;
+        return SimpleObject.create(
+                "startDate",  "",
+                "endDate",  "",
+                "regimenShortDisplay", "",
+                "regimenLine",  "",
+                "regimenLongDisplay", "",
+                "changeReasons", "",
+                "regimenUuid", "",
+                "current",""
+
+        );
+
+        //return null;
     }
 
     public static String getRegimenNameFromRegimensXMLString(String conceptRef, String regimenJson) throws IOException {

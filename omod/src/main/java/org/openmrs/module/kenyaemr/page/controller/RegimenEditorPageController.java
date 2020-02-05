@@ -81,7 +81,6 @@ public class RegimenEditorPageController {
 				}
 
 			}
-
 			lastEncDetails = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastEnc.getObs(), lastEnc);
 		}
 		model.put("lastEnc", lastEncDetails);
