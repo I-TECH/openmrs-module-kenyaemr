@@ -605,8 +605,8 @@ public class DatimIndicatorLibrary {
      * TX_RTT Number restarted Treatment during the reporting period
      * @return the indicator
      */
-    public CohortIndicator returnedToTreatment() {
-        return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.returnedToTreatment(),
+    public CohortIndicator txRTT() {
+        return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.txRTT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -848,31 +848,31 @@ public class DatimIndicatorLibrary {
     /**
      * TX_ML Number of ART patients with no clinical contact since their last expected contact
      */
-    public CohortIndicator onARTMissedAppointment() {
-        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointment(),
+    public CohortIndicator txML() {
+        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact", ReportUtils.<CohortDefinition>map(datimCohorts.txML(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
      */
-    public CohortIndicator onARTMissedAppointmentDied() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDied(),
+    public CohortIndicator txMlDied() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txMlDied(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator onARTLTFUonDrugsUnder3Months() {
-        return cohortIndicator("LTFU patients who have been on drugs for less than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.onARTLTFUonDrugsUnder3Months(),
+    public CohortIndicator txMLLTFUonDrugsUnder3Months() {
+        return cohortIndicator("LTFU patients who have been on drugs for less than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.txMLLTFUonDrugsUnder3Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_ML LTFU ON DRUGS >3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for more than 3 months
      */
-    public CohortIndicator onARTLTFUonDrugsOver3Months() {
-        return cohortIndicator("LTFU patients who have been on drugs for more than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.onARTLTFUonDrugsOver3Months(),
+    public CohortIndicator txMLLTFUonDrugsOver3Months() {
+        return cohortIndicator("LTFU patients who have been on drugs for more than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.txMLLTFUonDrugsOver3Months(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -934,16 +934,16 @@ public class DatimIndicatorLibrary {
     /**
      * TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
      */
-    public CohortIndicator onARTMissedAppointmentTransferred() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to undocumented transfer", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentTransferred(),
+    public CohortIndicator txMLTrfOut() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to undocumented transfer", ReportUtils.<CohortDefinition>map(datimCohorts.txMLTrfOut(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
      */
-    public CohortIndicator onARTMissedAppointmentStoppedTreatment() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact because they stopped treatment", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentStoppedTreatment(),
+    public CohortIndicator txMLStoppedTreatment() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact because they stopped treatment", ReportUtils.<CohortDefinition>map(datimCohorts.txMLStoppedTreatment(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
