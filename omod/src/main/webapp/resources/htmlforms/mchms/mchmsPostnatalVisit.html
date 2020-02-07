@@ -62,6 +62,7 @@
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
         onEncounterDateChange();
+        getDeliveryModeChange();
         //Show number of clients already booked on tca date
         jq('#showNumberBooked').hide();
         jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
@@ -297,10 +298,25 @@
     });
     //on ready end
     function getDeliveryModeChange() {
-        if (getField('delivery-mode.value').val() == 1170) {
-            jq('#cs-scar select').prop('disabled', true);
-        }else{
+        if (getField('delivery-mode.value').val() == 1171) {
             jq('#cs-scar select').prop('disabled', false);
+            jq('#episiotomy select').prop('disabled', true);
+            getField('episiotomy.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 1170) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 1172) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 118159) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
         }
     }
 
@@ -928,7 +944,7 @@
 						<tr>
 							<td>Condition of Episiotomy:</td>
 							<td>
-								<obs conceptId="159840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								<obs conceptId="159840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="episiotomy"
 									 answerConceptIds="159842AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Repaired-episiotomy wound,Healed-episiotomy wound,Gap-episiotomy wound,Postoperative wound infection,Not Applicable"
 								/>
