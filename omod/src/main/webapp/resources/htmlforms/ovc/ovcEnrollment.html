@@ -86,7 +86,7 @@
 		function isCaregiverEnrolledInThisFacility() {
 			var val = jq(this).val();
 			if(val ==1065) {
-				var noName ="Please add care giver relationship type to the client";
+				var noCareGiverRelationship ="Please use the relationship feature available on the patient dashboard to add a caregiver after saving the form";
 				jq('#care-giver-in-facility').show();
 				jq('#care-giver-in-facility-phone').show();
 				jq('#care-givers-name').show();
@@ -94,7 +94,7 @@
 				jq('#care-giver-not-enrolled').hide();
 				if(careGiverName == undefined || careGiverName =='undefined') {
 					jq('#care-giver-no-name').show();
-					jq('#care-giver-no-relationship').html(noName);
+					jq('#care-giver-no-relationship').html(noCareGiverRelationship);
 				}
 
 			}else {
