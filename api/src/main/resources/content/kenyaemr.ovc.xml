@@ -31,7 +31,7 @@
 		</property>
 		<property name="reports">
 			<set>
-				<ref bean="kenyaemr.ovc.report.enrolledInOVC"/>
+				<ref bean="kenyaemr.ovc.report.currentlyEnrolledInOVC"/>
 
 			</set>
 		</property>
@@ -71,12 +71,14 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
-
-	<bean id="kenyaemr.ovc.report.enrolledInOVC" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
-		<property name="targetUuid" value="bf960342-35d4-11ea-850d-2e728ce88125" />
-		<property name="name" value="Patients currently on OVC" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	<bean id="kenyaemr.ovc.report.currentlyEnrolledInOVC" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="c8e9b42e-4bce-4542-a0c8-0487d9f783d8" />
+		<property name="name" value="Patients Currently on OVC" />
+		<property name="description" value="Patients currently on OVC program" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
 	</bean>
 
 </beans>
