@@ -57,7 +57,7 @@ public class DatimCohortLibrary {
                 "                left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV' \n" +
                 "                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
                 "                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id  \n" +
-                "                where date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
+                "                where date(e.date_started) between date(:startDate) and :endDate\n" +
                 "                group by e.patient_id  \n" +
                 "                having TI_on_art=0 \n" +
                 "                )net;";
@@ -101,9 +101,9 @@ public class DatimCohortLibrary {
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
                 "       left outer join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=e.patient_id\n" +
-                "       where date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)\n" +
-                "       and ((fup.pregnancy_status =1065 and fup.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) OR\n" +
-                "            mch.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) )\n" +
+                "       where date(e.date_started) between :startDate and date(:endDate)\n" +
+                "       and ((fup.pregnancy_status =1065 and fup.visit_date between :startDate and date(:endDate)) OR\n" +
+                "            mch.visit_date between :startDate and date(:endDate) )\n" +
                 "       group by e.patient_id\n" +
                 "       having TI_on_art=0\n" +
                 "       )net;";
@@ -147,7 +147,7 @@ public class DatimCohortLibrary {
                 "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
                 "       left outer join kenyaemr_etl.etl_tb_enrollment tbenr on tbenr.patient_id = e.patient_id\n" +
-                "       where date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)\n" +
+                "       where date(e.date_started) between date(:startDate) and date(:endDate)\n" +
                 "       and fup.on_anti_tb_drugs =1065 or  tbenr.visit_date < tbenr.date_of_discontinuation\n" +
                 "       group by e.patient_id\n" +
                 "       having TI_on_art=0\n" +
@@ -1376,7 +1376,7 @@ public class DatimCohortLibrary {
                 "            or (e.date_started >= enr.lst_mch_visit_date)\n" +
                 "            and (e.date_started < dl.lst_del_visit_date or dl.lst_del_visit_date is null)\n" +
                 "            and (e.date_started < psnv.lst_pv_visit_date or psnv.lst_pv_visit_date is null )\n" +
-                "            and date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
+                "            and date(e.date_started) between date(:startDate) and :endDate\n" +
                 "     group by e.patient_id\n" +
                 "     having TI_on_art=0\n" +
                 "     )net;";
@@ -1429,7 +1429,7 @@ public class DatimCohortLibrary {
                 "            e.date_started >= enr.lst_mch_visit_date\n" +
                 "            and (e.date_started > dl.lst_del_visit_date or dl.lst_del_visit_date is null)\n" +
                 "            and (e.date_started >= psnv.lst_pv_visit_date and baby_feeding_method in (5526,6046))\n" +
-                "            and date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
+                "            and date(e.date_started) between date(:startDate) and :endDate\n" +
                 "     group by e.patient_id\n" +
                 "     having TI_on_art=0\n" +
                 "     )net;";
@@ -1472,9 +1472,9 @@ public class DatimCohortLibrary {
                 "            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
                 "            left outer join kenyaemr_etl.etl_tb_enrollment tbenr on tbenr.patient_id = e.patient_id\n" +
-                "     where date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)\n" +
+                "     where date(e.date_started) between :startDate and date(:endDate)\n" +
                 "       and ((fup.on_anti_tb_drugs =1065 and\n" +
-                "             tbenr.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) ))\n" +
+                "             tbenr.visit_date between :startDate and date(:endDate) ))\n" +
                 "         group by e.patient_id\n" +
                 "         having TI_on_art=0\n" +
                 "               )net;";
@@ -1516,7 +1516,7 @@ public class DatimCohortLibrary {
                 "                 left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'  \n" +
                 "                 left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id   \n" +
                 "                 left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id   \n" +
-                "                 where date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate \n" +
+                "                 where date(e.date_started) between date(:startDate) and :endDate \n" +
                 "                 group by e.patient_id   \n" +
                 "                 having TI_on_art=0  \n" +
                 "                 )net;";

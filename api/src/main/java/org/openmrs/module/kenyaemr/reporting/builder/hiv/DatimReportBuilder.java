@@ -403,23 +403,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Number of Adults with HIV infection receiving ART By Number of Months drugs dispensed Disagreggation
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
-        //One month before next appointment
-        cohortDsd.addColumn("TX_CURR_ONE_MONTH_DRUGS", "One month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOneMonthDrugsDispensed(durationMapper("1 Month", "0 and 30")), indParams), "");
-
-        //two month before next appointment
-        cohortDsd.addColumn("TX_CURR_TWO_MONTHS_DRUGS", "Two month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTTwoMonthsDrugsDispensed(durationMapper("2 Month", "31 and 60")), indParams), "");
-
-        //three month before next appointment
-        cohortDsd.addColumn("TX_CURR_THREE_MONTHS_DRUGS", "Three month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTThreeMonthsDrugsDispensed(durationMapper("3 Month", "61 and 90")), indParams), "");
-
-        //four month before next appointment
-        cohortDsd.addColumn("TX_CURR_FOUR_MONTHS_DRUGS", "Four month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTFourMonthsDrugsDispensed(durationMapper("4 Month", "91 and 120")), indParams), "");
-
-        //five month before next appointment
-        cohortDsd.addColumn("TX_CURR_FIVE_MONTHS_DRUGS", "Five month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTFiveMonthsDrugsDispensed(durationMapper("5 Month", "121 and 150")), indParams), "");
-
-        //six month before next appointment
-        cohortDsd.addColumn("TX_CURR_SIX_MONTHS_DRUGS", "Six month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTSixMonthsDrugsDispensed(durationMapper("6 Month", "151 and 180")), indParams), "");
 //PMTCT_ART
 
         //Mothers new on ART during current pregnancy
