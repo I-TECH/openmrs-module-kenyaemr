@@ -403,23 +403,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Number of Adults with HIV infection receiving ART By Number of Months drugs dispensed Disagreggation
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
-        //One month before next appointment
-        cohortDsd.addColumn("TX_CURR_ONE_MONTH_DRUGS", "One month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOneMonthDrugsDispensed(durationMapper("1 Month", "0 and 30")), indParams), "");
-
-        //two month before next appointment
-        cohortDsd.addColumn("TX_CURR_TWO_MONTHS_DRUGS", "Two month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTTwoMonthsDrugsDispensed(durationMapper("2 Month", "31 and 60")), indParams), "");
-
-        //three month before next appointment
-        cohortDsd.addColumn("TX_CURR_THREE_MONTHS_DRUGS", "Three month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTThreeMonthsDrugsDispensed(durationMapper("3 Month", "61 and 90")), indParams), "");
-
-        //four month before next appointment
-        cohortDsd.addColumn("TX_CURR_FOUR_MONTHS_DRUGS", "Four month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTFourMonthsDrugsDispensed(durationMapper("4 Month", "91 and 120")), indParams), "");
-
-        //five month before next appointment
-        cohortDsd.addColumn("TX_CURR_FIVE_MONTHS_DRUGS", "Five month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTFiveMonthsDrugsDispensed(durationMapper("5 Month", "121 and 150")), indParams), "");
-
-        //six month before next appointment
-        cohortDsd.addColumn("TX_CURR_SIX_MONTHS_DRUGS", "Six month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTSixMonthsDrugsDispensed(durationMapper("6 Month", "151 and 180")), indParams), "");
 //PMTCT_ART
 
         //Mothers new on ART during current pregnancy
@@ -438,22 +421,22 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //TX_TB(Denominator) -> Not Available
         //TX_ML
         //TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.onARTMissedAppointmentDied(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.txMlDied(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_UNDER3MONTHS", "LTFU patients who have been on drugs for less than 3 months", ReportUtils.map(datimIndicators.onARTLTFUonDrugsUnder3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_UNDER3MONTHS", "LTFU patients who have been on drugs for less than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsUnder3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML LTFU ON DRUGS >3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for more than 3 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_OVER3MONTHS", "LTFU patients who have been on drugs for more than 3 months", ReportUtils.map(datimIndicators.onARTLTFUonDrugsOver3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_OVER3MONTHS", "LTFU patients who have been on drugs for more than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsOver3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRF_OUT", "ART patients with missed appointment due to transfer out", ReportUtils.map(datimIndicators.onARTMissedAppointmentTransferred(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRF_OUT", "ART patients with missed appointment due to transfer out", ReportUtils.map(datimIndicators.txMLTrfOut(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_STOPPED_TREATMENT", "ART patients with missed appointment because they stopped treatment", ReportUtils.map(datimIndicators.onARTMissedAppointmentStoppedTreatment(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_STOPPED_TREATMENT", "ART patients with missed appointment because they stopped treatment", ReportUtils.map(datimIndicators.txMLStoppedTreatment(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_RTT Number of ART patients with no clinical contact (or ARV drug pick-up) for greater than 30 days since their last expected contact who restarted ARVs within the reporting period
-        EmrReportingUtils.addRow(cohortDsd, "TX_RTT", "Number restarted Treatment during the reporting period", ReportUtils.map(datimIndicators.returnedToTreatment(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_RTT", "Number restarted Treatment during the reporting period", ReportUtils.map(datimIndicators.txRTT(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //90-90-90 Viral Suppression
 
