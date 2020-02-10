@@ -89,7 +89,6 @@
 				<component drugCode="DTG" />
 			</regimen>
 
-			<!--added by ben-->
 			<regimen name="AZT/3TC/LPV/r" conceptRef="162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="c56e7dbf-ec9c-47f5-b5d9-15d5cdfee002">
 				<component drugCode="AZT" dose="300" units="mg" frequency="BD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
@@ -180,7 +179,6 @@
 				<component drugCode="RTV" />
 			</regimen>
 
-			<!--ADULT SECOND LINE ADDED BY BEN-->
 			<regimen name="AZT/3TC/DTG" conceptRef="6dec7d7d-0fda-4e8d-8295-cb6ef426878d" orderSetRef="b3af5ba7-bac7-4af9-9bd4-b43bdfb020de">
 				<component drugCode="AZT" />
 				<component drugCode="3TC" />
@@ -198,7 +196,7 @@
 			</regimen>
 		</group>
 
-		<!-- Adult third line ADDED BY BEN -->
+
 		<group code="adult-third" name="Adult (third line)">
 			<regimen name="TDF/3TC/DTG/DRV/r" conceptRef="422e1a78-23b5-4a9f-91f7-dd4931471299" orderSetRef="edce1a5a-32b5-11ea-978f-2e728ce88125">
 				<component drugCode="TDF" />
@@ -226,7 +224,7 @@
 		</group>
 
 		<!-- Child first line: dosages and units to be entered manually by clinician -->
-		<group code="child-first" name="Child">
+		<group code="child-first" name="Child (First Line)">
 			<regimen name="ABC/3TC/LPV/r" conceptRef="162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="07040910-04c9-4007-801f-66c7f7e981c6">
 				<component drugCode="ABC" units="tab" />
 				<component drugCode="3TC" units="tab" />
@@ -273,7 +271,7 @@
 				<component drugCode="RTV" units="tab" />
 			</regimen>
 
-			<!-- CHILD FIRST LINE ADDED BY BEN-->
+
 			<regimen name="ABC/3TC/RAL" conceptRef="45b57168-40a9-4dcd-a55c-6bfd1b0ea75a" orderSetRef="edce2022-32b5-11ea-978f-2e728ce88125">
 				<component drugCode="ABC" dose="300" units="mg" frequency="OD" />
 				<component drugCode="3TC" dose="150" units="mg" frequency="BD" />
@@ -282,8 +280,8 @@
 			</regimen>
 		</group>
 
-		<!-- Adult third line ADDED BY BEN -->
-		<group code="child-second" name="Child">
+
+		<group code="child-second" name="Child (Second Line)">
 			<regimen name="AZT/3TC/RAL/DRV/r" conceptRef="13cc619e-9960-4af3-b6dc-569e0f02d237" orderSetRef="edce2162-32b5-11ea-978f-2e728ce88125">
 				<component drugCode="AZT" />
 				<component drugCode="3TC" />
