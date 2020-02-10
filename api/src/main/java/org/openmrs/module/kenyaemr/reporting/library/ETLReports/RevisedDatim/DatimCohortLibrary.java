@@ -4261,9 +4261,9 @@ public CohortDefinition onARTLTFUonDrugsOver3Months() {
                 "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
+                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
                 "                       where  date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
+                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
                 "                       group by e.patient_id \n" +
                 "                       having TI_on_art=0\n" +
                 "                       )net;";
@@ -4309,9 +4309,9 @@ public CohortDefinition onARTLTFUonDrugsOver3Months() {
                 "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
+                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
                 "                       where  date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
+                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
                 "                       group by e.patient_id \n" +
                 "                       having TI_on_art=0\n" +
                 "                       )net;";
@@ -4358,9 +4358,9 @@ public CohortDefinition onARTLTFUonDrugsOver3Months() {
                 "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
+                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
                 "                       where  date(e.date_started) < date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
+                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
                 "                       group by e.patient_id \n" +
                 "                       having TI_on_art=0\n" +
                 "                       )net;";
@@ -4405,9 +4405,9 @@ public CohortDefinition onARTLTFUonDrugsOver3Months() {
                 "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
+                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
                 "                       where  date(e.date_started) < date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
+                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
                 "                       group by e.patient_id \n" +
                 "                       having TI_on_art=0\n" +
                 "                       )net;";
