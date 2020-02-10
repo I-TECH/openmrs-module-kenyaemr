@@ -256,27 +256,108 @@ public class EmrUtilsFragmentController {
  * Uses last recorded lot number to prepopulate lot numbers in HTS tests
  *
  */
-	public SimpleObject lastLotNumberUsedForHTSTesting() {
+public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitName", required = false) String kitName) {
 
-		String getLastLotNumberQuery = "select\n" +
-				"  max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,\n" +
-				"  max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date\n" +
-				"from openmrs.obs o\n" +
-				"  inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
-				"  inner join openmrs.form f on f.form_id=e.form_id and f.uuid in ('72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7')\n" +
-				"where o.concept_id in (164962,164964, 162502) and o.voided=0\n" +
-				"group by e.encounter_id ORDER BY e.encounter_id DESC limit 1 ;";
+	Integer currentUserId = Context.getAuthenticatedUser().getPerson().getPersonId();
+
+	String getLastLotNumberQuery = "select\n" +
+			"max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no\n" +
+			"from\n" +
+			"openmrs.obs o\n" +
+			"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
+			"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+			"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
+			"where o.concept_id in (164962,164964, 162502) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
+			"group by e.encounter_id,o.obs_group_id\n" +
+			"Having max(if(o.concept_id=164962,trim(o.value_coded),null)) = '" + kitName + "'\n" +
+			"ORDER BY e.encounter_id  DESC limit 1 ;";
+
+	  try {
+		       Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			   String lastLotNumber = Context.getAdministrationService().executeSQL(getLastLotNumberQuery, true).get(0).get(0).toString();
+		    if(lastLotNumber != null || lastLotNumber != "") {
+			  return SimpleObject.create(
+					  "lastLotNumber", lastLotNumber
+			  );
+			}
+		} finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		}
+	return SimpleObject.create("No previous lot numbers have been saved");
+}
+
+	/**
+	 * Checks whether provided identifier(s) is already assigned
+	 * @return simple object with statuses for the different identifiers
+	 * Uses last recorded lot Expiry date to prepopulate lot numbers in HTS tests
+	 *
+	 */
+	public SimpleObject lastLotExpiryDateUsedForHTSTesting(@RequestParam(value = "kitName", required = false) String kitName) {
+
+		Integer currentUserId = Context.getAuthenticatedUser().getPerson().getPersonId();
+
+		String getLastLotExpiryDateQuery = "select\n" +
+				"max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date\n" +
+				"from\n" +
+				"openmrs.obs o\n" +
+				"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
+				"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+				"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
+				"where o.concept_id in (164962,164964, 162502) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
+				"group by e.encounter_id, o.obs_group_id\n" +
+				"Having max(if(o.concept_id=164962,trim(o.value_coded),null)) = '" + kitName + "'\n" +
+				"ORDER BY e.encounter_id  DESC limit 1 ;";
 
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
-			Long lastLotNumber = (Long) Context.getAdministrationService().executeSQL(getLastLotNumberQuery, true).get(0).get(0);
-			return SimpleObject.create(
-					"lastLotNumber", lastLotNumber
-			);
+			String lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0).toString();
+
+			if(lastLotExpiryDate != null || lastLotExpiryDate != "") {
+				return SimpleObject.create(
+						"lastLotExpiryDate", lastLotExpiryDate
+				);
+			}
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 		}
+		return SimpleObject.create("No previous lot numbers have been saved");
+	}
+	/**
+	 * Checks whether provided identifier(s) is already assigned
+	 * @return simple object with statuses for the different identifiers
+	 * Uses last recorded lot Expiry date for test 2 to prepopulate lot numbers in HTS tests
+	 *
+	 */
+	public SimpleObject lastLotExpiryDate2UsedForHTSTesting(@RequestParam(value = "kitName", required = false) String kitName) {
+
+		Integer currentUserId = Context.getAuthenticatedUser().getPerson().getPersonId();
+
+		String getLastLotExpiryDateQuery = "select\n" +
+				"max(if(o.concept_id=162501,date(o.value_datetime),null)) as expiry_date\n" +
+				"from\n" +
+				"openmrs.obs o\n" +
+				"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
+				"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+				"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
+				"where o.concept_id in (164962,164964, 162501) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
+				"group by e.encounter_id, o.obs_group_id\n" +
+				"Having max(if(o.concept_id=164962,trim(o.value_coded),null)) = '" + kitName + "'\n" +
+				"ORDER BY e.encounter_id  DESC limit 1 ;";
+
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+			String lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0).toString();
+			if(lastLotExpiryDate != null || lastLotExpiryDate != "") {
+				return SimpleObject.create(
+						"lastLotExpiryDate", lastLotExpiryDate
+				);
+			}
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		}
+		return SimpleObject.create("No previous lot numbers have been saved");
 	}
 	/**
 	 * Voids the given relationship

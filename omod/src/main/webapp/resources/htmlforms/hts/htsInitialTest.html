@@ -16,6 +16,7 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
@@ -60,6 +61,15 @@
 
         var kit1Selected = function () {
             var val = jq(this).val();
+            // Show use previous lot number checkbox
+            if(val != null || val != ""){
+                jq("#latest-lot-number").show();
+                jq('#latestLotNumber').click(defaultLotNumberClicked);
+            }else{
+                jq("#latest-lot-number").hide();
+                jq('#latest-lot-number :input').prop('checked', false);
+            }
+
             if (val == 165351 ){   //Dual kit selected
                 jq('#dual-results-1').show();
                 getField("kit-name-2.value").val("");
@@ -67,7 +77,6 @@
                 jq("#kit-name-2 option[value='164960']").hide();
                 jq("#kit-name-2 option[value='165351']").hide();
             }
-
             else if (val == 164960 ){   //Determine kit selected
                 jq('#dual-results-1').hide();
                 getField("kit-name-2.value").val("");
@@ -84,6 +93,81 @@
             }
         }
 
+        var kit2Selected = function () {
+            var val = jq(this).val();
+            // Show use previous lot number checkbox
+            if (val != null || val != "") {
+                jq("#latest-lot-number2").show();
+                jq('#latestLotNumber2').click(defaultLotNumber2Clicked);
+            } else {
+                jq("#latest-lot-number2").hide();
+                jq('#latest-lot-number2 :input').prop('checked', false);
+            }
+        }
+
+        //Ckeckbox to prepopulate last latestLotNumber-1
+        var defaultLotNumberClicked = function () {
+            var val = jq(this).val();
+            var kitName1 = getField('kit-name-1.value').val();
+            jq('#upnError').hide();
+            if (jq(this).is(':checked') &amp;&amp; !isNaN(kitName1) ){
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotNumberUsedForHTSTesting.action', {kitName: kitName1}, function (data) {
+                    if (data.lastLotNumber != null || data.lastLotNumber != "") {
+                        jq('#upnError').text("");
+                        jq('#lot-number-1 input[type=text]').val(data.lastLotNumber);
+                       //Check lot expiry date
+                        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotExpiryDateUsedForHTSTesting.action', {kitName: kitName1}, function (data) {
+                            if (data.lastLotExpiryDate != null || data.lastLotExpiryDate != "") {
+                                jq('#expiry-date input[type=text]').val(data.lastLotExpiryDate);
+                            }
+                        });
+                    } else {
+                        jq('#lot-number-1 input[type=text]').val("");
+                        jq('#expiry-date input[type=text]').val("");
+                        jq('#upnError').text("");
+                        jq('#upnError').text("No previous lot numbers have been saved");
+                        jq('#upnError').show();
+                    }
+
+
+                });
+            }else{
+                getField('lot-number-1.value').val("");
+                getField('expiry-date.value').val("");
+            }
+        }
+        //Ckeckbox to prepopulate last latestLotNumber-2
+        var defaultLotNumber2Clicked = function () {
+            var val = jq(this).val();
+            var kitName2 = getField('kit-name-2.value').val();
+            jq('#upnError').hide();
+            if (jq(this).is(':checked') &amp;&amp; !isNaN(kitName2) ){
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotNumberUsedForHTSTesting.action', {kitName: kitName2}, function (data) {
+                    if (data.lastLotNumber != null || data.lastLotNumber != "") {
+                        jq('#upnError2').text("");
+                        jq('#lot-number-2 input[type=text]').val(data.lastLotNumber);
+                        //Check lot expiry date
+                        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotExpiryDate2UsedForHTSTesting.action', {kitName: kitName2}, function (data) {
+
+                            if (data.lastLotExpiryDate != null || data.lastLotExpiryDate != "") {
+                               jq('#expiry-date2 input[type=text]').val(data.lastLotExpiryDate);
+                            }
+                        });
+                    } else {
+                        jq('#lot-number-2 input[type=text]').val("");
+                        jq('#expiry-date2 input[type=text]').val("");
+                        jq('#upnError2').text("");
+                        jq('#upnError2').text("No previous lot numbers have been saved");
+                        jq('#upnError2').show();
+                    }
+
+
+                });
+            }else{
+                getField('lot-number-2.value').val("");
+                getField('expiry-date2.value').val("");
+            }
+        }
         var prevTestSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
@@ -308,7 +392,9 @@
             //hiv test123    hide second test by default
             //kit selected
             jq('#kit-name-1 select').change(kit1Selected);
-
+            jq('#kit-name-2 select').change(kit2Selected);
+            jq("#latest-lot-number").hide();
+            jq("#latest-lot-number2").hide();
             jq("#hiv-test2").hide();
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
@@ -655,9 +741,9 @@
                 <tr id="disability">
                     <td>  Please indicated the type of disability : <br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Hearing impairment" style="checkbox" /><br/>
+                             answerLabel="Deaf" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Visual impairment" style="checkbox" /><br/>
+                             answerLabel="Blind" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Mentally Challenged" style="checkbox"  /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -708,8 +794,8 @@
                         <obs class="hts-strategy"
                              id="strategy"
                              conceptId="164956"
-                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Provider Initiated Testing(PITC),Client Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,Other"
+                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,PNS,Other"
                         />
                     </td>
                 </tr>
@@ -752,8 +838,12 @@
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
-
-                        <td> Kit Name
+                        <td>HIV Test 1 Results:
+                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
+                        </td>
+                        <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name"
                                  id="kit-name-1"
                                  conceptId="164962"
@@ -762,20 +852,17 @@
                             />
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
-                            <obs
-                                 class="lot-number"
-                                 id="lot-number-1"
-                                 conceptId="164964"
-                            />
+                            <obs  class="lot-number" id="lot-number-1" conceptId="164964" />
+                        </td>
+                        <td>
+                            <div id="latest-lot-number">
+                                <input type="checkbox" name="last-batch-number" id="latestLotNumber" /> Use last lot number
+                                <span id="upnError" class="error"></span>
+                            </div>
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
-                        </td>
-                        <td>&#160;&#160;&#160;&#160;HIV Test 1 Results:
-                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
                         </td>
                         <td>
                         <div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
@@ -791,8 +878,12 @@
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr id="hiv-test2">
 
-
-                        <td>Kit Name
+                        <td>HIV Test 2 Results:
+                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
+                        </td>
+                        <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name2"
                                  id="kit-name-2"
                                  conceptId="164962"
@@ -806,16 +897,16 @@
                                  id="lot-number-2"
                                  conceptId="164964"
                             />
-
+                        </td>
+                        <td>
+                            <div id="latest-lot-number2">
+                                <input type="checkbox" name="last-batch-number" id="latestLotNumber2" value="1" /> Use last lot number
+                                <span id="upnError2" class="error"></span>
+                            </div>
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date2" conceptId="162501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
-                        </td>
-                        <td>&#160;&#160;&#160;&#160; HIV Test 2 Results:
-                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
                         </td>
                     </tr>
                 </obsgroup>

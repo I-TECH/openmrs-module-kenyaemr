@@ -20,6 +20,7 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateARV1Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4Calculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PatientArtOutComeCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadResultCalculation;
@@ -140,7 +141,8 @@ public class ArtCohortAnalysisReportBuilder extends AbstractHybridReportBuilder 
 
         dsd.setName("artCohortRegister");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
-        dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Art Start Date", new CalculationDataDefinition("ART Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
+       // dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
         dsd.addColumn("UPN", identifierDef_upn, "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
