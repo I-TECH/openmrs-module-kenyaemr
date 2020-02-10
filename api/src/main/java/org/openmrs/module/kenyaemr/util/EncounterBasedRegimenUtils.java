@@ -445,6 +445,61 @@ public class EncounterBasedRegimenUtils {
                 "    \"conceptRef\": \"159851AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
                 "    \"regimenLine\": \"child_intensive\"\n" +
                 "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"AZT/3TC/DTG\",\n" +
+                "    \"conceptRef\": \"6dec7d7d-0fda-4e8d-8295-cb6ef426878d\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG\",\n" +
+                "    \"conceptRef\": \"9fb85385-b4fb-468c-b7c1-22f75834b4b0\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/DTG\",\n" +
+                "    \"conceptRef\": \"4dc0119b-b2a6-4565-8d90-174b97ba31db\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/DRV/r\",\n" +
+                "    \"conceptRef\": \"5f429c76-2976-4374-a69e-d2d138dd16bf\",\n" +
+                "    \"regimenLine\": \"adult_third\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"9b9817dd-4c84-4093-95c3-690d65d24b99\",\n" +
+                "    \"regimenLine\": \"adult_third\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/EFV/DRV/r\",\n" +
+                "    \"conceptRef\": \"f2acaf9b-3da9-4d71-b0cf-fd6af1073c9e\",\n" +
+                "    \"regimenLine\": \"adult_third\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/RAL\",\n" +
+                "    \"conceptRef\": \"7af7ebbe-99da-4a43-a23a-c3866c5d08db\",\n" +
+                "    \"regimenLine\": \"child_first\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"AZT/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"a1183b26-8e87-457c-8d7d-00a96b17e046\",\n" +
+                "    \"regimenLine\": \"child_second\"\n" +
+                "  },\n" +
+
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"02302ab5-dcb2-4337-a792-d6cf1082fc1d\",\n" +
+                "    \"regimenLine\": \"child_second\"\n" +
+                "  },\n" +
+
                 "  {\n" +
                 "    \"name\": \"EH\",\n" +
                 "    \"conceptRef\": \"1108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +

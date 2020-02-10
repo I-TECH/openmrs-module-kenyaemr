@@ -1,3 +1,4 @@
+
 <!--
 
     This Source Code Form is subject to the terms of the Mozilla Public License,
@@ -88,7 +89,34 @@
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
             </regimen>
+
+            <regimen name="AZT/3TC/LPV/r" conceptRef="162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="c56e7dbf-ec9c-47f5-b5d9-15d5cdfee002">
+                <component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+                <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+                <component drugCode="LPV" dose="400" units="mg" frequency="BD" />
+                <component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+            </regimen>
+            <regimen name="AZT/3TC/ATV/r" conceptRef="164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="3fdc7351-9eeb-4141-84fc-d51b518cc14f">
+                <component drugCode="AZT" dose="300" units="mg" frequency="BD" />
+                <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+                <component drugCode="ATV" dose="300" units="mg" frequency="OD" />
+                <component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+            </regimen>
+            <regimen name="TDF/3TC/ATV/r" conceptRef="164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="38138537-dccf-4860-b017-459e99b25fab">
+                <component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+                <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+                <component drugCode="ATV" dose="300" units="mg" frequency="OD" />
+                <component drugCode="RTV" dose="100" units="mg" frequency="OD" />
+            </regimen>
+            <regimen name="TDF/3TC/LPV/r" conceptRef="162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="ffa2aee4-f795-4bb7-bc63-eebe75462e9f">
+                <component drugCode="TDF" dose="300" units="mg" frequency="OD" />
+                <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+                <component drugCode="LPV" dose="400" units="mg" frequency="BD" />
+                <component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+            </regimen>
         </group>
+
+
 
         <!-- Adult second line -->
         <group code="adult-second" name="Adult (second line)">
@@ -154,10 +182,53 @@
                 <component drugCode="ATV" />
                 <component drugCode="RTV" />
             </regimen>
+
+            <regimen name="AZT/3TC/DTG" conceptRef="6dec7d7d-0fda-4e8d-8295-cb6ef426878d" orderSetRef="b3af5ba7-bac7-4af9-9bd4-b43bdfb020de">
+                <component drugCode="AZT" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+            <regimen name="TDF/3TC/DTG" conceptRef="9fb85385-b4fb-468c-b7c1-22f75834b4b0" orderSetRef="fcc936c7-ff55-4f40-bb05-007796192bc2">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+            <regimen name="ABC/3TC/DTG" conceptRef="4dc0119b-b2a6-4565-8d90-174b97ba31db" orderSetRef="4fead254-26af-479f-8958-df2fa108d013">
+                <component drugCode="ABC" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+        </group>
+
+
+        <group code="adult-third" name="Adult (third line)">
+            <regimen name="TDF/3TC/DTG/DRV/r" conceptRef="5f429c76-2976-4374-a69e-d2d138dd16bf" orderSetRef="edce1a5a-32b5-11ea-978f-2e728ce88125">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+            <regimen name="TDF/3TC/RAL/DRV/r" conceptRef="9b9817dd-4c84-4093-95c3-690d65d24b99" orderSetRef="edce1cbc-32b5-11ea-978f-2e728ce88125');">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="RAL" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+            <regimen name="TDF/3TC/DTG/EFV/DRV/r" conceptRef="f2acaf9b-3da9-4d71-b0cf-fd6af1073c9e" orderSetRef="edce1eba-32b5-11ea-978f-2e728ce88125">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+                <component drugCode="EFV" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+
         </group>
 
         <!-- Child first line: dosages and units to be entered manually by clinician -->
-        <group code="child-first" name="Child">
+        <group code="child-first" name="Child (First Line)">
             <regimen name="ABC/3TC/LPV/r" conceptRef="162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="07040910-04c9-4007-801f-66c7f7e981c6">
                 <component drugCode="ABC" units="tab" />
                 <component drugCode="3TC" units="tab" />
@@ -203,7 +274,35 @@
                 <component drugCode="LPV" units="tab" />
                 <component drugCode="RTV" units="tab" />
             </regimen>
+
+
+            <regimen name="ABC/3TC/RAL" conceptRef="7af7ebbe-99da-4a43-a23a-c3866c5d08db" orderSetRef="edce2022-32b5-11ea-978f-2e728ce88125">
+                <component drugCode="ABC" dose="300" units="mg" frequency="OD" />
+                <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
+                <component drugCode="RAL" dose="300" units="mg" frequency="OD" />
+
+            </regimen>
         </group>
+
+
+        <group code="child-second" name="Child (Second Line)">
+            <regimen name="AZT/3TC/RAL/DRV/r" conceptRef="a1183b26-8e87-457c-8d7d-00a96b17e046" orderSetRef="edce2162-32b5-11ea-978f-2e728ce88125">
+                <component drugCode="AZT" />
+                <component drugCode="3TC" />
+                <component drugCode="RAL" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+            <regimen name="ABC/3TC/RAL/DRV/r" conceptRef="02302ab5-dcb2-4337-a792-d6cf1082fc1d" orderSetRef="edce22a2-32b5-11ea-978f-2e728ce88125">
+                <component drugCode="ABC" />
+                <component drugCode="3TC" />
+                <component drugCode="RAL" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+
+        </group>
+
     </category>
     <category code="TB" masterSetUuid="160021AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
         <drugs>
