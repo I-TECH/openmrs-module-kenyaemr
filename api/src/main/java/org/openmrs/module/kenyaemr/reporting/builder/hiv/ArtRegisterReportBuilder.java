@@ -160,8 +160,7 @@ public class ArtRegisterReportBuilder extends AbstractHybridReportBuilder {
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
-        dsd.addColumn("Art Start Date", new CalculationDataDefinition("Art Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
-        // dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new DateARV1Calculation()), "", new CalculationResultConverter());
+        dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("UPN", identifierDef_upn, "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
