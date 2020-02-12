@@ -31,7 +31,7 @@
 			<set>
 				<ref bean="kenyaemr.etl.common.report.otz"/>
 				<ref bean="kenyaemr.otz.report.otzRegister"/>
-				<ref bean="kenyaemr.otz.report.enrolledInOTZ"/>
+				<ref bean="kenyaemr.otz.report.CurrentlyEnrolledInOTZ"/>
 
 			</set>
 		</property>
@@ -115,10 +115,10 @@
 		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
 	</bean>
 
-	<bean id="kenyaemr.otz.report.enrolledInOTZ" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
-		<property name="targetUuid" value="bf9600d6-35d4-11ea-850d-2e728ce88125" />
+	<bean id="kenyaemr.otz.report.CurrentlyEnrolledInOTZ" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="9448109b-f75b-445f-a0e1-0faf143a30fc" />
 		<property name="name" value="Patients currently on OTZ" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.otz.OnOTZProgramCalculation" />
+		<property name="description" value="Patients currently on OTZ program" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
