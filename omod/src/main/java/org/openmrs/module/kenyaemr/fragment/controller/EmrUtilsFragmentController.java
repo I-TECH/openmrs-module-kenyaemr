@@ -263,9 +263,9 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 	String getLastLotNumberQuery = "select\n" +
 			"max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no\n" +
 			"from\n" +
-			"openmrs.obs o\n" +
-			"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
-			"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+			"obs o\n" +
+			"inner join encounter e on e.encounter_id = o.encounter_id\n" +
+			"inner join form f on f.form_id=e.form_id and f.uuid in\n" +
 			"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
 			"where o.concept_id in (164962,164964, 162502) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
 			"group by e.encounter_id,o.obs_group_id\n" +
@@ -299,9 +299,9 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		String getLastLotExpiryDateQuery = "select\n" +
 				"max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date\n" +
 				"from\n" +
-				"openmrs.obs o\n" +
-				"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
-				"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+				"obs o\n" +
+				"inner join encounter e on e.encounter_id = o.encounter_id\n" +
+				"inner join form f on f.form_id=e.form_id and f.uuid in\n" +
 				"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
 				"where o.concept_id in (164962,164964, 162502) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
 				"group by e.encounter_id, o.obs_group_id\n" +
@@ -336,9 +336,9 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		String getLastLotExpiryDateQuery = "select\n" +
 				"max(if(o.concept_id=162501,date(o.value_datetime),null)) as expiry_date\n" +
 				"from\n" +
-				"openmrs.obs o\n" +
-				"inner join openmrs.encounter e on e.encounter_id = o.encounter_id\n" +
-				"inner join openmrs.form f on f.form_id=e.form_id and f.uuid in\n" +
+				"obs o\n" +
+				"inner join encounter e on e.encounter_id = o.encounter_id\n" +
+				"inner join form f on f.form_id=e.form_id and f.uuid in\n" +
 				"('402dc5d7-46da-42d4-b2be-f43ea4ad87b0','b08471f6-0892-4bf7-ab2b-bf79797b8ea4','e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','496c7cc3-0eea-4e84-a04c-2292949e2f7f')\n" +
 				"where o.concept_id in (164962,164964, 162501) and e.creator = '" + currentUserId + "' and o.voided=0\n" +
 				"group by e.encounter_id, o.obs_group_id\n" +
