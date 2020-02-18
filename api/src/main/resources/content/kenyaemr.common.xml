@@ -538,29 +538,26 @@
 		</property>
 	</bean>
 	<!--Additionals fpr 15.1 release-->
-	<bean id="kenyaemr.common.report.clients.transferred.out" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.common.report.clients.transferred.out" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="fe5da2d2-7ecd-11e5-a6be-10c37b209c79" />
 		<property name="name" value="Clients transferred out" />
 		<property name="description" value="Patients who have been moved to other facilities" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 
 	</bean>
 
-	<bean id="kenyaemr.common.report.clients.transferred.in" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.common.report.clients.transferred.in" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="176edbce-7ece-11e5-a7d9-10c37b209c79" />
 		<property name="name" value="Clients transferred in" />
 		<property name="description" value="Patients who came in from other facilities" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferInCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 
 	</bean>
 
-	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="d4c6805e-7ecf-11e5-8b43-10c37b209c79" />
 		<property name="name" value="Clients died" />
 		<property name="description" value="Patients who have died" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculation" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 
 	</bean>

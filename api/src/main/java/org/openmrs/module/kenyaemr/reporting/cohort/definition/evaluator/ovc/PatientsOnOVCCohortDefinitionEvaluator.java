@@ -53,7 +53,7 @@ public class PatientsOnOVCCohortDefinitionEvaluator implements CohortDefinitionE
 				"    from (\n" +
 				"         select e.patient_id, d.patient_id as disc_patient ,max(d.visit_date) as date_discontinued, max(e.visit_date) as enrollment_date\n" +
 				"         from kenyaemr_etl.etl_ovc_enrolment e\n" +
-				"             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id and p.voided=0\n" +
+				"             join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id and p.voided=0 and p.dead=0 \n" +
 				"             left outer JOIN\n" +
 				"              (select patient_id,visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
 				"                where program_name='OVC'\n" +

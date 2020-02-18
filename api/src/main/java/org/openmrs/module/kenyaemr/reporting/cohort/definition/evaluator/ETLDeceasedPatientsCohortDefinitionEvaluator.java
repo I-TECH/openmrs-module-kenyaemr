@@ -7,13 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.otz;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.PatientsOnOTZCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLDeceasedPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -28,51 +28,40 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for PatientsOnOTZCohortDefinition
- * Includes patients who are on OTZ.
+ * Evaluator for patients who died within a reporting period
  */
-@Handler(supports = {PatientsOnOTZCohortDefinition.class})
-public class PatientsOnOTZCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {ETLDeceasedPatientsCohortDefinition.class})
+public class ETLDeceasedPatientsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 
 	@Autowired
 	EvaluationService evaluationService;
-
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
+		ETLDeceasedPatientsCohortDefinition definition = (ETLDeceasedPatientsCohortDefinition) cohortDefinition;
 
-		PatientsOnOTZCohortDefinition definition = (PatientsOnOTZCohortDefinition) cohortDefinition;
-
-        if (definition == null)
-            return null;
+		if (definition == null)
+			return null;
 
 		Cohort newCohort = new Cohort();
-
-		String qry="select t.patient_id\n" +
-				"from (\n" +
-				" select e.patient_id, d.patient_id as disc_patient ,max(d.visit_date) as date_discontinued, max(e.visit_date) as enrollment_date\n" +
-				"from kenyaemr_etl.etl_otz_enrollment e\n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id and p.voided=0 and p.dead=0\n" +
-				" left outer JOIN\n" +
-				"(select patient_id,visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-				"where program_name='OTZ'\n" +
-				"group by patient_id\n" +
-				") d on d.patient_id = e.patient_id\n" +
-				" group by patient_id\n" +
-				"having (disc_patient is null or date(enrollment_date) >= date(date_discontinued) )\n" +
-				"\n" +
-				" )t;";
+		String qry=" SELECT patient_id\n" +
+				"from kenyaemr_etl.etl_patient_demographics\n" +
+				"where dead=1 and date(death_date) between date(:startDate) and date(:endDate) \n" +
+				"union\n" +
+				"select patient_id\n" +
+				"from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+				"where program_name='HIV' and date(date_died) between date(:startDate) and date(:endDate);";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
-		builder.append(qry);
 		Date startDate = (Date)context.getParameterValue("startDate");
 		Date endDate = (Date)context.getParameterValue("endDate");
-		builder.addParameter("startDate", startDate);
 		builder.addParameter("endDate", endDate);
-
+		builder.addParameter("startDate", startDate);
+		builder.append(qry);
 		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
 		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
 		return new EvaluatedCohort(newCohort, definition, context);
     }
+
 }

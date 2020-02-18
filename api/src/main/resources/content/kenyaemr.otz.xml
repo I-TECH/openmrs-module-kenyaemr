@@ -115,7 +115,7 @@
 		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
 	</bean>
 
-	<bean id="kenyaemr.otz.report.CurrentlyEnrolledInOTZ" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.otz.report.CurrentlyEnrolledInOTZ" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="9448109b-f75b-445f-a0e1-0faf143a30fc" />
 		<property name="name" value="Patients currently on OTZ" />
 		<property name="description" value="Patients currently on OTZ program" />
