@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  * Returns a report of clients who have ever been transferred in
  */
 @Component
-@Builds({"kenyaemr.common.report.clients.transferred.in"})
+@Builds({"kenyaemr.common.report.clients.transferred.in.original"})
 public class TransferInClientsReportBuilder extends CalculationReportBuilder {
     @Override
     protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {

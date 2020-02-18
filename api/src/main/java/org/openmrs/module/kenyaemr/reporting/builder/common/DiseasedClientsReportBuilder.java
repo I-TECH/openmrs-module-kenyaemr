@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  * Returns a listing of patients who are dead
  */
 @Component
-@Builds({"kenyaemr.common.report.clients.died"})
+@Builds({"kenyaemr.common.report.clients.died.original"})
 public class DiseasedClientsReportBuilder extends CalculationReportBuilder {
     @Override
     protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
