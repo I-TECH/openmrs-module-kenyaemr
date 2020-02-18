@@ -19,6 +19,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.ETLMissedAppointmentsCohortDefinition")
-public class ETLDeadPatientsCohortDefinition extends BaseCohortDefinition {
+public class ETLDeceasedPatientsCohortDefinition extends BaseCohortDefinition {
 
 }

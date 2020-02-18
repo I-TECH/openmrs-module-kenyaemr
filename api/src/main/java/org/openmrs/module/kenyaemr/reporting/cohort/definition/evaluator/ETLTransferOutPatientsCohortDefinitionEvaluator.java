@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLTransferOutPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -40,7 +39,7 @@ public class ETLTransferOutPatientsCohortDefinitionEvaluator implements CohortDe
 	EvaluationService evaluationService;
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
-		ETLMissedAppointmentsCohortDefinition definition = (ETLMissedAppointmentsCohortDefinition) cohortDefinition;
+		ETLTransferOutPatientsCohortDefinition definition = (ETLTransferOutPatientsCohortDefinition) cohortDefinition;
 
 		if (definition == null)
 			return null;

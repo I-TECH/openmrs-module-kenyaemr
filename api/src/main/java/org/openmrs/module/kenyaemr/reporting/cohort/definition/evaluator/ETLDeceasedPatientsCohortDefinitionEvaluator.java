@@ -13,8 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLDeadPatientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLDeceasedPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -31,8 +30,8 @@ import java.util.List;
 /**
  * Evaluator for patients who died within a reporting period
  */
-@Handler(supports = {ETLDeadPatientsCohortDefinition.class})
-public class ETLDeadPatientsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {ETLDeceasedPatientsCohortDefinition.class})
+public class ETLDeceasedPatientsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 
@@ -40,7 +39,7 @@ public class ETLDeadPatientsCohortDefinitionEvaluator implements CohortDefinitio
 	EvaluationService evaluationService;
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
-		ETLMissedAppointmentsCohortDefinition definition = (ETLMissedAppointmentsCohortDefinition) cohortDefinition;
+		ETLDeceasedPatientsCohortDefinition definition = (ETLDeceasedPatientsCohortDefinition) cohortDefinition;
 
 		if (definition == null)
 			return null;

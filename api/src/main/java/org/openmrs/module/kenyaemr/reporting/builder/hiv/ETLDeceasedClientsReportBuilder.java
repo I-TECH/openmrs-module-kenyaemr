@@ -17,17 +17,13 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.NumberOfDaysLateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLDeadPatientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLLostToFollowupCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLDeceasedPatientsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -107,7 +103,7 @@ public class ETLDeceasedClientsReportBuilder extends AbstractHybridReportBuilder
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = new ETLDeadPatientsCohortDefinition();
+		CohortDefinition cd = new ETLDeceasedPatientsCohortDefinition();
         cd.setName("Patients who have died");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
