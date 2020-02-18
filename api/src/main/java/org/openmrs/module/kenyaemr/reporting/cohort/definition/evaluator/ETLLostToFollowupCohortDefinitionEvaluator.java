@@ -52,7 +52,7 @@ public class ETLLostToFollowupCohortDefinitionEvaluator implements CohortDefinit
 				" max(d.visit_date) as date_discontinued,\n" +
 				" d.patient_id as disc_patient\n" +
 				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id and p.dead=0 \n" +
 				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
 				"-- ensure those discontinued are catered for\n" +
 				"left outer JOIN\n" +
