@@ -10,7 +10,11 @@
 package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -20,8 +24,11 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
@@ -38,7 +45,7 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 
 	@Override
 	public String getFlagMessage() {
-		return "Missed Appointment";
+		return "Missed HIV Appointment";
 	}
 
 	/**
@@ -52,12 +59,14 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-		//Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Set<Integer> alive = Filters.alive(cohort, context);
-		//Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
-		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), alive, context);
-		CalculationResultMap lastEncounters = Calculations.lastEncounter(null, cohort, context);
+		CalculationResultMap lastReturnDateMap = Context.getService(PatientCalculationService.class).evaluate(inHivProgram, new LastReturnVisitDateCalculation(), context);
+
+		EncounterType lastHivVisit = Context.getEncounterService().getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_CONSULTATION);
+		CalculationResultMap lastEncounters = Calculations.lastEncounter(lastHivVisit, cohort, context);
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 		Set<Integer> transferredOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		CalculationResultMap ret = new CalculationResultMap();
@@ -66,7 +75,7 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 
 			// Is patient alive
 			if (alive.contains(ptId) && !(ltfu.contains(ptId)) && !(transferredOut.contains(ptId))) {
-				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
+				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeResultForPatient(lastReturnDateMap, ptId);
 
 				// Does patient have a scheduled return visit in the past
 				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
