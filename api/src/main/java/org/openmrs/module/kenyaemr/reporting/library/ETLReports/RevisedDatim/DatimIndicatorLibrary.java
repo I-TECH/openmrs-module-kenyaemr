@@ -128,6 +128,13 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * //Over Six Months to next appointment
+     * @return the indicator
+     */
+    public CohortIndicator currentlyOnARTOverSixMonthsDrugsDispensed(DurationToNextAppointmentDataDefinition duration) {
+        return cohortIndicator("Currently on ART Over six Month Drugs Dispensed", ReportUtils.map(datimCohorts.drugDurationCurrentOnArt(duration), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * Number of patients who were started on Art
      * @return the indicator
      */
@@ -371,66 +378,66 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Mothers new on ART during current pregnancy", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTDuringPregnancy(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * Number Tested Negative at PITC Inpatient Services
+     * Number Tested NegativeInpatient Services
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCInpatientServices() {
-        return cohortIndicator("Tested Negative at PITC Inpatient Services", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeAtPITCInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativeInpatientServices() {
+        return cohortIndicator("Tested NegativeInpatient Services", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Positive at PITC Inpatient Services
+     * Number Tested PositiveInpatient Services
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCInpatientServices() {
-        return cohortIndicator("Tested Positive at PITC Inpatient Services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositiveInpatientServices() {
+        return cohortIndicator("Tested PositiveInpatient Services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Negative at PITC PMTCT services ANC-1 only
+     * Number Tested NegativePMTCT services ANC-1 only
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCPMTCTANC1() {
-        return cohortIndicator("Tested Negative at PITC PMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativeAtPITCPMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativePMTCTANC1() {
+        return cohortIndicator("Tested NegativePMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Positive at PITC PMTCT services ANC-1 only
+     * Number Tested PositivePMTCT services ANC-1 only
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCPMTCTANC1() {
-        return cohortIndicator("Tested Positive at PITC PMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positiveAtPITCPMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositivePMTCTANC1() {
+        return cohortIndicator("Tested PositivePMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Negative at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)
+     * Number Tested NegativePMTCT services Post ANC-1 (including labour and delivery and BF)
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCPMTCTPostANC1() {
-        return cohortIndicator("Tested Negative at PITC PMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativeAtPITCPMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativePMTCTPostANC1() {
+        return cohortIndicator("Tested NegativePMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Positive at PITC PMTCT services Post ANC-1 (including labour and delivery and BF)
+     * Number Tested PositivePMTCT services Post ANC-1 (including labour and delivery and BF)
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCPMTCTPostANC1() {
-        return cohortIndicator("Tested Positive at PITC PMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positiveAtPITCPMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositivePMTCTPostANC1() {
+        return cohortIndicator("Tested PositivePMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * Number Tested Positive at PITC Paediatric services
+     * Number Tested PositivePaediatric services
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCPaediatricServices() {
-        return cohortIndicator("Tested Positive at PITC Paediatric services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCPaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositivePaediatricServices() {
+        return cohortIndicator("Tested PositivePaediatric services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositivePaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number Tested Negative at PITC Paediatric services
+     * Number Tested NegativePaediatric services
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCPaediatricServices() {
-        return cohortIndicator("Tested Negative at PITC Paediatric services", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeAtPITCPaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativePaediatricServices() {
+        return cohortIndicator("Tested NegativePaediatric services", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativePaediatricServices(), "startDate=${startDate},endDate=${endDate}"));
     }
 
 
@@ -438,67 +445,123 @@ public class DatimIndicatorLibrary {
      * PITC Malnutrition Clinics Negative
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCMalnutritionClinic() {
-        return cohortIndicator("Tested Negative at PITC Malnutrition Clinics", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeAtPITCMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativeMalnutritionClinic() {
+        return cohortIndicator("Tested NegativeMalnutrition Clinics", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * PITC Malnutrition Clinics Positive
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCMalnutritionClinic() {
-        return cohortIndicator("Tested Positive at PITC Malnutrition Clinics", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositiveMalnutritionClinic() {
+        return cohortIndicator("Tested PositiveMalnutrition Clinics", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * PITC TB Clinic Negative
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCTBClinic() {
-        return cohortIndicator("Tested Negative at PITC TB Clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeAtPITCTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedNegativeTBClinic() {
+        return cohortIndicator("Tested NegativeTB Clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeTBClinic(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * PITC TB Clinic Positive
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCTBClinic() {
-        return cohortIndicator("Tested Positive at PITC TB Clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator testedPositiveTBClinic() {
+        return cohortIndicator("Tested PositiveTB Clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveTBClinic(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Tested Negative at PITC Other
+     * Tested NegativeOther
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCOther() {
-        return cohortIndicator("Tested Negative at PITC Other", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeAtPITCOther(),
+    public CohortIndicator testedNegativeOther() {
+        return cohortIndicator("Tested NegativeOther", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeOther(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Tested Positive at PITC Other
+     * Tested PositiveOther
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCOther() {
-        return cohortIndicator("Tested Positive at PITC Other", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCOther(),
+    public CohortIndicator testedPositiveOther() {
+        return cohortIndicator("Tested PositiveOther", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveOther(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * PWID Tested Positive
+     * @return the indicator
+     */
+    public CohortIndicator pwidTestedPositive() {
+        return cohortIndicator("PWID Tested Positive", ReportUtils.<CohortDefinition>map(datimCohorts.pwidTestedPositive(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * PWID Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator pwidTestedNegative() {
+        return cohortIndicator("PWID Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.pwidTestedNegative(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Tested Negative at PITC VCT
+     * MSM Tested Positive
      * @return the indicator
      */
-    public CohortIndicator testedNegativeAtPITCVCT() {
-        return cohortIndicator("Tested Negative at PITC VCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeAtPITCVCT(),
+    public CohortIndicator msmTestedPositive() {
+        return cohortIndicator("MSM Tested Positive", ReportUtils.<CohortDefinition>map(datimCohorts.msmTestedPositive(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * MSM Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator msmTestedNegative() {
+        return cohortIndicator("MSM Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.msmTestedNegative(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Tested Positive at PITC VCT
+     * FSW Tested Positive
      * @return the indicator
      */
-    public CohortIndicator testedPositiveAtPITCVCT() {
-        return cohortIndicator("Tested Positive at PITC VCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveAtPITCVCT(),
+    public CohortIndicator fswTestedPositive() {
+        return cohortIndicator("FSW Tested Positive", ReportUtils.<CohortDefinition>map(datimCohorts.fswTestedPositive(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+
+    /**
+     * FSW Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator fswTestedNegative() {
+        return cohortIndicator("FSW Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.fswTestedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested NegativeVCT
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeVCT() {
+        return cohortIndicator("Tested NegativeVCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeVCT(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested PositiveVCT
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveVCT() {
+        return cohortIndicator("Tested PositiveVCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveVCT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -520,6 +583,23 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Tested Negative Mobile outreach
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeMobile() {
+        return cohortIndicator("Tested Negative Mobile outreach", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeMobile(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Positive Mobile outreach
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveMobile() {
+        return cohortIndicator("Tested Positive Mobile outreach", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveMobile(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * Number Newly Started ART While BreastFeeding
