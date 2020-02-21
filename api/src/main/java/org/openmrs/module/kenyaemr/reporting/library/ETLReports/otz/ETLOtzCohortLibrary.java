@@ -541,10 +541,54 @@ public class ETLOtzCohortLibrary {
         return cd;
     }
 
+    public CohortDefinition patientEligibleForRoutineVLAt6Months(){
+        SqlCohortDefinition cd =  new SqlCohortDefinition();
+        String sqlQuery = "select patient_id from\n" +
+                "(\n" +
+                "select a.patient_id, a.date_started_art, mch.patient_id as inMCH,max(mch.visit_date) as latest_mch_date, mid(max(concat(l.visit_date, l.test_result)),11) as lastVL, left(max(concat(l.visit_date, l.test_result)),10) as lastVLDate,a.dob as dob from\n" +
+                "(select e.patient_id, min(date_started) as date_started_art,p.DOB as dob\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "  inner join kenyaemr_etl.etl_patient_demographics p on e.patient_id=p.patient_id  and p.voided=0\n" +
+                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id and ifnull(d.voided, 0)=0\n" +
+                "group by e.patient_id ) a\n" +
+                "left join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=a.patient_id and mch.visit_date between a.date_started_art and date_add(a.date_started_art,  interval 6 month )\n" +
+                "left join kenyaemr_etl.etl_laboratory_extract l on l.patient_id=a.patient_id and l.lab_test in (856, 1305) and l.visit_date between a.date_started_art and date_add(a.date_started_art,  interval 6 month )\n" +
+                "group by a.patient_id\n" +
+                ") e where(\n" +
+                "                   (timestampdiff(YEAR,date_add(e.date_started_art,  interval 6 month), e.dob))<25\n" +
+                "                    or e.inMCH is not null and e.lastVL is null and e.lastVLDate is null\n" +
+                "                    or (e.lastVL is null and e.lastVLDate is null) \n" +
+                "                    or (e.lastVL is not null and e.lastVLDate is not null and e.lastVL >1000 and timestampdiff(MONTH,e.lastVLDate,date_add(e.lastVLDate,  interval 3 month )) > 3)\n" +
+                "                   );";
+        cd.setName("due for VL Test at 6 months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        return cd;
+    }
 
-    public CohortDefinition patientEligibleForRoutineVL(){
-        CalculationCohortDefinition cd = new CalculationCohortDefinition(new NeedsViralLoadTestForOtzCalculation());
+    public CohortDefinition patientEligibleForRoutineVL(int month){
+        SqlCohortDefinition cd =  new SqlCohortDefinition();
+        String sqlQuery = "select patient_id from\n" +
+                "(\n" +
+                "select a.patient_id, a.date_started_art, mch.patient_id as inMCH, mid(max(concat(l.visit_date, l.test_result)),11) as lastVL, left(max(concat(l.visit_date, l.test_result)),10) as lastVLDate,a.dob as dob from\n" +
+                "(select e.patient_id, min(date_started) as date_started_art,p.DOB as dob\n" +
+                "from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "       inner join kenyaemr_etl.etl_patient_demographics p on e.patient_id=p.patient_id  and p.voided=0\n" +
+                "       inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id and ifnull(d.voided, 0)=0\n" +
+                "group by e.patient_id ) a\n" +
+                " left join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=a.patient_id and mch.visit_date between a.date_started_art and date_add(a.date_started_art,  interval "+month+" month )\n" +
+                " left join kenyaemr_etl.etl_laboratory_extract l on l.patient_id=a.patient_id and l.lab_test in (856, 1305) and l.visit_date between a.date_started_art and date_add(a.date_started_art,  interval "+month+" month )\n" +
+                "group by a.patient_id\n" +
+                ") e where(\n" +
+                "      (timestampdiff(YEAR,date_add(e.date_started_art,  interval "+month+" month), e.dob))<25\n" +
+                "        or (e.inMCH is not null and e.lastVL is null and e.lastVLDate is null)\n" +
+                "        or (e.lastVL is null and e.lastVLDate is null)\n" +
+                "        or (e.lastVL is not null and e.lastVLDate is not null and e.lastVL >1000 and timestampdiff(MONTH,e.lastVLDate,date_add(e.lastVLDate,  interval 3 month )) > 3)\n" +
+                "        or (e.lastVL is not null and e.lastVLDate is not null and (e.lastVL <1000 or e.lastVL = 'LDL') and timestampdiff(MONTH,e.lastVLDate,date_add(e.lastVLDate,  interval "+month+" month )) > "+month+") \n" +
+                "      );";
         cd.setName("due for VL Test");
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         return cd;
