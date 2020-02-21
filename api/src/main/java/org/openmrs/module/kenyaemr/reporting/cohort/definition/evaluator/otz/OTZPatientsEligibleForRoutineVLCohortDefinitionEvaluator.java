@@ -41,7 +41,7 @@ public class OTZPatientsEligibleForRoutineVLCohortDefinitionEvaluator implements
 
         OTZPatientsEligibleForRoutineVLCohortDefinition definition = (OTZPatientsEligibleForRoutineVLCohortDefinition) cohortDefinition;
         Integer month = definition.getMonth();
-        CohortDefinition cd = otzCohortLibrary.patientEligibleForRoutineVL();
+        CohortDefinition cd = otzCohortLibrary.patientEligibleForRoutineVL(month);
 
         Calendar calendar = Calendar.getInstance();
         int thisMonth = calendar.get(calendar.MONTH);
