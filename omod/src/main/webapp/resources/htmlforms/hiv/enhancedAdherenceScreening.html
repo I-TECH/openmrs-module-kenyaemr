@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
         var LATEST_SESSION = "<lookup expression="fn.latestObs(1639).valueNumeric"/>"
-        var LATEST_SESSION_START_DATE = "<lookup expression="fn.latestObs(1639).getObsDatetime()"/>"
+        var LATEST_SESSION_START_DATE = "<lookup expression="fn.earliestObs(1639).getObsDatetime()"/>"
         jQuery(function($) {
             //Defaults
             var adherenceResponses1=jq('#adherence-1');
@@ -188,7 +188,7 @@
                     <td> Date of first session:</td>
                     <td>
                         <obs conceptId="164891AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        id="session-startdate" required="true"
+                        id="session-startdate"
                         />
                     </td>
                     <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Pill count adherence % (from pill count):</td>
