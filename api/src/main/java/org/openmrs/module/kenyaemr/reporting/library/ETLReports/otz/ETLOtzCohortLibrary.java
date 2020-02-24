@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.otz;
 
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.otz.NeedsViralLoadTestForOtzCalculation;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
