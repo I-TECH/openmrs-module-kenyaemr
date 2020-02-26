@@ -160,9 +160,6 @@ public class ETLOtzIndicatorLibrary {
         return cohortIndicator("Patients sample taken for Routine VL", ReportUtils.<CohortDefinition>map(new OTZPatientsWithSamplesTakenForRoutineVLCohortDefinition(month), ""));
 
     }
-    public CohortIndicator patientEligibleForRoutineVLAt6Months() {
-        return cohortIndicator("Patients Eligible for Routine VL at 6 Months", ReportUtils.<CohortDefinition>map(otzCohorts.patientEligibleForRoutineVLAt6Months(), "startDate=${startDate},endDate=${endDate}"));
-    }
 
     public CohortIndicator patientEligibleForRoutineVL(Integer month) {
         return cohortIndicator("Patients Eligible for Routine VL", ReportUtils.<CohortDefinition>map(new OTZPatientsEligibleForRoutineVLCohortDefinition(month), ""));

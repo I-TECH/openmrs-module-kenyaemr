@@ -62,8 +62,8 @@ public class OtzReportBuilder extends AbstractReportBuilder {
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)
+                new Parameter("endDate", "End Date", Date.class)
+
         );
     }
 
@@ -140,7 +140,7 @@ public class OtzReportBuilder extends AbstractReportBuilder {
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
-        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVLAt6Months(), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("19", "20"));
+        EmrReportingUtils.addRow(cohortDsd, "ALHIV", "Total OTZ  eligible for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientEligibleForRoutineVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("19", "20"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ whose samples taken for routine viral load testing (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientSamplesTakenForRoutineVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("21", "22"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "OTZ with routine follow up VL results at the end of the (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVL(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("23", "24"));
         EmrReportingUtils.addRow(cohortDsd, "ALHIV", "# with follow up VL > 1000 copies/ml (cohort reporting month 6)", ReportUtils.map(otzIndicators.patientWithRoutineFollowupVLGreaterThan1000(6), indParams), AdolecenceStandardDisaggregationAgeAndSex, Arrays.asList("25", "26"));
