@@ -92,6 +92,9 @@ public class EmrActivator implements ModuleActivator {
 	 */
 	public void started() {
 		Context.getService(ReportService.class).deleteOldReportRequests();
+		// this is required after removing lucene indexes. Without this searching of drugs is not possible
+		//TODO: should be removed when corrupted lucene indexes can be handled separately
+		Context.updateSearchIndex();
 		log.info("KenyaEMR started");
 	}
 
