@@ -55,6 +55,7 @@
 				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
 				<ref bean="kenyaemr.common.report.enrollmentTracker" />
 				<ref bean="kenyaemr.hiv.report.artRegister" />
+				<ref bean="kenyaemr.hiv.report.scheduledDrugRefills"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -433,6 +434,14 @@
 		</property>
 		<property name="template" value="kenyaemr:art/artRegister.xls" />
 		<property name="repeatingSection" value="sheet:1,row:18,dataset:ARTRegister" />
+	</bean>
+
+	<!--Patients scheduled for drug refil-->
+	<bean id="kenyaemr.hiv.report.scheduledDrugRefills" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="8801e151-2789-4745-92b9-0c95f52ee5a3" />
+		<property name="name" value="Patients scheduled for ART Drug refill visit" />
+		<property name="description" value="Patients with scheduled ART refill visit on a date" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
