@@ -50,6 +50,23 @@ kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService','$timeou
 }]);
 
 /**
+ * Controller for peer search form
+ */
+kenyaemrApp.controller('PeerSearchForm', ['$scope', 'PatientService', function($scope, patientService) {
+
+    $scope.query = '';
+
+    $scope.init = function() {
+        $scope.which = "";
+        $scope.$evalAsync($scope.updateSearch); // initiate an initial search
+    };
+
+    $scope.updateSearch = function() {
+        patientService.updateSearch($scope.query, $scope.which);
+    };
+}]);
+
+/**
  * Controller for patient search results
  */
 kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($scope, $http) {
@@ -249,4 +266,93 @@ kenyaemrApp.controller('RecentlyViewed', ['$scope', '$http', function($scope, $h
 	$scope.onResultClick = function(patient) {
 		ui.navigate('kenyaemr', 'chart/chartViewPatient', { patientId: patient.id });
 	};
+
+    /**
+     * Controller for peer search results
+     */
+    kenyaemrApp.controller('PeerSearchResults', ['$scope', '$http','$q','$timeout', function($scope, $http,$q,$timeout) {
+
+        $scope.query = '';
+        $scope.dateFilter = '';
+        $scope.results = [];
+
+        /**
+         * Initializes the controller
+         * @param appId the current app id
+         * @param which
+         */
+        $scope.init = function(appId, pageProvider, page) {
+            $scope.appId = appId;
+            $scope.pageProvider = pageProvider;
+            $scope.page = page;
+        };
+
+        /**
+         * Listens for the 'peer-search' event
+         */
+        $scope.$on('patient-search', function(event, data) {
+            $scope.query = data.query;
+            $scope.which = "all";
+            $scope.refresh();
+        });
+
+        /**
+         * Refreshes the person search
+         */
+        $scope.refresh = function() {
+            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+            success(function(data) {
+                $scope.results = data;
+
+            });
+        };
+
+        /**
+         * Result click event handler
+         * @param patient the clicked patient
+         */
+        $scope.onPeerEducatorResultClick = function(peer) {
+            $scope.effectiveDate = angular.element('#startDate').val();
+            $scope.datecopy = angular.copy( $scope.effectiveDate);
+            var date = getMonthDays($scope.datecopy);
+            $scope.effectiveDate = date +'-'+ $scope.effectiveDate;
+            var dateFormat = "yy-mm-dd";
+            var currentDate = $.datepicker.formatDate(dateFormat, new Date($scope.effectiveDate));
+
+            var finalDate ='';
+            if(currentDate.charAt(0)   === "-"){
+                finalDate = currentDate.substring(1);
+            }else {
+                finalDate = currentDate
+            }
+            ui.navigate('kenyaemr', 'peerCalender/peerViewClients', { patientId: peer.id ,effectiveDate:finalDate});
+
+        };
+
+
+
+
+        function getMonthDays(MonthYear) {
+            var months = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'
+            ];
+
+            var Value=MonthYear.split("-");
+            var month = (months.indexOf(Value[0]) + 1);
+            return new Date(Value[1], month, 0).getDate();
+        }
+
+    }]);
+
 }]);
