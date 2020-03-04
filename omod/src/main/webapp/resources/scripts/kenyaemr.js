@@ -63,16 +63,7 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	kenyaemr.openEncounterDialog = function(appId, encounterId,formName) {
 		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
 		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 85, scrolling: true });
-		if(formName ==="HIV Green Card") {
-			setTimeout(function(){
-				kenyaui.optimizeModalContent();
-			}, 4500);
-
-		}else {
-			setTimeout(function(){
-				kenyaui.optimizeModalContent();
-			}, 1500);
-		}
+		
 
 	};
 
