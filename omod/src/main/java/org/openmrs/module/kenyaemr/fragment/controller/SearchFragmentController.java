@@ -15,10 +15,12 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSearchResult;
+import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
+import org.openmrs.Relationship;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -34,10 +36,12 @@ import org.openmrs.web.user.CurrentUsers;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -158,7 +162,7 @@ public class SearchFragmentController {
 		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
 			@Override
 			public int compare(Location location1, Location location2) {
-			return location1.getName().compareTo(location2.getName());
+				return location1.getName().compareTo(location2.getName());
 			}
 		});
 
@@ -389,5 +393,90 @@ public class SearchFragmentController {
 			//do nothing
 		}
 		return minSearchCharacters;
+	}
+
+	/**
+	 * returns a list of peer educators
+	 * @param query
+	 * @param which
+	 * @param ui
+	 * @return
+	 */
+	public List<SimpleObject> peerEducators(@RequestParam(value = "q", required = false) String query,
+											@RequestParam(value = "which", required = false, defaultValue = "all") String which,
+											UiUtils ui) {
+
+		// Return empty list if we don't have enough input to search on
+		if (StringUtils.isBlank(query) && "all".equals(which)) {
+			return Collections.emptyList();
+		}
+
+		// Run main patient search query based on id/name
+		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
+
+		// Gather up active visits for all patients. These are attached to the returned patient representations.
+		Map<Patient, Visit> patientActiveVisits = getActiveVisitsByPatients();
+
+		List<Patient> matched = new ArrayList<Patient>();
+		List<Patient> peerEducators = new ArrayList<Patient>();
+
+		// If query wasn't long enough to be searched on, and they've requested checked-in patients, return the list
+		// of checked in patients
+		if (StringUtils.isBlank(query) && "checked-in".equals(which)) {
+			matched.addAll(patientActiveVisits.keySet());
+			Collections.sort(matched, new PersonByNameComparator()); // Sort by person name
+		}
+		else {
+			if ("all".equals(which)) {
+				matched = matchedByNameOrID;
+			}
+			else if ("checked-in".equals(which)) {
+				for (Patient patient : matchedByNameOrID) {
+					if (patientActiveVisits.containsKey(patient)) {
+						matched.add(patient);
+					}
+				}
+			}
+			else if ("non-accounts".equals(which)) {
+				Set<Person> accounts = new HashSet<Person>();
+				accounts.addAll(getUsersByPersons(query).keySet());
+				accounts.addAll(getProvidersByPersons(query).keySet());
+
+				for (Patient patient : matchedByNameOrID) {
+					if (!accounts.contains(patient)) {
+						matched.add(patient);
+					}
+				}
+			}
+		}
+
+		//only filter those who are peer educators
+		for (Patient p : matched) {
+			if (patientIsPeerEducator(p)) {
+				peerEducators.add(p);
+			}
+		}
+
+		// Simplify and attach active visits to patient objects
+		List<SimpleObject> simplePatients = new ArrayList<SimpleObject>();
+		for (Patient patient : peerEducators) {
+			SimpleObject simplePatient = ui.simplifyObject(patient);
+
+			Visit activeVisit = patientActiveVisits.get(patient);
+			simplePatient.put("activeVisit", activeVisit != null ? ui.simplifyObject(activeVisit) : null);
+
+			simplePatients.add(simplePatient);
+		}
+
+		return simplePatients;
+	}
+
+	private boolean patientIsPeerEducator(Patient patient) {
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getPersonA().equals(patient) && relationship.getRelationshipType().getaIsToB().equals("Peer-educator")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

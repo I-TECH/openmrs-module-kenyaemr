@@ -17,12 +17,12 @@
  */
 kenyaemrApp.service('PatientService', function ($rootScope) {
 
-	/**
-	 * Broadcasts new patient search parameters
-	 */
-	this.updateSearch = function(query, which) {
-		$rootScope.$broadcast('patient-search', { query: query, which: which });
-	};
+    /**
+     * Broadcasts new patient search parameters
+     */
+    this.updateSearch = function(query, which) {
+        $rootScope.$broadcast('patient-search', { query: query, which: which });
+    };
 });
 
 /**
@@ -30,23 +30,23 @@ kenyaemrApp.service('PatientService', function ($rootScope) {
  */
 kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService','$timeout', function($scope, patientService, $timeout) {
 
-	$scope.query = '';
+    $scope.query = '';
 
-	$scope.init = function(which) {
-		$scope.which = which;
-		$scope.$evalAsync($scope.updateSearch); // initiate an initial search
-	};
-	$scope.delayOnChange = (function() {
-		var promise = null;
-		return function(callback, ms) {
-			$timeout.cancel(promise); //clearTimeout(timer);
-			promise = $timeout(callback, ms); //timer = setTimeout(callback, ms);
-		};
-	})();
+    $scope.init = function(which) {
+        $scope.which = which;
+        $scope.$evalAsync($scope.updateSearch); // initiate an initial search
+    };
+    $scope.delayOnChange = (function() {
+        var promise = null;
+        return function(callback, ms) {
+            $timeout.cancel(promise); //clearTimeout(timer);
+            promise = $timeout(callback, ms); //timer = setTimeout(callback, ms);
+        };
+    })();
 
-	$scope.updateSearch = function() {
-		patientService.updateSearch($scope.query, $scope.which);
-	};
+    $scope.updateSearch = function() {
+        patientService.updateSearch($scope.query, $scope.which);
+    };
 }]);
 
 /**
@@ -71,46 +71,46 @@ kenyaemrApp.controller('PeerSearchForm', ['$scope', 'PatientService', function($
  */
 kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($scope, $http) {
 
-	$scope.query = '';
-	$scope.results = [];
+    $scope.query = '';
+    $scope.results = [];
 
-	/**
-	 * Initializes the controller
-	 * @param appId the current app id
-	 * @param which
-	 */
-	$scope.init = function(appId, pageProvider, page) {
-		$scope.appId = appId;
-		$scope.pageProvider = pageProvider;
-		$scope.page = page;
-	};
+    /**
+     * Initializes the controller
+     * @param appId the current app id
+     * @param which
+     */
+    $scope.init = function(appId, pageProvider, page) {
+        $scope.appId = appId;
+        $scope.pageProvider = pageProvider;
+        $scope.page = page;
+    };
 
-	/**
-	 * Listens for the 'patient-search' event
-	 */
-	$scope.$on('patient-search', function(event, data) {
-		$scope.query = data.query;
-		$scope.which = data.which;
-		$scope.refresh();
-	});
+    /**
+     * Listens for the 'patient-search' event
+     */
+    $scope.$on('patient-search', function(event, data) {
+        $scope.query = data.query;
+        $scope.which = data.which;
+        $scope.refresh();
+    });
 
-	/**
-	 * Refreshes the person search
-	 */
-	$scope.refresh = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
-			success(function(data) {
-				$scope.results = data;
-			});
-	};
+    /**
+     * Refreshes the person search
+     */
+    $scope.refresh = function() {
+        $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+        success(function(data) {
+            $scope.results = data;
+        });
+    };
 
-	/**
-	 * Result click event handler
-	 * @param patient the clicked patient
-	 */
-	$scope.onResultClick = function(patient) {
-		ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
-	};
+    /**
+     * Result click event handler
+     * @param patient the clicked patient
+     */
+    $scope.onResultClick = function(patient) {
+        ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
+    };
 
 }]);
 
@@ -119,40 +119,40 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
  */
 kenyaemrApp.controller('SimilarPatients', ['$scope', '$http', function($scope, $http) {
 
-	$scope.givenName = '';
-	$scope.familyName = '';
-	$scope.results = [];
+    $scope.givenName = '';
+    $scope.familyName = '';
+    $scope.results = [];
 
-	/**
-	 * Initializes the controller
-	 * @param appId the current app id
-	 * @param which
-	 */
-	$scope.init = function(appId, pageProvider, page) {
-		$scope.appId = appId;
-		$scope.pageProvider = pageProvider;
-		$scope.page = page;
-		$scope.refresh();
-	};
+    /**
+     * Initializes the controller
+     * @param appId the current app id
+     * @param which
+     */
+    $scope.init = function(appId, pageProvider, page) {
+        $scope.appId = appId;
+        $scope.pageProvider = pageProvider;
+        $scope.page = page;
+        $scope.refresh();
+    };
 
-	/**
-	 * Refreshes the patient search
-	 */
-	$scope.refresh = function() {
-		var query = $scope.givenName + ' ' + $scope.familyName;
-		$http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: query, which: 'all' })).
-			success(function(data) {
-				$scope.results = data;
-			});
-	};
+    /**
+     * Refreshes the patient search
+     */
+    $scope.refresh = function() {
+        var query = $scope.givenName + ' ' + $scope.familyName;
+        $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: query, which: 'all' })).
+        success(function(data) {
+            $scope.results = data;
+        });
+    };
 
-	/**
-	 * Result click event handler
-	 * @param patient the clicked patient
-	 */
-	$scope.onResultClick = function(patient) {
-		ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
-	};
+    /**
+     * Result click event handler
+     * @param patient the clicked patient
+     */
+    $scope.onResultClick = function(patient) {
+        ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
+    };
 
 }]);
 
@@ -161,41 +161,41 @@ kenyaemrApp.controller('SimilarPatients', ['$scope', '$http', function($scope, $
  */
 kenyaemrApp.controller('DailySchedule', ['$scope', '$http', function($scope, $http) {
 
-	$scope.date = null;
-	$scope.scheduled = [];
+    $scope.date = null;
+    $scope.scheduled = [];
 
-	/**
-	 * Initializes the controller
-	 * @param appId
-	 * @param date
-	 * @param pageProvider
-	 * @param page
-	 */
-	$scope.init = function(appId, date, pageProvider, page) {
-		$scope.appId = appId;
-		$scope.date = date;
-		$scope.pageProvider = pageProvider;
-		$scope.page = page;
-		$scope.fetch();
-	};
+    /**
+     * Initializes the controller
+     * @param appId
+     * @param date
+     * @param pageProvider
+     * @param page
+     */
+    $scope.init = function(appId, date, pageProvider, page) {
+        $scope.appId = appId;
+        $scope.date = date;
+        $scope.pageProvider = pageProvider;
+        $scope.page = page;
+        $scope.fetch();
+    };
 
-	/**
-	 * Refreshes the schedule
-	 */
-	$scope.fetch = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getScheduled', { appId: $scope.appId, date: $scope.date })).
-			success(function(data) {
-				$scope.scheduled = data;
-			});
-	};
+    /**
+     * Refreshes the schedule
+     */
+    $scope.fetch = function() {
+        $http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getScheduled', { appId: $scope.appId, date: $scope.date })).
+        success(function(data) {
+            $scope.scheduled = data;
+        });
+    };
 
-	/**
-	 * Result click event handler
-	 * @param patient the clicked patient
-	 */
-	$scope.onResultClick = function(patient) {
-		ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
-	};
+    /**
+     * Result click event handler
+     * @param patient the clicked patient
+     */
+    $scope.onResultClick = function(patient) {
+        ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
+    };
 }]);
 
 /**
@@ -203,41 +203,41 @@ kenyaemrApp.controller('DailySchedule', ['$scope', '$http', function($scope, $ht
  */
 kenyaemrApp.controller('DailySeen', ['$scope', '$http', function($scope, $http) {
 
-	$scope.date = null;
-	$scope.seen = [];
+    $scope.date = null;
+    $scope.seen = [];
 
-	/**
-	 * Initializes the controller
-	 * @param appId
-	 * @param date
-	 * @param pageProvider
-	 * @param page
-	 */
-	$scope.init = function(appId, date, pageProvider, page) {
-		$scope.appId = appId;
-		$scope.date = date;
-		$scope.pageProvider = pageProvider;
-		$scope.page = page;
-		$scope.fetch();
-	};
+    /**
+     * Initializes the controller
+     * @param appId
+     * @param date
+     * @param pageProvider
+     * @param page
+     */
+    $scope.init = function(appId, date, pageProvider, page) {
+        $scope.appId = appId;
+        $scope.date = date;
+        $scope.pageProvider = pageProvider;
+        $scope.page = page;
+        $scope.fetch();
+    };
 
-	/**
-	 * Refreshes the seen patients
-	 */
-	$scope.fetch = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getSeenPatients', { appId: $scope.appId, date: $scope.date })).
-			success(function(data) {
-				$scope.seen = data;
-			});
-	};
+    /**
+     * Refreshes the seen patients
+     */
+    $scope.fetch = function() {
+        $http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'getSeenPatients', { appId: $scope.appId, date: $scope.date })).
+        success(function(data) {
+            $scope.seen = data;
+        });
+    };
 
-	/**
-	 * Result click event handler
-	 * @param patient the clicked patient
-	 */
-	$scope.onResultClick = function(patient) {
-		ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
-	};
+    /**
+     * Result click event handler
+     * @param patient the clicked patient
+     */
+    $scope.onResultClick = function(patient) {
+        ui.navigate($scope.pageProvider, $scope.page, { patientId: patient.id });
+    };
 }]);
 
 /**
@@ -245,27 +245,27 @@ kenyaemrApp.controller('DailySeen', ['$scope', '$http', function($scope, $http) 
  */
 kenyaemrApp.controller('RecentlyViewed', ['$scope', '$http', function($scope, $http) {
 
-	$scope.recent = [];
+    $scope.recent = [];
 
-	/**
-	 * Initializes the controller
-	 * @param pageProvider
-	 * @param page
-	 */
-	$scope.init = function() {
-		$http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'recentlyViewed')).
-			success(function(data) {
-				$scope.recent = data;
-			});
-	};
+    /**
+     * Initializes the controller
+     * @param pageProvider
+     * @param page
+     */
+    $scope.init = function() {
+        $http.get(ui.fragmentActionLink('kenyaemr', 'patient/patientUtils', 'recentlyViewed')).
+        success(function(data) {
+            $scope.recent = data;
+        });
+    };
 
-	/**
-	 * Result click event handler
-	 * @param patient the clicked patient
-	 */
-	$scope.onResultClick = function(patient) {
-		ui.navigate('kenyaemr', 'chart/chartViewPatient', { patientId: patient.id });
-	};
+    /**
+     * Result click event handler
+     * @param patient the clicked patient
+     */
+    $scope.onResultClick = function(patient) {
+        ui.navigate('kenyaemr', 'chart/chartViewPatient', { patientId: patient.id });
+    };
 
 }]);
 
@@ -302,7 +302,7 @@ kenyaemrApp.controller('PeerSearchResults', ['$scope', '$http','$q','$timeout', 
      * Refreshes the person search
      */
     $scope.refresh = function() {
-        $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+        $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'peerEducators', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
         success(function(data) {
             $scope.results = data;
 
