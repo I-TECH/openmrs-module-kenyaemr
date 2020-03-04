@@ -73,8 +73,32 @@ public class ScheduledARTDrugRefillsCohortDefinitionEvaluator implements CohortD
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select o.person_id from obs o inner join person p on p.person_id=o.person_id and p.voided=0 and p.dead=0 " +
-				" where o.voided=0 and o.concept_id=162549 and date(o.value_datetime) between date(:startDate) and date(:endDate);";
+		String qry=" select e.patient_id\n" +
+				"from (\n" +
+				"select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+				"    max(fup.visit_date) as latest_vis_date,\n" +
+				"    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+				"    max(d.visit_date) as date_discontinued,\n" +
+				"    d.patient_id as disc_patient,\n" +
+				"  de.patient_id as started_on_drugs,\n" +
+				"  de.program as hiv_program\n" +
+				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+				"join obs o on o.person_id=fup.patient_id and o.concept_id=162549 and date(o.value_datetime) between date(:startDate) and date(:endDate) \n" +
+				"left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
+				"left outer JOIN\n" +
+				"(select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+				"where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+				"group by patient_id\n" +
+				") d on d.patient_id = fup.patient_id\n" +
+				"where de.program = 'HIV' and fup.visit_date <= date(:endDate)\n" +
+				"group by patient_id\n" +
+				"having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
+				"(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
+				"(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
+				") e\n" +
+				";";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
