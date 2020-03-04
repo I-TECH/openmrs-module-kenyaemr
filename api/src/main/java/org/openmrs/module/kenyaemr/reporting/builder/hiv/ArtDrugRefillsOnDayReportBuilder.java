@@ -25,8 +25,10 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLTransferOutPatientsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledARTDrugRefillsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.ArtDrugRefillAppointmentConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredDrugRefillAppointmentDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -96,6 +98,8 @@ public class ArtDrugRefillsOnDayReportBuilder extends AbstractHybridReportBuilde
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
+		dsd.addColumn("Has visit on day", new HonouredDrugRefillAppointmentDataDefinition(), "", new ArtDrugRefillAppointmentConverter());
+
 	}
 
 	@Override
