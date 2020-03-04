@@ -531,7 +531,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "    if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, 'LDL','')) as vl_result,\n" +
                 "    urgency\n" +
                 "  from kenyaemr_etl.etl_laboratory_extract\n" +
-                "  where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "  where lab_test in (1305, 856)  and visit_date between  date_sub(date(:startDate) , interval 12 MONTH) and date(:endDate)\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
                 "group by e.patient_id\n" +
                 "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)='LDL' or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
@@ -574,7 +574,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "    if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, 'LDL','')) as vl_result,\n" +
                 "    urgency\n" +
                 "  from kenyaemr_etl.etl_laboratory_extract\n" +
-                "  where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "  where lab_test in (1305, 856)  and visit_date between  date_sub(date(:startDate) , interval 12 MONTH) and date(:endDate)\n" +
                 "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
                 "group by e.patient_id\n" +
                 ";";
