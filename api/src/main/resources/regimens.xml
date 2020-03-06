@@ -225,14 +225,14 @@
                 <component drugCode="DRV" />
                 <component drugCode="RTV" />
             </regimen>
-            <regimen name="TDF/3TC/DTG/DRV/r" conceptRef="422e1a78-23b5-4a9f-91f7-dd4931471299" orderSetRef="edce1a5a-32b5-11ea-978f-2e728ce88125">
+            <regimen name="TDF/3TC/DTG/DRV/r" conceptRef="5f429c76-2976-4374-a69e-d2d138dd16bf" orderSetRef="edce1a5a-32b5-11ea-978f-2e728ce88125">
                 <component drugCode="TDF" />
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
                 <component drugCode="DRV" />
                 <component drugCode="RTV" />
             </regimen>
-            <regimen name="TDF/3TC/RAL/DRV/r" conceptRef="4ad27507-e60d-43c5-a29f-6a5645932236" orderSetRef="edce1cbc-32b5-11ea-978f-2e728ce88125');">
+            <regimen name="TDF/3TC/RAL/DRV/r" conceptRef="9b9817dd-4c84-4093-95c3-690d65d24b99" orderSetRef="edce1cbc-32b5-11ea-978f-2e728ce88125');">
                 <component drugCode="TDF" />
                 <component drugCode="3TC" />
                 <component drugCode="RAL" />
@@ -377,7 +377,7 @@
                 <component drugCode="RTV" />
                 <component drugCode="ABC" />
             </regimen>
-            <regimen name="AZT/3TC/RAL/DRV/r" conceptRef="13cc619e-9960-4af3-b6dc-569e0f02d237" orderSetRef="edce2162-32b5-11ea-978f-2e728ce88125">
+            <regimen name="AZT/3TC/RAL/DRV/r" conceptRef="a1183b26-8e87-457c-8d7d-00a96b17e046" orderSetRef="edce2162-32b5-11ea-978f-2e728ce88125">
                 <component drugCode="AZT" />
                 <component drugCode="3TC" />
                 <component drugCode="RAL" />
