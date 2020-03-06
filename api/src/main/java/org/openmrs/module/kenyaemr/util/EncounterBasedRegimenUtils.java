@@ -517,12 +517,12 @@ public class EncounterBasedRegimenUtils {
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/DTG/DRV/r\",\n" +
-                "    \"conceptRef\": \"422e1a78-23b5-4a9f-91f7-dd4931471299\",\n" +
+                "    \"conceptRef\": \"5f429c76-2976-4374-a69e-d2d138dd16bf\",\n" +
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"TDF/3TC/RAL/DRV/r\",\n" +
-                "    \"conceptRef\": \"4ad27507-e60d-43c5-a29f-6a5645932236\",\n" +
+                "    \"conceptRef\": \"9b9817dd-4c84-4093-95c3-690d65d24b99\",\n" +
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
                 "  },\n" +
                 "  {\n" +
