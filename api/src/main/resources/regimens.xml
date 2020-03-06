@@ -384,7 +384,7 @@
                 <component drugCode="DRV" />
                 <component drugCode="RTV" />
             </regimen>
-            <regimen name="ABC/3TC/RAL/DRV/r" conceptRef="247994fa-2fc0-4207-875f-202118647b14" orderSetRef="edce22a2-32b5-11ea-978f-2e728ce88125">
+            <regimen name="ABC/3TC/RAL/DRV/r" conceptRef="02302ab5-dcb2-4337-a792-d6cf1082fc1d" orderSetRef="edce22a2-32b5-11ea-978f-2e728ce88125">
                 <component drugCode="ABC" />
                 <component drugCode="3TC" />
                 <component drugCode="RAL" />
