@@ -42,22 +42,6 @@ public class EmrActivator implements ModuleActivator {
 	public void willRefreshContext() {
 
 		log.info("KenyaEMR context refreshing...");
-		//TODO: explore the best method to rebuild lucene files after disruptive power outage
-		// remove content of lucene
-		File luceneDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory("lucene");
-		String fullDirPath = luceneDir.getPath() + File.separator + "indexes";
-
-		File indexesDir = new File(fullDirPath);
-		log.info("Remove all lucene files for fresh rebuild...");
-		try {
-			FileUtils.cleanDirectory(indexesDir);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		log.info("Successfully removed all lucene files for fresh rebuild...");
-
-
 
 	}
 
@@ -92,9 +76,6 @@ public class EmrActivator implements ModuleActivator {
 	 */
 	public void started() {
 		Context.getService(ReportService.class).deleteOldReportRequests();
-		// this is required after removing lucene indexes. Without this searching of drugs is not possible
-		//TODO: should be removed when corrupted lucene indexes can be handled separately
-		Context.updateSearchIndex();
 		log.info("KenyaEMR started");
 	}
 
