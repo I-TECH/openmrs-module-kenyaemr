@@ -297,7 +297,7 @@
                 <component drugCode="LPV" units="tab" />
                 <component drugCode="RTV" units="tab" />
             </regimen>
-            <regimen name="ABC/3TC/RAL" conceptRef="45b57168-40a9-4dcd-a55c-6bfd1b0ea75a" orderSetRef="edce2022-32b5-11ea-978f-2e728ce88125">
+            <regimen name="ABC/3TC/RAL" conceptRef="7af7ebbe-99da-4a43-a23a-c3866c5d08db" orderSetRef="edce2022-32b5-11ea-978f-2e728ce88125">
                 <component drugCode="ABC" dose="300" units="mg" frequency="OD" />
                 <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
                 <component drugCode="RAL" dose="300" units="mg" frequency="OD" />
