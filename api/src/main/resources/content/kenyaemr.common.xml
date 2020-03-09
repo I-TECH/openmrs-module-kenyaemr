@@ -156,6 +156,7 @@
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyakeypop.app.keypopulation.provider" />
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
