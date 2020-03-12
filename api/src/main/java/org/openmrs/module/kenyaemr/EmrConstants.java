@@ -18,7 +18,7 @@ public class EmrConstants {
 	 * Module ID
 	 */
 	public static final String MODULE_ID = "kenyaemr";
-
+	public static final String KP_MODULE_ID = "kenyakeypop";
 	/**
 	 * Application IDs
 	 */
@@ -37,6 +37,7 @@ public class EmrConstants {
 	public static final String APP_DEFAULTER_TRACING = MODULE_ID + ".defaultertracing";
 	public static final String APP_HIV_TESTING = MODULE_ID + ".hivtesting";
 	public static final String APP_PREP = MODULE_ID + ".prep";
+	public static final String APP_KP = KP_MODULE_ID + ".keypopulation.provider";
 
 	/**
 	 * Global property names
