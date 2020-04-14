@@ -11,13 +11,19 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.Patient;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.HtsConstants;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,10 +41,13 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
         EncounterService encounterService = Context.getEncounterService();
+        PatientService patientService = Context.getPatientService();
 
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId: cohort){
-            boolean notEnrolled = true;
+            Patient patient = patientService.getPatient(ptId);
+
+            boolean patientNegative = false;
             List<Encounter> enrollmentEncounters = encounterService.getEncounters(
                     Context.getPatientService().getPatient(ptId),
                     null,
@@ -51,11 +60,35 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
                     null,
                     false
             );
-            if(enrollmentEncounters.size() > 0) {
-                notEnrolled = false;
+
+            Encounter lastHtsInitialEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsInitialForm);
+            Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
+            Encounter lastHtsEnc = null;
+
+            if (lastHtsInitialEnc != null && lastHtsRetestEnc == null) {
+                lastHtsEnc = lastHtsInitialEnc;
+            } else if (lastHtsInitialEnc == null && lastHtsRetestEnc != null) {
+                lastHtsEnc = lastHtsRetestEnc;
+            } else if (lastHtsInitialEnc != null && lastHtsRetestEnc != null) {
+                if (lastHtsInitialEnc.getEncounterDatetime().after(lastHtsRetestEnc.getEncounterDatetime())) {
+                    lastHtsEnc = lastHtsInitialEnc;
+                } else {
+                    lastHtsEnc = lastHtsRetestEnc;
+                }
             }
 
-            ret.put(ptId, new BooleanResult(notEnrolled, this));
+            ConceptService cs = Context.getConceptService();
+            Concept htsFinalTestQuestion = cs.getConcept(HtsConstants.HTS_FINAL_TEST_CONCEPT_ID);
+            Concept htsNegativeResult = cs.getConcept(HtsConstants.HTS_NEGATIVE_RESULT_CONCEPT_ID);
+
+            boolean patientHasNegativeTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsNegativeResult) : false;
+
+
+            if(enrollmentEncounters.size() <= 0 && patientHasNegativeTestResult) {
+                patientNegative = true;
+            }
+
+            ret.put(ptId, new BooleanResult(patientNegative, this));
         }
         return ret;
     }
