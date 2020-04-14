@@ -279,30 +279,33 @@ public class AdxViewFragmentController {
         // add additional MOH 731 indicators for air
 
         for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
+            if(e.getDatasetID() !=null) {
 
-            Integer datasetId = Integer.parseInt(e.getDatasetID());
-            FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
-            String datasetName = ds.getMapping();
+                Integer datasetId = Integer.parseInt(e.getDatasetID());
+                FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
+                String datasetName = ds.getMapping();
 
-            Element eDataset = document.createElement("group");
-            // add group attributes
-            eDataset.setAttribute("orgUnit", mfl);
-            eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
-            eDataset.setAttribute("dataSet", datasetName);
+                Element eDataset = document.createElement("group");
+                // add group attributes
+                eDataset.setAttribute("orgUnit", mfl);
+                eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
+                eDataset.setAttribute("dataSet", datasetName);
 
-            for (DatasetIndicatorDetails row : e.getIndicators()) {
-                if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
-                    String name = row.getName();
-                    Object value = row.getValue();
-                    // add data values
-                    Element dataValue = document.createElement("dataValue");
-                    dataValue.setAttribute("dataElement", columnPrefix.concat(name));
-                    dataValue.setAttribute("value", value.toString());
-                    eDataset.appendChild(dataValue);
+                for (DatasetIndicatorDetails row : e.getIndicators()) {
+                    if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
+                        String name = row.getName();
+                        Object value = row.getValue();
+                        // add data values
+                        Element dataValue = document.createElement("dataValue");
+                        dataValue.setAttribute("dataElement", columnPrefix.concat(name));
+                        dataValue.setAttribute("value", value.toString());
+                        eDataset.appendChild(dataValue);
 
+                    }
                 }
+
+                root.appendChild(eDataset);
             }
-            root.appendChild(eDataset);
         }
         document.appendChild(root);
 
