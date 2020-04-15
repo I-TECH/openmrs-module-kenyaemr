@@ -207,6 +207,8 @@ public class AdxViewFragmentController {
 
         administrationService = Context.getAdministrationService();
         locationService = Context.getLocationService();
+        facilityreportingService = Context.getService(FacilityreportingService.class);
+
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
         Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
