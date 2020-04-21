@@ -101,7 +101,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER, "1", _Form.DRUG_ORDER));
 		install(form("ART Preparation", "ART Preparation", _EncounterType.HIV_CONSULTATION, "1", _Form.TREATMENT_PREPARATION));
 		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.GBV_SCREENING));
-		install(form("Alcohol and Drug Abuse Screening", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
+		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
 
