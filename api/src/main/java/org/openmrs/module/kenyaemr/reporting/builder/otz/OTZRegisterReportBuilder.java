@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -47,8 +48,6 @@ import java.util.List;
 public class OTZRegisterReportBuilder extends AbstractHybridReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
-    @Autowired
-    private CommonDimensionLibrary commonDimensions;
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
@@ -100,6 +99,7 @@ public class OTZRegisterReportBuilder extends AbstractHybridReportBuilder {
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+        dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Enrolment date",new OTZEnrolmentDateDataDefinition(),"");
         dsd.addColumn("Date of Birth and Age", new DateOfBirthAgeDataDefinition(),"");
         //dsd.addColumn("Age", new AgeDataDefinition(), "");

@@ -32,6 +32,7 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -115,6 +116,7 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+        dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Unique Patient No", identifierDef, "");
         dsd.addColumn("Patient Number", new PersonIdDataDefinition(), "");
         dsd.addColumn("Sub County Registration", new RegistrationSubcountyDataDefinition(), "");
