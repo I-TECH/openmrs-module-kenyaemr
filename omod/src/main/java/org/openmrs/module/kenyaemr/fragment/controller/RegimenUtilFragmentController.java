@@ -30,6 +30,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -385,6 +386,12 @@ public class RegimenUtilFragmentController {
 				 if (programs.size() > 0) {
 					 enrollmentDate = programs.get(0).getDateEnrolled();
 				 }
+				Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+				List<PatientProgram> tbPrograms = service.getPatientPrograms(patient, tbProgram, null, null, null,null, true);
+				if (tbPrograms.size() > 0) {
+					enrollmentDate = tbPrograms.get(0).getDateEnrolled();
+				}
+
 				// Don't allow regimen start date to be before enrollment date
 				if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(enrollmentDate, Calendar.DAY_OF_MONTH)) ) {
 					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
