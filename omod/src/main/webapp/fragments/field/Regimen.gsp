@@ -37,9 +37,11 @@
 			<optgroup label="${ group.name }">${ groupOptions(group) }</optgroup>
 	<% } %>
 	</select>
+	<%if (config.category =="ARV") { %>
 	<span id="others-checked">
 		<input type="checkbox" name="nonstandardregimen" value="nonstandardregimen" id="other">Use none standard<br>
 	</span>
+	<% } %>
 	<br />
 	<span id="${ config.id }-error" class="error" style="display: none"></span>
 
