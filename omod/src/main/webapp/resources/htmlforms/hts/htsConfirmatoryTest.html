@@ -40,12 +40,24 @@
             var val = jq(this).val();
             if (val == 1066 ){
                 jq('#disability').hide();
+                jq('#tbl-other-disability').hide();
                 jq('#disability select').prop("disabled", true);
                 jq('#disability select').val('');
                 clearHiddenSections(jq('#disability'));
             }else{
                 jq('#disability').show();
                 jq('#disability select').prop("disabled", false);
+            }
+        }
+        var hasOtherDisabilitySelected = function () {
+            var val = jq(this).val();
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-disability').show();
+            }
+            if(val != 5622){
+                jq('#tbl-other-disability').hide();
+                clearHiddenSections(jq('#other-disability'));
             }
         }
         var strategySelected = function () {
@@ -56,6 +68,12 @@
                 getField('hts-entry-point.value').prop("selectedIndex", 10);
             }else if (val == 164954 || val == 164955){
                 getField('hts-entry-point.value').prop("selectedIndex", 8);
+            }
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-strategy').show();
+            }else{
+                jq('#tbl-other-strategy').hide();
             }
         }
 
@@ -373,7 +391,9 @@
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
+            jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
             jq('#disability').hide();
+            jq('#tbl-other-disability').hide();
 
             //pre-populate from HIV Initial
             var prev_disability = "<lookup expression="fn.latestObs(164951).getValueCoded()"/>";
@@ -417,6 +437,7 @@
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
+            jq('#tbl-other-strategy').hide();
 
             var htsStrategySelected = getField('strategy.value').val();
             if (htsStrategySelected == 159938 ){
@@ -426,7 +447,30 @@
             }else if (htsStrategySelected == 164954 || htsStrategySelected == 164955){
                 getField('hts-entry-point.value').prop("selectedIndex", 8);
             }
+            // Specify other
+            if (htsStrategySelected == 5622){
+                jq('#tbl-other-strategy').show();
+            }else{
+                jq('#tbl-other-strategy').hide();
+            }
 
+            jq('#has-other-disability :input[type=checkbox]').change(otherDisabilitySelected);
+            var hasDisability = getValue('has-disability.value');
+            // Specify other
+            if (hasDisability == 1065){
+                jq('#disability').show();
+                jq('#tbl-other-disability').show();
+            }
+
+            var otherDisabilitySelected = function() {
+                var val = jq(this).val();
+                if (val == 5622) {
+                    jq('#disability').show();
+                    jq('#tbl-other-disability').show();
+                } else {
+                    jq('#tbl-other-disability').hide();
+                }
+            }
              //Consent validation
             jq('.consent input').change(consentSelected);
             //couple testing
@@ -793,7 +837,16 @@
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Physically Challenged" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Other" style="checkbox"  /><br/>
+                             answerLabel="Other" style="checkbox" id="has-other-disability" /><br/>
+
+                        <table id="tbl-other-disability">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-disability" conceptId="160632" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
 
                     </td>
                 </tr>
@@ -842,6 +895,16 @@
                              answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Provider Initiated Testing(PITC),Client Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,PNS,Other"
                         />
+                    </td>
+                    <td>
+                        <table id="tbl-other-strategy">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-strategy" conceptId="163761" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
