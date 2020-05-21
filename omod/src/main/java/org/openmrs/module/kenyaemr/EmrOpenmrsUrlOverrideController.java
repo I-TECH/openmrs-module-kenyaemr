@@ -24,6 +24,7 @@ public class EmrOpenmrsUrlOverrideController {
 	private static final String KENYAEMR_HOME_URL = EmrConstants.MODULE_ID + "/home.page";
 	private static final String KENYAEMR_LOGIN_URL = EmrConstants.MODULE_ID + "/login.page";
 	private static final String KENYAEMR_FORGOTPASSWORD_URL = EmrConstants.MODULE_ID + "/forgotPassword.page";
+	private static final String KENYAEMR_HELPDIALOG_URL = EmrConstants.MODULE_ID + "/helpDialog.page";
 
 	/**
 	 * Handles requests for index.htm. If user is authenticated they will be forwarded to this module's home page. If
@@ -50,5 +51,13 @@ public class EmrOpenmrsUrlOverrideController {
 	@RequestMapping("/forgotPassword.form")
 	public String showOurForgotPasswordPage() {
 		return Context.isAuthenticated() ? ("redirect:/" + OPENMRS_HOME_URL) : ("forward:/" + KENYAEMR_FORGOTPASSWORD_URL);
+	}
+	/**
+	 * Handles requests to helpDialog.form. If user is authenticated they will be redirected to this modules's home
+	 * page. If not they will be forwarded to this module's help dialog page.
+	 */
+	@RequestMapping("/helpDialog.form")
+	public String showOurHelpDialogPage() {
+		return Context.isAuthenticated() ? ("redirect:/" + KENYAEMR_HELPDIALOG_URL) : ("forward:/" + KENYAEMR_HELPDIALOG_URL);
 	}
 }

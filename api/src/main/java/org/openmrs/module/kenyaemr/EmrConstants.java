@@ -52,7 +52,7 @@ public class EmrConstants {
 	/**
 	 * Default global property values
 	 */
-	public static final String DEFAULT_SUPPORT_PHONE_NUMBER = "0800720701";
+	public static final String DEFAULT_SUPPORT_PHONE_NUMBER = "0800722440";
 	public static final String DEFAULT_SUPPORT_EMAIL_ADDRESS = "help@kenyaemr.org";
 	public static final String DEFAULT_EXTERNAL_HELP_URL = "/help";
 }
