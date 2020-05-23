@@ -24,6 +24,9 @@
 	margin:0 auto;
 	text-align: center;
 }
+.telephone-number {
+	font-size: 1.5em;
+}
 * {
 	box-sizing: border-box;
 }
@@ -39,7 +42,8 @@ body {
 	padding: 0 10px;
 }
 .card-label{
-	font-size: 14px;
+	font-size: 1.3em;
+	line-height: 1.6em;
 }
 
 .pdfcolumn {
@@ -207,7 +211,7 @@ input[name='panel']:checked ~ .accordion__content {
 	<br/>
 
 	<div style="width:450px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
-		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> Call the help desk for free at <strong>${ supportNumber }</strong><br />
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> Call the help desk for free at <span class="telephone-number" > <strong>${ supportNumber }</strong></span><br />
 		or<br />
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/email.png") }" class="ke-glyph" /> Email <a href="mailto:${ supportEmail }">${ supportEmail }</a>
 		<br />
@@ -404,7 +408,7 @@ input[name='panel']:checked ~ .accordion__content {
 	<div class="ke-panel-footer">
 		<% if(isAuthenticated){ %>
 		<div id="closeButton">
-			<button type="button" style="alignment: center" onclick="ui.navigate('userHome.page?')"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
+			<button type="button" style="alignment: center" onclick="ui.navigate('userHome.page?')"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Back to home</button>
 		</div>
 		<% } else{ %>
 		<div id="closeButton">
