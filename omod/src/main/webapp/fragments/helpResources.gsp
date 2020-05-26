@@ -199,7 +199,7 @@ body:before {
 
 input[name='panel']:checked ~ .accordion__content {
 	/* Get this as close to what height you expect */
-	max-height: 50em;
+	max-height: 100em;
 }
 
 
@@ -229,11 +229,129 @@ input[name='panel']:checked ~ .accordion__content {
 		<div>
 
 		<div class="accordion">
+			<!-- Kenyaemr navigation -->
+			<div>
+				<input type="checkbox" name="panel" id="panel-1">
+				<label for="panel-1">KenyaEMR navigation SOPs</label>
+				<div class="accordion__content">
+					<% if(kenyaemrNavigationPdfResources) {  %>
+					<div>
+						<h3 class="accordion__header">KenyaEMR navigation SOPs pdf resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% kenyaemrNavigationPdfResources.each { resource -> %>
+
+										<div class="pdfcolumn">
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<% } %>
+
+					<% if(kenyaemrNavigationVideoResources) {  %>
+
+					<div>
+						<h3 class="accordion__header">KenyaEMR navigation SOPs video resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% kenyaemrNavigationVideoResources.each { resource -> %>
+
+										<div class="column">
+											<div class="card">
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<video width="270" height="155" controls>
+													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+												</video>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+
+
+						</div>
+					</div>
+					<% } %>
+				</div>
+			</div>
+
+			<!-- HTS -->
+			<div>
+				<input type="checkbox" name="panel" id="panel-2">
+				<label for="panel-2">HTS</label>
+				<div class="accordion__content">
+					<% if(htsPdfResources) {  %>
+					<div>
+						<h3 class="accordion__header">HTS pdf resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% htsPdfResources.each { resource -> %>
+
+										<div class="pdfcolumn">
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<% } %>
+
+					<% if(htsVideoResources) {  %>
+
+					<div>
+						<h3 class="accordion__header">HTS video resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% htsVideoResources.each { resource -> %>
+
+										<div class="column">
+											<div class="card">
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<video width="270" height="155" controls>
+													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+												</video>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+
+
+						</div>
+					</div>
+					<% } %>
+				</div>
+			</div>
+
 
 			<!-- Data tools -->
 			<div>
-				<input type="checkbox" name="panel" id="panel-1">
-				<label for="panel-1">Using Data tools</label>
+				<input type="checkbox" name="panel" id="panel-3">
+				<label for="panel-3">Using Data tools</label>
 			<div class="accordion__content">
 			<% if(dataToolsPdfResources) {  %>
 				<div>
@@ -291,8 +409,8 @@ input[name='panel']:checked ~ .accordion__content {
 
 			<!-- OTZ module -->
 			<div>
-				<input type="checkbox" name="panel" id="panel-2">
-				<label for="panel-2">OTZ </label>
+				<input type="checkbox" name="panel" id="panel-4">
+				<label for="panel-4">OTZ </label>
 				<div class="accordion__content">
 					<h3 class="accordion__header">OTZ pdf resource(s)</h3>
 					<div class="accordion__body">
@@ -317,8 +435,8 @@ input[name='panel']:checked ~ .accordion__content {
 
 			<!-- OVC -->
 			<div>
-				<input type="checkbox" name="panel" id="panel-3">
-				<label for="panel-3">OVC</label>
+				<input type="checkbox" name="panel" id="panel-5">
+				<label for="panel-5">OVC</label>
 			<div class="accordion__content">
 				<h3 class="accordion__header">OVC pdf resource(s)</h3>
 				<div class="accordion__body">
@@ -344,8 +462,8 @@ input[name='panel']:checked ~ .accordion__content {
 
 			<!-- PrEP -->
 			<div>
-				<input type="checkbox" name="panel" id="panel-4">
-				<label for="panel-4">PrEP</label>
+				<input type="checkbox" name="panel" id="panel-6">
+				<label for="panel-6">PrEP</label>
 			<div class="accordion__content">
 				<h3 class="accordion__header">PrEP pdf resource(s)</h3>
 				<div class="accordion__body">
@@ -371,8 +489,8 @@ input[name='panel']:checked ~ .accordion__content {
 
 			<!-- DWAPI -->
 			<div>
-				<input type="checkbox" name="panel" id="panel-5">
-				<label for="panel-5">DWAPI Application content</label>
+				<input type="checkbox" name="panel" id="panel-7">
+				<label for="panel-7">DWAPI Application content</label>
 				<div class="accordion__content">
 					<h3 class="accordion__header">DWAPI pdf resource(s)</h3>
 					<div class="accordion__body">
@@ -394,6 +512,118 @@ input[name='panel']:checked ~ .accordion__content {
 					</div>
 				</div>
 
+			</div>
+
+			<!-- mUzima -->
+			<div>
+				<input type="checkbox" name="panel" id="panel-8">
+				<label for="panel-8">mUzima</label>
+				<div class="accordion__content">
+					<h3 class="accordion__header">mUzima pdf resource(s)</h3>
+					<div class="accordion__body">
+						<table width="100%">
+							<tr class="row">
+								<td valign="top">
+									<% muzimaPdfResources.each { resource -> %>
+
+									<div class="pdfcolumn">
+										<div>
+											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+										</div>
+									</div>
+
+									<% } %>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+			</div>
+			<!-- AIR -->
+			<div>
+				<input type="checkbox" name="panel" id="panel-9">
+				<label for="panel-9">Automated Indicator Reporting (AIR)</label>
+				<div class="accordion__content">
+					<h3 class="accordion__header">AIR pdf resource(s)</h3>
+					<div class="accordion__body">
+						<table width="100%">
+							<tr class="row">
+								<td valign="top">
+									<% airPdfResources.each { resource -> %>
+
+									<div class="pdfcolumn">
+										<div>
+											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+										</div>
+									</div>
+
+									<% } %>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- IL -->
+			<div>
+				<input type="checkbox" name="panel" id="panel-10">
+				<label for="panel-10">Interoperability Layer(IL)</label>
+				<div class="accordion__content">
+					<% if(ilPdfResources) {  %>
+					<div>
+						<h3 class="accordion__header">IL pdf resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% ilPdfResources.each { resource -> %>
+
+										<div class="pdfcolumn">
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<% } %>
+
+					<% if(ilVideoResources) {  %>
+
+					<div>
+						<h3 class="accordion__header">IL video resource(s)</h3>
+						<div class="accordion__body">
+							<table width="100%">
+								<tr class="row">
+									<td valign="top">
+										<% ilVideoResources.each { resource -> %>
+
+										<div class="column">
+											<div class="card">
+												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<video width="270" height="155" controls>
+													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+												</video>
+											</div>
+										</div>
+
+										<% } %>
+									</td>
+								</tr>
+							</table>
+
+
+						</div>
+					</div>
+					<% } %>
+				</div>
 			</div>
 
 		</div><!-- .accordion -->

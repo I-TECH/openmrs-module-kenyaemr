@@ -51,6 +51,79 @@ public class HelpResourcesFragmentController {
 	private static final String[][] dataToolsvideoHelpResources = new String[][] {
 			{ "Data extraction and reporting using datatools", "Data_Tools_Reporting.mp4" }
 	};
+	private static final String[][] kenyaEmrNavigationpdfHelpResources = new String[][] {
+			{ "KenyaEMR Server reconstruction using clone", "SERVER_RECONSTRUCTION_USING _CLONE_IMAGE_JOB AID.pdf" },
+			{ "KenyaEMR server setup - Baremetal", "SERVERSETUP_BareMetal_LongProcess_JobAid.pdf" },
+			{ "KenyaEMR Upgrade process", "KenyaEMR_Upgrade_JOB_AID.pdf" },
+			{ "Ubuntu Desktop Setup", "UBUNTU_DESKTOP_SETUP_FINAL.pdf" },
+			{ "Ubuntu Server Setup", "UBUNTU_SERVER_Installation_JOB_AID.pdf" },
+			{ "Alcohol and Drug Abuse Screening form", "Alcohol_Drug_Abuse_JobAid.pdf" },
+			{ "Defaulter  Tracing", "Defaulter_Tracing_JobAid_Final.pdf" },
+			{ "Enhanced Adherence", "Enhanced_Adherance_Screening_JobAid.pdf" },
+			{ "Gender based violence screening", "GBVS_JobAid.pdf" },
+			{ "Appointment Management", "KenyaEMR_Appointment_Management_JOB_AID.pdf" },
+			{ "Full drug order - Prescription", "KenyaEMR_DRUG_FULL_ORDER_Job_AID .pdf" },
+			{ "ART Fast Track  form", "KenyaEMR_fast_track_JOB_AID.pdf" },
+			{ "Green card navigation", "KenyaEMR_GREENCARD_FINAL.pdf" },
+			{ "Full lab order ", "KenyaEMR_LAB FULL_ORDER_JOB_AID.pdf" },
+			{ "KenyaEMR Leap Surge Report ", "KenyaEMR_Leap_Surge_report_JOB_AID.pdf" },
+			{ "MCH module ", "KenyaEMR_MCH_Module_Complete Job_aid.pdf" },
+			{ "KenyaEMR patient merge function", "KenyaEMR_Merge_Function_JOB AID_CBS.pdf" }
+
+	};
+
+	private static final String[][] kenyaEmrNavigationVideoHelpResources = new String[][] {
+			{ "Alcohol and Drug Abuse Screening form", "Alcohol_Drug_Abuse_Screening.mp4" },
+			{ "Appointment Management", "appointment_management.mp4" },
+			{ "ART Fast Track  form", "ART_fast_track.mp4" },
+			{ "ART Initiation", "ART_Initiation.mp4" },
+			{ "ART Preparation Encounter", "ART_Preparation_Encounter.mp4" },
+			{ "Defaulter  Tracing", "Defaulter_Tracing.mp4" },
+			{ "Desktop Ubuntu Installation guide", "Desktop_Ubuntu_installation.mp4" },
+			{ "Ubuntu Server Installation", "Ubuntu_Server_installation.mp4" },
+			{ "Full drug order - Prescription", "Drug_Order.mp4" },
+			{ "Full lab order ", "Lab_Order.mp4" },
+			{ "Enhanced Adherence", "Enhanced_Adherence.mp4" },
+			{ "Gender based violence screening", "Gender_Based_Violence_Screening.mp4" },
+			{ "Green card navigation", "Greencard_Navigation.mp4" },
+			{ "KenyaEMR installation - Dependancies ", "KenyaEMR_dependancies_installation.mp4" },
+			{ "Client registration in KenyaEMR ", "Client_Registration_Onto_the_HTS_Module.mp4" },
+			{ "KenyaEMR Installation ", "KenyaEMR_installation.mp4" }
+	};
+
+	private static final String[][] ehtspdfHelpResources = new String[][] {
+			{ "eHTS module (Desktop)", "HTS_user_JobAid_FINAL.pdf" }
+
+	};
+	private static final String[][] ehtsVideoHelpResources = new String[][] {
+			{ "Client Registration into eHTS desktop module", "Client_Registration_HTS_Module.mp4" },
+			{ "HTS Screening", "HTS_Screening_FormF1.mp4" },
+			{ "eHTS Testing - Initial", "HTS_Testing_intial.mp4" },
+			{ "eHTS Testing - Retest", "HTS_Retest_Form.mp4" },
+			{ "eHTS referral and Linkage", "Referral_LinkageForm.mp4" },
+			{ "eHTS PNS service encounter form", "Patient_NotificationService_Encounter.mp4" },
+			{ "HTS reporting using Data tools", "HTSReports.mp4" },
+
+	};
+
+	private static final String[][] mzumapdfHelpResources = new String[][] {
+			{ "mUzima technical setup", "mUzima_User_Installation_JOB_AID.pdf" },
+			{ "mUzima server side configuration", "mUzima_configuration_From_KenyaEMRend.pdf" },
+			{ "mUzima application navigation", "mUzima_User_JOB_AIDCBS.pdf" },
+			{ "Ressolving errors in error queue", "mUzima_Error_Queue_JOB_AID_CBS.pdf" },
+			{ "Linkage SOP", "eHTS_Linkage_SOP.pdf" }
+	};
+	private static final String[][] airpdfHelpResources = new String[][] {
+			{ "AIR reporting process", "Automated_Indicator_Reporting_AIR_JOB_AID.pdf" }
+	};
+	private static final String[][] ilVideoHelpResources = new String[][] {
+			{ "IL Setup on Ubuntu - Video", "IL_installation_on_Ubuntu_environment.mp4" }
+	};
+	private static final String[][] ilpdfHelpResources = new String[][] {
+			{ "IL Installation and setup on Windows", "IL_Installation_and_configuration.pdf" },
+			{ "IL Installation and setup on Ubuntu", "IL_Linux_Installation_JobAid.pdf" },
+			{ "IL Technical configurations", "IL_Installation_configuration_on_KenyaEMR.pdf" }
+	};
 
 
 
@@ -87,6 +160,46 @@ public class HelpResourcesFragmentController {
 			dwapiPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
 		}
 
+		List<HelpResourcesFragmentController.HelpResource> kenyaemrNavigationPdfResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : kenyaEmrNavigationpdfHelpResources) {
+			kenyaemrNavigationPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> kenyaemrNavigationVideoResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : kenyaEmrNavigationVideoHelpResources) {
+			kenyaemrNavigationVideoResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> htsPdfResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : ehtspdfHelpResources) {
+			htsPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> htsVideoResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : ehtsVideoHelpResources) {
+			htsVideoResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> muzimaPdfResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : mzumapdfHelpResources) {
+			muzimaPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> airPdfResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : airpdfHelpResources) {
+			airPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+		List<HelpResourcesFragmentController.HelpResource> ilPdfResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : ilpdfHelpResources) {
+			ilPdfResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+		List<HelpResourcesFragmentController.HelpResource> ilVideoResources = new ArrayList<HelpResourcesFragmentController.HelpResource>();
+		for (String[] res : ilVideoHelpResources) {
+			ilVideoResources.add(new HelpResourcesFragmentController.HelpResource(res[0], "/help/"  + res[1]));
+		}
+
+
 
 
 		User authenticatedUser = Context.getAuthenticatedUser();
@@ -99,6 +212,14 @@ public class HelpResourcesFragmentController {
 		model.put("prepPdfResources", prepPdfResources);
 		model.put("dwapiPdfResources", dwapiPdfResources);
 		model.put("dataTooVideoResources", dataTooVideoResources);
+		model.put("kenyaemrNavigationVideoResources", kenyaemrNavigationVideoResources);
+		model.put("kenyaemrNavigationPdfResources", kenyaemrNavigationPdfResources);
+		model.put("htsVideoResources", htsVideoResources);
+		model.put("htsPdfResources", htsPdfResources);
+		model.put("muzimaPdfResources", muzimaPdfResources);
+		model.put("airPdfResources", airPdfResources);
+		model.put("ilPdfResources", ilPdfResources);
+		model.put("ilVideoResources", ilVideoResources);
 		try {
 
 			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
