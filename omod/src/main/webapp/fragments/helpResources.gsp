@@ -44,6 +44,7 @@ body {
 .card-label{
 	font-size: 1.3em;
 	line-height: 1.6em;
+	display:block;
 }
 
 .pdfcolumn {
