@@ -272,7 +272,7 @@ input[name='panel']:checked ~ .accordion__content {
 											<div class="card">
 												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
 												<video width="270" height="155" controls>
-													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+													<source src="${ resource.url }" type="video/mp4">
 												</video>
 											</div>
 										</div>
@@ -331,7 +331,7 @@ input[name='panel']:checked ~ .accordion__content {
 											<div class="card">
 												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
 												<video width="270" height="155" controls>
-													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+													<source src="${ resource.url }" type="video/mp4">
 												</video>
 											</div>
 										</div>
@@ -391,7 +391,7 @@ input[name='panel']:checked ~ .accordion__content {
 									<div class="card">
 										<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
 										<video width="270" height="155" controls>
-											<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+											<source src="${ resource.url }" type="video/mp4">
 										</video>
 									</div>
 								</div>
@@ -610,7 +610,7 @@ input[name='panel']:checked ~ .accordion__content {
 											<div class="card">
 												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
 												<video width="270" height="155" controls>
-													<source src="http://localhost:8080${ resource.url }" type="video/mp4">
+													<source src="${ resource.url }" type="video/mp4">
 												</video>
 											</div>
 										</div>
