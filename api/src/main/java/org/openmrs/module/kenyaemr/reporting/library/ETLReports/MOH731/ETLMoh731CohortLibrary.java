@@ -277,7 +277,7 @@ public class ETLMoh731CohortLibrary {
                 "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
-                "  mid(max(concat(fup.visit_date, tb.visit_date)), 11) screened_using_icf,\n" +
+                "  mid(max(concat(tb.visit_date, tb.resulting_tb_status)), 11) screened_using_icf,\n" +
                 "mid(max(concat(fup.visit_date, fup.tb_status)), 11) screened_using_consultation\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
