@@ -1060,6 +1060,10 @@ public class ETLMoh731GreenCardIndicatorLibrary {
         return cohortIndicator("Screen for TB", ReportUtils.map(moh731Cohorts.tbScreening(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator presumedForTb() {
+        return cohortIndicator("Presumed for TB", ReportUtils.map(moh731Cohorts.presumedTb(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
     /**
      * Number of patients who were started on Art while pregnant
      *
