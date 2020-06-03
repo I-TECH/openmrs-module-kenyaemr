@@ -69,7 +69,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "where fup.visit_date <= date(:endDate) \n" +
                 "group by patient_id \n" +
 //                "--  we may need to filter lost to follow-up using this\n" +
-                "having ((date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or \n" +
+                "having ((date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null)) or \n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
 //                "-- drop missd completely\n" +
                 ") e\n" ;
@@ -142,7 +142,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "where de.program = 'HIV' and fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
-                "(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
+                "(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null)) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
                 ") e\n" +
                 ";";
@@ -297,7 +297,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
                 ") e";
 
@@ -692,7 +692,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
                 "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
                 ") e" +
                 "; ";
@@ -976,7 +976,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  WHERE de.program = 'HIV' and date(fup.visit_date) <= date(:endDate) \n" +
                 "  GROUP BY patient_id \n" +
                 "  HAVING ( \n" +
-                "    (date(latest_tca) > date(:endDate) AND (date(latest_tca) > date(date_discontinued) OR disc_patient IS NULL)) OR \n" +
+                "    (date(latest_tca) > date(:endDate) AND (date(latest_tca) > date(date_discontinued) OR disc_patient IS NULL) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null)) OR \n" +
                 "    (((date(latest_tca) BETWEEN date(:startDate) AND date(:endDate)) OR (date(latest_vis_date) BETWEEN date(:startDate) AND date(:endDate))) AND \n" +
                 "     (latest_tca > date_discontinued OR disc_patient IS NULL))) \n" +
                 ") active \n" +
