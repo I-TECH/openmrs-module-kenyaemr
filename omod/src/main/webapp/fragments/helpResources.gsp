@@ -1,5 +1,8 @@
 <%
-
+	ui.includeCss("kenyaemrorderentry", "font-awesome.css")
+	ui.includeCss("kenyaemrorderentry", "font-awesome.min.css")
+	ui.includeCss("kenyaemrorderentry", "font-awesome.css.map")
+	ui.includeCss("kenyaemrorderentry", "fontawesome-webfont.svg")
 %>
 <script type="text/javascript">
 
@@ -47,10 +50,9 @@ body {
 	display:block;
 }
 
-.pdfcolumn {
-	float: left;
+.column-width {
 	width: 50%;
-	padding: 0 10px;
+	/*padding: 0 10px;*/
 }
 
 /* Remove extra left and right margins, due to padding */
@@ -208,6 +210,7 @@ input[name='panel']:checked ~  .accordion__content {
 
 
 </style>
+
 	<div id="header"><h2>HELP</h2></div>
 	<br/>
 
@@ -237,43 +240,30 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content ">
 					<% if(kenyaemrNavigationPdfResources) {  %>
 					<div>
-						<h3 class="accordion__header">KenyaEMR navigation SOPs pdf resource(s)</h3>
 						<div class="accordion__body">
-							<table width="100%">
+							<table width="100%" style="padding-top: 20px">
 								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% kenyaemrNavigationPdfResources.each { resource -> %>
 
-										<div class="pdfcolumn">
+										<div>
 											<div>
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+													${ resource.name }</a>
 											</div>
 										</div>
 
 										<% } %>
 									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<% } %>
-
-					<% if(kenyaemrNavigationVideoResources) {  %>
-
-					<div>
-						<h3 class="accordion__header">KenyaEMR navigation SOPs video resource(s)</h3>
-						<div class="accordion__body">
-							<table width="100%">
-								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% kenyaemrNavigationVideoResources.each { resource -> %>
 
-										<div class="column">
-											<div class="card">
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
-												<video width="270" height="155" controls>
-													<source src="${ resource.url }" type="video/mp4">
-												</video>
+										<div>
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<i class="fa fa-video-camera" style="margin-top: 7px"></i>
+													${ resource.name }</a>
 											</div>
 										</div>
 
@@ -281,11 +271,11 @@ input[name='panel']:checked ~  .accordion__content {
 									</td>
 								</tr>
 							</table>
-
-
 						</div>
 					</div>
 					<% } %>
+
+
 				</div>
 			</div>
 
@@ -296,43 +286,31 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content ">
 					<% if(htsPdfResources) {  %>
 					<div>
-						<h3 class="accordion__header">HTS pdf resource(s)</h3>
 						<div class="accordion__body">
-							<table width="100%">
+							<table width="100%" style="padding-top: 20px">
 								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% htsPdfResources.each { resource -> %>
 
-										<div class="pdfcolumn">
+										<div>
 											<div>
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+
+													${ resource.name }</a>
 											</div>
 										</div>
 
 										<% } %>
 									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<% } %>
-
-					<% if(htsVideoResources) {  %>
-
-					<div>
-						<h3 class="accordion__header">HTS video resource(s)</h3>
-						<div class="accordion__body">
-							<table width="100%">
-								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% htsVideoResources.each { resource -> %>
 
-										<div class="column">
-											<div class="card">
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
-												<video width="270" height="155" controls>
-													<source src="${ resource.url }" type="video/mp4">
-												</video>
+										<div>
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<i class="fa fa-video-camera" style="margin-top: 7px"></i>
+													${ resource.name }</a>
 											</div>
 										</div>
 
@@ -340,11 +318,10 @@ input[name='panel']:checked ~  .accordion__content {
 									</td>
 								</tr>
 							</table>
-
-
 						</div>
 					</div>
 					<% } %>
+
 				</div>
 			</div>
 
@@ -356,16 +333,30 @@ input[name='panel']:checked ~  .accordion__content {
 			<div class="accordion__content ">
 			<% if(dataToolsPdfResources) {  %>
 				<div>
-					<h3 class="accordion__header">Data tools pdf resource(s)</h3>
 					<div class="accordion__body">
-						<table width="100%">
+						<table width="100%" style="padding-top: 20px">
 							<tr class="row">
-								<td valign="top">
+								<td valign="top" class="column-width">
 									<% dataToolsPdfResources.each { resource -> %>
 
-									<div class="pdfcolumn">
+									<div>
 										<div>
-											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+												${ resource.name }</a>
+										</div>
+									</div>
+
+									<% } %>
+								</td>
+								<td valign="top" class="column-width">
+									<% dataTooVideoResources.each { resource -> %>
+
+									<div>
+										<div>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<i class="fa fa-video-camera" style="margin-top: 7px"></i>
+												${ resource.name }</a>
 										</div>
 									</div>
 
@@ -377,34 +368,6 @@ input[name='panel']:checked ~  .accordion__content {
 				</div>
 			<% } %>
 
-			<% if(dataTooVideoResources) {  %>
-
-			<div>
-				<h3 class="accordion__header">Data tools video resource(s)</h3>
-				<div class="accordion__body">
-					<table width="100%">
-						<tr class="row">
-							<td valign="top">
-								<% dataTooVideoResources.each { resource -> %>
-
-								<div class="column">
-									<div class="card">
-										<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
-										<video width="270" height="155" controls>
-											<source src="${ resource.url }" type="video/mp4">
-										</video>
-									</div>
-								</div>
-
-								<% } %>
-							</td>
-						</tr>
-					</table>
-
-
-				</div>
-			</div>
-			<% } %>
 			</div>
 			</div>
 
@@ -413,20 +376,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-4">
 				<label for="panel-4">OTZ </label>
 				<div class="accordion__content">
-					<h3 class="accordion__header">OTZ pdf resource(s)</h3>
 					<div class="accordion__body">
-						<table width="100%">
+						<table width="100%" style="padding-top: 20px">
 							<tr class="row">
-								<td valign="top">
+								<td valign="top" class="column-width">
 									<% otzPdfResources.each { resource -> %>
 
-									<div class="pdfcolumn">
+									<div>
 										<div>
-											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+												${ resource.name }</a>
 										</div>
 									</div>
 
 									<% } %>
+								</td>
+								<td class="column-width">
 								</td>
 							</tr>
 						</table>
@@ -439,20 +405,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-5">
 				<label for="panel-5">OVC</label>
 			<div class="accordion__content">
-				<h3 class="accordion__header">OVC pdf resource(s)</h3>
 				<div class="accordion__body">
-					<table width="100%">
+					<table width="100%" style="padding-top: 20px">
 						<tr class="row">
-							<td valign="top">
+							<td valign="top" class="column-width">
 								<% ovcPdfResources.each { resource -> %>
 
-								<div class="pdfcolumn">
+								<div >
 									<div>
-										<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+										<a class="card-label" href="${ resource.url }"   target="_blank">
+											<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+											${ resource.name }</a>
 									</div>
 								</div>
 
 								<% } %>
+							</td>
+							<td class="column-width">
 							</td>
 						</tr>
 					</table>
@@ -466,20 +435,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-6">
 				<label for="panel-6">PrEP</label>
 			<div class="accordion__content">
-				<h3 class="accordion__header">PrEP pdf resource(s)</h3>
 				<div class="accordion__body">
-					<table width="100%">
+					<table width="100%" style="padding-top: 20px">
 						<tr class="row">
-							<td valign="top">
+							<td valign="top" class="column-width">
 								<% prepPdfResources.each { resource -> %>
 
-								<div class="pdfcolumn">
+								<div>
 									<div>
-										<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+										<a class="card-label" href="${ resource.url }"   target="_blank">
+											<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+											${ resource.name }</a>
 									</div>
 								</div>
 
 								<% } %>
+							</td>
+							<td class="column-width">
 							</td>
 						</tr>
 					</table>
@@ -493,20 +465,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-7">
 				<label for="panel-7">DWAPI Application content</label>
 				<div class="accordion__content">
-					<h3 class="accordion__header">DWAPI pdf resource(s)</h3>
 					<div class="accordion__body">
-						<table width="100%">
+						<table width="100%" style="padding-top: 20px">
 							<tr class="row">
-								<td valign="top">
+								<td valign="top" class="column-width">
 									<% dwapiPdfResources.each { resource -> %>
 
-									<div class="pdfcolumn">
+									<div>
 										<div>
-											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+												${ resource.name }</a>
 										</div>
 									</div>
 
 									<% } %>
+								</td>
+								<td class="column-width">
 								</td>
 							</tr>
 						</table>
@@ -520,20 +495,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-8">
 				<label for="panel-8">mUzima</label>
 				<div class="accordion__content">
-					<h3 class="accordion__header">mUzima pdf resource(s)</h3>
 					<div class="accordion__body">
-						<table width="100%">
+						<table width="100%" style="padding-top:20px ">
 							<tr class="row">
-								<td valign="top">
+								<td valign="top" class="column-width">
 									<% muzimaPdfResources.each { resource -> %>
 
-									<div class="pdfcolumn">
+									<div>
 										<div>
-											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+												${ resource.name }</a>
 										</div>
 									</div>
 
 									<% } %>
+								</td>
+								<td class="column-width">
 								</td>
 							</tr>
 						</table>
@@ -546,20 +524,23 @@ input[name='panel']:checked ~  .accordion__content {
 				<input type="radio" name="panel" id="panel-9">
 				<label for="panel-9">Automated Indicator Reporting (AIR)</label>
 				<div class="accordion__content">
-					<h3 class="accordion__header">AIR pdf resource(s)</h3>
 					<div class="accordion__body">
-						<table width="100%">
+						<table width="100%" style="padding-top: 20px">
 							<tr class="row">
-								<td valign="top">
+								<td valign="top" class="column-width">
 									<% airPdfResources.each { resource -> %>
 
-									<div class="pdfcolumn">
+									<div>
 										<div>
-											<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+											<a class="card-label" href="${ resource.url }"   target="_blank">
+												<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+												${ resource.name }</a>
 										</div>
 									</div>
 
 									<% } %>
+								</td>
+								<td class="column-width">
 								</td>
 							</tr>
 						</table>
@@ -575,43 +556,30 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content">
 					<% if(ilPdfResources) {  %>
 					<div>
-						<h3 class="accordion__header">IL pdf resource(s)</h3>
 						<div class="accordion__body">
-							<table width="100%">
+							<table width="100%" style="padding-top: 20px">
 								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% ilPdfResources.each { resource -> %>
 
-										<div class="pdfcolumn">
+										<div >
 											<div>
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<img src="${ ui.resourceLink("kenyaemr", "images/file-pdf-solid2.svg") }" />
+													${ resource.name }</a>
 											</div>
 										</div>
 
 										<% } %>
 									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<% } %>
-
-					<% if(ilVideoResources) {  %>
-
-					<div>
-						<h3 class="accordion__header">IL video resource(s)</h3>
-						<div class="accordion__body">
-							<table width="100%">
-								<tr class="row">
-									<td valign="top">
+									<td valign="top" class="column-width">
 										<% ilVideoResources.each { resource -> %>
 
-										<div class="column">
-											<div class="card">
-												<a class="card-label" href="${ resource.url }"   target="_blank">${ resource.name }</a>
-												<video width="270" height="155" controls>
-													<source src="${ resource.url }" type="video/mp4">
-												</video>
+										<div >
+											<div>
+												<a class="card-label" href="${ resource.url }"   target="_blank">
+													<i class="fa fa-video-camera" style="margin-top: 7px"></i>
+													${ resource.name }</a>
 											</div>
 										</div>
 
@@ -619,11 +587,10 @@ input[name='panel']:checked ~  .accordion__content {
 									</td>
 								</tr>
 							</table>
-
-
 						</div>
 					</div>
 					<% } %>
+
 				</div>
 			</div>
 
