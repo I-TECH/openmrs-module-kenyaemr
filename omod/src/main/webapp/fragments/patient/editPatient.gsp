@@ -1,6 +1,6 @@
 <%
     ui.decorateWith("kenyaui", "panel", [heading: (config.heading ?: "Edit Patient"), frameOnly: true])
-    def countyName = command.personAddress.country == null ? false : command.personAddress.countyDistrict.toLowerCase()
+    def countyName = command.personAddress.countyDistrict == null ? false : command.personAddress.countyDistrict.toLowerCase()
 
     def nameFields = [
             [
@@ -170,7 +170,7 @@
                         <select name="personAddress.countyDistrict">
                             <option></option>
                             <%countyList.each { %>
-                            <option ${!countyName? "" : it.toLowerCase() == command.personAddress.country.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                            <option ${!countyName? "" : it.toLowerCase() == command.personAddress.countyDistrict.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
                             <%}%>
                         </select>
                     </td>
