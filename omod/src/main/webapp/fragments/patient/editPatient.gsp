@@ -1,6 +1,6 @@
 <%
     ui.decorateWith("kenyaui", "panel", [heading: (config.heading ?: "Edit Patient"), frameOnly: true])
-    def countyName = command.personAddress.country == null ? false : command.personAddress.country.toLowerCase()
+    def countyName = command.personAddress.country == null ? false : command.personAddress.countyDistrict.toLowerCase()
 
     def nameFields = [
             [
