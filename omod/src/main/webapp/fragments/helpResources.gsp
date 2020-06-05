@@ -49,6 +49,11 @@ body {
 	line-height: 1.6em;
 	display:block;
 }
+.table-header{
+	font-size: 1.6em;
+	line-height: 1.6em;
+	text-align: left;
+}
 
 .column-width {
 	width: 50%;
@@ -242,6 +247,8 @@ input[name='panel']:checked ~  .accordion__content {
 					<div>
 						<div class="accordion__body">
 							<table width="100%" style="padding-top: 20px">
+								<th class="table-header">PDF</th>
+								<th class="table-header">Video</th>
 								<tr class="row">
 									<td valign="top" class="column-width">
 										<% kenyaemrNavigationPdfResources.each { resource -> %>
@@ -288,6 +295,8 @@ input[name='panel']:checked ~  .accordion__content {
 					<div>
 						<div class="accordion__body">
 							<table width="100%" style="padding-top: 20px">
+								<th class="table-header">PDF</th>
+								<th class="table-header">Video</th>
 								<tr class="row">
 									<td valign="top" class="column-width">
 										<% htsPdfResources.each { resource -> %>
@@ -335,6 +344,8 @@ input[name='panel']:checked ~  .accordion__content {
 				<div>
 					<div class="accordion__body">
 						<table width="100%" style="padding-top: 20px">
+							<th class="table-header">PDF</th>
+							<th class="table-header">Video</th>
 							<tr class="row">
 								<td valign="top" class="column-width">
 									<% dataToolsPdfResources.each { resource -> %>
@@ -378,6 +389,8 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content">
 					<div class="accordion__body">
 						<table width="100%" style="padding-top: 20px">
+							<th class="table-header">PDF</th>
+							<th class="table-header">Video</th>
 							<tr class="row">
 								<td valign="top" class="column-width">
 									<% otzPdfResources.each { resource -> %>
@@ -407,6 +420,8 @@ input[name='panel']:checked ~  .accordion__content {
 			<div class="accordion__content">
 				<div class="accordion__body">
 					<table width="100%" style="padding-top: 20px">
+						<th class="table-header">PDF</th>
+						<th class="table-header">Video</th>
 						<tr class="row">
 							<td valign="top" class="column-width">
 								<% ovcPdfResources.each { resource -> %>
@@ -437,6 +452,8 @@ input[name='panel']:checked ~  .accordion__content {
 			<div class="accordion__content">
 				<div class="accordion__body">
 					<table width="100%" style="padding-top: 20px">
+						<th class="table-header">PDF</th>
+						<th class="table-header">Video</th>
 						<tr class="row">
 							<td valign="top" class="column-width">
 								<% prepPdfResources.each { resource -> %>
@@ -467,6 +484,8 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content">
 					<div class="accordion__body">
 						<table width="100%" style="padding-top: 20px">
+							<th class="table-header">PDF</th>
+							<th class="table-header">Video</th>
 							<tr class="row">
 								<td valign="top" class="column-width">
 									<% dwapiPdfResources.each { resource -> %>
@@ -497,6 +516,8 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content">
 					<div class="accordion__body">
 						<table width="100%" style="padding-top:20px ">
+							<th class="table-header">PDF</th>
+							<th class="table-header">Video</th>
 							<tr class="row">
 								<td valign="top" class="column-width">
 									<% muzimaPdfResources.each { resource -> %>
@@ -526,6 +547,8 @@ input[name='panel']:checked ~  .accordion__content {
 				<div class="accordion__content">
 					<div class="accordion__body">
 						<table width="100%" style="padding-top: 20px">
+							<th class="table-header">PDF</th>
+							<th class="table-header">Video</th>
 							<tr class="row">
 								<td valign="top" class="column-width">
 									<% airPdfResources.each { resource -> %>
@@ -558,6 +581,8 @@ input[name='panel']:checked ~  .accordion__content {
 					<div>
 						<div class="accordion__body">
 							<table width="100%" style="padding-top: 20px">
+								<th class="table-header">PDF</th>
+								<th class="table-header">Video</th>
 								<tr class="row">
 									<td valign="top" class="column-width">
 										<% ilPdfResources.each { resource -> %>
