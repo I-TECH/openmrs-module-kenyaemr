@@ -50,9 +50,11 @@
 
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var discontinueDate;
+			var encounterDate;
 
 			beforeSubmit.push(function() {
-				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
+				encounterDate = new Date(getValue('encounter-date.value')).getTime();
+				discontinueDate = new Date(getValue('discontinue-date.value')).getTime();
 
 				if(discontinueDate &lt; pbirthdate){
 					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Birth date').show();
@@ -67,6 +69,22 @@
 					return false;
 				}else {
 					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
+				}
+
+				if(encounterDate &lt; pbirthdate){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
+					return false;
+				}
+				if(encounterDate &lt; artStartDate){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than art start date').show();
+					return false;
+				}
+				if(encounterDate &lt; enrollmentDate){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment').hide();
 
 				}
 
@@ -87,7 +105,7 @@
 				</tr>
 				<tr>
 					<td>Effective discontinuation date</td>
-					<td><obs id= "discontinue-date"conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+					<td><obs id= "discontinue-date" conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
 					<td></td>
 					<td></td>
 					<td></td>
