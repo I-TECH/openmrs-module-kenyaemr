@@ -29,9 +29,9 @@
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         //On Ready
         jq(function() {
-            var confirmed_positive = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
-            var date_confirmed_positive = "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
-            var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getObsDatetime()"/>";
+            var confirmed_positive = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>"; // this is the HTS final result
+            var date_confirmed_positive = "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";// this is the HTS final result date
+            var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
             var date_enrolled_in_care = "<lookup expression="fn.latestObs(160555).getValueDatetime()"/>";
             var art_start_date = "<lookup expression="fn.latestObs(159599).getValueDatetime()"/>";
             var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
@@ -97,25 +97,22 @@
             {
                 jq("#art-status input[value='true']").prop("checked", false);
             }
-            if(date_added_as_confirmed_positive != "") {
+            console.log("Recorded date confirmed positive: " + date_added_as_confirmed_positive);
+            console.log("HTS date confirmed positive: " + date_confirmed_positive);
+            if(date_added_as_confirmed_positive != "" &amp;&amp; date_added_as_confirmed_positive != null ) {
                 setValue('confirmed-positive-date.value', moment(moment(date_added_as_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 getField('confirmed-positive-date.value').prop("readonly", true);
+                console.log("Inside 1st loop: ");
+
             }else  if (confirmed_positive == 703) {
                 if (date_confirmed_positive != null) {
                     setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                     getField('confirmed-positive-date.value').prop("readonly", true);
+                    console.log("Inside 2nd loop: ");
+
                 }
             }
 
-            if (date_enrolled_in_care != null) {
-                setValue('confirmed-positive-date.value', moment(moment(date_enrolled_in_care, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                getField('confirmed-positive-date.value').prop("readonly", true);
-            }
-
-            if (art_start_date != null) {
-                setValue('confirmed-positive-date.value', moment(moment(art_start_date, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-                getField('confirmed-positive-date.value').prop("readonly", true);
-            }
             if (facility_confirmed != null) {
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
