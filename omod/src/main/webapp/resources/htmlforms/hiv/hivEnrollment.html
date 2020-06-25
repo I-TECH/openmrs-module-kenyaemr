@@ -97,19 +97,15 @@
             {
                 jq("#art-status input[value='true']").prop("checked", false);
             }
-            console.log("Recorded date confirmed positive: " + date_added_as_confirmed_positive);
-            console.log("HTS date confirmed positive: " + date_confirmed_positive);
+
             if(date_added_as_confirmed_positive != "" &amp;&amp; date_added_as_confirmed_positive != null ) {
                 setValue('confirmed-positive-date.value', moment(moment(date_added_as_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                 getField('confirmed-positive-date.value').prop("readonly", true);
-                console.log("Inside 1st loop: ");
 
             }else  if (confirmed_positive == 703) {
                 if (date_confirmed_positive != null) {
                     setValue('confirmed-positive-date.value', moment(moment(date_confirmed_positive, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
                     getField('confirmed-positive-date.value').prop("readonly", true);
-                    console.log("Inside 2nd loop: ");
-
                 }
             }
 
