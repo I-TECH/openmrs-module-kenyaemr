@@ -26,6 +26,7 @@
 	width:600px;
 	margin:0 auto;
 	text-align: center;
+	font-size: 1.4rem;
 }
 .telephone-number {
 	font-size: 1.5em;
@@ -61,7 +62,10 @@ body {
 }
 
 /* Remove extra left and right margins, due to padding */
-.row {margin: 0 -5px;}
+.row {
+	margin: 0 -5px;
+	background-color: papayawhip;
+}
 
 /* Clear floats after the columns */
 .row:after {
@@ -219,7 +223,7 @@ input[name='panel']:checked ~  .accordion__content {
 	<div id="header"><h2>HELP</h2></div>
 	<br/>
 
-	<div style="width:450px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
+	<div style="width:650px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> Call the help desk for free at <span class="telephone-number" > <strong>${ supportNumber }</strong></span><br />
 		or<br />
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/email.png") }" class="ke-glyph" /> Email <a href="mailto:${ supportEmail }">${ supportEmail }</a>
