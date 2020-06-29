@@ -288,7 +288,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(tb.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(fup.visit_date) = date(tb.visit_date)\n" +
                 "left outer JOIN\n" +
                 "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
@@ -326,7 +326,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(tb.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(fup.visit_date) = date(tb.visit_date)\n" +
                 "left outer JOIN\n" +
                 "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "   where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +

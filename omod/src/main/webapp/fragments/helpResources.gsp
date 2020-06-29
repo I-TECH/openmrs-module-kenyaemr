@@ -17,6 +17,21 @@
 	text-align: center;
 	alignment: center !important;
 }
+
+.navigation-button {
+	background-color: cadetblue;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+	width: 30em;
+}
+
 #header{
 	width:450px;
 	margin:0 auto;
@@ -30,6 +45,7 @@
 }
 .telephone-number {
 	font-size: 1.5em;
+	color: brown;
 }
 * {
 	box-sizing: border-box;
@@ -138,6 +154,8 @@ body:before {
 	padding-right: 2em;
 	padding-left: 2em;
 	box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+	overflow-y: scroll;
+	max-height: 38em;
 	/* Radio Inputs */
 	/* Labels */
 	/* Panel Content */
@@ -214,16 +232,24 @@ input[name='panel']:checked ~  .accordion__content {
 	max-height: 100em;
 }
 
+.service-desk-contact {
+	width:650px;
+	margin:0 auto;
+	text-align: center;
+	background-color: #e8e7e2;
+	padding: 10px;
+	border-radius: 4px;
+	font-size: 1.5rem;
+}
 
 
 
 
 </style>
 
-	<div id="header"><h2>HELP</h2></div>
 	<br/>
 
-	<div style="width:650px; margin:0 auto; text-align: center; background-color: #e8e7e2; padding: 10px; border-radius: 4px">
+	<div class="service-desk-contact">
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/phone.png") }" class="ke-glyph" /> Call the help desk for free at <span class="telephone-number" > <strong>${ supportNumber }</strong></span><br />
 		or<br />
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/email.png") }" class="ke-glyph" /> Email <a href="mailto:${ supportEmail }">${ supportEmail }</a>
@@ -234,11 +260,16 @@ input[name='panel']:checked ~  .accordion__content {
 
 
 	<div class="ke-page-content">
-
-		<div id="label"><b>You may find the following resources helpful <em>(choose category)</em>:</b></div>
-		<br />
-
-
+		<div style="text-align: center">
+			<% if(isAuthenticated){ %>
+				<button type="button" class="navigation-button" onclick="ui.navigate('userHome.page?')">Back to home</button>
+			<% } else{ %>
+				<button type="button" class="navigation-button" onclick="ui.navigate('login.htm')"> Login</button>
+			<% } %>
+		</div>
+		<br/>
+		<div id="label"><b>You may find the following resources helpful</b></div>
+		<br/>
 		<div>
 
 		<div class="accordion">
@@ -633,15 +664,6 @@ input[name='panel']:checked ~  .accordion__content {
 	</div>
 <br/>
 	<div class="ke-panel-footer">
-		<% if(isAuthenticated){ %>
-		<div id="closeButton">
-			<button type="button" style="alignment: center" onclick="ui.navigate('userHome.page?')"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Back to home</button>
-		</div>
-		<% } else{ %>
-		<div id="closeButton">
-			<button type="button" style="alignment: center" onclick="ui.navigate('login.htm')"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Cancel</button>
-		</div>
 
-		<% } %>
 	</div>
 
