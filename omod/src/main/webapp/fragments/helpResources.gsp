@@ -262,7 +262,6 @@ input[name='panel']:checked ~  .accordion__content {
 	<div class="ke-page-content">
 		<div style="text-align: center">
 			<% if(isAuthenticated){ %>
-				<button type="button" class="navigation-button" onclick="ui.navigate('userHome.page?')">Back to home</button>
 			<% } else{ %>
 				<button type="button" class="navigation-button" onclick="ui.navigate('login.htm')"> Login</button>
 			<% } %>
