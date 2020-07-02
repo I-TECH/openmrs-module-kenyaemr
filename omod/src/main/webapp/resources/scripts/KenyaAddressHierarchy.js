@@ -1,5 +1,5 @@
 var kenyaAddressHierarchy = {
-    "Homa-Bay":
+    "Homa Bay":
         {
             "Homa-bay town":
                 [
