@@ -24,7 +24,8 @@ import java.util.List;
  */
 public class HelpResourcesFragmentController {
 	private static final String[][] dataToolspdfHelpResources = new String[][] {
-			{ "Data extraction and reporting using datatools", "Data_tools_User_SOP_UPDATED.pdf" }
+			{ "Data extraction and reporting using datatools", "Data_tools_User_SOP_UPDATED.pdf" },
+			{ "Data tool setup on ubuntu machine", "Data_Tools_Setup_May 2020.pdf" }
 
 	};
 	private static final String[][] otzpdfHelpResources = new String[][] {
@@ -67,7 +68,8 @@ public class HelpResourcesFragmentController {
 			{ "Green card navigation", "KenyaEMR_GREENCARD_FINAL.pdf" },
 			{ "Full lab order ", "KenyaEMR_LAB FULL_ORDER_JOB_AID.pdf" },
 			{ "KenyaEMR Leap Surge Report ", "KenyaEMR_Leap_Surge_report_JOB_AID.pdf" },
-			{ "MCH module ", "KenyaEMR_MCH_Module_Complete Job_aid.pdf" },
+			{ "MCH module child services ", "KenyaEMR_MCH_Module_Child_Job_aid.pdf" },
+			{ "MCH module ", "KenyaEMR_MCH_Module_Mother_Job_aid.pdf" },
 			{ "KenyaEMR patient merge function", "KenyaEMR_Merge_Function_JOB AID_CBS.pdf" }
 
 	};
@@ -120,9 +122,8 @@ public class HelpResourcesFragmentController {
 			{ "IL Setup on Ubuntu - Video", "IL_installation_on_Ubuntu_environment.mp4" }
 	};
 	private static final String[][] ilpdfHelpResources = new String[][] {
-			{ "IL Installation and setup on Windows", "IL_Installation_and_configuration.pdf" },
+			{ "IL Installation and setup on Windows", "IL_Installation_windows_and_configuration.pdf" },
 			{ "IL Installation and setup on Ubuntu", "IL_Linux_Installation_JobAid.pdf" },
-			{ "IL Technical configurations", "IL_Installation_configuration_on_KenyaEMR.pdf" }
 	};
 
 
