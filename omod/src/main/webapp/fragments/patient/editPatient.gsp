@@ -1,7 +1,9 @@
 <%
     ui.decorateWith("kenyaui", "panel", [heading: (config.heading ?: "Edit Patient"), frameOnly: true])
-    def countyName = command.personAddress.countyDistrict == null ? false : command.personAddress.countyDistrict.toLowerCase()
-
+    def countyName = command.personAddress.countyDistrict
+    def country = command.personAddress.country
+    def subCounty = command.personAddress.stateProvince
+    def ward = command.personAddress.address4
     def nameFields = [
             [
                     [object: command, property: "personName.familyName", label: "Surname *"],
@@ -59,6 +61,7 @@
             ]
     ]
 %>
+<script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/KenyaAddressHierarchy.js"></script>
 
 <form id="edit-patient-form" method="post" action="${ui.actionLink("kenyaemr", "patient/editPatient", "savePatient")}">
     <% if (command.original) { %>
@@ -167,15 +170,23 @@
 
                 <tr>
                     <td style="width: 265px">
-                        <select name="personAddress.countyDistrict">
+                        <select id="county" name="personAddress.countyDistrict">
                             <option></option>
                             <%countyList.each { %>
-                            <option ${!countyName? "" : it.toLowerCase() == command.personAddress.countyDistrict.toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                            <option ${!countyName? "" : it.trim().toLowerCase() == countyName.trim().toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
                             <%}%>
                         </select>
                     </td>
-                    <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.stateProvince"])}</td>
-                    <td style="width: 260px">${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "personAddress.address4"])}</td>
+                    <td style="width: 260px">
+                        <select id="subCounty" name="personAddress.stateProvince">
+                            <option></option>
+                        </select>
+                    </td>
+                    <td style="width: 260px">
+                        <select id="ward" name="personAddress.address4">
+                            <option></option>
+                        </select>
+                    </td>
                 </tr>
             </table>
             <% locationSubLocationVillageFields.each { %>
@@ -250,6 +261,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 <script type="text/javascript">
     //On ready
     jQuery(function () {
+        jQuery('#county').change(updateSubcounty);
+        jQuery('#subCounty').change(updateWard);
 
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
         jQuery('#edit-patient-form .cancel-button').click(function () {
@@ -268,6 +281,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
             }
         });
+        updateSubcountyOnEdit();
+        updateWardOnEdit();
+
 
 
     }); // end of jQuery initialization block
@@ -276,5 +292,59 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         var birthdate = new Date(data.birthdate);
         kenyaui.setDateField('patient-birthdate', birthdate);
         kenyaui.setRadioField('patient-birthdate-estimated', 'true');
+    }
+    function updateSubcounty() {
+
+        jQuery('#subCounty').empty();
+        jQuery('#ward').empty();
+        var selectedCounty = jQuery('#county').val();
+        var scKey;
+        jQuery('#subCounty').append(jQuery("<option></option>").attr("value", "").text(""));
+        for (scKey in kenyaAddressHierarchy[selectedCounty]) {
+            jQuery('#subCounty').append(jQuery("<option></option>").attr("value", scKey).text(scKey));
+
+        }
+    }
+
+    function updateSubcountyOnEdit() {
+
+        jQuery('#subCounty').empty();
+        jQuery('#ward').empty();
+        var selectedCounty = jQuery('#county').val();
+        var scKey;
+        jQuery('#subCounty').append(jQuery("<option></option>").attr("value", "").text(""));
+        for (scKey in kenyaAddressHierarchy[selectedCounty]) {
+
+            jQuery('#subCounty').append(jQuery("<option></option>").attr("value", scKey).text(scKey));
+
+        }
+        jQuery('#subCounty').val('${subCounty}');
+    }
+
+    function updateWardOnEdit() {
+
+        jQuery('#ward').empty();
+        var selectedCounty = jQuery('#county').val();
+        var selectedsubCounty = jQuery('#subCounty').val();
+        var scKey;
+        jQuery('#ward').append(jQuery("<option></option>").attr("value", "").text(""));
+        for (scKey in kenyaAddressHierarchy[selectedCounty][selectedsubCounty]) {
+            jQuery('#ward').append(jQuery("<option></option>").attr("value", kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility).text(kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility));
+
+        }
+        jQuery('#ward').val('${ward}');
+    }
+
+    function updateWard() {
+
+        jQuery('#ward').empty();
+        var selectedCounty = jQuery('#county').val();
+        var selectedsubCounty = jQuery('#subCounty').val();
+        var scKey;
+        jQuery('#ward').append(jQuery("<option></option>").attr("value", "").text(""));
+        for (scKey in kenyaAddressHierarchy[selectedCounty][selectedsubCounty]) {
+            jQuery('#ward').append(jQuery("<option></option>").attr("value", kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility).text(kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility));
+
+        }
     }
 </script>
