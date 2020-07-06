@@ -2077,7 +2077,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Wamba North","id":"Wamba North"}
                 ]
         },
-    "Uasin-Gishu":
+    "Uasin Gishu":
         {
             "Soy":
                 [
