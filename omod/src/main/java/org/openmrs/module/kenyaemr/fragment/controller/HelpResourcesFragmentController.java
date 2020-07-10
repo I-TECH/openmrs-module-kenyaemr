@@ -42,7 +42,7 @@ public class HelpResourcesFragmentController {
 	};
 	private static final String[][] dwpipdfHelpResources = new String[][] {
 			{ "DWAPI installation on Ubuntu", "DWAPI_Installation_on_ubuntu.pdf" },
-			{ "DWAPI Installation on Windows", "DWAPI_Installation_on_windows" },
+			{ "DWAPI Installation on Windows", "DWAPI_Installation_on_windows.pdf" },
 			{ "DWAPI Data transmission job Aid", "DWAPI_Data_Transmission.pdf" },
 			{ "DWAPI Deduplication function", "DWAPI_De_duplication.pdf" },
 			{ "DWAPI Data Cleaning function", "DWAPI_Data_Cleaning.pdf" }
@@ -69,7 +69,7 @@ public class HelpResourcesFragmentController {
 			{ "Full lab order ", "KenyaEMR_LAB FULL_ORDER_JOB_AID.pdf" },
 			{ "KenyaEMR Leap Surge Report ", "KenyaEMR_Leap_Surge_report_JOB_AID.pdf" },
 			{ "MCH module child services ", "KenyaEMR_MCH_Module_Child_Job_aid.pdf" },
-			{ "MCH module ", "KenyaEMR_MCH_Module_Mother_Job_aid.pdf" },
+			{ "MCH module mother services ", "KenyaEMR_MCH_Module_Mother_Job_aid.pdf" },
 			{ "KenyaEMR patient merge function", "KenyaEMR_Merge_Function_JOB AID_CBS.pdf" }
 
 	};
