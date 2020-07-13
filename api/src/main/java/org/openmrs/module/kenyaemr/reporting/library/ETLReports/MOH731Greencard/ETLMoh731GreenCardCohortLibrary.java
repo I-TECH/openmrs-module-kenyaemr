@@ -124,8 +124,8 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery=" select  e.patient_id\n" +
                 "from (\n" +
                 "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "    max(fup.visit_date) as latest_vis_date,\n" +
-                "    mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
                 "    max(d.visit_date) as date_discontinued,\n" +
                 "    d.patient_id as disc_patient,\n" +
                 "  de.patient_id as started_on_drugs,\n" +
@@ -135,14 +135,14 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and date(date_started) <= date(:endDate)\n" +
                 "left outer JOIN\n" +
-                "(select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "(select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
                 "group by patient_id\n" +
                 ") d on d.patient_id = fup.patient_id\n" +
                 "where de.program = 'HIV' and fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
-                "having (started_on_drugs is not null and started_on_drugs <> \"\") and (\n" +
-                "(date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null)) or\n" +
+                "having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
+                "(date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null)) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ))\n" +
                 ") e\n" +
                 ";";
@@ -279,8 +279,8 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery = " select  e.patient_id\n" +
                 "from (\n" +
                 "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "  max(fup.visit_date) as latest_vis_date,\n" +
-                "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
                 "  mid(max(concat(tb.visit_date, tb.resulting_tb_status)), 11) screened_using_icf,\n" +
@@ -290,14 +290,14 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(fup.visit_date) = date(tb.visit_date)\n" +
                 "left outer JOIN\n" +
-                "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
                 "  group by patient_id\n" +
                 "  ) d on d.patient_id = fup.patient_id\n" +
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
                 ") e";
 
@@ -316,9 +316,9 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery = "select  e.patient_id\n" +
                 "from (\n" +
                 "select fup.visit_date as visit_date_greenCard,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "  max(fup.visit_date) as latest_vis_date,\n" +
+                "    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
                 "  max(tb.visit_date) as latest_tb_screening_vis_date,\n" +
-                "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
                 "  mid(max(concat(tb.visit_date, tb.resulting_tb_status)), 11) screened_using_icf,\n" +
@@ -328,14 +328,14 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "left join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id and date(fup.visit_date) = date(tb.visit_date)\n" +
                 "left outer JOIN\n" +
-                "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "   where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
                 "   group by patient_id\n" +
                 "   ) d on d.patient_id = fup.patient_id\n" +
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null) and (screened_using_icf =142177 or screened_using_consultation=142177)) or\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (screened_using_icf =142177 or screened_using_consultation=142177)) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (screened_using_icf =142177 or screened_using_consultation=142177)) )\n" +
                 ") e";
 
@@ -711,8 +711,8 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery=" select  e.patient_id\n" +
                 "from (\n" +
                 "select fup.visit_date,fup.patient_id,\n" +
-                "  max(fup.visit_date) as latest_vis_date,\n" +
-                "  mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
                 "  max(d.visit_date) as date_discontinued,\n" +
                 "  d.patient_id as disc_patient,\n" +
                 "  max(if(dr.is_ctx=1, 1, if(dr.is_dapsone =1, 1, 0))) as prophylaxis_given, \n" +
@@ -723,14 +723,14 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
                 "left join kenyaemr_etl.etl_pharmacy_extract dr on date(fup.visit_date) = date(dr.visit_date) and dr.patient_id = fup.patient_id \n" +
                 "left outer JOIN\n" +
-                "  (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
                 "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
                 "  group by patient_id\n" +
                 "  ) d on d.patient_id = fup.patient_id\n" +
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) > date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
+                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
                 "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
                 ") e" +
                 "; ";
