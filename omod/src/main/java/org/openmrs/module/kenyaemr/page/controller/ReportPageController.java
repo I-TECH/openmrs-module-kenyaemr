@@ -72,8 +72,14 @@ public class ReportPageController {
 			excelRenderable = true;
 		}
 
-		String mappingString = admService.getGlobalProperty("kenyaemr.adxDatasetMapping");
-		ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), mappingString);
+  		ObjectNode mappingDetails = null;
+		if (report.getName().equals("Monthly report")){
+			mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), admService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
+		}
+		else if(report.getName().equals("MOH 731")){
+			mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), admService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
+		}
+
 		model.addAttribute("report", report);
 		model.addAttribute("definition", definition);
 		model.addAttribute("isIndicator", isIndicator);

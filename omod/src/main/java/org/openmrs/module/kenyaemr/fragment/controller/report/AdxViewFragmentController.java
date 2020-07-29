@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.validation.constraints.Null;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -80,9 +81,9 @@ public class AdxViewFragmentController {
 
     private LocationService locationService;
     public String SERVER_ADDRESS = "http://41.204.187.152:9721/api/";
+    public String KPIF_SERVER_ADDRESS = "https://il.kenyahmis.org:9721/api/3pm/";
     DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
 
     public void get(@RequestParam("request") ReportRequest reportRequest,
                     @RequestParam("returnUrl") String returnUrl,
@@ -112,24 +113,38 @@ public class AdxViewFragmentController {
         model.addAttribute("adx", render(reportData));
         model.addAttribute("reportName", definition.getName());
         model.addAttribute("returnUrl", returnUrl);
-        model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : SERVER_ADDRESS);
+        model.addAttribute("serverAddress",SERVER_ADDRESS);
+        if(definition.getName()!=null){
+            if(definition.getName().equals("Monthly report")){
+            model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : KPIF_SERVER_ADDRESS);
+        }
+        else if(definition.getName().equals("MOH 731") ){
+            model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : SERVER_ADDRESS);
+        }
+        }
         model.addAttribute("serverAddressLength", SERVER_ADDRESS.length());
     }
 
     public String render(ReportData reportData) throws IOException {
-
 
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
         Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
         administrationService = Context.getAdministrationService();
         facilityreportingService = Context.getService(FacilityreportingService.class);
         locationService = Context.getLocationService();
+        String reportName = reportData.getDefinition().getName();
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
-        String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
 
         Location location = locationService.getLocation(locationId);
-        ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(reportData.getDefinition().getName(), mappingString);
+        ObjectNode mappingDetails = null;
+
+if(reportName.equals("MOH 731")){
+         mappingDetails = EmrUtils.getDatasetMappingForReport(reportName,  administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
+    }
+else if(reportName.equals("Monthly report")) {
+    mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
+}
 
         String mfl = "Unknown";
         String columnPrefix = mappingDetails.get("prefix").getTextValue();
@@ -148,20 +163,33 @@ public class AdxViewFragmentController {
         for (String dsKey : reportData.getDataSets().keySet()) {
 
             String datasetName = null;
-            if (mappingDetails.get("datasets").getElements() != null) {
-                for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
-                    ObjectNode node = (ObjectNode) it.next();
-                    if (node.get("name").asText().equals(dsKey)) {
-                        datasetName = node.get("dhisName").getTextValue();
-                        break;
+
+            if (mappingDetails.get("datasets").getElements() != null && reportName.equals("MOH 731")) {
+
+                             for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
+                        ObjectNode node = (ObjectNode) it.next();
+                        if (node.get("name").asText().equals(dsKey)) {
+                            datasetName = node.get("dhisName").getTextValue();
+                            break;
+                        }
                     }
                 }
-            }
+                else if(mappingDetails.get("datasets").getElements() != null && reportName.equals("Monthly report")){
+
+                    for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
+                        ObjectNode node = (ObjectNode) it.next();
+                        if (node.get("name").asText().equals(dsKey)) {
+                            datasetName = node.get("3pmName").getTextValue();
+                            break;
+                        }
+                    }
+                }
 
             if (datasetName == null)
                 continue;
 
-            mappingDetails.get("datasets").getElements();
+                mappingDetails.get("datasets").getElements();
+
             w.append("\t").append("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
                     + "/P1M\" dataSet=\"" + datasetName + "\">\n");
             DataSet dataset = reportData.getDataSets().get(dsKey);
@@ -176,24 +204,25 @@ public class AdxViewFragmentController {
             }
             w.append("</group>\n");
         }
+        if(reportName.equals("MOH 731")) {
+            for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
 
-        for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
+                Integer datasetId = Integer.parseInt(e.getDatasetID());
+                FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
 
-            Integer datasetId = Integer.parseInt(e.getDatasetID());
-            FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
+                w.append("\t").append("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
+                        + "/P1M\" dataSet=\"" + ds.getMapping() + "\">\n");
+                for (DatasetIndicatorDetails row : e.getIndicators()) {
+                    if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
+                        String name = row.getName();
+                        Object value = row.getValue();
 
-            w.append("\t").append("<group orgUnit=\"" + mfl + "\" period=\"" + isoDateFormat.format(reportDate)
-                    + "/P1M\" dataSet=\"" + ds.getMapping() + "\">\n");
-            for (DatasetIndicatorDetails row : e.getIndicators()) {
-                if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
-                    String name = row.getName();
-                    Object value = row.getValue();
+                        w.append("\t\t").append("<dataValue dataElement=\"" + columnPrefix + "" + name + "\" value=\"" + value.toString() + "\"/>\n");
 
-                    w.append("\t\t").append("<dataValue dataElement=\"" + columnPrefix + "" + name + "\" value=\"" + value.toString() + "\"/>\n");
-
+                    }
                 }
+                w.append("</group>\n");
             }
-            w.append("</group>\n");
         }
         w.append("</adx>\n");
         //w.flush();
@@ -204,24 +233,32 @@ public class AdxViewFragmentController {
                                          @SpringBean ReportService reportService) throws ParserConfigurationException, IOException, TransformerException {
 
         ReportData reportData = reportService.loadReportData(reportRequest);
+        String reportName =  reportData.getDefinition().getName();
 
         administrationService = Context.getAdministrationService();
         locationService = Context.getLocationService();
         facilityreportingService = Context.getService(FacilityreportingService.class);
 
-
         Date reportDate = (Date) reportData.getContext().getParameterValue("startDate");
         Date endDate = (Date) reportData.getContext().getParameterValue("endDate");
 
         Integer locationId = Integer.parseInt(administrationService.getGlobalProperty("kenyaemr.defaultLocation"));
-        String mappingString = administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping");
+
         Location location = locationService.getLocation(locationId);
-        ObjectNode mappingDetails = EmrUtils.getDatasetMappingForReport(reportData.getDefinition().getName(), mappingString);
+        ObjectNode mappingDetails = null;
+        if(reportName.equals("MOH 731")) {
+             mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
+        }
+        else if(reportName.equals("Monthly report")){
+             mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
+        }
+
         String serverAddress = administrationService.getGlobalProperty("ilServer.address");
 
-
         String mfl = "Unknown";
-        String columnPrefix = mappingDetails.get("prefix").getTextValue();
+        String columnPrefix = null;
+
+            columnPrefix = mappingDetails.get("prefix").getTextValue();
 
         if (location != null) {
             mfl = new Facility(location).getMflCode();
@@ -237,16 +274,29 @@ public class AdxViewFragmentController {
         root.setAttribute("xsi:schemaLocation", "urn:ihe:qrph:adx:2015 ../schema/adx_loose.xsd");
         root.setAttribute("exported", isoDateTimeFormat.format(new Date()));
 
-
         for (String dsKey : reportData.getDataSets().keySet()) {
 
             String datasetName = null;
-            if (mappingDetails.get("datasets").getElements() != null) {
-                for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
-                    ObjectNode node = (ObjectNode) it.next();
-                    if (node.get("name").asText().equals(dsKey)) {
-                        datasetName = node.get("dhisName").getTextValue();
-                        break;
+
+            if (reportName.equals("MOH 731")) {
+                if (mappingDetails.get("datasets").getElements() != null) {
+                    for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
+                        ObjectNode node = (ObjectNode) it.next();
+                        if (node.get("name").asText().equals(dsKey)) {
+                            datasetName = node.get("dhisName").getTextValue();
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (reportName.equals("Monthly report")) {
+                if (mappingDetails.get("datasets").getElements() != null) {
+                    for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
+                        ObjectNode node = (ObjectNode) it.next();
+                        if (node.get("name").asText().equals(dsKey)) {
+                            datasetName = node.get("3pmName").getTextValue();
+                            break;
+                        }
                     }
                 }
             }
@@ -279,36 +329,38 @@ public class AdxViewFragmentController {
         }
 
         // add additional MOH 731 indicators for air
+        if (reportName.equals("MOH 731")){
+            for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
+                if (e.getDatasetID() != null) {
 
-        for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
-            if(e.getDatasetID() !=null) {
+                    Integer datasetId = Integer.parseInt(e.getDatasetID());
+                    FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
+                    String datasetName = ds.getMapping();
 
-                Integer datasetId = Integer.parseInt(e.getDatasetID());
-                FacilityReportDataset ds = facilityreportingService.getDatasetById(datasetId);
-                String datasetName = ds.getMapping();
+                    Element eDataset = document.createElement("group");
+                    // add group attributes
+                    eDataset.setAttribute("orgUnit", mfl);
+                    eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
+                    eDataset.setAttribute("dataSet", datasetName);
 
-                Element eDataset = document.createElement("group");
-                // add group attributes
-                eDataset.setAttribute("orgUnit", mfl);
-                eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
-                eDataset.setAttribute("dataSet", datasetName);
+                    for (DatasetIndicatorDetails row : e.getIndicators()) {
+                        if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
+                            String name = row.getName();
+                            Object value = row.getValue();
+                            // add data values
+                            Element dataValue = document.createElement("dataValue");
+                            dataValue.setAttribute("dataElement", columnPrefix.concat(name));
+                            dataValue.setAttribute("value", value.toString());
+                            eDataset.appendChild(dataValue);
 
-                for (DatasetIndicatorDetails row : e.getIndicators()) {
-                    if (row.getValue() != null && !"".equals(row.getValue()) && StringUtils.isNotEmpty(row.getValue())) {
-                        String name = row.getName();
-                        Object value = row.getValue();
-                        // add data values
-                        Element dataValue = document.createElement("dataValue");
-                        dataValue.setAttribute("dataElement", columnPrefix.concat(name));
-                        dataValue.setAttribute("value", value.toString());
-                        eDataset.appendChild(dataValue);
-
+                        }
                     }
-                }
 
-                root.appendChild(eDataset);
+                    root.appendChild(eDataset);
+                }
             }
         }
+
         document.appendChild(root);
 
         // create the xml file
@@ -323,16 +375,17 @@ public class AdxViewFragmentController {
 
         //transformer.transform(domSource, printOut);
         transformer.transform(domSource, inMemory);
-        if (serverAddress != null)
+        if (serverAddress != null) {
+
             SERVER_ADDRESS = serverAddress;
 
-        return postAdxToIL(out, SERVER_ADDRESS);
+        }
 
+        return postAdxToIL(out, SERVER_ADDRESS);
     }
 
     private SimpleObject postAdxToIL(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
 
-        //System.out.println("Posting to server at: " + serverAddress);
         URL url = new URL(serverAddress);
 
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -372,7 +425,6 @@ public class AdxViewFragmentController {
 
     private SimpleObject getDataFromFacilityReportingModule(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
 
-        //System.out.println("Posting to server at: " + serverAddress);
         URL url = new URL("http://localhost:8080/openmrs/ws/rest/v1/facilityreporting/getreportdata");
         String params = "{\"REPORTID\":\"1\",\"STARTDATE\":\"2019-01-02\",\"ENDDATE\":\"2019-01-31\",\"ADXORGUNIT\":\"10657\",\"ADXREPORTINGPERIOD\":\"2018-01-01/P1M\"}";
 
@@ -437,7 +489,6 @@ public class AdxViewFragmentController {
             } else {
                 //return null;
             }
-
 
             // we did not succeed with connection (or we would have returned the connection).
             con.disconnect();
