@@ -44,7 +44,9 @@ import java.util.Map;
 @SharedPage
 public class ReportPageController {
 	private AdministrationService admService;
-	
+    public static final String KPIF_MONTHLY_REPORT = "Monthly report";
+    public static final String MOH_731 = "MOH 731";
+
 	public void get(@RequestParam("reportUuid") String reportUuid,
 					@RequestParam(required = false, value = "startDate") Date startDate,
 					@RequestParam("returnUrl") String returnUrl,
@@ -73,10 +75,10 @@ public class ReportPageController {
 		}
 
   		ObjectNode mappingDetails = null;
-		if (report.getName().equals("Monthly report")){
+		if (report.getName().equals(KPIF_MONTHLY_REPORT)){
 			mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), admService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
 		}
-		else if(report.getName().equals("MOH 731")){
+		else if(report.getName().equals(MOH_731)){
 			mappingDetails = EmrUtils.getDatasetMappingForReport(definition.getName(), admService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
 		}
 

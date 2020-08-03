@@ -84,6 +84,8 @@ public class AdxViewFragmentController {
     public String KPIF_SERVER_ADDRESS = "https://il.kenyahmis.org:9721/api/3pm/";
     DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
     DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public static final String KPIF_MONTHLY_REPORT = "Monthly report";
+    public static final String MOH_731 = "MOH 731";
 
     public void get(@RequestParam("request") ReportRequest reportRequest,
                     @RequestParam("returnUrl") String returnUrl,
@@ -115,10 +117,10 @@ public class AdxViewFragmentController {
         model.addAttribute("returnUrl", returnUrl);
         model.addAttribute("serverAddress",SERVER_ADDRESS);
         if(definition.getName()!=null){
-            if(definition.getName().equals("Monthly report")){
+            if(definition.getName().equals(KPIF_MONTHLY_REPORT)){
             model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : KPIF_SERVER_ADDRESS);
         }
-        else if(definition.getName().equals("MOH 731") ){
+        else if(definition.getName().equals(MOH_731) ){
             model.addAttribute("serverAddress",  serverAddress != null ? serverAddress : SERVER_ADDRESS);
         }
         }
@@ -139,10 +141,10 @@ public class AdxViewFragmentController {
         Location location = locationService.getLocation(locationId);
         ObjectNode mappingDetails = null;
 
-if(reportName.equals("MOH 731")){
+if(reportName.equals(MOH_731)){
          mappingDetails = EmrUtils.getDatasetMappingForReport(reportName,  administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
     }
-else if(reportName.equals("Monthly report")) {
+else if(reportName.equals(KPIF_MONTHLY_REPORT)) {
     mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
 }
 
@@ -164,7 +166,7 @@ else if(reportName.equals("Monthly report")) {
 
             String datasetName = null;
 
-            if (mappingDetails.get("datasets").getElements() != null && reportName.equals("MOH 731")) {
+            if (mappingDetails.get("datasets").getElements() != null && reportName.equals(MOH_731)) {
 
                              for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
                         ObjectNode node = (ObjectNode) it.next();
@@ -174,7 +176,7 @@ else if(reportName.equals("Monthly report")) {
                         }
                     }
                 }
-                else if(mappingDetails.get("datasets").getElements() != null && reportName.equals("Monthly report")){
+                else if(mappingDetails.get("datasets").getElements() != null && reportName.equals(KPIF_MONTHLY_REPORT)){
 
                     for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
                         ObjectNode node = (ObjectNode) it.next();
@@ -204,7 +206,7 @@ else if(reportName.equals("Monthly report")) {
             }
             w.append("</group>\n");
         }
-        if(reportName.equals("MOH 731")) {
+        if(reportName.equals(MOH_731)) {
             for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
 
                 Integer datasetId = Integer.parseInt(e.getDatasetID());
@@ -246,10 +248,10 @@ else if(reportName.equals("Monthly report")) {
 
         Location location = locationService.getLocation(locationId);
         ObjectNode mappingDetails = null;
-        if(reportName.equals("MOH 731")) {
+        if(reportName.equals(MOH_731)) {
              mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
         }
-        else if(reportName.equals("Monthly report")){
+        else if(reportName.equals(KPIF_MONTHLY_REPORT)){
              mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyakeypop.adx3pmDatasetMapping"));
         }
 
@@ -278,7 +280,7 @@ else if(reportName.equals("Monthly report")) {
 
             String datasetName = null;
 
-            if (reportName.equals("MOH 731")) {
+            if (reportName.equals(MOH_731)) {
                 if (mappingDetails.get("datasets").getElements() != null) {
                     for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
                         ObjectNode node = (ObjectNode) it.next();
@@ -289,7 +291,7 @@ else if(reportName.equals("Monthly report")) {
                     }
                 }
             }
-            else if (reportName.equals("Monthly report")) {
+            else if (reportName.equals(KPIF_MONTHLY_REPORT)) {
                 if (mappingDetails.get("datasets").getElements() != null) {
                     for (Iterator<JsonNode> it = mappingDetails.get("datasets").iterator(); it.hasNext(); ) {
                         ObjectNode node = (ObjectNode) it.next();
@@ -329,7 +331,7 @@ else if(reportName.equals("Monthly report")) {
         }
 
         // add additional MOH 731 indicators for air
-        if (reportName.equals("MOH 731")){
+        if (reportName.equals(MOH_731)){
             for (ReportDatasetValueEntryMapper e : getFaclityReportData(MOH_731_ID, isoDateFormat.format(reportDate), isoDateFormat.format(endDate))) {
                 if (e.getDatasetID() != null) {
 
