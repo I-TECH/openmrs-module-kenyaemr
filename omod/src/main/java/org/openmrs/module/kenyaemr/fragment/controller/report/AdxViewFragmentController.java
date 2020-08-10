@@ -112,7 +112,6 @@ public class AdxViewFragmentController {
         model.addAttribute("adx", render(reportData));
         model.addAttribute("reportName", definition.getName());
         model.addAttribute("returnUrl", returnUrl);
-        model.addAttribute("serverAddress", SERVER_ADDRESS);
         if (definition.getName() != null) {
             if (definition.getName().equals(KPIF_MONTHLY_REPORT)) {
                 model.addAttribute("serverAddress", serverAddress != null ? serverAddress : KPIF_SERVER_ADDRESS);
