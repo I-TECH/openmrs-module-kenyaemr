@@ -141,8 +141,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationDatatype.class, null, null));
 
 		String adxMappingString = "[{\"reportName\":\"MOH 731\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"2\",\"dhisName\":\"xUesg8lcmDs\"},{\"name\":\"1\",\"dhisName\":\"ptIUGFkE6jn\"},{\"name\":\"3\",\"dhisName\":\"Vo4KDrUFwnA\"}]}]";
+		//3pm Adx string
+		String adx3pmMappingString = "[{\"reportName\":\"Monthly report\",\"prefix\":\"\",\"datasets\":[{\"name\":\"1\",\"3pmName\":\"qzJqoxdfXJn\"}]}]";
 
 		install(globalProperty(EmrConstants.GP_DHIS2_DATASET_MAPPING, "ADX Mapping for KenyaEMR and DHIS2 datasets", adxMappingString));
+		install(globalProperty(EmrConstants.GP_3PM_DATASET_MAPPING, "ADX Mapping for KenyaEMR and 3PM datasets", adx3pmMappingString));
+
 		install(globalProperty("order.drugDosingUnitsConceptUuid", "Drug dosing units concept", "162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
@@ -163,7 +167,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
-		
+
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
