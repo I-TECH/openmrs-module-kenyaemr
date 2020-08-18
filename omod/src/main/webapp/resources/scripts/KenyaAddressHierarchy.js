@@ -51,7 +51,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Kanyamwa Kosewe","id":"Kanyamwa Kosewe"},
                     {"facility":"Kanyamwa Kologi","id":"Kanyamwa Kologi"}
                 ],
-            "Mbita":
+            "Suba North":
                 [
                     {"facility":"Mfangano Island","id":"Mfangano Island"},
                     {"facility":"Rusinga Island","id":"Rusinga Island"},
@@ -61,7 +61,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Kanyamwa Kosewe","id":"Kanyamwa Kosewe"},
                     {"facility":"Kanyamwa Kologi","id":"Kanyamwa Kologi"}
                 ],
-            "Suba":
+            "Suba South":
                 [
                     {"facility":"Gwassi South","id":"Gwassi South"},
                     {"facility":"Gwassi North","id":"Gwassi North"},
