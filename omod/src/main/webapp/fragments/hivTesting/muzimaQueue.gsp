@@ -1,5 +1,5 @@
 <%
-    ui.decorateWith("kenyaui", "panel", [ heading: "mUzima Queue Summary" ])
+    ui.decorateWith("kenyaui", "panel", [ heading: "Medic Queue Summary" ])
 %>
 <style>
 .simple-table {
@@ -28,7 +28,7 @@
 <div>
 
     <fieldset>
-        <legend>mUzima Error Queue</legend>
+        <legend>Medic Error Queue</legend>
         <div>
             <table class="simple-table">
                 <thead>
@@ -40,12 +40,10 @@
                 <tr>
                     <td>Potential Registration duplicates</td>
                     <td>${registrationErrors}</td>
-                    <td><button onclick="ui.navigate('/' + OPENMRS_CONTEXT_PATH + '/module/muzimacore/view.list#/duplicates')">View Errors</button> </td>
                 </tr>
                 <tr>
                     <td>Total Errors</td>
                     <td>${totalErrors}</td>
-                    <td><button onclick="ui.navigate('/' + OPENMRS_CONTEXT_PATH + '/module/muzimacore/view.list#/errors')">View Errors</button> </td>
                 </tr>
                 </tbody>
             </table>
@@ -54,7 +52,7 @@
 
     <br/>
     <fieldset>
-    <legend>mUzima Queue Data</legend>
+    <legend>Medic Queue Data</legend>
         <div>Total records in queue: ${queueData}</div>
 </fieldset>
 

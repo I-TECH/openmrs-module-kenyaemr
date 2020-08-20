@@ -27,9 +27,9 @@ public class MuzimaQueueFragmentController {
 
 		Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 
-		String regStr = "select count(*) from muzima_error_data where discriminator='json-registration';";
-		String allErrors = "select count(*) from muzima_error_data;";
-		String queueData = "select count(*) from muzima_queue_data;";
+		String regStr = "select count(*) from medic_error_data where discriminator='json-registration';";
+		String allErrors = "select count(*) from medic_error_data;";
+		String queueData = "select count(*) from medic_queue_data;";
 		Long totalErrors = (Long) Context.getAdministrationService().executeSQL(allErrors, true).get(0).get(0);
 		Long registrationErrors = (Long) Context.getAdministrationService().executeSQL(regStr, true).get(0).get(0);
 		Long queueDataTotal = (Long) Context.getAdministrationService().executeSQL(queueData, true).get(0).get(0);
