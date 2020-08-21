@@ -21,7 +21,7 @@ import org.openmrs.ui.framework.page.PageModel;
  * Homepage for the Hiv Testing app
  */
 @AppPage(EmrConstants.APP_HIV_TESTING)
-public class MuzimaQueueHomePageController {
+public class MedicQueueHomePageController {
 
 	public String controller(UiUtils ui, PageModel model) {
 

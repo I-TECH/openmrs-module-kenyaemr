@@ -2,7 +2,7 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	def menuItems = [
-			[ label: "View mUzima Queue", iconProvider: "kenyaemr", icon: "queue-icon.jpg", label: "View Medic Queue", href: ui.pageLink("kenyaemr", "hivTesting/muzimaQueueHome") ]
+			[ label: "View medic Queue", iconProvider: "kenyaemr", icon: "queue-icon.jpg", label: "View Medic Queue", href: ui.pageLink("kenyaemr", "hivTesting/medicQueueHome") ]
 	]
 %>
 
