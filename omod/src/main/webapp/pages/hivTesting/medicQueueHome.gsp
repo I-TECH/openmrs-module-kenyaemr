@@ -11,7 +11,7 @@
 </div>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "hivTesting/muzimaQueue") }
+	${ ui.includeFragment("kenyaemr", "hivTesting/medicQueue") }
 </div>
 
 <script type="text/javascript">
