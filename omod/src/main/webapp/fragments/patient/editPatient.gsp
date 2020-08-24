@@ -3,6 +3,7 @@
     def countyName = command.personAddress.countyDistrict
     def country = command.personAddress.country
     def subCounty = command.personAddress.stateProvince
+    def nokRelationShip = command.nextOfKinRelationship
     def ward = command.personAddress.address4
     def nameFields = [
             [
@@ -212,7 +213,7 @@
                         <select name="nextOfKinRelationship">
                             <option></option>
                             <%nextOfKinRelationshipOptions.each { %>
-                            <option value="${it}">${it}</option>
+                            <option ${!nokRelationShip? "" : it.trim().toLowerCase() == nokRelationShip.trim().toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
                             <%}%>
                         </select>
                     </td>
