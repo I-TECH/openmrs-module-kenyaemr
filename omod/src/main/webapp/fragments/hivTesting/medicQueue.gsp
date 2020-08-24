@@ -153,7 +153,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
         </div>
         <div id="msg"></div>
         <div>
-            <h3>History of Error Messages (Last 10 entries)</h3>
+            <h3>History of Error Messages (Last 5 entries)</h3>
             <table id="log_table">
                 <thead>
                 <tr>
