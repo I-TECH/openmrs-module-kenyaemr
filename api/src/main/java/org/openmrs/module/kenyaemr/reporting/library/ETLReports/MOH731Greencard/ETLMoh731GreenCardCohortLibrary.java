@@ -143,9 +143,10 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "group by patient_id\n" +
                 "having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
                 "(date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null)) or\n" +
-                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ))\n" +
-                ") e\n" +
-                ";";
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or\n" +
+                "((timestampdiff(DAY,date(latest_tca),date(:endDate)) between 1 and 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30))\n" +
+                " and (date(latest_tca) >= date(date_discontinued) or disc_patient is null )\n" +
+                ")) e;";
 
         cd.setName("currentlyOnArt");
         cd.setQuery(sqlQuery);
@@ -298,7 +299,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "group by patient_id\n" +
                 "having (\n" +
                 "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) or\n" +
-                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or ((timestampdiff(DAY,date(latest_tca),date(:endDate)) between 1 and 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30)) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (screened_using_icf is not null or screened_using_consultation in(1660, 142177, 160737 ))) )\n" +
                 ") e";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -336,7 +337,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "group by patient_id\n" +
                 "having (\n" +
                 "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (screened_using_icf =142177 or screened_using_consultation=142177)) or\n" +
-                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (screened_using_icf =142177 or screened_using_consultation=142177)) )\n" +
+                "(((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or ((timestampdiff(DAY,date(latest_tca),date(:endDate)) between 1 and 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30)) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (screened_using_icf =142177 or screened_using_consultation=142177)) )\n" +
                 ") e";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -731,7 +732,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "group by patient_id\n" +
                 "having (\n" +
                 "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
+                "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or ((timestampdiff(DAY,date(latest_tca),date(:endDate)) between 1 and 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30)) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
                 ") e" +
                 "; ";
 
