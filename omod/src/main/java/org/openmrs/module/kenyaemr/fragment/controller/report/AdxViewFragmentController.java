@@ -314,28 +314,7 @@ public class AdxViewFragmentController {
 
             if (datasetName == null)
                 continue;
-/* for (DataSetRow row : dataset) {
-                for (DataSetColumn column : columns) {
-                    indicatorName = column.getName();
-                    Object value = row.getColumnValue(column);
 
-                    if (reportName.equals(MOH_731)) {
-                        w.append("\t\t").append("<dataValue dataElement=\"" + columnPrefix + "" + indicatorName + "\" value=\"" + value.toString() + "\"/>\n");
-                    } else if (reportName.equals(KPIF_MONTHLY_REPORT)) {
-
-                        if (indicatorName.contains("PWUD"))
-                            continue;
-
-                        mappedIndicatorId = get3PIndicatorId(indicatorName);
-
-                        String[] combos = mappedIndicatorId.split("-");
-
-                        w.append("\t\t").append("<dataValue dataElement=\"" + combos[0] + "\" categoryOptionCombo=\"" + combos[1] + "\" value=\"" + value.toString() + "\"/>\n");
-                    }
-                }
-            }
-            w.append("</group>\n");
-        }*/
             Element eDataset = document.createElement("group");
             // add group attributes
             eDataset.setAttribute("orgUnit", mfl);
