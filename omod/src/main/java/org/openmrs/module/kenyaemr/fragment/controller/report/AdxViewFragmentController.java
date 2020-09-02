@@ -257,6 +257,8 @@ public class AdxViewFragmentController {
 
         Location location = locationService.getLocation(locationId);
         ObjectNode mappingDetails = null;
+        String mappedIndicatorId = null;
+
         if (reportName.equals(MOH_731)) {
             mappingDetails = EmrUtils.getDatasetMappingForReport(reportName, administrationService.getGlobalProperty("kenyaemr.adxDatasetMapping"));
         } else if (reportName.equals(KPIF_MONTHLY_REPORT)) {
@@ -319,7 +321,6 @@ public class AdxViewFragmentController {
             eDataset.setAttribute("period", isoDateFormat.format(reportDate).concat("/P1M"));
             eDataset.setAttribute("dataSet", datasetName);
 
-
             DataSet dataset = reportData.getDataSets().get(dsKey);
             List<DataSetColumn> columns = dataset.getMetaData().getColumns();
             for (DataSetRow row : dataset) {
@@ -329,8 +330,19 @@ public class AdxViewFragmentController {
 
                     // add data values
                     Element dataValue = document.createElement("dataValue");
-                    dataValue.setAttribute("dataElement", columnPrefix.concat(name));
-                    dataValue.setAttribute("value", value.toString());
+                    if (reportName.equals(MOH_731)) {
+                        dataValue.setAttribute("dataElement", columnPrefix.concat(name));
+                        dataValue.setAttribute("value", value.toString());
+                    }
+                    else if(reportName.equals(KPIF_MONTHLY_REPORT)){
+                        if (name.contains("PWUD"))
+                            continue;
+                        mappedIndicatorId = get3PIndicatorId(name);
+                        String[] combos = mappedIndicatorId.split("-");
+                        dataValue.setAttribute("dataElement", columnPrefix.concat(combos[0]));
+                        dataValue.setAttribute("categoryOptionCombo", columnPrefix.concat(combos[1]));
+                        dataValue.setAttribute("value", value.toString());
+                    }
                     eDataset.appendChild(dataValue);
                 }
             }
