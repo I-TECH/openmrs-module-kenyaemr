@@ -23,30 +23,55 @@
 			if ((getValue('idReason.value')) == 160034) {
 				jq('#pdied :input').prop('disabled', false);
 				jq('#ptransferred :input').prop('disabled', true);
+				jq('#ptrfVerification :input').prop('disabled', true);
+
 			}
 			else if((getValue('idReason.value')) == 159492) {
 				jq('#pdied :input').prop('disabled', true);
 				jq('#ptransferred :input').prop('disabled', false);
+				jq('#ptrfVerification :input').prop('disabled', false);
 			}
 			else {
 				jq('#pdied :input').prop('disabled', true);
 				jq('#ptransferred :input').prop('disabled', true);
+				jq('#ptrfVerification :input').prop('disabled', true);
 			}
 
 			jq("#idReason select").change(function() {
 				if ((getValue('idReason.value')) == 160034) {
 					jq('#pdied :input').prop('disabled', false);
 					jq('#ptransferred :input').prop('disabled', true);
+					jq('#ptrfVerification :input').prop('disabled', true);
+                    clearHiddenSections(jq('#ptransferred'));
+                    clearHiddenSections(jq('#ptrfVerification'));
 				}
 				else if((getValue('idReason.value')) == 159492) {
 					jq('#pdied :input').prop('disabled', true);
 					jq('#ptransferred :input').prop('disabled', false);
+					jq('#ptrfVerification :input').prop('disabled', false);
+                    clearHiddenSections(jq('#pdied'));
 				}
 				else {
 					jq('#pdied :input').prop('disabled', true);
 					jq('#ptransferred :input').prop('disabled', true);
+					jq('#ptrfVerification :input').prop('disabled', true);
+                    clearHiddenSections(jq('#ptransferred'));
+                    clearHiddenSections(jq('#ptrfVerification'));
+                    clearHiddenSections(jq('#pdied'));
 				}
+
 			});
+			jq("#tr-verified-obs").change(function(){
+                if (getValue('tr-verified-obs.value') == 1066 || getValue('tr-verified-obs.value') == "") {
+					jq('#trf-verification-date :input').val('');
+					jq('#trf-verification-date :input').prop('disabled',true);
+                }
+                else
+                {
+                    jq('#trf-verification-date :input').prop('disabled',false);
+                }
+			});
+
 
 			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 			var discontinueDate;
@@ -55,6 +80,9 @@
 			beforeSubmit.push(function() {
 				encounterDate = new Date(getValue('encounter-date.value')).getTime();
 				discontinueDate = new Date(getValue('discontinue-date.value')).getTime();
+                var trfVerified = getValue('tr-verified-obs.value');
+               /* var trfVerificationDate = new Date(getValue('trf-verification-date.value')).getTime();*/
+                var trfVerificationDate = getValue('trf-verification-date.value');
 
 				if(discontinueDate &lt; pbirthdate){
 					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Birth date').show();
@@ -87,10 +115,31 @@
 					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment').hide();
 
 				}
+                if (trfVerified == 1065 &amp;&amp; trfVerificationDate == "") {
+                    getField('trf-verification-date.error').html('Please enter date transfer was verified').show();
+                    return false;
+                }else{
+                    getField('trf-verification-date.error').html('Please enter date transfer was verified').hide();
+                }
+
 
 				return true;
 			});
 		});
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 	</script>
 
 	<div class="ke-form-content">
@@ -135,6 +184,19 @@
 						<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
 						<td>Date Transferred Out<br /></td>
 						<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+					</tr>
+				</table>
+			</div>
+			<div id="ptrfVerification">
+				<table>
+					<tr>
+						<td><br/>Transfer out verified?</td>
+						<td ><br/><obs conceptId="1285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									   answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									   answerLabel="Yes,No"
+									   style="radio" id="tr-verified-obs"/> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+						<td>Date verified</td>
+						<td><br/><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
 					</tr>
 				</table>
 			</div>
