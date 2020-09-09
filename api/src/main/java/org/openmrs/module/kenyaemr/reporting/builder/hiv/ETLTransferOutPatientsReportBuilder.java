@@ -77,6 +77,16 @@ public class ETLTransferOutPatientsReportBuilder extends AbstractHybridReportBui
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
+		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
+		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
+
+		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
+
+		definition.setWhich(TimeQualifier.LAST);
+		definition.setTypes(encounterTypes);
+
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		dsd.addSortCriteria("Number of days late", SortCriteria.SortDirection.ASC);
@@ -89,16 +99,6 @@ public class ETLTransferOutPatientsReportBuilder extends AbstractHybridReportBui
 		dsd.addColumn("Transfer out date", new CalculationDataDefinition("Transfer out date", new TransferOutDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verified", new CalculationDataDefinition("Transfer out verified", new TransferOutVerificationCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verification date", new CalculationDataDefinition("Transfer out verification date", new TransferOutVerificationDateCalculation()), "", new CalculationResultConverter());
-
-		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
-		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
-
-		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
-
-		definition.setWhich(TimeQualifier.LAST);
-		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
 		dsd.addColumn("Last Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
