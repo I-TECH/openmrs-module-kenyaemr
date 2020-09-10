@@ -396,13 +396,15 @@ public class AdxViewFragmentController {
 
         //transformer.transform(domSource, printOut);
         transformer.transform(domSource, inMemory);
+        if(reportName.equals(MOH_731)){
         if (serverAddress != null) {
 
             SERVER_ADDRESS = serverAddress;
+        }
 
         }
 
-        return postAdxToIL(out, SERVER_ADDRESS);
+        return postAdxToIL(out, reportName.equals(MOH_731)? SERVER_ADDRESS : KPIF_SERVER_ADDRESS);
     }
 
     private SimpleObject postAdxToIL(ByteArrayOutputStream outStream, String serverAddress) throws IOException {
