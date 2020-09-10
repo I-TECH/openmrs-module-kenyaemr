@@ -77,6 +77,17 @@
             }
         }
 
+        var referralSelected = function () {
+            var val = jq(this).val();
+            console.log("Val ==>" + val);
+            if (val == 164407) {
+                jq('#tbl-other-facility').show();
+            } else {
+                jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
+            }
+        }
+
         var kit1Selected = function () {
             var val = jq(this).val();
             // Show use previous lot number checkbox
@@ -326,6 +337,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#fs-referral').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -394,6 +406,7 @@
             jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
             jq('#disability').hide();
             jq('#tbl-other-disability').hide();
+            jq('#fs-referral').hide();
 
             //pre-populate from HIV Initial
             var prev_disability = "<lookup expression="fn.latestObs(164951).getValueCoded()"/>";
@@ -437,6 +450,7 @@
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
+            jq('#feferral-to select').change(referralSelected);
             jq('#tbl-other-strategy').hide();
 
             var htsStrategySelected = getField('strategy.value').val();
@@ -470,6 +484,14 @@
                 } else {
                     jq('#tbl-other-disability').hide();
                 }
+            }
+
+            var referralFacilitySelected = getField('feferral-to.value').val();
+            if (referralFacilitySelected == 164407 ){
+                jq('#tbl-other-facility').show();
+            }else{
+                jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
             }
              //Consent validation
             jq('.consent input').change(consentSelected);
@@ -550,6 +572,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#fs-referral').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -711,6 +734,7 @@
                                     jq("#expiry-date2 input").prop("disabled", false);
                                     getField('hiv-final-result.value').val(703);
                                     jq('#ccc-no input').prop("disabled", false);
+                                    jq('#fs-referral').show();
                                 }
                                 //Invalid
                                 if(secondTest ==163611){
@@ -1049,6 +1073,42 @@
                     <td>Tb Screening results: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="No TB Signs,Presumed TB,Not Done,On TB Treatment" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="fs-referral">
+            <legend>Referral</legend>
+            <table id="tbl-referral">
+                <tr>
+                    <td>Referral for: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="feferral-for" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="162082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Confirmatory test,
+                                                         Comprehensive care center,
+                                                         DBS for PCR" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Referral to:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="feferral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Current health facility,
+                                                            Other health facility" />
+                    </td>
+                    <td>
+                        <br/>
+                        <table id="tbl-other-facility">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
