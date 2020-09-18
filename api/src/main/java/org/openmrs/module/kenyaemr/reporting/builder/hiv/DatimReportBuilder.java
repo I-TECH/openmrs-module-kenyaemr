@@ -429,7 +429,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_CURR_BF", "Breast Feeding mothers with HIV receiving ART", ReportUtils.map(datimIndicators.bfMothersCurrentlyOnART(), indParams), "");
 
         //One month before next appointment
-        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_ONE_MONTH_DRUGS", "One month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOneMonthDrugsDispensed(durationMapper("1 Month", "between 0 and 30")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_ONE_MONTH_DRUGS", "One month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOneMonthDrugsDispensed(durationMapper("1 Month", "<= 30")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //two month before next appointment
         EmrReportingUtils.addRow(cohortDsd, "TX_CURR_TWO_MONTHS_DRUGS", "Two month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTTwoMonthsDrugsDispensed(durationMapper("2 Month", "between 31 and 60")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
@@ -447,7 +447,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_CURR_SIX_MONTHS_DRUGS", "Six month before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTSixMonthsDrugsDispensed(durationMapper("6 Month", "between 151 and 180")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //Over 6 months appointment
-        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_OVER_SIX_MONTHS_DRUGS", "Over Six months before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOverSixMonthsDrugsDispensed(durationMapper("6 Month", ">180")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_CURR_OVER_SIX_MONTHS_DRUGS", "Over Six months before next appointment", ReportUtils.map(datimIndicators.currentlyOnARTOverSixMonthsDrugsDispensed(durationMapper("6 Month", "> 180")), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 //PMTCT_ART
 
         //Mothers new on ART during current pregnancy
