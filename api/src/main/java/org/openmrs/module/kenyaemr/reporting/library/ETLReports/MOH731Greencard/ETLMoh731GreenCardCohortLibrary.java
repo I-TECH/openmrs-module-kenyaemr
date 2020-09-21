@@ -729,7 +729,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "  group by patient_id\n" +
                 "  ) d on d.patient_id = fup.patient_id\n" +
                 "where fup.visit_date <= date(:endDate)\n" +
-                "group by patient_id\n" +
+                "group by fup.patient_id,fup.visit_date\n" +
                 "having (\n" +
                 "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
                 "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
