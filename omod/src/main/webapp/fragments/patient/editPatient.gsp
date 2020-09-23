@@ -61,9 +61,9 @@
                     [object: command, property: "nearestHealthFacility", label: "Nearest Health Center"]
             ]
     ]
-    def disabilityTypeFieldRows = [
+    def chtDetailsFields = [
             [
-                  [object: command, property: "disability", label: "Disability type", config: [style: "list", options: disabilityOptions]]
+                    [object: command, property: "chtReferenceNumber", label: "CHT Number"]
             ]
     ]
 %>
@@ -204,28 +204,13 @@
             <% } %>
         </fieldset>
     <fieldset>
-        <legend>Other Details</legend>
+        <legend>CHT Details</legend>
         <table>
             <tr>
                 <td valign="top">
-                    <label class="ke-field-label">Disability</label>
-                    <span class="ke-field-content">
-                        <input type="radio" name="disability" value="Y"
-                               id="disabled-Y" ${command.disability == 'Y' ? 'checked="checked"' : ''}/> Yes
-                        <input type="radio" name="disability" value="N"
-                               id="disabled-N" ${command.disability == 'N' ? 'checked="checked"' : ''}/> No
-                       </span>
-                </td>
-                <td></td>
-                <td>
-                    <% disabilityTypeFieldRows.each { %>
+                    <% chtDetailsFields.each { %>
                     ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
                     <% } %>
-                    <div class="checkbox-container">
-                        <input id="checkbox1" type="checkbox" value="checkbox1">Checkbox 1
-                        <input id="checkbox2" type="checkbox" value="checkbox2">Checkbox 2
-                        <input id="checkbox3" type="checkbox" value="checkbox3">Checkbox 3
-                    </div>
                 </td>
             </tr>
         </table>

@@ -86,6 +86,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String NEAREST_HEALTH_CENTER = "27573398-4651-4ce5-89d8-abec5998165c";
 		public static final String GUARDIAN_FIRST_NAME = "8caf6d06-9070-49a5-b715-98b45e5d427b";
 		public static final String GUARDIAN_LAST_NAME = "0803abbd-2be4-4091-80b3-80c6940303df";
+		public static final String CHT_NUMBER = "1aaead2d-0e88-40b2-abcd-6bc3d20fa43c";
 	}
 
 	public static final class _Provider {
@@ -172,6 +173,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
 				String.class, null, false, 2.0, _PersonAttributeType.EMAIL_ADDRESS));
+		install(personAttributeType("CHT number", "CHT reference number",
+				String.class, null, false, 4.4, _PersonAttributeType.CHT_NUMBER));
 
 		// Patient only person attributes..
 		install(personAttributeType("Subchief name", "Name of subchief or chief of patient's area",

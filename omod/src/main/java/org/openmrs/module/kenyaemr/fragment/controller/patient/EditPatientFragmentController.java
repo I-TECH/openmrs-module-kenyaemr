@@ -81,7 +81,6 @@ public class EditPatientFragmentController {
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
-		model.addAttribute("disabilityConcept", Dictionary.getConcept(Dictionary.DISABILITY));
 
 		// create list of counties
 
@@ -157,16 +156,6 @@ public class EditPatientFragmentController {
 		yesNoOptions.add(Dictionary.getConcept(Dictionary.YES));
 		yesNoOptions.add(Dictionary.getConcept(Dictionary.NO));
 		model.addAttribute("yesNoOptions", yesNoOptions);
-
-		// Create list of disability answer concepts
-		List<Concept> disabilityOptions = new ArrayList<Concept>();
-		disabilityOptions.add(Dictionary.getConcept(Dictionary.DEAF));
-		disabilityOptions.add(Dictionary.getConcept(Dictionary.BLIND));
-		disabilityOptions.add(Dictionary.getConcept(Dictionary.MENTALLY_CHALLENGED));
-		disabilityOptions.add(Dictionary.getConcept(Dictionary.PHYSICALLY_CHALLENGED));
-		disabilityOptions.add(Dictionary.getConcept(Dictionary.OTHER_NON_CODED));
-		model.addAttribute("disabilityOptions", disabilityOptions);
-
 	}
 
 	/**
@@ -218,13 +207,11 @@ public class EditPatientFragmentController {
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
-		private Concept disability;
 		private Concept inSchool;
 		private Concept orphan;
 		private Obs savedMaritalStatus;
 		private Obs savedOccupation;
 		private Obs savedEducation;
-		private Obs savedDisability;
 		private Obs savedInSchool;
 		private Obs savedOrphan;
 		private Boolean dead = false;
@@ -243,6 +230,7 @@ public class EditPatientFragmentController {
 		private String emailAddress;
 		private String guardianFirstName;
 		private String guardianLastName;
+		private String chtReferenceNumber;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -305,6 +293,7 @@ public class EditPatientFragmentController {
 			nearestHealthFacility = wrapper.getNearestHealthFacility();
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
+			chtReferenceNumber = wrapper.getChtReferenceNumber();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -319,11 +308,6 @@ public class EditPatientFragmentController {
 			savedEducation = getLatestObs(patient, Dictionary.EDUCATION);
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
-			}
-
-			savedDisability = getLatestObs(patient, Dictionary.DISABILITY);
-			if (savedDisability != null) {
-				disability = savedDisability.getValueCoded();
 			}
 			savedInSchool = getLatestObs(patient, Dictionary.IN_SCHOOL);
 			if (savedInSchool != null) {
@@ -485,6 +469,7 @@ public class EditPatientFragmentController {
 			wrapper.setEmailAddress(emailAddress);
 			wrapper.setGuardianFirstName(guardianFirstName);
 			wrapper.setGuardianLastName(guardianLastName);
+			wrapper.setChtReferenceNumber(chtReferenceNumber);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -514,7 +499,6 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
-			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.DISABILITY), savedDisability, disability);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.IN_SCHOOL), savedInSchool, inSchool);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.ORPHAN), savedOrphan, orphan);
 
@@ -757,20 +741,6 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * @return the disability
-		 */
-		public Concept getDisability() {
-			return disability;
-		}
-
-		/**
-		 * @param disability the disability to set
-		 */
-		public void setDisability(Concept disability) {
-			this.disability = disability;
-		}
-
-		/**
 		 * @return the occupation
 		 */
 		public Concept getOccupation() {
@@ -941,5 +911,14 @@ public class EditPatientFragmentController {
 		public void setGuardianLastName(String guardianLastName) {
 			this.guardianLastName = guardianLastName;
 		}
+
+		public String getChtReferenceNumber() {
+			return chtReferenceNumber;
+		}
+
+		public void setChtReferenceNumber(String chtReferenceNumber) {
+			this.chtReferenceNumber = chtReferenceNumber;
+		}
+
 	}
 }
