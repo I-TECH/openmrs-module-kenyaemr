@@ -61,6 +61,11 @@
                     [object: command, property: "nearestHealthFacility", label: "Nearest Health Center"]
             ]
     ]
+    def chtDetailsFields = [
+            [
+                    [object: command, property: "chtReferenceNumber", label: "CHT Number"]
+            ]
+    ]
 %>
 <script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/KenyaAddressHierarchy.js"></script>
 
@@ -198,7 +203,19 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
         </fieldset>
+    <fieldset>
+        <legend>CHT Details</legend>
+        <table>
+            <tr>
+                <td valign="top">
+                    <% chtDetailsFields.each { %>
+                    ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+                    <% } %>
+                </td>
+            </tr>
+        </table>
 
+    </fieldset>
         <fieldset>
             <legend>Next of Kin Details</legend>
             <table>

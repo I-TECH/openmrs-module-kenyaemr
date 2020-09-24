@@ -230,6 +230,7 @@ public class EditPatientFragmentController {
 		private String emailAddress;
 		private String guardianFirstName;
 		private String guardianLastName;
+		private String chtReferenceNumber;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -292,6 +293,7 @@ public class EditPatientFragmentController {
 			nearestHealthFacility = wrapper.getNearestHealthFacility();
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
+			chtReferenceNumber = wrapper.getChtReferenceNumber();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -467,6 +469,7 @@ public class EditPatientFragmentController {
 			wrapper.setEmailAddress(emailAddress);
 			wrapper.setGuardianFirstName(guardianFirstName);
 			wrapper.setGuardianLastName(guardianLastName);
+			wrapper.setChtReferenceNumber(chtReferenceNumber);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -908,5 +911,14 @@ public class EditPatientFragmentController {
 		public void setGuardianLastName(String guardianLastName) {
 			this.guardianLastName = guardianLastName;
 		}
+
+		public String getChtReferenceNumber() {
+			return chtReferenceNumber;
+		}
+
+		public void setChtReferenceNumber(String chtReferenceNumber) {
+			this.chtReferenceNumber = chtReferenceNumber;
+		}
+
 	}
 }

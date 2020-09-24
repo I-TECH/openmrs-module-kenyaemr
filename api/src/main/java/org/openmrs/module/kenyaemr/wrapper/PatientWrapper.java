@@ -247,4 +247,17 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setGuardianLastName(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.GUARDIAN_LAST_NAME, value);
 	}
+	/**
+	 * Gets patient's CHT Reference Number
+	 * @return cht reference number
+	 */
+	public String getChtReferenceNumber() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.CHT_NUMBER);
+	}
+	/**
+	 * Sets patient's CHT Reference Number
+	 */
+	public void setChtReferenceNumber(String chtReferenceNumber) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.CHT_NUMBER, chtReferenceNumber);
+	}
 }
