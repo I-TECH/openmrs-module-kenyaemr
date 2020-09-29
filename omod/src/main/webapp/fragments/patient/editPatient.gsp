@@ -63,7 +63,7 @@
     ]
     def chtDetailsFields = [
             [
-                    [object: command, property: "chtReferenceNumber", label: "CHT Number"]
+                    [object: command, property: "chtReferenceNumber", label: "CHT Username"]
             ]
     ]
 %>
