@@ -144,7 +144,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
                 "(date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null)) or\n" +
                 "(((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or\n" +
-                "((timestampdiff(DAY,date(latest_tca),date(:endDate))  <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate()))  <= 30))\n" +
+                "((timestampdiff(DAY,date(latest_tca),date(:endDate))  <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate()))  <= 30) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null))\n" +
                 " and (date(latest_tca) >= date(date_discontinued) or disc_patient is null )\n" +
                 ")) e;";
 

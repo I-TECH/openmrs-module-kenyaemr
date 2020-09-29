@@ -252,12 +252,12 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	 * @return cht reference number
 	 */
 	public String getChtReferenceNumber() {
-		return getAsAttribute(CommonMetadata._PersonAttributeType.CHT_NUMBER);
+		return getAsAttribute(CommonMetadata._PersonAttributeType.CHT_USERNAME);
 	}
 	/**
 	 * Sets patient's CHT Reference Number
 	 */
 	public void setChtReferenceNumber(String chtReferenceNumber) {
-		setAsAttribute(CommonMetadata._PersonAttributeType.CHT_NUMBER, chtReferenceNumber);
+		setAsAttribute(CommonMetadata._PersonAttributeType.CHT_USERNAME, chtReferenceNumber);
 	}
 }
