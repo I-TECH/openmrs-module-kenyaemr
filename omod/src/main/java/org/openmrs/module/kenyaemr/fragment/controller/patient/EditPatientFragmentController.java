@@ -21,6 +21,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
+import org.openmrs.Relationship;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -156,6 +157,21 @@ public class EditPatientFragmentController {
 		yesNoOptions.add(Dictionary.getConcept(Dictionary.YES));
 		yesNoOptions.add(Dictionary.getConcept(Dictionary.NO));
 		model.addAttribute("yesNoOptions", yesNoOptions);
+
+		// Get peer educators
+		boolean isPeerEducator = false;
+		if(patient != null) {
+			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+				if (relationship.getRelationshipType().getaIsToB().equalsIgnoreCase("Peer-educator")
+						&& relationship.getEndDate() == null && relationship.getPersonA().getPersonId() == patient.getId()) {
+					isPeerEducator = true;
+					break;
+
+				}
+			}
+		}
+
+		model.addAttribute("peerEducator", isPeerEducator);
 	}
 
 	/**
