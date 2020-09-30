@@ -203,7 +203,9 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
         </fieldset>
-    <fieldset>
+
+    <% if (peerEducator) { %>
+        <fieldset>
         <legend>CHT Details</legend>
         <table>
             <tr>
@@ -214,6 +216,7 @@
                 </td>
             </tr>
         </table>
+        <%} %>
 
     </fieldset>
         <fieldset>
