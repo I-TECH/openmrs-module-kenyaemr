@@ -121,9 +121,9 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     public CohortDefinition currentlyOnArt() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery="select e.patient_id\n" +
+        String sqlQuery="select  e.patient_id\n" +
                 "from (\n" +
-                "       select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "       select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
                 "                                             greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
                 "                                             greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
                 "                                             max(d.visit_date) as date_discontinued,\n" +
@@ -143,8 +143,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "       group by patient_id\n" +
                 "       having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
                 "         (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30  and  (date(latest_vis_date) >= date(date_discontinued)))\n" +
-                "         and disc_patient is null\n" +
-                "       )) e;\n";
+                "         and (date(enroll_date) > date(date_discontinued) or disc_patient is null)\n" +
+                "       )) e;";
 
         cd.setName("currentlyOnArt");
         cd.setQuery(sqlQuery);
