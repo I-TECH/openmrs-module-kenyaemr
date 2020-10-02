@@ -14,7 +14,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>kenyaemr</artifactId>
-    <version>17.2.0</version>
+    <version>17.2.1</version>
     <packaging>pom</packaging>
     <name>KenyaEMR</name>
     <description>OpenMRS-based EMR for Kenya</description>
