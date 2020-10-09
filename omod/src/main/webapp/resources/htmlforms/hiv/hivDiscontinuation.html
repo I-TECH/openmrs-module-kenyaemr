@@ -104,10 +104,7 @@
 					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
 					return false;
 				}
-				if(encounterDate &lt; artStartDate){
-					getField('encounter-date.error').html('Encounter date, should not be earlier than art start date').show();
-					return false;
-				}
+
 				if(encounterDate &lt; enrollmentDate){
 					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment date').show();
 					return false;
