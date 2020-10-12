@@ -62,7 +62,6 @@ public class ViralSuppressionCohortLibrary {
                 "        )\n" +
                 "    )t;";
         cd.setName("suppressed");
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setQuery(sqlQuery);
         cd.setDescription("Suppressed");
@@ -114,7 +113,6 @@ public class ViralSuppressionCohortLibrary {
 
         cd.setName("unsuppressed");
         cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Unsuppressed");
 
@@ -163,7 +161,6 @@ public class ViralSuppressionCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("noVLResults");
         cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("No VL Results");
         return cd;
