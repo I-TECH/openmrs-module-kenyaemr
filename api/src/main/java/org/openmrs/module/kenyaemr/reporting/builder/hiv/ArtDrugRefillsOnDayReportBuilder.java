@@ -92,13 +92,17 @@ public class ArtDrugRefillsOnDayReportBuilder extends AbstractHybridReportBuilde
 		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
+		HonouredDrugRefillAppointmentDataDefinition honouredVisitDs = new HonouredDrugRefillAppointmentDataDefinition();
+		honouredVisitDs.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		honouredVisitDs.addParameter(new Parameter("endDate", "End Date", Date.class));
+
 		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
 
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-		dsd.addColumn("Has visit on day", new HonouredDrugRefillAppointmentDataDefinition(), "", new ArtDrugRefillAppointmentConverter());
+		dsd.addColumn("Has visit on day", honouredVisitDs, paramMapping, new ArtDrugRefillAppointmentConverter());
 
 	}
 
