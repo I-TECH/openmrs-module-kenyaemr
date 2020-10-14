@@ -590,8 +590,8 @@
 
 	<bean id="kenyaemr.etl.common.report.viralSuppression" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="d75fb0f5-bda7-4b13-8090-f0fe875b4915" />
-		<property name="name" value="Viral Suppression Report for Current in Care Patients" />
-		<property name="description" value="Current in Care - Viral Suppression status" />
+		<property name="name" value="Viral Suppression Report for Current on ART Patients" />
+		<property name="description" value="Current on ART - Viral Suppression status" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
