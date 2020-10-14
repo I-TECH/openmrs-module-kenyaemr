@@ -35,7 +35,7 @@ public class ETLCurrentRegimenDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "            mid(max(concat(visit_date,regimen, \"\" )),11) as regimen from kenyaemr_etl.etl_drug_event\n" +
+                "            mid(max(concat(visit_date,regimen, \"\" )),11) as regimen from kenyaemr_etl.etl_drug_event where program ='HIV'\n" +
                 "\tGROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
