@@ -66,7 +66,7 @@ public class ETLMissedAppointmentsCohortDefinitionEvaluator implements CohortDef
 				") d on d.patient_id = fup.patient_id\n" +
 				"where fup.visit_date <= date(curdate())\n" +
 				"group by patient_id\n" +
-				"having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
+				"having (\n" +
 				"(timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30) and (date(d.effective_disc_date) > date(curdate()) or d.effective_disc_date is null)\n" +
 				"and (date(latest_vis_date) > date(date_discontinued) and date(latest_tca) > date(date_discontinued) or disc_patient is null)\n" +
 				")\n" +
