@@ -139,6 +139,7 @@ public class EncounterBasedRegimenUtils {
         String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String REGIMEN_LINE_CONCEPT = "163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; // concept should be changed to correct one
 
 
 
@@ -157,7 +158,7 @@ public class EncounterBasedRegimenUtils {
                 regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "Unresolved Regimen name";
                 try {
                     regimenShort = getRegimenNameFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
-                    regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
+                  //  regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -178,6 +179,23 @@ public class EncounterBasedRegimenUtils {
             } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
                 if(obs.getValueDatetime() != null){
                     endDate = DATE_FORMAT.format(obs.getValueDatetime());
+                }
+            } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(REGIMEN_LINE_CONCEPT)) {
+                if(obs.getValueText() != null){
+                    if (obs.getValueText().equals("AF")) {
+                        regimenLine = "Adult First line";
+                    } else if (obs.getValueText().equals("AS")) {
+                        regimenLine = "Adult Second line";
+                    } else if (obs.getValueText().equals("AT")) {
+                        regimenLine = "Adult Third line";
+                    } else if (obs.getValueText().equals("CF")) {
+                        regimenLine = "Child First line";
+                    } else if (obs.getValueText().equals("CS")) {
+                        regimenLine = "Child Second line";
+                    } else if (obs.getValueText().equals("CT")) {
+                        regimenLine = "Child Third line";
+                    }
+
                 }
             }
 

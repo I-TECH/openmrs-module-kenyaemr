@@ -167,6 +167,16 @@ public class RegimenUtilFragmentController {
             encounter.addObs(non4);
         }
 
+        // create obs for regimen line
+		Obs regimenLineObs = new Obs();
+		regimenLineObs.setConcept(cs.getConcept(163104)); // regimen line concept should be changed to correct one
+		regimenLineObs.setDateCreated(new Date());
+		regimenLineObs.setCreator(Context.getAuthenticatedUser());
+		regimenLineObs.setObsDatetime(command.getChangeDate());
+		regimenLineObs.setValueText(command.getRegimenLine());
+		regimenLineObs.setPerson(command.getPatient());
+
+
 		//create  obs for Change reason coded
 		Obs o2 = new Obs();
 		o2.setConcept(cs.getConcept(1252));
@@ -226,6 +236,9 @@ public class RegimenUtilFragmentController {
 				}
 				 encounterService.saveEncounter(enc);
 			}
+			if(command.getRegimenLine() !=null) {
+				encounter.addObs(regimenLineObs);
+			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);
 
@@ -251,6 +264,9 @@ public class RegimenUtilFragmentController {
 
 		if(command.getChangeType()==RegimenChangeType.START || command.getChangeType()==RegimenChangeType.RESTART) {
 			category.setValueCoded(cs.getConcept(1256));
+			if(command.getRegimenLine() !=null) {
+				encounter.addObs(regimenLineObs);
+			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);
 
@@ -321,6 +337,7 @@ public class RegimenUtilFragmentController {
 		private String regimenConceptNonStandardRefTwo;
         private String regimenConceptNonStandardRefThree;
 		private String regimenConceptNonStandardRefFour;
+		private String regimenLine;
 
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
@@ -335,7 +352,7 @@ public class RegimenUtilFragmentController {
 			require(errors, "category");
 			require(errors, "changeType");
 			require(errors, "changeDate");
-
+			
 			// Reason is only required for stopping or changing
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
 				require(errors, "changeReason");
@@ -355,7 +372,15 @@ public class RegimenUtilFragmentController {
 				if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
 				require(errors, "regimenConceptRef");
 				require(errors, "regimenConceptNonStandardRef");
+
 			   }
+				if ((regimenLine == null || regimenLine.equals(""))) {
+					require(errors, "regimenLine");
+
+				}
+
+
+
 			}
 
 			if (category != null && changeDate != null) {
@@ -625,6 +650,14 @@ public class RegimenUtilFragmentController {
         public void setRegimenConceptNonStandardRefFour(String regimenConceptRef) {
             this.regimenConceptNonStandardRefFour = regimenConceptRef;
         }
+
+		public String getRegimenLine() {
+			return regimenLine;
+		}
+
+		public void setRegimenLine(String regimenLine) {
+			this.regimenLine = regimenLine;
+		}
         
 
 	}
