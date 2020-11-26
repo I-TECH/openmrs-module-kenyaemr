@@ -36,6 +36,7 @@ import org.openmrs.module.kenyaemr.calculation.library.ovc.OvcDiscontinuationVel
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientDueForTbProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.tb.TbDiscontinuationVelocityCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -68,6 +69,18 @@ public class EmrVelocityFunctions {
 			return false;
 		} else {
 			PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			return session.getPatient().getPatientIdentifier(pit) != null;
+		}
+	}
+	/**
+	 * Checks whether the patient has HIV identifier
+	 * @return true if patient has such an identifier
+	 */
+	public boolean hasHivkDoDNumber() {
+		if (session.getPatient() == null) {
+			return false;
+		} else {
+			PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.KDoD_NUMBER);
 			return session.getPatient().getPatientIdentifier(pit) != null;
 		}
 	}
@@ -224,6 +237,7 @@ public class EmrVelocityFunctions {
 		}
 		return "Unknown Location";
 	}
+
 	public List<Obs> allObs(String conceptIdentifier) {
 		if (session.getPatient() == null)
 			return new ArrayList<Obs>();
@@ -233,6 +247,14 @@ public class EmrVelocityFunctions {
 			return new ArrayList<Obs>();
 		else
 			return Context.getObsService().getObservationsByPersonAndConcept(p, getConcept(conceptIdentifier));
+	}
+	public String getFacilityType() {
+		AdministrationService administrationService = org.openmrs.api.context.Context.getAdministrationService();
+		GlobalProperty globalProperty = administrationService.getGlobalPropertyObject("kenyaemr.isKDoD");
+		if (globalProperty.getValue() != null) {
+			return globalProperty.getPropertyValue();
+		}
+		return "true";
 	}
 
 	/**

@@ -24,8 +24,10 @@
         var TRANSIT =164931;
         var RE_ENROLL=159833;
         var PATIENT_HAS_UPN = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+        var PATIENT_HAS_KDoD_NUMBER = <lookup expression="kenyaemr.hasHivkDoDNumber()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+		var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         //On Ready
         jq(function() {
@@ -66,6 +68,7 @@
             });
             //onEntryPointChange();
             //defaults
+
             jq('#generate-hiv-id').hide();
             //Gender based validations  pregnancy, breastfeeding bmi and muac
             if (pgender == 'M') {
@@ -150,7 +153,7 @@
             var guardian = jq('#guardian-name input[type=text]').val();
 
             var upn = jq('#hiv-id input[type=text]').val();
-
+            if(IS_KDoD_SITE==false){
             if (PATIENT_HAS_UPN) {
                 if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
                     jq("#upnError").text("Invalid Unique Patient Number(UPN) Format! Should be mfl-clinic number, each 5 digits (accepts 11 digits for existing UPN)").show();
@@ -162,6 +165,7 @@
                     return false;
                 }
             }
+        }
             if (encounterDate =="" &amp;&amp; upn == "") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
                 return false;
@@ -528,6 +532,7 @@
 				<td>Enrolled by: <encounterProvider default="currentUser" /></td>
 				<td>Enrolled at: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
 			</tr>
+
 		</table>
 	</div>
 
@@ -560,14 +565,26 @@
 					</obsgroup></td>
 					</td>
 				</tr>
-				<tr>
+				<excludeIf velocityTest="$kenyaemr.getFacilityType()==true">
+				<tr id="upn-row">
 					<td>Unique Patient Number (UPN)</td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
 						<span id="upnError" class="error"></span>
 					</td>
 				</tr>
+				</excludeIf>
+				<excludeIf velocityTest="$kenyaemr.getFacilityType()==false">
+				<tr id="kdod-number">
+					<td>KDoD Number</td>
+					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+						<span id="kdod-id"><patient id="kdod" field="identifier" identifierTypeId="b51ffe55-3e76-44f8-89a2-14f5eaf11079" /></span>
+
+					</td>
+				</tr>
+				</excludeIf>
 			</table>
+
 			<table id="transit-patient" style="display: inline-block">
 				<tr>
 					<td>Facility from: </td>

@@ -139,6 +139,9 @@ public class CommonDimensionLibrary {
         dim.addCohortDefinition("15-19", map(commonCohortLibrary.agedAtLeastAgedAtMost(15, 19), "effectiveDate=${onDate}"));
         dim.addCohortDefinition("20-24", map(commonCohortLibrary.agedAtLeastAgedAtMost(20, 24), "effectiveDate=${onDate}"));
         dim.addCohortDefinition("25+", map(commonCohortLibrary.agedAtLeast(25), "effectiveDate=${onDate}"));
+        //25-49 and 50+ added for KDoD
+        dim.addCohortDefinition("25-49", map(commonCohortLibrary.agedAtLeastAgedAtMost(25, 49), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("50+", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${onDate}"));
 
         return dim;
     }
@@ -185,4 +188,16 @@ public class CommonDimensionLibrary {
         dim.addCohortDefinition("15+", map(commonCohortLibrary.agedAtLeast(15), "effectiveDate=${onDate}"));
         return dim;
     }
+    /**
+     * Cadre dimension
+     * @return the dimension
+     */
+    public CohortDefinitionDimension cadre() {
+        CohortDefinitionDimension dim = new CohortDefinitionDimension();
+        dim.setName("cadre");
+        dim.addCohortDefinition("T", map(commonCohortLibrary.kDoDTroupesPatients()));
+        dim.addCohortDefinition("C", map(commonCohortLibrary.kDoDCiviliansPatients()));
+        return dim;
+    }
+
 }

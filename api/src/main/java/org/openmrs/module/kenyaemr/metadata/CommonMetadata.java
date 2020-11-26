@@ -72,6 +72,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PATIENT_CLINIC_NUMBER = Metadata.IdentifierType.PATIENT_CLINIC_NUMBER;
 		public static final String NATIONAL_UNIQUE_PATIENT_IDENTIFIER = Metadata.IdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER;
 		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
+		public static final String KDoD_SERVICE_NUMBER = Metadata.IdentifierType.KDoD_SERVICE_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -87,6 +88,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String GUARDIAN_FIRST_NAME = "8caf6d06-9070-49a5-b715-98b45e5d427b";
 		public static final String GUARDIAN_LAST_NAME = "0803abbd-2be4-4091-80b3-80c6940303df";
 		public static final String CHT_USERNAME= "1aaead2d-0e88-40b2-abcd-6bc3d20fa43c";
+		public static final String KDOD_CADRE = "96a99acd-2f11-45bb-89f7-648dbcac5ddf";
+		public static final String KDOD_RANK = "9f1f8254-20ea-4be4-a14d-19201fe217bf";
+		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
 	}
 
 	public static final class _Provider {
@@ -136,8 +140,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("HTS Client Tracing Form", "Form for tracing hts clients", _EncounterType.HTS, "1", _Form.HTS_CLIENT_TRACING));
 		install(form("HTS Client Referral Form", "Form for HTS linkage referral", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
 
-
-
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
 
@@ -168,6 +170,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
+		install(patientIdentifierType("KDoD service number", "Unique Id for KDoD service men", "^[0-9]{6}$|^[0-9]{6}\\/[0-9]{2}$", "Must be a 6 digit number for principal (Example 908761) or 6 digit followed by / and 2 digits for dependant (Example 123456/01)",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_SERVICE_NUMBER));
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
@@ -196,7 +200,15 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_FIRST_NAME));
 		install(personAttributeType("Guardian Last Name", "Guardian's last name",
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_LAST_NAME));
+		//KDoD properties
+		install(personAttributeType("KDoD cadre", "Cadre in KDoD",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_CADRE));
+		install(personAttributeType("KDoD rank", "Rank in KDoD",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_RANK));
+		install(personAttributeType("KDoD unit", "KDoD passout unit",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_UNIT));
 
+		install(globalProperty("kenyaemr.isKDoD", "Defines whether facility is KDoD or not", "false"));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));

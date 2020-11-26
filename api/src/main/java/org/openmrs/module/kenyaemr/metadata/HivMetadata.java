@@ -66,6 +66,8 @@ public class HivMetadata extends AbstractMetadataBundle {
 
 	public static final class _PatientIdentifierType {
 		public static final String UNIQUE_PATIENT_NUMBER = Metadata.IdentifierType.UNIQUE_PATIENT_NUMBER;
+		public static final String KDoD_NUMBER = Metadata.IdentifierType.KDoD_NUMBER;
+
 	}
 
 	public static final class _Program {
@@ -87,7 +89,6 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("Lab Order", "Lab Order", _EncounterType.LAB_ORDER));
 		install(encounterType("CCC Defaulter Tracing", "CCC Defaulter Tracing", _EncounterType.CCC_DEFAULTER_TRACING));
 
-
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
 		install(form("Clinical Encounter - HIV addendum", null, _EncounterType.HIV_CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
 		install(form("Family History", null, CommonMetadata._EncounterType.REGISTRATION, "1", _Form.FAMILY_HISTORY));
@@ -108,7 +109,11 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
+		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "^[KDODkdod]+[0-9]{5}$", "Must start with KDoD followed by 5 digit number. Example: KDoD12345",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
+
 		install(program("HIV", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, _Program.HIV));
 		install(globalProperty(LDL_DEFAULT_VALUE, "Default value for LDL results. Required for graphing", "50"));
+
 	}
 }

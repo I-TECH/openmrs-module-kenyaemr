@@ -22,6 +22,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
 import org.openmrs.Relationship;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -60,7 +61,8 @@ public class EditPatientFragmentController {
 	// We don't record cause of death, but data model requires a concept
 	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
 	//private static final String INSCHOOL = Dictionary.INSCHOOL;
-
+	private AdministrationService administrationService = Context.getAdministrationService();
+	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
 	/**
 	 * Main controller method
 	 * @param patient the patient (may be null)
@@ -172,7 +174,37 @@ public class EditPatientFragmentController {
 		}
 
 		model.addAttribute("peerEducator", isPeerEducator);
-	}
+
+		/*Create list of cadre answer concepts  */
+        List<String> cadreOptions = Arrays.asList(
+                new String("Troupe"),
+                new String("Civilian")
+        );
+        model.addAttribute("cadreOptions", cadreOptions);
+
+        /*Create list of rank answer Options  */
+        List<String> rankOptions = Arrays.asList(
+                new String("General(Gen)"),
+                new String("Lieutenant General (Lt Gen)"),
+                new String("Major General (Maj Gen)"),
+                new String("Brigadier (Brig)"),
+                new String("Colonel (Col)"),
+                new String("Lieutenant Colonel (Lt Col)"),
+                new String("Major (Maj)"),
+                new String("Captain (Capt)"),
+                new String("Lieutenant (Lt)"),
+                new String("2nd Lieutenant (2lt)"),
+                new String("Warrant officer 1 (WO1)"),
+                new String("Warrant officer 2 (WO2)"),
+                new String("Senior Sergeant (Ssgt)"),
+                new String("Sergeant (Sgt)"),
+                new String("Corporal (Cpl)"),
+                new String("Private (Spte)")
+        );
+        model.addAttribute("rankOptions", rankOptions);
+        model.addAttribute("isKDoD", isKDoD);
+
+    }
 
 	/**
 	 * Saves the patient being edited by this form
@@ -247,6 +279,10 @@ public class EditPatientFragmentController {
 		private String guardianFirstName;
 		private String guardianLastName;
 		private String chtReferenceNumber;
+		private String kDoDCadre;
+		private String kDoDRank;
+		private String kDoDServiceNumber;
+		private String kDoDUnit;
 
 		/**
 		 * Creates an edit form for a new patient
@@ -310,6 +346,10 @@ public class EditPatientFragmentController {
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
 			chtReferenceNumber = wrapper.getChtReferenceNumber();
+			chtReferenceNumber = wrapper.getKDoDServiceNumber();
+			kDoDCadre = wrapper.getCadre();
+			kDoDRank = wrapper.getRank();
+			kDoDUnit = wrapper.getKDoDUnit();
 
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
@@ -352,10 +392,17 @@ public class EditPatientFragmentController {
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
-			require(errors, "personName.givenName");
-			require(errors, "personName.familyName");
-			require(errors, "gender");
-			require(errors, "birthdate");
+			if(isKDoD.equals("true")){
+			require(errors, "kDoDServiceNumber");
+			require(errors, "kDoDCadre");
+			require(errors, "kDoDUnit");
+			}
+			else {
+				require(errors, "personName.givenName");
+				require(errors, "personName.familyName");
+				require(errors, "gender");
+				require(errors, "birthdate");
+			}
 
 			// Require death details if patient is deceased
 			if (dead) {
@@ -385,6 +432,9 @@ public class EditPatientFragmentController {
 
 			validateField(errors, "personAddress");
 
+            if(isKDoD.equals("true")){
+                validateIdentifierField(errors, "kDoDServiceNumber", CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
+            }
 			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 			validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
@@ -486,6 +536,10 @@ public class EditPatientFragmentController {
 			wrapper.setGuardianFirstName(guardianFirstName);
 			wrapper.setGuardianLastName(guardianLastName);
 			wrapper.setChtReferenceNumber(chtReferenceNumber);
+			wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
+			wrapper.setCadre(kDoDCadre);
+			wrapper.setRank(kDoDRank);
+			wrapper.setKDoDUnit(kDoDUnit);
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -517,7 +571,6 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.IN_SCHOOL), savedInSchool, inSchool);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.ORPHAN), savedOrphan, orphan);
-
 
 			for (Obs o : obsToVoid) {
 				Context.getObsService().voidObs(o, "KenyaEMR edit patient");
@@ -936,5 +989,37 @@ public class EditPatientFragmentController {
 			this.chtReferenceNumber = chtReferenceNumber;
 		}
 
+		public String getkDoDCadre() {
+			return kDoDCadre;
+		}
+
+		public void setkDoDCadre(String cadre) {
+			this.kDoDCadre = cadre;
+		}
+
+		public String getkDoDRank() {
+			return kDoDRank;
+		}
+
+		public void setkDoDRank(String rank) {
+			this.kDoDRank = rank;
+		}
+
+		public String getkDoDServiceNumber() {
+			return kDoDServiceNumber;
+		}
+
+		public void setkDoDServiceNumber(String kDoDServiceNumber) {
+			this.kDoDServiceNumber = kDoDServiceNumber;
+		}
+
+		public String getkDoDUnit() {
+			return kDoDUnit;
+		}
+
+		public void setkDoDUnit(String kDoDUnit) {
+			this.kDoDUnit = kDoDUnit;
+		}
 	}
+
 }

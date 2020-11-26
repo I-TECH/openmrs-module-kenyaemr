@@ -50,6 +50,7 @@
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
+				<ref bean="kenyaemr.etl.common.report.Moh731KDoD"/>
 				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
 				<ref bean="kenyaemr.hiv.report.htsConfirmationRegister"/>
@@ -438,7 +439,16 @@
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
 
-
+	<bean id="kenyaemr.etl.common.report.Moh731KDoD" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="d67f43e3-f553-4777-8151-837bbaf84bde" />
+		<property name="name" value="KDoD MOH 731" />
+		<property name="description" value="Comprehensive HIV/AIDS Facility Reporting Form - NASCOP" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:moh731-KDoD.xls" />
+	</bean>
 
 
 	<!-- Datim report-->
