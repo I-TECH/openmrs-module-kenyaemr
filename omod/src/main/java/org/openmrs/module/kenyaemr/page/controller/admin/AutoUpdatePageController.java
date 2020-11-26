@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.page.controller.admin;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.module.kenyaui.annotation.AppPage;
@@ -36,7 +37,8 @@ import java.util.Date;
  */
 @AppPage(EmrConstants.APP_ADMIN)
 public class AutoUpdatePageController {
-    private static String latestReleaseUrl = "https://api.github.com/repos/palladiumkenya/kenyahmis-releases/releases/latest";
+    public static final String AUTO_UPDATE_RELEASE_URL = "kenyaemr.autoUpdateReleaseUrl";
+    private static String latestReleaseUrl = Context.getAdministrationService().getGlobalProperty(AUTO_UPDATE_RELEASE_URL);
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final Log log = LogFactory.getLog(AutoUpdatePageController.class);
