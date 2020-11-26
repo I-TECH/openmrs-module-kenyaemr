@@ -67,12 +67,11 @@
     <% } else { %>
 
     <div class="ke-panel-frame">
-        <div class="ke-panel-heading">
-
-            No Updates Available
-        </div>
-        <div class="ke-panel-content">
-            You are currently running the latest version <span style="font-size: large;"><b>${version} </span>
+        <div class="ke-panel-heading"></div>
+        <div class="ke-panel-content" style="text-align: center;">
+            <span style="font-size: larger"><b>No Updates Available </b></span> <br/>
+            <span style="font-size: medium"> You are currently running the latest version</span>
+            <span style="font-size: large;"><b>${version} </span>
         </div>
     </div>
 
