@@ -208,7 +208,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("KDoD unit", "KDoD passout unit",
 				String.class, null, false, 4.5, _PersonAttributeType.KDOD_UNIT));
 
-		install(globalProperty("kenyaemr.isKDoD", "Defines whether facility is KDoD or not", "false"));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));

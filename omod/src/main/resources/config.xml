@@ -69,4 +69,12 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>kenyaemr.isKDoD</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines whether facility is KDoD site or not
+		</description>
+	</globalProperty>
+
 </module>
