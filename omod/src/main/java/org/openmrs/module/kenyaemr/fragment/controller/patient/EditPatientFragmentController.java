@@ -346,7 +346,7 @@ public class EditPatientFragmentController {
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
 			chtReferenceNumber = wrapper.getChtReferenceNumber();
-			chtReferenceNumber = wrapper.getKDoDServiceNumber();
+			kDoDServiceNumber = wrapper.getKDoDServiceNumber();
 			kDoDCadre = wrapper.getCadre();
 			kDoDRank = wrapper.getRank();
 			kDoDUnit = wrapper.getKDoDUnit();
