@@ -63,7 +63,7 @@
 
 	<globalProperty>
 		<property>kenyaemr.autoUpdateReleaseUrl</property>
-		<defaultValue>https://api.github.com/repos/palladiumkenya/kenyahmis-releases/releases/latest</defaultValue>
+		<defaultValue>https://api.github.com/repos/palladiumkenya/kenyahmis-kenyaEmr/releases/latest</defaultValue>
 		<description>
 			A github api url for KenyaEMR auto-update pointing at the latest KenyaEMR release.
 		</description>
