@@ -77,4 +77,12 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>kenyaemr.generateUPN</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines facility to enable UPN Autogeneration
+		</description>
+	</globalProperty>
+
 </module>

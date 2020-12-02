@@ -258,6 +258,19 @@ public class EmrVelocityFunctions {
 	}
 
 	/**
+	 * This facility types will have their UPN Generation enabled
+	 *
+	 */
+	public String generateUPN() {
+		AdministrationService administrationService = org.openmrs.api.context.Context.getAdministrationService();
+		GlobalProperty globalProperty = administrationService.getGlobalPropertyObject("kenyaemr.generateUPN");
+		if (globalProperty.getValue() != null) {
+			return globalProperty.getPropertyValue();
+		}
+		return "false";
+	}
+
+	/**
 	 * Gets the latest obs with the given concept for the current patient
 	 * @param conceptIdentifier the concept identifier
 	 * @return the most recent obs

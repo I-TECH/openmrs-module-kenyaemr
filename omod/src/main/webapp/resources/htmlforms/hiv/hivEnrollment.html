@@ -31,6 +31,7 @@
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         //On Ready
         jq(function() {
+
             var confirmed_positive = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>"; // this is the HTS final result
             var date_confirmed_positive = "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";// this is the HTS final result date
             var date_added_as_confirmed_positive = "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
@@ -69,7 +70,7 @@
             //onEntryPointChange();
             //defaults
 
-            jq('#generate-hiv-id').hide();
+            jq('#generate-hiv-id').show();
             //Gender based validations  pregnancy, breastfeeding bmi and muac
             if (pgender == 'M') {
                 jq('#pregnant :input').prop('disabled', true);
@@ -285,6 +286,7 @@
             if (entryPointStatus == NEW_CLIENT) {
                 var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
                 jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').show();
                 jq('#transfer-details').hide();
                 jq('#patient-history').show();
                 jq('#art-history').show();
@@ -303,7 +305,6 @@
                 jq('#ldl-date :input').prop('disabled', true);
                 jq('#patient-regimen select').prop('disabled', true);
 
-                //jq('#generate-hiv-id').show(); Deactivate generate upn
                 jq('#transit-patient').hide();
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
@@ -363,18 +364,18 @@
             }
             if (entryPointStatus== TRANSIT) {
                 jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
                 jq('#transit-patient').show();
                 jq('#transfer-details').hide();
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
                 clearHiddenSections([transferDetails, dateConfirmedPositive, facilityConfirmedPositive, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
             }
             if (entryPointStatus == RE_ENROLL) {
                 jq('#hiv-id :input').prop('disabled', true);
+                jq('#generate-hiv-id').hide();
                 jq('#transit-patient').hide();
                 jq('#transfer-details').hide();
                 jq('#patient-history').hide();
@@ -382,20 +383,17 @@
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
             }
             if (entryPointStatus == false) {
                 jq('#hiv-id :input').prop('disabled', false);
+                jq('#generate-hiv-id').hide();
                 jq('#transit-patient').hide();
                 jq('#transfer-details').hide();
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
-                jq('#hiv-id :input').prop('disabled', false);
-                jq('#generate-hiv-id').hide();
-                //jq("#entry-point :input").prop("checked", false);
                 clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
             }
         }
@@ -565,15 +563,23 @@
 					</obsgroup></td>
 					</td>
 				</tr>
+
 				<excludeIf velocityTest="$kenyaemr.getFacilityType()==true">
 				<tr id="upn-row">
+
 					<td>Unique Patient Number (UPN)</td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" /></span>
 						<span id="upnError" class="error"></span>
+						<excludeIf velocityTest="$kenyaemr.hasHivUniquePatientNumber()">
+							<excludeIf velocityTest="$kenyaemr.generateUPN()==false">
+								<input type="button" id="generate-hiv-id" value="Generate"/>
+							</excludeIf>
+						</excludeIf>
 					</td>
 				</tr>
 				</excludeIf>
+
 				<excludeIf velocityTest="$kenyaemr.getFacilityType()==false">
 				<tr id="kdod-number">
 					<td>KDoD Number</td>
@@ -583,6 +589,7 @@
 					</td>
 				</tr>
 				</excludeIf>
+
 			</table>
 
 			<table id="transit-patient" style="display: inline-block">
