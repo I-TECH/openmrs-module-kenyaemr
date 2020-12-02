@@ -22,13 +22,14 @@ import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.CadreCohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -327,4 +328,26 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
+/**
+	 * KDoD Patients who are troupes
+	 * @return the cohort definition
+	 */
+	public CohortDefinition kDoDTroupesPatients() {
+		CadreCohortDefinition cd = new CadreCohortDefinition();
+		cd.setName("troupes");
+		cd.setTroupeIncluded(true);
+		return cd;
+	}
+	/**
+	 * KDoD Patients who are Civilians
+	 * @return the cohort definition
+	 */
+	public CohortDefinition kDoDCiviliansPatients() {
+		CadreCohortDefinition cd = new CadreCohortDefinition();
+		cd.setName("civilians");
+		cd.setCivilianIncluded(true);
+		return cd;
+	}
+
+
 }

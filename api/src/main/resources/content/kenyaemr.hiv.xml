@@ -76,6 +76,11 @@
 		<property name="order" value="50" />
 	</bean>
 
+	<!-- KDoD Number -->
+	<bean id="kenyaemr.hiv.identifier.KDoD" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="${metadata.identifiertype.KDoD_NUMBER}" />
+		<property name="order" value="50" />
+	</bean>
 	<!-- ===================== Forms ===================== -->
 
 	<!-- HIV Enrollment -->

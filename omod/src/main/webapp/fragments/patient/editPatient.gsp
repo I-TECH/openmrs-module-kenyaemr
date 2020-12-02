@@ -4,6 +4,9 @@
     def country = command.personAddress.country
     def subCounty = command.personAddress.stateProvince
     def nokRelationShip = command.nextOfKinRelationship
+    def kDoDCadre = command.kDoDCadre
+    def kDoDRank = command.kDoDRank
+    def kDoDUnit = command.kDoDUnit
     def ward = command.personAddress.address4
     def nameFields = [
             [
@@ -20,6 +23,7 @@
                     [object: command, property: "education", label: "Education", config: [style: "list", options: educationOptions]]
             ]
     ]
+
     def deathFieldRows = [
             [
                     [object: command, property: "dead", label: "Deceased"],
@@ -66,6 +70,11 @@
                     [object: command, property: "chtReferenceNumber", label: "CHT Username"]
             ]
     ]
+    def kDoDUnitField = [
+            [
+                    [object: command, property: "kDoDUnit", label: "Unit *"]
+            ]
+    ]
 %>
 <script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/KenyaAddressHierarchy.js"></script>
 
@@ -86,7 +95,7 @@
             <legend>ID Numbers</legend>
 
             <table>
-                <% if (command.inHivProgram) { %>
+                <% if (command.inHivProgram && isKDoD==false) { %>
                 <tr>
                     <td class="ke-field-label">Unique Patient Number</td>
                     <td>${
@@ -94,6 +103,7 @@
                     <td class="ke-field-instructions">(HIV program<% if (!command.uniquePatientNumber) { %>, if assigned<%
                             } %>)</td>
                 </tr>
+
                 <% } %>
                 <tr>
                     <td class="ke-field-label">Patient Clinic Number</td>
@@ -105,6 +115,12 @@
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number if available.)<% } %></td>
+                </tr>
+
+                <tr id="kdod-service-no">
+                    <td class="ke-field-label">Service Number *</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(Example 123456 for service officer or 123456/00 for dependant)<%} %></td>
                 </tr>
             </table>
 
@@ -152,6 +168,40 @@
             <% otherDemogFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
+
+            <table id ="kdod-struct">
+                <tr>
+                    <td class="ke-field-label" style="width: 70px">Cadre *</td>
+                    <td class="ke-field-label" style="width: 70px">Rank</td>
+                </tr>
+
+                <tr>
+                    <td style="width: 70px">
+                        <select name="kDoDCadre">
+                            <option></option>
+                            <%cadreOptions.each { %>
+                            <option ${!kDoDCadre? "" : it.trim().toLowerCase() == kDoDCadre.trim().toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                            <%}%>
+                        </select>
+                    </td>
+                    <td style="width: 70px">
+                        <select name="kDoDRank" class ="kDoDRank">
+                            <option></option>
+                            <%rankOptions.each { %>
+                            <option ${!kDoDRank? "" : it.trim().toLowerCase() == kDoDRank.trim().toLowerCase() ? "selected" : ""} value="${it}">${it}</option>
+                            <%}%>
+                        </select>
+                    </td>
+                </tr>
+            <tr>
+                <td style="width: 200px">
+                    <% kDoDUnitField.each { %>
+                    ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+                    <% } %>
+                </td>
+            </tr>
+            </table>
+
             <% deathFieldRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
@@ -282,6 +332,29 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 <script type="text/javascript">
     //On ready
     jQuery(function () {
+        if("${isKDoD}"=="false"){
+            jQuery('#kdod-struct').hide();
+            jQuery('#kdod-service-no').hide();
+        }
+        else {
+            jQuery('#kdod-struct').show();
+            jQuery('#kdod-service-no').show();
+            jq("select[name='kDoDCadre']").change(function () {
+
+                var cadre = jq(this).val();
+
+                if (cadre === "Civilian") {
+
+                    jq('.kDoDRank').prop('disabled', true);
+
+                }
+                else {
+                    jq('.kDoDRank').prop('disabled', false);
+                    jq('select.kDoDRank').attr('required',1);
+                }
+            });
+        }
+
         jQuery('#county').change(updateSubcounty);
         jQuery('#subCounty').change(updateWard);
 

@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.wrapper;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.wrapper.AbstractPatientWrapper;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
@@ -260,4 +261,62 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setChtReferenceNumber(String chtReferenceNumber) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.CHT_USERNAME, chtReferenceNumber);
 	}
+
+	/**
+	 * Gets service number
+	 * @return the identifier value
+	 */
+	public String getKDoDServiceNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
+	}
+
+	/**
+	 * Sets service number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setKDoDServiceNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER, value, location);
+	}
+	/**
+	 * Gets patient's cadre for KDoD
+	 * @return KDoD cadre
+	 */
+	public String getCadre() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_CADRE);
+	}
+	/**
+	 * Sets KDoD cadre
+	 */
+	public void setCadre(String KDoDCadre) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_CADRE, KDoDCadre);
+	}
+	/**
+	 * Gets patient's rank for KDoD
+	 * @return KDoD rank
+	 */
+	public String getRank() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_RANK);
+	}
+	/**
+	 * Sets KDoD rank
+	 */
+	public void setRank(String KDoDRank) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_RANK, KDoDRank);
+	}
+
+	/**
+	 * Gets patient's KDoD Unit
+	 * @return KDoD unit
+	 */
+	public String getKDoDUnit() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_UNIT);
+	}
+	/**
+	 * Sets KDoD unit
+	 */
+	public void setKDoDUnit(String KDoDUnit) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_UNIT, KDoDUnit);
+	}
+
 }

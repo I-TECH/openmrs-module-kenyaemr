@@ -28,4 +28,5 @@ public class HivConstants {
 	 * Number of days between old CD4 count and current CD4 count to determine declining status
 	 */
 	public static final int DECLINING_CD4_COUNT_ACROSS_DAYS = 180;
+
 }

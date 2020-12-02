@@ -195,6 +195,13 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>kenyaemrorderentry-api</artifactId>
+            <version>${kenyaemrOrderentryVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api</artifactId>
             <version>${serializationxstreamVersion}</version>
             <scope>provided</scope>

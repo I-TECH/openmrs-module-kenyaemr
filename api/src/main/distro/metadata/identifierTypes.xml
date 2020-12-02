@@ -20,4 +20,6 @@
 	<ref key="PATIENT_CLINIC_NUMBER" uuid="b4d66522-11fc-45c7-83e3-39a1af21ae0d" />
 	<ref key="UNIQUE_PATIENT_NUMBER" uuid="05ee9cf4-7242-4a17-b4d4-00f707265c8a" />
 	<ref key="NATIONAL_UNIQUE_PATIENT_IDENTIFIER" uuid="f85081e2-b4be-4e48-b3a4-7994b69bb101" />
+	<ref key="KDoD_NUMBER" uuid="b51ffe55-3e76-44f8-89a2-14f5eaf11079" />
+	<ref key="KDoD_SERVICE_NUMBER" uuid="f2b0c94f-7b2b-4ab0-aded-0d970f88c063" />
 </refs>
