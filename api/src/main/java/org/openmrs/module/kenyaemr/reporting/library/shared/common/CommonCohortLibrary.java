@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Program;
 import org.openmrs.api.PatientSetService;
-import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
@@ -21,18 +21,25 @@ import org.openmrs.module.kenyaemr.calculation.library.DeceasedPatientsCalculati
 import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.CadreCohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * Library of common cohort definitions
@@ -155,7 +162,7 @@ public class CommonCohortLibrary {
 		cd.setName("has obs between dates");
 		cd.setQuestion(question);
 		cd.setOperator(SetComparator.IN);
-		//cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (answers.length > 0) {
@@ -191,7 +198,7 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.setName("transferred out between dates");
-		//cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
 		cd.setQuestion(reasonForDiscontinue);
 		cd.setOperator(SetComparator.IN);
 		cd.setValueList(Collections.singletonList(transferredOut));

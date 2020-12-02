@@ -73,7 +73,7 @@ public class EmrVelocityFunctions {
 		}
 	}
 	/**
-	 * Checks whether the patient has HIV identifier
+	 * Checks whether the patient has KDoD identifier
 	 * @return true if patient has such an identifier
 	 */
 	public boolean hasHivkDoDNumber() {
@@ -254,7 +254,7 @@ public class EmrVelocityFunctions {
 		if (globalProperty.getValue() != null) {
 			return globalProperty.getPropertyValue();
 		}
-		return "true";
+		return "false";
 	}
 
 	/**
