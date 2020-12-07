@@ -336,17 +336,17 @@ public class RegimenJsonGenerator {
                 if (obs.getConcept() != null && obs.getConcept().getUuid().equals(REGIMEN_LINE_CONCEPT)) {
                     if(obs.getValueText() != null){
                         if (obs.getValueText().equals("AF")) {
-                            regimenLine = "Adult First line";
+                            regimenLine = "Adult first line";
                         } else if (obs.getValueText().equals("AS")) {
-                            regimenLine = "Adult Second line";
+                            regimenLine = "Adult second line";
                         } else if (obs.getValueText().equals("AT")) {
-                            regimenLine = "Adult Third line";
+                            regimenLine = "Adult third line";
                         } else if (obs.getValueText().equals("CF")) {
-                            regimenLine = "Child First line";
+                            regimenLine = "Child first line";
                         } else if (obs.getValueText().equals("CS")) {
-                            regimenLine = "Child Second line";
+                            regimenLine = "Child second line";
                         } else if (obs.getValueText().equals("CT")) {
-                            regimenLine = "Child Third line";
+                            regimenLine = "Child third line";
                         }
                     }
                 }
