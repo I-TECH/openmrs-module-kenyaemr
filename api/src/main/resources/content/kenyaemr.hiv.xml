@@ -367,6 +367,8 @@
 		<property name="name" value="Patients on second line ART" />
 		<property name="description" value="Patients on second line ART" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:on_secondline_art_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:patientsOnSecondLineART" />
 	</bean>
 
 
