@@ -45,15 +45,15 @@
 	<br />
 
 	<%if (config.category =="ARV") { %>
-	<span id="others-checked">
-	<i>Regimen line:</i> <select class="standard-regimen-select"  name="regimenLine" id="regimenLine">
-		<option label="Select regimen line ..." value="" />
-		<option label="Adult First line" value="AF" />
-		<option label="Adult Second line" value="AS" />
-		<option label="Adult Third line" value="AT" />
-		<option label="Child First line" value="CF" />
-		<option label="Child Second line" value="CS" />
-		<option label="Child Third line" value="CT" />
+	<span id="reg-line">
+	<i>Regimen line:</i> <select   name="regimenLine" id="regimenLine">
+		<option value="" >Select regimen line ... </option>
+		<option value="AF">Adult First line</option>
+		<option  value="AS">Adult Second line</option>
+		<option  value="AT" >Adult Third line</option>
+		<option  value="CF" >Child First line</option>
+		<option  value="CS" >Child Second line</option>
+		<option  value="CT">Child Third line</option>
 	</select>
 	</span>
 	<% } %>
