@@ -48,7 +48,7 @@
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
 				<ref bean="kenyaemr.hiv.report.neverScreenedForTb" />
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
-				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
+				<ref bean="kenyaemr.hiv.report.secondLineART" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
@@ -362,13 +362,13 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.onSecondLineArt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
-		<property name="targetUuid" value="6e91a8da-fcab-47dc-86e7-dd92b925dd86" />
+	<bean id="kenyaemr.hiv.report.secondLineART" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="21592d66-39ee-11eb-adc1-0242ac120002" />
 		<property name="name" value="Patients on second line ART" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="description" value="Patients on second line ART" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
+
 
 	<bean id="kenyaemr.hiv.report.neverTakenCtxOrDapsone" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="8eda25f8-a3aa-401c-ab88-49f6f2021a39" />
