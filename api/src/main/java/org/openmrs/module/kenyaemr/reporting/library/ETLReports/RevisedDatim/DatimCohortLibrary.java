@@ -28,6 +28,13 @@ import java.util.Date;
  */
 @Component
 public class DatimCohortLibrary {
+
+    static String startOfYear = "0000-10-01";
+
+    final String TRANSGENDER_SW = "\"Transgender\" and c.year_started_sex_work is not null";
+
+    final String TRANSGENDER_NOT_SW = "\"Transgender\" and c.year_started_sex_work is null";
+
     /**
      * Patients started on ART during the reporting period (last 3 months)
      * TX_New Datim indicator
@@ -1766,31 +1773,30 @@ public class DatimCohortLibrary {
    //Number restarted Treatment during the reporting period
     public CohortDefinition txRTT() {
 
-        String sqlQuery = "select k.patient_id from (select e.patient_id,e.latest_tca,e.latest_vis_date,e.date_discontinued,f.visit_date as rtt_date,r.visit_date as ltca_after_return\n" +
-                "from (\n" +
-                "     select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "            max(fup.visit_date) as latest_vis_date,\n" +
-                "            mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "            date_sub(:startDate, INTERVAL 30 DAY),\n" +
-                "            datediff(date_sub(:startDate, INTERVAL 30 DAY), date(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11))) as 'start_date-30 - ltca' ,\n" +
-                "            max(d.visit_date) as date_discontinued,\n" +
-                "            d.patient_id as disc_patient\n" +
-                "     from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "            join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "            join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "            left outer JOIN\n" +
-                "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "               where date(visit_date) <= date_sub(:startDate, INTERVAL 30 DAY)  and program_name='HIV'\n" +
-                "               group by patient_id -- check if this line is necessary\n" +
+        String sqlQuery = "select k.patient_id from (select e.patient_id,e.latest_tca,e.latest_vis_date,e.date_discontinued,f.visit_date as rtt_date,mid(max(concat(r.visit_date,r.next_appointment_date)),11) as ltca_after_return\n" +
+                "  from (\n" +
+                "       select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "              max(fup.visit_date) as latest_vis_date,\n" +
+                "              mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
+                "              date_sub(:startDate, INTERVAL 30 DAY),\n" +
+                "              datediff(date_sub(:startDate, INTERVAL 30 DAY), date(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11))) as 'start_date-30 - ltca' ,\n" +
+                "              max(d.visit_date) as date_discontinued,\n" +
+                "              d.patient_id as disc_patient\n" +
+                "       from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "              join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "              join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "              left outer JOIN\n" +
+                "                (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                 where date(visit_date) <= date_sub(:startDate, INTERVAL 30 DAY)  and program_name='HIV'\n" +
+                "                 group by patient_id -- check if this line is necessary\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "     where fup.visit_date <= date_sub(:startDate, INTERVAL 30 DAY)\n" +
                 "     group by patient_id\n" +
                 "     having (\n" +
-                "                (((date(latest_tca) < date_sub(:startDate, INTERVAL 30 DAY)) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null)\n" +
-                "                )\n" +
+                "                (((date(latest_tca) < date_sub(:startDate, INTERVAL 30 DAY)) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null))\n" +
                 "     ) e inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id=e.patient_id and date(f.visit_date) between date(latest_tca) and date(:endDate)\n" +
                 "         inner join kenyaemr_etl.etl_patient_hiv_followup r on r.patient_id=e.patient_id and date(r.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "group by e.patient_id)k where k.rtt_date between date(:startDate) and date(:endDate);";
+                "group by e.patient_id)k where timestampdiff(DAY,date(k.ltca_after_return),date(:endDate)) <= 30;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_RTT");
@@ -3934,7 +3940,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
                 "        left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
                 "group by e.patient_id\n" +
-                "        having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate;";
+                "        having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PrEP_NEWLY_ENROLLED");
@@ -3957,7 +3963,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
                 "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
                 "where e.voided = 0 and t.voided = 0\n" +
                 "group by e.patient_id\n" +
-                "having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
+                "having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
                 "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -3981,7 +3987,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
                 "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
                 "where e.voided = 0 and t.voided = 0\n" +
                 "group by e.patient_id\n" +
-                "having max(date(e.visit_date)) between date_sub(:endDate , interval 6 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
+                "having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
                 "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\";";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -4001,9 +4007,16 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
      */
     public CohortDefinition currEnrolledInPrEP() {
 
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e \n" +
-                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id \n" +
-                "where d.patient_id is null \n" +
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
+                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
+                "where d.patient_id is null  and (e.visit_date between\n" +
+                "    date(case MONTH(:startDate) when 1 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
+                "                                when 3 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
+                "                                when 5 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
+                "                                when 7 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
+                "                                when 9 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"+startOfYear+"','0000',YEAR(:startDate))\n" +
+                "                                when 11 then replace('"+startOfYear+"','0000',YEAR(:startDate))\n" +
+                "                                when 12 then replace('"+startOfYear+"','0000',YEAR(:startDate)) else null end) and date(:endDate))\n" +
                 "group by e.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -4065,15 +4078,47 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     }
 
     /**
-     *Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
+     *Number of beneficiaries served by PEPFAR OVC Comprehensive programs for children and families affected by HIV
      * DATIM_OVC_SERV Datim indicator
      */
-    public CohortDefinition beneficiaryOfOVCProgram(){
-        CalculationCohortDefinition cd = new CalculationCohortDefinition(new OnOVCProgramCalculation());
-        cd.setName("DATIM_OVC_SERV");
+    public CohortDefinition totalBeneficiaryOfOVCComprehensiveProgram(){
+        String sqlQuery ="select e.patient_id from kenyaemr_etl.etl_ovc_enrolment e where e.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and e.ovc_comprehensive_program = 'Yes';";
+                SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DATIM_OVC_SERV_COMPREHENSIVE");
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients on OVC program");
+        return cd;
+    }
 
+    /**
+     *Number of beneficiaries served by PEPFAR OVC DREAMS programs for children and families affected by HIV
+     * DATIM_OVC_SERV Datim indicator
+     */
+    public CohortDefinition totalBeneficiaryOfOVCDreamsProgram(){
+        String sqlQuery ="select e.patient_id from kenyaemr_etl.etl_ovc_enrolment e where e.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and e.dreams_program = 'Yes';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DATIM_OVC_SERV_DREAMS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients on OVC program");
+        return cd;
+    }
+
+    /**
+     *Number of beneficiaries served by PEPFAR OVC Preventive programs for children and families affected by HIV
+     * DATIM_OVC_SERV Datim indicator
+     */
+    public CohortDefinition totalBeneficiaryOfOVCPreventiveProgram(){
+        String sqlQuery ="select e.patient_id from kenyaemr_etl.etl_ovc_enrolment e where e.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and e.ovc_preventive_program = 'Yes';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DATIM_OVC_SERV_PREVENTIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients on OVC program");
         return cd;
     }
 
@@ -4534,6 +4579,124 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).");
+        return cd;
+    }
+    /**
+     *  Number of KPs who received prevention services
+     * KP_PREV
+     */
+    public CohortDefinition kpPrev(String kpType) {
+        if (kpType.equals("TRANSGENDER_SW")) {
+            kpType = TRANSGENDER_SW;
+        } else if (kpType.equals("TRANSGENDER_NOT_SW")) {
+            kpType = TRANSGENDER_NOT_SW;
+        }
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n"
+                + "    inner join (select e.client_id,max(e.visit_date) as enrolment_date,mid(max(concat(e.visit_date,e.ever_tested_for_hiv)),11) as ever_tested_for_hiv,mid(max(concat(e.visit_date,e.share_test_results)),11) as hiv_status_at_enrolment from kenyaemr_etl.etl_client_enrollment e group by e.client_id ) e on c.client_id = e.client_id\n"
+                + "    left join (select t.patient_id,min(t.visit_date) as first_hts_date,mid(min(concat(t.final_test_result)),11) as first_hiv_results from kenyaemr_etl.etl_hts_test t group by t.patient_id)t on c.client_id = t.patient_id\n"
+                + "    left join (select v.client_id, min(v.visit_date) as first_clinical_visit_date from kenyaemr_etl.etl_clinical_visit v group by v.client_id)v on c.client_id = v.client_id\n"
+                + "    left join (select p.client_id, min(p.visit_date) as first_peer_enc from kenyaemr_etl.etl_peer_calendar p group by p.client_id)p on c.client_id = p.client_id\n"
+                + "where((((e.ever_tested_for_hiv = 'No' or e.hiv_status_at_enrolment in('Yes I tested negative','No I do not want to share',null)) and (t.first_hts_date between\n"
+                + "date(case MONTH(:startDate) when 1 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 3 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 5 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 7 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 9 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate))\n"
+                + "        when 11 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) when 12 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) else null end) and date(:endDate)))\n"
+                + "or (v.first_clinical_visit_date between (case MONTH(:startDate) when 1 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "       when 3 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "       when 5 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "       when 7 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "       when 9 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate))\n"
+                + "       when 11 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) when 12 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) else null end) and date(:endDate))\n"
+                + "or (p.first_peer_enc between (case MONTH(:startDate) when 1 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 3 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 5 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 7 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
+                + "        when 9 then replace('"
+                + startOfYear
+                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate))\n"
+                + "        when 11 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) when 12 then replace('"
+                + startOfYear
+                + "','0000',YEAR(:startDate)) else null end) and date(:endDate))) and c.key_population_type = "
+                + kpType
+                + " and c.voided=0)\n" + "group by c.client_id;\n";
+        cd.setName("kpPrev");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("kpPrev");
+
         return cd;
     }
 }

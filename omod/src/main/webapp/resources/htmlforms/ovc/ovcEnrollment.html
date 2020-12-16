@@ -17,9 +17,11 @@
 		var patientId = <lookup expression="patient.patientId"/>;
 		var careGiverEnrolled = "<lookup expression="fn.latestObs(163777).getValueCoded()"/>"
 		var cpIdentifier = "<lookup expression="fn.latestObs(163766).getValueCoded()"/>"
-
 		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
 		var enrollmentDate;
+        var patientAge = parseInt('<lookup expression="patient.age"/>');
+        var patientGender = "<lookup expression="patient.gender" />";
+
 		beforeSubmit.push(function() {
 			enrollmentDate = new Date(getValue('encounter-date.value')).getTime();
 
@@ -37,6 +39,8 @@
             jq('#care-givers-name').hide();
             jq('#care-givers-phone').hide();
             jq('#care-giver-not-enrolled').hide();
+            jq('#ovc-dreams').hide();
+            jq('#ovc-prev').hide();
 
 
             if(careGiverEnrolled == 1066 &amp;&amp; jq('#enrolled-in-this-facility input[value=1066]:checked').length > 0) {
@@ -59,7 +63,12 @@
 				jq('#cpims-field').hide();
 			}
 
-
+            if (patientGender == 'F' &amp;&amp; patientAge &gt; 9 &amp;&amp; patientAge &lt; 18) {
+                jq('#ovc-dreams').show();
+            }
+            if(patientAge &gt;8 &amp;&amp; patientAge &lt; 15){
+                jq('#ovc-prev').show();
+			}
 
 			includeCareGiversNames();
 			jq('#enrolled-in-this-facility :input[type=radio]').click(isCaregiverEnrolledInThisFacility);
@@ -251,6 +260,17 @@
 					<td>Partner offering OVC services:</td>
 					<td><obs conceptId="165347" id="partner-offering-services"/></td>
 				</tr>
+
+					<td>
+						Program model:
+					</td>
+
+						<td id="ovc-comp"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OVC comprehensive" style="checkbox" /></td>
+
+						<td id="ovc-dreams"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="DREAMS" style="checkbox" /></td>
+
+						<td id="ovc-prev"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OVC preventive" style="checkbox" /></td>
+
 			</table>
 		</fieldset>
 

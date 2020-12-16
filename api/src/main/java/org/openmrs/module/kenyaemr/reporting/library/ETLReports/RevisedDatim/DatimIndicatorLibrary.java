@@ -1259,10 +1259,24 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
+     * Number of beneficiaries served by PEPFAR OVC comprehensive programs for children and families affected by HIV
      */
-    public CohortIndicator totalBeneficiaryOfOVCProgram() {
-        return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC program", ReportUtils.<CohortDefinition>map(datimCohorts.beneficiaryOfOVCProgram(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator totalBeneficiaryOfOVCComprehensiveProgram() {
+        return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC Comprehensive program", ReportUtils.<CohortDefinition>map(datimCohorts.totalBeneficiaryOfOVCComprehensiveProgram(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of beneficiaries served by PEPFAR OVC Dreams programs for children and families affected by HIV
+     */
+    public CohortIndicator totalBeneficiaryOfOVCDreamsProgram() {
+        return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC Comprehensive program", ReportUtils.<CohortDefinition>map(datimCohorts.totalBeneficiaryOfOVCDreamsProgram(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of beneficiaries served by PEPFAR OVC preventive programs for children and families affected by HIV
+     */
+    public CohortIndicator totalBeneficiaryOfOVCPreventiveProgram() {
+        return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC preventive program", ReportUtils.<CohortDefinition>map(datimCohorts.totalBeneficiaryOfOVCPreventiveProgram(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
@@ -1337,6 +1351,12 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.<CohortDefinition>map(datimCohorts.patientsSpecimenSentForGeneExpert(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-
+    /**
+     * Number of KPs received prevention services
+     */
+    public CohortIndicator kpPrev(String kpType) {
+        return cohortIndicator("Number of KPs received prevention services",
+                ReportUtils.map(datimCohorts.kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
+    }
 
 }
