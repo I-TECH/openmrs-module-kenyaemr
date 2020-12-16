@@ -149,6 +149,20 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters munder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
         ColumnParameters fabove15 = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
         ColumnParameters mabove15 = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
+//KP age groups
+        ColumnParameters below_15 = new ColumnParameters(null, "<15", "age=<15");
+        ColumnParameters kp15_to_19 = new ColumnParameters(null, "15-19", "age=15-19");
+        ColumnParameters kp20_to_24 = new ColumnParameters(null, "20-24", "age=20-24");
+        ColumnParameters kp25_and_above = new ColumnParameters(null, "25+", "age=25+");
+
+        ColumnParameters below_15_f = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
+        ColumnParameters below_15_m = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
+        ColumnParameters kp15_to_19_f = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
+        ColumnParameters kp15_to_19_m = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
+        ColumnParameters kp20_to_24_f = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
+        ColumnParameters kp20_to_24_m = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
+        ColumnParameters kp25_and_above_f = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
+        ColumnParameters kp25_and_above_m = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
 
         List<ColumnParameters> datimNewAgeDisaggregation =
                 Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
@@ -178,8 +192,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         List<ColumnParameters> datimTBScreenedPositiveNewOnART =
                 Arrays.asList(funder15, fabove15, munder15, mabove15);
-        List<ColumnParameters> datimTBScreenedNegativetiveNewOnART =
-                Arrays.asList(funder15, fabove15, munder15, mabove15);
+
+        List<ColumnParameters>  kpAgeDisaggregation = Arrays.asList(below_15, kp15_to_19, kp20_to_24, kp25_and_above,colTotal);
+        List<ColumnParameters> kpAgeGenderDisaggregation = Arrays.asList(below_15_f, below_15_m, kp15_to_19_f, kp15_to_19_m,
+                kp20_to_24_f, kp20_to_24_m, kp25_and_above_f, kp25_and_above_m,colTotal);
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
@@ -201,9 +217,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
-        cohortDsd.addColumn("DATIM_OVC_SERV", "Number of beneficiaries served by  PEPFAR OVC program", ReportUtils.map(datimIndicators.totalBeneficiaryOfOVCProgram(), indParams), "");
+        cohortDsd.addColumn("OVC_SERV_COMP", "Number of beneficiaries served by PEPFAR OVC Comprehensive program", ReportUtils.map(datimIndicators.totalBeneficiaryOfOVCComprehensiveProgram(), indParams), "");
+        cohortDsd.addColumn("OVC_SERV_DREAMS", "Number of beneficiaries served by PEPFAR OVC DREAMS program", ReportUtils.map(datimIndicators.totalBeneficiaryOfOVCDreamsProgram(), indParams), "");
+        cohortDsd.addColumn("OVC_SERV_PREV", "Number of beneficiaries served by PEPFAR OVC preventive program", ReportUtils.map(datimIndicators.totalBeneficiaryOfOVCPreventiveProgram(), indParams), "");
 
-//Testing Indicators
+        //Testing Indicators
         //HTS_INDEX_OFFERED Index services
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Indexes offered Index testing services", ReportUtils.map(datimIndicators.offeredIndexServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
@@ -469,10 +487,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.txMlDied(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_UNDER3MONTHS", "LTFU patients who have been on drugs for less than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsUnder3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_ONDRUGS_UNDER3MONTHS", "IIT patients who have been on drugs for less than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsUnder3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML LTFU ON DRUGS >3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for more than 3 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_LTFU_ONDRUGS_OVER3MONTHS", "LTFU patients who have been on drugs for more than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsOver3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_ONDRUGS_OVER3MONTHS", "IIT patients who have been on drugs for more than 3 months", ReportUtils.map(datimIndicators.txMLLTFUonDrugsOver3Months(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRF_OUT", "ART patients with missed appointment due to transfer out", ReportUtils.map(datimIndicators.txMLTrfOut(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
@@ -632,17 +650,14 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
-        //Number of beneficiaries served by PEPFAR OVC programs for children and families affected by HIV
-        cohortDsd.addColumn("DATIM_OVC_SERV", "Number of beneficiaries served by  PEPFAR OVC program", ReportUtils.map(datimIndicators.totalBeneficiaryOfOVCProgram(), indParams), "");
-
         // Number of people newly on art that tested negative to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE", "Number of people newly on art that tested negative to TB", ReportUtils.map(datimIndicators.newlyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedNegativetiveNewOnART, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE", "Number of people newly on art that tested negative to TB", ReportUtils.map(datimIndicators.newlyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
 
         // Number of people newly on art that tested positive to TB
         EmrReportingUtils.addRow(cohortDsd, "TX_TB_POSITIVE", "Number of people newly on art that tested positive to TB", ReportUtils.map(datimIndicators.newlyOnArtPatientScreenedPositiveForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
 
         // Number of people previously on art that tested negative to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE_PREVIOUS", "Number of people previously on art that tested negative to TB", ReportUtils.map(datimIndicators.previouslyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedNegativetiveNewOnART, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE_PREVIOUS", "Number of people previously on art that tested negative to TB", ReportUtils.map(datimIndicators.previouslyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
 
         //Number of people previously on art that tested positive to TB
         EmrReportingUtils.addRow(cohortDsd, "TX_TB_POSITIVE_PREVIOUS", "Number of people previously on art that tested positive to TB", ReportUtils.map(datimIndicators.previouslyOnArtPatientScreenedPositiveForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
@@ -664,6 +679,29 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //Number of patients whose specimens were sent for  Smear only
         cohortDsd.addColumn("TX_TB_GENE_XPERT_SPECIMEN", "Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.map(datimIndicators.patientSWhoseSpecimenSentForGeneExpert(), indParams), "");
+
+        //3. KP_PREV
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("(\"FSW\")"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSM", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("(\"MSM\")"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSW", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("(\"MSW\")"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWUD", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("(\"PWUD\")"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWID", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("(\"PWID\")"), indParams), kpAgeGenderDisaggregation,
+                Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08","09"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_SW", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_SW"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
+        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_NOT_SW", "Received care for the first time this year",
+                ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_NOT_SW"), indParams), kpAgeDisaggregation,
+                Arrays.asList("01", "02", "03", "04","05"));
 
         return cohortDsd;
     }
