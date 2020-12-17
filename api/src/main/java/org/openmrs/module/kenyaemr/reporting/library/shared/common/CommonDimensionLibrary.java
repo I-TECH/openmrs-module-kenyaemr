@@ -72,25 +72,6 @@ public class CommonDimensionLibrary {
      * Dimension of age between
      * @return Dimension
      */
-    public CohortDefinitionDimension datimAgeGroups() {
-        CohortDefinitionDimension dim = new CohortDefinitionDimension();
-        dim.setName("standard age between(<1, btw 1 and 9, btw 10 and 14, btw 15 and 19, btw 20 and 24, btw 25 and 49, 50+");
-        dim.addParameter(new Parameter("onDate", "Date", Date.class));
-        dim.addCohortDefinition("<1", map(commonCohortLibrary.agedAtMost(0), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("1 - 9", map(commonCohortLibrary.agedAtMost(9), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("10 - 14", map(commonCohortLibrary.agedAtMost(14), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("15 - 19", map(commonCohortLibrary.agedAtMost(19), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("20 - 24", map(commonCohortLibrary.agedAtMost(24), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("25 - 49", map(commonCohortLibrary.agedAtMost(49), "effectiveDate=${onDate}"));
-        dim.addCohortDefinition("50+", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${onDate}"));
-
-        return dim;
-    }
-
-    /**
-     * Dimension of age between
-     * @return Dimension
-     */
     public CohortDefinitionDimension datimFineAgeGroups() {
         CohortDefinitionDimension dim = new CohortDefinitionDimension();
         dim.setName("fine age between(<1, btw 1 and 9, btw 10 and 14, btw 15 and 19, btw 20 and 24, btw 25 and 49, 50+");
