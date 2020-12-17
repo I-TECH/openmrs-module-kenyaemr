@@ -170,7 +170,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
-		install(patientIdentifierType("KDoD service number", "Unique Id for KDoD service men", "^[0-9]{6}$|^[0-9]{6}\\/[0-9]{2}$", "Must be a 6 digit number for principal (Example 908761) or 6 digit followed by / and 2 digits for dependant (Example 123456/01)",
+		install(patientIdentifierType("KDoD service number", "Unique Id for KDoD service men", "^[0-9]{5,6}$|^[0-9]{5,6}\\/[0-9]{2}$", "Must be a 5-6 digit number (for principal) or 5-6 digit number followed by / and 2 digits (for dependant)",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_SERVICE_NUMBER));
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",

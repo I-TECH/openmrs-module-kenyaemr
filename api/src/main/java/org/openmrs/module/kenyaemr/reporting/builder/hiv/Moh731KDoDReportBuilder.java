@@ -43,63 +43,63 @@ public class Moh731KDoDReportBuilder extends AbstractReportBuilder {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    ColumnParameters colInfants_T = new ColumnParameters(null, "<1, Troupe", "age=<1|cadre=T");
+    ColumnParameters colInfants_T = new ColumnParameters(null, "<1, Troop", "age=<1|cadre=T");
     ColumnParameters colInfants_C = new ColumnParameters(null, "<1, Civilian", "age=<1|cadre=C");
 
-    ColumnParameters _10_to_14_T = new ColumnParameters(null, "10-14, Troupe", "cadre=T|age=10-14");
+    ColumnParameters _10_to_14_T = new ColumnParameters(null, "10-14, Troop", "cadre=T|age=10-14");
     ColumnParameters _10_to_14_C = new ColumnParameters(null, "10-14, Civilian", "cadre=C|age=10-14");
 
-    ColumnParameters _15_to_19_T = new ColumnParameters(null, "15-19, Troupe", "cadre=T|age=15-19");
+    ColumnParameters _15_to_19_T = new ColumnParameters(null, "15-19, Troop", "cadre=T|age=15-19");
     ColumnParameters _15_to_19_C = new ColumnParameters(null, "15-19, Civilian", "cadre=C|age=15-19");
 
-    ColumnParameters _20_to_24_T = new ColumnParameters(null, "20-24, Troupe", "cadre=T|age=20-24");
+    ColumnParameters _20_to_24_T = new ColumnParameters(null, "20-24, Troop", "cadre=T|age=20-24");
     ColumnParameters _20_to_24_C = new ColumnParameters(null, "20-24, Civilian", "cadre=C|age=20-24");
 
-    ColumnParameters _25_to_49_T = new ColumnParameters(null, "25-49, Troupe", "cadre=T|age=25-49");
+    ColumnParameters _25_to_49_T = new ColumnParameters(null, "25-49, Troop", "cadre=T|age=25-49");
     ColumnParameters _25_to_49_C = new ColumnParameters(null, "25-49, Civilian", "cadre=C|age=25-49");
 
-    ColumnParameters above_50_T = new ColumnParameters(null, "50+, Troupe", "cadre=T|age=50+");
+    ColumnParameters above_50_T = new ColumnParameters(null, "50+, Troop", "cadre=T|age=50+");
     ColumnParameters above_50_C = new ColumnParameters(null, "50+, Civilian", "cadre=C|age=50+");
 
     ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
-    ColumnParameters children_1_to_9_T = new ColumnParameters(null, "1-9,Troupe", "age=1-9|cadre=T");
+    ColumnParameters children_1_to_9_T = new ColumnParameters(null, "1-9,Troop", "age=1-9|cadre=T");
     ColumnParameters children_1_to_9_C = new ColumnParameters(null, "1-9,Civilian", "age=1-9|cadre=C");
 
-    ColumnParameters adult_15_to_19_T = new ColumnParameters(null, "15-19,Troupe", "age=15-19|cadre=T");
+    ColumnParameters adult_15_to_19_T = new ColumnParameters(null, "15-19,Troop", "age=15-19|cadre=T");
     ColumnParameters adult_15_to_19_C = new ColumnParameters(null, "15-19,Civilian", "age=15-19|cadre=C");
-    ColumnParameters adult_20_to_24_T = new ColumnParameters(null, "20-24,Troupe", "age=20-24|cadre=T");
+    ColumnParameters adult_20_to_24_T = new ColumnParameters(null, "20-24,Troop", "age=20-24|cadre=T");
     ColumnParameters adult_20_to_24_C = new ColumnParameters(null, "20-24,Civilian", "age=20-24|cadre=C");
 
-    ColumnParameters _0_to_14_T = new ColumnParameters(null, "0-14,Troupe", "age=0-14|cadre=T");
+    ColumnParameters _0_to_14_T = new ColumnParameters(null, "0-14,Troop", "age=0-14|cadre=T");
     ColumnParameters _0_to_14_C = new ColumnParameters(null, "0-14,Civilian", "age=0-14|cadre=C");
-    ColumnParameters adult_15_and_above_T = new ColumnParameters(null, "15+,Troupe", "age=15+|cadre=T");
+    ColumnParameters adult_15_and_above_T = new ColumnParameters(null, "15+,Troop", "age=15+|cadre=T");
     ColumnParameters adult_15_and_above_C = new ColumnParameters(null, "15+,Civilian", "age=15+|cadre=C");
 
-    ColumnParameters m_10_to_14_T = new ColumnParameters(null, "10-14, Male,Troupe", "gender=M|age=10-14|cadre=T");
+    ColumnParameters m_10_to_14_T = new ColumnParameters(null, "10-14, Male,Troop", "gender=M|age=10-14|cadre=T");
     ColumnParameters m_10_to_14_C = new ColumnParameters(null, "10-14, Male,Civilian", "gender=M|age=10-14|cadre=C");
-    ColumnParameters f_10_to_14_T = new ColumnParameters(null, "10-14, Female,Troupe", "gender=F|age=10-14|cadre=T");
+    ColumnParameters f_10_to_14_T = new ColumnParameters(null, "10-14, Female,Troop", "gender=F|age=10-14|cadre=T");
     ColumnParameters f_10_to_14_C = new ColumnParameters(null, "10-14, Female,Civilian", "gender=F|age=10-14|cadre=C");
 
-    ColumnParameters m_15_to_19_T = new ColumnParameters(null, "15-19, Male,Troupe", "gender=M|age=15-19|cadre=T");
+    ColumnParameters m_15_to_19_T = new ColumnParameters(null, "15-19, Male,Troop", "gender=M|age=15-19|cadre=T");
     ColumnParameters m_15_to_19_C = new ColumnParameters(null, "15-19, Male,Civilian", "gender=M|age=15-19|cadre=C");
-    ColumnParameters f_15_to_19_T = new ColumnParameters(null, "15-19, Female,Troupe", "gender=F|age=15-19|cadre=T");
+    ColumnParameters f_15_to_19_T = new ColumnParameters(null, "15-19, Female,Troop", "gender=F|age=15-19|cadre=T");
     ColumnParameters f_15_to_19_C = new ColumnParameters(null, "15-19, Female,Civilian", "gender=F|age=15-19|cadre=C");
 
-    ColumnParameters m_20_to_24_T = new ColumnParameters(null, "20-24, Male,Troupe", "gender=M|age=20-24|cadre=T");
+    ColumnParameters m_20_to_24_T = new ColumnParameters(null, "20-24, Male,Troop", "gender=M|age=20-24|cadre=T");
     ColumnParameters m_20_to_24_C = new ColumnParameters(null, "20-24, Male,Civilian", "gender=M|age=20-24|cadre=C");
-    ColumnParameters f_20_to_24_T = new ColumnParameters(null, "20-24, Female,Troupe", "gender=F|age=20-24|cadre=T");
+    ColumnParameters f_20_to_24_T = new ColumnParameters(null, "20-24, Female,Troop", "gender=F|age=20-24|cadre=T");
     ColumnParameters f_20_to_24_C = new ColumnParameters(null, "20-24, Female,Civilian", "gender=F|age=20-24|cadre=C");
 
 
-    ColumnParameters m_25_to_49_T = new ColumnParameters(null, "25-49, Male,Troupe", "gender=M|age=25-49|cadre=T");
+    ColumnParameters m_25_to_49_T = new ColumnParameters(null, "25-49, Male,Troop", "gender=M|age=25-49|cadre=T");
     ColumnParameters m_25_to_49_C = new ColumnParameters(null, "25-49, Male,Civilian", "gender=M|age=25-49|cadre=C");
-    ColumnParameters f_25_to_49_T = new ColumnParameters(null, "25-49, Female,Troupe", "gender=F|age=25-49|cadre=T");
+    ColumnParameters f_25_to_49_T = new ColumnParameters(null, "25-49, Female,Troop", "gender=F|age=25-49|cadre=T");
     ColumnParameters f_25_to_49_C = new ColumnParameters(null, "25-49, Female,Civilian", "gender=F|age=25-49|cadre=C");
-    ColumnParameters m_50_and_above_T = new ColumnParameters(null, "50+, Male,Troupe", "gender=M|age=50+|cadre=T");
+    ColumnParameters m_50_and_above_T = new ColumnParameters(null, "50+, Male,Troop", "gender=M|age=50+|cadre=T");
     ColumnParameters m_50_and_above_C = new ColumnParameters(null, "50+, Male,Civilian", "gender=M|age=50+|cadre=C");
-    ColumnParameters f_50_and_above_T = new ColumnParameters(null, "50+, Female,Troupe", "gender=F|age=50+|cadre=T");
+    ColumnParameters f_50_and_above_T = new ColumnParameters(null, "50+, Female,Troop", "gender=F|age=50+|cadre=T");
     ColumnParameters f_50_and_above_C = new ColumnParameters(null, "50+, Female,Civilian", "gender=F|age=50+|cadre=C");
-    ColumnParameters troupe_dimension = new ColumnParameters(null, "Troupe", "cadre=T");
+    ColumnParameters troop_dimension = new ColumnParameters(null, "Troop", "cadre=T");
     ColumnParameters civilian_dimension = new ColumnParameters(null, "Civilian", "cadre=C");
 
     List<ColumnParameters> kdodDisaggregation = Arrays.asList(
@@ -123,7 +123,7 @@ public class Moh731KDoDReportBuilder extends AbstractReportBuilder {
             _0_to_14_T,_0_to_14_C,  adult_15_and_above_T,adult_15_and_above_C , colTotal);
 
     List<ColumnParameters> cadreDisaggregation = Arrays.asList(
-            troupe_dimension,  civilian_dimension , colTotal);
+            troop_dimension,  civilian_dimension , colTotal);
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {

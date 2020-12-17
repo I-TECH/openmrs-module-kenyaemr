@@ -177,7 +177,7 @@ public class EditPatientFragmentController {
 
 		/*Create list of cadre answer concepts  */
         List<String> cadreOptions = Arrays.asList(
-                new String("Troupe"),
+                new String("Troop"),
                 new String("Civilian")
         );
         model.addAttribute("cadreOptions", cadreOptions);
@@ -395,7 +395,6 @@ public class EditPatientFragmentController {
 			if(isKDoD.equals("true")){
 			require(errors, "kDoDServiceNumber");
 			require(errors, "kDoDCadre");
-			require(errors, "kDoDUnit");
 			}
 			else {
 				require(errors, "personName.givenName");
