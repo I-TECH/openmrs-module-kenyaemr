@@ -115,7 +115,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Art Start Date", new ETLArtStartDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("First Regimen", new ETLFirstRegimenDataDefinition(), "");
-        dsd.addColumn("First Substitution Date", new ETLFirstSubstitutionDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        //dsd.addColumn("First Substitution Date", new ETLFirstSubstitutionDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Current Regimen", new ETLCurrentRegimenDataDefinition(), "");
         dsd.addColumn("Current Regimen Line", new ETLCurrentRegLineDataDefinition(), "");
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
