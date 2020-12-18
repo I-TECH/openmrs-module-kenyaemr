@@ -329,12 +329,12 @@ public class CommonCohortLibrary {
 		return cd;
 	}
 /**
-	 * KDoD Patients who are troupes
+	 * KDoD Patients who are Troops
 	 * @return the cohort definition
 	 */
 	public CohortDefinition kDoDTroupesPatients() {
 		CadreCohortDefinition cd = new CadreCohortDefinition();
-		cd.setName("troupes");
+		cd.setName("troops");
 		cd.setTroupeIncluded(true);
 		return cd;
 	}

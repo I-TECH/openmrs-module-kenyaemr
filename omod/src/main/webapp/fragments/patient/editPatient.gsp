@@ -120,7 +120,7 @@
                 <tr id="kdod-service-no">
                     <td class="ke-field-label">Service Number *</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(Example 123456 for service officer or 123456/00 for dependant)<%} %></td>
+                    <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(5-6 digits for service officer or 5-6 digits followed by / and 2 digits for dependant(eg.12345/01))<%} %></td>
                 </tr>
             </table>
 
@@ -171,8 +171,8 @@
 
             <table id ="kdod-struct">
                 <tr>
-                    <td class="ke-field-label" style="width: 70px">Cadre *</td>
-                    <td class="ke-field-label" style="width: 70px">Rank</td>
+                    <td id="cadre" class="ke-field-label" style="width: 70px">Cadre *</td>
+                    <td id="rank" class="ke-field-label" style="width: 70px">Rank *</td>
                 </tr>
 
                 <tr>
@@ -193,13 +193,16 @@
                         </select>
                     </td>
                 </tr>
+
             <tr>
-                <td style="width: 200px">
-                    <% kDoDUnitField.each { %>
-                    ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
-                    <% } %>
-                </td>
+                <td id="unit" class="ke-field-label" style="width: 70px">Unit *</td>
             </tr>
+              <tr>
+                  <td style="width: 200px" id="kdod-unit">
+                      <input name="kDoDUnit" class ="kDoDUnit" ${(command.kDoDUnit != null)? command.kDoDUnit : ""}/>
+
+                </td>
+              </tr>
             </table>
 
             <% deathFieldRows.each { %>
@@ -339,18 +342,35 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         else {
             jQuery('#kdod-struct').show();
             jQuery('#kdod-service-no').show();
-            jq("select[name='kDoDCadre']").change(function () {
 
+            jq("select[name='kDoDCadre']").change(function () {
                 var cadre = jq(this).val();
 
                 if (cadre === "Civilian") {
+                    jq('#rank').hide();
+                    jq('#unit').hide();
 
-                    jq('.kDoDRank').prop('disabled', true);
+                    jq(".kDoDUnit").val("");
+
+                    jq(".kDoDRank")[0].selectedIndex = 0;
+
+                    jq('.kDoDRank').removeAttr('required');
+                    jq('.kDoDUnit').removeAttr('required');
+
+                    jq('.kDoDRank').hide();
+                    jq('.kDoDUnit').hide();
 
                 }
                 else {
-                    jq('.kDoDRank').prop('disabled', false);
-                    jq('select.kDoDRank').attr('required',1);
+                    jq('.kDoDRank').attr('required',1);
+                    jq('.kDoDUnit').attr('required',1);
+
+                    jq('#rank').show();
+                    jq('#unit').show();
+
+                    jq('.kDoDRank').show();
+                    jq('.kDoDUnit').show();
+
                 }
             });
         }
@@ -377,8 +397,6 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         });
         updateSubcountyOnEdit();
         updateWardOnEdit();
-
-
 
     }); // end of jQuery initialization block
 
@@ -441,4 +459,5 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
         }
     }
+
 </script>
