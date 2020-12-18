@@ -115,6 +115,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Art Start Date", new ETLArtStartDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("First Regimen", new ETLFirstRegimenDataDefinition(), "");
+        //dsd.addColumn("First Substitution Date", new ETLFirstSubstitutionDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Current Regimen", new ETLCurrentRegimenDataDefinition(), "");
         dsd.addColumn("Current Regimen Line", new ETLCurrentRegLineDataDefinition(), "");
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
@@ -125,9 +126,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
-
+        dsd.addColumn("Stability", new ETLStabilityDataDefinition(), "");
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
 
 
         return dsd;
