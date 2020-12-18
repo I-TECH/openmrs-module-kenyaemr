@@ -281,7 +281,7 @@ public class ETLMoh731GreenCardCohortLibrary {
 // look all active in care who were screened for tb
         String sqlQuery = "select  e.patient_id\n" +
                 "       from (  \n" +
-                "       select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,  \n" +
+                "       select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
                 "         greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,  \n" +
                 "         greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,  \n" +
                 "         greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,  \n" +
@@ -289,9 +289,9 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         d.patient_id as disc_patient,  \n" +
                 "         d.effective_disc_date as effective_disc_date,  \n" +
                 "         de.patient_id as started_on_drugs,  \n" +
-                "         mid(max(concat(tb.visit_date, tb.resulting_tb_status)), 11) screened_using_icf,  \n" +
-                "       mid(max(concat(fup.visit_date, fup.tb_status)), 11) screened_using_consultation,\n" +
-                "       mid(max(concat(fup.visit_date, fup.person_present)), 11) person_present\n" +
+                "         mid(max(concat(tb.visit_date, tb.resulting_tb_status)), 11) screened_using_icf,\n" +
+                "        max(tb.visit_date) latest_tb_visit_date,\n" +
+                "       mid(max(concat(fup.visit_date, fup.tb_status)), 11) screened_using_consultation\n" +
                 "       from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id  \n" +
                 "       join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id  \n" +
@@ -302,12 +302,12 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         where date(visit_date) <= date(:endDate) and program_name='HIV'  \n" +
                 "         group by patient_id  \n" +
                 "         ) d on d.patient_id = fup.patient_id  \n" +
-                "       where fup.visit_date <= date(:endDate)  \n" +
+                "       where fup.visit_date <= date(:endDate) and fup.person_present = 978\n" +
                 "       group by patient_id  \n" +
                 "       having (started_on_drugs is not null and started_on_drugs <> '') and  \n" +
                 "              ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))  \n" +
-                "                        and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and  \n" +
-                "              (screened_using_icf is not null or (screened_using_consultation in(1660,1662,1111) and person_present=978))\n" +
+                "                        and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and\n" +
+                "              ((screened_using_icf is not null )or (screened_using_consultation in(1660,1662,1111)))\n" +
                 "       )e;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
