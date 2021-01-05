@@ -47,13 +47,8 @@ public class DiffCareUnstableUnder15CohortDefinitionEvaluator implements CohortD
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select patient_id from(\n" +
-				"                      select c.patient_id,f.stability stability,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,\n" +
-				"                             c.dob dob\n" +
-				"                      from kenyaemr_etl.etl_current_in_care c\n" +
-				"                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=2\n" +
-				"                                                                                                          and timestampdiff(year ,cic.dob,cic.latest_visit_date) <15;";
+		String qry="select patient_id from kenyaemr_etl.etl_current_in_care c where c.started_on_drugs is not null and c.stability=2\n" +
+				"and timestampdiff(year ,c.dob,c.latest_vis_date) <15 group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
