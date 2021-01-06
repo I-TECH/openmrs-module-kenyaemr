@@ -24,6 +24,15 @@ public class DiffCareStabilityIndicatorLibrary {
     @Autowired
     private DiffCareStabilityCohortLibrary cohortLibrary;
 
+    /*stableUnder1Monthtca*/
+    /**
+     * Number of stable patients in care with under 1 month prescription
+     * @return the indicator
+     */
+    public CohortIndicator stableUnder1Monthtca() {
+        return cohortIndicator("Stable patients with under 1 month prescription", ReportUtils.map(cohortLibrary.stableUnder1Monthtca(), ""));
+    }
+
     /**
      * Number of stable patients in care with over 4 months prescription
      * @return the indicator
@@ -62,7 +71,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator stablePatientsMultiMonthAppointments(Integer month) {
-        return cohortIndicator("Undocumented stability" , ReportUtils.map(cohortLibrary.stablePatientsMultiMonthAppointments(month), ""));
+        return cohortIndicator("Stable with Multi-month appointment" , ReportUtils.map(cohortLibrary.stablePatientsMultiMonthAppointments(month), ""));
     }
 
 

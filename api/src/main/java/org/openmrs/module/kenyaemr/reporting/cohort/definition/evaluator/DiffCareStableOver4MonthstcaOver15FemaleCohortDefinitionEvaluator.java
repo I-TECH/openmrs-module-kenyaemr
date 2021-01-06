@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for IDU contacts linked to care
+ * Evaluator for Stable over 4 months tca, over 15 years females
  */
 @Handler(supports = {DiffCareStableOver4MonthstcaOver15FemaleCohortDefinition.class})
 public class DiffCareStableOver4MonthstcaOver15FemaleCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -47,14 +47,8 @@ public class DiffCareStableOver4MonthstcaOver15FemaleCohortDefinitionEvaluator i
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select patient_id from(\n" +
-				"                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca,\n" +
-				"                      c.Gender gender, c.dob dob\n" +
-				"                      from kenyaemr_etl.etl_current_in_care c\n" +
-				"                            inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
-				"                             and cic.patient_present = 978 and cic.gender =\"F\" and timestampdiff(year ,cic.dob,cic.latest_visit_date) >=15\n" +
-				"                             and timestampdiff(month,cic.latest_visit_date,cic.ltca) >=4;";
+		String qry="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+				"and timestampdiff(month,c.latest_vis_date,c.latest_tca) >=4 and timestampdiff(year ,c.dob,c.latest_vis_date) >=15 and c.gender =\"F\" group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
