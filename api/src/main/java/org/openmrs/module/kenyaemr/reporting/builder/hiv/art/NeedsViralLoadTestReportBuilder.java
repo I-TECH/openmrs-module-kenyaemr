@@ -17,13 +17,16 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.builder.CalculationReportBuilder;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfLastViralLoadCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LowDetectableViralLoadCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
@@ -41,6 +44,7 @@ import java.util.Date;
 @Component
 @Builds({"kenyaemr.hiv.report.needsViralLoad"})
 public class NeedsViralLoadTestReportBuilder extends CalculationReportBuilder {
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
     @Override
     protected void addColumns(CohortReportDescriptor report, PatientDataSetDefinition dsd) {
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
@@ -71,7 +75,9 @@ public class NeedsViralLoadTestReportBuilder extends CalculationReportBuilder {
                 return null ;
             }
         });
-        dsd.addColumn("Date of last viral load", new ObsForPersonDataDefinition("Date of last viral load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null ), "", new DataConverter() {
+        dsd.addColumn("Date of last viral load", new CalculationDataDefinition("Date of last viral load", new DateOfLastViralLoadCalculation()), "", new DateArtStartDateConverter());
+
+        /*dsd.addColumn("Date of last viral load", new ObsForPersonDataDefinition("Date of last viral load", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), null, null ), "", new DataConverter() {
             @Override
             public Class<?> getInputDataType() {
                 return Obs.class;
@@ -93,7 +99,7 @@ public class NeedsViralLoadTestReportBuilder extends CalculationReportBuilder {
                 }
                 return null ;
             }
-        });
+        });*/
         dsd.addColumn("LDL", new CalculationDataDefinition("LDL", new LowDetectableViralLoadCalculation()), "", new DataConverter() {
             @Override
             public Class<?> getInputDataType() {
