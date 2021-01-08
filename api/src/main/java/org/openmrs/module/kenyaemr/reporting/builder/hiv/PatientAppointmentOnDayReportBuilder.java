@@ -19,19 +19,16 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLTransferOutPatientsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledARTDrugRefillsCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledAppointmentCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.ArtDrugRefillAppointmentConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredDrugRefillAppointmentDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredAppointmentDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -54,8 +51,8 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.hiv.report.scheduledDrugRefills"})
-public class ArtDrugRefillsOnDayReportBuilder extends AbstractHybridReportBuilder {
+@Builds({"kenyaemr.hiv.report.scheduledAppointment"})
+public class PatientAppointmentOnDayReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 	String paramMapping = "startDate=${startDate},endDate=${endDate}";
 
@@ -80,19 +77,20 @@ public class ArtDrugRefillsOnDayReportBuilder extends AbstractHybridReportBuilde
 
 		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
 		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-		dsd.setName("patientsScheduledForARTDrugRefill");
+		dsd.setName("patientsScheduledForAppointment");
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Unique Patient No", identifierDef, "");
 		dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
 		dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
+		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 
 		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
 		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
 		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
 		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
-		HonouredDrugRefillAppointmentDataDefinition honouredVisitDs = new HonouredDrugRefillAppointmentDataDefinition();
+		HonouredAppointmentDataDefinition honouredVisitDs = new HonouredAppointmentDataDefinition();
 		honouredVisitDs.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		honouredVisitDs.addParameter(new Parameter("endDate", "End Date", Date.class));
 
@@ -101,15 +99,15 @@ public class ArtDrugRefillsOnDayReportBuilder extends AbstractHybridReportBuilde
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
+		dsd.addColumn("Next HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
 		dsd.addColumn("Has visit on day", honouredVisitDs, paramMapping, new ArtDrugRefillAppointmentConverter());
 
 	}
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = new ScheduledARTDrugRefillsCohortDefinition();
-        cd.setName("Patients scheduled for ART drug refill");
+		CohortDefinition cd = new ScheduledAppointmentCohortDefinition();
+        cd.setName("Patients scheduled for appointment");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		return ReportUtils.map(cd, paramMapping);

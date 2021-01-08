@@ -15,10 +15,10 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Returns a list of patients scheduled to have drug refills on a date
+ * Returns a list of patients scheduled to have an appointment on a date
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.scheduledArtDrugRefills")
-public class ScheduledARTDrugRefillsCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.scheduledAppointment")
+public class ScheduledAppointmentCohortDefinition extends BaseCohortDefinition {
 
 }

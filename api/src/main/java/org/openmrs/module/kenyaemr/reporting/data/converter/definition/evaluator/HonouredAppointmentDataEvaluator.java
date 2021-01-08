@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredAppointmentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredDrugRefillAppointmentDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -26,8 +27,8 @@ import java.util.Map;
 /**
  * Evaluates whether a patient honoured drug refill appointment
  */
-@Handler(supports=HonouredDrugRefillAppointmentDataDefinition.class, order=50)
-public class HonouredHivAppointmentDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=HonouredAppointmentDataDefinition.class, order=50)
+public class HonouredAppointmentDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
