@@ -39,8 +39,7 @@ public class HonouredAppointmentDataEvaluator implements PersonDataEvaluator {
         String qry = "select e.patient_id, 'Yes'\n" +
                 "from encounter e\n" +
                 "inner join encounter_type et on et.encounter_type_id=e.encounter_type and et.uuid in ('e87aa2ad-6886-422e-9dfd-064e3bfe3aad','a0034eee-1940-4e35-847f-97537a35d05e'," +
-                                                                                                       "'465a92f2-baf8-42e9-9612-53064be868e8','c6d09e05-1f25-4164-8860-9f32c5a02df0'," +
-                                                                                                       "'fbf0bfce-e9f4-45bb-935a-59195d8a0e35','c4a2be28-6673-4c36-b886-ea89b0a42116')\n" +
+                                                                                                       "'465a92f2-baf8-42e9-9612-53064be868e8')\n" +
                 "where e.voided=0 and date(e.encounter_datetime) between date(:startDate) and date(:endDate)";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
