@@ -18,8 +18,8 @@ import java.io.PrintWriter;
 /**
  * update location id for openmrs identifier
  */
-@Component("kenyaemr.chore.UpdateLocationId")
-public class UpdateLocationId extends AbstractChore {
+@Component("kenyaemr.chore.UpdateOpenMRSIDWithNullLocation")
+public class UpdateOpenMRSIDWithNullLocation extends AbstractChore {
 
     /**
      * @see AbstractChore#perform(PrintWriter)
