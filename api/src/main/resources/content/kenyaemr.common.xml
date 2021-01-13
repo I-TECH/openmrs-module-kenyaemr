@@ -70,6 +70,7 @@
 				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
+				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
 
 			</set>
 		</property>
@@ -657,7 +658,17 @@
 		<property name="template" value="kenyaemr:active_on_art_linelist.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:activePatients" />
 	</bean>
-	
 
+	<bean id="kenyaemr.common.report.patientRegimenHistory" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="35e2888e-8892-46c7-a6ea-8e3753ff1594" />
+		<property name="name" value="Patient Regimen History Report" />
+		<property name="description" value="A linelist of patients and their regimen history. It's primarily provided for regimen line data cleaning" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:patient_regimen_history.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:regimenHistory" />
+	</bean>
 
 </beans>
