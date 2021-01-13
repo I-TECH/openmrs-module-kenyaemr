@@ -27,10 +27,11 @@ public class UpdateOpenMRSIDWithNullLocation extends AbstractChore {
 
     @Override
     public void perform(PrintWriter out) {
-        String updateConceptSql = "update patient_identifier pi set pi.location_id = (select property_value from global_property where property='kenyaemr.defaultLocation') where pi.location_id is NULL and pi.identifier_type = 3;";
+        String updatePatientIdentifierLocSql = "update patient_identifier pi inner join patient_identifier_type it on pi.identifier_type = it.patient_identifier_type_id and it.uuid = 'dfacd928-0370-4315-99d7-6ec1c9f7ae76' " +
+                "set pi.location_id = (select property_value from global_property where property='kenyaemr.defaultLocation') where pi.location_id is NULL;";
 
 
-        Context.getAdministrationService().executeSQL(updateConceptSql, false);
+        Context.getAdministrationService().executeSQL(updatePatientIdentifierLocSql, false);
 
 
         out.println("Completed updating location id for Openmrs patient identifiers with NULL ids");

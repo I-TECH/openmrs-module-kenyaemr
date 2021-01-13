@@ -27,10 +27,10 @@ public class UpdateOpenMRSIDAsPreferredIdentifier extends AbstractChore {
 
     @Override
     public void perform(PrintWriter out) {
-        String updateConceptSql = "update patient_identifier pi set pi.preferred = 1 where pi.preferred = 0 and pi.identifier_type = 3;";
+        String updatePreferredIdentifierSql = " update patient_identifier pi inner join patient_identifier_type it on pi.identifier_type = it.patient_identifier_type_id and it.uuid = 'dfacd928-0370-4315-99d7-6ec1c9f7ae76' set pi.preferred = 1 where pi.preferred = 0;";
 
 
-        Context.getAdministrationService().executeSQL(updateConceptSql, false);
+        Context.getAdministrationService().executeSQL(updatePreferredIdentifierSql, false);
 
 
         out.println("Completed updating OpenMRS ID as preferred identifier");
