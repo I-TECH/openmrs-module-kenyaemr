@@ -458,6 +458,8 @@
 		<property name="name" value="Patients scheduled for appointment" />
 		<property name="description" value="Patients with scheduled appointment on a date" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/patients_scheduled_for_hiv_appointment.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:patientsScheduledForAppointment" />
 	</bean>
 
 </beans>
