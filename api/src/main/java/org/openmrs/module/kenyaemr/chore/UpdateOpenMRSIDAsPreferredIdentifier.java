@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 import java.io.PrintWriter;
 
 /**
- * update location id for openmrs identifier
+ * update OpenMRS id as preferred identifier
  */
-@Component("kenyaemr.chore.UpdateOpenMRSIDWithNullLocation")
-public class UpdateOpenMRSIDWithNullLocation extends AbstractChore {
+@Component("kenyaemr.chore.UpdateOpenMRSIDAsPreferredIdentifier")
+public class UpdateOpenMRSIDAsPreferredIdentifier extends AbstractChore {
 
     /**
      * @see AbstractChore#perform(PrintWriter)
@@ -27,14 +27,13 @@ public class UpdateOpenMRSIDWithNullLocation extends AbstractChore {
 
     @Override
     public void perform(PrintWriter out) {
-        String updatePatientIdentifierLocSql = "update patient_identifier pi inner join patient_identifier_type it on pi.identifier_type = it.patient_identifier_type_id and it.uuid = 'dfacd928-0370-4315-99d7-6ec1c9f7ae76' " +
-                "set pi.location_id = (select property_value from global_property where property='kenyaemr.defaultLocation') where pi.location_id is NULL;";
+        String updatePreferredIdentifierSql = " update patient_identifier pi inner join patient_identifier_type it on pi.identifier_type = it.patient_identifier_type_id and it.uuid = 'dfacd928-0370-4315-99d7-6ec1c9f7ae76' set pi.preferred = 1 where pi.preferred = 0;";
 
 
-        Context.getAdministrationService().executeSQL(updatePatientIdentifierLocSql, false);
+        Context.getAdministrationService().executeSQL(updatePreferredIdentifierSql, false);
 
 
-        out.println("Completed updating location id for Openmrs patient identifiers with NULL ids");
+        out.println("Completed updating OpenMRS ID as preferred identifier");
 
     }
 
