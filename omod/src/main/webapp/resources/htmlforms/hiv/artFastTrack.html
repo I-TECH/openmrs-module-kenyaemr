@@ -15,23 +15,18 @@
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
 
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var REGIMEN_DURATION = GREENCARD_VELOCITY.split(",")[5].split(":")[1];
+
         function onEncounterDateChange() {
             var patientId = <lookup expression="patient.patientId"/>;
             var encDate = getValue('encounter-date.value');
             if(encDate == null) {
                 encDate = new Date();
             }
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? data.duration : 'Not started';
-                    jq('#calculated-duration-start-art').html(msg);
-                });
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
-                .done(function(data) {
-                    var msg = data.duration ? (data.regimen +  ' (' + data.duration + ')') : 'None';
-                    jq('#calculated-duration-current-regimen').html(msg);
-                });
-        }
+                jq('#calculated-duration-current-regimen').html( REGIMEN_NAME ? (REGIMEN_NAME + ' ('+REGIMEN_DURATION+')') : 'None');
+          }
         var medicationFromElsewhere = function() {
             var val = jq(this).val();
             if (val == 1066){
@@ -169,7 +164,7 @@
                 </tr>
                 <tr>
                     <td>Current Regimen:</td>
-                    <td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+                    <td ><span id="calculated-duration-current-regimen" class="value"></span></td>
                 </tr>
                 <tr>
                     <td>Treatment Supporter:</td>
