@@ -40,7 +40,7 @@ public class PatientRegimenHistoryCohortDefinitionEvaluator implements Encounter
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT e.encounter_id from kenyaemr_etl.etl_drug_event e  where ifnull(e.voided,0) = 0 and (regimen_name is not null and regimen_name !='') and date(e.date_started) BETWEEN date(:startDate) AND date(:endDate) and program = 'HIV' ;";
+		String qry = "SELECT e.encounter_id from kenyaemr_etl.etl_drug_event e  where ifnull(e.voided,0) = 0 and (regimen_line is null or regimen_line ='') and (regimen_name is not null and regimen_name !='') and date(e.date_started) BETWEEN date(:startDate) AND date(:endDate) and program = 'HIV' ;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
