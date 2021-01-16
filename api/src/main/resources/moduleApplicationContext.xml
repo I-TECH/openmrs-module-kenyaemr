@@ -53,6 +53,14 @@
 		<constructor-arg value="250" />
 	</bean>
 
+	<bean id="kenyaemr.app.counselling" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.counselling" />
+		<constructor-arg value="Adherence Counselling" />
+		<constructor-arg value="kenyaemr/adherenceCounselling/counsellingHome.page" />
+		<constructor-arg value="kenyaemr:apps/counselling.png" />
+		<constructor-arg value="255" />
+	</bean>
+
 	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.medicalEncounter" />
 		<constructor-arg value="Clinician" />
