@@ -160,6 +160,7 @@
 			<set>
 				<ref bean="kenyaemr.app.clinician"/>
 				<ref bean="kenyaemr.app.chart"/>
+				<ref bean="kenyaemr.app.counselling"/>
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png"/>

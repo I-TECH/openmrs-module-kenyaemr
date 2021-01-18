@@ -32,13 +32,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
- * Visit summary fragment
+ * serves counseling fragment
  */
 public class CounsellingHistoryFragmentController {
 
@@ -47,37 +49,55 @@ public class CounsellingHistoryFragmentController {
     public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
         PatientWrapper patientWrapper = new PatientWrapper(patient);
-
         Form enhancedAdherenceForm = MetadataUtils.existing(Form.class, HivMetadata._Form.ENHANCED_ADHERENCE_SCREENING);
         List<Encounter> enhancedAdherenceEncounters = patientWrapper.allEncounters(enhancedAdherenceForm);
-        //Collections.reverse(enhancedAdherenceEncounters);
-        //List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(enhancedAdherenceForm), null, null, null, null, false);
-
-        List<SimpleObject> encDetails = new ArrayList<SimpleObject>();
-        for (Encounter e : enhancedAdherenceEncounters) {
-
-
-            SimpleObject o = getSessionDetails(e.getObs(), e);
-            encDetails.add(o);
-            model.put("encDetails", encDetails);
-        }
-        model.put("enhancedAdherenceEncounters", enhancedAdherenceEncounters);
+        TreeMap<String, List<SimpleObject>> orderedEpisodes = getSessionDetails(enhancedAdherenceEncounters);
+        model.put("episodes", orderedEpisodes);
        }
 
-    SimpleObject getSessionDetails (Set<Obs> obsList, Encounter e) {
+    /**
+     * Extract session information from encounters and order them based on counseling episodes
+     * @param encounters
+     * @return
+     */
+    TreeMap<String, List<SimpleObject>> getSessionDetails (List<Encounter> encounters) {
 
         Integer sessionConcept = 1639;
-        Double sessionNum = null;
-        for(Obs obs:obsList) {
-            if (obs.getConcept().getConceptId().equals(sessionConcept) ) {
-                sessionNum = obs.getValueNumeric();
+        Integer dateOfFirstSessionConcept = 164891;
+        TreeMap<String, List<SimpleObject>> orderedEpisodes = new TreeMap<String, List<SimpleObject>>();
+
+        for (Encounter e : encounters) {
+            Double sessionNum = null;
+            Date episodeStartDate = null;
+            String episodeStartDateString = null;
+            for(Obs obs : e.getObs()) {
+                if (obs.getConcept().getConceptId().equals(sessionConcept) ) {
+                    sessionNum = obs.getValueNumeric();
+                } else if (obs.getConcept().getConceptId().equals(dateOfFirstSessionConcept)) {
+                    episodeStartDate = obs.getValueDatetime();
+                }
+            }
+
+            episodeStartDateString = episodeStartDate != null ? DATE_FORMAT.format(episodeStartDate) : DATE_FORMAT.format(e.getEncounterDatetime());
+
+            SimpleObject encData = SimpleObject.create(
+                    "episodeStartDate", episodeStartDateString,
+                    "sessionNum", sessionNum != null ? sessionNum.intValue() : "",
+                    "encDate", e.getEncounterDatetime(),
+                    "encounter", Arrays.asList(e),
+                    "form",e.getForm()
+            );
+
+            if (orderedEpisodes.containsKey(episodeStartDateString)) {
+                orderedEpisodes.get(episodeStartDateString).add(encData);
+            } else {
+                List<SimpleObject> sessionList = new ArrayList<SimpleObject>();
+                sessionList.add(encData);
+                orderedEpisodes.put(episodeStartDateString, sessionList);
             }
         }
-        return SimpleObject.create(
-                "sessionNum", sessionNum != null ? sessionNum : "",
-                "encDate", DATE_FORMAT.format(e.getEncounterDatetime()),
-                "encounter", e,
-                "form",e.getForm()
-        );
+
+        return orderedEpisodes;
     }
+
 }

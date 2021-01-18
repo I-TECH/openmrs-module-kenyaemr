@@ -41,6 +41,7 @@ public class EmrConstants {
 	public static final String APP_KP = KP_MODULE_ID + ".keypopulation.provider";
 	public static final String APP_AIR = FACILITY_REPORTING_MODULE_ID + ".facilityReporting.air";
 	public static final String APP_LAB_MANIFEST = MODULE_ID + ".labmanifest";
+	public static final String APP_ADHERENCE_COUNSELOR = MODULE_ID + ".counselling";
 
 
 	/**

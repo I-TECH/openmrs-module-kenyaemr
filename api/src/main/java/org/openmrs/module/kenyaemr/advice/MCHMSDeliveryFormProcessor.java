@@ -98,8 +98,6 @@ public class MCHMSDeliveryFormProcessor implements AfterReturningAdvice {
 
                            baby = Context.getPatientService().savePatient(baby);
                            addRelationship(parent, baby);
-//                            System.out.println("Name: " + baby.getNames());
-//                            System.out.println("Dobb: " + baby.getBirthdate());
                         } catch (Exception e) {
                             e.printStackTrace();
                             errorOccured = true;

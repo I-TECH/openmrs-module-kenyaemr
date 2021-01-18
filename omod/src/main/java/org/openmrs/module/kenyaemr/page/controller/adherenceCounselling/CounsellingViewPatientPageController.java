@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * View patient page for clinician app
  */
-@AppPage(EmrConstants.APP_CLINICIAN)
+@AppPage(EmrConstants.APP_ADHERENCE_COUNSELOR)
 public class CounsellingViewPatientPageController {
 
 	public void controller(PageModel model) {

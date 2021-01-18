@@ -36,32 +36,33 @@
 
 <div>
 
-    <fieldset>
-        <legend>Adherence Counselling History</legend>
-        <%if (encDetails.encounter) { %>
-        <table class="simple-table">
+    <% if(episodes) { %>
+        <% episodes.each { %>
+            <fieldset>
+                <legend>Started on ${ it.key }</legend>
+                <% if(it.value) { %>
+                    <table class="simple-table">
 
-        <tr>
-            <th align="left">Date</th>
-            <th align="left">Session Number</th>
-            <th align="left">Form</th>
+                        <tr>
+                            <th align="left" width="15%">Date</th>
+                            <th align="left" width="15%">Session Number</th>
+                            <th align="left">Form</th>
 
-         </tr>
-            <% encDetails.each {  %>
-          <tr>
-            <td>${it.encDate}</td>
-            <td>${it.sessionNum}</td>
-            <td>
-                ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: enhancedAdherenceEncounters, onEncounterClick: onEncounterClick])}
-            </td>
-            </tr>
+                        </tr>
+                    <% it.value.each { %>
+                        <tr>
+                            <td width="15%">${kenyaui.formatDate(it.encDate)}</td>
+                            <td width="15%">${it.sessionNum}</td>
+                            <td>
+                                ${ui.includeFragment("kenyaemr", "widget/encounterStack", [encounters: it.encounter, onEncounterClick: onEncounterClick])}
+                            </td>
+                        </tr>
+                    <% } %>
+                    </table>
+                <% } %>
+            </fieldset>
         <% } %>
+    <% } %>
 
-        </table>
-        <% } else {%>
-        <div>No counselling history</div>
-
-        <% } %>
-    </fieldset>
 
 </div>
