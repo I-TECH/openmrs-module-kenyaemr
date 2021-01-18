@@ -159,6 +159,7 @@
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 				<ref bean="kenyakeypop.app.keypopulation.provider" />
 			</set>
 		</property>
@@ -281,6 +282,7 @@
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsInitialTestCalculation" />
@@ -299,6 +301,7 @@
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsRetestCalculation" />
@@ -318,6 +321,7 @@
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.defaultertracing" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsLinkageAndReferralCalculation" />
@@ -348,6 +352,7 @@
 				<ref bean="kenyaemr.app.intake"/>
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVNegativePatientsCalculation" />
@@ -365,6 +370,7 @@
 				<ref bean="kenyaemr.app.chart" />
 				<ref bean="kenyaemr.app.hts" />
 				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsScreeningCalculation" />
