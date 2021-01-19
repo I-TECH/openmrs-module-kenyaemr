@@ -49,7 +49,7 @@
                             <th align="left">Form</th>
 
                         </tr>
-                    <% it.value.each { %>
+                    <% it.value.reverse().each { %>
                         <tr>
                             <td width="15%">${kenyaui.formatDate(it.encDate)}</td>
                             <td width="15%">${it.sessionNum}</td>
