@@ -18,9 +18,9 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
 
 /**
- * Homepage for the clinician app
+ * Homepage for the adherence counseling app
  */
-@AppPage(EmrConstants.APP_CLINICIAN)
+@AppPage(EmrConstants.APP_ADHERENCE_COUNSELOR)
 public class CounsellingHomePageController {
 
 	public String controller(UiUtils ui, PageModel model) {
