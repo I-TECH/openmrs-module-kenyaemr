@@ -224,7 +224,6 @@ public class EmrUtilsFragmentController {
 	 */
 	public SimpleObject clientsBookedForMchConsultationOnDate(@RequestParam(value = "appointmentDate") String tca) {
 
-		System.out.println("Date passed from browser: " + tca);
 		String appointmentQuery = "select count(patient_id) as bookings\n" +
 				"from (\n" +
 				"select\n" +

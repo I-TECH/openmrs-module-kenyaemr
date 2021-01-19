@@ -104,7 +104,6 @@ public class AutoUpdatePageController {
         con.setRequestMethod("GET");
         int responseCode = con.getResponseCode();
         StringBuffer response = new StringBuffer();
-        System.out.println("GET Response Code :: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream()));

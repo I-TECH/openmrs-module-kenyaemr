@@ -60,6 +60,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String HIV_TESTING_COUNSELLOR = "HTS Counsellor";
 		public static final String AIR = "AIR";
 		public static final String LAB_MANIFEST = "Lab Manifest";
+		public static final String ADHERENCE_COUNSELOR = "Adherence Counselor";
 	}
 
 	/**
@@ -85,7 +86,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_HIV_TESTING,
 				EmrConstants.APP_PREP,
 				EmrConstants.APP_AIR,
-				EmrConstants.APP_LAB_MANIFEST
+				EmrConstants.APP_LAB_MANIFEST,
+				EmrConstants.APP_ADHERENCE_COUNSELOR
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -275,6 +277,18 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_LAB_MANIFEST),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
+		install(role(_Role.ADHERENCE_COUNSELOR, "Can access the adherence counselor app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 	}

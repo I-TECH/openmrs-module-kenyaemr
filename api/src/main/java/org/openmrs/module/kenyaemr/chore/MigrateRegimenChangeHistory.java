@@ -386,7 +386,6 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
 
         AdministrationService as = Context.getAdministrationService();
         List<List<Object>> rowsAffected = as.executeSQL(encountersWithNullRegimenQry, false);
-        System.out.println("Rows affected: " + rowsAffected.size());
     }
 
     protected void discontinueAllActiveOrders(){
