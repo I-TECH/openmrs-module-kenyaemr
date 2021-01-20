@@ -45,7 +45,7 @@ import java.util.TreeMap;
 public class CounsellingHistoryFragmentController {
 
     ConceptService conceptService = Context.getConceptService();
-    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
     public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
         PatientWrapper patientWrapper = new PatientWrapper(patient);
