@@ -9,6 +9,16 @@
  */
 package org.openmrs.module.kenyaemr.page.controller.admin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.api.context.Context;
@@ -16,15 +26,10 @@ import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.ui.framework.page.PageModel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,7 +43,6 @@ import java.util.Date;
 @AppPage(EmrConstants.APP_ADMIN)
 public class AutoUpdatePageController {
     public static final String AUTO_UPDATE_RELEASE_URL = "kenyaemr.autoUpdateReleaseUrl";
-    private static String latestReleaseUrl = Context.getAdministrationService().getGlobalProperty(AUTO_UPDATE_RELEASE_URL);
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final Log log = LogFactory.getLog(AutoUpdatePageController.class);
@@ -99,25 +103,36 @@ public class AutoUpdatePageController {
 
 
     private static String getLatestRelease() throws IOException {
-        URL obj = new URL(latestReleaseUrl);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        int responseCode = con.getResponseCode();
-        StringBuffer response = new StringBuffer();
-        if (responseCode == HttpURLConnection.HTTP_OK) { // success
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+        String latestReleaseUrl = Context.getAdministrationService().getGlobalProperty(AUTO_UPDATE_RELEASE_URL);
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                SSLContexts.createDefault(),
+                new String[] { "TLSv1.2"},
+                null,
+                SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+        CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+        try {
+            HttpGet getRequest = new HttpGet(latestReleaseUrl);
+            getRequest.addHeader("content-type", "application/json");
+            CloseableHttpResponse response = httpClient.execute(getRequest);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200) {
+                throw new RuntimeException("Failed with HTTP error code : " + statusCode);
             }
-            in.close();
+            String result =null;
+            try {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    result = EntityUtils.toString(entity);
+                }
 
-        } else {
-            System.out.println("GET request not worked");
+            } finally {
+                response.close();
+            }
+            return result;
+
+        } finally {
+            httpClient.close();
         }
-        return response.toString();
-
     }
 
     private boolean checkInternetConnectionStatus() {
