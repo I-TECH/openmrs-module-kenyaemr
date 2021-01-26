@@ -77,8 +77,7 @@ public class ScheduledAppointmentCohortDefinitionEvaluator implements CohortDefi
 				" where fup.visit_date <= date(:endDate)\n" +
 				"group by patient_id\n" +
 				"having (\n" +
-				"          (date(latest_tca) BETWEEN date(:startDate) AND date(:endDate)) and\n" +
-				"           (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null) and (date(latest_vis_date) > date(date_discontinued) and date(latest_tca) > date(date_discontinued) or disc_patient is null)\n" +
+				"          (date(latest_tca) BETWEEN date(:startDate) AND date(:endDate)) " +
 				")\n" +
 				") t;";
 

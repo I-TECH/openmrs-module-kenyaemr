@@ -87,19 +87,19 @@ public class PatientAppointmentOnDayReportBuilder extends AbstractHybridReportBu
 
 		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
 		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
+		//EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT); TODO: establish whether this is needed
 		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
 
 		HonouredAppointmentDataDefinition honouredVisitDs = new HonouredAppointmentDataDefinition();
 		honouredVisitDs.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		honouredVisitDs.addParameter(new Parameter("endDate", "End Date", Date.class));
 
-		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
+		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation);
 
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-		dsd.addColumn("Next HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+		dsd.addColumn("Next HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 		dsd.addColumn("Has visit on day", honouredVisitDs, paramMapping, new ArtDrugRefillAppointmentConverter());
 
 	}
