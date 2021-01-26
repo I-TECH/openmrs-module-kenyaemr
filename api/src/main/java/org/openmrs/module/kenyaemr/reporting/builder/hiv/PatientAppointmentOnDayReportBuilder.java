@@ -26,12 +26,15 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledAppointm
 import org.openmrs.module.kenyaemr.reporting.data.converter.ArtDrugRefillAppointmentConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.CustomDateStringConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HivProgramLastDiscontinuationDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredAppointmentDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
@@ -100,6 +103,7 @@ public class PatientAppointmentOnDayReportBuilder extends AbstractHybridReportBu
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
 		dsd.addColumn("Next HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
+		dsd.addColumn("Last Discontinuation Date", new HivProgramLastDiscontinuationDateDataDefinition(), "", new CustomDateStringConverter());
 		dsd.addColumn("Has visit on day", honouredVisitDs, paramMapping, new ArtDrugRefillAppointmentConverter());
 
 	}
