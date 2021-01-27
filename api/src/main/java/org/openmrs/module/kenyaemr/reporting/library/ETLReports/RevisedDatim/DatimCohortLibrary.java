@@ -1796,7 +1796,7 @@ public class DatimCohortLibrary {
                 "                (((date(latest_tca) < date_sub(:startDate, INTERVAL 30 DAY)) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null))\n" +
                 "     ) e inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id=e.patient_id and date(f.visit_date) between date(latest_tca) and date(:endDate)\n" +
                 "         inner join kenyaemr_etl.etl_patient_hiv_followup r on r.patient_id=e.patient_id and date(r.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "group by e.patient_id)k where timestampdiff(DAY,date(k.ltca_after_return),date(:endDate)) <= 30;";
+                "group by e.patient_id)k;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_RTT");
@@ -2957,7 +2957,7 @@ public CohortDefinition txMLLTFUonDrugsUnder3Months() {
             "(select dt.patient_id from kenyaemr_etl.etl_ccc_defaulter_tracing dt where dt.is_final_trace =1267 and dt.true_status =5240 and date(dt.visit_date) between date(:startDate) and date(:endDate) group by dt.patient_id )dt on tx_ml.patient_id = dt.patient_id\n" +
             "left outer join\n" +
             "(select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d group by d.patient_id having mid(max(concat(date(d.visit_date),d.discontinuation_reason)),11)=5240 and max(date(d.visit_date)) between date(:startDate) and date(:endDate))dis on tx_ml.patient_id = dis.patient_id\n" +
-            "where (dis.patient_id is not null or dt.patient_id is not null or datediff(:endDate, date(tx_ml.latest_tca))>90) and datediff(tx_ml.latest_vis_date,tx_ml.date_started) < 90\n" +
+            "where (dis.patient_id is not null or dt.patient_id is not null or datediff(:endDate, date(tx_ml.latest_tca))>30) and datediff(tx_ml.latest_vis_date,tx_ml.date_started) < 90\n" +
             "group by tx_ml.patient_id;";
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("TX_ML_LTFU_ONDRUGS_UNDER3MONTHS");
@@ -3023,7 +3023,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
             "(select dt.patient_id from kenyaemr_etl.etl_ccc_defaulter_tracing dt where dt.is_final_trace =1267 and dt.true_status =5240 and date(dt.visit_date) between date(:startDate) and date(:endDate) group by dt.patient_id )dt on tx_ml.patient_id = dt.patient_id\n" +
             "left outer join\n" +
             "(select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d group by d.patient_id having mid(max(concat(date(d.visit_date),d.discontinuation_reason)),11)=5240 and max(date(d.visit_date)) between date(:startDate) and date(:endDate))dis on tx_ml.patient_id = dis.patient_id\n" +
-            "where (dis.patient_id is not null or dt.patient_id is not null  or datediff(:endDate, date(tx_ml.latest_tca))>90) and datediff(tx_ml.latest_vis_date,tx_ml.date_started) >90\n" +
+            "where (dis.patient_id is not null or dt.patient_id is not null  or datediff(:endDate, date(tx_ml.latest_tca))>30) and datediff(tx_ml.latest_vis_date,tx_ml.date_started) >90\n" +
             "group by tx_ml.patient_id;";
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("TX_ML_LTFU_ONDRUGS_OVER3MONTHS");
