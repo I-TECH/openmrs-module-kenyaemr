@@ -48,7 +48,7 @@ public class PendingVLAndCD4ResultsDefinitionEvaluator implements CohortDefiniti
 
 		String qry="select distinct o.patient_id from orders o \n" +
 				"  inner join (select order_type_id from order_type where uuid = '52a447d3-a64a-11e3-9aeb-50e549534c5e') ot on ot.order_type_id = o.order_type_id\n" +
-				"  where o.concept_id in (1305, 856, 5497, 730) and o.voided=0 and o.order_action='NEW'";
+				"  where o.concept_id in (1305, 856, 5497, 730) and o.voided=0 and o.order_action='NEW' and o.date_stopped is null";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
