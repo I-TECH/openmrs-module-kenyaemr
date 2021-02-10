@@ -44,7 +44,11 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinit
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.TBScreeningConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.InfantProphylaxisDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PCREIDAt8MonthsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PregnancyIntentionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.TBScreeningAtLastVisitDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIInfantProphylaxisDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
@@ -253,6 +257,9 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         definition.setTypes(encounterTypes);
         dsd.addColumn("Last clinical encounter date", definition, "", new EncounterDatetimeConverter());
         dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+        dsd.addColumn("Pregnancy intention", new PregnancyIntentionDataDefinition(), "");
+        dsd.addColumn("PCR/EID at 8 months", new PCREIDAt8MonthsDataDefinition(), "");
+        dsd.addColumn("Infant Prophylaxis", new InfantProphylaxisDataDefinition(), "");
 
         return dsd;
     }
@@ -307,6 +314,10 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         definition.setTypes(encounterTypes);
         dsd.addColumn("Last clinical encounter date", definition, "", new EncounterDatetimeConverter());
         dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+
+        dsd.addColumn("Pregnancy intention", new PregnancyIntentionDataDefinition(), "");
+        dsd.addColumn("PCR/EID at 8 months", new PCREIDAt8MonthsDataDefinition(), "");
+        dsd.addColumn("Infant Prophylaxis", new InfantProphylaxisDataDefinition(), "");
 
         return dsd;
     }
