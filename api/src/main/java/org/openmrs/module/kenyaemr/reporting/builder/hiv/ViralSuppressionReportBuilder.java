@@ -61,7 +61,8 @@ public class ViralSuppressionReportBuilder extends AbstractReportBuilder {
         cohortDsd.setDescription("Viral suppression report");
         cohortDsd.addColumn("Number Suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.suppressed(), indParams),"");
         cohortDsd.addColumn("Number Un-suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.unsuppressed(), indParams),"");
-        cohortDsd.addColumn("Number with no VL Results", "", ReportUtils.map(suppressionIndicatorLibrary.noVLResults(), indParams),"");
+        cohortDsd.addColumn("Number with no current VL", "", ReportUtils.map(suppressionIndicatorLibrary.noCurrentVLResults(), indParams),"");
+        cohortDsd.addColumn("Number with no VL", "", ReportUtils.map(suppressionIndicatorLibrary.noVLResults(), indParams),"");
 
         return cohortDsd;
 

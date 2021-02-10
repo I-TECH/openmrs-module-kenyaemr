@@ -2109,41 +2109,52 @@ public class DatimCohortLibrary {
 
     }
     /*Pregnant Women on ART with Suppressed Routine VL within last 12 Months*/
-    public CohortDefinition pregnantOnARTWithSuppressedRoutineVLLast12Months() {
+    public CohortDefinition pregnantAndBFOnARTWithSuppressedVLLast12Months(String testType) {
 
-        String sqlQuery = "select vl.patient_id from\n" +
-                "                          (select e.patient_id from kenyaemr_etl.etl_drug_event e\n" +
-                "                                                      inner join\n" +
-                "                                                        (\n" +
-                "                                                        select\n" +
-                "                                                               l.patient_id,\n" +
-                "                                                               l.visit_date,\n" +
-                "                                                               if(l.lab_test = 856, l.test_result, if(l.lab_test=1305 and l.test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                                               l.urgency\n" +
-                "                                                        from kenyaemr_etl.etl_laboratory_extract l\n" +
-                "                                                        where l.lab_test in (1305, 856)  and l.visit_date between  date_sub(:endDate , interval 12 MONTH) and  date(:endDate)\n" +
-                "                                                                and l.urgency ='ROUTINE'\n" +
-                "                                                        ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "\n" +
-                "                                                      left JOIN\n" +
-                "                                                        (select pd.patient_id, pd.visit_date from kenyaemr_etl.etl_patient_program_discontinuation pd\n" +
-                "                                                         where date(visit_date) <= date(:endDate) and pd.program_name='HIV'\n" +
-                "                                                         group by pd.patient_id\n" +
-                "                                                        ) d on d.patient_id = e.patient_id\n" +
-                "                           where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "                           group by e.patient_id\n" +
-                "                           having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000) vl\n" +
-                "                            inner join\n" +
-                "                              (select mid(max(concat(en.visit_date,en.patient_id)),11 )latest_enr\n" +
-                "                               from kenyaemr_etl.etl_mch_enrollment en\n" +
-                "                                      left outer join (select mid(max(concat(del.visit_date,del.patient_id)),11 )latest_del, max(visit_date) lst_del_visit_date\n" +
-                "                                                       from kenyaemr_etl.etl_mchs_delivery del group by del.patient_id) dl on dl.latest_del = en.patient_id\n" +
-                "                                      left outer join (select mid(max(concat(pv.visit_date,pv.patient_id)),11 )latest_pv, max(visit_date) lst_pv_visit_date\n" +
-                "                                                       from kenyaemr_etl.etl_mch_postnatal_visit pv group by pv.patient_id) psnv on psnv.lst_pv_visit_date = en.patient_id\n" +
-                "                               group by en.patient_id)t on t.latest_enr = vl.patient_id\n" +
-                "                            left join (select fup.patient_id from kenyaemr_etl.etl_patient_hiv_followup fup where fup.pregnancy_status =1065 and fup.voided = 0\n" +
-                "                                       group by fup.patient_id having max(fup.visit_date) between date_sub(:endDate, interval 12 MONTH )\n" +
-                "                                                                          and date(:endDate)) f on vl.patient_id = f.patient_id ;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,\n" +
+                "           vl.order_reason as order_reason\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency,\n" +
+                "                              mid(max(concat(visit_date,order_reason)),11) as order_reason\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = "+testType+" and vl.order_reason in (1434,159882) and (vl.vl_result < 1000 or vl.vl_result = 'LDL')\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_PREGNANT_ROUTINE");
@@ -2202,42 +2213,116 @@ public class DatimCohortLibrary {
 
     }
 
-    /*Pregnant Women on ART with Suppressed undocumented VL within last 12 Months*/
-    public CohortDefinition pregnantOnARTWithSuppressedUndocumentedVLLast12Months() {
+    public CohortDefinition kpOnARTSuppRoutineVLLast12Months(String kpType) {
 
-        String sqlQuery = "select vl.patient_id from\n" +
-                "                          (select e.patient_id from kenyaemr_etl.etl_drug_event e\n" +
-                "                                                      inner join\n" +
-                "                                                        (\n" +
-                "                                                        select\n" +
-                "                                                               l.patient_id,\n" +
-                "                                                               l.visit_date,\n" +
-                "                                                               if(l.lab_test = 856, l.test_result, if(l.lab_test=1305 and l.test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                                               l.urgency\n" +
-                "                                                        from kenyaemr_etl.etl_laboratory_extract l\n" +
-                "                                                        where l.lab_test in (1305, 856)  and l.visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                                                                and l.urgency is null or l.urgency not in ('IMMEDIATELY','ROUTINE')\n" +
-                "                                                        ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "\n" +
-                "                                                      left JOIN\n" +
-                "                                                        (select pd.patient_id, pd.visit_date from kenyaemr_etl.etl_patient_program_discontinuation pd\n" +
-                "                                                         where date(visit_date) <= date(:endDate) and pd.program_name='HIV'\n" +
-                "                                                         group by pd.patient_id\n" +
-                "                                                        ) d on d.patient_id = e.patient_id\n" +
-                "                           where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "                           group by e.patient_id\n" +
-                "                           having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000) vl\n" +
-                "                            inner join\n" +
-                "                              (select mid(max(concat(en.visit_date,en.patient_id)),11 )latest_enr\n" +
-                "                               from kenyaemr_etl.etl_mch_enrollment en\n" +
-                "                                      left outer join (select mid(max(concat(del.visit_date,del.patient_id)),11 )latest_del, max(visit_date) lst_del_visit_date\n" +
-                "                                                       from kenyaemr_etl.etl_mchs_delivery del group by del.patient_id) dl on dl.latest_del = en.patient_id\n" +
-                "                                      left outer join (select mid(max(concat(pv.visit_date,pv.patient_id)),11 )latest_pv, max(visit_date) lst_pv_visit_date\n" +
-                "                                                       from kenyaemr_etl.etl_mch_postnatal_visit pv group by pv.patient_id) psnv on psnv.lst_pv_visit_date = en.patient_id\n" +
-                "                               group by en.patient_id)t on t.latest_enr = vl.patient_id\n" +
-                "                            left join (select fup.patient_id from kenyaemr_etl.etl_patient_hiv_followup fup where fup.pregnancy_status =1065 and fup.voided = 0\n" +
-                "                                       group by fup.patient_id having max(fup.visit_date) between date_sub(:endDate, interval 12 MONTH )\n" +
-                "                                                                          and date(:endDate)) f on vl.patient_id = f.patient_id ;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,latest_kp_enrol_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name in ('HIV')\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "           inner join (select client_id,latest_kp_enrol_date,kp_type from (select kp.client_id,max(kp.visit_date) as latest_kp_enrol_date,kp.key_population_type as kp_type from kenyaemr_etl.etl_contact kp where kp.voided =0 group by kp.client_id)kp left join\n" +
+                "                                                                      (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as\n" +
+                "                                                                                                                                                    effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation where date(visit_date) <= date(:endDate) and program_name in ('KP')\n" +
+                "                                                                       group by patient_id)d1 on kp.client_id = d1.patient_id where (kp.latest_kp_enrol_date > d1.effective_disc_date or d1.patient_id is null)\n" +
+                "                      )kp on fup.patient_id = kp.client_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = 'ROUTINE' and kp.latest_kp_enrol_date <= vl.vl_date and kp.kp_type = "+kpType+" and (vl.vl_result < 1000 or vl.vl_result = 'LDL')\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TX_PVLS_SUPP_PREGNANT_UNDOCUMENTED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Pregnant Women on ART with Suppressed undocumented VL within last 12 Months");
+        return cd;
+
+    }
+
+    /*Pregnant Women on ART with Suppressed undocumented VL within last 12 Months*/
+    public CohortDefinition kpOnARTSuppTargetedVLLast12Months(String kpType) {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,latest_kp_enrol_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name in ('HIV')\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "           inner join (select client_id,latest_kp_enrol_date,kp_type from (select kp.client_id,max(kp.visit_date) as latest_kp_enrol_date,kp.key_population_type as kp_type from kenyaemr_etl.etl_contact kp where kp.voided =0 group by kp.client_id)kp left join\n" +
+                "                                                                      (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as\n" +
+                "                                                                                                                                                    effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation where date(visit_date) <= date(:endDate) and program_name in ('KP')\n" +
+                "                                                                       group by patient_id)d1 on kp.client_id = d1.patient_id where (kp.latest_kp_enrol_date > d1.effective_disc_date or d1.patient_id is null)\n" +
+                "                      )kp on fup.patient_id = kp.client_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = 'STAT' and kp.latest_kp_enrol_date <= vl.vl_date and kp.kp_type = "+kpType+" and (vl.vl_result < 1000 or vl.vl_result = 'LDL')\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_PREGNANT_UNDOCUMENTED");
@@ -2336,30 +2421,50 @@ public class DatimCohortLibrary {
 
     }
     /*On Routine ART with Suppressed VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTSuppRoutineVLBySex() {
+    public CohortDefinition onARTSuppVLAgeSex(String testType) {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "                from kenyaemr_etl.etl_drug_event e\n" +
-                "                  inner join\n" +
-                "                  (\n" +
-                "                    select\n" +
-                "                      patient_id,\n" +
-                "                      visit_date,\n" +
-                "                      if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "          urgency\n" +
-                "        from kenyaemr_etl.etl_laboratory_extract\n" +
-                "       where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "             and urgency = 'ROUTINE'\n" +
-                "      ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "\n" +
-                "                  left JOIN\n" +
-                "                         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                          group by patient_id\n" +
-                "                         ) d on d.patient_id = e.patient_id\n" +
-                "    where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "    group by e.patient_id\n" +
-                "    having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = "+testType+" and (vl.vl_result < 1000 or vl.vl_result = 'LDL')\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_SUPP_ROUTINE");
@@ -2627,23 +2732,52 @@ public class DatimCohortLibrary {
         return cd;
     }
     /*Breastfeeding mother on ART with Routine VL within last 12 Months*/
-    public CohortDefinition breastfeedingOnARTWithRoutineVLLast12Months() {
+    public CohortDefinition breastfeedingOnARTVLLast12Months(String testType) {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       inner join\n" +
-                "         (select\n" +
-                "                 patient_id,\n" +
-                "                 visit_date,\n" +
-                "                 if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result, urgency\n" +
-                "          from kenyaemr_etl.etl_laboratory_extract l where l.visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                                                       and lab_test in (1305, 856) and urgency = 'ROUTINE'\n" +
-                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=e.patient_id and mch.date_of_discontinuation is NULL\n" +
-                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = e.patient_id and v.baby_feeding_method in (5526,6046)\n" +
-                "where e.program = 'HIV' and v.visit_date > mch.visit_date\n" +
-                "  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,\n" +
+                "           vl.order_reason as order_reason\n" +
+                "           from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency,\n" +
+                "                              mid(max(concat(visit_date,order_reason)),11) as order_reason\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = "+testType+" and vl.order_reason in (1434,159882)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_ROUTINE");
         cd.setQuery(sqlQuery);
@@ -2653,23 +2787,56 @@ public class DatimCohortLibrary {
         return cd;
     }
     /*Breastfeeding Mother on ART with Targeted VL within last 12 Months*/
-    public CohortDefinition breastfeedingOnARTWithTargetedVLLast12Months() {
+    public CohortDefinition kpWithRoutineVLLast12Months(String kpType) {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       inner join\n" +
-                "         (select\n" +
-                "                 patient_id,\n" +
-                "                 visit_date,\n" +
-                "                 if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result, urgency\n" +
-                "          from kenyaemr_etl.etl_laboratory_extract l where l.visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                                                       and lab_test in (1305, 856) and urgency = 'IMMEDIATELY'\n" +
-                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=e.patient_id and mch.date_of_discontinuation is NULL\n" +
-                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = e.patient_id and v.baby_feeding_method in (5526,6046)\n" +
-                "where e.program = 'HIV' and v.visit_date > mch.visit_date\n" +
-                "  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,latest_kp_enrol_date\n" +
+                "           #max(fup.key_population_type) as keypop\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name in ('HIV')\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "           inner join (select client_id,latest_kp_enrol_date,kp_type from (select kp.client_id,max(kp.visit_date) as latest_kp_enrol_date,kp.key_population_type as kp_type from kenyaemr_etl.etl_contact kp where kp.voided =0 group by kp.client_id)kp left join\n" +
+                "                                                                      (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as\n" +
+                "                                                                       effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation where date(visit_date) <= date(:endDate) and program_name in ('KP')\n" +
+                "                                                                       group by patient_id)d1 on kp.client_id = d1.patient_id where (kp.latest_kp_enrol_date > d1.effective_disc_date or d1.patient_id is null)\n" +
+                "              )kp on fup.patient_id = kp.client_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = 'ROUTINE' and kp.latest_kp_enrol_date <= vl.vl_date and kp_type = "+kpType+"\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_TARGETED");
@@ -2680,23 +2847,55 @@ public class DatimCohortLibrary {
         return cd;
     }
     /*Breastfeeding Mother on ART with Undocumented VL within last 12 Months*/
-    public CohortDefinition breastfeedingOnARTWithUndocumentedVLLast12Months() {
+    public CohortDefinition kpWithTargetedVLLast12Months(String kpType) {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       inner join\n" +
-                "         (select\n" +
-                "                 patient_id,\n" +
-                "                 visit_date,\n" +
-                "                 if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result, urgency\n" +
-                "          from kenyaemr_etl.etl_laboratory_extract l where l.visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                                                       and lab_test in (1305, 856) and urgency is null or urgency NOT IN ('ROUTINE','IMMEDIATELY')\n" +
-                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=e.patient_id and mch.date_of_discontinuation is NULL\n" +
-                "       inner join kenyaemr_etl.etl_mch_postnatal_visit v on v.patient_id = e.patient_id and v.baby_feeding_method in (5526,6046)\n" +
-                "where e.program = 'HIV' and v.visit_date > mch.visit_date\n" +
-                "  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency,latest_kp_enrol_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name in ('HIV')\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           inner join  (\n" +
+                "                       select\n" +
+                "                              patient_id,\n" +
+                "                              max(visit_date) as vl_date,\n" +
+                "                              if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                              mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                       from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                       where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                       group by patient_id\n" +
+                "                       having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                       ) vl on vl.patient_id = fup.patient_id\n" +
+                "           inner join (select client_id,latest_kp_enrol_date,kp_type from (select kp.client_id,max(kp.visit_date) as latest_kp_enrol_date,kp.key_population_type as kp_type from kenyaemr_etl.etl_contact kp where kp.voided =0 group by kp.client_id)kp left join\n" +
+                "                                                                      (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as\n" +
+                "                                                                                                                                                    effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation where date(visit_date) <= date(:endDate) and program_name in ('KP')\n" +
+                "                                                                       group by patient_id)d1 on kp.client_id = d1.patient_id where (kp.latest_kp_enrol_date > d1.effective_disc_date or d1.patient_id is null)\n" +
+                "                      )kp on fup.patient_id = kp.client_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = 'STAT' and kp.latest_kp_enrol_date <= vl.vl_date and kp_type = "+kpType+"\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED");
@@ -2707,29 +2906,50 @@ public class DatimCohortLibrary {
         return cd;
     }
     /*On ART with Routine VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTWithRoutineVLLast12MonthsByAgeSex() {
+    public CohortDefinition onARTAndVLLast12MonthsbyAgeSex(String testType) {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       inner join\n" +
-                "         (\n" +
-                "         select\n" +
-                "                patient_id,\n" +
-                "                visit_date,\n" +
-                "                if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                urgency\n" +
-                "         from kenyaemr_etl.etl_laboratory_extract\n" +
-                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "           and urgency = 'ROUTINE'\n" +
-                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "\n" +
-                "       left JOIN\n" +
-                "         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "          group by patient_id\n" +
-                "         ) d on d.patient_id = e.patient_id\n" +
-                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id;";
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           vl.vl_date as vl_date,\n" +
+                "           vl.vl_result as vl_result,\n" +
+                "           vl.urgency as vl_urgency\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "          inner join  (\n" +
+                "                  select\n" +
+                "                         patient_id,\n" +
+                "                         max(visit_date) as vl_date,\n" +
+                "                         if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                         mid(max(concat(visit_date,urgency)),11) as urgency\n" +
+                "                  from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                  where lab_test in (1305, 856) and visit_date between date_sub(:endDate , interval 12 MONTH) and date(:endDate) and test_result !=0\n" +
+                "                  group by patient_id\n" +
+                "                  having max(test_result) is not null or max(test_result) <> ''\n" +
+                "                  ) vl on vl.patient_id = fup.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate) and vl.urgency = "+testType+"\n"+
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' ) and (\n" +
+                "        (\n" +
+                "            ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null))\n" +
+                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "            )\n" +
+                "        )\n" +
+                "    ) t;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_PVLS_DENOMINATOR_ROUTINE");
         cd.setQuery(sqlQuery);

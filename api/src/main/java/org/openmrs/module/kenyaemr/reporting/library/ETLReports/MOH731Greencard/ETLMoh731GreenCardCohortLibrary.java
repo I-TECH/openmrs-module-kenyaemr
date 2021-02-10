@@ -917,10 +917,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition htsNumberTestedPositiveAndLinked() {
-        String sqlQuery = "select r.patient_id \n" +
+        String sqlQuery = "select distinct r.patient_id \n" +
                 " from kenyaemr_etl.etl_hts_referral_and_linkage r \n" +
                 "  inner join kenyaemr_etl.etl_hts_test t on r.patient_id = t.patient_id and t.final_test_result = 'Positive' \n" +
-                " where (r.ccc_number !=''  and r.ccc_number IS NOT NULL) and (r.facility_linked_to !='' and r.facility_linked_to IS NOT NULL) \n" +
+                " where (r.ccc_number !='' or r.ccc_number IS NOT NULL) and (r.facility_linked_to !='' or r.facility_linked_to IS NOT NULL) \n" +
                 "      and t.visit_date between date_sub(:endDate , interval 3 MONTH) and  :endDate ;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositiveAndLinked");

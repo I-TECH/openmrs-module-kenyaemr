@@ -771,8 +771,8 @@ public class DatimIndicatorLibrary {
     /**
      * TX_PVLS Number pregnant women on ART with suppressed Routine viral load results (<1,000 copies/ml) within the past 12 months.
      */
-    public CohortIndicator pregnantOnARTWithSuppressedRoutineVLLast12Months() {
-        return cohortIndicator("Pregnant Women on ART with Suppressed Routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOnARTWithSuppressedRoutineVLLast12Months(),
+    public CohortIndicator pregnantAndBFOnARTWithSuppressedVLLast12Months(String testType) {
+        return cohortIndicator("Pregnant Women on ART with Suppressed Routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantAndBFOnARTWithSuppressedVLLast12Months(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -785,11 +785,17 @@ public class DatimIndicatorLibrary {
     /**
      * TX_PVLS Number pregnant women with Undocumented ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
      */
-    public CohortIndicator pregnantOnARTSuppUndocumentedVLLast12Months() {
-        return cohortIndicator("Pregnant Women on ART with Suppressed undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOnARTWithSuppressedUndocumentedVLLast12Months(),
+    public CohortIndicator kpOnARTSuppRoutineVLLast12Months(String kpType) {
+        return cohortIndicator("Pregnant Women on ART with Suppressed undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpOnARTSuppRoutineVLLast12Months(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * TX_PVLS Number pregnant women with Undocumented ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
+     */
+    public CohortIndicator kpOnARTSuppTargetedVLLast12Months(String kpType) {
+        return cohortIndicator("Pregnant Women on ART with Suppressed undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpOnARTSuppTargetedVLLast12Months(kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * TX_PVLS Number breastfeeding mother on routine ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
      */
@@ -816,8 +822,8 @@ public class DatimIndicatorLibrary {
     /**
      * TX_PVLS Number of Patients on Routine ART test with suppressed viral load results (<1,000 copies/ml) within the past 12 months Disaggregated by Sex/Age
      */
-    public CohortIndicator onARTSuppRoutineVLAgeSex() {
-        return cohortIndicator("Total on ART in last 12 months by Age / Sex", ReportUtils.<CohortDefinition>map(datimCohorts.onARTSuppRoutineVLBySex(),
+    public CohortIndicator onARTSuppVLAgeSex(String testType) {
+        return cohortIndicator("Total on ART in last 12 months by Age / Sex", ReportUtils.<CohortDefinition>map(datimCohorts.onARTSuppVLAgeSex(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -882,37 +888,44 @@ public class DatimIndicatorLibrary {
     /**
      * TX_PVLS  Breastfeeding women on ART with Routine viral load results within the past 12 months.
      */
-    public CohortIndicator breastfeedingOnARTRoutineVLLast12Months() {
-        return cohortIndicator("Breastfeeding Women on ART with Routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.breastfeedingOnARTWithRoutineVLLast12Months(),
+    public CohortIndicator breastfeedingOnARTVLLast12Months(String testType) {
+        return cohortIndicator("Breastfeeding Women on ART with Routine VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.breastfeedingOnARTVLLast12Months(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_PVLS  Breastfeeding women on ART with Targeted viral load results within the past 12 months.
      */
-    public CohortIndicator breastfeedingOnARTTargetedVLLast12Months() {
-        return cohortIndicator("Breastfeeding Women on ART with Targeted VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.breastfeedingOnARTWithTargetedVLLast12Months(),
+    public CohortIndicator breastfeedingOnARTTargetedVLLast12Months(String testType) {
+        return cohortIndicator("Breastfeeding Women on ART with Targeted VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpWithTargetedVLLast12Months(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * TX_PVLS  Breastfeeding women on ART with undocumented viral load results within the past 12 months.
+     * TX_PVLS Breastfeeding women on ART with Targeted viral load results within the past 12 months.
      */
-    public CohortIndicator breastfeedingOnARTUndocumentedVLLast12Months() {
-        return cohortIndicator("Breastfeeding Women on ART with Undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.breastfeedingOnARTWithUndocumentedVLLast12Months(),
+    public CohortIndicator kpWithTargetedVLLast12Months(String kpType) {
+        return cohortIndicator("Breastfeeding Women on ART with Undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpWithTargetedVLLast12Months(kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_PVLS  KP on ART with Targeted viral load results within the past 12 months.
+     */
+    public CohortIndicator kpWithRoutineVLLast12Months(String kpType) {
+        return cohortIndicator("Breastfeeding Women on ART with Undocumented VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpWithRoutineVLLast12Months(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_PVLS Number of Patients on ART with Routine viral load test within the past 12 months Disaggregated by Sex/Age
      */
-    public CohortIndicator onARTRoutineVLLast12MonthsbyAgeSex() {
-        return cohortIndicator("On ART with Routine VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.onARTWithRoutineVLLast12MonthsByAgeSex(),
+    public CohortIndicator onARTAndVLLast12MonthsbyAgeSex(String testType) {
+        return cohortIndicator("On ART with Routine VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.onARTAndVLLast12MonthsbyAgeSex(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_PVLS Number of Patients on ART with Targeted viral load test within the past 12 months Disaggregated by Sex/Age
      */
-    public CohortIndicator onARTTargetedVLLast12MonthsbyAgeSex() {
+    public CohortIndicator onARTTargetedVLLast12MonthsbyAgeSex(String testType) {
         return cohortIndicator("Patients on ART with Targeted VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.onARTWithTargetedVLLast12MonthsByAgeSex(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
