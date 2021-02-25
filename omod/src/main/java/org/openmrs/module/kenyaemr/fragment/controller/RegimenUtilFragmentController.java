@@ -374,7 +374,7 @@ public class RegimenUtilFragmentController {
 				require(errors, "regimenConceptNonStandardRef");
 
 			   }
-				if ((regimenLine == null || regimenLine.equals(""))) {
+				if ((regimenLine == null || regimenLine.equals("")) && category.equalsIgnoreCase("ARV")) {
 					require(errors, "regimenLine");
 
 				}
