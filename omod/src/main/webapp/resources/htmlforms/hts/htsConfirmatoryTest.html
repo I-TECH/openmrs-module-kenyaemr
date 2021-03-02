@@ -49,6 +49,33 @@
                 jq('#disability select').prop("disabled", false);
             }
         }
+
+        var willingnessToShareSelfTestResults = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").show();
+            }else {
+                jq("#test-results").hide();
+                clearHiddenSections(jq('#results'));
+                clearHiddenSections(jq('#date-of-self-test'));
+            }
+
+        };
+
+        var isSelfTestDoneInLast12months = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").hide();
+                jq("#willingness-share-results").show();
+            }else {
+                jq("#test-results").hide();
+                jq("#willingness-share-results").hide();
+                clearHiddenSections(jq('#share-results'));
+                clearHiddenSections(jq('#results'));
+
+            }
+        };
+
         var hasOtherDisabilitySelected = function () {
             var val = jq(this).val();
             // Specify other
@@ -401,11 +428,15 @@
             jq('input[type=radio].priority-population').prop("checked", false);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
             //disability
+            jq('#share-results :input[type=radio]').change(willingnessToShareSelfTestResults);
+            jq('#client-done-test :input[type=radio]').change(isSelfTestDoneInLast12months);
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
             jq('#disability').hide();
             jq('#tbl-other-disability').hide();
             jq('#fs-referral').hide();
+            jq("#test-results").hide();
+            jq("#willingness-share-results").hide();
 
             //pre-populate from HIV Initial
             var prev_disability = "<lookup expression="fn.latestObs(164951).getValueCoded()"/>";
@@ -897,10 +928,35 @@
                         <obs class="hb-self-test" conceptId="164952"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
+                             id="client-done-test"
                              style="radio"
                         />
                     </td>
                 </tr>
+                <tr id="willingness-share-results">
+                    <td>Is client willing to share results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="share-results" conceptId="165153"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio"
+                        />
+                    </td>
+                </tr>
+
+                <tr id="test-results">
+                    <td>Self test results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="results" conceptId="165233"
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="SKT POSITIVE,SKT NEGATIVE"
+                             style="radio"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160; Date of self test
+                        <obs id="date-of-self-test" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"
+                        />
+                    </td>
+                </tr>
+
             </table>
         </fieldset>
         <fieldset>
