@@ -68,6 +68,7 @@
         <reportingVersion>0.9.8.1</reportingVersion>
         <serializationxstreamVersion>0.2.7</serializationxstreamVersion>
         <uiframeworkVersion>3.8</uiframeworkVersion>
+        <webservicesRestVersion>2.1</webservicesRestVersion>
         <facilityReportingVersion>1.0.0</facilityReportingVersion>
         <apacheHttpClientVersion>4.5.10</apacheHttpClientVersion>
         <!--
@@ -215,6 +216,36 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-1.8</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
 
 <!--        <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -266,6 +297,7 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+
 
         <!-- End OpenMRS core -->
 
