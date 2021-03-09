@@ -34,9 +34,12 @@ public class ETLArtStartDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,\n" +
-                " min(date_started)as date_started from kenyaemr_etl.etl_drug_event\n" +
-                "GROUP BY patient_id;";
+        String qry = "select de.patient_id,\n" +
+                "  if(enr.date_started_art_at_transferring_facility is not null,enr.date_started_art_at_transferring_facility,\n" +
+                "     min(de.date_started)) as art_start_date\n" +
+                "from kenyaemr_etl.etl_drug_event de\n" +
+                "     left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=de.patient_id\n" +
+                "      GROUP BY de.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
