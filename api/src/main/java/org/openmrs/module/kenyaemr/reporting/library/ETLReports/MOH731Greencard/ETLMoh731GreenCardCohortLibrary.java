@@ -305,12 +305,12 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         where date(visit_date) <= date(:endDate) and program_name='HIV'  \n" +
                 "         group by patient_id  \n" +
                 "         ) d on d.patient_id = fup.patient_id  \n" +
-                "       where fup.visit_date <= date(:endDate) \n" +
+                "       where fup.visit_date <= date(:endDate) and person_present = 978\n" +
                 "       group by patient_id  \n" +
                 "       having (started_on_drugs is not null and started_on_drugs <> '') and  \n" +
                 "              ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))  \n" +
                 "                        and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and\n" +
-                "              ((screened_using_icf is not null )or (screened_using_consultation in(1660,1662,142177,1111) and person_present = 978))\n" +
+                "              ((screened_using_icf is not null )or (screened_using_consultation in(1660,1662,142177,1111)))\n" +
                 "       )e;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -349,12 +349,12 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         where date(visit_date) <= date(:endDate) and program_name='HIV'  \n" +
                 "         group by patient_id  \n" +
                 "         ) d on d.patient_id = fup.patient_id  \n" +
-                "       where fup.visit_date <= date(:endDate) \n" +
+                "       where fup.visit_date <= date(:endDate) and person_present = 978\n" +
                 "       group by patient_id  \n" +
                 "       having (started_on_drugs is not null and started_on_drugs <> '') and  \n" +
                 "              ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))  \n" +
                 "                        and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and\n" +
-                "              (screened_using_icf =142177 or (screened_using_consultation=142177 and person_present = 978))\n" +
+                "              (screened_using_icf =142177 or (screened_using_consultation=142177))\n" +
                 "       )e;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("presumedTB");
