@@ -277,7 +277,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForFastrackPatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
 		<property name="order" value="201090" />
