@@ -25,12 +25,6 @@
 	<description>OMOD project for KenyaEMR Module</description>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>webservices.rest-omod-1.8</artifactId>
-			<version>${webservicesRestVersion}</version>
-		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>${project.parent.artifactId}-api</artifactId>
