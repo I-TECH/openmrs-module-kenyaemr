@@ -73,7 +73,7 @@ public class ETLLTFUWithDateRangeCohortDefinitionEvaluator implements CohortDefi
 				"where fup.visit_date <= date(:endDate)\n" +
 				"group by patient_id\n" +
 				"having (\n" +
-				"(timestampdiff(DAY,date(latest_tca),date(:endDate)) > 30) and (date(d.effective_disc_date) > date(:endDate) or d.effective_disc_date is null)\n" +
+				"(timestampdiff(DAY,date(latest_tca),date(:endDate)) > 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null)\n" +
 				"and (date(latest_vis_date) > date(date_discontinued) and date(latest_tca) > date(date_discontinued) or disc_patient is null)\n" +
 				")\n" +
 				") t;";
