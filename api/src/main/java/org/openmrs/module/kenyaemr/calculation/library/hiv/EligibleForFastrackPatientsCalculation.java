@@ -80,7 +80,7 @@ public class EligibleForFastrackPatientsCalculation extends AbstractPatientCalcu
                 tcaPlus30days= daysBetween(tcaDate,tcaObsDate);
             }
 
-            if (inHivProgram.contains(ptId)) {
+            if (inHivProgram.contains(ptId) && !ltfu.contains(ptId)) {
                 patientInHivProgram = true;
             }
             if(patientInHivProgram && tcaDate != null && tcaObsDate != null && tcaPlus30days >= 30) {
