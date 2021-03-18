@@ -83,7 +83,7 @@ public class EligibleForFastrackPatientsCalculation extends AbstractPatientCalcu
             if (inHivProgram.contains(ptId) && !ltfu.contains(ptId)) {
                 patientInHivProgram = true;
             }
-            if(patientInHivProgram && tcaDate != null && tcaObsDate != null && tcaPlus30days >= 30) {
+            if(patientInHivProgram && tcaDate != null && tcaObsDate != null && tcaDate.after(new Date()) && tcaPlus30days >= 30) { // exclude missed appointments
                 eligible = true;
             }
             ret.put(ptId, new BooleanResult(eligible, this));
