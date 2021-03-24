@@ -3720,9 +3720,9 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         public CohortDefinition offeredIndexServices() {
 
             String sqlQuery = "select c.patient_related_to from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t\n" +
-                    "on c.patient_related_to = t.patient_id where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                    "and t.final_test_result = \"Positive\" and t.voided=0 and c.voided = 0 and t.test_type = 2 and date(c.date_created)\n" +
-                    "between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate) group by t.patient_id;";
+                    "               on c.patient_id = t.patient_id where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
+                    "               and t.final_test_result = \"Positive\" and t.voided=0 and c.voided = 0 and t.test_type = 2 and date(c.date_created)\n" +
+                    "    between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate) group by t.patient_id;";
             SqlCohortDefinition cd = new SqlCohortDefinition();
             cd.setName("HTS_INDEX_OFFERED");
             cd.setQuery(sqlQuery);
@@ -3733,11 +3733,11 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
 
         }
     //HTS_INDEX_ELICITED_MALE_CONTACTS_UNDER15
-    public CohortDefinition maleContactsUnder15() {
+    public CohortDefinition htsIndexContactsElicited() {
 
         String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c\n" +
                 "where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "  and c.voided = 0 and c.sex = \"M\" and timestampdiff(YEAR ,date(:endDate),c.birth_date) < 15\n" +
+                "  and c.voided = 0 and timestampdiff(YEAR ,date(:endDate),c.birth_date) < 15\n" +
                 "  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_ELICITED_MALE_CONTACTS_UNDER15");
@@ -3749,57 +3749,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
 
     }
 
-    //HTS_INDEX_ELICITED_MALE_CONTACTS_15+
-    public CohortDefinition maleContacts15AndAbove() {
-
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c\n" +
-                "where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "  and c.voided = 0 and c.sex = \"M\" and timestampdiff(YEAR ,date(:endDate),c.birth_date) >= 15\n" +
-                "  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_ELICITED_MALE_CONTACTS_15+");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of male contacts 15+ years elicited");
-        return cd;
-
-    }
-
-    //HTS_INDEX_ELICITED_FEMALE_CONTACTS_UNDER15
-    public CohortDefinition femaleContactsUnder15() {
-
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c\n" +
-                "where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "  and c.voided = 0 and c.sex = \"F\" and timestampdiff(YEAR ,date(:endDate),c.birth_date) < 15\n" +
-                "  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_ELICITED_FEMALE_CONTACTS_UNDER15");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of female contacts under 15 elicited");
-        return cd;
-
-    }
-
-    //HTS_INDEX_ELICITED_FEMALE_CONTACTS_15+
-    public CohortDefinition femaleContacts15AndAbove() {
-
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c\n" +
-                "where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "  and c.voided = 0 and c.sex = \"F\" and timestampdiff(YEAR ,date(:endDate),c.birth_date) >= 15\n" +
-                "  and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_ELICITED_FEMALE_CONTACTS_15+");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of elicited female contacts 15+ years");
-        return cd;
-
-    }
-    /*HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services */
+    //HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
     public CohortDefinition acceptedIndexServices() {
 
         String sqlQuery = "select c.patient_related_to from kenyaemr_hiv_testing_patient_contact c\n" +
@@ -3818,10 +3768,10 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     //HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
     public CohortDefinition hivPositiveContact() {
 
-        String sqlQuery = "select c.patient_id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-                "where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
-                "group by c.patient_id\n" +
-                "  having mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\"\n" +
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "             where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
+                "             group by c.id\n" +
+                "               having mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\"\n" +
                 "  and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_POSITIVE");
@@ -3836,9 +3786,9 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     //Number of individuals who were tested HIV Negative using Index testing services
     public CohortDefinition hivNegativeContact() {
 
-        String sqlQuery = "select c.patient_id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
-                "group by c.patient_id\n" +
+                "group by c.id\n" +
                 "having mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\"\n" +
                 "   and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -3853,10 +3803,10 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     //Known HIV Positive contacts
     public CohortDefinition knownPositiveContact() {
 
-        String sqlQuery = "select c.patient_id from kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c left join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "left join kenyaemr_hiv_testing_client_trace tr on c.id = tr.client_id\n" +
                 "where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
-                "group by c.patient_id\n" +
+                "group by c.id\n" +
                 "having   mid(max(concat(date(tr.date_created),tr.status)),11) ='Contacted and Linked' and max(date(tr.date_created)) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate)\n" +
                 "    or (max(t.visit_date) < date_sub( date(:endDate), INTERVAL  3 MONTH ) and\n" +
                 "    mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\");";

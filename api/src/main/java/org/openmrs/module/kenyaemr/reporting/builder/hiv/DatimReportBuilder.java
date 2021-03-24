@@ -48,7 +48,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
     @Autowired
     private DatimIndicatorLibrary datimIndicators;
 
-
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Override
@@ -80,29 +79,17 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.datimFineAgeGroups(), "onDate=${endDate}"));
         cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
-        ColumnParameters colInfants = new ColumnParameters(null, "<1", "age=<1");
-
-        ColumnParameters children_1_to_9 = new ColumnParameters(null, "1-9", "age=1-9");
+        //HTS dimensions
+        cohortDsd.addDimension("contactAge", ReportUtils.map(commonDimensions.contactAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("contactFineAge", ReportUtils.map(commonDimensions.contactsFineAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("contactGender", ReportUtils.map(commonDimensions.contactGender()));
 
         ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
 
         /*DatimQ4 Column parameters*/
 
-        ColumnParameters colInfant = new ColumnParameters(null, "<1", "age=<1");
         ColumnParameters all0_to_2m = new ColumnParameters(null, "0-2", "age=0-2");
         ColumnParameters all2_to_12m = new ColumnParameters(null, "2-12", "age=2-12");
-        ColumnParameters f1_to_9 = new ColumnParameters(null, "1-9, Female", "gender=F|age=1-9");
-        ColumnParameters f10_14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
-        ColumnParameters m10_14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
-        ColumnParameters f15_19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
-        ColumnParameters m15_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
-        ColumnParameters f20_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
-        ColumnParameters m20_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
-        ColumnParameters f25_49 = new ColumnParameters(null, "25-49, Female", "gender=F|age=20-49");
-        ColumnParameters m25_49 = new ColumnParameters(null, "25-49, Male", "gender=M|age=20-49");
-        ColumnParameters f_Over_50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
-        ColumnParameters m_Over_50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
-        ColumnParameters colTot = new ColumnParameters(null, "Total", "");
 
         /*New age disaggregations*/
         ColumnParameters fInfant = new ColumnParameters(null, "<1, Female", "gender=F|age=<1");
@@ -130,20 +117,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters m45_to49 = new ColumnParameters(null, "45-49, Male", "gender=M|age=45-49");
         ColumnParameters fAbove50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
         ColumnParameters mAbove50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
-        ColumnParameters all0_to4 = new ColumnParameters(null, "0-4", "age=0-4");
-        ColumnParameters all5_to9 = new ColumnParameters(null, "5-9", "age=5-9");
-        ColumnParameters all1_to9 = new ColumnParameters(null, "1-9", "age=1-9");
-        ColumnParameters all0_to14 = new ColumnParameters(null, "0-14", "age=0-14");
-        ColumnParameters all10_to14 = new ColumnParameters(null, "10-14", "age=10-14");
-        ColumnParameters all15_to19 = new ColumnParameters(null, "15-19", "age=15-19");
-        ColumnParameters all20_to24 = new ColumnParameters(null, "20-24", "age=20-24");
-        ColumnParameters allOver25 = new ColumnParameters(null, "50+", "age=50+");
-        ColumnParameters all25_to29 = new ColumnParameters(null, "25-29", "age=25-29");
-        ColumnParameters all30_to34 = new ColumnParameters(null, "30-34", "age=30-34");
-        ColumnParameters all35_to39 = new ColumnParameters(null, "35-39", "age=35-39");
-        ColumnParameters all40_to44 = new ColumnParameters(null, "40-44", "age=40-44");
-        ColumnParameters all45_to49 = new ColumnParameters(null, "45-49", "age=45-49");
-        ColumnParameters allAbove50 = new ColumnParameters(null, "50+", "age=50+");
 
         ColumnParameters funder15 = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
         ColumnParameters munder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
@@ -164,25 +137,48 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters kp25_and_above_f = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
         ColumnParameters kp25_and_above_m = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
 
+        //Patient Contacts
+        ColumnParameters contacts_under_15_f = new ColumnParameters(null, "<15, Female", "contactGender=F|contactAge=<15");
+        ColumnParameters contacts_under_15_m = new ColumnParameters(null, "<15, Male", "contactGender=M|contactAge=<15");
+        ColumnParameters contacts_15_and_above_f = new ColumnParameters(null, ">=15, Female", "contactGender=F|contactAge=15+");
+        ColumnParameters contacts_15_and_above_m = new ColumnParameters(null, ">=15, Male", "contactGender=M|contactAge=15+");
+
+        ColumnParameters fCInfant = new ColumnParameters(null, "<1, Female", "contactGender=F|contactFineAge=<1");
+        ColumnParameters mCInfant = new ColumnParameters(null, "<1, Male", "contactGender=M|contactFineAge=<1");
+        ColumnParameters fC1_to4 = new ColumnParameters(null, "1-4, Female", "contactGender=F|contactFineAge=1-4");
+        ColumnParameters mC1_to4 = new ColumnParameters(null, "1-4, Male", "contactGender=M|contactFineAge=1-4");
+        ColumnParameters fC5_to9 = new ColumnParameters(null, "5-9, Female", "contactGender=F|contactFineAge=5-9");
+        ColumnParameters mC5_to9 = new ColumnParameters(null, "5-9, Male", "contactGender=M|contactFineAge=5-9");
+        ColumnParameters fC10_to14 = new ColumnParameters(null, "10-14, Female", "contactGender=F|contactFineAge=10-14");
+        ColumnParameters mC10_to14 = new ColumnParameters(null, "10-14, Male", "contactGender=M|contactFineAge=10-14");
+        ColumnParameters fC15_to19 = new ColumnParameters(null, "15-19, Female", "contactGender=F|contactFineAge=15-19");
+        ColumnParameters mC15_to19 = new ColumnParameters(null, "15-19, Male", "contactGender=M|contactFineAge=15-19");
+        ColumnParameters fC20_to24 = new ColumnParameters(null, "20-24, Female", "contactGender=F|contactFineAge=20-24");
+        ColumnParameters mC20_to24 = new ColumnParameters(null, "20-24, Male", "contactGender=M|contactFineAge=20-24");
+        ColumnParameters fC25_to29 = new ColumnParameters(null, "25-29, Female", "contactGender=F|contactFineAge=25-29");
+        ColumnParameters mC25_to29 = new ColumnParameters(null, "25-29, Male", "contactGender=M|contactFineAge=25-29");
+        ColumnParameters fC30_to34 = new ColumnParameters(null, "30-34, Female", "contactGender=F|contactFineAge=30-34");
+        ColumnParameters mC30_to34 = new ColumnParameters(null, "30-34, Male", "contactGender=M|contactFineAge=30-34");
+        ColumnParameters fC35_to39 = new ColumnParameters(null, "35-39, Female", "contactGender=F|contactFineAge=35-39");
+        ColumnParameters mC35_to39 = new ColumnParameters(null, "35-39, Male", "contactGender=M|contactFineAge=35-39");
+        ColumnParameters fC40_to44 = new ColumnParameters(null, "40-44, Female", "contactGender=F|contactFineAge=40-44");
+        ColumnParameters mC40_to44 = new ColumnParameters(null, "40-44, Male", "contactGender=M|contactFineAge=40-44");
+        ColumnParameters fC45_to49 = new ColumnParameters(null, "45-49, Female", "contactGender=F|contactFineAge=45-49");
+        ColumnParameters mC45_to49 = new ColumnParameters(null, "45-49, Male", "contactGender=M|contactFineAge=45-49");
+        ColumnParameters fCAbove50 = new ColumnParameters(null, "50+, Female", "contactGender=F|contactFineAge=50+");
+        ColumnParameters mCAbove50 = new ColumnParameters(null, "50+, Male", "contactGender=M|contactFineAge=50+");
+        //End of patient contacts
+
         List<ColumnParameters> datimNewAgeDisaggregation =
                 Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
                         f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50, colTotal);
 
-        List<ColumnParameters> datimHTSSelfTestAgeDisaggregation =
-                Arrays.asList(f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24, f25_to29, m25_to29, f30_to34, m30_to34, f35_to39,
-                        m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50);
 
         List<ColumnParameters> datimPMTCTANCAgeDisaggregation =
                 Arrays.asList(funder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
 
         List<ColumnParameters> datimPMTCTCXCAAgeDisaggregation =
                 Arrays.asList(f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
-        List<ColumnParameters> datimOtherReportsAgeDisaggregation = Arrays.asList(all1_to9, all10_to14, all15_to19, all20_to24, allOver25);
-
-        List<ColumnParameters> datimDCMAgeDisaggregation =
-                Arrays.asList(all0_to4, all5_to9, all10_to14, all15_to19, all20_to24, all25_to29, all30_to34, all35_to39, all40_to44, all45_to49, allAbove50);
-
-        List<ColumnParameters> datimPAMAAgeDisaggregation = Arrays.asList(all0_to14);
 
         List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m, colTotal);
 
@@ -196,6 +192,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters>  kpAgeDisaggregation = Arrays.asList(below_15, kp15_to_19, kp20_to_24, kp25_and_above,colTotal);
         List<ColumnParameters> kpAgeGenderDisaggregation = Arrays.asList(below_15_f, below_15_m, kp15_to_19_f, kp15_to_19_m,
                 kp20_to_24_f, kp20_to_24_m, kp25_and_above_f, kp25_and_above_m,colTotal);
+
+        //Patient contacts disagggregations
+        List<ColumnParameters> contactAgeSexDisaggregation = Arrays.asList(contacts_under_15_f, contacts_under_15_m, contacts_15_and_above_f, contacts_15_and_above_m, colTotal);
+        List<ColumnParameters> contactAgeSexFineDisaggregation =
+                Arrays.asList(fCInfant, mCInfant, fC1_to4, mC1_to4, fC5_to9, mC5_to9, fC10_to14, mC10_to14, fC15_to19, mC15_to19, fC20_to24, mC20_to24,
+                        fC25_to29, mC25_to29, fC30_to34, mC30_to34, fC35_to39, mC35_to39, fC40_to44, mC40_to44, fC45_to49, mC45_to49, fCAbove50, mCAbove50, colTotal);
+        //End of patient contact Disaggregations
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
@@ -229,25 +232,16 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Indexes who accepted Index testing services", ReportUtils.map(datimIndicators.acceptedIndexServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX_CONTACTS_ELICITED_MALES_UNDER15
-        cohortDsd.addColumn("HTS_INDEX_ELICITED_MALE_CONTACTS_UNDER15", "Male Contacts under 15 years", ReportUtils.map(datimIndicators.maleContactsUnder15(), indParams), "");
-
-        //HTS_INDEX_CONTACTS_ELICITED_MALES_ABOVE15
-        cohortDsd.addColumn("HTS_INDEX_ELICITED_MALE_CONTACTS_15+", "Male Contacts 15+ years", ReportUtils.map(datimIndicators.maleContacts15AndAbove(), indParams), "");
-
-        //HTS_INDEX_CONTACTS_ELICITED_FEMALES_UNDER15
-        cohortDsd.addColumn("HTS_INDEX_ELICITED_FEMALE_CONTACTS_UNDER15", "Female Contacts under 15 years", ReportUtils.map(datimIndicators.femaleContactsUnder15(), indParams), "");
-
-        //HTS_INDEX_CONTACTS_ELICITED_MALES_ABOVE15
-        cohortDsd.addColumn("HTS_INDEX_ELICITED_FEMALE_CONTACTS_15+", "Female Contacts 15+ years", ReportUtils.map(datimIndicators.femaleContacts15AndAbove(), indParams), "");
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ELICITED_CONTACTS", "HTS Index Elicited Contacts", ReportUtils.map(datimIndicators.htsIndexContactsElicited(), indParams), contactAgeSexDisaggregation, Arrays.asList("01", "02", "03", "04", "05"));
 
         //HTS_INDEX New Positives
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX New Negatives
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_NEGATIVE", "Contacts tested HIV Negative", ReportUtils.map(datimIndicators.contactTestedNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_NEGATIVE", "Contacts tested HIV Negative", ReportUtils.map(datimIndicators.contactTestedNegative(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX Known Positive
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_KNOWN_POSITIVE", "Contacts Known HIV Positive", ReportUtils.map(datimIndicators.contactKnownPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_KNOWN_POSITIVE", "Contacts Known HIV Positive", ReportUtils.map(datimIndicators.contactKnownPositive(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_TST
         //1. Index Testing
@@ -509,16 +503,16 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_TARGETED", "On ART with current VL results", ReportUtils.map(datimIndicators.onARTAndVLLast12MonthsbyAgeSex("(\"STA\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number of Pregnant or breastfeeding patients on ART with routine VL results within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd,"TX_PVLS_DENOMINATOR_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of Pregnant or breastfeeding patients on ART with targeted VL results within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd,"TX_PVLS_DENOMINATOR_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"STA\")"), indParams),datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"STA\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of PWID KPs on ART with Routine VL results within the past 12 months
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_PWID_ROUTINE", "PWID on ART with current VL results", ReportUtils.map(datimIndicators.kpWithRoutineVLLast12Months("(\"PWID\")"), indParams), "");
 
         //TX_PVLS Number of MSMS KPs on ART with Routine VL results within the past 12 months
-        cohortDsd.addColumn( "TX_PVLS_DENOMINATOR_KP_MSM_ROUTINE", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithRoutineVLLast12Months("(\"MSM\")"), indParams),"");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_MSM_ROUTINE", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithRoutineVLLast12Months("(\"MSM\")"), indParams), "");
 
         //TX_PVLS Number of TG KPs on ART with Routine VL results within the past 12 months
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_TG_ROUTINE", "Transgender on ART with current VL results", ReportUtils.map(datimIndicators.kpWithRoutineVLLast12Months("(\"Transgender\")"), indParams), "");
@@ -530,7 +524,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_PWID_TARGETED", "PWID on ART with current VL results", ReportUtils.map(datimIndicators.kpWithTargetedVLLast12Months("(\"PWID\")"), indParams), "");
 
         //TX_PVLS Number of MSM KPs on ART with Targeted VL results within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_MSM_TARGETED", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithTargetedVLLast12Months("(\"MSM\")"), indParams),"");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_MSM_TARGETED", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithTargetedVLLast12Months("(\"MSM\")"), indParams), "");
 
         //TX_PVLS Number of TG KPs on ART with VL results within the past 12 months
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_TG_TARGETED", "Transgender on ART with current VL results", ReportUtils.map(datimIndicators.kpWithTargetedVLLast12Months("(\"Transgender\")"), indParams), "");
@@ -545,10 +539,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "On ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppVLAgeSex("(\"STA\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number pregnant or breastfeeding patients on ART with suppressed routine viral load results (<1,000 copies/ml) within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd,"TX_PVLS_SUPP_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number pregnant or breastfeeding patients on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd,"TX_PVLS_SUPP_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"STA\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"STA\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / undocumented
         cohortDsd.addColumn("TX_PVLS_SUPP_KP_PWID_ROUTINE", "PWID on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppRoutineVLLast12Months("(\"PWID\")"), indParams), "");
@@ -574,7 +568,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //TX_PVLS Number of FSW KPs on ART with targeted suppressed VL results (<1,000 copies/ml) within the past 12 months
         cohortDsd.addColumn("TX_PVLS_SUPP_KP_FSW_TARGETED", "FSW on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppTargetedVLLast12Months("(\"FSW\")"), indParams), "");
 
-               //HTS_INDEX_OFFERED Index services
+        //HTS_INDEX_OFFERED Index services
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Indexes offered Index testing services", ReportUtils.map(datimIndicators.offeredIndexServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX_ACCEPTED Index services
@@ -700,25 +694,25 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //3. KP_PREV
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"FSW\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSM", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"MSM\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSW", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"MSW\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWUD", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"PWUD\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWID", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"PWID\")"), indParams), kpAgeGenderDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08","09"));
+                Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_SW", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_SW"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_NOT_SW", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_NOT_SW"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04","05"));
+                Arrays.asList("01", "02", "03", "04", "05"));
 
         return cohortDsd;
     }
