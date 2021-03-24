@@ -36,6 +36,34 @@
                 clearHiddenSections(pripop);
             }
         }
+
+        var willingnessToShareSelfTestResults = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").show();
+            }else {
+                jq("#test-results").hide();
+                clearHiddenSections(jq('#results'));
+                clearHiddenSections(jq('#date-of-self-test'));
+            }
+
+        };
+
+        var isSelfTestDoneInLast12months = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").hide();
+                jq("#willingness-share-results").show();
+            }else {
+                jq("#test-results").hide();
+                jq("#willingness-share-results").hide();
+                clearHiddenSections(jq('#share-results'));
+                clearHiddenSections(jq('#results'));
+
+            }
+        };
+
+
         var hasDisabilitySelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
@@ -400,6 +428,8 @@
             jq('input[type=radio].key-population').prop("checked", false);
             jq('input[type=radio].priority-population').prop("checked", false);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq('#share-results :input[type=radio]').change(willingnessToShareSelfTestResults);
+            jq('#client-done-test :input[type=radio]').change(isSelfTestDoneInLast12months);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
@@ -412,6 +442,8 @@
             jq('.hts-strategy select').change(strategySelected);
             jq('#feferral-to select').change(referralSelected);
             jq('#tbl-other-strategy').hide();
+            jq("#test-results").hide();
+            jq("#willingness-share-results").hide();
 
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
@@ -858,10 +890,37 @@
                         <obs class="hb-self-test" conceptId="164952"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
+                             id="client-done-test"
                              style="radio"
                         />
                     </td>
                 </tr>
+
+                <tr id="willingness-share-results">
+                    <td>Is client willing to share results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="share-results" conceptId="165153"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio"
+                        />
+                    </td>
+                </tr>
+
+                <tr id="test-results">
+                    <td>Self test results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="results" conceptId="165233"
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="SKT POSITIVE,SKT NEGATIVE"
+                             style="radio"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160; Date of self test
+                        <obs id="date-of-self-test" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"
+                        />
+                    </td>
+                </tr>
+
+
             </table>
         </fieldset>
         <fieldset>
