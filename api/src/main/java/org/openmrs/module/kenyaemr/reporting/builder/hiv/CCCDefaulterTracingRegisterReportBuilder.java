@@ -136,7 +136,7 @@ public class CCCDefaulterTracingRegisterReportBuilder extends AbstractReportBuil
         dsd.addColumn("Final Outcome", new FinalOutcomeDataDefinition(),"");
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last TCA Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Return to Care Date", new ReturnToCareDateDataDefinition(),"");
+        dsd.addColumn("Return to Care Date", new ReturnToCareDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Comments", new ProviderCommentsDataDefinition(),"");
         dsd.addColumn("Provider", providerDataDefinition,"", new EncounterProviderConverter());
 
