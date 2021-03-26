@@ -69,8 +69,12 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
             Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
 
             Form antenatalVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
+            Form matVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY);
+            Form pncVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_POSTNATAL_VISIT);
             EncounterType mchConsultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
             Encounter lastANCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,antenatalVisitForm );
+            Encounter lastMatHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,matVisitForm );
+            Encounter lastPNCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,pncVisitForm );
 
             Encounter lastHtsEnc = null;
 
@@ -86,6 +90,10 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
                 }
             }  else if (lastANCHtsEnc != null) {
                 lastHtsEnc = lastANCHtsEnc;
+            }else if (lastMatHtsEnc != null) {
+                lastHtsEnc = lastMatHtsEnc;
+            }else if (lastPNCHtsEnc != null) {
+                lastHtsEnc = lastPNCHtsEnc;
             }
 
             ConceptService cs = Context.getConceptService();
