@@ -40,8 +40,12 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRM
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDisabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLRefillDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.FinalOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ProviderCommentsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingTypeDataDefinition;
@@ -130,6 +134,9 @@ public class CCCDefaulterTracingRegisterReportBuilder extends AbstractReportBuil
         dsd.addColumn("Outcome", new TracingOutcomeDataDefinition(),"");
         dsd.addColumn("Tracing attempt No", new TracingNumberDataDefinition(),"");
         dsd.addColumn("Final Outcome", new FinalOutcomeDataDefinition(),"");
+        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Return to Care Date", new ReturnToCareDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Comments", new ProviderCommentsDataDefinition(),"");
         dsd.addColumn("Provider", providerDataDefinition,"", new EncounterProviderConverter());
 

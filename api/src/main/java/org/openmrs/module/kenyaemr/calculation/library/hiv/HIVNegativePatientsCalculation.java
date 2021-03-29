@@ -13,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
@@ -22,8 +24,10 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.util.HtsConstants;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,6 +67,15 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
 
             Encounter lastHtsInitialEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsInitialForm);
             Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
+
+            Form antenatalVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
+            Form matVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY);
+            Form pncVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_POSTNATAL_VISIT);
+            EncounterType mchConsultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
+            Encounter lastANCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,antenatalVisitForm );
+            Encounter lastMatHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,matVisitForm );
+            Encounter lastPNCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,pncVisitForm );
+
             Encounter lastHtsEnc = null;
 
             if (lastHtsInitialEnc != null && lastHtsRetestEnc == null) {
@@ -75,6 +88,12 @@ public class HIVNegativePatientsCalculation extends AbstractPatientCalculation {
                 } else {
                     lastHtsEnc = lastHtsRetestEnc;
                 }
+            }  else if (lastANCHtsEnc != null) {
+                lastHtsEnc = lastANCHtsEnc;
+            }else if (lastMatHtsEnc != null) {
+                lastHtsEnc = lastMatHtsEnc;
+            }else if (lastPNCHtsEnc != null) {
+                lastHtsEnc = lastPNCHtsEnc;
             }
 
             ConceptService cs = Context.getConceptService();
