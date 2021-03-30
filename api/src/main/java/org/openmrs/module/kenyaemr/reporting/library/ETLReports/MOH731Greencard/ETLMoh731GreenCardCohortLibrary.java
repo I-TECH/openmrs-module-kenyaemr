@@ -573,8 +573,13 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "   left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "   left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "   where  date(e.date_started) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year) \n" +
-                "   group by e.patient_id \n" +
-                "   having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) \n" +
+                "   group by e.patient_id\n" +
+                "  having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) and (\n" +
+                "      (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(dis_date) or dis_date is null ))  or\n" +
+                "      (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_tca) >= date(latest_vis_date)) ) ) or\n" +
+                "      (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and\n" +
+                "      (date(latest_tca) > date(dis_date) or dis_date is null )\n" +
+                "      )\n" +
                 "   )net ) e\n" +
                 " inner join\n" +
                 " (\n" +
@@ -616,8 +621,13 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "   left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
                 "   left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
                 "   where  date(e.date_started) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year) \n" +
-                "   group by e.patient_id \n" +
-                "   having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) \n" +
+                "   group by e.patient_id\n" +
+                "  having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) and (\n" +
+                "      (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(dis_date) or dis_date is null ))  or\n" +
+                "      (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_tca) >= date(latest_vis_date)) ) ) or\n" +
+                "      (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and\n" +
+                "      (date(latest_tca) > date(dis_date) or dis_date is null )\n" +
+                "      )\n" +
                 "   )net ) e\n" +
                 " inner join\n" +
                 " (\n" +

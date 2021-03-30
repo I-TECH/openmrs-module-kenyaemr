@@ -23,6 +23,8 @@ import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.CadreCohortDefinition;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.ContactAgeCohortDefinition;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.ContactGenderCohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -348,6 +350,65 @@ public class CommonCohortLibrary {
 		cd.setCivilianIncluded(true);
 		return cd;
 	}
+	//----------------------------- definitions for patient contact
 
+	/**
+	 * Patients who at most maxAge years old on ${effectiveDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition contactAgedAtMost(int maxAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged at most " + maxAge);
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMaxAge(maxAge);
+		return cd;
+	}
+
+	/**
+	 * Patients who are at least minAge years old on ${effectiveDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition contactAgedAtLeast(int minAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged at least " + minAge);
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		return cd;
+	}
+
+	/**
+	 * patients who are at least minAge years old and at most years old on ${effectiveDate}
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition contactAgedAtLeastAgedAtMost(int minAge, int maxAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged between "+minAge+" and "+maxAge+" years");
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		cd.setMaxAge(maxAge);
+		return cd;
+	}
+
+	/**
+	 * Patients who are female
+	 * @return the cohort definition
+	 */
+	public CohortDefinition femalePatientContacts() {
+		ContactGenderCohortDefinition cd = new ContactGenderCohortDefinition();
+		cd.setName("females");
+		cd.setFemaleIncluded(true);
+		return cd;
+	}
+
+	/**
+	 * Patients who are male
+	 * @return the cohort definition
+	 */
+	public CohortDefinition malePatientContacts() {
+		ContactGenderCohortDefinition cd = new ContactGenderCohortDefinition();
+		cd.setName("males");
+		cd.setMaleIncluded(true);
+		return cd;
+	}
 
 }
