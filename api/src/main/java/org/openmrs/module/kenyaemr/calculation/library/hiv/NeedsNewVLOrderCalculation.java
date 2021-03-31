@@ -57,14 +57,16 @@ public class NeedsNewVLOrderCalculation extends AbstractPatientCalculation imple
                     vlOrders.add(order.getOrderId());
                 }
             }
-            Integer latestVlOrder = Collections.max(vlOrders);
-            if(dueForVl.contains(ptId) && orderService.getOrder(latestVlOrder).isVoided()
-                    && ( orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Sample not taken")
-                    || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Collect new sample")
-                    || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Sample rejected")
-                    || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("No reagents"))) {
-                needsNewVLOrder = true;
+            if (vlOrders.size() > 0) {
+                Integer latestVlOrder = Collections.max(vlOrders);
+                if (dueForVl.contains(ptId) && orderService.getOrder(latestVlOrder).isVoided()
+                        && (orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Sample not taken")
+                        || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Collect new sample")
+                        || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("Sample rejected")
+                        || orderService.getOrder(latestVlOrder).getVoidReason().equalsIgnoreCase("No reagents"))) {
+                    needsNewVLOrder = true;
 
+                }
             }
             ret.put(ptId, new BooleanResult(needsNewVLOrder, this));
         }
