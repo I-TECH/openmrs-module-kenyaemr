@@ -33,7 +33,7 @@ public class NeedsNewVLOrderCalculation extends AbstractPatientCalculation imple
      */
     @Override
     public String getFlagMessage() {
-        return "Previous VL order cancelled";
+        return "Collect new sample";
     }
 
     @Override
