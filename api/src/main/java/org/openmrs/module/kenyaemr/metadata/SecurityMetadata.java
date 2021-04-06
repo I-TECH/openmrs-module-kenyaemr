@@ -166,7 +166,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.CLINICIAN, "Can access the registration, triage, clinician, chart and reports apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
@@ -189,7 +189,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.DATA_CLERK, "Can access the chart, reporting and data quality apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
@@ -252,7 +252,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.LAB_TECHNICIAN, "Can access the lab requests app",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_LAB_ORDER),
 						app(EmrConstants.APP_LAB_MANIFEST),
