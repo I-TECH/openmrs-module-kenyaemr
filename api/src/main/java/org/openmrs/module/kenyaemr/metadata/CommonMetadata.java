@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.metadata;
 
+import org.openmrs.Form;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
@@ -227,5 +229,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 		uninstall(possible(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
+
+		//Retiring Lab results form
+		uninstall(possible(Form.class, "7e603909-9ed5-4d0c-a688-26ecb05d8b6e"), "Form deprecated with introduction of Lab orders");
 	}
 }

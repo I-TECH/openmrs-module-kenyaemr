@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Form;
 import org.openmrs.Visit;
 import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
@@ -45,7 +46,11 @@ public class VisitAvailableFormsFragmentController {
 		List<SimpleObject> availableForms = new ArrayList<SimpleObject>();
 
 		for (FormDescriptor descriptor : formManager.getAllUncompletedFormsForVisit(currentApp, visit)) {
-			availableForms.add(ui.simplifyObject(descriptor.getTarget()));
+			//Display only active forms
+			if(!descriptor.getTarget().isRetired()) {
+				availableForms.add(ui.simplifyObject(descriptor.getTarget()));
+			}
+			continue;
 		}
 
 		model.addAttribute("availableForms", availableForms);
