@@ -38,6 +38,8 @@
 				<!--<ref bean="kenyaemr.common.form.referralAndLinkage"/>-->
 				<ref bean="prep.prep.form.behaviorRiskAssessment"/>
 				<ref bean="kenyaemr_hiv_testing.common.form.htsScreeningForm"/>
+				<ref bean="kenyaemr.common.form.cervicalCancerScreening"/>
+				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
 		</property>
@@ -392,8 +394,6 @@
 		<!--<property name="order" value="200016" />-->
 	<!--</bean>-->
 
-	<!-- ===================== Reports ===================== -->
-
 	<!-- HTS Client Referral form -->
 	<bean id="kenyaemr.common.form.htsReferral" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="9284828e-ce55-11e9-a32f-2a2ae2dbcce4" />
@@ -407,6 +407,43 @@
 		<property name="htmlform" value="kenyaemr:hts/htsReferral.html" />
 		<property name="order" value="201004" />
 	</bean>
+
+	<!-- Cervical cancer screening form -->
+	<bean id="kenyaemr.common.form.cervicalCancerScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="ca555e8c-1b09-4a4c-8f99-d02e7bffec32" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:cervicalCancerScreening.html" />
+		<property name="order" value="201080" />
+	</bean>
+
+	<!-- Cervical cancer assessment form -->
+	<bean id="kenyaemr.common.form.cervicalCancerAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="1bc2f8b7-1bc0-4005-b7e3-1210aed324fd" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:cervicalCancerAssessment.html" />
+		<property name="order" value="201082" />
+	</bean>
+
 
 	<!-- ===================== Reports ===================== -->
 
