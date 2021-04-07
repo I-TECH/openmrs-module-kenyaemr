@@ -362,11 +362,22 @@ public class DatimCohortLibrary {
 //TODO find max test - Done
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
-        String sqlQuery = "select v.patient_id\n" +
-                "                from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date  between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "                and v.patient_given_result =\"Yes\" group by v.patient_id\n" +
-                "                having mid(min(concat(v.visit_date,final_test_result)),11)=\"Positive\"\n" +
-                "      and mid(min(concat(v.visit_date,v.final_test_result)),1,10) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+        String sqlQuery = "select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.test_date,e.1st_anc_visit from\n" +
+                "(select e.patient_id, max(e.visit_date) as latest_enrollment_date,mid(max(concat(e.visit_date,e.first_anc_visit_date)),11) as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "group by e.patient_id) e\n" +
+                "inner join\n" +
+                "(select av.patient_id,av.visit_date as visit_date, av.final_test_result as hiv_status from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                "  and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
+                "left join (select t.visit_date as test_date,t.patient_id, t.final_test_result as test_result from kenyaemr_etl.etl_hts_test t\n" +
+                "where t.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "and t.hts_entry_point ='PMTCT ANC'\n" +
+                "and t.final_test_result = 'Positive') t on e.patient_id = t.patient_id\n" +
+                "where ((t.test_date = av.visit_date and t.test_result = 'Positive') or (av.hiv_status = 'Positive'))\n" +
+                "group by e.patient_id\n" +
+                "having latest_enrollment_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "and ( 1st_anc_visit is null or 1st_anc_visit = latest_enrollment_date)\n" +
+                ")n;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testPositiveResultsANC");
         cd.setQuery(sqlQuery);
@@ -379,11 +390,22 @@ public class DatimCohortLibrary {
     //TODO find latest test - Done
     public CohortDefinition patientHIVNegativeResultsATANC() {
 
-        String sqlQuery = "select v.patient_id\n" +
-                "                from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date  between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "                and v.patient_given_result =\"Yes\" group by v.patient_id\n" +
-                "                having mid(min(concat(v.visit_date,final_test_result)),11)=\"Negative\"\n" +
-                "      and mid(min(concat(v.visit_date,v.final_test_result)),1,10) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+        String sqlQuery = "select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.test_date,e.1st_anc_visit from\n" +
+                "(select e.patient_id, max(e.visit_date) as latest_enrollment_date,mid(max(concat(e.visit_date,e.first_anc_visit_date)),11) as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "group by e.patient_id) e\n" +
+                "inner join\n" +
+                "(select av.patient_id,av.visit_date as visit_date, av.final_test_result as hiv_status from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                "        and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
+                "left join (select t.visit_date as test_date,t.patient_id, t.final_test_result as test_result from kenyaemr_etl.etl_hts_test t\n" +
+                "    where t.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "    and t.hts_entry_point ='PMTCT ANC'\n" +
+                "    and t.final_test_result = 'Negative') t on e.patient_id = t.patient_id\n" +
+                "where ((t.test_date = av.visit_date and t.test_result = 'Negative') or (av.hiv_status = 'Negative'))\n" +
+                "group by e.patient_id\n" +
+                "having latest_enrollment_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "and ( 1st_anc_visit is null or 1st_anc_visit = latest_enrollment_date)\n" +
+                " )n;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testNegativeResultsANC");
         cd.setQuery(sqlQuery);
@@ -432,13 +454,21 @@ public class DatimCohortLibrary {
     //Clients with positive HIV status before ANC-1
     public CohortDefinition positiveHivStatusBeforeAnc1() {
 
-        String sqlQuery = "select e.patient_id\n" +
-                "                from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "                       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
-                "                where e.hiv_status =703\n" +
-                "                group by e.patient_id\n" +
-                "                having min(v.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "                      and min(v.visit_date) > max(e.visit_date);";
+        String sqlQuery = "select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.test_date,e.1st_anc_visit,av.visit_date from\n" +
+                "(select e.patient_id, max(e.visit_date) as latest_enrollment_date,mid(max(concat(e.visit_date,e.first_anc_visit_date)),11) as 1st_anc_visit,\n" +
+                " mid(max(concat(e.visit_date,e.hiv_status)),11) as HIV_status from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "group by e.patient_id having HIV_status = 703) e\n" +
+                "inner join\n" +
+                "(select av.patient_id,av.visit_date as visit_date, av.final_test_result as hiv_status from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                "        and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
+                "left join (select max(t.visit_date) as test_date,t.patient_id, mid(max(concat(t.visit_date,t.final_test_result)),11) as test_result from kenyaemr_etl.etl_hts_test t\n" +
+                "   group by t.patient_id\n" +
+                "     having test_result = 'Positive') t on e.patient_id = t.patient_id\n" +
+                "where ((t.test_date < av.visit_date) or (e.HIV_status = 703))\n" +
+                "group by e.patient_id\n" +
+                "having coalesce(1st_anc_visit,visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                ")n;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_STAT_KNOWN_POSITIVE");
@@ -453,11 +483,18 @@ public class DatimCohortLibrary {
     //Clients with negative HIV status before ANC-1
     public CohortDefinition negativeHivStatusBeforeAnc1() {
 
-        String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v inner join kenyaemr_etl.etl_hts_test t on v.patient_id=t.patient_id\n" +
-                "where t.final_test_result = \"Negative\"  and t.patient_given_result=\"Yes\"\n" +
-                "group by v.patient_id\n" +
-                "having  timestampdiff(month,max(t.visit_date), min(v.visit_date) )< 3\n" +
-                "and min(v.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+        String sqlQuery = "select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.latest_test_date,av.visit_date as anc_visit_date,e.1st_anc_visit from\n" +
+                "(select e.patient_id, max(e.visit_date) as latest_enrollment_date,e.visit_date as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "group by e.patient_id) e\n" +
+                "inner join\n" +
+                "(select av.patient_id,av.visit_date as visit_date from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                " and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
+                "inner join (select max(t.visit_date) as latest_test_date,t.patient_id from kenyaemr_etl.etl_hts_test t\n" +
+                "group by t.patient_id having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Negative') t on e.patient_id = t.patient_id\n" +
+                "group by e.patient_id\n" +
+                "having coalesce(1st_anc_visit,anc_visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                "and timestampdiff(MONTH,t.latest_test_date,anc_visit_date)< 3)n;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PMTCT_STAT_RECENT_NEGATIVE");
@@ -472,12 +509,14 @@ public class DatimCohortLibrary {
     //TODO subquery to get last enrollment
     public CohortDefinition newANCClients() {
 
-        String sqlQuery = "select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = av.patient_id\n" +
-                "where av.anc_visit_number = 1 and av.visit_date\n" +
-                "                   between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+        String sqlQuery = "select d.patient_id from\n" +
+                "  (select e.patient_id, max(e.visit_date) as latest_enrollment_date,av.visit_date as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "inner join\n" +
+                " (select av.patient_id,av.visit_date as visit_date from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                " and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
+                " group by av.patient_id) av on e.patient_id = av.patient_id\n" +
                 "group by e.patient_id\n" +
-                "having max(e.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
+                "having 1st_anc_visit between date_sub(:endDate, interval 3 MONTH) and date(:endDate))d;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("newANCClients");
         cd.setQuery(sqlQuery);
