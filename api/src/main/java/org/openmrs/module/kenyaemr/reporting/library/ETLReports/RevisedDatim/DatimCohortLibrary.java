@@ -1080,6 +1080,600 @@ public class DatimCohortLibrary {
         return cd;
 
     }
+
+    /**
+     *  Starting TB treatment newly on ART
+     *
+     */
+    public CohortDefinition startingTBTreatmentNewOnART() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "   select fup.visit_date,fup.patient_id,f.screened_for_tb,f.started_anti_TB,f.tb_results,\n" +
+                "          greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "          greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "          greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "          d.patient_id as disc_patient,\n" +
+                "          d.effective_disc_date as effective_disc_date,\n" +
+                "          max(d.visit_date) as date_discontinued,\n" +
+                "          de.patient_id as started_on_drugs,\n" +
+                "          min(de.date_started) as art_start_date\n" +
+                "   from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "          join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "          join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "          left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "          left outer JOIN\n" +
+                "            (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "             where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "             group by patient_id\n" +
+                "            ) d on d.patient_id = fup.patient_id\n" +
+                "   join (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "        where started_anti_TB = 1065 and f.screened_for_tb='Yes' and f.tb_status=1662 and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "   where fup.visit_date <= date(:endDate)\n" +
+                "   group by patient_id\n" +
+                "   having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) >= date_sub(:endDate,interval 6 month))\n" +
+                "    and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "     and (\n" +
+                "       (\n" +
+                "           ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "             and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "           )\n" +
+                "       )\n" +
+                "   ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("startingTBTreatmentNewOnART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Starting TB treatment newly started ART");
+        return cd;
+
+    }
+
+    /**
+     *  Starting TB treatment previously on ART
+     *
+     */
+    public CohortDefinition startingTBTreatmentPrevOnART() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,f.screened_for_tb,f.started_anti_TB,f.tb_results,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where started_anti_TB = 1065 and f.screened_for_tb='Yes' and f.tb_status=1662 and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) < date_sub(:endDate,interval 6 month))\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("startingTBTreatmentPrevOnART");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Starting TB treatment currently on ART");
+        return cd;
+
+    }
+
+    /**
+     *  New on ART Screened Positive
+     *
+     */
+    public CohortDefinition newOnARTScreenedPositive() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,f.screened_for_tb,f.started_anti_TB,f.tb_results,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.cough =159799 or f.fever = 1494 or f.weight_loss_poor_gain = 832 or f.night_sweats = 33027 or f.tb_case_contact = 124068 or f.lethargy = 116334)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) >= date_sub(:endDate,interval 6 month))\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("newOnARTScreenedPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New on ART Screened Positive");
+        return cd;
+
+    }
+
+    /**
+     *  Previously on ART Screened Positive
+     *
+     */
+    public CohortDefinition prevOnARTScreenedPositive() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,f.screened_for_tb,f.started_anti_TB,f.tb_results,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.cough =159799 or f.fever = 1494 or f.weight_loss_poor_gain = 832 or f.night_sweats = 33027 or f.tb_case_contact = 124068 or f.lethargy = 116334)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) < date_sub(:endDate,interval 6 month))\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("prevOnARTScreenedPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Previously on ART Screened Positive");
+        return cd;
+
+    }
+
+    /**
+     *  New on ART Screened Negative
+     *
+     */
+    public CohortDefinition newOnARTScreenedNegative() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select n.patient_id from\n" +
+                "            (select f.patient_id,f.encounter_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "             where f.screened_for_tb='Yes' and (f.cough is null and f.fever is null and f.weight_loss_poor_gain is null and f.night_sweats is null and f.tb_case_contact is null and f.lethargy is null)\n" +
+                "               and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate) group by f.patient_id)n\n" +
+                "              left join\n" +
+                "                (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.cough =159799 or f.fever = 1494 or f.weight_loss_poor_gain = 832 or f.night_sweats = 33027 or f.tb_case_contact = 124068 or f.lethargy = 116334)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate) group by f.patient_id)p on n.patient_id = p.patient_id\n" +
+                "                 where p.patient_id is null\n" +
+                "                 group by n.patient_id)f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) >= date_sub(:endDate,interval 6 month))\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("newOnARTScreenedNegative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("New on ART Screened Negative");
+        return cd;
+
+    }
+
+    /**
+     *  Previously on ART Screened Negative
+     *
+     */
+    public CohortDefinition prevOnARTScreenedNegative() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select n.patient_id from\n" +
+                "                (select f.patient_id,f.encounter_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.cough is null and f.fever is null and f.weight_loss_poor_gain is null and f.night_sweats is null and f.tb_case_contact is null and f.lethargy is null)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate) group by f.patient_id)n\n" +
+                "                  left join\n" +
+                "                    (select f.patient_id,f.visit_date,f.started_anti_TB as started_anti_tb,f.screened_for_tb as screened_for_tb,f.tb_status as tb_results,f.cough,f.fever,f.weight_loss_poor_gain,f.night_sweats,f.tb_case_contact,f.lethargy from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                     where f.screened_for_tb='Yes' and (f.cough =159799 or f.fever = 1494 or f.weight_loss_poor_gain = 832 or f.night_sweats = 33027 or f.tb_case_contact = 124068 or f.lethargy = 116334)\n" +
+                "                       and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate) group by f.patient_id)p on n.patient_id = p.patient_id\n" +
+                "                 where p.patient_id is null\n" +
+                "                 group by n.patient_id)f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '' and min(date_started) < date_sub(:endDate,interval 6 month))\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("prevOnARTScreenedNegative");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Previously on ART Screened Negative");
+        return cd;
+
+    }
+    /**
+     *  Specimen sent for bacteriologic diagnosis of active TB
+     *
+     */
+    public CohortDefinition specimenSent() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select patient_id from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.genexpert_ordered = 162202 or f.spatum_smear_ordered = 307)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate)\n" +
+                "                 union all\n" +
+                "                 select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in (307,1465,162202)\n" +
+                "                  and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '')\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("specimenSent");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Specimen sent for bacteriologic diagnosis of active TB");
+        return cd;
+
+    }
+
+    /**
+     *  GeneXpert MTB/RIF assay (with or without other testing
+     *
+     */
+    public CohortDefinition geneXpertMTBRIF() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select patient_id from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.genexpert_ordered = 162202)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate)\n" +
+                "                 union all\n" +
+                "                 select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test=162202\n" +
+                "                 and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '')\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("geneXpertMTBRIF");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("GeneXpert MTB/RIF assay (with or without other testing");
+        return cd;
+
+    }
+
+    /**
+     *  Smear microscopy only
+     *
+     */
+    public CohortDefinition smearMicroscopy() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select a.patient_id from (select patient_id from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                               where f.screened_for_tb='Yes' and (f.spatum_smear_ordered = 307)\n" +
+                "                                 and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "                               union all\n" +
+                "                               select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test =307\n" +
+                "                                                  and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate) )a\n" +
+                "                                left join (\n" +
+                "                                          select patient_id from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                                          where f.screened_for_tb='Yes' and (f.genexpert_ordered = 162202 or f.chest_xray_ordered = 12)\n" +
+                "                                            and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate)\n" +
+                "                                          union all\n" +
+                "                                          select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in(162202,1465)\n" +
+                "                                                 and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate)\n" +
+                "                                          )b on a.patient_id = b.patient_id\n" +
+                "     where b.patient_id is null\n" +
+                "     group by a.patient_id)f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '')\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("smearMicroscopy");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Smear microscopy only");
+        return cd;
+
+    }
+    /**
+     *  Additional test other than GeneXpert
+     *
+     */
+    public CohortDefinition additionalTBTests() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test=1465\n" +
+                "                  and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '')\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("additionalTBTests");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Additional test other than GeneXpert");
+        return cd;
+
+    }
+
+    /**
+     *  Starting TB treatment previously on ART
+     *
+     */
+    public CohortDefinition resultsReturned() {
+
+        String sqlQuery = "select t.patient_id\n" +
+                "from(\n" +
+                "    select fup.visit_date,fup.patient_id,\n" +
+                "           greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
+                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
+                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
+                "           d.patient_id as disc_patient,\n" +
+                "           d.effective_disc_date as effective_disc_date,\n" +
+                "           max(d.visit_date) as date_discontinued,\n" +
+                "           de.patient_id as started_on_drugs,\n" +
+                "           min(de.date_started) as art_start_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
+                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
+                "           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
+                "           left outer JOIN\n" +
+                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "              group by patient_id\n" +
+                "             ) d on d.patient_id = fup.patient_id\n" +
+                "           join (select patient_id from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "                 where f.screened_for_tb='Yes' and (f.genexpert_result in(162203,162204,164104) or f.spatum_smear_result = 703)\n" +
+                "                   and f.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate)\n" +
+                "                 union all\n" +
+                "                 select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in (162202,1465,307) and x.test_result in (162203,162204,162104,703,1362,1363,1364)\n" +
+                "                       and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate))f on fup.patient_id = f.patient_id\n" +
+                "    where fup.visit_date <= date(:endDate)\n" +
+                "    group by patient_id\n" +
+                "    having (started_on_drugs is not null and started_on_drugs <> '')\n" +
+                "       and (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)\n" +
+                "       and (\n" +
+                "               (\n" +
+                "                   ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(latest_enrolment_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                     and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
+                "                   )\n" +
+                "               )\n" +
+                "    ) t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("resultsReturned");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Positive result returned for bacteriologic diagnosis of active TB");
+        return cd;
+
+    }
+
+
     //TODO enroolnemt date > art date : Done
     public CohortDefinition newOnARTDuringPregnancy() {
 
@@ -4331,465 +4925,6 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         return cd;
     }
 
-    /**
-     *  Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period.
-     * Denominator will auto-calculate from Start on ART by Screen Result by Age/Sex.
-     * DATIM_TX_TB Datim indicator
-     */
-    public CohortDefinition artPatientScreenedForTBandResultNegative() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                       from ( \n" +
-                "                       select e.patient_id,e.date_started, \n" +
-                "                       e.gender,\n" +
-                "                       e.dob,\n" +
-                "                       d.visit_date as dis_date, \n" +
-                "                       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                       e.regimen, e.regimen_line, e.alternative_regimen, \n" +
-                "                       fup.visit_date, fup.pregnancy_status,\n" +
-                "                       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                "                       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
-                "                       max(fup.visit_date) as latest_vis_date\n" +
-                "                       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-                "                       max(if(discontinued,1,0))as alternative_regimen \n" +
-                "                       from kenyaemr_etl.etl_drug_event e \n" +
-                "                       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "                       group by e.patient_id) e \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
-                "                       where  date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
-                "                       group by e.patient_id \n" +
-                "                       having TI_on_art=0\n" +
-                "                       )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-        return cd;
-
-    }
-
-    /**
-     *  Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period.
-     * Denominator will auto-calculate from Start on ART by Screen Result by Age/Sex.
-     * DATIM_TX_TB Datim indicator
-     */
-    public CohortDefinition artPatientScreenedForTBResultPositive() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                       from ( \n" +
-                "                       select e.patient_id,e.date_started, \n" +
-                "                       e.gender,\n" +
-                "                       e.dob,\n" +
-                "                       d.visit_date as dis_date, \n" +
-                "                       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                       e.regimen, e.regimen_line, e.alternative_regimen, \n" +
-                "                       fup.visit_date, fup.pregnancy_status,\n" +
-                "                       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                "                       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
-                "                       max(fup.visit_date) as latest_vis_date\n" +
-                "                       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-                "                       max(if(discontinued,1,0))as alternative_regimen \n" +
-                "                       from kenyaemr_etl.etl_drug_event e \n" +
-                "                       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "                       group by e.patient_id) e \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
-                "                       where  date(e.date_started) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
-                "                       group by e.patient_id \n" +
-                "                       having TI_on_art=0\n" +
-                "                       )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-
-        return cd;
-
-    }
-
-    /**
-     *  Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period.
-     * Denominator will auto-calculate from Start on ART by Screen Result by Age/Sex.
-     * DATIM_TX_TB Datim indicator
-     */
-    public CohortDefinition previouslyOnArtPatientScreenedForTBResultPositive() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                       from ( \n" +
-                "                       select e.patient_id,e.date_started, \n" +
-                "                       e.gender,\n" +
-                "                       e.dob,\n" +
-                "                       d.visit_date as dis_date, \n" +
-                "                       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                       e.regimen, e.regimen_line, e.alternative_regimen, \n" +
-                "                       fup.visit_date, fup.pregnancy_status,\n" +
-                "                       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                "                       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
-                "                       max(fup.visit_date) as latest_vis_date\n" +
-                "                       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-                "                       max(if(discontinued,1,0))as alternative_regimen \n" +
-                "                       from kenyaemr_etl.etl_drug_event e \n" +
-                "                       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "                       group by e.patient_id) e \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
-                "                       where  date(e.date_started) < date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status in(1662,142177)\n" +
-                "                       group by e.patient_id \n" +
-                "                       having TI_on_art=0\n" +
-                "                       )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_POSITIVE_PREVIOUS");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-        return cd;
-    }
-
-    /**
-     *  Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period.
-     * Denominator will auto-calculate from Start on ART by Screen Result by Age/Sex.
-     * DATIM_TX_TB Datim indicator
-     */
-    public CohortDefinition previouslyOnArtPatientScreenedForTBandResultNegative() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                       from ( \n" +
-                "                       select e.patient_id,e.date_started, \n" +
-                "                       e.gender,\n" +
-                "                       e.dob,\n" +
-                "                       d.visit_date as dis_date, \n" +
-                "                       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                       e.regimen, e.regimen_line, e.alternative_regimen, \n" +
-                "                       fup.visit_date, fup.pregnancy_status,\n" +
-                "                       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                "                       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn, \n" +
-                "                       max(fup.visit_date) as latest_vis_date\n" +
-                "                       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen, \n" +
-                "                       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line, \n" +
-                "                       max(if(discontinued,1,0))as alternative_regimen \n" +
-                "                       from kenyaemr_etl.etl_drug_event e \n" +
-                "                       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "                       group by e.patient_id) e \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "                       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                       join kenyaemr_etl.etl_tb_screening tb on fup.patient_id = tb.patient_id\n" +
-                "                       where  date(e.date_started) < date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) \n" +
-                "                       and tb.visit_date between date_sub(date(:startDate) , interval 3 MONTH) and date(:endDate) and tb.resulting_tb_status =6060\n" +
-                "                       group by e.patient_id \n" +
-                "                       having TI_on_art=0\n" +
-                "                       )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_NEGATIVE_PREVIOUS");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-        return cd;
-
-    }
-
-    // ebrolled to tb
-    /**
-     *  Auto-Calculate Number of new ART patients who were started on TB treatment during the reporting period.
-     * Numerator will autocalculate from Current/New on ART by Age/Sex..
-     * TX_TB_NEW(NUMERATOR) (Numerator) Datim indicator
-     */
-    public CohortDefinition patientNewOnARTEnrolledOnTB_ThisReportingPeriod() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                        from (\n" +
-                "                        select e.patient_id,e.date_started,\n" +
-                "                        e.gender,\n" +
-                "                        e.dob,\n" +
-                "                        d.visit_date as dis_date,\n" +
-                "                        if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                        e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                "                        mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                        max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                        max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                "                        max(fup.visit_date) as latest_vis_date\n" +
-                "                        from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "                        mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "                        mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "                        max(if(discontinued,1,0))as alternative_regimen\n" +
-                "                        from kenyaemr_etl.etl_drug_event e\n" +
-                "                        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "                        group by e.patient_id) e\n" +
-                "                        left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
-                "                        left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                "                        left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                        inner join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id where tb.visit_date between date_sub(date(:startDate) , interval 6 MONTH) and date(:endDate)\n" +
-                "                        and  date(e.date_started) between date_sub(:endDate , interval 3 MONTH) and :endDate\n" +
-                "                        group by e.patient_id\n" +
-                "                        having TI_on_art=0\n" +
-                "                        )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_NEW(NUMERATOR)");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-        return cd;
-
-    }
-
-
-    /**
-     *  Auto-Calculate Number of patients previously on ART  who were started on TB treatment during the reporting period.
-     * Numerator will autocalculate from Current/prev on ART by Age/Sex..
-     * TX_TB_PREV(NUMERATOR) (Numerator) Datim indicator
-     */
-    public CohortDefinition patientPreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod() {
-
-        String sqlQuery = "\n" +
-                "select net.patient_id \n" +
-                "                        from (\n" +
-                "                        select e.patient_id,e.date_started,\n" +
-                "                        e.gender,\n" +
-                "                        e.dob,\n" +
-                "                        d.visit_date as dis_date,\n" +
-                "                        if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "                        e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                "                        mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                        max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "                        max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                "                        max(fup.visit_date) as latest_vis_date\n" +
-                "                        from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "                        mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "                        mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "                        max(if(discontinued,1,0))as alternative_regimen\n" +
-                "                        from kenyaemr_etl.etl_drug_event e\n" +
-                "                        join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "                        group by e.patient_id) e\n" +
-                "                        left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id\n" +
-                "                        left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                "                        left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "                        inner join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id where tb.visit_date between date_sub(date(:startDate) , interval 6 MONTH) and date(:endDate)\n" +
-                "                        and  date(e.date_started) < date_sub(:endDate , interval 3 MONTH)\n" +
-                "                        group by e.patient_id\n" +
-                "                        having TI_on_art=0\n" +
-                "                        )net;;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_PREV(NUMERATOR)");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period");
-        return cd;
-    }
-
-    /**
-     *  Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease.
-     * TX_TB_SPECIMEN Datim indicator
-     */
-    public CohortDefinition patientsWhoHadSpecimenSentFor_TB_ThisReportingPeriod() {
-
-        String sqlQuery = "\n" +
-                "select  e.patient_id\n" +
-                "                                from (\n" +
-                "                                         select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "                                                max(fup.visit_date) as latest_vis_date,\n" +
-                "                                                mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                                                max(d.visit_date) as date_discontinued,\n" +
-                "                                                d.patient_id as disc_patient,\n" +
-                "                                                de.patient_id as started_on_drugs\n" +
-                "                                         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                                                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                                                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                                                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                                                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                                                  left outer JOIN\n" +
-                "                                              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                                                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                                                  group by patient_id\n" +
-                "                                              ) d on d.patient_id = fup.patient_id\n" +
-                "                                             where fup.visit_date between date_sub(date(:startDate) , interval 5 MONTH)  and date(:endDate) and tb.visit_date between date_sub(:startDate , interval 5 MONTH) and date(:endDate) and fup.spatum_smear_ordered =1065 and fup.genexpert_ordered=1065\n" +
-                "                                             group by patient_id\n" +
-                "                                             having (\n" +
-                "                                                         (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
-                "                                                         (((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )\n" +
-                "                                                             ) and started_on_drugs is not null and started_on_drugs <> \"\")\n" +
-                "             ) e;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_SPECIMEN");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease.");
-        return cd;
-    }
-
-    /**
-     *  Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease.
-     * TX_TB_POSITIVE_RESULT_RETURNED Datim indicator
-     */
-    public CohortDefinition patientsWhoHadPositiveResultForBacteriologicDiagnosis() {
-
-        String sqlQuery = "\n" +
-                "select  e.patient_id\n" +
-                "                                from (\n" +
-                "                                         select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "                                                max(fup.visit_date) as latest_vis_date,\n" +
-                "                                                mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                                                max(d.visit_date) as date_discontinued,\n" +
-                "                                                d.patient_id as disc_patient,\n" +
-                "                                                de.patient_id as started_on_drugs\n" +
-                "                                         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                                                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                                                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                                                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                                                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                                                  left outer JOIN\n" +
-                "                                              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                                                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                                                  group by patient_id\n" +
-                "                                              ) d on d.patient_id = fup.patient_id\n" +
-                "                                             where fup.visit_date between date_sub(date(:startDate) , interval 5 MONTH)  and date(:endDate) and tb.visit_date between date_sub(:startDate , interval 5 MONTH) and date(:endDate) and fup.spatum_smear_result =703 or fup.genexpert_ordered in (162203,162204,164104)\n" +
-                "                                             group by patient_id\n" +
-                "                                             having (\n" +
-                "                                                         (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
-                "                                                         (((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )\n" +
-                "                                                             ) and started_on_drugs is not null and started_on_drugs <> \"\")\n" +
-                "             ) e;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_POSITIVE_RESULT_RETURNED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease.");
-        return cd;
-    }
-
-    /**
-     *  Number of patients whose specimens were sent for  Smear only.
-     * TX_TB_SMEAR_SPECIMEN
-     */
-    public CohortDefinition patientsSpecimenSentForSmearOnly() {
-
-        String sqlQuery = "\n" +
-                "select  e.patient_id\n" +
-                "from (\n" +
-                "         select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "                max(fup.visit_date) as latest_vis_date,\n" +
-                "                mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                max(d.visit_date) as date_discontinued,\n" +
-                "                d.patient_id as disc_patient,\n" +
-                "                de.patient_id as started_on_drugs\n" +
-                "         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                  inner join encounter en on fup.patient_id = en.patient_id\n" +
-                "                  inner join orders od on od.encounter_id = en.encounter_id\n" +
-                "                  left outer JOIN\n" +
-                "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                  group by patient_id\n" +
-                "              ) d on d.patient_id = fup.patient_id\n" +
-                "             where fup.visit_date between date_sub(date(:startDate) , interval 5 MONTH) and date(:endDate) and tb.visit_date between date_sub(:startDate , interval 5 MONTH) and date(:endDate) and\n" +
-                "                  (SELECT COUNT(x.concept_id) = 1 AS TestsOrderd from  orders x join  encounter en on  x.encounter_id = en.encounter_id\n" +
-                "                      where en.patient_id = fup.patient_id) and  od.concept_id= 307\n" +
-                "             group by patient_id\n" +
-                "             having (\n" +
-                "                         (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
-                "                         (((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )\n" +
-                "                             ) and started_on_drugs is not null and started_on_drugs <> \"\")\n" +
-                "     ) e;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_SMEAR_SPECIMEN");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of patients whose specimens were sent for  Smear only.");
-        return cd;
-    }
-
-
-    /**
-     *  Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).
-     * TX_TB_GENE_XPERT_SPECIMEN
-     */
-    public CohortDefinition patientsSpecimenSentForGeneExpert() {
-
-        String sqlQuery = "\n" +
-                "select  e.patient_id\n" +
-                "from (\n" +
-                "         select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "                max(fup.visit_date) as latest_vis_date,\n" +
-                "                mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "                max(d.visit_date) as date_discontinued,\n" +
-                "                d.patient_id as disc_patient,\n" +
-                "                de.patient_id as started_on_drugs\n" +
-                "         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                  left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
-                "                  inner join kenyaemr_etl.etl_tb_screening tb on tb.patient_id=fup.patient_id\n" +
-                "                  inner join encounter en on fup.patient_id = en.patient_id\n" +
-                "                  inner join orders od on od.encounter_id = en.encounter_id\n" +
-                "                  left outer JOIN\n" +
-                "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                  group by patient_id\n" +
-                "              ) d on d.patient_id = fup.patient_id\n" +
-                "             where fup.visit_date between date_sub(date(:startDate) , interval 5 MONTH) and date(:endDate) and tb.visit_date between date_sub(:startDate , interval 5 MONTH) and date(:endDate) and  od.concept_id= 162202\n" +
-                "             group by patient_id\n" +
-                "             having (\n" +
-                "                         (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )) or\n" +
-                "                         (((date(latest_tca) between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and (date(latest_tca) > date(date_discontinued) or disc_patient is null )\n" +
-                "                             ) and started_on_drugs is not null and started_on_drugs <> \"\")\n" +
-                "     ) e;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_TB_GENE_XPERT_SPECIMEN");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).");
-        return cd;
-    }
     /**
      *  Number of KPs who received prevention services
      * KP_PREV

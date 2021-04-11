@@ -369,7 +369,81 @@ public class DatimIndicatorLibrary {
     public CohortIndicator alreadyOnARTTBInfected() {
         return cohortIndicator("TB patients already on ART", ReportUtils.<CohortDefinition>map(datimCohorts.alreadyOnARTTBInfected(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Starting TB treatment newly started ART
+     * @return the indicator
+     */
+    public CohortIndicator startingTBTreatmentNewOnART() {
+        return cohortIndicator("Starting TB treatment newly started ART", ReportUtils.<CohortDefinition>map(datimCohorts.startingTBTreatmentNewOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Starting TB treatment previously on ART
+     * @return the indicator
+     */
+    public CohortIndicator startingTBTreatmentPrevOnART() {
+        return cohortIndicator("Starting TB treatment previously on ART", ReportUtils.<CohortDefinition>map(datimCohorts.startingTBTreatmentPrevOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * New on ART Screened Positive
+     * @return the indicator
+     */
+    public CohortIndicator newOnARTScreenedPositive() {
+        return cohortIndicator("New on ART Screened Positive", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTScreenedPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Previously on ART Screened Positive
+     * @return the indicator
+     */
+    public CohortIndicator prevOnARTScreenedPositive() {
+        return cohortIndicator("Previously on ART Screened Positive", ReportUtils.<CohortDefinition>map(datimCohorts.prevOnARTScreenedPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * New on ART Screened Negative
+     * @return the indicator
+     */
+    public CohortIndicator newOnARTScreenedNegative() {
+        return cohortIndicator("New on ART Screened Negative", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTScreenedNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Previously on ART Screened Negative
+     * @return the indicator
+     */
+    public CohortIndicator prevOnARTScreenedNegative() {
+        return cohortIndicator("Previously on ART Screened Negative", ReportUtils.<CohortDefinition>map(datimCohorts.prevOnARTScreenedNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }    /**
+     * Specimen sent for bacteriologic diagnosis of active TB
+     * @return the indicator
+     */
+    public CohortIndicator specimenSent() {
+        return cohortIndicator("Specimen sent for bacteriologic diagnosis of active TB", ReportUtils.<CohortDefinition>map(datimCohorts.specimenSent(), "startDate=${startDate},endDate=${endDate}"));
+    }    /**
+     * GeneXpert MTB/RIF assay (with or without other testing)
+     * @return the indicator
+     */
+    public CohortIndicator geneXpertMTBRIF() {
+        return cohortIndicator("GeneXpert MTB/RIF assay (with or without other testing)", ReportUtils.<CohortDefinition>map(datimCohorts.geneXpertMTBRIF(), "startDate=${startDate},endDate=${endDate}"));
+    }    /**
+     * Smear microscopy only
+     * @return the indicator
+     */
+    public CohortIndicator smearMicroscopy() {
+        return cohortIndicator("Smear microscopy only", ReportUtils.<CohortDefinition>map(datimCohorts.smearMicroscopy(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
+    /**
+     * Additional test other than GeneXpert
+     * @return the indicator
+     */
+    public CohortIndicator additionalTBTests() {
+        return cohortIndicator("Additional test other than GeneXpert", ReportUtils.<CohortDefinition>map(datimCohorts.additionalTBTests(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Positive result returned for bacteriologic diagnosis of active TB
+     * @return the indicator
+     */
+    public CohortIndicator resultsReturned() {
+        return cohortIndicator("Positive result returned for bacteriologic diagnosis of active TB", ReportUtils.<CohortDefinition>map(datimCohorts.resultsReturned(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of Mothers new on ART during current pregnancy
      * @return the indicator
@@ -1163,78 +1237,6 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator totalBeneficiaryOfOVCPreventiveProgram() {
         return cohortIndicator("Number of beneficiaries served by  PEPFAR OVC preventive program", ReportUtils.<CohortDefinition>map(datimCohorts.totalBeneficiaryOfOVCPreventiveProgram(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
-     */
-    public CohortIndicator newlyOnArtPatientScreenedNegativeForTB() {
-        return cohortIndicator("Number of people on art that tested negative to TB", ReportUtils.<CohortDefinition>map(datimCohorts.artPatientScreenedForTBandResultNegative(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (positive).
-     */
-    public CohortIndicator newlyOnArtPatientScreenedPositiveForTB() {
-        return cohortIndicator("Number of people on art that tested positive to TB", ReportUtils.<CohortDefinition>map(datimCohorts.artPatientScreenedForTBResultPositive(), "startDate=${startDate},endDate=${endDate}"));
-
-    }
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
-     */
-    public CohortIndicator previouslyOnArtPatientScreenedNegativeForTB() {
-        return cohortIndicator("Number of people on art that tested negative to TB", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnArtPatientScreenedForTBandResultNegative(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (positive).
-     */
-    public CohortIndicator previouslyOnArtPatientScreenedPositiveForTB() {
-        return cohortIndicator("Number of people on art that tested positive to TB", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnArtPatientScreenedForTBResultPositive(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
-     */
-    public CohortIndicator PreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod() {
-        return cohortIndicator("Number of patients on art enrolled on tb previous reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.patientPreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-
-    /**
-     * Auto-Calculate Number of ART patients who were screened for TB at least once during the reporting period (negative).
-     */
-    public CohortIndicator NewOnARTEnrolledOnTB_ThisReportingPeriod() {
-        return cohortIndicator("Number of patients new on art enrolled on tb this reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.patientNewOnARTEnrolledOnTB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease
-     */
-    public CohortIndicator totalPatientsWhoHadSpecimenSentToLab() {
-        return cohortIndicator("Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease", ReportUtils.<CohortDefinition>map(datimCohorts.patientsWhoHadSpecimenSentFor_TB_ThisReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease
-     */
-    public CohortIndicator patientsWithPositiveResultForBacteriologicDiagnosis() {
-        return cohortIndicator("Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease", ReportUtils.<CohortDefinition>map(datimCohorts.patientsWhoHadPositiveResultForBacteriologicDiagnosis(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients whose specimens were sent for  Smear only
-     */
-    public CohortIndicator patientSWhoseSpecimenSentForSmearOnly() {
-        return cohortIndicator("Number of patients whose specimens were sent for  Smear only", ReportUtils.<CohortDefinition>map(datimCohorts.patientsSpecimenSentForSmearOnly(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-
-    /**
-     * Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).
-     */
-    public CohortIndicator patientSWhoseSpecimenSentForGeneExpert() {
-        return cohortIndicator("Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.<CohortDefinition>map(datimCohorts.patientsSpecimenSentForGeneExpert(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**

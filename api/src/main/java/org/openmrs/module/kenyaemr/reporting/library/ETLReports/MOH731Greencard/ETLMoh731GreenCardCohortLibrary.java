@@ -1326,10 +1326,13 @@ public class ETLMoh731GreenCardCohortLibrary {
     //First ANC visit  HV02-01
     public CohortDefinition firstANCVisitMchmsAntenatal(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =" select distinct v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "where anc_visit_number = 1 and date(v.visit_date)  between date(:startDate) and date(:endDate);";
+        String sqlQuery ="select d.patient_id from\n" +
+                "         (select e.patient_id, max(e.visit_date) as latest_enrollment_date,av.visit_date as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       inner join\n" +
+                "        (select av.patient_id,av.visit_date as visit_date from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                "        and av.visit_date between date(:startDate) and date(:endDate)) av on e.patient_id = av.patient_id\n" +
+                "       group by e.patient_id\n" +
+                "       having 1st_anc_visit between date(:startDate) and date(:endDate))d;";
 
         cd.setName("First ANC Visit");
         cd.setQuery(sqlQuery);
@@ -1361,10 +1364,20 @@ public class ETLMoh731GreenCardCohortLibrary {
     // Known Positive at 1st ANC HV02-03
     public CohortDefinition knownPositiveAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select distinct e.patient_id\n" +
-                "   from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "   where date(visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "   (e.patient_id is not null) and hiv_status=703;";
+        String sqlQuery ="select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.test_date,e.1st_anc_visit,av.visit_date from\n" +
+                "       (select e.patient_id, max(e.visit_date) as latest_enrollment_date,mid(max(concat(e.visit_date,e.first_anc_visit_date)),11) as 1st_anc_visit,\n" +
+                "        mid(max(concat(e.visit_date,e.hiv_status)),11) as HIV_status from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "       group by e.patient_id having HIV_status = 703) e\n" +
+                "       inner join\n" +
+                "       (select av.patient_id,av.visit_date as visit_date, av.final_test_result as hiv_status from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
+                "               and av.visit_date between date(:startDate) and date(:endDate)) av on e.patient_id = av.patient_id\n" +
+                "       left join (select max(t.visit_date) as test_date,t.patient_id, mid(max(concat(t.visit_date,t.final_test_result)),11) as test_result from kenyaemr_etl.etl_hts_test t\n" +
+                "          group by t.patient_id\n" +
+                "            having test_result = 'Positive') t on e.patient_id = t.patient_id\n" +
+                "       where ((t.test_date < av.visit_date) or (e.HIV_status = 703))\n" +
+                "       group by e.patient_id\n" +
+                "       having coalesce(1st_anc_visit,visit_date) between date(:startDate) and date(:endDate)\n" +
+                "       )n;";
 
         cd.setName("Known Positive at First ANC");
         cd.setQuery(sqlQuery);
