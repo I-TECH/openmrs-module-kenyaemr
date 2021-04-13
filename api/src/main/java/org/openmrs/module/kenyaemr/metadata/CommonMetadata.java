@@ -43,8 +43,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TRIAGE = "d1059fb9-a079-4feb-a749-eedd709ae542";
 		public static final String HTS = "9c0a7a57-62ff-4f75-babe-5835b0e921b7";
 		public static final String DRUG_REGIMEN_EDITOR = "7dffc392-13e7-11e9-ab14-d663bd873d93";
-		public static final String CACX_SCREENING = "e7f02969-8068-4541-a632-ed5cd1f45e6e";
-		public static final String CACX_ASSESSMENT = "ccf4dc8e-be1f-4a5a-a890-4fee10eeaac8";
+		public static final String CACX_SCREENING = "3fefa230-ea10-45c7-b62b-b3b8eb7274bb";
+
 	}
 
 	public static final class _Form {
@@ -63,8 +63,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String DRUG_REGIMEN_EDITOR = "da687480-e197-11e8-9f32-f2801f1b9fd1";
 		public static final String HTS_CLIENT_TRACING = "15ed03d2-c972-11e9-a32f-2a2ae2dbcce4";
 		public static final String HTS_REFERRAL = "9284828e-ce55-11e9-a32f-2a2ae2dbcce4";
-		public static final String CACX_SCREENING_FORM = "ca555e8c-1b09-4a4c-8f99-d02e7bffec32";
-		public static final String CACX_ASSESSMENT_FORM = "1bc2f8b7-1bc0-4005-b7e3-1210aed324fd";
+		public static final String CACX_SCREENING_FORM = "0c93b93c-bfef-4d2a-9fbe-16b59ee366e7";
+		public static final String CACX_ASSESSMENT_FORM = "48f2235ca-cc77-49cb-83e6-f526d5a5f174";
 	}
 
 	public static final class _OrderType {
@@ -130,7 +130,6 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(encounterType("HTS", "HTS Services", _EncounterType.HTS));
 		install(encounterType("Drug Regimen Editor", "Handles patient regimen events", _EncounterType.DRUG_REGIMEN_EDITOR));
 		install(encounterType("Cervical cancer screening", "Cervical cancer screening", _EncounterType.CACX_SCREENING));
-		install(encounterType("Cervical cancer assessment", "Cervical cancer assessment", _EncounterType.CACX_ASSESSMENT));
 
 		install(form("Clinical Encounter", null, _EncounterType.CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER));
 		install(form("Lab Results", null, _EncounterType.LAB_RESULTS, "1", _Form.LAB_RESULTS));
@@ -148,7 +147,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("HTS Client Tracing Form", "Form for tracing hts clients", _EncounterType.HTS, "1", _Form.HTS_CLIENT_TRACING));
 		install(form("HTS Client Referral Form", "Form for HTS linkage referral", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
 		install(form("Cervical Cancer Screening Form", "Form for Cervical Cancer Screening", _EncounterType.CACX_SCREENING, "1", _Form.CACX_SCREENING_FORM));
-		install(form("Cervical Cancer Assessment Form", "Form for Cervical Cancer Assessment", _EncounterType.CACX_ASSESSMENT, "1", _Form.CACX_ASSESSMENT_FORM));
+		install(form("Cervical Cancer Assessment Form", "Form for Cervical Cancer Assessment", _EncounterType.CACX_SCREENING, "1", _Form.CACX_ASSESSMENT_FORM));
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
