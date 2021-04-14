@@ -1247,4 +1247,25 @@ public class DatimIndicatorLibrary {
                 ReportUtils.map(datimCohorts.kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    /**
+     * Number of beneficiaries for Sexual violence (post-rape care)
+     */
+    public CohortIndicator sexualGBV() {
+        return cohortIndicator("Number of beneficiaries for Sexual violence (post-rape care)", ReportUtils.<CohortDefinition>map(datimCohorts.sexualGBV(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of beneficiaries for Physical and/or emotional violence (other Post-GBV) care
+     */
+    public CohortIndicator physicalEmotionalGBV() {
+        return cohortIndicator("Number of beneficiaries for Physical and/or emotional violence (other Post-GBV) care", ReportUtils.<CohortDefinition>map(datimCohorts.physicalEmotionalGBV(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of beneficiaries for Post-exposure prophylaxis (PEP) Services
+     */
+    public CohortIndicator receivedPEP() {
+        return cohortIndicator("Number of beneficiaries for post-exposure prophylaxis (PEP) Services", ReportUtils.<CohortDefinition>map(datimCohorts.receivedPEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
 }

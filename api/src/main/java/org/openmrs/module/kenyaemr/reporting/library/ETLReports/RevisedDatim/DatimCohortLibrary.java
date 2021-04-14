@@ -5043,6 +5043,66 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
 
         return cd;
     }
+
+    /**
+     *Physical and/or emotional violence (other Post-GBV) care
+     * GEND_GBV_SEXUAL_VIOLENCE Disaggreagtion
+     */
+    public CohortDefinition sexualGBV(){
+        String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_gbv_screening s join\n" +
+                "               (select a.patient_id as patient_id,a.visit_id as visit_id, a.visit_date as visit_date,group_concat(a.action_taken) as action_taken from kenyaemr_etl.etl_gbv_screening_action a\n" +
+                "                where a.action_taken is not null group by a.patient_id,a.visit_id)a on s.patient_id = a.patient_id and s.visit_id = a.visit_id\n" +
+                "where s.sexual_ipv = 152370 and FIND_IN_SET('1185',action_taken) !=0 and FIND_IN_SET('1356',action_taken) !=0 and FIND_IN_SET('127910',action_taken) !=0 and FIND_IN_SET('160570',action_taken) !=0 and FIND_IN_SET('165171',action_taken) !=0\n" +
+                "  and FIND_IN_SET('165184',action_taken) !=0 and FIND_IN_SET('165200',action_taken) !=0 and s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "group by s.patient_id,s.visit_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("GEND_GBV_SEXUAL_GBV");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Received post rape care");
+        return cd;
+    }
+
+    /**
+     *Number of beneficiaries served by PEPFAR OVC Preventive programs for children and families affected by HIV
+     * GEND_GBV_PHY_EMOTIONAL_VIOLENCE Disaggregation
+     */
+    public CohortDefinition physicalEmotionalGBV(){
+        String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_gbv_screening s join\n" +
+                "(select a.patient_id as patient_id,a.visit_id as visit_id, a.visit_date as visit_date,group_concat(a.action_taken) as action_taken from kenyaemr_etl.etl_gbv_screening_action a\n" +
+                "where a.action_taken is not null group by a.patient_id,a.visit_id)a on s.patient_id = a.patient_id and s.visit_id = a.visit_id\n" +
+                "where (s.ipv = 1065 or s.physical_ipv = 158358 or s.emotional_ipv = 118688) and s.sexual_ipv !=152370 and FIND_IN_SET('1185',action_taken) !=0 and FIND_IN_SET('1356',action_taken) !=0\n" +
+                "and FIND_IN_SET('165184',action_taken) !=0 and FIND_IN_SET('165200',action_taken) !=0 and s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "group by s.patient_id,s.visit_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("GEND_GBV_PHY_EMOTIONAL_GBV");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Physical and/or emotional violence (other Post-GBV) care");
+        return cd;
+    }
+
+    /**
+     *Number of People Receiving Post-exposure prophylaxis (PEP) Services. Disaggregate of the Sexual Violence Service Type
+     * GEND_GBV PEP Disaggregation
+     */
+    public CohortDefinition receivedPEP(){
+        String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_gbv_screening s join\n" +
+                "      (select a.patient_id as patient_id,a.visit_id as visit_id, a.visit_date as visit_date,group_concat(a.action_taken) as action_taken from kenyaemr_etl.etl_gbv_screening_action a\n" +
+                "       where a.action_taken is not null group by a.patient_id,a.visit_id)a on s.patient_id = a.patient_id and s.visit_id = a.visit_id\n" +
+                "where s.sexual_ipv = 152370 and FIND_IN_SET('165171',action_taken) !=0 and s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "group by s.patient_id,s.visit_id;\n";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("GEND_GBV_PEP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Receiving Post-exposure prophylaxis (PEP)");
+        return cd;
+    }
+
 }
 
 
