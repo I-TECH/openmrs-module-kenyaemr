@@ -410,7 +410,7 @@
 
 	<!-- Cervical cancer screening form -->
 	<bean id="kenyaemr.common.form.cervicalCancerScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="ca555e8c-1b09-4a4c-8f99-d02e7bffec32" />
+		<property name="targetUuid" value="0c93b93c-bfef-4d2a-9fbe-16b59ee366e7" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.registration" />
@@ -428,7 +428,7 @@
 
 	<!-- Cervical cancer assessment form -->
 	<bean id="kenyaemr.common.form.cervicalCancerAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="1bc2f8b7-1bc0-4005-b7e3-1210aed324fd" />
+		<property name="targetUuid" value="48f2235ca-cc77-49cb-83e6-f526d5a5f174" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.registration" />
