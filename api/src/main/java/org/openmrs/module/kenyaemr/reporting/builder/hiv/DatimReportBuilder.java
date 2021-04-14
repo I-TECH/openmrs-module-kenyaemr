@@ -118,10 +118,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters fAbove50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
         ColumnParameters mAbove50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
 
-        ColumnParameters funder15 = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
-        ColumnParameters munder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
-        ColumnParameters fabove15 = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
-        ColumnParameters mabove15 = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
+        ColumnParameters fUnder15 = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
+        ColumnParameters mUnder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
+        ColumnParameters f15AndAbove = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
+        ColumnParameters m15AndAbove = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
 //KP age groups
         ColumnParameters below_15 = new ColumnParameters(null, "<15", "age=<15");
         ColumnParameters kp15_to_19 = new ColumnParameters(null, "15-19", "age=15-19");
@@ -186,8 +186,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
                 Arrays.asList(f15_to19, m15_to19, f20_to24, m20_to24,
                         f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50, colTotal);
 
-        List<ColumnParameters> datimTBScreenedPositiveNewOnART =
-                Arrays.asList(funder15, fabove15, munder15, mabove15);
+        List<ColumnParameters> datimTXTBOnART =
+                Arrays.asList(fUnder15, f15AndAbove, mUnder15, m15AndAbove,colTotal);
 
         List<ColumnParameters>  kpAgeDisaggregation = Arrays.asList(below_15, kp15_to_19, kp20_to_24, kp25_and_above,colTotal);
         List<ColumnParameters> kpAgeGenderDisaggregation = Arrays.asList(below_15_f, below_15_m, kp15_to_19_f, kp15_to_19_m,
@@ -473,9 +473,42 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         // TB_ART Proportion of HIV-positive new and relapsed TB cases already on ART during TB treatment
         EmrReportingUtils.addRow(cohortDsd, "TB_ART_ALREADY_ON_ART", "TB patients already on ART", ReportUtils.map(datimIndicators.alreadyOnARTTBInfected(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
-        //TX_TB -> Not Available//TX_TB -> Not Available
 
-        //TX_TB(Denominator) -> Not Available
+        //TX_TB
+        //Numerator_new_on_art
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NUM_NEW_ON_ART", "Starting TB treatment newly started ART", ReportUtils.map(datimIndicators.startingTBTreatmentNewOnART(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //Numerator_Prev_on_art
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NUM_PREV_ON_ART", "Starting TB treatment previously on ART", ReportUtils.map(datimIndicators.startingTBTreatmentPrevOnART(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //TX_TB(Denominator)
+        //TX_TB_NEW_ON_ART_SCREENED_POSITIVE
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEW_ON_ART_SCREENED_POSITIVE", "New on ART Screened Positive", ReportUtils.map(datimIndicators.newOnARTScreenedPositive(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //TX_TB_PREVIOUSLY_ON_ART_SCREENED_POSITIVE
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_PREV_ON_ART_SCREENED_POSITIVE", "Previously on ART Screened Positive", ReportUtils.map(datimIndicators.prevOnARTScreenedPositive(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //TX_TB_NEW_ON_ART_SCREENED_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEW_ON_ART_SCREENED_NEGATIVE", "New on ART Screened Negative", ReportUtils.map(datimIndicators.newOnARTScreenedNegative(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //TX_TB_PREVIOUSLY_ON_ART_SCREENED_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "TX_TB_PREV_ON_ART_SCREENED_NEGATIVE", "Previously on ART Screened Negative", ReportUtils.map(datimIndicators.prevOnARTScreenedNegative(), indParams), datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        //TX_TB_SPECIMEN_SENT
+        cohortDsd.addColumn("TX_TB_SPECIMEN_SENT", "Specimen sent for bacteriologic diagnosis of active TB", ReportUtils.map(datimIndicators.specimenSent(), indParams), "");
+
+        //TX_TB_GeneXpert MTB/RIF assay (with or without other testing)
+        cohortDsd.addColumn("TX_TB_GeneXpert", "GeneXpert MTB/RIF assay (with or without other testing)", ReportUtils.map(datimIndicators.geneXpertMTBRIF(), indParams), "");
+
+        //TX_TB_SMEAR_MICROSCOPY_ONLY
+        cohortDsd.addColumn( "TX_TB_SMEAR_MICROSCOPY_ONLY", "Smear microscopy only", ReportUtils.map(datimIndicators.smearMicroscopy(), indParams), "");
+
+        //TX_TB_ADDITIONAL_TESTS (other than GeneXpert)
+        cohortDsd.addColumn( "TX_TB_ADDITIONAL_TESTS", "Additional test other than GeneXpert", ReportUtils.map(datimIndicators.additionalTBTests(), indParams),"");
+
+        //TX_TB_POSITIVE_RESULT_RETURNED
+        cohortDsd.addColumn( "TX_TB_POSITIVE_RESULT_RETURNED", "Positive result returned for bacteriologic diagnosis of active TB", ReportUtils.map(datimIndicators.resultsReturned(), indParams), "");
+
         //TX_ML
         //TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.txMlDied(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
@@ -660,36 +693,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
-
-        // Number of people newly on art that tested negative to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE", "Number of people newly on art that tested negative to TB", ReportUtils.map(datimIndicators.newlyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        // Number of people newly on art that tested positive to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_POSITIVE", "Number of people newly on art that tested positive to TB", ReportUtils.map(datimIndicators.newlyOnArtPatientScreenedPositiveForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        // Number of people previously on art that tested negative to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEGATIVE_PREVIOUS", "Number of people previously on art that tested negative to TB", ReportUtils.map(datimIndicators.previouslyOnArtPatientScreenedNegativeForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        //Number of people previously on art that tested positive to TB
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_POSITIVE_PREVIOUS", "Number of people previously on art that tested positive to TB", ReportUtils.map(datimIndicators.previouslyOnArtPatientScreenedPositiveForTB(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        //Number of patients previously on art enrolled on tb this reporting period
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_PREV(NUMERATOR)", "Number of patients previously on art enrolled on tb this reporting period", ReportUtils.map(datimIndicators.PreviouslyOnART_EnrolledOn_TB_ThisReportingPeriod(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        //Number of patients new on art enrolled on tb this reporting period
-        EmrReportingUtils.addRow(cohortDsd, "TX_TB_NEW(NUMERATOR)", "Number of patients new on art enrolled on tb this reporting period", ReportUtils.map(datimIndicators.NewOnARTEnrolledOnTB_ThisReportingPeriod(), indParams), datimTBScreenedPositiveNewOnART, Arrays.asList("01", "02", "03", "04"));
-
-        //Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease
-        cohortDsd.addColumn("TX_TB_SPECIMEN", "Number of ART patients who had a specimen sent for bacteriologic diagnosis of active TB disease", ReportUtils.map(datimIndicators.totalPatientsWhoHadSpecimenSentToLab(), indParams), "");
-
-        //Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease
-        cohortDsd.addColumn("TX_TB_POSITIVE_RESULT_RETURNED", "Number of ART patients who had a positive result returned for bacteriologic diagnosis of active TB disease", ReportUtils.map(datimIndicators.patientsWithPositiveResultForBacteriologicDiagnosis(), indParams), "");
-
-        //Number of patients whose specimens were sent for  Smear only
-        cohortDsd.addColumn("TX_TB_SMEAR_SPECIMEN", "Number of patients whose specimens were sent for  Smear only", ReportUtils.map(datimIndicators.patientSWhoseSpecimenSentForSmearOnly(), indParams), "");
-
-        //Number of patients whose specimens were sent for  Smear only
-        cohortDsd.addColumn("TX_TB_GENE_XPERT_SPECIMEN", "Number of patients whose specimens were sent for  GeneXpert MTB/RIF assay (with or without other testing).", ReportUtils.map(datimIndicators.patientSWhoseSpecimenSentForGeneExpert(), indParams), "");
 
         //3. KP_PREV
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",
