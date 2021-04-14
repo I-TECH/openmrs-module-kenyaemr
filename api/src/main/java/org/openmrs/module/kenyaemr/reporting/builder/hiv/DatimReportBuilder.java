@@ -98,7 +98,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters m1_to4 = new ColumnParameters(null, "1-4, Male", "gender=M|age=1-4");
         ColumnParameters f5_to9 = new ColumnParameters(null, "5-9, Female", "gender=F|age=5-9");
         ColumnParameters m5_to9 = new ColumnParameters(null, "5-9, Male", "gender=M|age=5-9");
-        ColumnParameters funder10 = new ColumnParameters(null, "<10, Female", "gender=F|age=<10");
+        ColumnParameters fUnder10 = new ColumnParameters(null, "<10, Female", "gender=F|age=<10");
+        ColumnParameters mUnder10 = new ColumnParameters(null, "<10, Male", "gender=M|age=<10");
         ColumnParameters f10_to14 = new ColumnParameters(null, "10-14, Female", "gender=F|age=10-14");
         ColumnParameters m10_to14 = new ColumnParameters(null, "10-14, Male", "gender=M|age=10-14");
         ColumnParameters f15_to19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
@@ -122,7 +123,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters mUnder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
         ColumnParameters f15AndAbove = new ColumnParameters(null, "15+, Female", "gender=F|age=15+");
         ColumnParameters m15AndAbove = new ColumnParameters(null, "15+, Male", "gender=M|age=15+");
-//KP age groups
+        //KP age groups
         ColumnParameters below_15 = new ColumnParameters(null, "<15", "age=<15");
         ColumnParameters kp15_to_19 = new ColumnParameters(null, "15-19", "age=15-19");
         ColumnParameters kp20_to_24 = new ColumnParameters(null, "20-24", "age=20-24");
@@ -175,7 +176,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
 
         List<ColumnParameters> datimPMTCTANCAgeDisaggregation =
-                Arrays.asList(funder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
+                Arrays.asList(fUnder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
 
         List<ColumnParameters> datimPMTCTCXCAAgeDisaggregation =
                 Arrays.asList(f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
@@ -192,6 +193,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters>  kpAgeDisaggregation = Arrays.asList(below_15, kp15_to_19, kp20_to_24, kp25_and_above,colTotal);
         List<ColumnParameters> kpAgeGenderDisaggregation = Arrays.asList(below_15_f, below_15_m, kp15_to_19_f, kp15_to_19_m,
                 kp20_to_24_f, kp20_to_24_m, kp25_and_above_f, kp25_and_above_m,colTotal);
+
+        List<ColumnParameters> datimGBVDisaggregation =
+                Arrays.asList(fUnder10,mUnder10,f10_to14, m10_to14,f15_to19, m15_to19, f20_to24, m20_to24,
+                        f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50, colTotal);
 
         //Patient contacts disagggregations
         List<ColumnParameters> contactAgeSexDisaggregation = Arrays.asList(contacts_under_15_f, contacts_under_15_m, contacts_15_and_above_f, contacts_15_and_above_m, colTotal);
@@ -717,6 +722,16 @@ public class DatimReportBuilder extends AbstractReportBuilder {
                 ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_NOT_SW"), indParams), kpAgeDisaggregation,
                 Arrays.asList("01", "02", "03", "04", "05"));
 
+        /*GEND_GBV
+        Number of people receiving post-gender-based violence (GBV) clinical care based on the minimum package*/
+        //1. Sexual violence (post-rape care)
+        EmrReportingUtils.addRow(cohortDsd, "GEND_GBV_SEXUAL_VIOLENCE", "Received Sexual violence (post-rape) care", ReportUtils.map(datimIndicators.sexualGBV(), indParams), datimGBVDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"));
+
+        //2. Physical and/or emotional violence (other Post-GBV care)
+        EmrReportingUtils.addRow(cohortDsd, "GEND_GBV_PHY_EMOTIONAL_VIOLENCE", "Received physical and emotional violence care", ReportUtils.map(datimIndicators.physicalEmotionalGBV(), indParams), datimGBVDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"));
+
+        //3. Number of People Receiving Post-exposure prophylaxis (PEP) Services. Disaggregate of the Sexual Violence Service Type
+        EmrReportingUtils.addRow(cohortDsd, "GEND_GBV_PEP", "Received Post-exposure prophylaxis (PEP) Services", ReportUtils.map(datimIndicators.receivedPEP(), indParams), datimGBVDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"));
         return cohortDsd;
     }
 
