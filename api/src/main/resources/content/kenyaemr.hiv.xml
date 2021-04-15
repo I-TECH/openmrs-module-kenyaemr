@@ -30,7 +30,6 @@
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
-				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening" />
 				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
 				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
@@ -126,19 +125,7 @@
 		<property name="htmlform" value="kenyaemr:hiv/treatmentPreparation.html"/>
 		<property name="order" value="400"/>
 	</bean>
-	<!-- Gender based violence screening  -->
-	<bean id="kenyaemr.hiv.form.genderBasedViolenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="03767614-1384-4ce3-aea9-27e2f4e67d01"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician"/>
-				<ref bean="kenyaemr.app.chart"/>
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png"/>
-		<property name="htmlform" value="kenyaemr:hiv/genderBasedViolenceScreening.html"/>
-		<property name="order" value="200001"/>
-	</bean>
+
 	<!-- Alcohol and Drug abuse screening  -->
 	<bean id="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c"/>

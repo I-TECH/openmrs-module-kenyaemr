@@ -40,6 +40,8 @@
 				<ref bean="kenyaemr_hiv_testing.common.form.htsScreeningForm"/>
 				<ref bean="kenyaemr.common.form.cervicalCancerScreening"/>
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
+				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
+
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
 		</property>
@@ -443,7 +445,21 @@
 		<property name="htmlform" value="kenyaemr:cervicalCancerAssessment.html" />
 		<property name="order" value="201082" />
 	</bean>
-
+	<!-- Gender based violence screening  -->
+	<bean id="kenyaemr.hiv.form.genderBasedViolenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="03767614-1384-4ce3-aea9-27e2f4e67d01"/>
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician"/>
+				<ref bean="kenyaemr.app.chart"/>
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyakeypop.app.keypopulation.provider" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png"/>
+		<property name="htmlform" value="kenyaemr:hiv/genderBasedViolenceScreening.html"/>
+		<property name="order" value="200001"/>
+	</bean>
 
 	<!-- ===================== Reports ===================== -->
 
