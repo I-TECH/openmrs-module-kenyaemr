@@ -307,8 +307,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "            ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
                 "                and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)))\n" +
                 "     )e\n" +
-                "     inner join (select tb.patient_id from kenyaemr_etl.etl_tb_screening tb where tb.person_present=978\n" +
-                "and tb.visit_date between date(:startDate) and date(:endDate) and tb.resulting_tb_status in (1660,1662,142177) group by tb.patient_id)tb on e.patient_id = tb.patient_id)a\n" +
+                "     inner join (select tb.patient_id from kenyaemr_etl.etl_tb_screening tb group by tb.patient_id having mid(max(concat(tb.visit_date,tb.person_present)),11) =978\n" +
+                "                                                                                                      and mid(max(concat(tb.visit_date,tb.resulting_tb_status)),11) in (1660,1662,142177))tb on e.patient_id = tb.patient_id)a\n" +
                 "group by a.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -349,8 +349,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                                      ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
                 "                                          and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)))\n" +
                 "                               )e\n" +
-                "                                 inner join (select tb.patient_id from kenyaemr_etl.etl_tb_screening tb where tb.person_present=978\n" +
-                "                                                                                                          and tb.visit_date between date(:startDate) and date(:endDate) and tb.resulting_tb_status =142177 group by tb.patient_id)tb on e.patient_id = tb.patient_id)a\n" +
+                "                                 inner join (select tb.patient_id from kenyaemr_etl.etl_tb_screening tb group by tb.patient_id having mid(max(concat(tb.visit_date,tb.person_present)),11) =978\n" +
+                "                                                                                                                                  and mid(max(concat(tb.visit_date,tb.resulting_tb_status)),11) =142177)tb on e.patient_id = tb.patient_id)a\n" +
                 "group by a.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("presumedTB");
