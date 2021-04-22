@@ -54,7 +54,7 @@ public class MchmsCarePanelFragmentController {
         EncounterWrapper lastMchFollowUpWrapped = null;
 
         Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
-        Encounter lastMchFollowup = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_CONSULTATION));
+        Encounter lastMchFollowup = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION));
          //Check whether already in hiv program
         CalculationResultMap enrolled = Calculations.firstEnrollments(hivProgram, Arrays.asList(patient.getPatientId()), context);
         PatientProgram program = EmrCalculationUtils.resultForPatient(enrolled, patient.getPatientId());
@@ -71,10 +71,10 @@ public class MchmsCarePanelFragmentController {
         Obs hivFollowUpStatusObs = null;
         if (lastMchEnrollmentWrapped != null) {
             hivEnrollmentStatusObs = lastMchEnrollmentWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
-           }
+            }
         if (lastMchFollowUpWrapped != null) {
             hivFollowUpStatusObs = lastMchFollowUpWrapped.firstObs(Dictionary.getConcept(Dictionary.HIV_STATUS));
-        }
+           }
         //Check if already enrolled
        if(program != null) {
            String regimenName = null;
@@ -93,9 +93,12 @@ public class MchmsCarePanelFragmentController {
            //Check mch enrollment and followup forms
        }else if(hivEnrollmentStatusObs != null || hivFollowUpStatusObs != null) {
             String regimenName = null;
-            calculations.put("hivStatus", hivEnrollmentStatusObs.getValueCoded() != null ? hivEnrollmentStatusObs.getValueCoded()  : hivFollowUpStatusObs.getValueCoded());
-
-            Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
+           if(hivFollowUpStatusObs != null){
+               calculations.put("hivStatus", hivFollowUpStatusObs.getValueCoded());
+           }else {
+               calculations.put("hivStatus", hivEnrollmentStatusObs.getValueCoded());
+              }
+        Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, "ARV");   //last DRUG_REGIMEN_EDITOR encounter
             if (lastDrugRegimenEditorEncounter != null) {
                 SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
                 regimenName = o.get("regimenShortDisplay").toString();
