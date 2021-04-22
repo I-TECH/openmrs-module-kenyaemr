@@ -101,14 +101,14 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Unique Patient No", identifierDef, "");
         dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
+        dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last Tracing Date", new LastDefaulterTracingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Return to Care Date", new BookingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
         dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
-        dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-    }
+      }
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
