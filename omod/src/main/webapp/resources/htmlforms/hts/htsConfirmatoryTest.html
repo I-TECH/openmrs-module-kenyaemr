@@ -567,7 +567,7 @@
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
-            jq('#feferral-to select').change(referralSelected);
+            jq('#referral-to select').change(referralSelected);
             jq('#tbl-other-strategy').hide();
 
             var htsStrategySelected = getField('strategy.value').val();
@@ -603,7 +603,7 @@
                 }
             }
 
-            var referralFacilitySelected = getField('feferral-to.value').val();
+            var referralFacilitySelected = getField('referral-to.value').val();
             if (referralFacilitySelected == 164407 ){
                 jq('#tbl-other-facility').show();
             }else{
@@ -805,6 +805,14 @@
                     <ifMode mode="EDIT">
                         <script type="text/javascript">
                             jq(function(){
+
+                                //Other facility referral
+                                var val = getField("referral-to.value").val();
+                                if (val == 5622){
+                                    jq('#tbl-other-facility').show();
+                                }else{
+                                    jq('#tbl-other-facility').hide();
+                                }
 
                                 //First test
                                 var firstTest = getField("hiv-test1-result.value").val();
@@ -1350,7 +1358,7 @@
             <table id="tbl-referral">
                 <tr>
                     <td>Referral for: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="feferral-for" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="referral-for" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="162082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                164461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1361,7 +1369,7 @@
                 </tr>
                 <tr>
                     <td>Referral to:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="feferral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="referral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="dropdown" answerLabels="Current health facility,
