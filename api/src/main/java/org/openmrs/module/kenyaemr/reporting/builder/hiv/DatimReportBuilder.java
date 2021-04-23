@@ -539,13 +539,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_ROUTINE", "On ART with current VL results", ReportUtils.map(datimIndicators.onARTAndVLLast12MonthsbyAgeSex("(\"ROUTINE\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number of patients on ART with Targeted VL results in the past 12 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_TARGETED", "On ART with current VL results", ReportUtils.map(datimIndicators.onARTAndVLLast12MonthsbyAgeSex("(\"STA\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_TARGETED", "On ART with current VL results", ReportUtils.map(datimIndicators.onARTAndVLLast12MonthsbyAgeSex("(\"STAT\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number of Pregnant or breastfeeding patients on ART with routine VL results within the past 12 months
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of Pregnant or breastfeeding patients on ART with targeted VL results within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"STA\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_DENOMINATOR_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current VL results", ReportUtils.map(datimIndicators.breastfeedingOnARTVLLast12Months("(\"STAT\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of PWID KPs on ART with Routine VL results within the past 12 months
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_PWID_ROUTINE", "PWID on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"ROUTINE\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
@@ -560,28 +560,28 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_FSW_ROUTINE", "FSW on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"ROUTINE\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of PWID KPs on ART with Targeted VL results within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_PWID_TARGETED", "PWID on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STA\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_PWID_TARGETED", "PWID on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STAT\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of MSM KPs on ART with Targeted VL results within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_MSM_TARGETED", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STA\")",mapKPType("MSM", MSM_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_MSM_TARGETED", "MSM on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STAT\")",mapKPType("MSM", MSM_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of TG KPs on ART with VL results within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_TG_TARGETED", "Transgender on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STA\")",mapKPType("TG", TG_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_TG_TARGETED", "Transgender on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STAT\")",mapKPType("TG", TG_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of FSW KPs on ART with Targeted VL results within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_FSW_TARGETED", "FSW on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STA\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_DENOMINATOR_KP_FSW_TARGETED", "FSW on ART with current VL results", ReportUtils.map(datimIndicators.kpWithVLLast12Months("(\"STAT\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of adults and pediatric patients on ART with suppressed routine viral load results (<1,000 copies/ml) within the past 12 months disaggregated by Age/Sex
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_ROUTINE", "On ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppVLAgeSex("(\"ROUTINE\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number of adults and pediatric patients on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months disaggregated by Age/Sex
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "On ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppVLAgeSex("(\"STA\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_TARGETED", "On ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.onARTSuppVLAgeSex("(\"STAT\")"), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //TX_PVLS Number pregnant or breastfeeding patients on ART with suppressed routine viral load results (<1,000 copies/ml) within the past 12 months
         EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_PG/BF_ROUTINE", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"ROUTINE\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number pregnant or breastfeeding patients on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"STA\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_PVLS_SUPP_PG/BF_TARGETED", "Pregnant or Breastfeeding on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.pregnantAndBFOnARTWithSuppressedVLLast12Months("(\"STAT\")"), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //TX_PVLS Number of adults and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months. Disaggregated by Pregnant / undocumented
         cohortDsd.addColumn("TX_PVLS_SUPP_KP_PWID_ROUTINE", "PWID on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"ROUTINE\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
@@ -596,16 +596,16 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_PVLS_SUPP_KP_FSW_ROUTINE", "FSW on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"ROUTINE\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of PWID KPs on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_SUPP_KP_PWID_TARGETED", "PWID on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STA\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_SUPP_KP_PWID_TARGETED", "PWID on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STAT\")",mapKPType("PWID", PWID_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of MSM KPs on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_SUPP_KP_MSM_TARGETED", "MSM on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STA\")",mapKPType("MSM", MSM_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_SUPP_KP_MSM_TARGETED", "MSM on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STAT\")",mapKPType("MSM", MSM_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of Transgender KPs on ART with targeted suppressed viral load results (<1,000 copies/ml) within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_SUPP_KP_TG_TARGETED", "Transgender on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STA\")",mapKPType("TG", TG_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_SUPP_KP_TG_TARGETED", "Transgender on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STAT\")",mapKPType("TG", TG_CONCEPT)), indParams), "");
 
         //TX_PVLS Number of FSW KPs on ART with targeted suppressed VL results (<1,000 copies/ml) within the past 12 months
-        cohortDsd.addColumn("TX_PVLS_SUPP_KP_FSW_TARGETED", "FSW on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STA\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
+        cohortDsd.addColumn("TX_PVLS_SUPP_KP_FSW_TARGETED", "FSW on ART with current suppressed VL results (<1,000 copies/ml)", ReportUtils.map(datimIndicators.kpOnARTSuppVLLast12Months("(\"STAT\")",mapKPType("FSW", FSW_CONCEPT)), indParams), "");
 
         //HTS_INDEX_OFFERED Index services
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_OFFERED", "Indexes offered Index testing services", ReportUtils.map(datimIndicators.offeredIndexServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
