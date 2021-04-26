@@ -66,7 +66,7 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 		// TODO implement a whitelist which allows only certain uiframework managed controllers.
 
 		// Only allow other requests if user has "View Legacy Interface" privilege
-		User authenticatedUser = Context.getAuthenticatedUser();
+		/*User authenticatedUser = Context.getAuthenticatedUser();
 		boolean allowRequest = authenticatedUser != null && authenticatedUser.hasPrivilege(SecurityMetadata._Privilege.VIEW_LEGACY_INTERFACE);
 
 		if (!allowRequest) {
@@ -77,7 +77,8 @@ public class EmrExternalUrlInterceptor extends HandlerInterceptorAdapter {
 			response.sendRedirect(request.getContextPath() + "/login.htm");
 		}
 
-		return allowRequest;
+		return allowRequest;*/
+		return true;
 	}
 
 	/**

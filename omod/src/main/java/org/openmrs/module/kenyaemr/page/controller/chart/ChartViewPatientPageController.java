@@ -65,7 +65,7 @@ public class ChartViewPatientPageController {
 		}
 
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-		recentlyViewed(patient, session);
+	//	recentlyViewed(patient, session);
 
 		AppDescriptor thisApp = kenyaUi.getCurrentApp(pageRequest);
 
@@ -117,7 +117,7 @@ public class ChartViewPatientPageController {
 	 * @param patient the patient
 	 * @param session the session
 	 */
-	private void recentlyViewed(Patient patient, Session session) {
+	/*private void recentlyViewed(Patient patient, Session session) {
 		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
 
 		LinkedList<Integer> recent = session.getAttribute(attrName, LinkedList.class);
@@ -129,7 +129,7 @@ public class ChartViewPatientPageController {
 		recent.add(0, patient.getPatientId());
 		while (recent.size() > 10)
 			recent.removeLast();
-	}
+	}*/
 
 	/**
 	 * Creates a one line summary for each program

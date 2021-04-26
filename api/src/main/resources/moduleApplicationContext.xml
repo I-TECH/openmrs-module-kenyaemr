@@ -215,7 +215,7 @@
 		<property name="moduleService">
 			<list>
 				<value>org.openmrs.module.kenyaemr.api.KenyaEmrService</value>
-				<ref local="kenyaEmrService"/>
+				<ref bean="kenyaEmrService"/>
 			</list>
 		</property>
 	</bean>
