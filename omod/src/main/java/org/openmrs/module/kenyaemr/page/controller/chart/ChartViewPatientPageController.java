@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpSession;
+
 
 /**
  * Viewing a patient's record, in the chart app
@@ -55,6 +57,7 @@ public class ChartViewPatientPageController {
 	                       PageModel model,
 	                       UiUtils ui,
 	                       Session session,
+                           HttpSession httpSession,
 						   PageRequest pageRequest,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean FormManager formManager,
@@ -65,7 +68,7 @@ public class ChartViewPatientPageController {
 		}
 
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-	//	recentlyViewed(patient, session);
+		recentlyViewed(patient,httpSession);
 
 		AppDescriptor thisApp = kenyaUi.getCurrentApp(pageRequest);
 
@@ -115,21 +118,40 @@ public class ChartViewPatientPageController {
 	/**
 	 * Adds this patient to the user's recently viewed list
 	 * @param patient the patient
-	 * @param session the session
+	 * @param httpSession the session
 	 */
-	/*private void recentlyViewed(Patient patient, Session session) {
+	private void recentlyViewed(Patient patient, HttpSession httpSession) {
 		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
 
-		LinkedList<Integer> recent = session.getAttribute(attrName, LinkedList.class);
+        LinkedList<Integer> recent = (LinkedList<Integer>) httpSession.getAttribute(attrName);
 		if (recent == null) {
 			recent = new LinkedList<Integer>();
-			session.setAttribute(attrName, recent);
+            httpSession.setAttribute(attrName, recent);
 		}
 		recent.removeFirstOccurrence(patient.getPatientId());
 		recent.add(0, patient.getPatientId());
 		while (recent.size() > 10)
 			recent.removeLast();
-	}*/
+	}
+
+    /**
+     * Adds this patient to the user's recently viewed list
+     * @param patient the patient
+     * @param session the session
+     */
+    private void recentlyViewed(Patient patient, Session session) {
+        String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
+
+        LinkedList<Integer> recent = session.getAttribute(attrName, LinkedList.class);
+        if (recent == null) {
+            recent = new LinkedList<Integer>();
+            session.setAttribute(attrName, recent);
+        }
+        recent.removeFirstOccurrence(patient.getPatientId());
+        recent.add(0, patient.getPatientId());
+        while (recent.size() > 10)
+            recent.removeLast();
+    }
 
 	/**
 	 * Creates a one line summary for each program
