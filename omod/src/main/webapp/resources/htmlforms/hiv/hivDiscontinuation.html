@@ -281,6 +281,28 @@
             });
         }
 	</script>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>
+					<ifMode mode="EDIT">
+						<script type="text/javascript">
+                            jq(function(){
+
+                                //Died as cause of death
+                                var val = getField("idReason.value").val();
+                                if (val == 160034){
+                                    jq("#reason-died").show();
+                                }else{
+                                    jq("#reason-died").hide();
+                                }
+                            });
+						</script>
+					</ifMode>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<div class="ke-form-content">
 		<fieldset>
@@ -331,13 +353,48 @@
 					<table id="specific-death-cause">
 						<tr id="cause-of-death">
 							<td>Specific cause of death:</td>
-							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156672AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159988AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,157578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							 				5333AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156669AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,882AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156671AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-											156670AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="HIV disease resulting in mycobacterial infection,HIV disease resulting in Kaposis sarcoma,HIV disease resulting in Burkitts lymphoma,HIV disease resulting in other types of non-Hodgkin lymphoma,HIV disease resulting in other malignant neoplasms of lymphoid and haematopoietic and related tissue,
-											HIV disease resulting in multiple malignant neoplasms,HIV disease resulting in other malignant neoplasms,HIV disease resulting in unspecified malignant neoplasms,HIV disease resulting in other bacterial infections,HIV disease resulting in cytomegaloviral disease,HIV disease resulting in other viral infections,HIV disease resulting in candidiasis,HIV disease resulting in other mycoses,
-											HIV disease resulting in Pneumocystis jirovecii pneumonia - HIV disease resulting in Pneumocystis carinii pneumonia,HIV disease resulting in multiple infections,HIV disease resulting in other infectious and parasitic diseases,HIV disease resulting in unspecified infectious or parasitic disease - HIV disease resulting in infection NOS,HIV disease resulting in other specified diseases including encephalopathy or lymphoid interstitial pneumonitis or wasting syndrome and others,
-											HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others,HIV disease resulting in Unspecified HIV disease" id="specific-cause-of-death" /></td>
+							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														155010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														115195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														157593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156672AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														159988AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														5333AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														116031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														123122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156669AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														5350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														882AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156671AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156670AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									    answerLabels="HIV disease resulting in mycobacterial infection,
+														HIV disease resulting in Kaposis sarcoma,
+														HIV disease resulting in Burkitts lymphoma,
+														HIV disease resulting in other types of non-Hodgkin lymphoma,
+														HIV disease resulting in other malignant neoplasms of lymphoid and haematopoietic and related tissue,
+														HIV disease resulting in multiple malignant neoplasms,
+														HIV disease resulting in other malignant neoplasms,
+														HIV disease resulting in other bacterial infections,
+														HIV disease resulting in unspecified malignant neoplasms,
+														HIV disease resulting in other viral infections,
+														HIV disease resulting in cytomegaloviral disease,
+														HIV disease resulting in candidiasis,
+														HIV disease resulting in other mycoses,
+														HIV disease resulting in Pneumocystis jirovecii pneumonia - HIV disease resulting in Pneumocystis carinii pneumonia,
+														HIV disease resulting in multiple infections,
+														HIV disease resulting in other infectious and parasitic diseases,
+														HIV disease resulting in unspecified infectious or parasitic disease - HIV disease resulting in infection NOS,
+														HIV disease resulting in other specified diseases including encephalopathy or lymphoid interstitial pneumonitis or wasting syndrome and others,
+														HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others,
+														HIV disease resulting in Unspecified HIV disease"
+									 id="specific-cause-of-death" /></td>
 							<td></td>
 							<td></td>
 						</tr>
