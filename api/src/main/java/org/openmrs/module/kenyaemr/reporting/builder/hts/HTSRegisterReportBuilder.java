@@ -136,9 +136,9 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), null);
         dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
         dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
+        dsd.addColumn("assessedForHIVRisk", new HTSRiskDoneDataDefinition(),"", new HTSRiskAssessedConverter());
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
-        dsd.addColumn("assessedForHIVRisk", new HTSRiskDoneDataDefinition(),"", new HTSRiskAssessedConverter());
 
         HTSRegisterCohortDefinition cd = new HTSRegisterCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
