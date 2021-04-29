@@ -56,14 +56,13 @@ public class EligibleForFastrackPatientsCalculation extends AbstractPatientCalcu
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
-
-        CalculationResultMap nextAppointmentMap = Calculations.lastObs(TCAdate, cohort, context);
         Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId: cohort){
 
             Integer tcaPlus30days = 0;
+            Integer tcaConcept = 5096;
             Date tcaDate = null;
             Date tcaObsDate = null;
             boolean patientInHivProgram = false;
@@ -71,13 +70,16 @@ public class EligibleForFastrackPatientsCalculation extends AbstractPatientCalcu
             boolean eligible = false;
             Date currentDate =new Date();
 
-         //With TCA more than 30 days
-            Obs nextOfVisitObs = EmrCalculationUtils.obsResultForPatient(nextAppointmentMap, ptId);
-
-            if(nextOfVisitObs != null){
-                tcaDate = nextOfVisitObs.getValueDatetime();
-                tcaObsDate = nextOfVisitObs.getObsDatetime();
-                tcaPlus30days= daysBetween(tcaDate,tcaObsDate);
+         //With Greencard TCA more than 30 days
+            Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), Context.getEncounterService().getEncounterTypeByUuid("a0034eee-1940-4e35-847f-97537a35d05e"));   //last greencard followup form
+            if (lastFollowUpEncounter != null) {
+                for (Obs obs : lastFollowUpEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(tcaConcept)){
+                         tcaDate = obs.getValueDatetime();
+                         tcaObsDate = obs.getObsDatetime();
+                         tcaPlus30days= daysBetween(tcaDate,tcaObsDate);
+                       }
+                }
             }
 
             if (inHivProgram.contains(ptId) && !ltfu.contains(ptId)) {
