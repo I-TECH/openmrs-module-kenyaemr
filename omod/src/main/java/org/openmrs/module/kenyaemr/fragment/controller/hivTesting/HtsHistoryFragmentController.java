@@ -156,12 +156,13 @@ public class HtsHistoryFragmentController {
 
 	String htsStrategyConverter (Concept key) {
 		Map<Concept, String> htsStrategyList = new HashMap<Concept, String>();
-		htsStrategyList.put(conceptService.getConcept(164163), "Provider Initiated Testing");
-		htsStrategyList.put(conceptService.getConcept(164953), "Non Patient Initiated Testing");
-		htsStrategyList.put(conceptService.getConcept(164954), "Integrated VCT Center");
-		htsStrategyList.put(conceptService.getConcept(164955), "Standalone VCT Center");
+		htsStrategyList.put(conceptService.getConcept(164163), "HP:Provider Initiated Testing(PITC)");
+		htsStrategyList.put(conceptService.getConcept(164953), "NP: HTS for non-patients");
+		htsStrategyList.put(conceptService.getConcept(164954), "VI:Integrated VCT Center");
+		htsStrategyList.put(conceptService.getConcept(164955), "Stand Alone VCT Center");
 		htsStrategyList.put(conceptService.getConcept(159938), "Home Based Testing");
-		htsStrategyList.put(conceptService.getConcept(159939), "Mobile Outreach HTS");
+		htsStrategyList.put(conceptService.getConcept(159939), "MO: Mobile Outreach HTS");
+		htsStrategyList.put(conceptService.getConcept(161557), "Index testing");
 		htsStrategyList.put(conceptService.getConcept(5622), "Other");
 		return htsStrategyList.get(key);
 
@@ -169,16 +170,21 @@ public class HtsHistoryFragmentController {
 
 	String entryPointConverter (Concept key) {
 		Map<Concept, String> entryPointList = new HashMap<Concept, String>();
-		entryPointList.put(conceptService.getConcept(5485), "Inpatient");
-		entryPointList.put(conceptService.getConcept(160542), "Outpatient");
+		entryPointList.put(conceptService.getConcept(5485), "In Patient Department(IPD)");
+		entryPointList.put(conceptService.getConcept(160542), "Out Patient Department(OPD)");
 		entryPointList.put(conceptService.getConcept(162181), "Peadiatric Clinic");
 		entryPointList.put(conceptService.getConcept(160552), "Nutrition Clinic");
-		entryPointList.put(conceptService.getConcept(160538), "PMTCT");
+		entryPointList.put(conceptService.getConcept(160538), "PMTCT - ANC");
+		entryPointList.put(conceptService.getConcept(160456), "PMTCT - MAT");
+		entryPointList.put(conceptService.getConcept(1623), "PMTCT - PNC");
 		entryPointList.put(conceptService.getConcept(160541), "TB");
-		entryPointList.put(conceptService.getConcept(162050), "CCC");
 		entryPointList.put(conceptService.getConcept(159940), "VCT");
 		entryPointList.put(conceptService.getConcept(159938), "Home Based Testing");
 		entryPointList.put(conceptService.getConcept(159939), "Mobile Outreach");
+		entryPointList.put(conceptService.getConcept(162223), "VMMC");
+		entryPointList.put(conceptService.getConcept(160546), "STI Clinic");
+		entryPointList.put(conceptService.getConcept(160522), "Emergency");
+		entryPointList.put(conceptService.getConcept(163096), "Community Testing");
 		entryPointList.put(conceptService.getConcept(5622), "Other");
 		return entryPointList.get(key);
 	}
