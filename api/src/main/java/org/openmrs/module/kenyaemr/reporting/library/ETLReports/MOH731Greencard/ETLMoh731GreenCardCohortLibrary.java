@@ -815,9 +815,8 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     // facility strategies include PITC, Non Provider initiated testing, integrated vct, stand alone vct
     public CohortDefinition htsNumberTestedAtFacility() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1\n" +
-                " and test_strategy in ('Integrated VCT Center','Non Provider Initiated Testing','Provider Initiated Testing(PITC)', 'Stand Alone VCT Center')" +
-                " and visit_date between :startDate and :endDate";
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test\n" +
+                "WHERE test_type =1 and setting = 'Facility' and visit_date between :startDate and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtFacility");
         cd.setQuery(sqlQuery);
@@ -830,9 +829,8 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     // community strategies include Home based testing, mobile outreaches and other
     public CohortDefinition htsNumberTestedAtCommunity() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test WHERE test_type =1 \n" +
-                " and test_strategy in ('Mobile Outreach HTS','Home Based Testing','Other')" +
-                " and visit_date between :startDate and :endDate";
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test\n" +
+                "WHERE test_type =1 and setting = 'Community' and visit_date between :startDate and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtCommunity");
         cd.setQuery(sqlQuery);
