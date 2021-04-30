@@ -326,6 +326,7 @@
 		var urineSpecificGravity = getValue('urine-specific-gravity.value');
         var encounterDate = getValue('encounter-date.value');
         var tca_date = getValue('returnVisitDate.value');
+        var visit_number = getValue('visit-number.value');
 
 		if (fundalHeight &lt; 0 || fundalHeight &gt; 40) {
 			getField('fundal.error').html('Fundal Height should be between 0 and 40.').show();
@@ -345,6 +346,12 @@
 				return false;
 			}
 		}
+        if (visit_number == "") {
+            getField('visit-number.error').html('Please specify visit number.').show();
+            return false;
+        }else{
+            getField('visit-number.error').html('Please specify visit number.').hide();
+        }
         if (tca_date == "") {
             getField('returnVisitDate.error').html('Please specify return visit date for client.').show();
             return false;
@@ -632,9 +639,9 @@
 					<td>
 						<table>
 							<tr>
-								<td> ANC Visit Number:</td>
+								<td> ANC Visit Number: <span style="color:red;"><strong>*</strong></span></td>
 								<td>
-									<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="visit-number"/>
+									<obs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="visit-number" />
 
 									<span class="value"><recentObs conceptId="1425AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
 
