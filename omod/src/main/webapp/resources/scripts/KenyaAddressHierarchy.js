@@ -351,6 +351,13 @@ var kenyaAddressHierarchy = {
                     {"facility":"Embakasi","id":"Embakasi"},
                     {"facility":"Utawala","id":"Utawala"}
                 ],
+            "Embakasi West":
+                [
+                    {"facility":"Umoja I","id":"Umoja I"},
+                    {"facility":"Umoja II","id":"Umoja II"},
+                    {"facility":"Mowlem","id":"Mowlem"},
+                    {"facility":"Kariobangi South ","id":"Kariobangi South"}
+                ],
             "Kamukunji":
                 [
                     {"facility":"Airbase","id":"Airbase"},
@@ -374,14 +381,6 @@ var kenyaAddressHierarchy = {
                     {"facility":"Kiamaiko","id":"Kiamaiko"},
                     {"facility":"Huruma","id":"Huruma"},
                     {"facility":"Hospital","id":"Hospital"}
-                ],
-            "Gilgil":
-                [
-                    {"facility":"Murindati","id":"Murindati"},
-                    {"facility":"Gilgil","id":"Gilgil"},
-                    {"facility":"Malewa West","id":"Malewa West"},
-                    {"facility":"Elementaita","id":"Elementaita"},
-                    {"facility":"Mbaruk/Eburu","id":"Mbaruk/Eburu"}
                 ]
         },
     "Kiambu":
