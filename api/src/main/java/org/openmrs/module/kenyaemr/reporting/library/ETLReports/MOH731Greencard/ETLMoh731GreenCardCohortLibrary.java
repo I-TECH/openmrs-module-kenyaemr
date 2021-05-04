@@ -817,7 +817,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition htsNumberTestedAtFacility() {
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test\n" +
                 "      WHERE test_type =1\n" +
-                "      AND coalesce(setting = 'Facility',test_strategy in ('Integrated VCT Center','Non Provider Initiated Testing','Provider Initiated Testing(PITC)', 'Stand Alone VCT Center'))\n" +
+                "      AND coalesce(setting = 'Facility',test_strategy in ('Integrated VCT Center','VI:Integrated VCT Center','Non Provider Initiated Testing','NP: HTS for non-patients','Provider Initiated Testing(PITC)','HP:Provider Initiated Testing(PITC)','Stand Alone VCT Center'))\n" +
                 "      AND visit_date between :startDate and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtFacility");
@@ -833,7 +833,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition htsNumberTestedAtCommunity() {
         String sqlQuery = "select patient_id FROM kenyaemr_etl.etl_hts_test\n" +
                             "  WHERE test_type =1\n" +
-                            "  AND coalesce(setting = 'Community',test_strategy in ('MO: Mobile Outreach HTS','Home Based Testing','Other'))\n" +
+                            "  AND coalesce(setting = 'Community',test_strategy in ('MO: Mobile Outreach HTS','Mobile Outreach HTS','Home Based Testing','Other'))\n" +
                             "  AND visit_date between :startDate and :endDate;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtCommunity");
