@@ -36,7 +36,7 @@ public class ANCVDRLDoneDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select\n" +
                 "              v.encounter_id,\n" +
-                "              (case v.syphilis_test_status when 1229 then 'Y' when 1228 then 'Y' when 1271 then 'Y' when 1402 then 'Y' else 'ND' end) as syphilis_test_status\n" +
+                "              (case v.syphilis_test_status when 1229 then 'Y' when 1228 then 'Y' when 1271 then 'Y' when 1402 then 'ND' else 'ND' end) as syphilis_test_status\n" +
                 "  from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

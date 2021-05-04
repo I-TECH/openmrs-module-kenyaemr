@@ -35,7 +35,7 @@ public class ANCVDRLResultsDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       concat_ws('\\r\\n',case v.syphilis_test_status when 1229 then 'N' when 1228 then 'P' else 'NA' end,case v.syphilis_treated_status when 1065 then 'Y' when 1066 then 'NO' else 'NA' end)\n" +
+                "       concat_ws('\\r\\n',case v.syphilis_test_status when 1229 then 'N' when 1228 then 'P' else 'NA' end,case v.syphilis_treated_status when 1065 then 'Y' when 1066 then 'N' else 'NA' end)\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
