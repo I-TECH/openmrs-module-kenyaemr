@@ -35,8 +35,8 @@ public class ETLLastWHOStageDateDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "           max(visit_date) as last_who_stage_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "\tGROUP BY patient_id;";
+                "max(visit_date) as last_who_stage_date from kenyaemr_etl.etl_patient_hiv_followup where who_stage is not null\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
