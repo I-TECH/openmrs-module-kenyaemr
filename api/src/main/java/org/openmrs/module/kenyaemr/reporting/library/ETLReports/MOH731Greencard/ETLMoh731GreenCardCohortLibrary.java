@@ -1628,11 +1628,11 @@ public class ETLMoh731GreenCardCohortLibrary {
     //On HAART at 1st ANC  HV02-16
     public CohortDefinition totalOnHAARTAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct e.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=e.patient_id\n" +
-                "where d.program = 'HIV' and date(e.visit_date) BETWEEN date(:startDate) and date(:endDate)\n" +
-                "and d.date_started < e.visit_date;\n";
+        String sqlQuery =  "select distinct v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=v.patient_id\n" +
+                "where d.program = 'HIV' and date(v.visit_date) BETWEEN date(:startDate) and date(:endDate)\n" +
+                "and d.date_started < v.visit_date and v.anc_visit_number =1;";
 
         cd.setName("totalOnHAARTAtFirstANC");
         cd.setQuery(sqlQuery);
@@ -1876,8 +1876,8 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select distinct patient_id\n" +
-                "    from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "    where (e.partner_hiv_status=703 and  e.visit_date between date(:startDate) and date(:endDate))";
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "where (e.hiv_status=703 and  e.visit_date between date(:startDate) and date(:endDate))";
 
         cd.setName("knownHIVPositive1stContact");
         cd.setQuery(sqlQuery);
