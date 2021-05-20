@@ -266,6 +266,7 @@ public class EditPatientFragmentController {
 		private Date deathDate;
 		private String nationalIdNumber;
 		private String patientClinicNumber;
+		private String clientNumber;
 		private String uniquePatientNumber;
 		private String telephoneContact;
 		private String nameOfNextOfKin;
@@ -331,6 +332,7 @@ public class EditPatientFragmentController {
 
 			PatientWrapper wrapper = new PatientWrapper(patient);
 
+			clientNumber = wrapper.getClientNumber();
 			patientClinicNumber = wrapper.getPatientClinicNumber();
 			uniquePatientNumber = wrapper.getUniquePatientNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
@@ -523,6 +525,7 @@ public class EditPatientFragmentController {
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
+			wrapper.setClientNumber(clientNumber, location);
 			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
@@ -679,6 +682,14 @@ public class EditPatientFragmentController {
 		 */
 		public void setPersonName(PersonName personName) {
 			this.personName = personName;
+		}
+
+		public String getClientNumber() {
+			return clientNumber;
+		}
+
+		public void setClientNumber(String clientNumber) {
+			this.clientNumber = clientNumber;
 		}
 
 		/**

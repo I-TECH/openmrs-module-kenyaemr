@@ -22,4 +22,5 @@
 	<ref key="NATIONAL_UNIQUE_PATIENT_IDENTIFIER" uuid="f85081e2-b4be-4e48-b3a4-7994b69bb101" />
 	<ref key="KDoD_NUMBER" uuid="b51ffe55-3e76-44f8-89a2-14f5eaf11079" />
 	<ref key="KDoD_SERVICE_NUMBER" uuid="f2b0c94f-7b2b-4ab0-aded-0d970f88c063" />
+	<ref key="CLIENT_NUMBER" uuid="9a260a8c-b94d-11eb-8529-0242ac130003" />
 </refs>

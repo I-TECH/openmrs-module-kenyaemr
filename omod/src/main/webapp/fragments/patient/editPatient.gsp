@@ -106,6 +106,13 @@
 
                 <% } %>
                 <tr>
+                    <td class="ke-field-label">Client Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "clientNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.clientNumber) { %>(This is a generic partner identification for clients. Please only provide if available)<%
+                        } %></td>
+                </tr>
+
+                <tr>
                     <td class="ke-field-label">Patient Clinic Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "patientClinicNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<%
