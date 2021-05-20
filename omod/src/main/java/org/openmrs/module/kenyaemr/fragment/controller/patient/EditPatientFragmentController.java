@@ -63,6 +63,10 @@ public class EditPatientFragmentController {
 	//private static final String INSCHOOL = Dictionary.INSCHOOL;
 	private AdministrationService administrationService = Context.getAdministrationService();
 	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
+	final String clientNumberFieldEnabled = (administrationService.getGlobalProperty("clientNumber.enabled"));
+	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
+
+
 	/**
 	 * Main controller method
 	 * @param patient the patient (may be null)
@@ -84,6 +88,8 @@ public class EditPatientFragmentController {
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
+		model.addAttribute("enableClientNumberField", (StringUtils.isBlank(clientNumberFieldEnabled) || clientNumberFieldEnabled.equalsIgnoreCase("false")) ? false : true);
+		model.addAttribute("clientNumberLabel", clientNumberPreferredLabel);
 
 		// create list of counties
 
@@ -266,6 +272,7 @@ public class EditPatientFragmentController {
 		private Date deathDate;
 		private String nationalIdNumber;
 		private String patientClinicNumber;
+		private String clientNumber;
 		private String uniquePatientNumber;
 		private String telephoneContact;
 		private String nameOfNextOfKin;
@@ -331,6 +338,7 @@ public class EditPatientFragmentController {
 
 			PatientWrapper wrapper = new PatientWrapper(patient);
 
+			clientNumber = wrapper.getClientNumber();
 			patientClinicNumber = wrapper.getPatientClinicNumber();
 			uniquePatientNumber = wrapper.getUniquePatientNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
@@ -523,6 +531,7 @@ public class EditPatientFragmentController {
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
+			wrapper.setClientNumber(clientNumber, location);
 			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
@@ -679,6 +688,14 @@ public class EditPatientFragmentController {
 		 */
 		public void setPersonName(PersonName personName) {
 			this.personName = personName;
+		}
+
+		public String getClientNumber() {
+			return clientNumber;
+		}
+
+		public void setClientNumber(String clientNumber) {
+			this.clientNumber = clientNumber;
 		}
 
 		/**

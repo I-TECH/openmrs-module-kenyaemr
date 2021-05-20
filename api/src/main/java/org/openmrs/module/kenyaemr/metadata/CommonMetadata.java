@@ -79,6 +79,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String NATIONAL_UNIQUE_PATIENT_IDENTIFIER = Metadata.IdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER;
 		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
 		public static final String KDoD_SERVICE_NUMBER = Metadata.IdentifierType.KDoD_SERVICE_NUMBER;
+		public static final String CLIENT_NUMBER = Metadata.IdentifierType.CLIENT_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -160,6 +161,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(globalProperty(EmrConstants.GP_3PM_DATASET_MAPPING, "ADX Mapping for KenyaEMR and 3PM datasets", adx3pmMappingString));
 
 		install(globalProperty("order.drugDosingUnitsConceptUuid", "Drug dosing units concept", "162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		install(globalProperty("client_number_label", "Label for Client Number", "Client Number"));
+		install(globalProperty("clientNumber.enabled", "Switch to show client number", "false"));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
@@ -181,6 +184,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
 		install(patientIdentifierType("KDoD service number", "Unique Id for KDoD service men", "^[0-9]{5,6}$|^[0-9]{5,6}\\/[0-9]{2}$", "Must be a 5-6 digit number (for principal) or 5-6 digit number followed by / and 2 digits (for dependant)",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_SERVICE_NUMBER));
+
+		install(patientIdentifierType("Client Number", "A partner specific identification for clients", "", "",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.CLIENT_NUMBER));
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));

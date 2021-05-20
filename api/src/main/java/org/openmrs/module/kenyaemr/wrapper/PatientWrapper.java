@@ -58,6 +58,7 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 	}
 
+
 	/**
 	 * Sets the patient clinic number
 	 * @param value the identifier value
@@ -67,6 +68,21 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		setAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER, value, location);
 	}
 
+	/**
+	 * Sets the client number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setClientNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.CLIENT_NUMBER, value, location);
+	}
+	/**
+	 * Gets the client number
+	 * @return the identifier value
+	 */
+	public String getClientNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.CLIENT_NUMBER);
+	}
 	/**
 	 * Gets the unique patient number
 	 * @return the identifier value

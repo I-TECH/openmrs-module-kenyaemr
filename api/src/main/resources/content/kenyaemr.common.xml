@@ -106,6 +106,12 @@
 		<property name="order" value="200" />
 	</bean>
 
+	<!-- Client Number -->
+	<bean id="kenyaemr.common.identifier.clientNumber" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="${metadata.identifiertype.CLIENT_NUMBER}" />
+		<property name="order" value="150" />
+	</bean>
+
 	<!-- Old Identification Number -->
 	<bean id="kenyaemr.common.identifier.old" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="${metadata.identifiertype.OLD}" />
