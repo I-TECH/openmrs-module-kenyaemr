@@ -63,6 +63,10 @@ public class EditPatientFragmentController {
 	//private static final String INSCHOOL = Dictionary.INSCHOOL;
 	private AdministrationService administrationService = Context.getAdministrationService();
 	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
+	final String clientNumberFieldEnabled = (administrationService.getGlobalProperty("clientNumber.enabled"));
+	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
+
+
 	/**
 	 * Main controller method
 	 * @param patient the patient (may be null)
@@ -84,6 +88,8 @@ public class EditPatientFragmentController {
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
+		model.addAttribute("enableClientNumberField", (StringUtils.isBlank(clientNumberFieldEnabled) || clientNumberFieldEnabled.equalsIgnoreCase("false")) ? false : true);
+		model.addAttribute("clientNumberLabel", clientNumberPreferredLabel);
 
 		// create list of counties
 
