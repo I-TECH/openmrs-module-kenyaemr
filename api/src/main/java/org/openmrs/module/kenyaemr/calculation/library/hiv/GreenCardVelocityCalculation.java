@@ -21,8 +21,13 @@ import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+<<<<<<< HEAD
+import org.openmrs.PatientProgram;
+import org.openmrs.Program;
+=======
 import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
+>>>>>>> cd34adec8dbaecc9fe679aea55f3321ca77f44da
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.PatientService;
@@ -205,6 +210,20 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+<<<<<<< HEAD
+            //Ever enrolled in HIV
+            EncounterService encounterService = Context.getEncounterService();
+            FormService formService = Context.getFormService();
+            PatientService patientService = Context.getPatientService();
+            EncounterType et = encounterService.getEncounterTypeByUuid("de78a6be-bfc5-4634-adc3-5f1a280455cc");
+            Form form = formService.getFormByUuid(HivMetadata._Form.HIV_ENROLLMENT);
+            Patient pt = patientService.getPatient(ptId);
+            List<Encounter> encounters = EmrUtils.AllEncounters(pt, et, form);
+            if (encounters != null ) {
+                if(encounters.size() > 0) {
+                    patientInHivProgram = true;
+                }
+=======
             //Currently in HIV
             EncounterService encounterService = Context.getEncounterService();
             FormService formService = Context.getFormService();
@@ -215,6 +234,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(pt, et);
             if (lastHivEnrollmentEncounter != null ) {
                     patientEverInHivProgram = true;
+>>>>>>> cd34adec8dbaecc9fe679aea55f3321ca77f44da
             }
 
             //Completed IPT 6 months cycle
