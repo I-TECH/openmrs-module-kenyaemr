@@ -41,7 +41,9 @@ public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
 
 			if (lastDrugRegimenEditorEncounter != null) {
 				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
-				regimenName = o.get("regimenShortDisplay").toString();
+				if(o !=null) {
+					regimenName = o.get("regimenShortDisplay").toString();
+				}
 
 				if (regimenName != null) {
 					ret.put(ptId, new SimpleResult(regimenName, this, context));

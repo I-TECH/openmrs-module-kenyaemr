@@ -245,6 +245,27 @@ public class PatientUtilsFragmentController {
 		}
 		return ui.simplifyCollection(people);
 	}
+
+	/**
+	 * Look for the care givers name for a patient from the relationship defined
+	 * @param patient
+	 * @param now
+	 * @return list of care givers
+	 */
+	public SimpleObject[] getCareGiver(@RequestParam("patientId") Patient patient,UiUtils ui) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Care-giver")) {
+				people.add(relationship.getPersonB());
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Care-giver")) {
+				people.add(relationship.getPersonA());
+			}
+		}
+		return ui.simplifyCollection(people);
+	}
+
+
 	/**
 	 * Check mothers is alive for an infant from the relationship defined
 	 * @param patient

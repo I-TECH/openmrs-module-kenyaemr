@@ -24,6 +24,8 @@
 	<import resource="content/kenyaemr.tb.xml" />
 	<import resource="content/kenyaemr.cohort.analysis.xml" />
 	<import resource="content/kenyaemr.ipt.xml" />
+	<import resource="content/kenyaemr.otz.xml" />
+	<import resource="content/kenyaemr.ovc.xml" />
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -51,6 +53,14 @@
 		<constructor-arg value="250" />
 	</bean>
 
+	<bean id="kenyaemr.app.counselling" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.counselling" />
+		<constructor-arg value="Adherence Counselling" />
+		<constructor-arg value="kenyaemr/adherenceCounselling/counsellingHome.page" />
+		<constructor-arg value="kenyaemr:apps/counselling.png" />
+		<constructor-arg value="255" />
+	</bean>
+
 	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.medicalEncounter" />
 		<constructor-arg value="Clinician" />
@@ -59,13 +69,13 @@
 		<constructor-arg value="300" />
 	</bean>
 
-	<!--<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">-->
-		<!--<constructor-arg value="kenyaemr.prep" />-->
-		<!--<constructor-arg value="Prep" />-->
-		<!--<constructor-arg value="kenyaemr/prep/prepHome.page"/>-->
-		<!--<constructor-arg value="kenyaui:apps/facilityDashboard.png" />-->
-		<!--<constructor-arg value="350" />-->
-	<!--</bean>-->
+	<bean id="kenyaemr.app.prep" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.prep" />
+		<constructor-arg value="PrEP" />
+		<constructor-arg value="kenyaemr/prep/prepHome.page"/>
+		<constructor-arg value="kenyaui:apps/prep.png" />
+		<constructor-arg value="350" />
+	</bean>
 
 	<bean id="kenyaemr.app.defaultertracing" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.defaultertracing" />

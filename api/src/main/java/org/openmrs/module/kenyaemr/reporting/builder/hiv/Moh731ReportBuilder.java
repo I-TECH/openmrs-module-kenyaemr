@@ -251,14 +251,19 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
 
         // 3.6 on CTX/Dapsone
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(moh731GreenCardIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "On CTX/Dapsone", ReportUtils.map(moh731GreenCardIndicators.onCotrimoxazoleProphylaxis(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("044", "045", "046", "047", "048", "049", "050"));
 
         // 3.7 TB Screening and presumed TB
         EmrReportingUtils.addRow(cohortDsd, "HV03", "TB Screening", ReportUtils.map(moh731GreenCardIndicators.screenedForTb(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("051", "052", "053", "054", "055", "056", "057"));
+        cohortDsd.addColumn("HV03-058", "Presumed TB_Total", ReportUtils.map(moh731GreenCardIndicators.presumedForTb(), indParams),"");
 
         // 3.8
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(moh731GreenCardIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
         cohortDsd.addColumn("HV03-066", "Completed IPT 12 months", ReportUtils.map(moh731GreenCardIndicators.ipt12MonthsCohort(), indParams),"");
+
+        //3.9 Nutrition and HIV
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Nutrition assessment", ReportUtils.map(moh731GreenCardIndicators.assessedForNutritionInHIV(), indParams), preARTDisaggregation, Arrays.asList("067", "068","069"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Malnourished", ReportUtils.map(moh731GreenCardIndicators.malnourishedInHIV(), indParams), preARTDisaggregation, Arrays.asList("070","071","072"));
         // 3.10
         cohortDsd.addColumn("HV03-076", "TB new cases", ReportUtils.map(moh731GreenCardIndicators.tbEnrollment(), indParams),"");
         cohortDsd.addColumn("HV03-077", "TB new cases, Known Positive", ReportUtils.map(moh731GreenCardIndicators.tbNewKnownPositive(), indParams),"");
@@ -306,7 +311,6 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         // number linked
         EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
         cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),"");
-
 
         return cohortDsd;
 

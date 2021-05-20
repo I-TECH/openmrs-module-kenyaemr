@@ -1,0 +1,150 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript">
+		var otzDiscontinuation_VELOCITY = "<lookup expression="kenyaemr.OtzDiscontinuationVelocityCalculation()" />";
+		var enrollmentDate = otzDiscontinuation_VELOCITY.split(",")[0].split(":")[1];
+
+		jq(document).ready(function(){
+			jq('#pdied').hide();
+			jq('#ptransferred').hide();
+			if ((getValue('discontinuation-reason.value')) == 160034) {
+				jq('#pdied :input').prop('disabled', false);
+				jq('#ptransferred :input').prop('disabled', true);
+			}
+			else if((getValue('discontinuation-reason.value')) == 159492) {
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', false);
+			}
+			else {
+				jq('#pdied :input').prop('disabled', true);
+				jq('#ptransferred :input').prop('disabled', true);
+			}
+
+			jq("#discontinuation-reason select").change(function() {
+				if ((getValue('discontinuation-reason.value')) == 160034) {
+					jq('#pdied').show();
+					jq('#ptransferred').hide();
+					jq('#pdied :input').prop('disabled', false);
+					jq('#ptransferred :input').prop('disabled', true);
+				}
+				else if((getValue('discontinuation-reason.value')) == 159492) {
+					jq('#ptransferred').show();
+					jq('#pdied').hide();
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', false);
+				}
+				else {
+					jq('#pdied').hide();
+					jq('#ptransferred').hide();
+					jq('#pdied :input').prop('disabled', true);
+					jq('#ptransferred :input').prop('disabled', true);
+				}
+			});
+
+			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+			var discontinueDate;
+
+			beforeSubmit.push(function() {
+				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
+
+				if(discontinueDate &lt; pbirthdate){
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+					return false;
+				}
+
+				if(discontinueDate &lt; enrollmentDate){
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
+				}
+
+				return true;
+			});
+		});
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+
+
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Discontinue OTZ</legend>
+
+			<table class="simple-table">
+				<tr>
+
+					<td>Reason for discontinuation:</td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discontinuation-reason"
+							 answerConceptIds="5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 159836AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165363"
+							 answerLabels=" Lost to followup, Opt out of OTZ, Died, Transferred Out,Transition to Adult Care"
+							 style="dropdown" labelText=""  required="true" /></td>
+				</tr>
+				<tr id="pdied">
+					<td>If Patient Died, please provide Date of Death if Known:</td>
+					<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+				</tr>
+				<tr id="ptransferred">
+					<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+					<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					<td>Date Transferred Out<br /></td>
+					<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+				</tr>
+			</table>
+		</fieldset>
+
+	</div>	
+
+	<completeProgram programId="24d05d30-0488-11ea-8d71-362b9e155667" />
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

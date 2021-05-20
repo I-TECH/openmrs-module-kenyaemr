@@ -1,0 +1,329 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+
+	jq(function() {
+		const POST_TX_COMPLICATION_CONCEPT_ID = 165382;
+		const SCREENING_METHOD_CONCEPT_ID = 163589;
+		const VIA_CONCEPT_ID = 162816;
+		const VILI_CONCEPT_ID = 164977;
+		const PAP_SMEAR_CONCEPT_ID = 885;
+		const HPV_TEST_CONCEPT_ID = 159859;
+		const YES_CONCEPT_ID = 1065
+
+		let hideViaScreeningResult = () => {
+			jq("#tr_via_screening_result").hide();
+		}
+
+		let showViaScreeningResult = () => {
+			jq("#tr_via_screening_result").show();
+		}
+
+		let hideViliScreeningResult = () => {
+			jq("#tr_vili_screening_result").hide();
+		}
+
+		let showViliScreeningResult = () => {
+			jq("#tr_vili_screening_result").show();
+		}
+
+		let hidePapSmearScreeningResult = () => {
+			jq("#tr_pap_smear_screening_result").hide();
+		}
+
+		let showPapSmearScreeningResult = () => {
+			jq("#tr_pap_smear_screening_result").show();
+		}
+
+		let hideHpvScreeningResult = () => {
+			jq("#tr_via_screening_result").hide();
+		}
+
+		let showHpvScreeningResult = () => {
+			jq("#tr_hpv_screening_result").show();
+		}
+
+
+		hideViaScreeningResult();
+		hideViliScreeningResult();
+		hidePapSmearScreeningResult();
+		hideHpvScreeningResult();
+
+		let visitType = getValue("visit_type.value");
+		if (visitType == POST_TX_COMPLICATION_CONCEPT_ID || visitType == "") {
+			jq("#tr_post_tx_complication").hide();
+		} else {
+			jq("#tr_post_tx_complication").show();
+		}
+
+		screeningMethod = getValue("screening_method.value");
+		if (screeningMethod == VIA_CONCEPT_ID) {
+			showViaScreeningResult();
+			hideViliScreeningResult();
+			hidePapSmearScreeningResult();
+			hideHpvScreeningResult();
+		} 
+
+		if (screeningMethod == VILI_CONCEPT_ID) {
+			hideViaScreeningResult();
+			showViliScreeningResult();
+			hidePapSmearScreeningResult();
+			hideHpvScreeningResult();
+		} 
+
+		if (screeningMethod == PAP_SMEAR_CONCEPT_ID) {
+			hideViaScreeningResult();
+			hideViliScreeningResult();
+			showPapSmearScreeningResult();
+			hideHpvScreeningResult();
+		} 
+
+		if (screeningMethod == HPV_TEST_CONCEPT_ID) {
+			hideViaScreeningResult();
+			hideViliScreeningResult();
+			hidePapSmearScreeningResult();
+			showHpvScreeningResult();
+		} 
+
+		let refferedOut = getValue("referred_out.value");
+		if (refferedOut == YES_CONCEPT_ID) {
+			jq("#t_referred_out").show();
+		} else {
+			jq("#t_referred_out").hide();
+		}
+		
+		beforeSubmit.push(() => {
+			let screeningMethod = getValue("screening_method.value");
+			if (screeningMethod == VIA_CONCEPT_ID) {
+				if (getValue("via_screening_result.value") == "") {
+					getField("via_screening_result.error").html("Required field") 
+					return false;
+				}
+
+				if (getValue("vili_screening_result.value") == "") {
+					getField("vili_screening_result.error").html("Required field") 
+					return false;
+				}
+
+				if (getValue("pap_smear_screening_result.value") == "") {
+					getField("pap_smear_screening_result.error").html("Required field") 
+					return false;
+				}
+
+				if (getValue("hpv_screening_result.value") == "") {
+					getField("hpv_screening_result.error").html("Required field") 
+					return false;
+				}
+
+			}
+
+			if (refferedOut == YES_CONCEPT_ID) {
+				if (getValue("referred_to.value") == "") {
+					getField("referred_to.error").html("Provide value")
+					return false;
+				}  
+
+				if (getValue("referral_reason.value") == "") {
+					getField("referral_reason.error").html("Provide value")
+					return false;
+				}  
+			}
+		})
+
+	});
+
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		td .simple-table, td .simple-table td {
+			border: none;
+		}
+		
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true" />
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<!-- add content here   -->
+		<fieldset>
+			<legend>
+				<strong> Cervical cancer screening form </strong>
+			</legend>
+			<table class="simple-table" style="width: 100%">
+				<tr>
+					<td style="width: 25%;"> Visit type: </td>
+					<td style="width: 25%;">
+						<obs id="visit_type" conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerConceptIds="151185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165381,165382"
+							answerLabels="Screening, Postponed cryotherapy visit, Post treatment complication"
+							style="dropdown" required="true" />
+					</td>
+					<td style="width: 50%;">
+						<table class="simple-table" style="width: 100%">
+							<tr id="tr_screening_type">
+								<td>
+									Screening type
+								</td>
+								<td>
+									<obs id="screening_type" conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Initial, Routine re-screening" style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_post_tx_complication">
+								<td>
+									Post treatment complication cause
+								</td>
+								<td>
+									<obs id="post_tx_complication" conceptId="165383"
+										answerConceptIds="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Cryotherapy, LEEP, Others" style="dropdown" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Screening method</td>
+					<td>
+						<obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerConceptIds="162812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,9818bba5-ecd4-4cf9-a48f-5e5d9a48eec6,885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="VIA, VILI, PAP Smear, HPV Test" style="dropdown" required="true"/>
+					</td>
+					<td>
+						<table class="simple-table" style="width: 100%">
+							<tr id="tr_via_screening_result">
+								<td>VIA Screening result</td>
+								<td>
+									<obs id="via_screening_result" conceptId="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="VIA Negative, VIA Positive, Suspicious for cancer, Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_vili_screening_result">
+								<td>VILI Screening result</td>
+								<td>
+									<obs id="vili_screening_result" conceptId="165384"
+										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="VILI Negative, VILI Positive, Suspicious for cancer, Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_pap_smear_screening_result">
+								<td>PAP Smear Screening result</td>
+								<td>
+									<obs id="pap_smear_screening_result"
+										conceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Low grade lesion, High grade lesion, Invasive Cancer, Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_hpv_screening_result">
+								<td>HPV Screening result</td>
+								<td>
+									<obs id="hpv_screening_result" conceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Positive, Negative" style="dropdown" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Treatment today</td>
+					<td>
+						<obs id="treatment" conceptId="a869d37b-bf4d-4946-9318-15ff505211a5"
+							answerConceptIds="165385,165387,165386,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="Cryptherapy performed (Single visit), Cryotherapy postponed, Cryotherapy performed (Previously postponed), Other cervical cancer specific treatment done"
+							style="dropdown" requierd="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Referred out</td>
+					<td>
+						<obs id="referred_out" conceptId="f5a15a0c-a55a-4680-8376-f9a1dd0be731"
+							answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="Yes, No" style="radio" />
+					</td>
+					<td>
+						<table class="simple-table" style="width: 100%" id="t_referred_out">
+							<tr>
+								<td>Referred out to</td>
+								<td>
+									<obs id="referred_to" conceptId="cab2c9a6-339e-47bc-b95b-d55797a26f14" />
+								</td>
+							</tr>
+							<tr>
+								<td>Referral reason</td>
+								<td>
+									<obs id="referral_reason" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="165388,132948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Site does not have cryotherapy machine, Large lesion, Suspect cancer, Other gynaecological problem"
+										style="dropdown" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Next appointment date</td>
+					<td>
+						<obs id="appointment" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+					</td>
+					<td></td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>

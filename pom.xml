@@ -14,7 +14,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>kenyaemr</artifactId>
-    <version>17.0.2</version>
+    <version>17.3.4</version>
     <packaging>pom</packaging>
     <name>KenyaEMR</name>
     <description>OpenMRS-based EMR for Kenya</description>
@@ -59,8 +59,8 @@
         <idgenVersion>2.6</idgenVersion>
         <kenyacoreVersion>2.4.1</kenyacoreVersion>
         <kenyadqVersion>1.2</kenyadqVersion>
-        <kenyauiVersion>2.1.1</kenyauiVersion>
-        <kenyaemrOrderentryVersion>1.0.2</kenyaemrOrderentryVersion>
+        <kenyauiVersion>2.1.2</kenyauiVersion>
+        <kenyaemrOrderentryVersion>1.1.4</kenyaemrOrderentryVersion>
         <logicVersion>0.5.2</logicVersion>
         <metadatadeployVersion>1.3</metadatadeployVersion>
         <metadatamappingVersion>1.0.1</metadatamappingVersion>
@@ -68,6 +68,8 @@
         <reportingVersion>0.9.8.1</reportingVersion>
         <serializationxstreamVersion>0.2.7</serializationxstreamVersion>
         <uiframeworkVersion>3.8</uiframeworkVersion>
+        <facilityReportingVersion>1.0.0</facilityReportingVersion>
+        <apacheHttpClientVersion>4.5.10</apacheHttpClientVersion>
         <!--
         <kenyaemrChartsVersion>1.0</kenyaemrChartsVersion>
         <kenyaemrHivTestingVersion>1.0</kenyaemrHivTestingVersion>-->
@@ -194,8 +196,22 @@
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>kenyaemrorderentry-api</artifactId>
+            <version>${kenyaemrOrderentryVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api</artifactId>
             <version>${serializationxstreamVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>facilityreporting-api</artifactId>
+            <version>${facilityReportingVersion}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -259,6 +275,19 @@
             <version>2.1</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apacheHttpClientVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

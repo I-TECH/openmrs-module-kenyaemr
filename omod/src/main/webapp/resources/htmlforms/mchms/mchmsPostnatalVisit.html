@@ -62,9 +62,10 @@
         getField('height.value').change(onWeightOrHeightChange);
         onWeightOrHeightChange();
         onEncounterDateChange();
+        getDeliveryModeChange();
         //Show number of clients already booked on tca date
         jq('#showNumberBooked').hide();
-        getField("returnVisitDate.value").change(getPatientsBookedOnDate);
+        jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
         //On delivery outcome change
         jq('#single').show();
@@ -189,6 +190,7 @@
         }
         if(MODE_OF_DELIVERY !=""){
             getField('delivery-mode.value').val(MODE_OF_DELIVERY);
+            getDeliveryModeChange();
         }else{
             getField('delivery-mode.value').val("");
         }
@@ -297,10 +299,25 @@
     });
     //on ready end
     function getDeliveryModeChange() {
-        if (getField('delivery-mode.value').val() == 1170) {
-            jq('#cs-scar select').prop('disabled', true);
-        }else{
+        if (getField('delivery-mode.value').val() == 1171) {
             jq('#cs-scar select').prop('disabled', false);
+            jq('#episiotomy select').prop('disabled', true);
+            getField('episiotomy.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 1170) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 1172) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
+        }
+        if(getField('delivery-mode.value').val() == 118159) {
+            jq('#cs-scar select').prop('disabled', true);
+            jq('#episiotomy select').prop('disabled', false);
+            getField('cs-scar.value').prop("selectedIndex", 0);
         }
     }
 
@@ -520,7 +537,7 @@
     }
     // get count of patients booked on a date
     function getPatientsBookedOnDate() {
-        var tca_date = getValue('returnVisitDate.value');
+        var tca_date = jq('#returnVisitDate input[type=hidden]').val();
         jq('#showNumberBooked').hide();
         jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForMchConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
             jq('#showBookedResult').text(data.bookingsOnDate);
@@ -928,7 +945,7 @@
 						<tr>
 							<td>Condition of Episiotomy:</td>
 							<td>
-								<obs conceptId="159840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								<obs conceptId="159840AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="episiotomy"
 									 answerConceptIds="159842AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159841AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="Repaired-episiotomy wound,Healed-episiotomy wound,Gap-episiotomy wound,Postoperative wound infection,Not Applicable"
 								/>
@@ -1112,11 +1129,7 @@
 										</td>
 									</tr>
 									<tr>
-										<td>HIV Test 1 Results:
-											<obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
-										</td>
+
 										<td>&#160;&#160;&#160;&#160; Kit Name
 											<obs class="kit-name"
 												 id="kit-name-1"
@@ -1138,6 +1151,11 @@
 											<obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
 											/>
 										</td>
+										<td>HIV Test 1 Results:
+											<obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
+										</td>
 										<td>
 											<div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
 												<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1151,11 +1169,6 @@
 								<obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 									<tr id="hiv-test2">
 
-										<td>HIV Test 2 Results:
-											<obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-												 style="dropdown" answerLabels="Positive,Negative,N/A"/>
-										</td>
 										<td>&#160;&#160;&#160;&#160; Kit Name
 											<obs class="kit-name2"
 												 id="kit-name-2"
@@ -1175,6 +1188,12 @@
 										<td>&#160;&#160;&#160;&#160;Expiry Date
 											<obs id="expiry-date2" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
 											/>
+										</td>
+
+										<td>HIV Test 2 Results:
+											<obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+												 style="dropdown" answerLabels="Positive,Negative,N/A"/>
 										</td>
 									</tr>
 								</obsgroup>

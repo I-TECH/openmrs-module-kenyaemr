@@ -25,8 +25,14 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadResu
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -95,6 +101,17 @@ public class CohortDialogPageController {
         LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
         CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 
+        AgeDataDefinition d = new AgeDataDefinition();
+        d.setEffectiveDate(endDate);
+        EvaluationContext context = new EvaluationContext();
+        context.setBaseCohort(cohort);
+        EvaluatedPersonData pd = null;
+        try {
+            pd = Context.getService(PersonDataService.class).evaluate(d, context);
+        } catch (EvaluationException e) {
+            e.printStackTrace();
+        }
+
         /*LastCD4ResultCalculation lastCD4ResultCalculation = new LastCD4ResultCalculation();
         CalculationResultMap lastCD4Results = lastCD4ResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
 */
@@ -107,6 +124,7 @@ public class CohortDialogPageController {
         model.addAttribute("enrollmentDates", enrollmentDates);
         model.addAttribute("artInitializationDates", artInitializationDates);
         model.addAttribute("lastVlResults", lastVlResults);
+        model.addAttribute("ageAtReportingResults", pd);
         //model.addAttribute("lastCD4Results", lastCD4Results);
     }
 }

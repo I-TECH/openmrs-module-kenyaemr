@@ -50,13 +50,13 @@
                 </tbody>
             </table>
         </div>
-   </fieldset>
+    </fieldset>
 
     <br/>
     <fieldset>
-    <legend>mUzima Queue Data</legend>
+        <legend>mUzima Queue Data</legend>
         <div>Total records in queue: ${queueData}</div>
-</fieldset>
+    </fieldset>
 
 
 </div>

@@ -23,6 +23,8 @@
             jq('.cause-of-death').hide();
             jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
             jq('#true-status :input[type=radio]').change(onDeceasedOutcomeChange);
+            jq('#contact-status :input[type=radio]').change(onContactStatusChange);
+            jq('#booking-date :input').prop('disabled', true);
 
             beforeSubmit.push(function () {
             });
@@ -49,6 +51,15 @@
             }else{
                 jq('.cause-of-death').hide();
                 clearHiddenSections([cause_death]);
+            }
+        }
+
+        function onContactStatusChange(){
+            var val = getValue('contact-status.value');
+            if(val == 1267) {
+                jq('#booking-date :input').prop('disabled', false);
+            }else{
+                jq('#booking-date :input').prop('disabled', true);
             }
         }
         clearHiddenSections = function(parentObj) {
@@ -133,7 +144,11 @@
                 <tr>
                     <td>Tracing Outcome</td>
                     <td>
-                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true"/>
+                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true" id="contact-status"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        Return to care date :
+                        <obs conceptId="163526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="booking-date" allowFutureDates="true"/>
                     </td>
                 </tr>
             </table>

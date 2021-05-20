@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
@@ -29,6 +30,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.regimen.Regimen;
 import org.openmrs.module.kenyaemr.regimen.RegimenChange;
 import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
@@ -50,8 +52,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * Various actions for regimen related functions
@@ -162,6 +167,16 @@ public class RegimenUtilFragmentController {
             encounter.addObs(non4);
         }
 
+        // create obs for regimen line
+		Obs regimenLineObs = new Obs();
+		regimenLineObs.setConcept(cs.getConcept(163104)); // regimen line concept should be changed to correct one
+		regimenLineObs.setDateCreated(new Date());
+		regimenLineObs.setCreator(Context.getAuthenticatedUser());
+		regimenLineObs.setObsDatetime(command.getChangeDate());
+		regimenLineObs.setValueText(command.getRegimenLine());
+		regimenLineObs.setPerson(command.getPatient());
+
+
 		//create  obs for Change reason coded
 		Obs o2 = new Obs();
 		o2.setConcept(cs.getConcept(1252));
@@ -221,6 +236,9 @@ public class RegimenUtilFragmentController {
 				}
 				 encounterService.saveEncounter(enc);
 			}
+			if(command.getRegimenLine() !=null) {
+				encounter.addObs(regimenLineObs);
+			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);
 
@@ -246,6 +264,9 @@ public class RegimenUtilFragmentController {
 
 		if(command.getChangeType()==RegimenChangeType.START || command.getChangeType()==RegimenChangeType.RESTART) {
 			category.setValueCoded(cs.getConcept(1256));
+			if(command.getRegimenLine() !=null) {
+				encounter.addObs(regimenLineObs);
+			}
 			encounter.addObs(category);
 			encounterService.saveEncounter(encounter);
 
@@ -316,6 +337,7 @@ public class RegimenUtilFragmentController {
 		private String regimenConceptNonStandardRefTwo;
         private String regimenConceptNonStandardRefThree;
 		private String regimenConceptNonStandardRefFour;
+		private String regimenLine;
 
 		public RegimenChangeCommandObject(RegimenManager regimenManager) {
 			this.regimenManager = regimenManager;
@@ -330,7 +352,7 @@ public class RegimenUtilFragmentController {
 			require(errors, "category");
 			require(errors, "changeType");
 			require(errors, "changeDate");
-
+			
 			// Reason is only required for stopping or changing
 			if (changeType == RegimenChangeType.STOP || changeType == RegimenChangeType.CHANGE) {
 				require(errors, "changeReason");
@@ -346,9 +368,19 @@ public class RegimenUtilFragmentController {
 				}
 			}
 
-			if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
+			if(changeType == RegimenChangeType.CHANGE || changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART ) {
+				if( (regimenConceptRef == null || regimenConceptRef.equalsIgnoreCase("")) && (regimenConceptNonStandardRef == null || regimenConceptNonStandardRef.equalsIgnoreCase(""))) {
 				require(errors, "regimenConceptRef");
 				require(errors, "regimenConceptNonStandardRef");
+
+			   }
+				if ((regimenLine == null || regimenLine.equals("")) && category.equalsIgnoreCase("ARV")) {
+					require(errors, "regimenLine");
+
+				}
+
+
+
 			}
 
 			if (category != null && changeDate != null) {
@@ -358,11 +390,12 @@ public class RegimenUtilFragmentController {
 				RegimenChange lastChange = history.getLastChange();
 				Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
 				boolean onRegimen = lastChange != null && lastChange.getStarted() != null && lastEnc !=null;
+
 				// Can't start if already started
-				if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
+				/*if ((changeType == RegimenChangeType.START || changeType == RegimenChangeType.RESTART) && onRegimen) {
 					errors.reject("Can't start regimen for patient who is already on a regimen");
 				}
-
+*/
 				// Changes must be in order
 				if (lastEnc != null && OpenmrsUtil.compare(changeDate, lastEnc.getEncounterDatetime()) <= 0) {
 					errors.rejectValue("changeDate", "Change date must be after all other changes");
@@ -378,8 +411,14 @@ public class RegimenUtilFragmentController {
 				 if (programs.size() > 0) {
 					 enrollmentDate = programs.get(0).getDateEnrolled();
 				 }
+				Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
+				List<PatientProgram> tbPrograms = service.getPatientPrograms(patient, tbProgram, null, null, null,null, true);
+				if (tbPrograms.size() > 0) {
+					enrollmentDate = tbPrograms.get(0).getDateEnrolled();
+				}
+
 				// Don't allow regimen start date to be before enrollment date
-				if(changeDate.before(enrollmentDate) ) {
+				if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(enrollmentDate, Calendar.DAY_OF_MONTH)) ) {
 					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
 				}
 
@@ -611,6 +650,14 @@ public class RegimenUtilFragmentController {
         public void setRegimenConceptNonStandardRefFour(String regimenConceptRef) {
             this.regimenConceptNonStandardRefFour = regimenConceptRef;
         }
+
+		public String getRegimenLine() {
+			return regimenLine;
+		}
+
+		public void setRegimenLine(String regimenLine) {
+			this.regimenLine = regimenLine;
+		}
         
 
 	}

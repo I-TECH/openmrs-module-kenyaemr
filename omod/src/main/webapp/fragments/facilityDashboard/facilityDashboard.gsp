@@ -189,7 +189,7 @@
                     y: ${htsPositive},
 
                 }, {
-                    name: 'Total Linked',
+                    name: 'Total Enrolled to Care',
                     y: ${htsLinked},
 
                 }]

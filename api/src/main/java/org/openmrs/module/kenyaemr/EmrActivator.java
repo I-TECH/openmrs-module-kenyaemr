@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
@@ -17,6 +18,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.util.OpenmrsUtil;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -35,7 +40,9 @@ public class EmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#willRefreshContext()
 	 */
 	public void willRefreshContext() {
+
 		log.info("KenyaEMR context refreshing...");
+
 	}
 
 	/**

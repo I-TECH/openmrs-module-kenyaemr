@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.ovc.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="${metadata.program.OVC}" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.ovc.EligibleForOvcProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.ovc.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.ovc.form.completion" />
+
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/ovc/ovcEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/ovc/ovcCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/ovc/ovcOutcomeSummary" />
+			</map>
+		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.ovc.report.currentlyEnrolledInOVC"/>
+
+			</set>
+		</property>
+		<property name="order" value="306" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!--OVC enrollment-->
+	<bean id="kenyaemr.ovc.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5cf01528-09da-11ea-8d71-362b9e155667" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:ovc/ovcEnrollment.html" />
+	</bean>
+
+	<!--OVC Completion -->
+	<bean id="kenyaemr.ovc.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5cf013e8-09da-11ea-8d71-362b9e155667" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:ovc/ovcDiscontinuation.html" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+	<bean id="kenyaemr.ovc.report.currentlyEnrolledInOVC" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="c8e9b42e-4bce-4542-a0c8-0487d9f783d8" />
+		<property name="name" value="Patients Currently on OVC" />
+		<property name="description" value="Patients currently on OVC program" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
+
+</beans>

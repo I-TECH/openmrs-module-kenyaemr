@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Calculate the date of enrollment into HIV Program
+ * Calculate the date a client was confirmed HIV positive
  */
 public class DateConfirmedHivPositiveCalculation extends AbstractPatientCalculation {
 

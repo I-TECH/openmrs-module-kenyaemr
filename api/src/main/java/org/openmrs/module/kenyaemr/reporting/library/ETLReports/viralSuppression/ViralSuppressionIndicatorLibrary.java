@@ -29,7 +29,7 @@ public class ViralSuppressionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator suppressed() {
-        return cohortIndicator("Patient suppressed", ReportUtils.map(cohortLibrary.suppressed(), ""));
+        return cohortIndicator("Patient suppressed", ReportUtils.map(cohortLibrary.suppressed(), "endDate=${endDate}"));
     }
 
     /**
@@ -37,19 +37,25 @@ public class ViralSuppressionIndicatorLibrary {
      * @return
      */
     public  CohortIndicator unsuppressed() {
-        return cohortIndicator("Unsuppressed VL", ReportUtils.map(cohortLibrary.unsuppressed(), ""));
+        return cohortIndicator("Unsuppressed VL", ReportUtils.map(cohortLibrary.unsuppressed(), "endDate=${endDate}"));
     }
 
+
+    /**
+     * Number of patients with no current vl result
+     * @return the indicator
+     */
+    public CohortIndicator noCurrentVLResults() {
+        return cohortIndicator("No Current VL Results", ReportUtils.map(cohortLibrary.noCurrentVLResults(), "endDate=${endDate}"));
+    }
 
     /**
      * Number of patients with no vl result
      * @return the indicator
      */
     public CohortIndicator noVLResults() {
-        return cohortIndicator("No VL Results", ReportUtils.map(cohortLibrary.noVLResults(), ""));
+        return cohortIndicator("No VL Results", ReportUtils.map(cohortLibrary.noVLResults(), "endDate=${endDate}"));
     }
-
-
 
 
 }

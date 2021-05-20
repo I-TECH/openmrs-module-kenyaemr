@@ -30,7 +30,6 @@
 		<property name="visitForms">
 			<set>
 				<ref bean="kenyaemr.hiv.form.hivGreenCard" />
-				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening" />
 				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
 				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
@@ -41,18 +40,22 @@
 		</property>
 		<property name="reports">
 			<set>
+				<ref bean="kenyaemr.common.report.cccDar" />
 				<ref bean="kenyaemr.hiv.report.qi.adult.c.tx" />
 				<ref bean="kenyaemr.hiv.report.qi.peds.c.tx" />
 				<!--<ref bean="kenyaemr.hiv.report.qi.adult.emtct" />-->
 				<ref bean="kenyaemr.hiv.report.lostToFollowUp" />
 				<ref bean="kenyaemr.hiv.report.neverScreenedForTb" />
 				<ref bean="kenyaemr.hiv.report.eligibleForArt" />
-				<ref bean="kenyaemr.hiv.report.onSecondLineArt" />
+				<ref bean="kenyaemr.hiv.report.secondLineART" />
 				<ref bean="kenyaemr.hiv.report.neverTakenCtxOrDapsone" />
 				<ref bean="kenyaemr.hiv.report.needsViralLoad" />
 				<ref bean="kenyaemr.hiv.report.artPrepRegister" />
 				<ref bean="kenyaemr.hiv.report.enhancedAdherenceRegister" />
 				<ref bean="kenyaemr.common.report.enrollmentTracker" />
+				<ref bean="kenyaemr.hiv.report.artRegister" />
+				<ref bean="kenyaemr.hiv.report.scheduledDrugRefills"/>
+				<ref bean="kenyaemr.hiv.report.scheduledAppointment"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -73,6 +76,11 @@
 		<property name="order" value="50" />
 	</bean>
 
+	<!-- KDoD Number -->
+	<bean id="kenyaemr.hiv.identifier.KDoD" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="${metadata.identifiertype.KDoD_NUMBER}" />
+		<property name="order" value="50" />
+	</bean>
 	<!-- ===================== Forms ===================== -->
 
 	<!-- HIV Enrollment -->
@@ -117,19 +125,7 @@
 		<property name="htmlform" value="kenyaemr:hiv/treatmentPreparation.html"/>
 		<property name="order" value="400"/>
 	</bean>
-	<!-- Gender based violence screening  -->
-	<bean id="kenyaemr.hiv.form.genderBasedViolenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="03767614-1384-4ce3-aea9-27e2f4e67d01"/>
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician"/>
-				<ref bean="kenyaemr.app.chart"/>
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png"/>
-		<property name="htmlform" value="kenyaemr:hiv/genderBasedViolenceScreening.html"/>
-		<property name="order" value="200001"/>
-	</bean>
+
 	<!-- Alcohol and Drug abuse screening  -->
 	<bean id="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c"/>
@@ -151,6 +147,7 @@
 			<set>
 				<ref bean="kenyaemr.app.clinician"/>
 				<ref bean="kenyaemr.app.chart"/>
+				<ref bean="kenyaemr.app.counselling"/>
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png"/>
@@ -267,7 +264,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.StablePatientsCalculation" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.EligibleForFastrackPatientsCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/artFastTrack.html" />
 		<property name="order" value="201090" />
@@ -315,10 +312,10 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.lostToFollowUp" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+	<bean id="kenyaemr.hiv.report.lostToFollowUp" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="70bca1e5-7c68-4500-bfb8-0795549f35a4" />
 		<property name="name" value="Patients who are lost to followup" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation" />
+		<!-- <property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation" /> -->
 		<!--<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />-->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
@@ -354,13 +351,15 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.onSecondLineArt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
-		<property name="targetUuid" value="6e91a8da-fcab-47dc-86e7-dd92b925dd86" />
+	<bean id="kenyaemr.hiv.report.secondLineART" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="21592d66-39ee-11eb-adc1-0242ac120002" />
 		<property name="name" value="Patients on second line ART" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnSecondLineArtCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="description" value="Patients on second line ART" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:on_secondline_art_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:patientsOnSecondLineART" />
 	</bean>
+
 
 	<bean id="kenyaemr.hiv.report.neverTakenCtxOrDapsone" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="8eda25f8-a3aa-401c-ab88-49f6f2021a39" />
@@ -405,6 +404,50 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hts/Enrollment_Tracker.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:allPatients" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.cccDar" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="351ac318-d875-11e9-8a34-2a2ae2dbcce4" />
+		<property name="name" value="DAR Register" />
+		<property name="description" value="CCC Daily Activity Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:ccc_dar.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:allVisit" />
+	</bean>
+
+	<!-- Art Register -->
+	<bean id="kenyaemr.hiv.report.artRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="e0c4994f-6bee-4894-a1f2-1c84deaf0408" />
+		<property name="name" value="ART Register" />
+		<property name="description" value="ART register based on art initiation date" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set>
+		</property>
+		<property name="template" value="kenyaemr:art/artRegister.xls" />
+		<property name="repeatingSection" value="sheet:1,row:18,dataset:ARTRegister" />
+	</bean>
+
+	<!--Patients scheduled for drug refil-->
+	<bean id="kenyaemr.hiv.report.scheduledDrugRefills" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="8801e151-2789-4745-92b9-0c95f52ee5a3" />
+		<property name="name" value="Patients scheduled for ART Drug refill visit" />
+		<property name="description" value="Patients with scheduled ART refill visit on a date" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<!--Patients scheduled appointment visits-->
+	<bean id="kenyaemr.hiv.report.scheduledAppointment" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="7070d7a9-671c-43bb-9947-d19d8d03fe5a" />
+		<property name="name" value="Patients scheduled for appointment" />
+		<property name="description" value="Patients with scheduled appointment on a date" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hiv/patients_scheduled_for_hiv_appointment.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:patientsScheduledForAppointment" />
 	</bean>
 
 </beans>

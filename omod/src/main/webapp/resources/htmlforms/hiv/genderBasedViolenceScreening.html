@@ -12,97 +12,578 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
   -->
 <htmlform>
-	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
-	<script type="text/javascript">
-		jQuery(function($) {
-			beforeSubmit.push(function() {
-			});
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
 
-		});
-	</script>
-	<style>
-		.simple-table {
-			border: solid 1px #DDEEEE;
-			border-collapse: collapse;
-			border-spacing: 0;
-			font: normal 13px Arial, sans-serif;
-		}
-		.simple-table thead th {
-			background-color: #DDEFEF;
-			border: solid 1px #DDEEEE;
-			color: #336B6B;
-			padding: 10px;
-			text-align: left;
-			text-shadow: 1px 1px 1px #fff;
-		}
-		.simple-table td {
-			border: solid 1px #DDEEEE;
-			color: #333;
-			padding: 10px;
-			text-shadow: 1px 1px 1px #fff;
-		}
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
 
-		tr:nth-child(even) {
-			background-color: #e495e4;
-		}
-	</style>
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
 
-	<div class="ke-form-header">
-		<table width="100%">
-			<tr>
-				<td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
-				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
-			</tr>
-		</table>
-	</div>
+    </style>
+    <script>
+        var PhysicalyAbusedClicked  = function () {
+            var Slapped = getValue('physicalyAbused.value');
+            if(Slapped=="1065"){
+                $('#slapped_select input').prop('disabled', false);
+            }
+            else if (Slapped != "1065"){
+                $('#slapped_select input').prop('disabled', true);
+                $('#other_slapped_specify input').prop('disabled', true);
+                $('#other_slapped_specify input').val('');
+            }
+        }
+        var ForcefulCliked  = function () {
+            var ForceFul = getValue('forceful.value');
+            if (ForceFul == "152370"){
 
-	<div class="ke-form-content">
-		<fieldset class="gbv-scree">
-			<!--Gender based violence screening-->
-			<fieldset id="psychosocial-preparation-tab">
-				<legend>
-					SEXUAL AND GENDER BASE VIOLENCE
-				</legend>
-				<table class="simple-table" id="gbv-screening-questions">
-					<obsgroup groupingConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                $('#forceful_select input').prop('disabled', false);
+            }
+            else if (ForceFul != '152370'){
+                $('#forceful_select input').prop('disabled', true);
+                $('#ForceFullOther input').prop('disabled', true);
+                $('#other_forceful_specify input').prop('disabled', true);
+                $('#other_forceful_specify input').val('');
+            }
+        }
 
-						<tr>
-							<td>1. Within the past year, have you been hit, slapped, kicked or physically hurt by someone in any way?	</td>
-							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
-						</tr>
-						<tr></tr>
-						<tr>
-							<td>2. Are you in a relationship with a person who physically hit you?</td>
-							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="158358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
-							</td>
-						</tr>
-						<tr></tr>
-						<tr>
-							<td>3. Are you in a relationship with a person who threatens, frightens or insults you or treats you badly?</td>
-							<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="118688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
-							</td>
-						</tr>
-						<tr></tr>
-						   <tr>
-							   <td>4. Are you in relationship with a person who forces you to participate in sexual activities that make you feel uncomfortable?
-									</td>
-								<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="152370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
-								</td>
-							</tr>
-						<tr></tr>
-						<tr>
-							<td>5. Have you ever experienced any of the above with someone you do not have a relationship with?
-									</td>
-								<td><obs conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
-								</td>
-							</tr>
-					</obsgroup>
-				</table>
-			</fieldset>
-		</fieldset>
-	</div>
-	<div class="ke-form-footer">
-		<submit />
-	</div>
+        var ForcefulOtherClicked  = function () {
+            var ForceFullOther = getValue('forceful_other.value');
+            if (ForceFullOther == "5622"){
+                $('#other_forceful_specify input').prop('disabled', false);
+            }
+            else if (ForceFullOther != "5622"){
+
+                $('#other_forceful_specify input').prop('disabled', true);
+                $('#other_forceful_specify input').val('');
+
+            }
+        }
+
+        var FrightensCliked  = function () {
+            var Frightens = getValue('frightens.value');
+            if(Frightens=="118688"){
+                $('#frightens_select input').prop('disabled', false);
+
+            }
+            else if (Frightens != "118688"){
+                $('#frightens_select input').prop('disabled', true);
+                $('#other_frightens_specify input').prop('disabled', true);
+                $('#other_frightens_specify input').val('');
+            }
+        }
+
+        var FrightensOtherCliked  = function () {
+            var FrightensOther = getValue('frightens_other.value');
+            if (FrightensOther == "5622"){
+                $('#other_frightens_specify input').prop('disabled', false);
+            }
+            else if (FrightensOther != "5622"){
+
+                $('#other_frightens_specify input').prop('disabled', true);
+                $('#other_frightens_specify input').val('');
+            }
+        }
+
+        var BadRelationCliked  = function () {
+            var BadRelation = getValue('badRelation.value');
+            if(BadRelation=="158358"){
+                $('#badRelation_select input').prop('disabled', false);
+
+            }
+            else if (BadRelation != "158358"){
+                $('#badRelation_select input').prop('disabled', true);
+                $('#other_badRelation_specify input').prop('disabled', true);
+                $('#other_badRelation_specify input').val('');
+            }
+        }
+
+        var BadRelationOtherCliked  = function () {
+            var BadRelationOther = getValue('badRelation_other.value');
+            if (BadRelationOther == "5622"){
+                $('#other_badRelation_specify input').prop('disabled', false);
+            }
+            else if (BadRelationOther != "5622"){
+
+                $('#other_badRelation_specify input').prop('disabled', true);
+                $('#other_badRelation_specify input').val('');
+
+            }
+        }
+
+
+
+        var SlappedOtherCliked  = function () {
+            var SlappedOther = getValue('slapped_other.value');
+            if (SlappedOther == "5622"){
+                $('#other_slapped_specify input').prop('disabled', false);
+            }
+            else if (SlappedOther != "5622"){
+
+                $('#other_slapped_specify input').prop('disabled', true);
+                $('#other_slapped_specify input').val('');
+
+            }
+        }
+
+        var SomeOneCliked  = function () {
+            var Someone = getValue('someone.value');
+            if(Someone=="1582"){
+                $('#someone_select input').prop('disabled', false);
+
+            }
+            else if (Someone != "1582"){
+                $('#someone_select input').prop('disabled', true);
+                $('#other_someone_specify input').prop('disabled', true);
+                $('#other_someone_specify input').val('');
+            }
+        }
+
+        var Help  = function () {
+            var help = getValue('soughtHelp.value');
+            if(help=="1065"){
+                $('#wheresoughtHelp input').prop('disabled', false);
+                $('#form_of_incident input').prop('disabled', true);
+                $('#form_of_incident input').prop('disabled', true);
+
+            }
+            else if (help != "1065"){
+                $('#wheresoughtHelp input').prop('disabled', true);
+                $('#form_of_incident input').prop('disabled', false);
+
+            }
+        }
+
+        var Reason  = function () {
+            var reasons = getValue('reson.value');
+            if(reasons=="5622"){
+                $('#reason_specify input').prop('disabled', false);
+
+            }
+            else if (reasons != "5622"){
+                $('#reason_specify input').prop('disabled', true);
+
+            }
+        }
+
+        var Outcome  = function () {
+            var outCome = getValue('outcome.value');
+            if(outCome=="5622"){
+                $('#outcome_specify input').prop('disabled', false);
+
+            }
+            else if (outCome != "5622"){
+                $('#outcome_specify input').prop('disabled', true);
+
+            }
+        }
+
+
+        var SomeOneOtherCliked  = function () {
+            var SomeoneOther = getValue('someone_other.value');
+            if (SomeoneOther == "5622"){
+                $('#other_someone_specify input').prop('disabled', false);
+            }
+            else if (SomeoneOther != "5622"){
+
+                $('#other_someone_specify input').prop('disabled', true);
+                $('#other_someone_specify input').val('');
+
+            }
+        }
+
+        $(document).ready(function () {
+
+            $('#forceful_select input').prop('disabled', true);
+            $('#frightens_select input').prop('disabled', true);
+            $('#badRelation_select input').prop('disabled', true);
+            $('#slapped_select input').prop('disabled', true);
+            $('#someone_select input').prop('disabled', true);
+
+            $('#other_someone_specify input').prop('disabled', true);
+            $('#other_slapped_specify input').prop('disabled', true);
+            $('#other_badRelation_specify input').prop('disabled', true);
+            $('#other_frightens_specify input').prop('disabled', true);
+            $('#other_forceful_specify input').prop('disabled', true);
+
+            $('#reason_specify input').prop('disabled', true);
+            $('#outcome_specify input').prop('disabled', true);
+            $('#form_of_incident input').prop('disabled', true);
+            $('#wheresoughtHelp input').prop('disabled', true);
+
+
+
+
+
+            $('#forceful_other').click(ForcefulOtherClicked);
+            $('#forceful').click(ForcefulCliked);
+            $('#frightens_other').click(FrightensOtherCliked);
+            $('#frightens').click(FrightensCliked);
+            $('#badRelation_other').click(BadRelationOtherCliked);
+            $('#badRelation').click(BadRelationCliked);
+            $('#slapped_other').click(SlappedOtherCliked);
+
+            $('#someone_other').click(SomeOneOtherCliked);
+            $('#someone').click(SomeOneCliked);
+            $('#physicalyAbused').click(PhysicalyAbusedClicked);
+            $('#soughtHelp').click(Help);
+            $('#reson').click(Reason);
+            $('#outcome').click(Outcome);
+
+
+
+            $('input[type=radio]').change( function()  {
+
+                var Slapped = getValue('physicalyAbused.value');
+                if(Slapped=="1065"){
+                    $('#slapped_other input').prop('disabled', false);
+                }
+                else if (Slapped != "1065"){
+                    $('#slapped_other input').prop('disabled', true);
+                    $('#other_slapped_specify input').prop('disabled', true);
+                    $('#other_slapped_specify input').val('');
+                }
+
+
+            });
+        });
+
+    </script>
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td>Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset class="gbv-scree">
+            <!--Gender based violence screening-->
+            <fieldset id="psychosocial-preparation-tab">
+                <legend>
+                    GENDER BASE VIOLENCE
+                </legend>
+                <table class="simple-table" id="gbv-screening-questions">
+                    <obsgroup groupingConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                        <tr>
+                            <td>1. Within the past year, have you been hit, slapped, kicked or physically hurt by
+                                someone in any way?
+                            </td>
+                            <td>
+                                <obs id="physicalyAbused" conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+                            </td>
+                            <td id="slapped_select" colspan="4">
+                                <obs conceptId="160658" answerConceptId="5617" answerLabel="Sexual Partner" style="checkbox" /><br />
+                                <obs conceptId="160658" answerConceptId="5618" answerLabel="Boy/Girl Friend" style="checkbox" /><br />
+                                <obs conceptId="160658" answerConceptId="1067"  answerLabel="Stranger" style="checkbox" /><br />
+                                <obs id="slapped_other" conceptId="160658" answerConceptId="5622"  answerLabel="Other" style="checkbox" /><br />
+
+                            </td>
+                            <td>Specify:
+                                <obs conceptId="165230" id="other_slapped_specify"/>
+
+                            </td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>2. Are you in a relationship with a person who physically hit you?</td>
+                            <td>
+                                <obs id="badRelation" conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="158358AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+                            </td>
+                            <td id="badRelation_select" colspan="4">
+                                <obs conceptId="164352" answerConceptId="5617" answerLabel="Sexual Partner" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5618" answerLabel="Boy/Girl Friend" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5620"  answerLabel="Relative" style="checkbox" /><br />
+                                <obs id="badRelation_other" conceptId="164352" answerConceptId="5622"  answerLabel="Other" style="checkbox" /><br />
+                            </td>
+                            <td> Specify:
+                                <obs conceptId="160618" id="other_badRelation_specify"/>
+
+                            </td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>3. Are you in a relationship with a person who threatens, frightens or insults you or
+                                treats you badly?
+                            </td>
+                            <td>
+                                <obs id="frightens" conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="118688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+                            </td>
+                            <td id="frightens_select" colspan="4">
+                                <obs conceptId="164352" answerConceptId="5617" answerLabel="Sexual Partner" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5618" answerLabel="Boy/Girl Friend" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5620"  answerLabel="Relative" style="checkbox" /><br />
+                                <obs id="frightens_other" conceptId="164352" answerConceptId="5622"  answerLabel="Other" style="checkbox" /><br />
+                            </td>
+                            <td> Specify:
+                                <obs conceptId="161011" id="other_frightens_specify"/>
+
+                            </td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>4. Are you in relationship with a person who forces you to participate in sexual
+                                activities that make you feel uncomfortable?
+                            </td>
+                            <td>
+                                <obs id="forceful" conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="152370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+                            </td>
+                            <td id="forceful_select" colspan="4">
+                                <obs conceptId="164352" answerConceptId="5617" answerLabel="Sexual Partner" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5618" answerLabel="Boy/Girl Friend" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5620"  answerLabel="Relative" style="checkbox" /><br />
+                                <obs id="forceful_other" conceptId="164352" answerConceptId="5622"  answerLabel="Other" style="checkbox" /><br />
+                            </td>
+                            <td> Specify:
+                                <obs conceptId="162749" id="other_forceful_specify"/>
+
+                            </td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>5. Have you ever experienced any of the above with someone you do not have a
+                                relationship with?
+                            </td>
+                            <td>
+                                <obs id="someone" conceptId="160658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1582AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" />
+                            </td>
+                            <td id="someone_select" colspan="4">
+                                <obs conceptId="164352" answerConceptId="5617" answerLabel="Sexual Partner" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5618" answerLabel="Boy/Girl Friend" style="checkbox" /><br />
+                                <obs conceptId="164352" answerConceptId="5620"  answerLabel="Relative" style="checkbox" /><br />
+                                <obs id="someone_other" conceptId="164352" answerConceptId="5622"  answerLabel="Other" style="checkbox" /><br />
+                            </td>
+                            <td> Specify:
+                                <obs conceptId="164879" id="other_someone_specify"/>
+
+                            </td>
+                        </tr>
+                    </obsgroup>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    Action
+                </legend>
+                <table id="questions">
+
+                    <tr>
+                        <td>
+                            <table style=" float: left; ">
+                                <tr>
+                                    <td>
+                                        Did you seek help?
+                                    </td>
+                                    <td>
+                                        <obs id="soughtHelp" conceptId="162871" labelText=" "
+                                             answerConceptIds="1065,1066"
+                                             style="radio" answerLabels="Yes,No"/>
+                                    </td>
+                                </tr>
+                                <tr  id="wheresoughtHelp">
+                                    <td>
+                                        Where did you seek help?
+                                    </td>
+                                    <td>
+                                        <table class="simple-table" >
+                                        <obsgroup groupingConceptId ="1562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="1589"
+                                                         answerLabel="Hospital" style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="165284"
+                                                         answerLabel="Police" style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="165037"
+                                                         answerLabel="Peer Educator" style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="1560" answerLabel="Family"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="165294" answerLabel="Peers"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="5618" answerLabel="Friends"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="165290"
+                                                         answerLabel="Religious Leader" style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="165350" answerLabel="Dice"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="162690" answerLabel="Chief"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="162886" answerConceptId="5622" answerLabel="other"
+                                                         style="checkbox"/>
+                                                    <br/>
+                                                </td>
+                                                <td>Date:
+                                                    <obs conceptId="160753"/>
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                        </table>
+                                    </td>
+                                    <td class="simple-table" >
+                                        What was the outcome?
+                                    </td>
+                                    <obsgroup groupingConceptId ="159639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <td class="simple-table" >
+                                        <obs conceptId="162875" answerConceptId="1066"  answerLabel="No action taken" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165070"  answerLabel="Counselling" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="160570"  answerLabel="Emergency pills" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="1356"  answerLabel=" Hiv testing" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="130719"  answerLabel="Investigation done" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="135914"  answerLabel="Matter presented to court" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165228"  answerLabel="P3 form issued" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165171"  answerLabel="PEP given" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165192"  answerLabel="Perpetrator arrested" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="127910"  answerLabel="Post rape care" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165203"  answerLabel=" PrEP given" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="5618"  answerLabel="Reconciliation" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165093"  answerLabel="Referred back to the family" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165274"  answerLabel="Referred to hospital" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165180"  answerLabel="Statement taken" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165200"  answerLabel="STI Prophylaxis" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="165184"  answerLabel="Trauma counselling done" style="checkbox" /><br />
+                                        <obs conceptId="162875" answerConceptId="1185"  answerLabel="Treatment" style="checkbox" /><br />
+                                        <obs id="outcome" conceptId="162875" answerConceptId="5622"  answerLabel="Other specify" style="checkbox" /><br />
+
+                                        <obs conceptId="160716" id="outcome_specify"/>
+                                    </td>
+                                    </obsgroup>
+                                </tr>
+                                <tr>
+                                <tr><td>
+                                    Reason(s) for not reporting
+                                </td>
+                                    <td colspan="2" class="simple-table" id="form_of_incident">
+                                        <obsgroup groupingConceptId ="1743AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <div style="float: left; padding-right: 50px">
+                                            <obs conceptId="6098" answerConceptId="1067" answerLabel="Did not know where to report" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="1811" answerLabel="Distance" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="140923" answerLabel="Exhaustion  / Lack of energy" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="163473" answerLabel="Fear shame" style="checkbox" /><br />
+
+                                            <obs conceptId="6098" answerConceptId="159418" answerLabel="Lack of faith in system" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="162951"  answerLabel="Lack of knowledge" style="checkbox" /><br />
+
+                                        </div>
+
+                                        <div style="float: left;padding-right: 50px">
+                                            <obs conceptId="6098" answerConceptId="664" answerLabel="Negative attitude of the person reported to" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="143100" answerLabel="Not allowed culturally" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="165161"  answerLabel="Perpetrator above the law" style="checkbox" /><br />
+                                            <obs conceptId="6098" answerConceptId="163475"  answerLabel="Self blame" style="checkbox" /><br />
+                                            <obs id="reson" conceptId="6098" answerConceptId="5622"  answerLabel="Other specify" style="checkbox" /><br />
+
+                                            Specify:  <obs conceptId="165230" id="reason_specify"/>
+                                        </div>
+                                        </obsgroup>
+                                    </td>
+                                </tr>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </fieldset>
+
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
 
 </htmlform>

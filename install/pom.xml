@@ -15,11 +15,11 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>kenyaemr</artifactId>
-		<version>17.0.2</version>
+		<version>17.3.4</version>
 	</parent>
 
 	<artifactId>kenyaemr-install</artifactId>
-  <version>17.0.2</version>
+  <version>17.3.4</version>
 	<packaging>pom</packaging>
 	<name>KenyaEMR Installation (optional)</name>
 	<description>Installation tools for KenyaEMR</description>

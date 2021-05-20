@@ -37,7 +37,7 @@ public class EligibleForMchmsProgramCalculation extends AbstractPatientCalculati
 
 		for (int ptId : cohort) {
 
-			boolean eligible = "F".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() > 12? true: false;
+			boolean eligible = "F".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() > 9? true: false;
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;

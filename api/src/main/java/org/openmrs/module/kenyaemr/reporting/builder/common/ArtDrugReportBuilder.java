@@ -88,22 +88,6 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 
 		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		Concept azt = Dictionary.getConcept(Dictionary.ZIDOVUDINE);
-		Concept tc3 = Dictionary.getConcept(Dictionary.LAMIVUDINE);
-		Concept nvp = Dictionary.getConcept(Dictionary.NEVIRAPINE);
-		Concept efv = Dictionary.getConcept(Dictionary.EFAVIRENZ);
-		Concept abc = Dictionary.getConcept(Dictionary.ABACAVIR);
-		Concept tdf = Dictionary.getConcept(Dictionary.TENOFOVIR);
-		Concept d4t = Dictionary.getConcept(Dictionary.STAVUDINE);
-		Concept lvp = Dictionary.getConcept(Dictionary.LOPINAVIR);
-		Concept rit = Dictionary.getConcept(Dictionary.RITONAVIR);
-		Concept ddi = Dictionary.getConcept(Dictionary.DIDANOSINE);
-		Concept etr = Dictionary.getConcept(Dictionary.ETRAVIRINE);
-		Concept ral = Dictionary.getConcept(Dictionary.RALTEGRAVIR);
-		Concept drv = Dictionary.getConcept(Dictionary.DARUNAVIR);
-		Concept atv = Context.getConceptService().getConceptByUuid("71647AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		Concept dtg = Context.getConceptService().getConceptByUuid("d1fd0e18-e0b9-46ae-ac0e-0452a927a94b");
-
 		List<ColumnParameters> allColumns = Arrays.asList(children, adults, colTotal);
 		List<String> indSuffixes = Arrays.asList("CH", "AD", "TT");
 
@@ -185,7 +169,38 @@ public class ArtDrugReportBuilder extends AbstractReportBuilder {
 		//ABC+3TC+DTG
 		EmrReportingUtils.addRow(dsd, "ABC+3TC+DTG", "Patients having (ABC+3TC+DTG) regimen", ReportUtils.map(artIndicators.onRegimen("ABC+3TC+DTG"), indParams), allColumns, indSuffixes);
 
+		//RAL+3TC+DRV+RTV
+        EmrReportingUtils.addRow(dsd, "RAL+3TC+DRV+RTV", "Patients having (RAL+3TC+DRV+RTV) regimen", ReportUtils.map(artIndicators.onRegimen("RAL+3TC+DRV+RTV"), indParams), allColumns, indSuffixes);
 
+		//RAL+3TC+DRV+RTV+AZT
+        EmrReportingUtils.addRow(dsd, "RAL+3TC+DRV+RTV+AZT", "Patients having (RAL+3TC+DRV+RTV+AZT) regimen", ReportUtils.map(artIndicators.onRegimen("RAL+3TC+DRV+RTV+AZT"), indParams), allColumns, indSuffixes);
+
+		//RAL+3TC+DRV+RTV+ABC
+        EmrReportingUtils.addRow(dsd, "RAL+3TC+DRV+RTV+ABC", "Patients having (RAL+3TC+DRV+RTV+ABC) regimen", ReportUtils.map(artIndicators.onRegimen("RAL+3TC+DRV+RTV+ABC"), indParams), allColumns, indSuffixes);
+
+		//ETV+3TC+DRV+RTV
+        EmrReportingUtils.addRow(dsd, "ETV+3TC+DRV+RTV", "Patients having (ETV+3TC+DRV+RTV) regimen", ReportUtils.map(artIndicators.onRegimen("ETV+3TC+DRV+RTV"), indParams), allColumns, indSuffixes);
+
+		//RAL+3TC+DRV+RTV+TDF
+        EmrReportingUtils.addRow(dsd, "RAL+3TC+DRV+RTV+TDF", "Patients having (RAL+3TC+DRV+RTV+TDF) regimen", ReportUtils.map(artIndicators.onRegimen("RAL+3TC+DRV+RTV+TDF"), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+DTG+DRV/r
+        EmrReportingUtils.addRow(dsd, "TDF+3TC+DTG+DRV/r", "Patients having (TDF+3TC+DTG+DRV/r) regimen", ReportUtils.map(artIndicators.onRegimen("TDF+3TC+DTG+DRV/r"), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+RAL+DRV/r
+        EmrReportingUtils.addRow(dsd, "TDF+3TC+RAL+DRV/r", "Patients having (TDF+3TC+RAL+DRV/r) regimen", ReportUtils.map(artIndicators.onRegimen("TDF+3TC+RAL+DRV/r"), indParams), allColumns, indSuffixes);
+
+		//TDF+3TC+DTG+EFV+DRV/r
+        EmrReportingUtils.addRow(dsd, "TDF+3TC+DTG+EFV+DRV/r", "Patients having (TDF+3TC+DTG+EFV+DRV/r) regimen", ReportUtils.map(artIndicators.onRegimen("TDF+3TC+DTG+EFV+DRV/r"), indParams), allColumns, indSuffixes);
+
+		//ABC+3TC+RAL
+        EmrReportingUtils.addRow(dsd, "ABC+3TC+RAL", "Patients having (ABC+3TC+RAL) regimen", ReportUtils.map(artIndicators.onRegimen("ABC+3TC+RAL"), indParams), allColumns, indSuffixes);
+
+		//AZT+3TC+RAL+DRV/r
+        EmrReportingUtils.addRow(dsd, "AZT+3TC+RAL+DRV/r", "Patients having (AZT+3TC+RAL+DRV/r) regimen", ReportUtils.map(artIndicators.onRegimen("AZT+3TC+RAL+DRV/r"), indParams), allColumns, indSuffixes);
+
+		//ABC+3TC+RAL+DRV/r
+        EmrReportingUtils.addRow(dsd, "ABC+3TC+RAL+DRV/r", "Patients having (ABC+3TC+RAL+DRV/r) regimen", ReportUtils.map(artIndicators.onRegimen("ABC+3TC+RAL+DRV/r"), indParams), allColumns, indSuffixes);
 		return dsd;
 	}
 }

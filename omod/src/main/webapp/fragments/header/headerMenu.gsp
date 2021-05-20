@@ -17,7 +17,7 @@
 		userMenuItems << "<span><em>Not Logged In</em></span>"
 	}
 
-	userMenuItems << """<a href="javascript:ke_showHelp()"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
+	userMenuItems << """<a href="${ ui.pageLink("kenyaemr", "helpDialog") }"><img src="${ ui.resourceLink("kenyaui", "images/toolbar/help.png") }" width="12" height="12" />&nbsp;&nbsp;Help</a>"""
 %>
 
 <div class="ke-toolbar">
@@ -32,10 +32,8 @@
 <script type="text/javascript">
 	function ke_logout() {
 		kenyaui.openConfirmDialog({ heading: 'Logout', message: 'Logout and end session?', okCallback: function() {
-			ui.navigate('/${ contextPath }/logout');
-		}});
+				ui.navigate('/${ contextPath }/logout');
+			}});
 	}
-	function ke_showHelp() {
-		window.open('${ externalHelpUrl }');
-	}
+	
 </script>

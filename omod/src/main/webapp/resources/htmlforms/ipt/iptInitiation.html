@@ -29,7 +29,7 @@
 						});
 					</script>
 				</ifMode>
-				<td>Date Started on IPT: <encounterDate id="encounter-date" /></td>
+				<td>Date Started on IPT: <encounterDate id="encounter-date" showTime="true" /></td>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
 		  </tr>
 		</table>
@@ -43,8 +43,33 @@
 				<tr>
 					<td>Indication for IPT</td>
 					<td>
-						<obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"  labelText=""/>
+						<obs conceptId="162276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							  style="dropdown" answerLabels="HIV Positive,In Prison,Child exposed to Tuberculosis,Health Care Worker"/>
 					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Sub-County registration</legend>
+
+			<table>
+				<tr>
+					<td>Registration Number:</td>
+					<td><patient field="identifier" identifierTypeId="d8ee3b8c-a8fc-4d6b-af6a-9423be5f8906" required="false"/></td>
+
+					<td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Registration Date:&#160;&#160;&#160;
+						<obs class="reg-date" conceptId="161552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" required="false" allowFutureDates="false"
+						/>
+					</td>
+
+
+
+				</tr>
+				<tr>
+					<td colspan="2"><div id="startOfTreatmentDateError" class="error"></div></td>
 				</tr>
 			</table>
 		</fieldset>

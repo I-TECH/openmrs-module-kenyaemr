@@ -66,6 +66,8 @@ public class HivMetadata extends AbstractMetadataBundle {
 
 	public static final class _PatientIdentifierType {
 		public static final String UNIQUE_PATIENT_NUMBER = Metadata.IdentifierType.UNIQUE_PATIENT_NUMBER;
+		public static final String KDoD_NUMBER = Metadata.IdentifierType.KDoD_NUMBER;
+
 	}
 
 	public static final class _Program {
@@ -87,7 +89,6 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("Lab Order", "Lab Order", _EncounterType.LAB_ORDER));
 		install(encounterType("CCC Defaulter Tracing", "CCC Defaulter Tracing", _EncounterType.CCC_DEFAULTER_TRACING));
 
-
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
 		install(form("Clinical Encounter - HIV addendum", null, _EncounterType.HIV_CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
 		install(form("Family History", null, CommonMetadata._EncounterType.REGISTRATION, "1", _Form.FAMILY_HISTORY));
@@ -101,14 +102,18 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER, "1", _Form.DRUG_ORDER));
 		install(form("ART Preparation", "ART Preparation", _EncounterType.HIV_CONSULTATION, "1", _Form.TREATMENT_PREPARATION));
 		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.GBV_SCREENING));
-		install(form("Alcohol and Drug Abuse Screening", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
+		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
 
 		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
 
+		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
+
 		install(program("HIV", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, _Program.HIV));
 		install(globalProperty(LDL_DEFAULT_VALUE, "Default value for LDL results. Required for graphing", "50"));
+
 	}
 }

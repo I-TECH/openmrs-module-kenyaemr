@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.otz.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="${metadata.program.OTZ}" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.otz.EligibleForOtzProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.otz.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.otz.form.completion" />
+		<property name="visitForms" >
+			<set>
+				<ref bean="kenyaemr.otz.form.activity" />
+			</set>
+		</property>
+
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.etl.common.report.otz"/>
+				<ref bean="kenyaemr.otz.report.otzRegister"/>
+				<ref bean="kenyaemr.otz.report.CurrentlyEnrolledInOTZ"/>
+
+			</set>
+		</property>
+
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/otz/otzEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/otz/otzCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/otz/otzOutcomeSummary" />
+			</map>
+		</property>
+		<property name="order" value="300" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!--OTZ enrollment-->
+	<bean id="kenyaemr.otz.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="3ae95898-0464-11ea-8d71-362b9e155667" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:otz/otzEnrollment.html" />
+	</bean>
+
+	<!--OTZ Completion -->
+	<bean id="kenyaemr.otz.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="3ae955dc-0464-11ea-8d71-362b9e155667" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:otz/otzDiscontinuation.html" />
+	</bean>
+
+	<!--OTZ activity form-->
+	<bean id="kenyaemr.otz.form.activity" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="3ae95d48-0464-11ea-8d71-362b9e155667" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:otz/otzActivityForm.html" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+
+	<bean id="kenyaemr.etl.common.report.otz" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="4bda61d2-efec-4c94-8804-fd0b06c8f873" />
+		<property name="name" value="OTZ Report" />
+		<property name="description" value="OTZ Monthly site level report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:otz/OTZ_monthly_reporting_tool.xls" />
+	</bean>
+	<bean id="kenyaemr.otz.report.otzRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="aedb1715-b6dd-43c6-b8d6-af6df4775396" />
+		<property name="name" value="OTZ Register" />
+		<property name="description" value="Register For OTZ Clients" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:otz/OTZ_REGISTER.xls" />
+		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
+	</bean>
+
+	<bean id="kenyaemr.otz.report.CurrentlyEnrolledInOTZ" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="9448109b-f75b-445f-a0e1-0faf143a30fc" />
+		<property name="name" value="Patients currently on OTZ" />
+		<property name="description" value="Patients currently on OTZ program" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+</beans>

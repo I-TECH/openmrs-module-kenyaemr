@@ -41,13 +41,14 @@ public class ViralSuppressionReportBuilder extends AbstractReportBuilder {
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-        return new ArrayList<Parameter>();
+        return Arrays.asList(new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
+        );
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
-        return Arrays.asList(
-                ReportUtils.map(suppresion(), "")
+        return Arrays.asList(ReportUtils.map(suppresion(), "endDate=${endDate}")
         );
     }
 
@@ -55,10 +56,13 @@ public class ViralSuppressionReportBuilder extends AbstractReportBuilder {
     protected DataSetDefinition suppresion() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.setName("Viral-suppression");
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        String indParams = "endDate=${endDate}";
         cohortDsd.setDescription("Viral suppression report");
-        cohortDsd.addColumn("Number Suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.suppressed(), ""), "");
-        cohortDsd.addColumn("Number Un-suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.unsuppressed(), ""), "");
-        cohortDsd.addColumn("Number with no VL Results", "", ReportUtils.map(suppressionIndicatorLibrary.noVLResults(), ""), "");
+        cohortDsd.addColumn("Number Suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.suppressed(), indParams),"");
+        cohortDsd.addColumn("Number Un-suppressed", "", ReportUtils.map(suppressionIndicatorLibrary.unsuppressed(), indParams),"");
+        cohortDsd.addColumn("Number with no current VL", "", ReportUtils.map(suppressionIndicatorLibrary.noCurrentVLResults(), indParams),"");
+        cohortDsd.addColumn("Number with no VL", "", ReportUtils.map(suppressionIndicatorLibrary.noVLResults(), indParams),"");
 
         return cohortDsd;
 

@@ -34,6 +34,7 @@
 		<require_module version="${groovyVersion}">org.openmrs.module.groovy</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</require_module>
+		<require_module version="${facilityReportingVersion}">org.openmrs.module.facilityreporting</require_module>
 	</require_modules>
 
 	<!--<aware_of_modules>
@@ -59,5 +60,29 @@
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
+
+	<globalProperty>
+		<property>kenyaemr.autoUpdateReleaseUrl</property>
+		<defaultValue>https://api.github.com/repos/palladiumkenya/kenyahmis-kenyaEmr/releases/latest</defaultValue>
+		<description>
+			A github api url for KenyaEMR auto-update pointing at the latest KenyaEMR release.
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.isKDoD</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines whether facility is KDoD site or not
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.generateUPN</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines facility to enable UPN Autogeneration
+		</description>
+	</globalProperty>
 
 </module>

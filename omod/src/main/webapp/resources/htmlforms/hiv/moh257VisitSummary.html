@@ -132,7 +132,7 @@
               jq('#fast-track select').prop('disabled', true);
 
       //Differentiated care
-          //console.log("PAtient stable ==>"+PATIENT_STABLE);
+
             if(PATIENT_STABLE == 1) {
                 jq("#tbl-fast-track").show();
                 jq("#tbl-standard").hide();
@@ -946,7 +946,7 @@
                          <td>(l)</td>
                          <td colspan="2">
                              <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 10)">
-                                 <obs id="anc-profile" conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
+                                 <obs id="anc-profile" conceptId="1719AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" />
                              </includeIf>
                          </td>
                      </tr>

@@ -37,9 +37,26 @@
 			<optgroup label="${ group.name }">${ groupOptions(group) }</optgroup>
 	<% } %>
 	</select>
+	<%if (config.category =="ARV") { %>
 	<span id="others-checked">
 		<input type="checkbox" name="nonstandardregimen" value="nonstandardregimen" id="other">Use none standard<br>
 	</span>
+	<% } %>
+	<br />
+
+	<%if (config.category =="ARV") { %>
+	<span id="reg-line">
+	<i>Regimen line:</i> <select   name="regimenLine" id="regimenLine">
+		<option value="" >Select regimen line ... </option>
+		<option value="AF">Adult First line</option>
+		<option  value="AS">Adult Second line</option>
+		<option  value="AT" >Adult Third line</option>
+		<option  value="CF" >Child First line</option>
+		<option  value="CS" >Child Second line</option>
+		<option  value="CT">Child Third line</option>
+	</select>
+	</span>
+	<% } %>
 	<br />
 	<span id="${ config.id }-error" class="error" style="display: none"></span>
 

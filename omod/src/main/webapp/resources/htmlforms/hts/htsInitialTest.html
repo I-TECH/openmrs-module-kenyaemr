@@ -16,6 +16,7 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
@@ -35,31 +36,161 @@
                 clearHiddenSections(pripop);
             }
         }
+
+        var willingnessToShareSelfTestResults = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").show();
+            }else {
+                jq("#test-results").hide();
+                clearHiddenSections(jq('#results'));
+                clearHiddenSections(jq('#date-of-self-test'));
+            }
+
+        };
+
+        var isSelfTestDoneInLast12months = function () {
+            var val = jq(this).val();
+            if (val == 1065 ){
+                jq("#test-results").hide();
+                jq("#willingness-share-results").show();
+            }else {
+                jq("#test-results").hide();
+                jq("#willingness-share-results").hide();
+                clearHiddenSections(jq('#share-results'));
+                clearHiddenSections(jq('#results'));
+
+            }
+        };
+
+        //Setting
+        var onSettingSelected = function() {
+            var val = jq(this).val();
+            jq("#strategy option[value='161557']").show();  //IT
+            jq("#strategy option[value='159939']").show();  //MO
+            jq("#strategy option[value='5622']").show();     //O
+            jq("#hts-entry-point option[value='5622']").show();     //O
+            if (val == 1537 ) {   //Facility setting selected
+                clearHiddenSections(jq('#strategy'));
+                clearHiddenSections(jq('#hts-entry-point'));
+                //Strategy
+                jq("#strategy option[value='164163']").show();  //PITC
+                jq("#strategy option[value='164953']").show();  //NP
+                jq("#strategy option[value='164954']").show();   //VI
+                jq("#strategy option[value='164955']").hide();    //VS
+                jq("#strategy option[value='159938']").hide();    //HB
+                //Entry point
+                jq("#hts-entry-point option[value='5485']").show();    //IPD
+                jq("#hts-entry-point option[value='160542']").show();    //OPD
+                jq("#hts-entry-point option[value='162181']").show();    //PC
+                jq("#hts-entry-point option[value='160552']").show();    //NC
+                jq("#hts-entry-point option[value='160538']").show();    //ANC
+                jq("#hts-entry-point option[value='160456']").show();    //MAT
+                jq("#hts-entry-point option[value='1623']").show();    //PNC
+                jq("#hts-entry-point option[value='160541']").show();    //TB
+                jq("#hts-entry-point option[value='159940']").show();    //VCT
+                jq("#hts-entry-point option[value='162223']").show();    //VMMC
+                jq("#hts-entry-point option[value='160546']").show();    //STI
+                jq("#hts-entry-point option[value='160522']").show();    //ER
+                jq("#hts-entry-point option[value='163096']").hide();    //CT
+                jq("#hts-entry-point option[value='159938']").hide();    //HBT
+                jq("#hts-entry-point option[value='159939']").hide();    //MO
+
+            }else if(val == 163488 ) {
+                clearHiddenSections(jq('#strategy'));
+                clearHiddenSections(jq('#hts-entry-point'));
+                // strategy
+                jq("#strategy option[value='164163']").hide();  //PITC
+                jq("#strategy option[value='164953']").hide();  //NP
+                jq("#strategy option[value='164954']").hide();   //VI
+                jq("#strategy option[value='164955']").show();    //VS
+                jq("#strategy option[value='159938']").show();    //HB
+                   //Entry point
+                jq("#hts-entry-point option[value='163096']").show();    //CT
+                jq("#hts-entry-point option[value='159938']").show();    //HBT
+                jq("#hts-entry-point option[value='159939']").show();    //MO
+                jq("#hts-entry-point option[value='5485']").hide();    //IPD
+                jq("#hts-entry-point option[value='160542']").hide();    //OPD
+                jq("#hts-entry-point option[value='162181']").hide();    //PC
+                jq("#hts-entry-point option[value='160552']").hide();    //NC
+                jq("#hts-entry-point option[value='160538']").hide();    //ANC
+                jq("#hts-entry-point option[value='160456']").hide();    //MAT
+                jq("#hts-entry-point option[value='1623']").hide();    //PNC
+                jq("#hts-entry-point option[value='160541']").hide();    //TB
+                jq("#hts-entry-point option[value='159940']").hide();    //VCT
+                jq("#hts-entry-point option[value='162223']").hide();    //VMMC
+                jq("#hts-entry-point option[value='160546']").hide();    //STI
+                jq("#hts-entry-point option[value='160522']").hide();    //ER
+
+            }
+        };
+
+
         var hasDisabilitySelected = function () {
             var val = jq(this).val();
             if (val == 1066 ){
                 jq('#disability').hide();
+                jq('#tbl-other-disability').hide();
                 jq('#disability select').prop("disabled", true);
                 jq('#disability select').val('');
                 clearHiddenSections(jq('#disability'));
+                clearHiddenSections(jq('#other-disability'));
             }else{
                 jq('#disability').show();
                 jq('#disability select').prop("disabled", false);
             }
         }
+
+        var hasOtherDisabilitySelected = function () {
+            var val = jq(this).val();
+                 // Specify other
+            if (val == 5622){
+                jq('#disability').show();
+                jq('#tbl-other-disability').show();
+            }
+            if(val != 5622){
+                jq('#tbl-other-disability').hide();
+                clearHiddenSections(jq('#other-disability'));
+            }
+        }
         var strategySelected = function () {
             var val = jq(this).val();
             if (val == 159938 ){
-                getField('hts-entry-point.value').prop("selectedIndex", 9);
+                getField('hts-entry-point.value').prop("selectedIndex", 14);
             }else if (val == 159939 ){
-                getField('hts-entry-point.value').prop("selectedIndex", 10);
+                getField('hts-entry-point.value').prop("selectedIndex", 15);
             }else if (val == 164954 || val == 164955){
-                getField('hts-entry-point.value').prop("selectedIndex", 8);
+                getField('hts-entry-point.value').prop("selectedIndex", 9);
+            }
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-strategy').show();
+            }else{
+                jq('#tbl-other-strategy').hide();
             }
         }
 
+       var referralSelected = function () {
+           var val = jq(this).val();
+          if (val == 164407) {
+               jq('#tbl-other-facility').show();
+           } else {
+               jq('#tbl-other-facility').hide();
+               getField('other-facility.value').val("");
+           }
+       }
+
         var kit1Selected = function () {
             var val = jq(this).val();
+            // Show use previous lot number checkbox
+            if(val != null || val != ""){
+                jq("#latest-lot-number").show();
+                jq('#latestLotNumber').click(defaultLotNumberClicked);
+            }else{
+                jq("#latest-lot-number").hide();
+                jq('#latest-lot-number :input').prop('checked', false);
+            }
+
             if (val == 165351 ){   //Dual kit selected
                 jq('#dual-results-1').show();
                 getField("kit-name-2.value").val("");
@@ -67,7 +198,6 @@
                 jq("#kit-name-2 option[value='164960']").hide();
                 jq("#kit-name-2 option[value='165351']").hide();
             }
-
             else if (val == 164960 ){   //Determine kit selected
                 jq('#dual-results-1').hide();
                 getField("kit-name-2.value").val("");
@@ -84,6 +214,81 @@
             }
         }
 
+        var kit2Selected = function () {
+            var val = jq(this).val();
+            // Show use previous lot number checkbox
+            if (val != null || val != "") {
+                jq("#latest-lot-number2").show();
+                jq('#latestLotNumber2').click(defaultLotNumber2Clicked);
+            } else {
+                jq("#latest-lot-number2").hide();
+                jq('#latest-lot-number2 :input').prop('checked', false);
+            }
+        }
+
+        //Ckeckbox to prepopulate last latestLotNumber-1
+        var defaultLotNumberClicked = function () {
+            var val = jq(this).val();
+            var kitName1 = getField('kit-name-1.value').val();
+            jq('#upnError').hide();
+            if (jq(this).is(':checked') &amp;&amp; !isNaN(kitName1) ){
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotNumberUsedForHTSTesting.action', {kitName: kitName1}, function (data) {
+                    if (data.lastLotNumber != null || data.lastLotNumber != "") {
+                        jq('#upnError').text("");
+                        jq('#lot-number-1 input[type=text]').val(data.lastLotNumber);
+                       //Check lot expiry date
+                        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotExpiryDateUsedForHTSTesting.action', {kitName: kitName1}, function (data) {
+                            if (data.lastLotExpiryDate != null || data.lastLotExpiryDate != "") {
+                                jq('#expiry-date input[type=text]').val(data.lastLotExpiryDate);
+                            }
+                        });
+                    } else {
+                        jq('#lot-number-1 input[type=text]').val("");
+                        jq('#expiry-date input[type=text]').val("");
+                        jq('#upnError').text("");
+                        jq('#upnError').text("No previous lot numbers have been saved");
+                        jq('#upnError').show();
+                    }
+
+
+                });
+            }else{
+                getField('lot-number-1.value').val("");
+                getField('expiry-date.value').val("");
+            }
+        }
+        //Ckeckbox to prepopulate last latestLotNumber-2
+        var defaultLotNumber2Clicked = function () {
+            var val = jq(this).val();
+            var kitName2 = getField('kit-name-2.value').val();
+            jq('#upnError').hide();
+            if (jq(this).is(':checked') &amp;&amp; !isNaN(kitName2) ){
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotNumberUsedForHTSTesting.action', {kitName: kitName2}, function (data) {
+                    if (data.lastLotNumber != null || data.lastLotNumber != "") {
+                        jq('#upnError2').text("");
+                        jq('#lot-number-2 input[type=text]').val(data.lastLotNumber);
+                        //Check lot expiry date
+                        jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/lastLotExpiryDate2UsedForHTSTesting.action', {kitName: kitName2}, function (data) {
+
+                            if (data.lastLotExpiryDate != null || data.lastLotExpiryDate != "") {
+                               jq('#expiry-date2 input[type=text]').val(data.lastLotExpiryDate);
+                            }
+                        });
+                    } else {
+                        jq('#lot-number-2 input[type=text]').val("");
+                        jq('#expiry-date2 input[type=text]').val("");
+                        jq('#upnError2').text("");
+                        jq('#upnError2').text("No previous lot numbers have been saved");
+                        jq('#upnError2').show();
+                    }
+
+
+                });
+            }else{
+                getField('lot-number-2.value').val("");
+                getField('expiry-date2.value').val("");
+            }
+        }
         var prevTestSelected = function () {
             var val = jq(this).val();
             if (val == 1065 ){
@@ -220,6 +425,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#fs-referral').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -284,22 +490,92 @@
             jq('input[type=radio].key-population').prop("checked", false);
             jq('input[type=radio].priority-population').prop("checked", false);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq('#share-results :input[type=radio]').change(willingnessToShareSelfTestResults);
+            jq('#client-done-test :input[type=radio]').change(isSelfTestDoneInLast12months);
+            jq('#setting :input[type=radio]').change(onSettingSelected);
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
+            jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
             jq('#disability').hide();
+            jq('#tbl-other-disability').hide();
+            jq('#fs-referral').hide();
             //ever tested
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
+            jq('#referral-to select').change(referralSelected);
+            jq('#tbl-other-strategy').hide();
+            jq("#test-results").hide();
+            jq("#willingness-share-results").hide();
+
+            //strategy
+            jq("#strategy option[value='164163']").hide();  //PITC
+            jq("#strategy option[value='164953']").hide();  //NP
+            jq("#strategy option[value='164954']").hide();   //VI
+            jq("#strategy option[value='164955']").hide();    //VS
+            jq("#strategy option[value='159938']").hide();    //HB
+            jq("#strategy option[value='161557']").hide();  //IT
+            jq("#strategy option[value='159939']").hide();  //MO
+            jq("#strategy option[value='5622']").hide();     //O
+            //Entry points
+            jq("#hts-entry-point option[value='163096']").hide();    //CT
+            jq("#hts-entry-point option[value='159938']").hide();    //HBT
+            jq("#hts-entry-point option[value='159939']").hide();    //MO
+            jq("#hts-entry-point option[value='5485']").hide();    //IPD
+            jq("#hts-entry-point option[value='160542']").hide();    //OPD
+            jq("#hts-entry-point option[value='162181']").hide();    //PC
+            jq("#hts-entry-point option[value='160552']").hide();    //NC
+            jq("#hts-entry-point option[value='160538']").hide();    //ANC
+            jq("#hts-entry-point option[value='160456']").hide();    //MAT
+            jq("#hts-entry-point option[value='1623']").hide();    //PNC
+            jq("#hts-entry-point option[value='160541']").hide();    //TB
+            jq("#hts-entry-point option[value='159940']").hide();    //VCT
+            jq("#hts-entry-point option[value='162223']").hide();    //VMMC
+            jq("#hts-entry-point option[value='160546']").hide();    //STI
+            jq("#hts-entry-point option[value='160522']").hide();    //ER
+            jq("#hts-entry-point option[value='5622']").hide();    //O
+
 
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
-                    getField('hts-entry-point.value').prop("selectedIndex", 9);
+                    getField('hts-entry-point.value').prop("selectedIndex", 14);
                 }else if (htsStrategySelected == 159939 ){
-                    getField('hts-entry-point.value').prop("selectedIndex", 10);
+                    getField('hts-entry-point.value').prop("selectedIndex", 15);
                 }else if (htsStrategySelected == 164954 || htsStrategySelected == 164955){
-                    getField('hts-entry-point.value').prop("selectedIndex", 8);
+                    getField('hts-entry-point.value').prop("selectedIndex", 9);
                 }
+                // Specify other
+                if (htsStrategySelected == 5622){
+                    jq('#tbl-other-strategy').show();
+                }else{
+                    jq('#tbl-other-strategy').hide();
+                }
+
+            jq('#has-other-disability :input[type=checkbox]').change(otherDisabilitySelected);
+            var hasDisability = getValue('has-disability.value');
+                   // Specify other
+            if (hasDisability == 1065){
+                jq('#disability').show();
+                jq('#tbl-other-disability').show();
+               }
+            //otherDisabilitySelected();
+            var otherDisabilitySelected = function() {
+                var val = jq(this).val();
+                if (val == 5622) {
+                    jq('#disability').show();
+                    jq('#tbl-other-disability').show();
+                } else {
+                    jq('#tbl-other-disability').hide();
+                }
+            }
+
+            var referralFacilitySelected = getField('referral-to.value').val();
+            if (referralFacilitySelected == 164407 ){
+                jq('#tbl-other-facility').show();
+            }else{
+                 jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
+            }
 
             //Consent validation
             jq('.consent input').change(consentSelected);
@@ -308,7 +584,9 @@
             //hiv test123    hide second test by default
             //kit selected
             jq('#kit-name-1 select').change(kit1Selected);
-
+            jq('#kit-name-2 select').change(kit2Selected);
+            jq("#latest-lot-number").hide();
+            jq("#latest-lot-number2").hide();
             jq("#hiv-test2").hide();
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
@@ -377,6 +655,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#fs-referral').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -482,8 +761,14 @@
                     <ifMode mode="EDIT">
                         <script type="text/javascript">
                             jq(function(){
-
-                                //First test
+                                        //Other facility referral
+                                        var val = getField("referral-to.value").val();
+                                        if (val == 5622){
+                                            jq('#tbl-other-facility').show();
+                                        }else{
+                                            jq('#tbl-other-facility').hide();
+                                        }
+                                  //First test
                                 var firstTest = getField("hiv-test1-result.value").val();
                                 //Negative
                                 if(firstTest ==664) {
@@ -528,6 +813,7 @@
                                     jq("#expiry-date2 input").prop("disabled", false);
                                     getField('hiv-final-result.value').val(703);
                                     jq('#ccc-no input').prop("disabled", false);
+                                    jq('#fs-referral').show();
                                 }
                                 //Invalid
                                 if(secondTest ==163611){
@@ -582,6 +868,64 @@
                                 if(syphylisTest1Results != ""){
                                     jq('#dual-results-1').show();
                                 }
+
+                                //Setting
+                                var onSettingSelected = function() {
+                                    var val = jq(this).val();
+                                    jq("#strategy option[value='161557']").show();  //IT
+                                    jq("#strategy option[value='159939']").show();  //MO
+                                    jq("#strategy option[value='5622']").show();     //O
+                                    jq("#hts-entry-point option[value='5622']").show();     //O
+                                    if (val == 1537 ) {   //Facility setting selected
+                                        //Strategy
+                                        jq("#strategy option[value='164163']").show();  //PITC
+                                        jq("#strategy option[value='164953']").show();  //NP
+                                        jq("#strategy option[value='164954']").show();   //VI
+                                        jq("#strategy option[value='164955']").hide();    //VS
+                                        jq("#strategy option[value='159938']").hide();    //HB
+                                        //Entry point
+                                        jq("#hts-entry-point option[value='5485']").show();    //IPD
+                                        jq("#hts-entry-point option[value='160542']").show();    //OPD
+                                        jq("#hts-entry-point option[value='162181']").show();    //PC
+                                        jq("#hts-entry-point option[value='160552']").show();    //NC
+                                        jq("#hts-entry-point option[value='160538']").show();    //ANC
+                                        jq("#hts-entry-point option[value='160456']").show();    //MAT
+                                        jq("#hts-entry-point option[value='1623']").show();    //PNC
+                                        jq("#hts-entry-point option[value='160541']").show();    //TB
+                                        jq("#hts-entry-point option[value='159940']").show();    //VCT
+                                        jq("#hts-entry-point option[value='162223']").show();    //VMMC
+                                        jq("#hts-entry-point option[value='160546']").show();    //STI
+                                        jq("#hts-entry-point option[value='160522']").show();    //ER
+                                        jq("#hts-entry-point option[value='163096']").hide();    //CT
+                                        jq("#hts-entry-point option[value='159938']").hide();    //HBT
+                                        jq("#hts-entry-point option[value='159939']").hide();    //MO
+
+                                    }else if(val == 163488 ) {
+                                        // strategy
+                                        jq("#strategy option[value='164163']").hide();  //PITC
+                                        jq("#strategy option[value='164953']").hide();  //NP
+                                        jq("#strategy option[value='164954']").hide();   //VI
+                                        jq("#strategy option[value='164955']").show();    //VS
+                                        jq("#strategy option[value='159938']").show();    //HB
+                                        //Entry point
+                                        jq("#hts-entry-point option[value='163096']").show();    //CT
+                                        jq("#hts-entry-point option[value='159938']").show();    //HBT
+                                        jq("#hts-entry-point option[value='159939']").show();    //MO
+                                        jq("#hts-entry-point option[value='5485']").hide();    //IPD
+                                        jq("#hts-entry-point option[value='160542']").hide();    //OPD
+                                        jq("#hts-entry-point option[value='162181']").hide();    //PC
+                                        jq("#hts-entry-point option[value='160552']").hide();    //NC
+                                        jq("#hts-entry-point option[value='160538']").hide();    //ANC
+                                        jq("#hts-entry-point option[value='160456']").hide();    //MAT
+                                        jq("#hts-entry-point option[value='1623']").hide();    //PNC
+                                        jq("#hts-entry-point option[value='160541']").hide();    //TB
+                                        jq("#hts-entry-point option[value='159940']").hide();    //VCT
+                                        jq("#hts-entry-point option[value='162223']").hide();    //VMMC
+                                        jq("#hts-entry-point option[value='160546']").hide();    //STI
+                                        jq("#hts-entry-point option[value='160522']").hide();    //ER
+
+                                    }
+                                };
                             });
                         </script>
                     </ifMode>
@@ -655,16 +999,24 @@
                 <tr id="disability">
                     <td>  Please indicated the type of disability : <br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="120291AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Deaf" style="checkbox" /><br/>
+                             answerLabel="Hearing impairment" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147215AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Blind" style="checkbox" /><br/>
+                             answerLabel="Visual impairment" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="151342AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Mentally Challenged" style="checkbox"  /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Physically Challenged" style="checkbox" /><br/>
                         <obs conceptId="162558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Other" style="checkbox"  /><br/>
+                             answerLabel="Other" style="checkbox" id="has-other-disability"  /><br/>
 
+                       <table id="tbl-other-disability">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-disability" conceptId="160632" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
@@ -694,8 +1046,58 @@
                         <obs class="hb-self-test" conceptId="164952"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
+                             id="client-done-test"
                              style="radio"
                         />
+                    </td>
+                </tr>
+
+                <tr id="willingness-share-results">
+                    <td>Is client willing to share results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="share-results" conceptId="165153"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio"
+                        />
+                    </td>
+                </tr>
+
+                <tr id="test-results">
+                    <td>Self test results? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="results" conceptId="165233"
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="SKT POSITIVE,SKT NEGATIVE"
+                             style="radio"
+                        />
+                    </td>
+                    <td>&#160;&#160;&#160;&#160; Date of self test
+                        <obs id="date-of-self-test" conceptId="164400AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false"
+                        />
+                    </td>
+                </tr>
+
+
+            </table>
+        </fieldset>
+        <fieldset id="hts-setting">
+            <legend>Setting</legend>
+            <table id="tbl-setting">
+                <tr>
+                    <td>HTS Setting: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="setting" conceptId="165215"  answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Facility,Community" required="true" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="hts-approach">
+            <legend>Approach</legend>
+            <table id="tbl-approach">
+                <tr>
+                    <td>HTS Approach: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                      &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="approach" conceptId="163556"  answerConceptIds="164163,164953"
+                             style="dropdown" answerLabels="Provider Initiated Testing(PITC),Client Initiated Testing (CITC)" />
                     </td>
                 </tr>
             </table>
@@ -708,9 +1110,33 @@
                         <obs class="hts-strategy"
                              id="strategy"
                              conceptId="164956"
-                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164953,164954,164955,159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Provider Initiated Testing(PITC),Non Patient Initiated Testing,Integrated VCT Center,Stand Alone VCT Center,Home Based Testing,Mobile Outreach HTS,PNS,Other"
+                             answerConceptIds="164163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164953,
+                                               164954,
+                                               164955,
+                                               159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               159939AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="HP:Provider Initiated Testing(PITC),
+                                           NP: HTS for non-patients,
+                                           VI:Integrated VCT Center,
+                                           Stand Alone VCT Center,
+                                           Home Based Testing,
+                                           MO: Mobile Outreach HTS,
+                                           Index testing,
+                                           O: Others"
                         />
+                    </td>
+                    <td>
+                        <table id="tbl-other-strategy">
+                             <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-strategy" conceptId="163761" />
+                                    &#160;&#160;&#160;
+                                </td>
+                           </tr>
+                          </table>
                     </td>
                 </tr>
             </table>
@@ -722,8 +1148,38 @@
                     <td>Indicate HTS entry point: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="hts-entry-point"
                              conceptId="160540"
-                             answerConceptIds="5485,160542,162181,160552,160538,160541,162050,159940,159938,159939,5622"
-                             answerLabels="In Patient Department(IPD),Out Patient Department(OPD),Peadiatric Clinic,Nutrition Clinic,PMTCT,TB,CCC,VCT,Home Based Testing,Mobile Outreach,Other"
+                             answerConceptIds="5485,
+                                               160542,
+                                               162181,
+                                               160552,
+                                               160538,
+                                               160456,
+                                               1623,
+                                               160541,
+                                               159940,
+                                               162223,
+                                               160546,
+                                               160522,
+                                               163096,
+                                               159938,
+                                               159939,
+                                               5622"
+                             answerLabels="In Patient Department(IPD),
+                                           Out Patient Department(OPD),
+                                           Peadiatric Clinic,
+                                           Nutrition Clinic,
+                                           PMTCT - ANC,
+                                           PMTCT - MAT,
+                                           PMTCT - PNC,
+                                           TB,
+                                           VCT,
+                                           VMMC,
+                                           STI Clinic,
+                                           Emergency,
+                                           Community Testing,
+                                           Home Based Testing,
+                                           Mobile Outreach,
+                                           Other"
                         />
                     </td>
                 </tr>
@@ -752,12 +1208,7 @@
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
-                        <td>HIV Test 1 Results:
-                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
-                        </td>
-                        <td>&#160;&#160;&#160;&#160; Kit Name
+                          <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name"
                                  id="kit-name-1"
                                  conceptId="164962"
@@ -766,15 +1217,22 @@
                             />
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number
-                            <obs
-                                 class="lot-number"
-                                 id="lot-number-1"
-                                 conceptId="164964"
-                            />
+                            <obs  class="lot-number" id="lot-number-1" conceptId="164964" />
+                        </td>
+                        <td>
+                            <div id="latest-lot-number">
+                                <input type="checkbox" name="last-batch-number" id="latestLotNumber" /> Use last lot number
+                                <span id="upnError" class="error"></span>
+                            </div>
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;HIV Test 1 Results:
+                            <obs id="hiv-test1-result" conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
                         </td>
                         <td>
                         <div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
@@ -784,16 +1242,12 @@
                                  answerLabels="Negative,Positive"/>
                         </div>
                         </td>
+
                     </tr>
                 </obsgroup>
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr id="hiv-test2">
 
-                        <td>HIV Test 2 Results:
-                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
-                        </td>
                         <td>&#160;&#160;&#160;&#160; Kit Name
                             <obs class="kit-name2"
                                  id="kit-name-2"
@@ -808,11 +1262,21 @@
                                  id="lot-number-2"
                                  conceptId="164964"
                             />
-
+                        </td>
+                        <td>
+                            <div id="latest-lot-number2">
+                                <input type="checkbox" name="last-batch-number" id="latestLotNumber2" value="1" /> Use last lot number
+                                <span id="upnError2" class="error"></span>
+                            </div>
                         </td>
                         <td>&#160;&#160;&#160;&#160;Expiry Date
                             <obs id="expiry-date2" conceptId="162501AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
                             />
+                        </td>
+                        <td>&#160;&#160;&#160;&#160;HIV Test 2 Results:
+                            <obs id="hiv-test2-result" conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 style="dropdown" answerLabels="Positive,Negative,N/A"/>
                         </td>
                     </tr>
                 </obsgroup>
@@ -846,6 +1310,42 @@
                     <td>Tb Screening results: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="No TB Signs,Presumed TB,Not Done,On TB Treatment" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="fs-referral">
+            <legend>Referral</legend>
+            <table id="tbl-referral">
+                <tr>
+                    <td>Referral for: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="referral-for" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="162082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Confirmatory test,
+                                                         Comprehensive care center,
+                                                         DBS for PCR" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Referral to:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="referral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Current health facility,
+                                                            Other health facility" />
+                    </td>
+                    <td>
+                        <br/>
+                        <table id="tbl-other-facility">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>

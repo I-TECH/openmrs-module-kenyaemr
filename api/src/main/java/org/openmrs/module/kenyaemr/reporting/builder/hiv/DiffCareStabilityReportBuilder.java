@@ -73,8 +73,14 @@ public class DiffCareStabilityReportBuilder extends AbstractReportBuilder {
         cohortDsd.setName("Diff-care-stability");
         cohortDsd.setDescription("Differentiated care stability report");
 
-        EmrReportingUtils.addRow(cohortDsd, "Stable patients with less than 4 months prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableUnder4Monthstca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
-        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 4+ months prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableOver4Monthstca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with <1 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableUnder1Monthtca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 1 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(1)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 2 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(2)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 3 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(3)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 4 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(4)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 5 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(5)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 6 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(6)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with 6+ months prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableOver6Monthstca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Unstable Patients", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.unstable()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Patients with undocumented stability", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.undocumentedStability()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         return cohortDsd;

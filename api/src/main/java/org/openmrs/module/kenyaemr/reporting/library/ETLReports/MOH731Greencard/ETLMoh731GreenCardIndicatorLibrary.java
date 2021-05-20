@@ -879,6 +879,22 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
+     * patients in HIV program assessed for nutrition
+     *
+     * @return indicator
+     */
+    public CohortIndicator assessedForNutritionInHIV() {
+        return cohortIndicator("Started on IPT", map(moh731Cohorts.assessedForNutritionInHIV(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * patients in HIV program who are malnourished
+     *
+     * @return indicator
+     */
+    public CohortIndicator malnourishedInHIV() {
+        return cohortIndicator("Started on IPT", map(moh731Cohorts.malnourishedInHIV(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * patients started on ipt
      *
      * @return indicator
@@ -886,7 +902,6 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     public CohortIndicator startedOnIPT() {
         return cohortIndicator("Started on IPT", map(moh731Cohorts.startedOnIPT(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
      * patients who started ipt 12 months ago and have completed
      */
@@ -1058,6 +1073,10 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      */
     public CohortIndicator screenedForTb() {
         return cohortIndicator("Screen for TB", ReportUtils.map(moh731Cohorts.tbScreening(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator presumedForTb() {
+        return cohortIndicator("Presumed for TB", ReportUtils.map(moh731Cohorts.presumedTb(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**

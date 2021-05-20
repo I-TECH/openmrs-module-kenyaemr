@@ -60,9 +60,11 @@ var kenyaemrApp = angular.module('kenyaemr', [ 'kenyaui' ]);
 	 * @param appId the app id
 	 * @param encounterId the encounter id
 	 */
-	kenyaemr.openEncounterDialog = function(appId, encounterId) {
+	kenyaemr.openEncounterDialog = function(appId, encounterId,formName) {
 		var contentUrl = ui.pageLink('kenyaemr', 'dialog/formDialog', { appId: appId, encounterId: encounterId, currentUrl: location.href });
 		kenyaui.openDynamicDialog({ heading: 'View Form', url: contentUrl, width: 90, height: 85, scrolling: true });
+		
+
 	};
 
 	/**

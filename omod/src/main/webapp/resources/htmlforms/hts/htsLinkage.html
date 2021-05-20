@@ -16,12 +16,16 @@
 
     <script type="text/javascript">
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var patientId = <lookup expression="patient.patientId"/>;
         jQuery(function () {
 
             //Default location
+            includePatientsCccNumberIfExists();
             jq('#default-location').click(defaultLocationChange);//Default location
             jq('#upnError').hide();
             jq("#upn-concept input[type=text]").blur(validatePatientIdentifiers);
+            jq('#hcw-cadre select').change(cadreSelected);
+            jq('#tbl-other-cadre').hide();
 
         });
         //Checkbox to prepopulate default location
@@ -70,6 +74,28 @@
                 getField('upn-concept.value').val("");
             }
         }
+
+        //CCC Number
+        function includePatientsCccNumberIfExists() {
+            var cccNumber;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientUniquePatientNumber.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    cccNumber = data;
+                    getField('upn-concept.value').val(cccNumber);
+                    getField('upn-concept.value').prop("readonly", true);
+                  }
+            });
+        }
+
+        var cadreSelected = function () {
+            var val = jq(this).val();
+                 // Specify other
+            if (val == 5622){
+                jq('#tbl-other-cadre').show();
+            }else{
+                jq('#tbl-other-cadre').hide();
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
                 return true;
@@ -100,6 +126,22 @@
                 </td>
                 <td align="right">Location:
                     <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+                <td>
+                <ifMode mode="EDIT">
+                    <script type="text/javascript">
+                        jq(function(){
+
+                            //Other Cadre
+                            var val = getField("hcw-cadre.value").val();
+                             if (val == 5622){
+                                jq('#tbl-other-cadre').show();
+                            }else{
+                                jq('#tbl-other-cadre').hide();
+                            }
+                        });
+                    </script>
+                </ifMode>
                 </td>
             </tr>
         </table>
@@ -134,11 +176,21 @@
                 </tr>
                 <tr>
                     <td><strong>Cadre of health worker : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Employee,Other"
+                        <obs id="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Employee,Adherence counsellor,Other"
                              style="dropdown" required="true"
                         />
+                    </td>
+                    <td>
+                        <table id="tbl-other-cadre">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-cadre" conceptId="160632" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>

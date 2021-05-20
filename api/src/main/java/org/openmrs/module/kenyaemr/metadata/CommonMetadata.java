@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.metadata;
 
+import org.openmrs.Form;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifierType.LocationBehavior;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.idgen.validator.LuhnMod25IdentifierValidator;
@@ -41,6 +43,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String TRIAGE = "d1059fb9-a079-4feb-a749-eedd709ae542";
 		public static final String HTS = "9c0a7a57-62ff-4f75-babe-5835b0e921b7";
 		public static final String DRUG_REGIMEN_EDITOR = "7dffc392-13e7-11e9-ab14-d663bd873d93";
+		public static final String CACX_SCREENING = "3fefa230-ea10-45c7-b62b-b3b8eb7274bb";
+
 	}
 
 	public static final class _Form {
@@ -59,6 +63,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String DRUG_REGIMEN_EDITOR = "da687480-e197-11e8-9f32-f2801f1b9fd1";
 		public static final String HTS_CLIENT_TRACING = "15ed03d2-c972-11e9-a32f-2a2ae2dbcce4";
 		public static final String HTS_REFERRAL = "9284828e-ce55-11e9-a32f-2a2ae2dbcce4";
+		public static final String CACX_SCREENING_FORM = "0c93b93c-bfef-4d2a-9fbe-16b59ee366e7";
+		public static final String CACX_ASSESSMENT_FORM = "48f2235ca-cc77-49cb-83e6-f526d5a5f174";
 	}
 
 	public static final class _OrderType {
@@ -72,6 +78,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PATIENT_CLINIC_NUMBER = Metadata.IdentifierType.PATIENT_CLINIC_NUMBER;
 		public static final String NATIONAL_UNIQUE_PATIENT_IDENTIFIER = Metadata.IdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER;
 		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
+		public static final String KDoD_SERVICE_NUMBER = Metadata.IdentifierType.KDoD_SERVICE_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -86,6 +93,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String NEAREST_HEALTH_CENTER = "27573398-4651-4ce5-89d8-abec5998165c";
 		public static final String GUARDIAN_FIRST_NAME = "8caf6d06-9070-49a5-b715-98b45e5d427b";
 		public static final String GUARDIAN_LAST_NAME = "0803abbd-2be4-4091-80b3-80c6940303df";
+		public static final String CHT_USERNAME= "1aaead2d-0e88-40b2-abcd-6bc3d20fa43c";
+		public static final String KDOD_CADRE = "96a99acd-2f11-45bb-89f7-648dbcac5ddf";
+		public static final String KDOD_RANK = "9f1f8254-20ea-4be4-a14d-19201fe217bf";
+		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
 	}
 
 	public static final class _Provider {
@@ -118,6 +129,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(encounterType("Triage", "Collection of limited data prior to a more thorough examination", _EncounterType.TRIAGE));
 		install(encounterType("HTS", "HTS Services", _EncounterType.HTS));
 		install(encounterType("Drug Regimen Editor", "Handles patient regimen events", _EncounterType.DRUG_REGIMEN_EDITOR));
+		install(encounterType("Cervical cancer screening", "Cervical cancer screening", _EncounterType.CACX_SCREENING));
 
 		install(form("Clinical Encounter", null, _EncounterType.CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER));
 		install(form("Lab Results", null, _EncounterType.LAB_RESULTS, "1", _Form.LAB_RESULTS));
@@ -134,15 +146,19 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Drug Regimen Editor", null, _EncounterType.DRUG_REGIMEN_EDITOR, "1", _Form.DRUG_REGIMEN_EDITOR));
 		install(form("HTS Client Tracing Form", "Form for tracing hts clients", _EncounterType.HTS, "1", _Form.HTS_CLIENT_TRACING));
 		install(form("HTS Client Referral Form", "Form for HTS linkage referral", _EncounterType.HTS, "1", _Form.HTS_REFERRAL));
-
-
+		install(form("Cervical Cancer Screening Form", "Form for Cervical Cancer Screening", _EncounterType.CACX_SCREENING, "1", _Form.CACX_SCREENING_FORM));
+		install(form("Cervical Cancer Assessment Form", "Form for Cervical Cancer Assessment", _EncounterType.CACX_SCREENING, "1", _Form.CACX_ASSESSMENT_FORM));
 
 		install(globalProperty(EmrConstants.GP_DEFAULT_LOCATION, "The facility for which this installation is configured",
 				LocationDatatype.class, null, null));
 
-		String adxMappingString = "[{\"reportName\":\"MOH 731 Report- Green Card\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"2\",\"dhisName\":\"xUesg8lcmDs\"},{\"name\":\"1\",\"dhisName\":\"ptIUGFkE6jn\"},{\"name\":\"3\",\"dhisName\":\"Vo4KDrUFwnA\"}]}]";
+		String adxMappingString = "[{\"reportName\":\"MOH 731\",\"prefix\":\"Y18_\",\"datasets\":[{\"name\":\"2\",\"dhisName\":\"xUesg8lcmDs\"},{\"name\":\"1\",\"dhisName\":\"ptIUGFkE6jn\"},{\"name\":\"3\",\"dhisName\":\"Vo4KDrUFwnA\"}]}]";
+		//3pm Adx string
+		String adx3pmMappingString = "[{\"reportName\":\"Monthly report\",\"prefix\":\"\",\"datasets\":[{\"name\":\"1\",\"3pmName\":\"qzJqoxdfXJn\"}]}]";
 
 		install(globalProperty(EmrConstants.GP_DHIS2_DATASET_MAPPING, "ADX Mapping for KenyaEMR and DHIS2 datasets", adxMappingString));
+		install(globalProperty(EmrConstants.GP_3PM_DATASET_MAPPING, "ADX Mapping for KenyaEMR and 3PM datasets", adx3pmMappingString));
+
 		install(globalProperty("order.drugDosingUnitsConceptUuid", "Drug dosing units concept", "162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
@@ -163,11 +179,15 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(patientIdentifierType("CWC Number", "Assigned to a child patient when enrolling into the Child Welfare Clinic (CWC)",
 				".{1,14}", "Should take the format (CWC-MFL code-serial number) e.g CWC-15007-00001", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.CWC_NUMBER));
-		
+		install(patientIdentifierType("KDoD service number", "Unique Id for KDoD service men", "^[0-9]{5,6}$|^[0-9]{5,6}\\/[0-9]{2}$", "Must be a 5-6 digit number (for principal) or 5-6 digit number followed by / and 2 digits (for dependant)",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_SERVICE_NUMBER));
+
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
 				String.class, null, false, 2.0, _PersonAttributeType.EMAIL_ADDRESS));
+		install(personAttributeType("CHT username", "CHT username reference",
+				String.class, null, false, 4.4, _PersonAttributeType.CHT_USERNAME));
 
 		// Patient only person attributes..
 		install(personAttributeType("Subchief name", "Name of subchief or chief of patient's area",
@@ -189,6 +209,13 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_FIRST_NAME));
 		install(personAttributeType("Guardian Last Name", "Guardian's last name",
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_LAST_NAME));
+		//KDoD properties
+		install(personAttributeType("KDoD cadre", "Cadre in KDoD",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_CADRE));
+		install(personAttributeType("KDoD rank", "Rank in KDoD",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_RANK));
+		install(personAttributeType("KDoD unit", "KDoD passout unit",
+				String.class, null, false, 4.5, _PersonAttributeType.KDOD_UNIT));
 
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
@@ -201,5 +228,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 		uninstall(possible(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
+
+		//Retiring Lab results form
+		uninstall(possible(Form.class, "7e603909-9ed5-4d0c-a688-26ecb05d8b6e"), "Form deprecated with introduction of Lab orders");
 	}
 }

@@ -19,6 +19,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSRiskAssessedConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultGivenDataDefinition;
@@ -29,8 +30,10 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkag
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSMonthsSinceLastTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRemarksDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRiskDoneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSSelfTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTBScreeningDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestEntryPointDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
@@ -125,6 +128,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("clientTestedAs", new IndividualORCoupleTestDataDefinition(), null);
         dsd.addColumn("monthsSinceLastTest", new HTSMonthsSinceLastTestDataDefinition(), null);
         dsd.addColumn("testingStrategy", new HTSTestStrategyDataDefinition(), null);
+        dsd.addColumn("testEntryPoint", new HTSTestEntryPointDataDefinition(),null);
         dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
         dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
         dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
@@ -132,6 +136,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("coupleDiscordant", new HTSDiscordanceDataDefinition(), null);
         dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
         dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
+        dsd.addColumn("assessedForHIVRisk", new HTSRiskDoneDataDefinition(),"", new HTSRiskAssessedConverter());
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 

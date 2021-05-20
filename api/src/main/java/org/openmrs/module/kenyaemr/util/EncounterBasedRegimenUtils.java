@@ -139,6 +139,7 @@ public class EncounterBasedRegimenUtils {
         String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String REGIMEN_LINE_CONCEPT = "163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; // concept should be changed to correct one
 
 
 
@@ -157,7 +158,7 @@ public class EncounterBasedRegimenUtils {
                 regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "Unresolved Regimen name";
                 try {
                     regimenShort = getRegimenNameFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
-                    regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
+                  //  regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -175,8 +176,27 @@ public class EncounterBasedRegimenUtils {
                 String reason = obs.getValueText();
                 if (reason != null)
                     changeReason.add(reason);
-            } else if (obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
-                endDate = DATE_FORMAT.format(obs.getValueDatetime());
+            } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
+                if(obs.getValueDatetime() != null){
+                    endDate = DATE_FORMAT.format(obs.getValueDatetime());
+                }
+            } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(REGIMEN_LINE_CONCEPT)) {
+                if(obs.getValueText() != null){
+                    if (obs.getValueText().equals("AF")) {
+                        regimenLine = "Adult first line";
+                    } else if (obs.getValueText().equals("AS")) {
+                        regimenLine = "Adult second line";
+                    } else if (obs.getValueText().equals("AT")) {
+                        regimenLine = "Adult third line";
+                    } else if (obs.getValueText().equals("CF")) {
+                        regimenLine = "Child first line";
+                    } else if (obs.getValueText().equals("CS")) {
+                        regimenLine = "Child second line";
+                    } else if (obs.getValueText().equals("CT")) {
+                        regimenLine = "Child third line";
+                    }
+
+                }
             }
 
 
@@ -208,7 +228,19 @@ public class EncounterBasedRegimenUtils {
 
             );
         }
-        return null;
+        return SimpleObject.create(
+                "startDate",  "",
+                "endDate",  "",
+                "regimenShortDisplay", "",
+                "regimenLine",  "",
+                "regimenLongDisplay", "",
+                "changeReasons", "",
+                "regimenUuid", "",
+                "current",""
+
+        );
+
+        //return null;
     }
 
     public static String getRegimenNameFromRegimensXMLString(String conceptRef, String regimenJson) throws IOException {
@@ -334,6 +366,16 @@ public class EncounterBasedRegimenUtils {
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/LPV/r\",\n" +
                 "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/ATV/r\",\n" +
+                "    \"conceptRef\": \"dddd9cf2-2b9c-4c52-84b3-38cfe652529a\",\n" +
+                "    \"regimenLine\": \"adult_second\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/LPV/r\",\n" +
+                "    \"conceptRef\": \"162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
                 "    \"regimenLine\": \"child_first\"\n" +
                 "  },\n" +
                 "  {\n" +
@@ -425,6 +467,91 @@ public class EncounterBasedRegimenUtils {
                 "    \"name\": \"EH\",\n" +
                 "    \"conceptRef\": \"1108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
                 "    \"regimenLine\": \"child_intensive\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV\",\n" +
+                "    \"conceptRef\": \"5b8e4955-897a-423b-ab66-7e202b9c304c\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV/AZT\",\n" +
+                "    \"conceptRef\": \"092604d3-e9cb-4589-824e-9e17e3cb4f5e\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV/TDF\",\n" +
+                "    \"conceptRef\": \"c6372744-9e06-40cf-83e5-c794c985b6bf\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ETV/3TC/DRV/RTV\",\n" +
+                "    \"conceptRef\": \"1995c4a1-a625-4449-ab28-aae88d0f80e6\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"AZT/3TC/LPV/r\",\n" +
+                "    \"conceptRef\": \"162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"Child (second line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"AZT/3TC/ATV/r\",\n" +
+                "    \"conceptRef\": \"164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"Child (second line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/ATV/r\",\n" +
+                "    \"conceptRef\": \"dddd9cf2-2b9c-4c52-84b3-38cfe652529a\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV\",\n" +
+                "    \"conceptRef\": \"5b8e4955-897a-423b-ab66-7e202b9c304c\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV/AZT\",\n" +
+                "    \"conceptRef\": \"092604d3-e9cb-4589-824e-9e17e3cb4f5e\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ETV/3TC/DRV/RTV\",\n" +
+                "    \"conceptRef\": \"1995c4a1-a625-4449-ab28-aae88d0f80e6\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"RAL/3TC/DRV/RTV/ABC\",\n" +
+                "    \"conceptRef\": \"0e74f7aa-85ab-4e92-9f97-79e76e618689\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"AZT/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"a1183b26-8e87-457c-8d7d-00a96b17e046\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"02302ab5-dcb2-4337-a792-d6cf1082fc1d\",\n" +
+                "    \"regimenLine\": \"Child (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/DRV/r\",\n" +
+                "    \"conceptRef\": \"5f429c76-2976-4374-a69e-d2d138dd16bf\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/RAL/DRV/r\",\n" +
+                "    \"conceptRef\": \"9b9817dd-4c84-4093-95c3-690d65d24b99\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/EFV/DRV/r\",\n" +
+                "    \"conceptRef\": \"f2acaf9b-3da9-4d71-b0cf-fd6af1073c9e\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/RAL\",\n" +
+                "    \"conceptRef\": \"7af7ebbe-99da-4a43-a23a-c3866c5d08db\",\n" +
+                "    \"regimenLine\": \"Child (first line)\"\n" +
                 "  }\n" +
                 "]";
         return json;

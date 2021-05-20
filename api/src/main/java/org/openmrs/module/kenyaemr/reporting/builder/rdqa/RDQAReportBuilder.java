@@ -20,10 +20,7 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.BMIAtLastVisitCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.DateConfirmedHivPositiveCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.SecondLastVLCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
@@ -41,27 +38,17 @@ import org.openmrs.module.kenyaemr.calculation.library.rdqa.VisitsForAPatientCal
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.WeightAtArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.CustomDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.GenderConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.ObsValueNumericConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientEntryPointDataConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentDateConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.RegimenConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.WHOStageDataConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQAActiveCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.Cd4OrVLValueAndDateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.TBScreeningConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.InfantProphylaxisDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PCREIDAt8MonthsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PregnancyIntentionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.TBScreeningAtLastVisitDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIInfantProphylaxisDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.rdqa.RDQAIndicatorLibrary;
@@ -69,10 +56,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.data.converter.BirthdateConverter;
-import org.openmrs.module.reporting.data.converter.DataConverter;
-import org.openmrs.module.reporting.data.converter.ObjectFormatter;
-import org.openmrs.module.reporting.data.converter.ObsValueConverter;
+import org.openmrs.module.reporting.data.converter.*;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
@@ -134,13 +118,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Unique Patient No", identifierDef, "");
-		//dsd.addColumn("Enrollment into Program", new CalculationDataDefinition("Enrollment into Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
-		//dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentDateConverter());
-		//dsd.addColumn("Entry Point", new ObsForPersonDataDefinition("Entry Point", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT), null, null), "", new PatientEntryPointDataConverter());
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-
-
 		dsd.addColumn("Art Start Date", new CalculationDataDefinition("Art Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
 		dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
 
@@ -257,10 +236,10 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
 
-        dsd.addColumn("IPT Start Date", new ObsForPersonDataDefinition("IPT Start Date", TimeQualifier.LAST, startIptConcept, null, null), "", new ObsDatetimeConverter());
-        /*dsd.addColumn("IPT Status", new ObsForPersonDataDefinition("IPT Status", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsValueConverter());
-        dsd.addColumn("IPT outcome Date", new ObsForPersonDataDefinition("IPT outcome Date", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsDatetimeConverter());
-*/
+        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
+        dsd.addColumn("IPT Status", new CalculationDataDefinition("IPT Status", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter("rdqa"));
+        dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new DateArtStartDateConverter());
+
         dsd.addColumn("Second last Viral Load Result", new CalculationDataDefinition("Second last Viral Load Result", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Second last Viral Load Result Date", new CalculationDataDefinition("Second last Viral Load Result Date", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("date"));
 
@@ -278,6 +257,9 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         definition.setTypes(encounterTypes);
         dsd.addColumn("Last clinical encounter date", definition, "", new EncounterDatetimeConverter());
         dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+        dsd.addColumn("Pregnancy intention", new PregnancyIntentionDataDefinition(), "");
+        dsd.addColumn("PCR/EID at 8 months", new PCREIDAt8MonthsDataDefinition(), "");
+        dsd.addColumn("Infant Prophylaxis", new InfantProphylaxisDataDefinition(), "");
 
         return dsd;
     }
@@ -311,10 +293,10 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
 
-        dsd.addColumn("IPT Start Date", new ObsForPersonDataDefinition("IPT Start Date", TimeQualifier.LAST, startIptConcept, null, null), "", new ObsDatetimeConverter());
-        /*dsd.addColumn("IPT Status", new ObsForPersonDataDefinition("IPT Status", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsValueConverter());
-        dsd.addColumn("IPT outcome Date", new ObsForPersonDataDefinition("IPT outcome Date", TimeQualifier.LAST, iptOutcomeConcept, null, null), "", new ObsDatetimeConverter());
-*/
+        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
+        dsd.addColumn("IPT Status", new CalculationDataDefinition("IPT Status", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter("rdqa"));
+        dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new DateArtStartDateConverter());
+
         dsd.addColumn("Second last Viral Load Result", new CalculationDataDefinition("Second last Viral Load Result", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Second last Viral Load Result Date", new CalculationDataDefinition("Second last Viral Load Result Date", new SecondLastVLCalculation()), "", new RDQASimpleObjectRegimenConverter("date"));
 
@@ -332,6 +314,10 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         definition.setTypes(encounterTypes);
         dsd.addColumn("Last clinical encounter date", definition, "", new EncounterDatetimeConverter());
         dsd.addColumn("Next Appointment Date", new CalculationDataDefinition("Next Appointment Date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+
+        dsd.addColumn("Pregnancy intention", new PregnancyIntentionDataDefinition(), "");
+        dsd.addColumn("PCR/EID at 8 months", new PCREIDAt8MonthsDataDefinition(), "");
+        dsd.addColumn("Infant Prophylaxis", new InfantProphylaxisDataDefinition(), "");
 
         return dsd;
     }

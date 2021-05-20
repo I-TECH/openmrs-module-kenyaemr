@@ -23,6 +23,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -83,7 +84,7 @@ public class Moh257FragmentController {
 		model.addAttribute("page2Form", moh257VisitForm);
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
-		List<SimpleObject> arvHistory = getRegimenHistoryFromObservations(patient, "ARV");
+		List<SimpleObject> arvHistory = EncounterBasedRegimenUtils.getRegimenHistoryFromObservations(patient, "ARV");
 		model.put("arvHistory", arvHistory);
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));

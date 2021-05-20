@@ -38,8 +38,7 @@
                 jq('#viral-load-tab').show();
                 jq('#adherence-barriers-tab').hide();
             }
-            console.log("LATEST SESSION==>"+LATEST_SESSION);
-            console.log("LATEST SESSION START DATE==>"+LATEST_SESSION_START_DATE);
+
             if(LATEST_SESSION &gt; 0) {
                 var formattedSessionStartDate =moment(moment(LATEST_SESSION_START_DATE,'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                 getField('session-startdate.value').val(formattedSessionStartDate);
@@ -188,7 +187,7 @@
                     <td> Date of first session:</td>
                     <td>
                         <obs conceptId="164891AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                        id="session-startdate" required="true"
+                        id="session-startdate"
                         />
                     </td>
                     <td>   &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Pill count adherence % (from pill count):</td>
@@ -281,6 +280,9 @@
                                     answerLabels="Good (G),Inadequate (I),Poor (P)"
                                     style="radio" id="arv-adherence"
                             />
+                        </td>
+                        <td> &#160;&#160;&#160;&#160;&#160;
+                            <span class="value"><recentObs conceptId="1658AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                         </td>
                     </tr>
                 </table>

@@ -1,0 +1,287 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	
+	<script type="text/javascript">
+		var patientId = <lookup expression="patient.patientId"/>;
+		var careGiverEnrolled = "<lookup expression="fn.latestObs(163777).getValueCoded()"/>"
+		var cpIdentifier = "<lookup expression="fn.latestObs(163766).getValueCoded()"/>"
+		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+		var enrollmentDate;
+        var patientAge = parseInt('<lookup expression="patient.age"/>');
+        var patientGender = "<lookup expression="patient.gender" />";
+
+		beforeSubmit.push(function() {
+			enrollmentDate = new Date(getValue('encounter-date.value')).getTime();
+
+			if(enrollmentDate &lt; pbirthdate){
+				getField('encounter-date.error').html('Enrollment date, should not be earlier than Birth date').show();
+				return false;
+			}
+			return true;
+		});
+
+
+		jQuery(function($){
+            jq('#care-giver-in-facility').hide();
+            jq('#care-giver-in-facility-phone').hide();
+            jq('#care-givers-name').hide();
+            jq('#care-givers-phone').hide();
+            jq('#care-giver-not-enrolled').hide();
+            jq('#ovc-dreams').hide();
+            jq('#ovc-prev').hide();
+
+
+            if(careGiverEnrolled == 1066 &amp;&amp; jq('#enrolled-in-this-facility input[value=1066]:checked').length > 0) {
+				jq('#care-giver-not-enrolled').show();
+			}
+
+            if(careGiverEnrolled == 1065 &amp;&amp; jq('#enrolled-in-this-facility input[value=1065]:checked').length > 0) {
+                jq('#care-giver-not-enrolled').hide();
+                jq('#care-giver-in-facility').show();
+                jq('#care-giver-in-facility-phone').show();
+                jq('#care-givers-name').show();
+                jq('#care-givers-phone').show();
+            }
+
+			if(cpIdentifier == 1065 &amp;&amp; jq('#enrolled-cpims input[value=1065]:checked').length > 0){
+				jq('#cpims-identifier-label').show();
+				jq('#cpims-field').show();
+			}else {
+				jq('#cpims-identifier-label').hide();
+				jq('#cpims-field').hide();
+			}
+
+            if (patientGender == 'F' &amp;&amp; patientAge &gt; 9 &amp;&amp; patientAge &lt; 18) {
+                jq('#ovc-dreams').show();
+            }
+            if(patientAge &gt;8 &amp;&amp; patientAge &lt; 15){
+                jq('#ovc-prev').show();
+			}
+
+			includeCareGiversNames();
+			jq('#enrolled-in-this-facility :input[type=radio]').click(isCaregiverEnrolledInThisFacility);
+			jq('#enrolled-cpims :input[type=radio]').click(isClientEnrolledInCPIMS);
+
+
+
+		});
+		var careGiverName;
+
+		function includeCareGiversNames() {
+			jq.getJSON('/' + OPENMRS_CONTEXT_PATH +  '/kenyaemr/patient/patientUtils/getCareGiver.action',{ patientId: patientId },function(data) {
+
+				var careGiverPhoneNumber;
+				for (var p in data) {
+					careGiverName = data[0].name;
+					careGiverPhoneNumber =data[0].telephoneContact;
+				}
+				jq('#care-giver-name-list').html(careGiverName);
+				jq('#care-giver-phone-list').html(careGiverPhoneNumber);
+
+			});
+		}
+		function isCaregiverEnrolledInThisFacility() {
+			var val = jq(this).val();
+			if(val ==1065) {
+				var noCareGiverRelationship ="Please use the relationship feature available on the patient dashboard to add a caregiver after saving the form";
+				jq('#care-giver-in-facility').show();
+				jq('#care-giver-in-facility-phone').show();
+				jq('#care-givers-name').show();
+				jq('#care-givers-phone').show();
+				jq('#care-giver-not-enrolled').hide();
+				if(careGiverName == undefined || careGiverName =='undefined') {
+					jq('#care-giver-no-name').show();
+					jq('#care-giver-no-relationship').html(noCareGiverRelationship);
+				}
+
+			}else {
+                jq('#care-giver-name :input').val('');
+                jq('#telephone-number :input').val('');
+                jq('#gender input[type=radio]').attr('checked',false);
+                jq('#relationship select').val('');
+				jq('#care-giver-in-facility').hide();
+				jq('#care-giver-in-facility-phone').hide();
+				jq('#care-givers-name').hide();
+				jq('#care-givers-phone').hide();
+				jq('#care-giver-no-name').hide();
+				jq('#care-giver-not-enrolled').show();
+			}
+		}
+		function isClientEnrolledInCPIMS() {
+			var val = jq(this).val();
+			if(val ==1065) {
+				jq('#cpims-identifier-label').show();
+				jq('#cpims-field').show();
+
+			}else {
+				jq('#cpims :input').val('');
+				jq('#cpims-identifier-label').hide();
+				jq('#cpims-field').hide();
+			}
+
+		}
+		beforeSubmit.push(function () {
+			var tsTelephone = jq('#telephone-number input[type=text]').val();
+
+			if (tsTelephone != "") {
+				if (/^(?:\+254|0|254)(\d{9})$/.test(tsTelephone) === false) {
+					getField('telephone-number.error').html('Phone number should contain only 10 digits').show();
+					return false;
+				}
+			}
+			return true;
+		});
+
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+		  <tr>
+				<ifMode mode="ENTER">
+
+				</ifMode>
+				<td>Enrollment Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+		  </tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Care giver</legend>
+			<table class="simple-table" id="assessment-questions">
+				<tr>
+					<td> Is care giver enrolled in this facility?</td>
+					<td>
+						<obs conceptId="163777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="enrolled-in-this-facility"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes, No"
+							 style="radio" labelText=""  />
+					</td>
+					<td id="care-givers-name">Care Giver's Name</td>
+
+					<td id="care-giver-in-facility"><div id="care-giver-name-list" class="value"></div></td>
+
+					<td id="care-givers-phone">Care Giver's Telephone Number</td>
+
+					<td id="care-giver-in-facility-phone"><div id="care-giver-phone-list" class="value"></div></td>
+
+					<td id="care-giver-no-name"><div id="care-giver-no-relationship" class="value"></div></td>
+				</tr>
+
+			</table>
+		</fieldset>
+
+		<fieldset id="care-giver-not-enrolled">
+			<legend>Care giver details</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Name</td>
+
+					<td><obs conceptId="163258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="care-giver-name"/></td>
+
+					<td>Gender</td>
+					<td><obs conceptId="1533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="gender"
+							 answerConceptIds="1534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Male, Female"
+							 style="radio" labelText=""  /></td>
+				</tr>
+				<tr>
+					<td>Relationship to client</td>
+					<td><obs conceptId="164352AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="relationship"
+							 answerConceptIds="1527AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 974AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							 162722AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,975AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Parent, Uncle, Sibling, Childrens home, Aunt"
+							 style="dropdown" labelText=""  /></td>
+					<td>Telephone number</td>
+					<td><obs conceptId="160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="telephone-number"/></td>
+				</tr>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend>Child protection information management system linkage</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Is client enrolled in CPIMS?</td>
+					<td><obs conceptId="163766AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="enrolled-cpims"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="Yes, No"
+							 style="radio" labelText=""  /></td>
+					<td id="cpims-identifier-label">Provide CPIMS unique identifier</td>
+					<td id="cpims-field"> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+						<span id="cpims-id"><patient id="cpims" field="identifier" identifierTypeId="5065ae70-0b61-11ea-8d71-362b9e155667" required="false" /></span>
+					</td>
+
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>Partner offering OVC services</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Partner offering OVC services:</td>
+					<td><obs conceptId="165347" id="partner-offering-services"/></td>
+				</tr>
+
+					<td>
+						Program model:
+					</td>
+
+						<td id="ovc-comp"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OVC comprehensive" style="checkbox" /></td>
+
+						<td id="ovc-dreams"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="DREAMS" style="checkbox" /></td>
+
+						<td id="ovc-prev"><obs conceptId="163775AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="164128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="OVC preventive" style="checkbox" /></td>
+
+			</table>
+		</fieldset>
+
+
+	</div>
+
+
+	<enrollInProgram programId="6eda83f0-09d9-11ea-8d71-362b9e155667" />
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

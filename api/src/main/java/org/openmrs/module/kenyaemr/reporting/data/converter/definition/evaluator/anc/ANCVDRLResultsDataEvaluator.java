@@ -34,10 +34,8 @@ public class ANCVDRLResultsDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select\n" +
-                "      v.encounter_id,\n" +
-                "     CONCAT_WS('\\r\\n',(case v.syphilis_test_status when 1229 then \"Yes\" when 1228 then \"Yes\" when 1304 then \"Yes\" when 1402 then \"No\" else \"Not Done\" end),\n" +
-                "     (case v.syphilis_test_status when 1229 then \"Negative\" when 1228 then \"Positive\" when 1304 then \"N/A\" when 1402 then \"N/A\" else \"N/A\" end))as syphilis_done_results\n" +
+        String qry = "select v.encounter_id,\n" +
+                "       concat_ws('\\r\\n',case v.syphilis_test_status when 1229 then 'N' when 1228 then 'P' else 'NA' end,case v.syphilis_treated_status when 1065 then 'Y' when 1066 then 'N' else 'NA' end)\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

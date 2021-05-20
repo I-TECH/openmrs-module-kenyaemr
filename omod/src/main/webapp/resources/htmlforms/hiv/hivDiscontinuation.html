@@ -14,89 +14,427 @@
 <htmlform>
 
 	<script type="text/javascript">
-		var value1;
-		jq(document).ready(function(){
-			if ((getValue('idReason.value')) == 160034) {
-				jq('#pdied :input').prop('disabled', false);
-				jq('#ptransferred :input').prop('disabled', true);
-			}
-			else if((getValue('idReason.value')) == 159492) {
-				jq('#pdied :input').prop('disabled', true);
-				jq('#ptransferred :input').prop('disabled', false);
-			}
-			else {
-				jq('#pdied :input').prop('disabled', true);
-				jq('#ptransferred :input').prop('disabled', true);
-			}
 
-			jq("#idReason select").change(function() {
-				if ((getValue('idReason.value')) == 160034) {
-					jq('#pdied :input').prop('disabled', false);
-					jq('#ptransferred :input').prop('disabled', true);
-				}
-				else if((getValue('idReason.value')) == 159492) {
-					jq('#pdied :input').prop('disabled', true);
-					jq('#ptransferred :input').prop('disabled', false);
-				}
-				else {
-					jq('#pdied :input').prop('disabled', true);
-					jq('#ptransferred :input').prop('disabled', true);
-				}
-			});
+        var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
+        var artStartDate = Discontinuation_VELOCITY.split(",")[0].split(":")[1];
+        var enrollmentDate = Discontinuation_VELOCITY.split(",")[1].split(":")[1];
 
-			var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
-			var discontinueDate;
+        jq(document).ready(function(){
 
-			beforeSubmit.push(function() {
-				discontinueDate = new Date(getValue('encounter-date.value')).getTime();
+            jq("#reason-died").hide();
+            jq("#reason-trf").hide();
 
-				if(discontinueDate &lt; pbirthdate){
-					getField('discontinueDate.error').html('Discontinue date, should not be earlier than Birth date').show();
-					return false;
+            if ((getValue('idReason.value')) == 160034) {
+                jq('#pdied :input').prop('disabled', false);
+                jq('#ptransferred :input').prop('disabled', true);
+                jq('#ptrfVerification :input').prop('disabled', true);
+
+            }
+            else if((getValue('idReason.value')) == 159492) {
+                jq('#pdied :input').prop('disabled', true);
+                jq('#ptransferred :input').prop('disabled', false);
+                jq('#ptrfVerification :input').prop('disabled', false);
+            }
+            else {
+                jq('#pdied :input').prop('disabled', true);
+                jq('#ptransferred :input').prop('disabled', true);
+                jq('#ptrfVerification :input').prop('disabled', true);
+            }
+
+            jq("#idReason select").change(function() {
+                if ((getValue('idReason.value')) == 160034) {
+                    jq('#pdied :input').prop('disabled', false);
+                    jq('#ptransferred :input').prop('disabled', true);
+                    jq('#ptrfVerification :input').prop('disabled', true);
+                    jq("#reason-died").show();
+                    jq("#reason-trf").hide();
+                    clearHiddenSections(jq('#ptransferred'));
+                    clearHiddenSections(jq('#ptrfVerification'));
+                }
+                else if((getValue('idReason.value')) == 159492) {
+                    jq("#reason-trf").show();
+                    jq('#pdied :input').prop('disabled', true);
+                    jq('#ptransferred :input').prop('disabled', false);
+                    jq('#ptrfVerification :input').prop('disabled', false);
+                    jq("#reason-died").hide();
+                    clearHiddenSections(jq('#reason-died'));
 				}
-				// alert(pbirthdate+" and "+discontinueDate);
-				return true;
-			});
-		});
+                else {
+					jq("#reason-trf").hide();
+                    jq("#reason-died").hide();
+                    clearHiddenSections(jq('#ptransferred'));
+                    clearHiddenSections(jq('#ptrfVerification'));
+                    clearHiddenSections(jq('#reason-died'));
+				}
+
+            });
+            jq("#death-reason select").change(function() {
+                if ((getValue('death-reason.value')) == 163324) {
+                    jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=156673]').show();
+                    jq('#specific-cause-of-death option[value=155010]').hide();
+                    jq('#specific-cause-of-death option[value=156667]').hide();
+                    jq('#specific-cause-of-death option[value=115195]').hide();
+                    jq('#specific-cause-of-death option[value=156672]').hide();
+                    jq('#specific-cause-of-death option[value=159988]').hide();
+                    jq('#specific-cause-of-death option[value=116031]').hide();
+                    jq('#specific-cause-of-death option[value=157578]').hide();
+                    jq('#specific-cause-of-death option[value=5333]').hide();
+                    jq('#specific-cause-of-death option[value=156669]').hide();
+                    jq('#specific-cause-of-death option[value=123122]').hide();
+                    jq('#specific-cause-of-death option[value=156668]').hide();
+                    jq('#specific-cause-of-death option[value=5350]').hide();
+                    jq('#specific-cause-of-death option[value=882]').hide();
+                    jq('#specific-cause-of-death option[value=156671]').hide();
+                    jq('#specific-cause-of-death option[value=160159]').hide();
+                    jq('#specific-cause-of-death option[value=171]').hide();
+                    jq('#specific-cause-of-death option[value=156670]').hide();
+                    jq('#specific-cause-of-death option[value=160160]').hide();
+                    jq('#specific-cause-of-death option[value=161548]').hide();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").hide();
+
+                }
+                else if ((getValue('death-reason.value')) == 116030) {
+                    jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=156673]').hide();
+                    jq('#specific-cause-of-death option[value=155010]').show();
+                    jq('#specific-cause-of-death option[value=156667]').show();
+                    jq('#specific-cause-of-death option[value=115195]').show();
+                    jq('#specific-cause-of-death option[value=156672]').show();
+                    jq('#specific-cause-of-death option[value=159988]').show();
+                    jq('#specific-cause-of-death option[value=116031]').show();
+                    jq('#specific-cause-of-death option[value=157578]').show();
+                    jq('#specific-cause-of-death option[value=5333]').hide();
+                    jq('#specific-cause-of-death option[value=156669]').hide();
+                    jq('#specific-cause-of-death option[value=123122]').hide();
+                    jq('#specific-cause-of-death option[value=156668]').hide();
+                    jq('#specific-cause-of-death option[value=5350]').hide();
+                    jq('#specific-cause-of-death option[value=882]').hide();
+                    jq('#specific-cause-of-death option[value=156671]').hide();
+                    jq('#specific-cause-of-death option[value=160159]').hide();
+                    jq('#specific-cause-of-death option[value=171]').hide();
+                    jq('#specific-cause-of-death option[value=156670]').hide();
+                    jq('#specific-cause-of-death option[value=160160]').hide();
+                    jq('#specific-cause-of-death option[value=161548]').hide();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").hide();
+                }
+                else if ((getValue('death-reason.value')) == 160159) {
+                    jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=156673]').hide();
+                    jq('#specific-cause-of-death option[value=155010]').hide();
+                    jq('#specific-cause-of-death option[value=156667]').hide();
+                    jq('#specific-cause-of-death option[value=115195]').hide();
+                    jq('#specific-cause-of-death option[value=156672]').hide();
+                    jq('#specific-cause-of-death option[value=159988]').hide();
+                    jq('#specific-cause-of-death option[value=116031]').hide();
+                    jq('#specific-cause-of-death option[value=157578]').hide();
+                    jq('#specific-cause-of-death option[value=5333]').show();
+                    jq('#specific-cause-of-death option[value=156669]').show();
+                    jq('#specific-cause-of-death option[value=123122]').show();
+                    jq('#specific-cause-of-death option[value=156668]').show();
+                    jq('#specific-cause-of-death option[value=5350]').show();
+                    jq('#specific-cause-of-death option[value=882]').show();
+                    jq('#specific-cause-of-death option[value=156671]').show();
+                    jq('#specific-cause-of-death option[value=160159]').show();
+                    jq('#specific-cause-of-death option[value=171]').show();
+                    jq('#specific-cause-of-death option[value=156670]').hide();
+                    jq('#specific-cause-of-death option[value=160160]').hide();
+                    jq('#specific-cause-of-death option[value=161548]').hide();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").hide();
+                }
+                else if ((getValue('death-reason.value')) == 160158) {
+                    jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=156673]').hide();
+                    jq('#specific-cause-of-death option[value=155010]').hide();
+                    jq('#specific-cause-of-death option[value=156667]').hide();
+                    jq('#specific-cause-of-death option[value=115195]').hide();
+                    jq('#specific-cause-of-death option[value=156672]').hide();
+                    jq('#specific-cause-of-death option[value=159988]').hide();
+                    jq('#specific-cause-of-death option[value=116031]').hide();
+                    jq('#specific-cause-of-death option[value=157578]').hide();
+                    jq('#specific-cause-of-death option[value=5333]').hide();
+                    jq('#specific-cause-of-death option[value=156669]').hide();
+                    jq('#specific-cause-of-death option[value=123122]').hide();
+                    jq('#specific-cause-of-death option[value=156668]').hide();
+                    jq('#specific-cause-of-death option[value=5350]').hide();
+                    jq('#specific-cause-of-death option[value=882]').hide();
+                    jq('#specific-cause-of-death option[value=156671]').hide();
+                    jq('#specific-cause-of-death option[value=160159]').hide();
+                    jq('#specific-cause-of-death option[value=171]').hide();
+                    jq('#specific-cause-of-death option[value=156670]').show();
+                    jq('#specific-cause-of-death option[value=160160]').show();
+                    jq('#specific-cause-of-death option[value=161548]').show();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").hide();
+                }
+                else if ((getValue('death-reason.value')) == 133478) {
+					jq("#specific-death-cause").hide();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").show();
+                }
+                else if ((getValue('death-reason.value')) == 123812) {
+                    jq("#specific-death-cause").hide();
+                    jq("#other-natural").hide();
+                    jq("#other-non-natural").show();
+				}
+                else if ((getValue('death-reason.value')) ==  142917) {
+                    jq("#specific-death-cause").hide();
+                    jq("#other-non-natural").hide();
+                    jq("#other-natural").hide();
+                }
+
+            });
+
+            jq("#tr-verified-obs").change(function(){
+                if (getValue('tr-verified-obs.value') == 1066 || getValue('tr-verified-obs.value') == "") {
+                    jq('#trf-verification-date :input').val('');
+                    jq('#trf-verification-date :input').prop('disabled',true);
+                }
+                else
+                {
+                    jq('#trf-verification-date :input').prop('disabled',false);
+                }
+            });
+
+            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+            var discontinueDate;
+            var encounterDate;
+
+            beforeSubmit.push(function() {
+                encounterDate = new Date(getValue('encounter-date.value')).getTime();
+                discontinueDate = new Date(getValue('discontinue-date.value')).getTime();
+                var trfVerified = getValue('tr-verified-obs.value');
+                var discReason = getValue('idReason.value');
+                var deathReason = getValue('death-reason.value');
+                var specificDeathReason = getValue('specific-cause-of-death.value');
+
+                var trfVerificationDate = getValue('trf-verification-date.value');
+
+                if(discontinueDate &lt; pbirthdate){
+                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+                    return false;
+                }
+                if(discontinueDate &lt; artStartDate){
+                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than art start date').show();
+                    return false;
+                }
+                if(discontinueDate &lt; enrollmentDate){
+                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+                    return false;
+                }else {
+                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
+                }
+
+                if(encounterDate &lt; pbirthdate){
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
+                    return false;
+                }
+                if(encounterDate &lt; artStartDate){
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than art start date').show();
+                    return false;
+                }
+                if(encounterDate &lt; enrollmentDate){
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment date').show();
+                    return false;
+                }else {
+                    getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment').hide();
+
+                }
+                if (trfVerified == 1065 &amp;&amp; trfVerificationDate == "") {
+                    getField('trf-verification-date.error').html('Please enter date transfer was verified').show();
+                    return false;
+                }else{
+                    getField('trf-verification-date.error').html('Please enter date transfer was verified').hide();
+                }
+                if (discReason == 160034 &amp;&amp; deathReason == "") {
+                    getField('death-reason.error').html('Cause of death is required').show();
+                    return false;
+                }else{
+                    getField('death-reason.error').html('Cause of death is require').hide();
+                }
+
+                if ((deathReason == 160158 || deathReason == 160159 || deathReason==116030 || deathReason == 163324) &amp;&amp; specificDeathReason == "") {
+                    getField('specific-cause-of-death.error').html('Specific cause of death is required').show();
+                    return false;
+                }else{
+                    getField('specific-cause-of-death.error').html('Specific cause of death is required').hide();
+                }
+                return true;
+            });
+        });
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 	</script>
+	<div class="ke-form-header">
+		<table style="width: 100%">
+			<tr>
+				<td>
+					<ifMode mode="EDIT">
+						<script type="text/javascript">
+                            jq(function(){
+
+                                //Died as cause of death
+                                var val = getField("idReason.value").val();
+                                if (val == 160034){
+                                    jq("#reason-died").show();
+                                }else{
+                                    jq("#reason-died").hide();
+                                }
+                            });
+						</script>
+					</ifMode>
+				</td>
+			</tr>
+		</table>
+	</div>
 
 	<div class="ke-form-content">
 		<fieldset>
 			<legend>Discontinue HIV Care</legend>
-			<table class="baseline-aligned" width="100%" border="0">
+			<table >
 				<tr>
-					<td>Date:</td>
+					<td>Encounter Date:</td>
 					<td><encounterDate id="encounter-date" showTime="true" /></td>
 					<td></td>
 					<td></td>
-				</tr>
+				</tr><br/>
+				<tr>
+					<td>Effective discontinuation date</td>
+					<td><obs id= "discontinue-date" conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr><br></br>
 				<tr>
 					<td>Reason:</td>
 					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Transferred Out,Died,Lost to Follow,Cannot afford Treatment,Other,Unknown" id="idReason" /></td>
 					<td></td>
 					<td></td>
 				</tr>
-			</table>
-			<div id="pdied">
-				<table>
-					<tr>
-						<td>If Patient Died, please provide Date of Death if Known:</td>
-						<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</div>
 
-			<div id="ptransferred">
-				<table>
-					<tr>
-						<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-						<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
-						<td>Date Transferred Out<br /></td>
-						<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
-					</tr>
-				</table>
+			</table><br/>
+			<div id="reason-died">
+				<div id="pdied">
+					<table>
+						<tr>
+							<td>Date of Death, if Known:</td>
+							<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+				</div><br/>
+				<div id="cause-death">
+					<table id="general-death-cause">
+						<tr>
+							<td>Death reason:</td>
+							<td><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="163324AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160158AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="HIV disease resulting in TB,HIV disease resulting in cancer,HIV disease resulting in other infectious and parasitic diseases,Other HIV disease resulting in other diseases or conditions leading to death,Other natural causes not directly related to HIV,Non-communicable diseases such as Diabetes and hypertension,Non-natural causes,Unknown cause" id="death-reason" /></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table><br/>
+					<table id="specific-death-cause">
+						<tr id="cause-of-death">
+							<td>Specific cause of death:</td>
+							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerConceptIds="156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														155010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														115195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														157593AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156672AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														159988AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														5333AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														116031AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														123122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156669AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														5350AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														882AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156671AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														156670AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														160160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+														161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									    answerLabels="HIV disease resulting in mycobacterial infection,
+														HIV disease resulting in Kaposis sarcoma,
+														HIV disease resulting in Burkitts lymphoma,
+														HIV disease resulting in other types of non-Hodgkin lymphoma,
+														HIV disease resulting in other malignant neoplasms of lymphoid and haematopoietic and related tissue,
+														HIV disease resulting in multiple malignant neoplasms,
+														HIV disease resulting in other malignant neoplasms,
+														HIV disease resulting in other bacterial infections,
+														HIV disease resulting in unspecified malignant neoplasms,
+														HIV disease resulting in other viral infections,
+														HIV disease resulting in cytomegaloviral disease,
+														HIV disease resulting in candidiasis,
+														HIV disease resulting in other mycoses,
+														HIV disease resulting in Pneumocystis jirovecii pneumonia - HIV disease resulting in Pneumocystis carinii pneumonia,
+														HIV disease resulting in multiple infections,
+														HIV disease resulting in other infectious and parasitic diseases,
+														HIV disease resulting in unspecified infectious or parasitic disease - HIV disease resulting in infection NOS,
+														HIV disease resulting in other specified diseases including encephalopathy or lymphoid interstitial pneumonitis or wasting syndrome and others,
+														HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others,
+														HIV disease resulting in Unspecified HIV disease"
+									 id="specific-cause-of-death" /></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
+					<table id="other-death-causes">
+						<tr id ="other-natural">
+							<td>Other natural causes:</td>
+							<td ><br/><obs conceptId="162580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+						</tr>
+						<tr id="other-non-natural">
+							<td>Non-natural causes:</td>
+							<td ><br/><obs conceptId="160218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="reason-trf">
+				<div id="ptransferred">
+					<table>
+						<tr>
+							<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+							<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+							<td>Date Transferred Out<br /></td>
+							<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+						</tr>
+					</table>
+				</div>
+				<div id="ptrfVerification">
+					<table>
+						<tr>
+							<td><br/>Transfer out verified?</td>
+							<td ><br/><obs conceptId="1285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										   answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										   answerLabel="Yes,No"
+										   style="radio" id="tr-verified-obs"/> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+							<td>Date verified</td>
+							<td><br/><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 			<br/>
 			<hr/>

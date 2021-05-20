@@ -18,15 +18,21 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DiffCareStabilityCohortLibrary {
+    public CohortDefinition stableUnder1Monthtca(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+                "                  and timestampdiff(month,c.latest_vis_date,c.latest_tca) <1 group by c.patient_id;";
+        cd.setName("stableUnder1Monthtca");
+        cd.setQuery(sqlQuery);
+        cd.setDescription("Stable with <1 month prescription");
+
+        return cd;
+    }
+
     public CohortDefinition stableUnder4Monthstca(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select patient_id from(\n" +
-                "                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca\n" +
-                "                                    from kenyaemr_etl.etl_current_in_care c\n" +
-                "                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-                "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
-                "                                                                                                          and cic.patient_present = 978\n" +
-                "                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) <4;";
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+                "                  and timestampdiff(month,c.latest_vis_date,c.latest_tca) <4 group by c.patient_id;";
         cd.setName("stableUnder4Monthstca");
         cd.setQuery(sqlQuery);
         cd.setDescription("Stable with <4 months prescription");
@@ -34,29 +40,30 @@ public class DiffCareStabilityCohortLibrary {
         return cd;
     }
 
-    public  CohortDefinition stableOver4Monthstca() {
+    public  CohortDefinition stableOver6Monthstca() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery="select patient_id from(\n" +
-                "                      select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca\n" +
-                "                                    from kenyaemr_etl.etl_current_in_care c\n" +
-                "                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-                "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=1\n" +
-                "                                                                                                          and cic.patient_present = 978\n" +
-                "                                                                                                          and timestampdiff(month,cic.latest_visit_date,cic.ltca) >=4;" ;
-        cd.setName("stableOver4Monthstca");
+        String sqlQuery="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+                "and timestampdiff(month,c.latest_vis_date,c.latest_tca) >6 group by c.patient_id;" ;
+        cd.setName("stableOver6Monthstca");
         cd.setQuery(sqlQuery);
         cd.setDescription("Stable with 4+ months prescription");
 
         return cd;
     }
 
+    public  CohortDefinition stablePatientsMultiMonthAppointments(Integer month) {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+                "and timestampdiff(month,c.latest_vis_date,c.latest_tca) =" + month + " group by c.patient_id;" ;
+        cd.setName("multimonthTCA");
+        cd.setQuery(sqlQuery);
+        cd.setDescription("Stable with and monthly appointments");
+
+        return cd;
+    }
+
     public  CohortDefinition unstable() {
-        String sqlQuery="\n" +
-                "select patient_id from(\n" +
-                "                      select c.patient_id,f.stability stability,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date\n" +
-                "                      from kenyaemr_etl.etl_current_in_care c\n" +
-                "                             inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-                "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability=2;";
+        String sqlQuery="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =2 and c.started_on_drugs is not null group by c.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("unstable");
         cd.setQuery(sqlQuery);
@@ -65,10 +72,7 @@ public class DiffCareStabilityCohortLibrary {
     }
 
     public  CohortDefinition undocumentedStability() {
-        String sqlQuery="select patient_id from(\n" +
-                "                      select c.patient_id,f.stability stability from kenyaemr_etl.etl_current_in_care c\n" +
-                "                                                                inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-                "                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability is null;";
+        String sqlQuery="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability is null and c.started_on_drugs is not null group by c.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Undocumented stability");
         cd.setQuery(sqlQuery);
