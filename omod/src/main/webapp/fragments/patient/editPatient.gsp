@@ -313,7 +313,7 @@
 
     <div class="ke-panel-footer">
         <button type="submit">
-            <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changes" : "Create Patient"}
+            <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changesma" : "Create Patient"}
         </button>
         <% if (config.returnUrl) { %>
         <button type="button" class="cancel-button"><img
@@ -408,6 +408,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         });
         updateSubcountyOnEdit();
         updateWardOnEdit();
+        Marital status
 
     }); // end of jQuery initialization block
 

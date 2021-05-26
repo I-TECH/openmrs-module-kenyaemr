@@ -152,6 +152,7 @@ public class EditPatientFragmentController {
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.DIVORCED));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.WIDOWED));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVING_WITH_PARTNER));
+		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.LIVES_ALONE));
 		maritalStatusOptions.add(Dictionary.getConcept(Dictionary.NEVER_MARRIED));
 		model.addAttribute("maritalStatusOptions", maritalStatusOptions);
 
