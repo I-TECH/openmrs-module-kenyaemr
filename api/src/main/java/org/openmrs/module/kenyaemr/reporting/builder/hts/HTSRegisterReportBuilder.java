@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRe
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSRiskAssessedConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.KPTypeConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -102,7 +103,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
-        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null);
+        dsd.addColumn("Population Type", new PopulationTypeDataDefinition(), null, new KPTypeConverter());
         dsd.addColumn("everTested", new EverTestedForHIVDataDefinition(), null);
         dsd.addColumn("disability", new PatientDisabilityDataDefinition(), null);
         dsd.addColumn("consent", new PatientConsentDataDefinition(), null);
