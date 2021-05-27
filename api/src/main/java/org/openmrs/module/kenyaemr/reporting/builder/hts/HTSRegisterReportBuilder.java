@@ -19,28 +19,9 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSRiskAssessedConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultGivenDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageToCareDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSMonthsSinceLastTestDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRemarksDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSRiskDoneDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSSelfTestDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTBScreeningDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestEntryPointDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestStrategyDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.IndividualORCoupleTestDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientConsentDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDisabilityDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PopulationTypeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.VisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -116,7 +97,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
+        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null,new HTSMaritalStatusConverter());
         dsd.addColumn("Unique Patient Number", identifierDef, null);
 
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
@@ -137,6 +118,7 @@ public class HTSRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
         dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
         dsd.addColumn("assessedForHIVRisk", new HTSRiskDoneDataDefinition(),"", new HTSRiskAssessedConverter());
+        dsd.addColumn("Linked", new HTSLinkageIdentifierDataDefinition(), null);
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
