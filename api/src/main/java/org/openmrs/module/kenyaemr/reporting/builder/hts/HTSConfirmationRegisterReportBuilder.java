@@ -19,6 +19,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSRiskAssessedConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.EverTestedForHIVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResultDataDefinition;
@@ -26,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.FinalResu
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestTwoDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSDiscordanceDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageIdentifierDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageToCareDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSMonthsSinceLastTestDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSProviderDataDefinition;
@@ -115,7 +117,7 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
+        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null,new HTSMaritalStatusConverter());
         dsd.addColumn("Unique Patient Number", identifierDef, null);
 
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
@@ -136,6 +138,7 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("tbScreening", new HTSTBScreeningDataDefinition(), null);
         dsd.addColumn("everHadHIVSelfTest", new HTSSelfTestDataDefinition(), null);
         dsd.addColumn("assessedForHIVRisk", new HTSRiskDoneDataDefinition(),"", new HTSRiskAssessedConverter());
+        dsd.addColumn("Linked", new HTSLinkageIdentifierDataDefinition(), null);
         dsd.addColumn("provider", new HTSProviderDataDefinition(), null);
         dsd.addColumn("remarks", new HTSRemarksDataDefinition(), null);
 
