@@ -415,6 +415,10 @@
                 clearHiddenSections(jq('#hiv-final-result'));
                 getField('hiv-final-result.value').val(1138);
                 jq('#ccc-no input').prop("disabled", true);
+                jq('#tbl-results-given').hide();
+                jq('#tbl-discordant').hide();
+                clearHiddenSections(jq('.result-given'));
+                clearHiddenSections(jq('#couple-discordant'));
             }
             //Positive
             if(secondTest ==703){
@@ -426,6 +430,8 @@
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
+                jq('#tbl-results-given').show();
+                jq('#tbl-discordant').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -435,6 +441,8 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#tbl-results-given').hide();
+                jq('#tbl-discordant').hide();
             }
             //Invalid
             if(secondTest ==1175){
@@ -444,6 +452,8 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#tbl-results-given').hide();
+                jq('#tbl-discordant').hide();
             }
         }
 
@@ -710,6 +720,7 @@
         //Before Submit
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
+            var hasDisability = getValue('has-disability.value');
             var hivTest1 = getField('hiv-test1-result.value').val();
             var hivTest2 = getField('hiv-test2-result.value').val();
             var kitName1 = getField('kit-name-1.value').val();
@@ -720,6 +731,15 @@
             var expiryDate2 = getField('expiry-date2.value').val();
             var firstKit = getField("kit-name-1.value").val();
             var secondKit = getField("kit-name-2.value").val();
+            var disabilityChecked = jq("#disability input:checkbox:checked");
+
+            if (disabilityChecked.length == 0 &amp;&amp; hasDisability == 1065) {
+                getField('has-disability.error').html('Please specify the disabilty type.').show();
+                return false;
+            }else{
+                getField('has-disability.error').html('Please specify the disabilty type.').hide();
+            }
+
             if(firstKit ==164960 &amp;&amp; secondKit == 164960 || firstKit ==164961 &amp;&amp; secondKit == 164961 ) {
                 getField('kit-name-2.error').html('Cannot use same test kit for both tests.').show();
                 return false;
@@ -876,30 +896,7 @@
                                     getField('hiv-final-result.value').val(1138);
                                 }
 
-                                //show syphilis results if they exist
-                                var testKit1 = getField('kit-name-1.value').val();
-                                if (testKit1 == 165351 ){   //Dual kit selected
-                                    jq('#dual-results-1').show();
-                                    getField("kit-name-2.value").val("");
-                                    jq("#kit-name-2 option[value='164961']").show();
-                                    jq("#kit-name-2 option[value='164960']").hide();
-                                    jq("#kit-name-2 option[value='165351']").hide();
-                                }
 
-                                else if (testKit1 == 164960 ){   //Determine kit selected
-                                    jq('#dual-results-1').hide();
-                                    getField("kit-name-2.value").val("");
-                                    jq("#kit-name-2 option[value='164961']").show();
-                                    jq("#kit-name-2 option[value='164960']").hide();
-                                    jq("#kit-name-2 option[value='165351']").hide();
-                                }
-                                else if (testKit1 == 164961 ){   //First response kit selected
-                                    jq('#dual-results-1').hide();
-                                    getField("kit-name-2.value").val("");
-                                    jq("#kit-name-2 option[value='164960']").show();
-                                    jq("#kit-name-2 option[value='165351']").hide();
-                                    jq("#kit-name-2 option[value='164961']").hide();
-                                }
                                 var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
 
                                 if(syphylisTest1Results != ""){
@@ -1324,10 +1321,16 @@
                         <obs id="hiv-final-result" conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Positive,Negative,Inconclusive"/>
                     </td>
-                    <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
-                        <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="YES,NO"/>
+                    <td>
+                        <table id="tbl-results-given">
+                            <tr>
+                                <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
+                                    <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         style="dropdown" answerLabels="YES,NO"/>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>

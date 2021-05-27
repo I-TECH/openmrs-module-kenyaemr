@@ -87,7 +87,8 @@ public class PatientsEligibleForHtsRetestCalculation extends AbstractPatientCalc
 
             boolean patientHasPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
 
-            if(enrollmentEncounters.size() <= 0 && patientHasPositiveTestResult && lastLinkageEnc == null) {
+           // if(enrollmentEncounters.size() <= 0 && patientHasPositiveTestResult && lastLinkageEnc == null) {
+            if(enrollmentEncounters.size() <= 0 && lastLinkageEnc == null) {          //Criteria:Not enrolled and not linked
                 patientEligible = true;
             }
 
