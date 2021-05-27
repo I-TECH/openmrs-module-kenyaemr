@@ -310,9 +310,10 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
-			String lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0).toString();
+			Object lastLotExpiryDate =null;
+			 lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0);
 
-			if(lastLotExpiryDate != null || lastLotExpiryDate != "") {
+			if(lastLotExpiryDate.toString() != null || lastLotExpiryDate.toString() != "") {
 				return SimpleObject.create(
 						"lastLotExpiryDate", lastLotExpiryDate
 				);
