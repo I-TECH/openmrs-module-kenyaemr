@@ -48,7 +48,7 @@ public class HTSMaritalStatusConverter implements DataConverter {
             return "S";
         }
         else if(value.equals("Never Married")){
-            return "NM";
+            return "S";
         }
 
         return  "";
