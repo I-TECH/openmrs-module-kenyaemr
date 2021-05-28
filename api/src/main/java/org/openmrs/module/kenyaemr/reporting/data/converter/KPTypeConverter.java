@@ -12,9 +12,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 /**
- * converter for HTS Marital status
+ * converter for KP Type
  */
-public class HTSMaritalStatusConverter implements DataConverter {
+public class KPTypeConverter implements DataConverter {
 
     @Override
     public Object convert(Object obj) {
@@ -29,28 +29,15 @@ public class HTSMaritalStatusConverter implements DataConverter {
             return  "";
         }
 
-        else if(value.equals("Separated")) {
-            return "Separated";
+        else if(value.equals("Men who have sex with men")) {
+            return "MSM";
         }
-        else if(value.equals("Polygamous")){
-            return "MP";
+        else if(value.equals("People who inject drugs")){
+            return "DU";
         }
-        else if(value.equals("Married")){
-            return "MM";
+        else if(value.equals("Female sex worker")){
+            return "FSW";
         }
-        else if(value.equals("Divorced")){
-            return "D";
-        }
-        else if(value.equals("Living With Partner")){
-            return "MM";
-        }
-        else if(value.equals("Lives alone")){
-            return "S";
-        }
-        else if(value.equals("Never Married")){
-            return "S";
-        }
-
         return  "";
 
     }
