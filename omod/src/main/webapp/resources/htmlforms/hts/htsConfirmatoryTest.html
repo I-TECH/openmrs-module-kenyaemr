@@ -166,16 +166,6 @@
             }
         }
 
-        var referralSelected = function () {
-            var val = jq(this).val();
-          if (val == 164407) {
-                jq('#tbl-other-facility').show();
-            } else {
-                jq('#tbl-other-facility').hide();
-                getField('other-facility.value').val("");
-            }
-        }
-
         var kit1Selected = function () {
             var val = jq(this).val();
             // Show use previous lot number checkbox
@@ -578,6 +568,8 @@
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
             jq('#referral-to select').change(referralSelected);
+            jq('#tbl-this-facility').hide();
+            jq('#tbl-other-facility').hide();
             jq('#tbl-other-strategy').hide();
 
             var htsStrategySelected = getField('strategy.value').val();
@@ -613,13 +605,6 @@
                 }
             }
 
-            var referralFacilitySelected = getField('referral-to.value').val();
-            if (referralFacilitySelected == 164407 ){
-                jq('#tbl-other-facility').show();
-            }else{
-                jq('#tbl-other-facility').hide();
-                getField('other-facility.value').val("");
-            }
              //Consent validation
             jq('.consent input').change(consentSelected);
             //couple testing
@@ -717,6 +702,21 @@
             }
 
         });
+
+        var referralSelected = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (val == 164407) {
+                jq('#tbl-other-facility').show();
+                jq('#tbl-this-facility').hide();
+                getField('this-facility.value').val("");
+            }if(val == 163266){
+                jq('#tbl-this-facility').show();
+                getField('this-facility.value').val(default_location);
+                jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
@@ -826,12 +826,18 @@
                         <script type="text/javascript">
                             jq(function(){
 
-                                //Other facility referral
+                                //facility referral
                                 var val = getField("referral-to.value").val();
-                                if (val == 5622){
+                                var default_location = "<lookup expression="kenyaemr.location()" />";
+                                if (val == 164407) {
                                     jq('#tbl-other-facility').show();
-                                }else{
+                                    jq('#tbl-this-facility').hide();
+                                    getField('this-facility.value').val("");
+                                }if(val == 163266){
+                                    jq('#tbl-this-facility').show();
                                     jq('#tbl-other-facility').hide();
+                                    getField('other-facility.value').val("");
+                                    getField('this-facility.value').val(default_location);
                                 }
 
                                 //First test
@@ -1375,20 +1381,29 @@
                         <obs id="referral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Current health facility,
-                                                            Other health facility" />
+                             style="dropdown" answerLabels="This health facility,Other health facility" />
                     </td>
                     <td>
                         <br/>
                         <table id="tbl-other-facility">
                             <tr>
-                                <td>  &#160;&#160;&#160; Specify :
-                                    <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                <td>  &#160;&#160;&#160; Facility name :
+                                    <obs id="other-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                                     &#160;&#160;&#160;
                                 </td>
                             </tr>
                         </table>
-                    </td>
+                    </td> <td>
+                    <br/>
+                    <table id="tbl-this-facility">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Name :
+                                <obs id="this-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
+                </td>
                 </tr>
             </table>
         </fieldset>
