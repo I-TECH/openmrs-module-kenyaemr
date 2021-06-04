@@ -209,7 +209,7 @@ public class ViralSuppressionCohortLibrary {
                 "left join (\n" +
                 "    select patient_id from kenyaemr_etl.etl_laboratory_extract\n" +
                 "    group by patient_id\n" +
-                "    having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) < date(:endDate)\n" +
+                "    having mid(max(concat(visit_date,lab_test)),11) in (1305,856)\n" +
                 "    )vl\n" +
                 "on t.patient_id = vl.patient_id\n" +
                 "    where vl.patient_id is null)a;";
