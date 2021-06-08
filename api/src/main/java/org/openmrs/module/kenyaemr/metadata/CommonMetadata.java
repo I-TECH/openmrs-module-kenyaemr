@@ -189,7 +189,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.CLIENT_NUMBER));
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",
-				String.class, null, false, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
+				String.class, null, true, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));
 		install(personAttributeType("Email address", "Email address of person",
 				String.class, null, false, 2.0, _PersonAttributeType.EMAIL_ADDRESS));
 		install(personAttributeType("CHT username", "CHT username reference",
