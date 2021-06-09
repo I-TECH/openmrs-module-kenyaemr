@@ -54,15 +54,18 @@ public class ViralSuppressionCohortLibrary {
                 ") t\n" +
                 "  inner join (\n" +
                 "             select\n" +
-                "   patient_id,encounter_id,\n" +
-                "   max(visit_date) as vl_date,\n" +
-                "   date_sub(:endDate , interval 12 MONTH),\n" +
-                "   if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "   mid(max(concat(visit_date,urgency)),11) as urgency\n" +
-                "             from kenyaemr_etl.etl_laboratory_extract\n" +
+                "                    b.patient_id,\n" +
+                "                    max(b.visit_date) as vl_date,\n" +
+                "                    date_sub(:endDate , interval 12 MONTH),\n" +
+                "                    mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
+                "                    if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "                    mid(max(concat(b.visit_date,b.urgency)),11) as urgency\n" +
+                "             from (select x.patient_id as patient_id,x.visit_date as visit_date,x.lab_test as lab_test, x.test_result as test_result,urgency as urgency\n" +
+                "                   from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in (1305,856)\n" +
+                "                   group by x.patient_id,x.visit_date order by visit_date desc)b\n" +
                 "             group by patient_id\n" +
-                "             having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
-                "date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
+                "             having max(visit_date) between\n" +
+                "                        date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
                 "             )vl\n" +
                 "    on t.patient_id = vl.patient_id  where (vl_result < 1000 or vl_result='LDL'))a;";
         cd.setName("suppressed");
@@ -76,7 +79,7 @@ public class ViralSuppressionCohortLibrary {
     public  CohortDefinition unsuppressed() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select a.patient_id as patient_id\n" +
-                "from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency from (\n" +
+                "from(select t.patient_id,vl.vl_date,vl.lab_test,vl.vl_result,vl.urgency from (\n" +
                 "select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
                 "       greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
                 "       greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
@@ -106,14 +109,17 @@ public class ViralSuppressionCohortLibrary {
                 ") t\n" +
                 "  inner join (\n" +
                 "             select\n" +
-                "   patient_id,encounter_id,\n" +
-                "   max(visit_date) as vl_date,\n" +
+                "   b.patient_id,\n" +
+                "   max(b.visit_date) as vl_date,\n" +
                 "   date_sub(:endDate , interval 12 MONTH),\n" +
-                "   if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "   mid(max(concat(visit_date,urgency)),11) as urgency\n" +
-                "             from kenyaemr_etl.etl_laboratory_extract\n" +
+                "   mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
+                "   if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
+                "   mid(max(concat(b.visit_date,b.urgency)),11) as urgency\n" +
+                "                   from (select x.patient_id as patient_id,x.visit_date as visit_date,x.lab_test as lab_test, x.test_result as test_result,urgency as urgency\n" +
+                "                   from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in (1305,856)\n" +
+                "                   group by x.patient_id,x.visit_date order by visit_date desc)b\n" +
                 "             group by patient_id\n" +
-                "             having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
+                "             having max(visit_date) between\n" +
                 "date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
                 "             )vl\n" +
                 "    on t.patient_id = vl.patient_id where vl_result >= 1000)a;" ;

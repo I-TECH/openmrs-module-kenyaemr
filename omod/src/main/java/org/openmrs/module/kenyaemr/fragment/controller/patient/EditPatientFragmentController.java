@@ -340,9 +340,7 @@ public class EditPatientFragmentController {
 
 			clientNumber = wrapper.getClientNumber();
 			patientClinicNumber = wrapper.getPatientClinicNumber();
-			uniquePatientNumber = wrapper.getUniquePatientNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
-
 			nameOfNextOfKin = wrapper.getNextOfKinName();
 			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
 			nextOfKinContact = wrapper.getNextOfKinContact();
@@ -354,11 +352,15 @@ public class EditPatientFragmentController {
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
 			chtReferenceNumber = wrapper.getChtReferenceNumber();
+			if(isKDoD.equals("true")){
 			kDoDServiceNumber = wrapper.getKDoDServiceNumber();
 			kDoDCadre = wrapper.getCadre();
 			kDoDRank = wrapper.getRank();
 			kDoDUnit = wrapper.getKDoDUnit();
-
+			}
+			else{
+				uniquePatientNumber = wrapper.getUniquePatientNumber();
+			}
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
 				maritalStatus = savedMaritalStatus.getValueCoded();
@@ -442,9 +444,11 @@ public class EditPatientFragmentController {
             if(isKDoD.equals("true")){
                 validateIdentifierField(errors, "kDoDServiceNumber", CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
             }
+            else {
+				validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			}
 			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
-			validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -525,14 +529,19 @@ public class EditPatientFragmentController {
 				}
 				toSave.addAddress(personAddress);
 			}
-
+			//UPN is not required for KDoD patients. Removing so that savePatient does not fail during form validation
+			if(isKDoD.equals("true")) {
+				PatientIdentifierType upnIdType = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+				PatientIdentifier identifierObj =  toSave.getPatientIdentifier(upnIdType);
+				toSave.removeIdentifier(identifierObj);
+			}
 			PatientWrapper wrapper = new PatientWrapper(toSave);
 
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
 			wrapper.setClientNumber(clientNumber, location);
-			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
+
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
@@ -544,10 +553,16 @@ public class EditPatientFragmentController {
 			wrapper.setGuardianFirstName(guardianFirstName);
 			wrapper.setGuardianLastName(guardianLastName);
 			wrapper.setChtReferenceNumber(chtReferenceNumber);
-			wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
-			wrapper.setCadre(kDoDCadre);
-			wrapper.setRank(kDoDRank);
-			wrapper.setKDoDUnit(kDoDUnit);
+
+			if(isKDoD.equals("true")){
+				wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
+				wrapper.setCadre(kDoDCadre);
+				wrapper.setRank(kDoDRank);
+				wrapper.setKDoDUnit(kDoDUnit);
+			}
+			else{
+				wrapper.setUniquePatientNumber(uniquePatientNumber, location);
+			}
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
