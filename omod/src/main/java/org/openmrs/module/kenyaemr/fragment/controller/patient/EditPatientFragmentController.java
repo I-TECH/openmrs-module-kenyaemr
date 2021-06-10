@@ -529,12 +529,7 @@ public class EditPatientFragmentController {
 				}
 				toSave.addAddress(personAddress);
 			}
-			//UPN is not required for KDoD patients. Removing so that savePatient does not fail during form validation
-			if(isKDoD.equals("true")) {
-				PatientIdentifierType upnIdType = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-				PatientIdentifier identifierObj =  toSave.getPatientIdentifier(upnIdType);
-				toSave.removeIdentifier(identifierObj);
-			}
+
 			PatientWrapper wrapper = new PatientWrapper(toSave);
 
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
@@ -582,6 +577,7 @@ public class EditPatientFragmentController {
 
 			// Explicitly save all identifier objects including voided
 			for (PatientIdentifier identifier : toSave.getIdentifiers()) {
+
 				Context.getPatientService().savePatientIdentifier(identifier);
 			}
 
