@@ -10,6 +10,8 @@
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.PatientIdentifierType.LocationBehavior;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
@@ -32,7 +34,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 	public static final String MODULE_ID = "kenyaemr";
 	public static final String LDL_DEFAULT_VALUE = MODULE_ID + ".LDL_default_value";
 
-	public static final class _EncounterType {
+		public static final class _EncounterType {
 		public static final String HIV_CONSULTATION = "a0034eee-1940-4e35-847f-97537a35d05e";
 		public static final String HIV_DISCONTINUATION = "2bdada65-4c72-4a48-8730-859890e25cee";
 		public static final String HIV_ENROLLMENT = "de78a6be-bfc5-4634-adc3-5f1a280455cc";
@@ -79,6 +81,9 @@ public class HivMetadata extends AbstractMetadataBundle {
 	 */
 	@Override
 	public void install() {
+		AdministrationService administrationService = Context.getAdministrationService();
+		final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
+
 		install(encounterType("HIV Enrollment", "Enrollment onto HIV program", _EncounterType.HIV_ENROLLMENT));
 		install(encounterType("HIV Consultation", "Collection of HIV-specific data during the main consultation", _EncounterType.HIV_CONSULTATION));
 		install(encounterType("HIV Discontinuation", "Discontinuation from HIV program", _EncounterType.HIV_DISCONTINUATION));
@@ -106,12 +111,17 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
 
-		install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
-				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
-
-		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
-				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
-
+		if(isKDoD.equals("true")){
+			install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
+					null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
+			//Validation for UPN (if present) is relaxed for KDOD patients because migrated UPNs have illegal formats
+			install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", null, null,
+					null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		}
+		else{
+			install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", "^[0-9]{10,11}$", "Facility code followed by sequential number",
+					null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
+		}
 		install(program("HIV", "Treatment for HIV-positive patients", Dictionary.HIV_PROGRAM, _Program.HIV));
 		install(globalProperty(LDL_DEFAULT_VALUE, "Default value for LDL results. Required for graphing", "50"));
 

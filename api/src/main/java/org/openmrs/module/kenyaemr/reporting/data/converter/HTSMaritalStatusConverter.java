@@ -30,7 +30,7 @@ public class HTSMaritalStatusConverter implements DataConverter {
         }
 
         else if(value.equals("Separated")) {
-            return "Separated";
+            return "D";
         }
         else if(value.equals("Polygamous")){
             return "MP";
@@ -41,16 +41,18 @@ public class HTSMaritalStatusConverter implements DataConverter {
         else if(value.equals("Divorced")){
             return "D";
         }
-        else if(value.equals("Living With Partner")){
+        else if(value.equals("Living with partner")){
             return "MM";
         }
         else if(value.equals("Lives alone")){
             return "S";
         }
-        else if(value.equals("Never Married")){
+        else if(value.equals("Never married")){
             return "S";
         }
-
+        else if(value.equals("Widowed")){
+            return "W";
+        }
         return  "";
 
     }
