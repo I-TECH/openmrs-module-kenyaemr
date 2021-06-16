@@ -193,7 +193,7 @@ public class ViralSuppressionCohortLibrary {
                 "            max(d.visit_date) as date_discontinued,\n" +
                 "            de.patient_id as started_on_drugs,\n" +
                 "            de.date_started,\n" +
-                "             P.unique_patient_no as ccc_number,\n" +
+                "             p.unique_patient_no as ccc_number,\n" +
                 "             concat_ws(' ',p.given_name,p.middle_name,p.family_name) as name,\n" +
                 "             p.phone_number as phone_number,\n" +
                 "             p.DOB as date_of_birth\n" +
