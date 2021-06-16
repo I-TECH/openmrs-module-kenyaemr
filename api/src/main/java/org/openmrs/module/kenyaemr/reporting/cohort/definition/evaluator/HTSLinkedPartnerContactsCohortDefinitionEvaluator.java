@@ -47,11 +47,7 @@ public class HTSLinkedPartnerContactsCohortDefinitionEvaluator implements Cohort
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select id from (select c.id\n" +
-				"                from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-				"                                                            inner join kenyaemr_etl.etl_hts_referral_and_linkage l on l.patient_id=c.patient_id and l.voided=0\n" +
-				"                where t.voided=0 and c.voided = 0 and c.relationship_type =163565\n" +
-				"                group by c.id ) t;";
+		String qry="select cl.id from kenyaemr_etl.etl_contacts_linked cl where cl.relationship_type =163565 group by cl.id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
