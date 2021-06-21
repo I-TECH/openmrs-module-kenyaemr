@@ -2869,7 +2869,7 @@ public class DatimCohortLibrary {
     public CohortDefinition kpOnARTSuppVLLast12Months(String testType,KPTypeDataDefinition kpType) {
 
         String sqlQuery = "select a.patient_id as patient_id\n" +
-                "            from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency,t.kp_type,order_reason from (\n" +
+                "            from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency,t.kp_type from (\n" +
                 "                         select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
                 "                                greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
                 "                                greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
