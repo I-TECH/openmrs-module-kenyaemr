@@ -64,7 +64,8 @@ import org.apache.commons.lang.time.DateUtils;
 public class RegimenUtilFragmentController {
 
 	protected static final Log log = LogFactory.getLog(RegimenUtilFragmentController.class);
-	private Date enrollmentDate = null;
+	private Date hivEnrollmentDate = null;
+	private Date tbEnrollmentDate = null;
 	/**
 	 * Changes the patient's current regimen
 	 * @param command the command object
@@ -409,18 +410,30 @@ public class RegimenUtilFragmentController {
 				Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 				List<PatientProgram> programs = service.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
 				 if (programs.size() > 0) {
-					 enrollmentDate = programs.get(0).getDateEnrolled();
+					 hivEnrollmentDate = programs.get(0).getDateEnrolled();
 				 }
 				Program tbProgram = MetadataUtils.existing(Program.class, TbMetadata._Program.TB);
 				List<PatientProgram> tbPrograms = service.getPatientPrograms(patient, tbProgram, null, null, null,null, true);
 				if (tbPrograms.size() > 0) {
-					enrollmentDate = tbPrograms.get(0).getDateEnrolled();
+					tbEnrollmentDate = tbPrograms.get(0).getDateEnrolled();
 				}
 
-				// Don't allow regimen start date to be before enrollment date
-				if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(enrollmentDate, Calendar.DAY_OF_MONTH)) ) {
-					errors.rejectValue("changeDate", "Start date can't be before enrollment date");
+				// Don't allow regimen start date to be before HIV enrollment date
+				if(hivEnrollmentDate  != null && category.equalsIgnoreCase("ARV")) {
+					if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(hivEnrollmentDate, Calendar.DAY_OF_MONTH)) ) {
+						errors.rejectValue("changeDate", "Start date can't be before enrollment date");
+					}
+
 				}
+
+				// Don't allow regimen start date to be before TB enrollment date
+				if(tbEnrollmentDate  != null && category.equalsIgnoreCase("TB")) {
+					if(DateUtils.truncate(changeDate, Calendar.DAY_OF_MONTH).before(DateUtils.truncate(tbEnrollmentDate, Calendar.DAY_OF_MONTH)) ) {
+						errors.rejectValue("changeDate", "Start date can't be before enrollment date");
+					}
+
+				}
+
 
 			}
 
