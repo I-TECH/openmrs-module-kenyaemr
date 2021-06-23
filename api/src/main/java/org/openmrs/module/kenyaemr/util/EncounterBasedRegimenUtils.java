@@ -544,6 +544,21 @@ public class EncounterBasedRegimenUtils {
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
                 "  },\n" +
                 "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/ATV/r\",\n" +
+                "    \"conceptRef\": \"64b63993-1479-4714-9389-312072f26704\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/ETV/DRV/r\",\n" +
+                "    \"conceptRef\": \"9de6367e-479b-4d50-a0f9-2a9987c6dce0\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/DTG/DRV/r\",\n" +
+                "    \"conceptRef\": \"cc728487-2f54-4d5e-ae0f-22ef617a8cfd\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
                 "    \"name\": \"TDF/3TC/DTG/EFV/DRV/r\",\n" +
                 "    \"conceptRef\": \"f2acaf9b-3da9-4d71-b0cf-fd6af1073c9e\",\n" +
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
