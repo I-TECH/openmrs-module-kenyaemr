@@ -13,7 +13,8 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.OTZPatinetAged20To24StillinProgramCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.OTZPatients20To24WithValidVLLess1000CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.OTZPatientsWithValidVLLess1000CohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.otz.ETLOtzCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -28,10 +29,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates a OnPatientsAge20To24StillInOtzProgramDataDefinition
+ * Evaluates a OnPatientsWithValidVLLess1000DataDefinition
  */
-@Handler(supports = {OTZPatinetAged20To24StillinProgramCohortDefinition.class})
-public class OTZPatientAge20To24InProgramCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {OTZPatients20To24WithValidVLLess1000CohortDefinition.class})
+public class OTZPatient20To24WithValidVLLess1000CohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     @Autowired
     private ETLOtzCohortLibrary otzCohortLibrary;
@@ -39,10 +40,9 @@ public class OTZPatientAge20To24InProgramCohortDefinitionEvaluator implements Co
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        OTZPatinetAged20To24StillinProgramCohortDefinition definition = (OTZPatinetAged20To24StillinProgramCohortDefinition) cohortDefinition;
+        OTZPatients20To24WithValidVLLess1000CohortDefinition definition = (OTZPatients20To24WithValidVLLess1000CohortDefinition) cohortDefinition;
         Integer month = definition.getMonth();
-
-        CohortDefinition cd = otzCohortLibrary.numberOfAdolescentsInotzProgram();
+        CohortDefinition cd = otzCohortLibrary.patient20To24WithValidVLLess1000();
 
         Calendar calendar = Calendar.getInstance();
         int thisMonth = calendar.get(calendar.MONTH);
@@ -55,9 +55,9 @@ public class OTZPatientAge20To24InProgramCohortDefinitionEvaluator implements Co
         context.addParameterValue("endDate", endDate);
         context.addParameterValue("month", month);
 
-        Cohort patientsStillInProgram = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+        Cohort patient20To24VlLess1000 = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
 
 
-        return new EvaluatedCohort(patientsStillInProgram, definition, context);
+        return new EvaluatedCohort(patient20To24VlLess1000, definition, context);
     }
 }
