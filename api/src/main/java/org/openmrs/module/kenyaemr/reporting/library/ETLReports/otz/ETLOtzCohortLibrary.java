@@ -116,8 +116,8 @@ public class ETLOtzCohortLibrary {
                 "                         where d.program_name = 'OTZ'\n" +
                 "                         group by d.patient_id)d on e.patient_id = d.patient_id\n" +
                 "      group by e.patient_id\n" +
-                "      having timestampdiff(YEAR, dob, date(:endDate)) between 20 and 24\n" +
-                "         and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "      having \n" +
+                "         latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
                 "         and d.latest_disc between :startDate and :endDate)a;";
         cd.setName("ExitedPostOtz");
         cd.setQuery(sqlQuery);
@@ -138,8 +138,8 @@ public class ETLOtzCohortLibrary {
                 "                  where d.program_name = 'OTZ'\n" +
                 "                  group by d.patient_id)d on e.patient_id = d.patient_id\n" +
                 "group by e.patient_id\n" +
-                "having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "   and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "having \n" +
+                "    latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
                 "and (disc_patient is null or latest_enr > d.latest_disc))a;";
         cd.setName("Adolescents");
         cd.setQuery(sqlQuery);
@@ -366,8 +366,8 @@ public class ETLOtzCohortLibrary {
                 "                    where d.program_name = 'OTZ'\n" +
                 "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
                 "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "  having \n" +
+                "      latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
                 "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
                 "inner join\n" +
                 " (select\n" +
@@ -400,138 +400,6 @@ public class ETLOtzCohortLibrary {
         return cd;
     }
 
-    public CohortDefinition patient20To24WithValidVL(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id from (select c.patient_id,vl.vl_date from (select e.patient_id, max(e.visit_date) as latest_enr,min(e.visit_date) as first_enr, d.patient_id as disc_patient,d.latest_disc,p.dob as dob,timestampdiff(YEAR,p.DOB,date(:endDate)),date_sub(:endDate , interval :month MONTH)\n" +
-                "  from kenyaemr_etl.etl_otz_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics p on e.patient_id = p.patient_id\n" +
-                "         left join (select d.patient_id, date(max(d.visit_date)) as latest_disc\n" +
-                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "                    where d.program_name = 'OTZ'\n" +
-                "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
-                "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
-                "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
-                "inner join\n" +
-                " (select\n" +
-                "                          b.patient_id,\n" +
-                "                          max(b.visit_date) as vl_date,\n" +
-                "                          date_sub(:endDate , interval 12 MONTH),\n" +
-                "                          mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
-                "                          if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                                                              mid(max(concat(b.visit_date, b.urgency)), 11)\n" +
-                "                                                                              as urgency\n" +
-                "                                                                              from (select x.patient_id  as patient_id,\n" +
-                "                                                                                           x.visit_date  as visit_date,\n" +
-                "                                                                                           x.lab_test    as lab_test,\n" +
-                "                                                                                           x.test_result as test_result,\n" +
-                "                                                                                           urgency       as urgency\n" +
-                "                                                                                    from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "                                                                                    where x.lab_test in (1305, 856)\n" +
-                "                                                                                    group by x.patient_id, x.visit_date\n" +
-                "                                                                                    order by visit_date desc)b\n" +
-                "                                                                              group by patient_id\n" +
-                "                                                                              having max(visit_date) between\n" +
-                "                                                                                  date_sub(:endDate, interval 12 MONTH) and date(:endDate))vl\n" +
-                "                             on c.patient_id = vl.patient_id)a;";
-        cd.setName("ValidVL");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patient aged 20 - 24 with Valid VL");
-
-        return cd;
-    }
-
-    public CohortDefinition patient20To24WithValidVLLess400(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id from (select c.patient_id,vl.vl_date from (select e.patient_id, max(e.visit_date) as latest_enr,min(e.visit_date) as first_enr, d.patient_id as disc_patient,d.latest_disc,p.dob as dob,timestampdiff(YEAR,p.DOB,date(:endDate)),date_sub(:endDate , interval :month MONTH)\n" +
-                "  from kenyaemr_etl.etl_otz_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics p on e.patient_id = p.patient_id\n" +
-                "         left join (select d.patient_id, date(max(d.visit_date)) as latest_disc\n" +
-                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "                    where d.program_name = 'OTZ'\n" +
-                "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
-                "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
-                "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
-                "inner join\n" +
-                " (select\n" +
-                "                          b.patient_id,\n" +
-                "                          max(b.visit_date) as vl_date,\n" +
-                "                          date_sub(:endDate , interval 12 MONTH),\n" +
-                "                          mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
-                "                          if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                                                              mid(max(concat(b.visit_date, b.urgency)), 11)\n" +
-                "                                                                              as urgency\n" +
-                "                                                                              from (select x.patient_id  as patient_id,\n" +
-                "                                                                                           x.visit_date  as visit_date,\n" +
-                "                                                                                           x.lab_test    as lab_test,\n" +
-                "                                                                                           x.test_result as test_result,\n" +
-                "                                                                                           urgency       as urgency\n" +
-                "                                                                                    from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "                                                                                    where x.lab_test in (1305, 856)\n" +
-                "                                                                                    group by x.patient_id, x.visit_date\n" +
-                "                                                                                    order by visit_date desc)b\n" +
-                "                                                                              group by patient_id\n" +
-                "                                                                              having max(visit_date) between\n" +
-                "                                                                                  date_sub(:endDate, interval 12 MONTH) and date(:endDate))vl\n" +
-                "                             on c.patient_id = vl.patient_id where vl.vl_result < 400 or vl_result = 'LDL')a;";
-        cd.setName("ValidVLLess400");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patient with Valid VL < 400");
-
-        return cd;
-    }
-
-    public CohortDefinition patient20To24WithValidVLLess1000(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id from (select c.patient_id,vl.vl_date from (select e.patient_id, max(e.visit_date) as latest_enr,min(e.visit_date) as first_enr, d.patient_id as disc_patient,d.latest_disc,p.dob as dob,timestampdiff(YEAR,p.DOB,date(:endDate)),date_sub(:endDate , interval :month MONTH)\n" +
-                "  from kenyaemr_etl.etl_otz_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics p on e.patient_id = p.patient_id\n" +
-                "         left join (select d.patient_id, date(max(d.visit_date)) as latest_disc\n" +
-                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "                    where d.program_name = 'OTZ'\n" +
-                "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
-                "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
-                "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
-                "inner join\n" +
-                " (select\n" +
-                "                          b.patient_id,\n" +
-                "                          max(b.visit_date) as vl_date,\n" +
-                "                          date_sub(:endDate , interval 12 MONTH),\n" +
-                "                          mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
-                "                          if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                                                              mid(max(concat(b.visit_date, b.urgency)), 11)\n" +
-                "                                                                              as urgency\n" +
-                "                                                                              from (select x.patient_id  as patient_id,\n" +
-                "                                                                                           x.visit_date  as visit_date,\n" +
-                "                                                                                           x.lab_test    as lab_test,\n" +
-                "                                                                                           x.test_result as test_result,\n" +
-                "                                                                                           urgency       as urgency\n" +
-                "                                                                                    from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "                                                                                    where x.lab_test in (1305, 856)\n" +
-                "                                                                                    group by x.patient_id, x.visit_date\n" +
-                "                                                                                    order by visit_date desc)b\n" +
-                "                                                                              group by patient_id\n" +
-                "                                                                              having max(visit_date) between\n" +
-                "                                                                                  date_sub(:endDate, interval 12 MONTH) and date(:endDate))vl\n" +
-                "                             on c.patient_id = vl.patient_id where vl.vl_result < 1000 or vl_result = 'LDL')a;";
-        cd.setName("ValidVLLess1000");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patient with Valid VL < 1000");
-
-        return cd;
-    }
-
     public CohortDefinition patientWithValidVLLess400(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id from (select c.patient_id,vl.vl_date from (select e.patient_id, max(e.visit_date) as latest_enr,min(e.visit_date) as first_enr, d.patient_id as disc_patient,d.latest_disc,p.dob as dob,timestampdiff(YEAR,p.DOB,date(:endDate)),date_sub(:endDate , interval :month MONTH)\n" +
@@ -542,8 +410,8 @@ public class ETLOtzCohortLibrary {
                 "                    where d.program_name = 'OTZ'\n" +
                 "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
                 "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "  having \n" +
+                "      latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
                 "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
                 "inner join\n" +
                 " (select\n" +
@@ -586,8 +454,8 @@ public class ETLOtzCohortLibrary {
                 "                    where d.program_name = 'OTZ'\n" +
                 "                    group by d.patient_id)d on e.patient_id = d.patient_id\n" +
                 "  group by e.patient_id\n" +
-                "  having timestampdiff(YEAR,dob,date(:endDate)) between 20 and 24\n" +
-                "     and latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "  having \n" +
+                "      latest_enr between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
                 "     and (disc_patient is null or latest_enr > d.latest_disc))c\n" +
                 "inner join\n" +
                 " (select\n" +

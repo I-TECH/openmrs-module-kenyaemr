@@ -100,26 +100,12 @@ public class ETLOtzIndicatorLibrary {
     public CohortIndicator patientsWithValidVLLess1000(Integer month) {
         return cohortIndicator("Valid VL Less 1000 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLLess1000CohortDefinition(month), ""));
 
-
     }
 
     public CohortIndicator patientsWithValidVLLess400(Integer month) {
         return cohortIndicator("Valid VL Less 400 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatientsWithValidVLLess400CohortDefinition(month), ""));
     }
-    public CohortIndicator patients20To24WithValidVLOnReportingPeriod(Integer month) {
-        return cohortIndicator("Valid VL on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatient20To24WithValidVLonReportingPeriodCohortDefinition(month), ""));
 
-    }
-
-    public CohortIndicator patients20To24WithValidVLLess1000(Integer month) {
-        return cohortIndicator("Valid VL Less 1000 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatients20To24WithValidVLLess1000CohortDefinition(month), ""));
-
-
-    }
-
-    public CohortIndicator patients20To24WithValidVLLess400(Integer month) {
-        return cohortIndicator("Valid VL Less 400 on reporting month", ReportUtils.<CohortDefinition>map(new OTZPatients20To24WithValidVLLess400CohortDefinition(month), ""));
-    }
     public CohortIndicator patientsSwithedToSecondlineArt(Integer month) {
         return cohortIndicator("Switch to second line ART", ReportUtils.<CohortDefinition>map(new OTZSwitchedToSecondLineARTCohortDefinition(month), ""));
 
