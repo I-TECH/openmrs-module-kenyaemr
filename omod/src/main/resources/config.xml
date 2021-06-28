@@ -31,6 +31,7 @@
 		<require_module version="${kenyauiVersion}">org.openmrs.module.kenyaui</require_module>
 		<require_module version="${metadatasharingVersion}">org.openmrs.module.metadatasharing</require_module>
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
+		<require_module version="${reportingcompatibilityVersion}">org.openmrs.module.reportingcompatibility</require_module>
 		<require_module version="${groovyVersion}">org.openmrs.module.groovy</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
 		<require_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</require_module>
