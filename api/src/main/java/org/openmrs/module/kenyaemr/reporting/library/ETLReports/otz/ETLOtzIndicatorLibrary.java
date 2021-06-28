@@ -75,7 +75,7 @@ public class ETLOtzIndicatorLibrary {
     }
 
     public CohortIndicator adolecentsInProgram(Integer month) {
-        return cohortIndicator("Person age 20-24 still in OTZ program", ReportUtils.<CohortDefinition>map(new OTZPatinetAged20To24StillinProgramCohortDefinition(month), ""));
+        return cohortIndicator("Person age 20-24 still in OTZ program", ReportUtils.<CohortDefinition>map(new OTZPatientStillinProgramCohortDefinition(month), ""));
 
     }
 

@@ -13,7 +13,7 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.OTZPatinetAged20To24StillinProgramCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.OTZPatientStillinProgramCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.otz.ETLOtzCohortLibrary;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -30,8 +30,8 @@ import java.util.Map;
 /**
  * Evaluates a OnPatientsAge20To24StillInOtzProgramDataDefinition
  */
-@Handler(supports = {OTZPatinetAged20To24StillinProgramCohortDefinition.class})
-public class OTZPatientAge20To24InProgramCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {OTZPatientStillinProgramCohortDefinition.class})
+public class OTZPatientInProgramCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     @Autowired
     private ETLOtzCohortLibrary otzCohortLibrary;
@@ -39,7 +39,7 @@ public class OTZPatientAge20To24InProgramCohortDefinitionEvaluator implements Co
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-        OTZPatinetAged20To24StillinProgramCohortDefinition definition = (OTZPatinetAged20To24StillinProgramCohortDefinition) cohortDefinition;
+        OTZPatientStillinProgramCohortDefinition definition = (OTZPatientStillinProgramCohortDefinition) cohortDefinition;
         Integer month = definition.getMonth();
 
         CohortDefinition cd = otzCohortLibrary.numberOfAdolescentsInotzProgram();

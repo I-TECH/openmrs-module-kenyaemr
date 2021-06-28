@@ -35,21 +35,20 @@ public class FirstVLPostOTZEnrolmentDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "\n" +
-                "select f.patient_id, f.Vl_post_enr from\n" +
-                "(select n.patient_id, concat_ws('\\r\\n',if(mid(min(concat(n.visit_date, n.lab_test)), 11) = 856,mid(min(concat(n.visit_date, n.test_result)), 11), if(mid(min(concat(n.visit_date,n.lab_test)),11) = 1305 and mid(min(concat(n.visit_date, n.test_result)), 11) = 1302,'LDL', '')),n.visit_date)as Vl_post_enr,n.visit_date from kenyaemr_etl.etl_otz_enrollment e  join\n" +
-                "(select t.patient_id,t.test_result,t.visit_date,t.lab_test\n" +
+        String qry = "select t.patient_id,t.test_result,t.Vl_post_enr\n" +
                 "from (select t.*,\n" +
-                "(@rn := if(@v = patient_id, @rn + 1,\n" +
-                "if(@v := patient_id, 1, 1)\n" +
-                ")\n" +
-                ") as rn\n" +
-                "from kenyaemr_etl.etl_laboratory_extract t cross join\n" +
-                "(select @v := -1, @rn := 0) params\n" +
-                "where t.lab_test in (1305, 856)\n" +
-                "order by t.patient_id, t.visit_date asc\n" +
-                ") t\n" +
-                "where rn=1)n on n.patient_id= e.patient_id group by e.patient_id having max(date(e.visit_date)) <= date(n.visit_date))f;";
+                "             (@rn := if(@v = patient_id, @rn + 1,\n" +
+                "                        if(@v := patient_id, 1, 1)\n" +
+                "                 )\n" +
+                "                 ) as rn\n" +
+                "      from (select t.patient_id,t.visit_date,t.lab_test,t.test_result,concat_ws('\\r\\n',if(mid(min(concat(t.visit_date, t.lab_test)), 11) = 856,mid(min(concat(t.visit_date, t.test_result)), 11), if(mid(min(concat(t.visit_date,t.lab_test)),11) = 1305 and mid(min(concat(t.visit_date, t.test_result)), 11) = 1302,'LDL', '')),t.visit_date)as Vl_post_enr,max(e.visit_date) as latest_otz_enr from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "                                                                                                                   left join kenyaemr_etl.etl_laboratory_extract t on e.patient_id = t.patient_id\n" +
+                "            group by t.visit_date,e.patient_id\n" +
+                "            having t.visit_date >= latest_otz_enr) t cross join\n" +
+                "               (select @v := -1, @rn := 0) params\n" +
+                "      order by t.patient_id, t.visit_date asc\n" +
+                "     ) t\n" +
+                "where rn=1;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

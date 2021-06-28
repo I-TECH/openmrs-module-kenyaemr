@@ -21,8 +21,8 @@ import java.util.Date;
  * Visit ID Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.OTZPatinetAged20To24StillinProgramCohortDefinition")
-public class OTZPatinetAged20To24StillinProgramCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.OTZPatientStillinProgramCohortDefinition")
+public class OTZPatientStillinProgramCohortDefinition extends BaseCohortDefinition {
 
 
     @ConfigurationProperty
@@ -33,7 +33,7 @@ public class OTZPatinetAged20To24StillinProgramCohortDefinition extends BaseCoho
     /**
      * Default Constructor
      */
-    public OTZPatinetAged20To24StillinProgramCohortDefinition() {
+    public OTZPatientStillinProgramCohortDefinition() {
         super();
     }
 
@@ -44,7 +44,7 @@ public class OTZPatinetAged20To24StillinProgramCohortDefinition extends BaseCoho
     /**
      * Constructor to populate name only
      */
-    public OTZPatinetAged20To24StillinProgramCohortDefinition(Integer month) {
+    public OTZPatientStillinProgramCohortDefinition(Integer month) {
         super();
         this.month = month;
     }

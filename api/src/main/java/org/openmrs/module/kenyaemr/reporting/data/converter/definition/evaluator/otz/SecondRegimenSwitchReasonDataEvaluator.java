@@ -36,35 +36,32 @@ public class SecondRegimenSwitchReasonDataEvaluator implements PersonDataEvaluat
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select t.patient_id, t.reason\n" +
-                "from (select t.*, (@rn := if(@v = patient_id, @rn + 1,\n" +
-                "                             if(@v := patient_id, 1, 1)\n" +
-                "    )\n" +
-                "    ) as rn\n" +
-                "      from (select t.patient_id,\n" +
-                "                   t.date_started,\n" +
-                "                   t.regimen,\n" +
-                "                   t.regimen_line,\n" +
+        String qry = "select t.patient_id,t.reason\n" +
+                "from (select t.*,\n" +
+                "             (@rn := if(@v = patient_id, @rn + 1,\n" +
+                "                        if(@v := patient_id, 1, 1)\n" +
+                "                 )\n" +
+                "                 ) as rn\n" +
+                "      from (select t.patient_id,t.date_started,t.regimen,t.regimen_line,max(e.visit_date) as latest_otz_enr,\n" +
                 "                   coalesce((case t.reason_discontinued\n" +
-                "                               when 102 then 'Drug toxicity'\n" +
-                "                               when 160561 then 'New drug available'\n" +
-                "                               when 160567 then 'New diagnosis of Tuberculosis'\n" +
-                "                               when 160569 then 'Virologic failure'\n" +
-                "                               when 159598 then 'Non-compliance with treatment or therapy'\n" +
-                "                               when 1754 then 'Medications unavailable'\n" +
-                "                               when 1434 then 'Currently pregnant'\n" +
-                "                               when 1253 then 'Completed PMTCT'\n" +
-                "                               when 843 then 'Regimen failure'\n" +
-                "                               when 5622 then 'Other'\n" +
-                "                               else '' end), t.reason_discontinued_other) as reason,\n" +
-                "                   max(e.visit_date)                                      as latest_otz_enr\n" +
-                "            from kenyaemr_etl.etl_otz_enrollment e\n" +
-                "                   left join kenyaemr_etl.etl_drug_event t on e.patient_id = t.patient_id\n" +
-                "            group by t.date_started, e.patient_id\n" +
-                "            having t.date_started >= latest_otz_enr) t\n" +
-                "             cross join (select @v := -1, @rn := 0) params\n" +
-                "      order by t.patient_id, t.date_started asc) t\n" +
-                "where rn = 3;";
+                "                                               when 102 then 'Drug toxicity'\n" +
+                "                                               when 160561 then 'New drug available'\n" +
+                "                                               when 160567 then 'New diagnosis of Tuberculosis'\n" +
+                "                                               when 160569 then 'Virologic failure'\n" +
+                "                                               when 159598 then 'Non-compliance with treatment or therapy'\n" +
+                "                                               when 1754 then 'Medications unavailable'\n" +
+                "                                               when 1434 then 'Currently pregnant'\n" +
+                "                                               when 1253 then 'Completed PMTCT'\n" +
+                "                                               when 843 then 'Regimen failure'\n" +
+                "                                               when 5622 then 'Other'\n" +
+                "                                               else '' end), t.reason_discontinued_other) as reason from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "                                                            left join kenyaemr_etl.etl_drug_event t on e.patient_id = t.patient_id where t.program = 'HIV'\n" +
+                "            group by t.date_started,e.patient_id\n" +
+                "            having t.date_started >= latest_otz_enr) t cross join\n" +
+                "               (select @v := -1, @rn := 0) params\n" +
+                "      order by t.patient_id, t.date_started asc\n" +
+                "     ) t\n" +
+                "where rn=2;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
