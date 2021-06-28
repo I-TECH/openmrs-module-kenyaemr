@@ -368,7 +368,7 @@ public class MigrateRegimenChangeHistory extends AbstractChore {
     }
 
     protected Set<Integer> getPatientsWithOrders() {
-        Cohort patientsHavingDrugOrder =  Context.getService(ReportingCompatibilityService.class).getPatientsHavingDrugOrder(null, null, null, null, null, null, null);
+        org.openmrs.cohort.Cohort patientsHavingDrugOrder =  Context.getService(ReportingCompatibilityService.class).getPatientsHavingDrugOrder(null, null, null, null, null, null, null);
         return patientsHavingDrugOrder.getMemberIds();
     }
 
