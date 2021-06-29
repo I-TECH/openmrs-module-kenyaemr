@@ -35,7 +35,7 @@ public class FifthVLPostOTZEnrolmentDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select t.patient_id,t.test_result,t.Vl_post_enr\n" +
+        String qry = "select t.patient_id,t.Vl_post_enr\n" +
                 "from (select t.*,\n" +
                 "             (@rn := if(@v = patient_id, @rn + 1,\n" +
                 "                        if(@v := patient_id, 1, 1)\n" +
