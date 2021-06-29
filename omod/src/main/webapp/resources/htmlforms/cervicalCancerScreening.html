@@ -47,40 +47,52 @@
         beforeSubmit.push(function() {
 			var screeningMethod = getValue("screening_method.value");
 			     if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == "") {
-					getField("via_screening_result.error").html("Required field")
-					return false;
+                     getField("via_screening_result.error").html("Required field").show();
+                     return false;
+                 }else{
+                     getField("via_screening_result.error").html("Required field").hide();
 				}
                 if (screeningMethod == VILI_CONCEPT_ID &amp;&amp; getValue("vili_screening_result.value") == "") {
-					getField("vili_screening_result.error").html("Required field") 
+					getField("vili_screening_result.error").html("Required field").show();
 					return false;
+				}else{
+                    getField("vili_screening_result.error").html("Required field").hide();
 				}
 
 				if (screeningMethod == PAP_SMEAR_CONCEPT_ID &amp;&amp; getValue("pap_smear_screening_result.value") == "") {
-					getField("pap_smear_screening_result.error").html("Required field") 
+					getField("pap_smear_screening_result.error").html("Required field").show();
 					return false;
+				}else{
+                    getField("pap_smear_screening_result.error").html("Required field").show();
 				}
 
 				if (screeningMethod == HPV_TEST_CONCEPT_ID &amp;&amp; getValue("hpv_screening_result.value") == "") {
-					getField("hpv_screening_result.error").html("Required field") 
+					getField("hpv_screening_result.error").html("Required field").show();
 					return false;
+				}else{
+                    getField("hpv_screening_result.error").html("Required field").hide();
 				}
 				if (screeningMethod == COLPOSCOPY &amp;&amp; getValue("colposcopy_screening_result.value") == "") {
-					getField("colposcopy_screening_result.error").html("Required field")
+					getField("colposcopy_screening_result.error").html("Required field").show();
 					return false;
+				}else{
+                    getField("colposcopy_screening_result.error").html("Required field").hide();
 				}
-
-			}
 
 			if (refferedOut == YES_CONCEPT_ID) {
 				if (getValue("referred_to.value") == "") {
-					getField("referred_to.error").html("Provide value")
+					getField("referred_to.error").html("Provide value").show();
 					return false;
-				}  
+				} else{
+                    getField("referred_to.error").html("Provide value").hide();
+				}
 
 				if (getValue("referral_reason.value") == "") {
-					getField("referral_reason.error").html("Provide value")
+					getField("referral_reason.error").html("Provide value").show();
 					return false;
-				}  
+				} else{
+                    getField("referral_reason.error").html("Provide value").hide();
+				}
 			}
 		})
 
