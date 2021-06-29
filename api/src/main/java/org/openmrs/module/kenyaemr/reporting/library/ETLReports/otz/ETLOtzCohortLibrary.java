@@ -536,40 +536,41 @@ public class ETLOtzCohortLibrary {
     public CohortDefinition patientEligibleForRoutineVL(int month){
         SqlCohortDefinition cd =  new SqlCohortDefinition();
         String sqlQuery = "select patient_id\n" +
-                "from\n" +
-                "(\n" +
-                "select patient_id, date_started_art, inMCH, latest_mch_date, lastVLDate, lastVLDateWithinPeriod, dob,timestampdiff(YEAR,dob,:endDate) as age, if(lastVL !=null and (lastVL<1000 or lastVL=1302), 'Suppressed', if(lastVL !=null and lastVL>=1000, 'Unsuppressed', null)) lastVLWithinPeriod,lastVL  from\n" +
-                "      (select a.patient_id,\n" +
-                "              a.date_started_art,\n" +
-                "              mch.patient_id                                               as inMCH,\n" +
-                "              mch.latest_mch_date                                          as latest_mch_date,\n" +
-                "              mid(max(concat(l.visit_date, l.test_result)), 11)            as lastVL,\n" +
-                "              left(max(concat(l.visit_date, l.test_result)), 10)           as lastVLDateWithinPeriod,\n" +
-                "              left(max(concat(l_ever.visit_date, l_ever.test_result)), 10) as lastVLDate,\n" +
-                "              a.dob                                                        as dob\n" +
-                "       from (select e.patient_id, min(date_started) as date_started_art, p.DOB as dob\n" +
-                "             from kenyaemr_etl.etl_otz_enrollment e\n" +
-                "                    inner join kenyaemr_etl.etl_patient_demographics p\n" +
-                "                      on e.patient_id = p.patient_id and p.voided = 0\n" +
-                "                    inner join kenyaemr_etl.etl_drug_event d\n" +
-                "                      on d.patient_id = e.patient_id and ifnull(d.voided, 0) = 0\n" +
-                "             group by e.patient_id\n" +
-                "             having timestampdiff(MONTH,min(d.date_started),:endDate ) = "+month+") a\n" +
-                "              left join (select mch.patient_id,di.patient_id as disc_patient,max(date(mch.visit_date)) as latest_mch_date,max(date(di.visit_date)) as disc_date,di.program_name from kenyaemr_etl.etl_mch_enrollment mch\n" +
-                "                               left join kenyaemr_etl.etl_patient_program_discontinuation di on mch.patient_id = di.patient_id\n" +
-                "                         group by mch.patient_id having ((latest_mch_date > disc_date and di.program_name = 'MCH Mother') or di.patient_id is null) and latest_mch_date between date_sub(:endDate, interval "+month+" month) and :endDate) mch on mch.patient_id = a.patient_id\n" +
-                "              left join kenyaemr_etl.etl_laboratory_extract l on l.patient_id = a.patient_id and l.lab_test in (856, 1305)\n" +
-                "              left join kenyaemr_etl.etl_laboratory_extract l_ever on l_ever.patient_id = a.patient_id and l_ever.lab_test in (856, 1305)\n" +
-                "       group by a.patient_id) o\n" +
-                ") e where\n" +
-                "(\n" +
-                "(e.lastVL is null and  e.inMCH is null)\n" +
-                "or  e.lastVL is null and  e.inMCH is not null and e.latest_mch_date >= e.date_started_art\n" +
-                "or  e.lastVL is not null  and (lastVL < 1000 or lastVL=1302) and (timestampdiff(YEAR,e.dob,:endDate))<25 and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 6\n" +
-                "or  e.lastVL is not null  and (lastVL < 1000 or lastVL=1302) and (timestampdiff(YEAR,e.dob,:endDate))>25 and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 12\n" +
-                "or  e.lastVL is not null  and (lastVL > 1000 and timestampdiff(MONTH,e.lastVLDate, :endDate) >= 3\n" +
-                "or  e.lastVL is not null and (lastVL < 1000 or lastVL=1302) and e.inMCH is not null and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 6\n" +
-                "));";
+                "                from\n" +
+                "                (\n" +
+                "                select patient_id, date_started_art, inMCH, latest_mch_date, lastVLDate, lastVLDateWithinPeriod, dob,timestampdiff(YEAR,dob,:endDate) as age, if(lastVL !=null and (lastVL<1000 or lastVL=1302), 'Suppressed', if(lastVL !=null and lastVL>=1000, 'Unsuppressed', null)) lastVLWithinPeriod,lastVL  from\n" +
+                "                 (select a.patient_id,\n" +
+                "                         a.date_started_art,\n" +
+                "                         mch.patient_id                                               as inMCH,\n" +
+                "                         mch.latest_mch_date                                          as latest_mch_date,\n" +
+                "                         mid(max(concat(l.visit_date, l.test_result)), 11)            as lastVL,\n" +
+                "                         left(max(concat(l.visit_date, l.test_result)), 10)           as lastVLDateWithinPeriod,\n" +
+                "                         left(max(concat(l_ever.visit_date, l_ever.test_result)), 10) as lastVLDate,\n" +
+                "                         a.dob                                                        as dob\n" +
+                "                  from (select e.patient_id, min(date_started) as date_started_art, p.DOB as dob\n" +
+                "                        from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "                               inner join kenyaemr_etl.etl_patient_demographics p\n" +
+                "                                 on e.patient_id = p.patient_id and p.voided = 0\n" +
+                "                               inner join kenyaemr_etl.etl_drug_event d\n" +
+                "                                 on d.patient_id = e.patient_id and ifnull(d.voided, 0) = 0\n" +
+                "                        where  e.visit_date between date_sub(:startDate, interval :month MONTH) and date_sub(:endDate, interval :month MONTH)\n" +
+                "                        group by e.patient_id\n" +
+                "                        having timestampdiff(MONTH,min(d.date_started),:endDate ) = \"+month+\") a\n" +
+                "                         left join (select mch.patient_id,di.patient_id as disc_patient,max(date(mch.visit_date)) as latest_mch_date,max(date(di.visit_date)) as disc_date,di.program_name from kenyaemr_etl.etl_mch_enrollment mch\n" +
+                "                                          left join kenyaemr_etl.etl_patient_program_discontinuation di on mch.patient_id = di.patient_id\n" +
+                "                                    group by mch.patient_id having ((latest_mch_date > disc_date and di.program_name = 'MCH Mother') or di.patient_id is null) and latest_mch_date between date_sub(:endDate, interval \"+month+\" month) and :endDate) mch on mch.patient_id = a.patient_id\n" +
+                "                         left join kenyaemr_etl.etl_laboratory_extract l on l.patient_id = a.patient_id and l.lab_test in (856, 1305)\n" +
+                "                         left join kenyaemr_etl.etl_laboratory_extract l_ever on l_ever.patient_id = a.patient_id and l_ever.lab_test in (856, 1305)\n" +
+                "                  group by a.patient_id) o\n" +
+                "                ) e where\n" +
+                "                (\n" +
+                "                (e.lastVL is null and  e.inMCH is null)\n" +
+                "                or  e.lastVL is null and  e.inMCH is not null and e.latest_mch_date >= e.date_started_art\n" +
+                "                or  e.lastVL is not null  and (lastVL < 1000 or lastVL=1302) and (timestampdiff(YEAR,e.dob,:endDate))<25 and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 6\n" +
+                "                or  e.lastVL is not null  and (lastVL < 1000 or lastVL=1302) and (timestampdiff(YEAR,e.dob,:endDate))>25 and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 12\n" +
+                "                or  e.lastVL is not null  and (lastVL > 1000 and timestampdiff(MONTH,e.lastVLDate, :endDate) >= 3\n" +
+                "                or  e.lastVL is not null and (lastVL < 1000 or lastVL=1302) and e.inMCH is not null and  timestampdiff(MONTH,e.lastVLDate, :endDate) >= 6\n" +
+                "                ));";
         cd.setName("due for VL Test");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
