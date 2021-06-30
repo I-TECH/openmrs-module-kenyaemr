@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.page.controller.dialog;
 
 import org.openmrs.Cohort;
+import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -47,7 +48,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller for cohort dialog
@@ -86,7 +89,18 @@ public class CohortDialogPageController {
             cohort = (Cohort) result;
         }
 
-        List<Patient> patients = Context.getService(ReportingCompatibilityService.class).getPatients(cohort.getMemberIds());
+        Set<Integer> cohortPatients = new HashSet<Integer>();
+        if(cohort != null) {
+
+            for (CohortMembership membership : cohort.getMemberships()) {
+                cohortPatients.add(membership.getPatientId());
+
+            }
+        }
+
+        List<Patient> patients = Context.getService(ReportingCompatibilityService.class).getPatients(cohortPatients);
+
+
 
         PatientCalculationService calculationService = Context.getService(PatientCalculationService.class);
         PatientCalculationContext calculationContext = calculationService.createCalculationContext();
@@ -94,13 +108,13 @@ public class CohortDialogPageController {
         calculationContext.setNow(endDate);
 
         DateOfEnrollmentArtCalculation dateOfEnrollmentArtCalculation = new DateOfEnrollmentArtCalculation();
-        CalculationResultMap enrollmentDates = dateOfEnrollmentArtCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap enrollmentDates = dateOfEnrollmentArtCalculation.evaluate(cohortPatients, null, calculationContext);
 
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
-        CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohortPatients, null, calculationContext);
 
         LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
-        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohortPatients, null, calculationContext);
 
         AgeDataDefinition d = new AgeDataDefinition();
         d.setEffectiveDate(endDate);
