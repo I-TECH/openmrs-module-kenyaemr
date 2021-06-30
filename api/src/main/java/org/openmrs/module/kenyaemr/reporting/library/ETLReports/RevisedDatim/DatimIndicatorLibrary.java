@@ -306,6 +306,27 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * Women on ART and Cx treatment screened Negative for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator postTreatmentscreenedCXCANegative() {
+        return cohortIndicator("Women on ART and Cx treatment screened Negative for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Women on ART and Cx treatment screened Positive for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator postTreatmentscreenedCXCAPositive() {
+        return cohortIndicator("Women on ART and Cx treatment screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Women on ART and Cx treatment screened Positive for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator postTreatmentscreenedCXCAPresumed() {
+        return cohortIndicator("Women on ART and Cx treatment screened Presumed for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * Number of OVC Current on ART reported to implementing partner
      * @return the indicator
      */

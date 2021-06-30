@@ -397,6 +397,15 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //CXCA_RESCRN_PRESUMED
         EmrReportingUtils.addRow(cohortDsd, "CXCA_RESCRN_PRESUMED", "HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.map(datimIndicators.firstTimescreenedCXCAPresumed(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
 
+        //CXCA_TX_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_NEGATIVE", "Women on ART and Cx treatment screened Negative for cervical cancer", ReportUtils.map(datimIndicators.postTreatmentscreenedCXCANegative(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+
+        //CXCA_TX_POSITIVE
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_POSITIVE", "Women on ART and Cx treatment screened Positive for cervical cancer", ReportUtils.map(datimIndicators.postTreatmentscreenedCXCAPositive(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+
+        //CXCA_TX_PRESUMED
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_PRESUMED", "Women on ART and Cx treatment screened presumed for cervical cancer", ReportUtils.map(datimIndicators.postTreatmentscreenedCXCAPresumed(), indParams), datimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+
         //Number of OVC current on ART reported to implementing partner
         cohortDsd.addColumn("OVC_HIVSTAT_ONART", "Number of OVC Current on ART reported to implementing partner", ReportUtils.map(datimIndicators.ovcOnART(), indParams), "");
 

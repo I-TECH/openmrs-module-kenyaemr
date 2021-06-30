@@ -33,17 +33,13 @@
         jq("#tr_post_tx_complication").hide();
         jq("#tbl-other-tx-complication").hide();
         jq("#tbl-other-treatment").hide();
+        jq("#t_referred_out").hide();
         jq("#visit_type select").change(onVisitTypeSelected);
         jq('#screening_method select').change(screeningMethodSelected);
         jq('#post_tx_complication select').change(postTxComplicationsSelected);
         jq('#treatment select').change(otherTreatmentSelected);
+        jq('#referred_out :input[type=radio]').change(onReferralSelected);
 
-		var refferedOut = getValue("referred_out.value");
-		if (refferedOut == YES_CONCEPT_ID) {
-			jq("#t_referred_out").show();
-		} else {
-			jq("#t_referred_out").hide();
-		}
         beforeSubmit.push(function() {
 			var screeningMethod = getValue("screening_method.value");
 			     if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == "") {
@@ -79,21 +75,6 @@
                     getField("colposcopy_screening_result.error").html("Required field").hide();
 				}
 
-			if (refferedOut == YES_CONCEPT_ID) {
-				if (getValue("referred_to.value") == "") {
-					getField("referred_to.error").html("Provide value").show();
-					return false;
-				} else{
-                    getField("referred_to.error").html("Provide value").hide();
-				}
-
-				if (getValue("referral_reason.value") == "") {
-					getField("referral_reason.error").html("Provide value").show();
-					return false;
-				} else{
-                    getField("referral_reason.error").html("Provide value").hide();
-				}
-			}
 		})
 
 	});
@@ -121,6 +102,15 @@
             jq("#tbl-other-treatment").show();
         } else {
             jq("#tbl-other-treatment").hide();
+        }
+    }
+
+    var onReferralSelected  = function () {
+        var refferedOut = getValue("referred_out.value");
+        if (refferedOut == 1065) {
+            jq("#t_referred_out").show();
+        } else {
+            jq("#t_referred_out").hide();
         }
     }
 
@@ -273,6 +263,13 @@
                                         jq("#tbl-other-treatment").hide();
                                     }
 
+                                var refferedOut = getValue("referred_out.value");
+                                if (refferedOut == 1065) {
+                                    jq("#t_referred_out").show();
+                                } else {
+                                    jq("#t_referred_out").hide();
+                                }
+
 
                             });
 						</script>
@@ -321,7 +318,7 @@
 								<td>
 									<table id="tbl-other-tx-complication">
 										<tr>
-											<td>Remarks:
+											<td>Explain:
 									              <obs id="other-tx-complication" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="20"/>
 											</td>
 										</tr>
@@ -343,16 +340,16 @@
 							<tr id="tr_via_screening_result">
 								<td>VIA Screening result</td>
 								<td>
-									<obs id="via_screening_result" conceptId="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									<obs id="via_screening_result" conceptId="164934"
 										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="VIA Negative, VIA Positive, Suspicious for cancer, Other"
+										answerLabels="VIA Negative,VIA Positive,Suspicious for cancer,Other"
 										style="dropdown" />
 								</td>
 							</tr>
 							<tr id="tr_vili_screening_result">
 								<td>VIA/VILI Screening result</td>
 								<td>
-									<obs id="vili_screening_result" conceptId="165384"
+									<obs id="vili_screening_result" conceptId="164934"
 										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="VILI Negative, VILI Positive, Suspicious for cancer, Other"
 										style="dropdown" />
@@ -361,7 +358,7 @@
 							<tr id="tr_colposcopy_screening_result">
 								<td>Colposcopy Screening result</td>
 								<td>
-									<obs id="colposcopy_screening_result" conceptId="165384"
+									<obs id="colposcopy_screening_result" conceptId="164934"
 										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										 answerLabels="Normal,Abnormal, Suspicious for cancer, Other"
 										 style="dropdown" />
@@ -371,16 +368,16 @@
 								<td>PAP Smear Screening result</td>
 								<td>
 									<obs id="pap_smear_screening_result"
-										conceptId="885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										conceptId="164934"
 										answerConceptIds="145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="Low grade lesion, High grade lesion, Invasive Cancer, Other"
+										answerLabels="Low grade lesion,High grade lesion,Invasive Cancer,Other"
 										style="dropdown" />
 								</td>
 							</tr>
 							<tr id="tr_hpv_screening_result">
 								<td>HPV Screening result</td>
 								<td>
-									<obs id="hpv_screening_result" conceptId="159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									<obs id="hpv_screening_result" conceptId="164934"
 										answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerLabels="Positive,Negative,Presumed Cancer" style="dropdown" />
 								</td>
@@ -391,7 +388,7 @@
 				<tr>
 					<td>Treatment today</td>
 					<td>
-						<obs id="treatment" conceptId="a869d37b-bf4d-4946-9318-15ff505211a5"
+						<obs id="treatment" conceptId="165266"
 							answerConceptIds="165381,
 							                  165386,
 							                  162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -404,14 +401,14 @@
 							              LEEP performed,
 							              Cold knife cone,
 							              Thermocoagulation,
-							              Referred for Cancer Treatment,
+							              Referred for cancer treatment,
                                           Other"
 							style="dropdown" required="true"/>
 					</td>
 					<td>
 						<table id="tbl-other-treatment">
 							<tr>
-								<td>Remarks:
+								<td>Explain:
 									<obs id="other-tx" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="20"/>
 								</td>
 							</tr>
@@ -421,7 +418,7 @@
 				<tr>
 					<td>Referred out</td>
 					<td>
-						<obs id="referred_out" conceptId="f5a15a0c-a55a-4680-8376-f9a1dd0be731"
+						<obs id="referred_out" conceptId="165267"
 							answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerLabels="Yes, No" style="radio" />
 					</td>
@@ -430,7 +427,7 @@
 							<tr>
 								<td>Referred out to</td>
 								<td>
-									<obs id="referred_to" conceptId="cab2c9a6-339e-47bc-b95b-d55797a26f14" />
+									<obs id="referred_to" conceptId="165268" />
 								</td>
 							</tr>
 							<tr>
@@ -438,7 +435,7 @@
 								<td>
 									<obs id="referral_reason" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerConceptIds="165388,132948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="Site does not have cryotherapy machine, Large lesion, Suspect cancer, Other gynaecological problem"
+										answerLabels="Site does not have cryotherapy machine,Large lesion, Suspect cancer,Other gynaecological problem"
 										style="dropdown" />
 								</td>
 							</tr>
