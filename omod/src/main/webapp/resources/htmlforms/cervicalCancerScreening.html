@@ -342,7 +342,7 @@
 								<td>
 									<obs id="via_screening_result" conceptId="164934"
 										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="VIA Negative,VIA Positive,Suspicious for cancer,Other"
+										answerLabels="Negative,Positive,Suspicious for cancer,Other"
 										style="dropdown" />
 								</td>
 							</tr>
@@ -351,7 +351,7 @@
 								<td>
 									<obs id="vili_screening_result" conceptId="164934"
 										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="VILI Negative, VILI Positive, Suspicious for cancer, Other"
+										answerLabels="Negative,Positive,Suspicious for cancer, Other"
 										style="dropdown" />
 								</td>
 							</tr>
@@ -360,7 +360,7 @@
 								<td>
 									<obs id="colposcopy_screening_result" conceptId="164934"
 										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Abnormal, Suspicious for cancer, Other"
+										 answerLabels="Normal,Abnormal,Suspicious for cancer, Other"
 										 style="dropdown" />
 								</td>
 							</tr>
@@ -389,18 +389,22 @@
 					<td>Treatment today</td>
 					<td>
 						<obs id="treatment" conceptId="165266"
-							answerConceptIds="165381,
+							answerConceptIds="165385
+							                  165381,
 							                  165386,
 							                  162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                  165396,
 							                  165395,
+							                  159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                  165391,
                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-							answerLabels="Cryotherapy postponed,
+							answerLabels="Cryotherapy performed (single Visit)
+							              Cryotherapy postponed,
 							              Cryotherapy performed (previously postponed),
 							              LEEP performed,
 							              Cold knife cone,
 							              Thermocoagulation,
+							              Hysterectomy,
 							              Referred for cancer treatment,
                                           Other"
 							style="dropdown" required="true"/>
