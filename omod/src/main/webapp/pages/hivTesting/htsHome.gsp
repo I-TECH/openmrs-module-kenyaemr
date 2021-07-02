@@ -2,10 +2,10 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	def menuItems = [
-			[ label: "View Afyastat Queue", iconProvider: "kenyaemr", icon: "queue-icon.jpg", label: "View Afyastat Queue", href: ui.pageLink("afyastat", "afyastatHome") ]
+			[ label: "View Afyastat Queue", iconProvider: "kenyaemr", icon: "queue/Record_Queue-sample1.1.png", label: "View Afyastat Queue", href: ui.pageLink("afyastat", "afyastatHome") ]
 	]
 	def muzimaMenuItems = [
-			[ label: "View mUzima Queue", iconProvider: "kenyaemr", icon: "queue-icon.jpg", label: "View mUzima Queue", href: ui.pageLink("kenyaemr", "hivTesting/muzimaQueueHome") ]
+			[ label: "View mUzima Queue", iconProvider: "kenyaemr", icon: "queue/Record_Queue-sample1.2.png", label: "View mUzima Queue", href: ui.pageLink("kenyaemr", "hivTesting/muzimaQueueHome") ]
 	]
 %>
 
