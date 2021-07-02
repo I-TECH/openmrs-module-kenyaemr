@@ -62,7 +62,8 @@ public class OtzReportBuilder extends AbstractReportBuilder {
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class)
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)  //Determines whether to add start and end date
 
         );
     }
