@@ -32,7 +32,7 @@
 <script type="text/javascript">
 	function ke_logout() {
 		kenyaui.openConfirmDialog({ heading: 'Logout', message: 'Logout and end session?', okCallback: function() {
-				ui.navigate('/${ contextPath }/logout');
+				ui.navigate('/${ contextPath }/ms/logout');
 			}});
 	}
 	
