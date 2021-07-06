@@ -14,9 +14,7 @@
 <htmlform>
 	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
-
-	jq(function() {
-		var POST_TX_COMPLICATION_CONCEPT_ID = 165382;
+        var POST_TX_COMPLICATION_CONCEPT_ID = 165382;
         var SCREENING_METHOD_CONCEPT_ID = 163589;
         var VIA_CONCEPT_ID = 164805;
         var VILI_CONCEPT_ID = 164977;
@@ -25,6 +23,7 @@
         var COLPOSCOPY = 160705;
         var YES_CONCEPT_ID = 1065
 
+	jq(function() {
 		jq("#tr_via_screening_result").hide();
 		jq("#tr_vili_screening_result").hide();
         jq("#tr_colposcopy_screening_result").hide();
@@ -40,42 +39,6 @@
         jq('#treatment select').change(otherTreatmentSelected);
         jq('#referred_out :input[type=radio]').change(onReferralSelected);
 
-        beforeSubmit.push(function() {
-			var screeningMethod = getValue("screening_method.value");
-			     if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == "") {
-                     getField("via_screening_result.error").html("Required field").show();
-                     return false;
-                 }else{
-                     getField("via_screening_result.error").html("Required field").hide();
-				}
-                if (screeningMethod == VILI_CONCEPT_ID &amp;&amp; getValue("vili_screening_result.value") == "") {
-					getField("vili_screening_result.error").html("Required field").show();
-					return false;
-				}else{
-                    getField("vili_screening_result.error").html("Required field").hide();
-				}
-
-				if (screeningMethod == PAP_SMEAR_CONCEPT_ID &amp;&amp; getValue("pap_smear_screening_result.value") == "") {
-					getField("pap_smear_screening_result.error").html("Required field").show();
-					return false;
-				}else{
-                    getField("pap_smear_screening_result.error").html("Required field").show();
-				}
-
-				if (screeningMethod == HPV_TEST_CONCEPT_ID &amp;&amp; getValue("hpv_screening_result.value") == "") {
-					getField("hpv_screening_result.error").html("Required field").show();
-					return false;
-				}else{
-                    getField("hpv_screening_result.error").html("Required field").hide();
-				}
-				if (screeningMethod == COLPOSCOPY &amp;&amp; getValue("colposcopy_screening_result.value") == "") {
-					getField("colposcopy_screening_result.error").html("Required field").show();
-					return false;
-				}else{
-                    getField("colposcopy_screening_result.error").html("Required field").hide();
-				}
-
-		})
 
 	});
 
@@ -153,6 +116,46 @@
 
         }
       }
+
+    beforeSubmit.push(function() {
+        var screeningMethod = getValue("screening_method.value");
+        console.log("Screening method ==>"+screeningMethod);
+
+        if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == '') {
+            getField("via_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("via_screening_result.error").html("Required field").hide();
+        }
+        if (screeningMethod == VILI_CONCEPT_ID &amp;&amp; getValue("vili_screening_result.value") == '') {
+            getField("vili_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("vili_screening_result.error").html("Required field").hide();
+        }
+
+        if (screeningMethod == PAP_SMEAR_CONCEPT_ID &amp;&amp; getValue("pap_smear_screening_result.value") == '') {
+            getField("pap_smear_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("pap_smear_screening_result.error").html("Required field").hide();
+        }
+
+        if (screeningMethod == HPV_TEST_CONCEPT_ID &amp;&amp; getValue("hpv_screening_result.value") == '') {
+            getField("hpv_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("hpv_screening_result.error").html("Required field").hide();
+        }
+        if (screeningMethod == COLPOSCOPY &amp;&amp; getValue("colposcopy_screening_result.value") == '') {
+            getField("colposcopy_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("colposcopy_screening_result.error").html("Required field").hide();
+        }
+        return true;
+    })
+
 
 	</script>
 	<style>
@@ -369,8 +372,8 @@
 								<td>
 									<obs id="pap_smear_screening_result"
 										conceptId="164934"
-										answerConceptIds="145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										answerLabels="Low grade lesion,High grade lesion,Invasive Cancer,Other"
+										answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Normal,Low grade lesion,High grade lesion,Invasive Cancer,Other"
 										style="dropdown" />
 								</td>
 							</tr>
@@ -397,7 +400,8 @@
 							                  165395,
 							                  159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                  165391,
-                                              5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                              5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                              1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							answerLabels="Cryotherapy performed (single Visit),
 							              Cryotherapy postponed,
 							              Cryotherapy performed (previously postponed),
@@ -406,7 +410,8 @@
 							              Thermocoagulation,
 							              Hysterectomy,
 							              Referred for cancer treatment,
-                                          Other"
+                                          Other,
+                                          None"
 							style="dropdown" required="true"/>
 					</td>
 					<td>
