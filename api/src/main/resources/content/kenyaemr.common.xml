@@ -429,6 +429,7 @@
 				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:cervicalCancerScreening.html" />
 		<property name="order" value="201080" />
@@ -447,6 +448,7 @@
 				<ref bean="kenyaemr.app.counselling" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:cervicalCancerAssessment.html" />
 		<property name="order" value="201082" />
