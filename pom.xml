@@ -46,7 +46,7 @@
     </modules>
 
     <properties>
-        <openMRSVersion>2.4.0</openMRSVersion>
+        <openMRSVersion>2.3.3</openMRSVersion>
         <openMRSMinorVersion>2.0</openMRSMinorVersion>
         <cielVersion>20150123</cielVersion>
 
