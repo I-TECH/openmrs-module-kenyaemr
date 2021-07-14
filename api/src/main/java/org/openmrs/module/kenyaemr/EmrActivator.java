@@ -42,6 +42,7 @@ public class EmrActivator implements ModuleActivator {
 	public void willRefreshContext() {
 
 		log.info("KenyaEMR context refreshing...");
+		//TODO: Investigate what causes reports page to load slowly. This behavior started with platform 2.x upgrade
 		Context.getAdministrationService().executeSQL("delete from reporting_report_request", false);
 
 	}
