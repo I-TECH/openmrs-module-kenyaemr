@@ -112,7 +112,7 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:otz/OTZ_REGISTER.xls" />
-		<property name="repeatingSection" value="sheet:1,row:9,dataset:OTZRegister" />
+		<property name="repeatingSection" value="sheet:1,row:8,dataset:OTZRegister" />
 	</bean>
 
 	<bean id="kenyaemr.otz.report.CurrentlyEnrolledInOTZ" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
