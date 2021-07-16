@@ -702,13 +702,14 @@
         }
         //Start before submit
         beforeSubmit.push(function() {
-            var encounterDate = new Date(getValue('encounter-date.value')).getTime();
+            var encounterDate =getValue('encounter-date.value');
             var personPresent =getValue('person-present.value');
             var complaintsToday = getValue('complaints-today.value');           //boolean
             var knownAllergies = getValue('known-allergies.value');            //boolean
             var adverseReactions = getValue('adverse-reactions.value');        // boolean
             var chronicIllness = getValue('chronic-illness.value');            //non boolean
-            var nextAptDate = new Date(getValue('next-apt-date.value')).getTime();
+            var nextAptDate = getValue('returnVisitDate.value');
+            var refillDate = getValue('refillVisitDate.value');
             var eddDate = new Date(getValue('pregdate-yes.value')).getTime();
             var dodDate = new Date(getValue('pregdate-no.value')).getTime();
             var stabilityStatus= getValue('stability.value');
@@ -729,10 +730,23 @@
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
                 return false;
             }
-            if (nextAptDate &amp;&amp; encounterDate &gt; nextAptDate) {
-                getField('next-apt-date.error').html('Should not be earlier than encounter date').show();
+
+            var isNextAppointmentDateBeforeEncounterDate = moment(moment(moment(nextAptDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isNextAppointmentDateBeforeEncounterDate) {
+                getField('returnVisitDate.error').html('Should not be earlier than encounter date').show();
                 return false;
+            }else{
+                getField('returnVisitDate.error').html('Should not be earlier than encounter date').hide();
             }
+
+            var isRefillDateBeforeEncounterDate = moment(moment(moment(refillDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
+            if (isRefillDateBeforeEncounterDate) {
+                getField('refillVisitDate.error').html('Should not be earlier than encounter date').show();
+                return false;
+            }else{
+                getField('refillVisitDate.error').html('Should not be earlier than encounter date').hide();
+            }
+
             if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
                 getField('stability.error').html('Please specify stability status.').show();
                 return false;
