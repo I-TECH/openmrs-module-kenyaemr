@@ -110,10 +110,10 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
-
+		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
 		if(isKDoD.equals("true")){
-			install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
-					null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
+
 			//Validation for UPN (if present) is relaxed for KDOD patients because migrated UPNs have illegal formats
 			install(patientIdentifierType("Unique Patient Number", "Assigned to every HIV patient", null, null,
 					null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UNIQUE_PATIENT_NUMBER));
