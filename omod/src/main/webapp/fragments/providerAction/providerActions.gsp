@@ -104,6 +104,12 @@
 					Lab Orders
 				</a>
 			</li>
+			<li class="float-left" style="margin-top: 7px">
+				<a href="${ ui.pageLink("covid19", "covidHome", [patientId: currentPatient]) }" class="float-left">
+					<i class="fa fa fa-cog fa-2x"></i>
+					Covid-19
+				</a>
+			</li>
 
 		</ul>
 
