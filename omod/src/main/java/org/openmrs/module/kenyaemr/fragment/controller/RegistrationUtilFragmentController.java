@@ -103,7 +103,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING,EmrConstants.APP_PREP,EmrConstants.APP_KP, EmrConstants.APP_ADHERENCE_COUNSELOR})
+	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING,EmrConstants.APP_PREP,EmrConstants.APP_KP, EmrConstants.APP_ADHERENCE_COUNSELOR, EmrConstants.APP_COVID})
 	public SimpleObject startVisit(@BindParams("visit") @Validate Visit visit, UiUtils ui) {
 		if (visit.getLocation() == null)
 			visit.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
@@ -120,7 +120,7 @@ public class RegistrationUtilFragmentController {
 	 * @param visit the visit
 	 * @return the simplified visit
 	 */
-	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING, EmrConstants.APP_PREP,EmrConstants.APP_KP, EmrConstants.APP_ADHERENCE_COUNSELOR})
+	@SharedAction({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING, EmrConstants.APP_PREP,EmrConstants.APP_KP, EmrConstants.APP_ADHERENCE_COUNSELOR, EmrConstants.APP_COVID})
 	public SimpleObject stopVisit(@RequestParam("visitId") Visit visit, @RequestParam("stopDatetime") Date stopDatetime, UiUtils ui) {
 		visit.setStopDatetime(stopDatetime);
 

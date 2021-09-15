@@ -38,6 +38,7 @@ public class EmrConstants {
 	public static final String APP_DEFAULTER_TRACING = MODULE_ID + ".defaultertracing";
 	public static final String APP_HIV_TESTING = MODULE_ID + ".hivtesting";
 	public static final String APP_PREP = MODULE_ID + ".prep";
+	public static final String APP_COVID = "covid.app.home";
 	public static final String APP_KP = KP_MODULE_ID + ".keypopulation.provider";
 	public static final String APP_AIR = FACILITY_REPORTING_MODULE_ID + ".facilityReporting.air";
 	public static final String APP_LAB_MANIFEST = MODULE_ID + ".labmanifest";
