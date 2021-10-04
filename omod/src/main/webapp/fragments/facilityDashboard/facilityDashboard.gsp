@@ -236,20 +236,29 @@
             },
 
             series: [{
-                data: [{y:${htsTestedFamily},color:"#7cb5ec"}, {y:${htsPositiveFamily},color:"#434348"},{y:${htsUnknownStatusFamily},color:"#90ed7d"}, {y:${htsLinkedFamily},color:"#f7a35c"},
-                    {y:${htsTestedPartners},color:"#7cb5ec"}, {y:${htsPositivePartner},color:"#434348"},{y:${htsUnknownStatusPartner},color:"#90ed7d"}, {y:${htsLinkedPartner},color:"#f7a35c"},
-                    {y:${htsTestedIDU},color:"#7cb5ec"}, {y:${htsPositiveIDU},color:"#434348"},{y:${htsUnknownStatusIDU},color:"#90ed7d"}, {y:${htsLinkedIDU},color:"#f7a35c"}]
+                data: [{y:${htsTestedFamily}, color: "#7cb5ec"}, {
+                    y:${htsPositiveFamily},
+                    color: "#434348"
+                }, {y:${htsUnknownStatusFamily}, color: "#90ed7d"}, {y:${htsLinkedFamily}, color: "#f7a35c"},
+                    {y:${htsTestedPartners}, color: "#7cb5ec"}, {
+                        y:${htsPositivePartner},
+                        color: "#434348"
+                    }, {y:${htsUnknownStatusPartner}, color: "#90ed7d"}, {y:${htsLinkedPartner}, color: "#f7a35c"},
+                    {y:${htsTestedIDU}, color: "#7cb5ec"}, {
+                        y:${htsPositiveIDU},
+                        color: "#434348"
+                    }, {y:${htsUnknownStatusIDU}, color: "#90ed7d"}, {y:${htsLinkedIDU}, color: "#f7a35c"}]
             }],
             xAxis: {
                 categories: [{
                     name: "Family contacts",
-                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                    categories: ["Total Tested", "HIV+", "Unknown status", "Linked"]
                 }, {
                     name: "Sex partners",
-                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                    categories: ["Total Tested", "HIV+", "Unknown status", "Linked"]
                 }, {
                     name: "Injectable Drug Users",
-                    categories: ["Total Tested", "HIV+","Unknown status","Linked"]
+                    categories: ["Total Tested", "HIV+", "Unknown status", "Linked"]
                 },
                 ]
             },
@@ -300,8 +309,14 @@
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
             },
             series: [{
-                data: [{y:${stableUnder4mtcaBelow15},color:"#7cb5ec"}, {y:${stableOver4mtcaBelow15},color:"#434348"},{y:${stableUnder4mtcaOver15F},color:"#90ed7d"}, {y:${stableUnder4mtcaOver15M},color:"#f7a35c"},  {y:${stableOver4mtcaOver15F},color:"#8085e9"},
-                    {y:${stableOver4mtcaOver15M},color:"#f15c80"}]
+                data: [{y:${stableUnder4mtcaBelow15}, color: "#7cb5ec"}, {
+                    y:${stableOver4mtcaBelow15},
+                    color: "#434348"
+                }, {y:${stableUnder4mtcaOver15F}, color: "#90ed7d"}, {
+                    y:${stableUnder4mtcaOver15M},
+                    color: "#f7a35c"
+                }, {y:${stableOver4mtcaOver15F}, color: "#8085e9"},
+                    {y:${stableOver4mtcaOver15M}, color: "#f15c80"}]
             }],
             xAxis: {
                 categories: [{
@@ -357,21 +372,141 @@
             },
 
 
+            series: [{
+                data: [{y:${unstableUnder15}, color: "#7cb5ec"}, {
+                    y:${unstableFemales15Plus},
+                    color: "#434348"
+                }, {y:${unstableMales15Plus}, color: "#90ed7d"}]
+            }],
+            xAxis: {
+                categories: [{
+                    name: "<15 Years",
+                    categories: ["Males and Females"]
+
+                }, {
+                    name: "15+ Years",
+                    categories: ["Females", " Males"]
+                },
+                ]
+            }
+        });
+    });
+
+    jQuery(function () {
+        jQuery('#covid19_vaccines_tracker').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Patients'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
 
             series: [{
-            data: [{y:${unstableUnder15},color:"#7cb5ec"}, {y:${unstableFemales15Plus},color:"#434348"},{y:${unstableMales15Plus},color:"#90ed7d"}]
-        }],
-            xAxis: {
-            categories: [{
-                name: "<15 Years",
-                categories: ["Males and Females"]
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [{
 
-            }, {
-                name: "15+ Years",
-                categories: ["Females", " Males"]
+                    name: 'Partially vaccinated',
+                    y:${partiallyVaccinatedCovid19},
+
+                }, {
+                    name: 'Fully vaccinated',
+                    y: ${fullyVaccinatedCovid19},
+
+                }, {
+                    name: 'Not vaccinated',
+                    y: ${notVaccinatedCovid19},
+
+                }]
+            }],
+        });
+    });
+
+    jQuery(function () {
+        jQuery('#covid19_infections_tracker').highcharts({
+            chart: {
+                type: 'column'
             },
-            ]
-            }
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Patients'
+                }
+
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            },
+
+            series: [{
+                name: 'Statistics',
+                colorByPoint: true,
+                data: [{
+
+                    name: 'Ever infected',
+                    y:${everPositiveOfCovid19},
+
+                }, {
+                    name: 'Ever hospitalized',
+                    y: ${everHospitalizedOfCovid19},
+
+                }, {
+                    name: 'Died of covid-19',
+                    y: ${diedOfCovid19},
+
+                }]
+            }],
         });
     });
 
@@ -390,6 +525,7 @@
 
             <div class="ke-tabmenu-item" data-tabid="diff_care">Differentiated Care</div>
 
+            <div class="ke-tabmenu-item" data-tabid="covid_19">Covid-19</div>
 
         </div>
 
@@ -427,7 +563,8 @@
                             </div>
                         </div>
 
-                        <div id="care_and_treatment_chart" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                        <div id="care_and_treatment_chart"
+                             style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
@@ -457,6 +594,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="ke-tab" data-tabid="hts">
             <table cellspacing="0" cellpadding="0" width="100%">
                 <tr>
@@ -484,6 +622,7 @@
                                 </table>
                             </div>
                         </div>
+
                         <div id="hts_tracker" style="min-width: 450px; height: 300px; margin: 0 auto"></div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
@@ -527,11 +666,13 @@
                                 </table>
                             </div>
                         </div>
+
                         <div id="hts_contacts_tracker" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
         </div>
+
         <div class="ke-tab" data-tabid="appointments">
             <table cellspacing="0" cellpadding="0" width="100%">
                 <tr>
@@ -547,8 +688,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Number Scheduled </th>
-                                        <th>Number Checked In </th>
+                                        <th>Number Scheduled</th>
+                                        <th>Number Checked In</th>
                                         <th>Number Seen</th>
                                         <th>Unscheduled Visits</th>
 
@@ -568,6 +709,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="ke-tab" data-tabid="diff_care">
             <table cellspacing="0" cellpadding="0" width="100%">
                 <tr>
@@ -592,20 +734,27 @@
                                         <td>${unstableMales15Plus}</td>
                                     </tr>
                                     <tr><strong>
-                                    <td colspan="3" class="heading"><strong style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus }</strong></td></strong>
+                                        <td colspan="3" class="heading"><strong
+                                                style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus}</strong>
+                                        </td></strong>
                                     </tr>
                                     <tr><strong>
-                                        <td colspan="3" class="heading"><strong style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong></td></strong>
+                                        <td colspan="3" class="heading"><strong
+                                                style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong>
+                                        </td></strong>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading1"><strong style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong></td>
+                                        <td colspan="6" class="heading1"><strong
+                                                style="font-weight: bold;">Current on ART: ${currInCareOnART}</strong>
+                                        </td>
                                     </tr>
-
 
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker_unstable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
+
+                        <div id="differentiated_care_tracker_unstable"
+                             style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
 
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
@@ -639,24 +788,96 @@
                                         <td>${stableOver4mtcaOver15M}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 +  stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong></td>
+                                        <td colspan="6" class="heading1"><strong
+                                                style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 + stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong></td>
+                                        <td colspan="6" class="heading1"><strong
+                                                style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" class="heading1"><strong style="font-weight: bold">Current on ART: ${currInCareOnART}</strong></td>
+                                        <td colspan="6" class="heading1"><strong
+                                                style="font-weight: bold">Current on ART: ${currInCareOnART}</strong>
+                                        </td>
                                     </tr>
 
                                 </table>
                             </div>
                         </div>
-                        <div id="differentiated_care_tracker_stable" style="min-width: 700px; height: 350px; margin: 0 auto"></div>
+
+                        <div id="differentiated_care_tracker_stable"
+                             style="min-width: 700px; height: 350px; margin: 0 auto"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="ke-tab" data-tabid="covid_19">
+            <table cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td style="width: 50%; vertical-align: top">
+                        <div class="ke-panel-frame">
+                            <div class="ke-panel-heading">Covid-19 Vaccination</div>
+
+                            <div class="ke-panel-content">
+                                <table class="alignLeft">
+                                    <tr>
+                                        <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>Fully Vaccinated</th>
+                                        <th>Partially Vaccinated</th>
+                                        <th>Not Vaccinated</th>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total Patients</b></td>
+                                        <td>${fullyVaccinatedCovid19}</td>
+                                        <td>${partiallyVaccinatedCovid19}</td>
+                                        <td>${notVaccinatedCovid19}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="covid19_vaccines_tracker"
+                             style="min-width: 450px; height: 300px; margin: 0 auto"></div>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; padding-left: 5px">
+                        <div class="ke-panel-frame">
+                            <div class="ke-panel-heading">Covid-19 Infection</div>
+
+                            <div class="ke-panel-content">
+                                <table class="alignLeft">
+                                    <tr>
+                                        <td colspan="3" class="heading2"><strong>Reporting Period: Today</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>Ever Tested Positive</th>
+                                        <th>Ever Hospitalized</th>
+                                        <th>Died of Covid-19</th>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total Patients</b></td>
+                                        <td>${everPositiveOfCovid19}</td>
+                                        <td>${everHospitalizedOfCovid19}</td>
+                                        <td>${diedOfCovid19}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="covid19_infections_tracker"
+                             style="min-width: 700px; height: 350px; margin: 0 auto"></div>
                     </td>
                 </tr>
             </table>
         </div>
         <br/>
-       <br/>
+        <br/>
     </div>
-   </div>
+</div>
