@@ -21,6 +21,7 @@
             //Defaults
             jq('#final_outcome').hide();
             jq('.cause-of-death').hide();
+            jq('#missed-appointment').hide();
             jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
             jq('#true-status :input[type=radio]').change(onDeceasedOutcomeChange);
             jq('#contact-status :input[type=radio]').change(onContactStatusChange);
@@ -58,8 +59,10 @@
             var val = getValue('contact-status.value');
             if(val == 1267) {
                 jq('#booking-date :input').prop('disabled', false);
+                jq('#missed-appointment').show();
             }else{
                 jq('#booking-date :input').prop('disabled', true);
+                jq('#missed-appointment').hide();
             }
         }
         clearHiddenSections = function(parentObj) {
@@ -113,6 +116,21 @@
                             });
                         </script>
                     </ifMode>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+
+                                var val = getValue('contact-status.value');
+                                if(val == 1267) {
+                                    jq('#booking-date :input').prop('disabled', false);
+                                    jq('#missed-appointment').show();
+                                }else{
+                                    jq('#booking-date :input').prop('disabled', true);
+                                    jq('#missed-appointment').hide();
+                                }
+                            });
+                        </script>
+                    </ifMode>
                     <encounterDate id="encounter-date" showTime="false"/>
                 </td>
                 <td>Location:
@@ -153,7 +171,20 @@
                 </tr>
             </table>
         </fieldset>
+        <fieldset id="missed-appointment">
+            <legend>Missed appointment</legend>
 
+            <table class="simple-table">
+                <tr>
+                    <td>Reasons for missing appointment?</td>
+                    <td>
+                        <obs conceptId="1801AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="missed-appointment-reasons"
+                             answerConceptIds="165609,165610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Sick due to COVID-19,COVID-19 restrictions" style="dropdown" required="true"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
         <fieldset>
             <legend>Tracing Numbering</legend>
 
@@ -181,8 +212,8 @@
                 <tr>
                     <td>Outcome</td>
                     <td><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="true-status"
-                             answerConceptIds="165610,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164435AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
-                             answerLabels="Exposure to COVID-19,Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Stopped treatment,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
+                             answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164435AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                             answerLabels="Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Stopped treatment,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
                         <obs id="true-status-other" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                     </td>
                     <td class="cause-of-death">Cause of death</td>
