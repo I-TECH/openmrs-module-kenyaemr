@@ -72,6 +72,7 @@
                 if ((getValue('death-reason.value')) == 163324) {
                     jq("#specific-death-cause").show();
                     jq('#specific-cause-of-death option[value=156673]').show();
+                    jq('#specific-cause-of-death option[value=165609]').hide();
                     jq('#specific-cause-of-death option[value=155010]').hide();
                     jq('#specific-cause-of-death option[value=156667]').hide();
                     jq('#specific-cause-of-death option[value=115195]').hide();
@@ -97,6 +98,7 @@
                 }
                 else if ((getValue('death-reason.value')) == 116030) {
                     jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=165609]').hide();
                     jq('#specific-cause-of-death option[value=156673]').hide();
                     jq('#specific-cause-of-death option[value=155010]').show();
                     jq('#specific-cause-of-death option[value=156667]').show();
@@ -130,6 +132,7 @@
                     jq('#specific-cause-of-death option[value=159988]').hide();
                     jq('#specific-cause-of-death option[value=116031]').hide();
                     jq('#specific-cause-of-death option[value=157578]').hide();
+                    jq('#specific-cause-of-death option[value=165609]').show();
                     jq('#specific-cause-of-death option[value=5333]').show();
                     jq('#specific-cause-of-death option[value=156669]').show();
                     jq('#specific-cause-of-death option[value=123122]').show();
@@ -147,6 +150,7 @@
                 }
                 else if ((getValue('death-reason.value')) == 160158) {
                     jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=165609]').hide();
                     jq('#specific-cause-of-death option[value=156673]').hide();
                     jq('#specific-cause-of-death option[value=155010]').hide();
                     jq('#specific-cause-of-death option[value=156667]').hide();
@@ -344,8 +348,21 @@
 					<table id="general-death-cause">
 						<tr>
 							<td>Death reason:</td>
-							<td><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="163324AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160158AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,123812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerLabels="HIV disease resulting in TB,HIV disease resulting in cancer,HIV disease resulting in other infectious and parasitic diseases,Other HIV disease resulting in other diseases or conditions leading to death,Other natural causes not directly related to HIV,Non-communicable diseases such as Diabetes and hypertension,Non-natural causes,Unknown cause" id="death-reason" /></td>
+							<td><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="163324AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            160158AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            133478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            123812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                                                                            142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									 answerLabels="HIV disease resulting in TB,
+									               HIV disease resulting in cancer,
+									               HIV disease resulting in other infectious and parasitic diseases,
+									               Other HIV disease resulting in other diseases or conditions leading to death,
+									               Other natural causes not directly related to HIV,
+									               Non-communicable diseases such as Diabetes and hypertension,Non-natural causes,
+									               Unknown cause" id="death-reason" /></td>
 							<td></td>
 							<td></td>
 						</tr>
@@ -354,7 +371,8 @@
 						<tr id="cause-of-death">
 							<td>Specific cause of death:</td>
 							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-									 answerConceptIds="156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+									 answerConceptIds="165609,
+									                    156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														155010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														156667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														115195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -373,9 +391,9 @@
 														171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														156670AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														160160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-														161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                        165609"
-									    answerLabels="HIV disease resulting in mycobacterial infection,
+														161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									    answerLabels="COVID-19 Complications,
+									                    HIV disease resulting in mycobacterial infection,
 														HIV disease resulting in Kaposis sarcoma,
 														HIV disease resulting in Burkitts lymphoma,
 														HIV disease resulting in other types of non-Hodgkin lymphoma,
@@ -394,8 +412,7 @@
 														HIV disease resulting in unspecified infectious or parasitic disease - HIV disease resulting in infection NOS,
 														HIV disease resulting in other specified diseases including encephalopathy or lymphoid interstitial pneumonitis or wasting syndrome and others,
 														HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others,
-														HIV disease resulting in Unspecified HIV disease,
-                                                        COVID-19 Complications"
+														HIV disease resulting in Unspecified HIV disease"
 									 id="specific-cause-of-death" /></td>
 							<td></td>
 							<td></td>

@@ -25,7 +25,9 @@
             jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
             jq('#true-status :input[type=radio]').change(onDeceasedOutcomeChange);
             jq('#contact-status :input[type=radio]').change(onContactStatusChange);
+            jq("#missed-appointment-reasons select").change(onOtherReasonsSelected);
             jq('#booking-date :input').prop('disabled', true);
+            jq('#tbl-other-reasons').hide();
 
             beforeSubmit.push(function () {
             });
@@ -65,6 +67,17 @@
                 jq('#missed-appointment').hide();
             }
         }
+
+        //Specify other Reasons for missing appointments
+        function onOtherReasonsSelected() {
+            var val = jq(this).val();
+            if (val == 5622) {
+                jq('#tbl-other-reasons').show();
+            } else {
+                jq('#tbl-other-reasons').hide();
+            }
+        }
+
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
                 parentObj[i].find('input[type=radio]').each(function() {
@@ -121,12 +134,19 @@
                             jq(function(){
 
                                 var val = getValue('contact-status.value');
+                                var otherReasons = getField('missed-appointment-reasons.value');
                                 if(val == 1267) {
                                     jq('#booking-date :input').prop('disabled', false);
                                     jq('#missed-appointment').show();
                                 }else{
                                     jq('#booking-date :input').prop('disabled', true);
                                     jq('#missed-appointment').hide();
+                                }
+
+                                if (otherReasons.val() == 5622) {
+                                    jq('#tbl-other-reasons').show();
+                                } else {
+                                    jq('#tbl-other-reasons').hide();
                                 }
                             });
                         </script>
@@ -179,8 +199,39 @@
                     <td>Reasons for missing appointment?</td>
                     <td>
                         <obs conceptId="1801AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="missed-appointment-reasons"
-                             answerConceptIds="165609,165610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Sick due to COVID-19,COVID-19 restrictions" style="dropdown" required="true"/>
+                             answerConceptIds="165609,
+                                               165610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               159367AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               126240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164349AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Client has covid-19 infection  ,
+                                           COVID-19 restrictions,
+                                           Client refilled drugs from another facility,
+                                           Client has enough drugs,
+                                           Client travelled,
+                                           Client could not get an off from work/school,
+                                           Client is sharing drugs with partner,
+                                           Client forgot clinic dates,
+                                           Client stopped medications,
+                                           Client sick at home/admitted,
+                                           Other"
+                             style="dropdown" required="true"/>
+                    </td>
+                    <td>
+                        <table id="tbl-other-reasons">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-reasons" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="60"/>
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
