@@ -87,7 +87,7 @@ public class EverHospitalizedForCovid19CohortDefinitionEvaluator implements Coho
 				"                           )\n" +
 				"                       )) t\n" +
 				"             inner join (\n" +
-				"                        select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admimission = 1065 and ever_vaccinated is not null)c\n" +
+				"                        select patient_id from kenyaemr_etl.etl_covid19_assessment where hospital_admission = 1065 and ever_vaccinated is not null)c\n" +
 				"               on t.patient_id = c.patient_id)p\n" +
 				"group by p.patient_id;";
 

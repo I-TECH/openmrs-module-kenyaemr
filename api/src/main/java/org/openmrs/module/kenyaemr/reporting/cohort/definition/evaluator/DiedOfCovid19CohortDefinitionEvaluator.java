@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for Covid-19 ever hospitalized patients
+ * Evaluator for Covid-19 deaths
  */
 @Handler(supports = {DiedOfCovid19CohortDefinition.class})
 public class DiedOfCovid19CohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -47,7 +47,7 @@ public class DiedOfCovid19CohortDefinitionEvaluator implements CohortDefinitionE
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and death_reason=165609";
+		String qry="select patient_id from kenyaemr_etl.etl_patient_program_discontinuation where discontinuation_reason =160034 and specific_death_cause=165609";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
