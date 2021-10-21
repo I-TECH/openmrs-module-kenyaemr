@@ -495,7 +495,7 @@
                 data: [{
 
                     name: 'Ever infected',
-                    y:${everPositiveOfCovid19},
+                    y:${everPositiveForCovid19},
 
                 }, {
                     name: 'Ever hospitalized',
@@ -862,7 +862,7 @@
                                     </tr>
                                     <tr>
                                         <td><b>Total Patients</b></td>
-                                        <td>${everPositiveOfCovid19}</td>
+                                        <td>${everPositiveForCovid19}</td>
                                         <td>${everHospitalizedOfCovid19}</td>
                                         <td>${diedOfCovid19}</td>
                                     </tr>

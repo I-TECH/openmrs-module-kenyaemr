@@ -47,7 +47,7 @@ public class FacilityDashboardFragmentController {
 				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
 				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
 				currInCareOnARTOver15F = 0, undocumentedStability = 0, fullyVaccinatedCovid19 = 0,partiallyVaccinatedCovid19 = 0,notVaccinatedCovid19 = 0,
-				everPositiveOfCovid19 = 0,everHospitalizedOfCovid19 = 0,diedOfCovid19 = 0;
+				everPositiveForCovid19 = 0,everHospitalizedOfCovid19 = 0,diedOfCovid19 = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
@@ -207,14 +207,14 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> notVaccinated = DashBoardCohorts.notVaccinated(evaluationContext).getMemberIds();
 		notVaccinatedCovid19 = notVaccinated != null? notVaccinated.size(): 0;
 
-		Set<Integer> everHospitalizedForCovid19 = DashBoardCohorts.everHospitalizedOfCovid19(evaluationContext).getMemberIds();
-		everPositiveOfCovid19 = everHospitalizedForCovid19 != null? everHospitalizedForCovid19.size(): 0;
+		Set<Integer> everTestedPositiveCovid19 = DashBoardCohorts.everTestedCovid19(evaluationContext).getMemberIds();
+		everPositiveForCovid19 = everTestedPositiveCovid19 != null? everTestedPositiveCovid19.size(): 0;
 
-		Set<Integer> diedofCovid19 = DashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
-		diedOfCovid19 = diedofCovid19 != null? diedofCovid19.size(): 0;
+		Set<Integer> everHospitalized = DashBoardCohorts.everHospitalizedOfCovid19(evaluationContext).getMemberIds();
+		everHospitalizedOfCovid19 = everHospitalized != null? everHospitalized.size(): 0;
 
 		Set<Integer> covid19Deaths = DashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
-		diedOfCovid19 = diedOfCovid19 != null? covid19Deaths.size(): 0;
+		diedOfCovid19 = covid19Deaths != null? covid19Deaths.size(): 0;
 
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
@@ -263,7 +263,7 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("fullyVaccinatedCovid19", fullyVaccinatedCovid19);
 		model.addAttribute("partiallyVaccinatedCovid19", partiallyVaccinatedCovid19);
 		model.addAttribute("notVaccinatedCovid19", notVaccinatedCovid19);
-		model.addAttribute("everPositiveOfCovid19", everPositiveOfCovid19);
+		model.addAttribute("everPositiveForCovid19", everPositiveForCovid19);
 		model.addAttribute("everHospitalizedOfCovid19", everHospitalizedOfCovid19);
 		model.addAttribute("diedOfCovid19", diedOfCovid19);
 
