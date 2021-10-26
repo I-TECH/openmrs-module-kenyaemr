@@ -16,11 +16,11 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>kenyaemr</artifactId>
-		<version>18.0.1</version>
+		<version>18.1.0</version>
 	</parent>
 
 	<artifactId>kenyaemr-distro</artifactId>
-  <version>18.0.1</version>
+  <version>18.1.0</version>
 	<packaging>pom</packaging>
 	<name>KenyaEMR Distribution (optional)</name>
 	<description>Distribution project for KenyaEMR</description>
