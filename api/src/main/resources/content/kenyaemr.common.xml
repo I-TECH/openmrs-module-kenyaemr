@@ -75,7 +75,6 @@
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
-				<ref bean="kenyaemr.common.report.clients.diedofCovid19"/>
 				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
 
 			</set>
