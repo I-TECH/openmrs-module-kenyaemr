@@ -71,6 +71,7 @@
             jq("#death-reason select").change(function() {
                 if ((getValue('death-reason.value')) == 163324) {
                     jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=145439]').hide();
                     jq('#specific-cause-of-death option[value=156673]').show();
                     jq('#specific-cause-of-death option[value=165609]').hide();
                     jq('#specific-cause-of-death option[value=155010]').hide();
@@ -98,6 +99,7 @@
                 }
                 else if ((getValue('death-reason.value')) == 116030) {
                     jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=145439]').hide();
                     jq('#specific-cause-of-death option[value=165609]').hide();
                     jq('#specific-cause-of-death option[value=156673]').hide();
                     jq('#specific-cause-of-death option[value=155010]').show();
@@ -124,6 +126,7 @@
                 }
                 else if ((getValue('death-reason.value')) == 160159) {
                     jq("#specific-death-cause").show();
+                    jq('#specific-cause-of-death option[value=145439]').hide();
                     jq('#specific-cause-of-death option[value=156673]').hide();
                     jq('#specific-cause-of-death option[value=155010]').hide();
                     jq('#specific-cause-of-death option[value=156667]').hide();
@@ -168,6 +171,7 @@
                     jq('#specific-cause-of-death option[value=156671]').hide();
                     jq('#specific-cause-of-death option[value=160159]').hide();
                     jq('#specific-cause-of-death option[value=171]').hide();
+                    jq('#specific-cause-of-death option[value=145439]').show();
                     jq('#specific-cause-of-death option[value=156670]').show();
                     jq('#specific-cause-of-death option[value=160160]').show();
                     jq('#specific-cause-of-death option[value=161548]').show();
@@ -353,7 +357,6 @@
 							                                                                            160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            160158AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            133478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                                                                            145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            123812AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerLabels="HIV disease resulting in TB,
@@ -361,7 +364,7 @@
 									               HIV disease resulting in other infectious and parasitic diseases,
 									               Other HIV disease resulting in other diseases or conditions leading to death,
 									               Other natural causes not directly related to HIV,
-									               Non-communicable diseases such as Diabetes and hypertension,Non-natural causes,
+									               Non-natural causes,
 									               Unknown cause" id="death-reason" /></td>
 							<td><span style="color:red;">*</span></td>
 							<td></td>
@@ -372,6 +375,7 @@
 							<td>Specific cause of death:</td>
 							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="165609,
+									                    145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 									                    156673AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														155010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														156667AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -393,6 +397,7 @@
 														160160AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 														161548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									    answerLabels="COVID-19 Complications,
+									                    Non-communicable diseases such as Diabetes and hypertension,
 									                    HIV disease resulting in mycobacterial infection,
 														HIV disease resulting in Kaposis sarcoma,
 														HIV disease resulting in Burkitts lymphoma,
