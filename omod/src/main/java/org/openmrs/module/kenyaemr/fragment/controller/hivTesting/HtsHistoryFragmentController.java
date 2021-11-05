@@ -163,6 +163,7 @@ public class HtsHistoryFragmentController {
 		htsStrategyList.put(conceptService.getConcept(159938), "Home Based Testing");
 		htsStrategyList.put(conceptService.getConcept(159939), "MO: Mobile Outreach HTS");
 		htsStrategyList.put(conceptService.getConcept(161557), "Index testing");
+		htsStrategyList.put(conceptService.getConcept(166606), "SNS - Social Networks");
 		htsStrategyList.put(conceptService.getConcept(5622), "Other");
 		return htsStrategyList.get(key);
 

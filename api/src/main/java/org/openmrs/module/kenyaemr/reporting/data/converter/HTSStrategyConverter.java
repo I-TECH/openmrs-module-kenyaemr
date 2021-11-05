@@ -50,6 +50,9 @@ public class HTSStrategyConverter implements DataConverter {
         else if(value.equals("Index testing")){
             return "Index testing";
         }
+        else if(value.equals("SNS - Social Networks")){
+            return "SNS";
+        }
         else if(value.equals("Other")){
             return "O";
         }
