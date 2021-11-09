@@ -544,7 +544,7 @@
                 jq('#disability').show();
             }
             if (prev_disabilityType != "" || prev_disabilityType != null) {
-                jq("#disability input[type=checkbox][value=" + prev_disabilityType+ "]").prop("checked",true);
+                jq("#disability input[type=checkbox][value='+ prev_disabilityType+']").prop("checked",true);
             }
             if (prev_disability == 1066) {
                 jq("#has-disability input[value=1066]").prop("checked", true);
@@ -559,7 +559,7 @@
                 jq('#key-population').hide();
             }
             if (prev_keyPopulationType != "" || prev_keyPopulationType != null) {
-                jq("#key-population input[type=checkbox][value=" + prev_keyPopulationType+ "]").prop("checked",true);
+                jq("#key-population input[type=checkbox][value='+prev_keyPopulationType+']").prop("checked",true);
             }
             if (prev_EverTested == 1065) {
                 jq("#ever-tested input[value=1065]").prop("checked", true);
@@ -801,15 +801,6 @@
                 getField('kit-name-2.error').html('Please use a different kit.').hide();
             }
 
-            var popTypeSelected = getField("population-type.value");
-            if (popTypeSelected == 164929 ){
-                jq("#key-population").show();
-                jq("#priority-population").hide();
-            }
-            if (popTypeSelected == 138643 ){
-                jq("#priority-population").show();
-                jq("#key-population").hide();
-            }
         });
     </script>
 
@@ -827,7 +818,6 @@
                     <ifMode mode="EDIT">
                         <script type="text/javascript">
                             jq(function(){
-
                                 //facility referral
                                 var val = getField("referral-to.value").val();
                                 var default_location = "<lookup expression="kenyaemr.location()" />";
@@ -841,7 +831,16 @@
                                     getField('other-facility.value').val("");
                                     getField('this-facility.value').val(default_location);
                                 }
-
+                                //if key pop show which type
+                                var popTypeSelected = getValue('population-type.value');
+                                if (popTypeSelected == 164929 ){
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                                }
+                                if (popTypeSelected == 138643 ){
+                                    jq("#priority-population").show();
+                                    jq("#key-population").hide();
+                                }
                                 //First test
                                 var firstTest = getField("hiv-test1-result.value").val();
                                 //Negative
@@ -1004,6 +1003,10 @@
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
                         </includeIf>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="People in prison and other closed settings" style="checkbox"  id="prisoner"/><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165100"
+                             answerLabel="Transgender" style="checkbox"  id="transgender"/><br/>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Other" style="checkbox" id="other" /><br/>
                     </td>

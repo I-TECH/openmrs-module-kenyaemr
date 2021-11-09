@@ -38,6 +38,12 @@ public class KPTypeConverter implements DataConverter {
         else if(value.equals("Female sex worker")){
             return "FSW";
         }
+        else if(value.equals("Transgender")){
+            return "Transgender";
+        }
+        else if(value.equals("People in prison and other closed settings")){
+            return "Prisoner";
+        }
         return  "";
 
     }

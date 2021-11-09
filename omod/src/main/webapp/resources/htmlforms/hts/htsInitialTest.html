@@ -857,8 +857,8 @@
                                     jq("#expiry-date2 input").prop("disabled", false);
                                     getField('hiv-final-result.value').val(1138);
                                 }
-
-                                var popTypeSelected = getField("population-type.value");
+//if key pop show which type
+                                var popTypeSelected = getValue('population-type.value');
                                 if (popTypeSelected == 164929 ){
                                     jq("#key-population").show();
                                     jq("#priority-population").hide();
@@ -967,6 +967,10 @@
                             <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerLabel="Female sex Worker" style="checkbox" id="female-sex-worker" /><br/>
                         </includeIf>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="People in prison and other closed settings" style="checkbox"  id="prisoner"/><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165100"
+                             answerLabel="Transgender" style="checkbox"  id="transgender"/><br/>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Other" style="checkbox" id="other" /><br/>
                     </td>
