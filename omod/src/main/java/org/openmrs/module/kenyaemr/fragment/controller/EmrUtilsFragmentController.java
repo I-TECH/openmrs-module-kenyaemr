@@ -471,7 +471,7 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_INITIATION));
 
 		if (indicationForIpt != null) {
-			Obs iptIndication = new Obs(); // build indication for ipt obs
+			Obs iptIndication = new Obs(); // build indication for tpt obs
 			iptIndication.setConcept(conceptService.getConceptByUuid(indicationForIptConcept));
 			iptIndication.setDateCreated(new Date());
 			iptIndication.setCreator(loggedInUser);

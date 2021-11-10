@@ -21,7 +21,7 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 
 	@Override
 	public String getFlagMessage() {
-		return "Due for IPT";
+		return "Due for TPT";
 	}
 
 	@Override

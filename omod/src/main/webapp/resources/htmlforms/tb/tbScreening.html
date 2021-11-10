@@ -329,10 +329,10 @@
             jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/discontinueIptProgram.action', { completionDate: encDate, patientId: patientId, reason: selIptDisReason, action: txtDiscAction, userId: userId }, function(data) {
                 if (data.discontinueInIpt != null) {
                     jq("#dlgIptOutcome").dialog('close');
-                    jq("#lblIptCompletionState").text("IPT completed successfully");
+                    jq("#lblIptCompletionState").text("TPT completed successfully");
                     jq("#btnShowIptOutcomeDialog").attr("disabled", true);
                 } else {
-                    jq("#lblIptCompletionState").text("There was a problem discontinuing patient in IPT Program");
+                    jq("#lblIptCompletionState").text("There was a problem discontinuing patient in TPT Program");
                 }
 
             });
@@ -368,18 +368,18 @@
 
                 if (data.followupEncounter != null) {
                     jq("#dlgIptFollowup").dialog('close');
-                    jq("#lblIptCompletionState").text("IPT followup information saved successfully");
+                    jq("#lblIptCompletionState").text("TPT followup information saved successfully");
                     jq("#btnShowIptFollowupDialog").attr("disabled", true);
                 } else {
-                    jq("#lblIptCompletionState").text("There was a problem saving IPT followup information");
+                    jq("#lblIptCompletionState").text("There was a problem saving TPT followup information");
                 }
 
             });
         }
 
-        //----------------------------------- IPT handlers ------------------------
+        //----------------------------------- TPT handlers ------------------------
 
-        // enroll patient in IPT program
+        // enroll patient in TPT program
 
         function enrollPatientToIPTProgram() {
             var patientId = <lookup expression="patient.patientId"/>;
@@ -391,9 +391,9 @@
             jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/enrollInIptProgram.action', { enrollmentDate: encDate, patientId: patientId }, function(data) {
                 if (data.enrolledInIpt != null) {
                     jq("#enrollInIptProgram").attr("disabled", true);
-                    jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in IPT Program");
+                    jq("#lblIptEnrollmentStatus").text("Patient successfully enrolled in TPT Program");
                 } else {
-                    jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in IPT Program");
+                    jq("#lblIptEnrollmentStatus").text("There was a problem enrolling the patient in TPT Program");
                 }
 
 
@@ -453,7 +453,7 @@
 			const NO_CONCEPT_ID = 1066
 
 			//This function will perform the folllowing:
-			//Only show 'IPT Client Workup' tab if all screening questions evaluate to NO
+			//Only show 'TPT Client Workup' tab if all screening questions evaluate to NO
 			//Only show 'Action Taken' tab if any of the screening questions evaluate to YES
 			var showHideTabs = function() {
 				var actionTakenTab = $('#action-taken');
@@ -533,7 +533,7 @@
 				var iptClientWorkupYesResponses = [];
 				var iptClientWorkupNoResponses = [];
 
-				//Fetch responses for the IPT client workup questions
+				//Fetch responses for the TPT client workup questions
 				$.each(iptClientWorkupRadios, function() {
                     const YELLOWURINE = 162311;
                     const NUMBNESS = 132652;
@@ -612,7 +612,7 @@
             jq("#btnShowIptFollowupDialog").click(function(e){ // ipt followup
                 e.preventDefault();
                 jq("#dlgIptFollowup").dialog({bgiframe: true,
-                    title : "Record IPT follow-up information",
+                    title : "Record TPT follow-up information",
                     buttons: {
                         "Save": recordIptFollowupInformation,
                         "Cancel": function () {
@@ -627,9 +627,9 @@
             jq("#btnShowIptOutcomeDialog").click(function(e){ // ipt outcome
                 e.preventDefault();
                 jq("#dlgIptOutcome").dialog({bgiframe: true,
-                    title : "Discontinue patient in IPT program",
+                    title : "Discontinue patient in TPT program",
                     buttons: {
-                        "Discontinue IPT": discontinuePatientInIpt,
+                        "Discontinue TPT": discontinuePatientInIpt,
                         "Cancel": function () {
                             jq("#dlgIptOutcome").dialog("close");
                         }
@@ -740,7 +740,7 @@
 						<td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
 					</tr>
 					<tr>
-						<td>Evaluated for IPT:</td>
+						<td>Evaluated for TPT:</td>
 						<td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
 					</tr>
 				</table>
@@ -779,7 +779,7 @@
 				</table>
 			</fieldset>
 			<fieldset id="ipt-client-workup">
-				<legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
+				<legend>Tuberculosis Preventive Therapy (TPT) Client Workup</legend>
 				<table>
 					<tr>
 						<td colspan="2" class="ke-panel-header">Ask for the following</td>
@@ -808,10 +808,10 @@
 				</table>
 			</fieldset>
 
-			<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
+			<div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for TPT Initiation</span>
 				<table>
 					<tr>
-						<!--<td><button type="button" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px" id="enrollInIptProgram">Start IPT</button></td>
+						<!--<td><button type="button" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px" id="enrollInIptProgram">Start TPT</button></td>
 						<td><label style="background-color: #E9E4CC;font-size: 16pt;font-weight: 600;" id="lblIptEnrollmentStatus"></label></td>-->
 					</tr>
 				</table>
@@ -819,15 +819,15 @@
 
 		</fieldset>
 		<fieldset id="ipt-followup">
-			<legend>IPT Followup</legend>
+			<legend>TPT Followup</legend>
 
 			<br />
 			<br/>
 			<table border="0">
 				<tr>
-					<td><button type="button" id="btnShowIptFollowupDialog" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Followup Details</button></td>
+					<td><button type="button" id="btnShowIptFollowupDialog" style="background-color:steelblue;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record TPT Followup Details</button></td>
 					<td></td>
-					<td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:seagreen;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record IPT Outcome</button></td>
+					<td><button type="button" id="btnShowIptOutcomeDialog" style="background-color:seagreen;font-size:16pt;font-weight:600;padding: 4px 10px;color:white;height: 50px">Record TPT Outcome</button></td>
 				</tr>
 				<tr>
 					<td colspan="3"  align="left"><label id="lblIptCompletionState" style="font-size: 16pt;font-weight: 600;color:darkgreen"/></td>
@@ -840,11 +840,11 @@
 				<span class="ui-helper-hidden-accessible"><input type="text"/></span>
 				<table>
 					<tr>
-						<td>IPT Due Date</td>
+						<td>TPT Due Date</td>
 						<td><input type="text" size="10" id="txtIptDueDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errortxtIptDueDate"></span></td>
 					</tr>
 					<tr>
-						<td>Date collected IPT</td>
+						<td>Date collected TPT</td>
 						<td><input type="text" size="10" id="txtIptCollectionDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errtxtIptCollectionDate"></span></td>
 					</tr>
 					<tr>
@@ -868,6 +868,14 @@
 							<input type="radio" name="rdoRash" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
 							<input type="radio" name="rdoRash" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
 							<span class="error field-error" style="display: none" id="rdoRash"></span></td>
+					</tr>
+					<tr>
+						<td>Others e.g. gastrointestinal disturbances</td>
+						<td>
+							<input type="radio" name="rdoOther" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+							<input type="radio" name="rdoOther" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+							<span class="error field-error" style="display: none" id="rdoOther"></span></td>
+						<td><label id="patient-other"></label></td>
 					</tr>
 					<tr>
 						<td>Adherence Measurement <br/>Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
@@ -915,16 +923,17 @@
 			</div>
 			<div>
 				<fieldset id="ipt-uptake">
-					<legend>IPT Uptake History</legend>
+					<legend>TPT Uptake History</legend>
 
 					<table>
 						<tr>
-							<th>IPT Due Date</th>
-							<th>Date collected IPT</th>
+							<th>TPT Due Date</th>
+							<th>Date collected TPT</th>
 							<th>Weight(Kg)</th>
 							<th>Hepatotoxicity</th>
 							<th>Peripheral Neuropathy</th>
 							<th>Rash?</th>
+							<th>Other</th>
 							<th>Adherence Measurement</th>
 						</tr>
 						<lookup complexExpression="
@@ -936,6 +945,7 @@
 				#set($hepatotoxicity='')
 				#set($peripheralneuropathy='')
 				#set($rash='')
+				#set($other='')
 				#set($adherenceMeasurement='')
 
 				#foreach($obs in $encounter.obs)
@@ -957,6 +967,9 @@
 						#end
 						#if ( $obs.concept==512 )
 							#set($rash=$obs.valueCoded.name)
+						#end
+						#if ( $obs.concept==163190 )
+							#set($other=$obs.valueCoded.name)
 						#end
 						#if ( $obs.concept==164075 )
 							#set($adherenceMeasurement=$obs.valueCoded.name)
@@ -981,6 +994,9 @@
 				&lt;/td&gt;
 				&lt;td&gt;
 					$rash
+				&lt;/td&gt;
+				&lt;td&gt;
+					$other
 				&lt;/td&gt;
 				&lt;td&gt;
 					$adherenceMeasurement

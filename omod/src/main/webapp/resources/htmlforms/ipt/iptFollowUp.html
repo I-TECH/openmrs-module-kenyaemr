@@ -54,6 +54,10 @@
 	  			<td>Does the patient have Rash?	</td>
 	  			<td><obs conceptId="512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
 	  		</tr>
+			<tr>
+				<td>Others e.g. gastrointestinal disturbances	</td>
+				<td><obs conceptId="163190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
+			</tr>
 	  		<tr>
 	  			<td>Adherence Measurement &lt;/br&gt;Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Bad= missed 9 doses/month</td>
 	  			<td><obs conceptId="164075AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159406AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"/></td>
@@ -76,6 +80,7 @@
 				<th>Hepatotoxicity</th>
 				<th>Peripheral Neuropathy</th>
 				<th>Rash?</th>
+				<th>Other</th>
 				<th>Adherence Measurement</th>
 			</tr>
 			<lookup complexExpression="
@@ -87,6 +92,7 @@
 				#set($hepatotoxicity='')
 				#set($peripheralneuropathy='')
 				#set($rash='')
+				#set($other='')
 				#set($adherenceMeasurement='')
 
 				#foreach($obs in $encounter.obs)
@@ -108,6 +114,9 @@
 						#end						
 						#if ( $obs.concept==512 )
 							#set($rash=$obs.valueCoded.name)				 	
+						#end
+						#if ( $obs.concept==163190 )
+							#set($other=$obs.valueCoded.name)
 						#end
 						#if ( $obs.concept==164075 )
 							#set($adherenceMeasurement=$obs.valueCoded.name)				 	
@@ -132,6 +141,9 @@
 				&lt;/td&gt;				
 				&lt;td&gt;
 					$rash
+				&lt;/td&gt;
+				&lt;td&gt;
+					$other
 				&lt;/td&gt;
 				&lt;td&gt;
 					$adherenceMeasurement
