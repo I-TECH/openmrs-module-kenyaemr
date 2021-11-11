@@ -21,7 +21,7 @@ import java.util.Date;
  */
 
 /**
- * Library of cohort definitions used specifically in the IPT register summaries
+ * Library of cohort definitions used specifically in the TPT register summaries
  */
 @Component
 

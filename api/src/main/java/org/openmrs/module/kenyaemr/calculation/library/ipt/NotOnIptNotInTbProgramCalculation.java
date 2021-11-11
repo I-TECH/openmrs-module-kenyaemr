@@ -33,7 +33,7 @@ public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculatio
 
 		EncounterType iptOutcome = MetadataUtils.existing(EncounterType.class, IPTMetadata._EncounterType.IPT_OUTCOME);
 
-		// Get all patients who are alive and initiated into IPT
+		// Get all patients who are alive and initiated into TPT
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> onIptProgram = Filters.inProgram(iptProgram, alive, context);
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);

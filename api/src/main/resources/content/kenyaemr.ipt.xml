@@ -54,7 +54,7 @@
 
 	<!-- ===================== Forms ===================== -->
 
-	<!--IPT Initiation-->
+	<!--TPT Initiation-->
 	<bean id="kenyaemr.ipt.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="61ea2a72-b0f9-47cf-ae86-443f88656acc" />
 		<property name="apps">
@@ -101,22 +101,22 @@
 
 	<bean id="kenyaemr.ipt.report.onIpt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="1303cda9-742c-41f1-a4f2-4adadf2b24e9" />
-		<property name="name" value="Patients on IPT" />
+		<property name="name" value="Patients on TPT" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation" />
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 	<bean id="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="b31d4acb-0db6-4dc5-adc5-7f07da76f142" />
-		<property name="name" value="Patients not on IPT and not on TB Treatment" />
+		<property name="name" value="Patients not on TPT and not on TB Treatment" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.NotOnIptNotInTbProgramCalculation" />
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 	<bean id="kenyaemr.ipt.report.iptRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="e36d4a1e-b3ff-4c59-9d07-dbb61800c80f" />
-		<property name="name" value="IPT Register" />
-		<property name="description" value="Register for Patients on IPT" />
+		<property name="name" value="TPT Register" />
+		<property name="description" value="Register for Patients on TPT" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />

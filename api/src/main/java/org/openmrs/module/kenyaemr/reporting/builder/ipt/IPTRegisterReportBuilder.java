@@ -132,8 +132,8 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("WeightAtStart", new WeightAtStartDataDefinition(), "");
         dsd.addColumn("Height", new HeightDataDefinition(), "");
         dsd.addColumn("BMI or Z Score or MUAC", new BMIZScoreMUACDataDefinition(), "");
-        dsd.addColumn("TPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
-        dsd.addColumn("Indication for TPT", new IPTIndicationDataDefinition(), "");
+        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
+        dsd.addColumn("Indication for IPT", new IPTIndicationDataDefinition(), "");
         dsd.addColumn("INH Dose(Mg)", new INHDataDefinition(), "");
         dsd.addColumn("VTB 6(Pyridoxine)Dose", new VTBDataDefinition(), "");
         dsd.addColumn("Treatment start date", new TreatmentStartDateDataDefinition(), "");
@@ -149,9 +149,9 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Date started CTX", new CTXDapsoneStartDateDataDefinition(), "");
         dsd.addColumn("Started ART", new StartedARTDataDefinition(), "");
         dsd.addColumn("ART Start Date and Regimen", new DateStartedARTDataDefinition(), "");
-        dsd.addColumn("TPT Outcome", new IPTOutcomeDataDefinition(), "");
-        dsd.addColumn("TPT Outcome Date", new IPTOutcomeDateDataDefinition(), "");
-        dsd.addColumn("Reasons for TPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(), "");
+        dsd.addColumn("IPT Outcome", new IPTOutcomeDataDefinition(), "");
+        dsd.addColumn("IPT Outcome Date", new IPTOutcomeDateDataDefinition(), "");
+        dsd.addColumn("Reasons for IPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(), "");
         dsd.addColumn("M6 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 6",150,210), defParam, null);
         dsd.addColumn("M12 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 12",330,390), defParam, null);
         dsd.addColumn("M18 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 18",510,570), defParam, null);
@@ -170,11 +170,11 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
         EmrReportingUtils.addRow(cohortDsd, "numberOnIPT", "No of Clients", ReportUtils.map(iptIndicators.numberOnIPT(), indParams), iptAgeDisaggregation, Arrays.asList("01", "02", "03"));
-        cohortDsd.addColumn("plhiv", "HIV+ on TPT", ReportUtils.map(iptIndicators.plhivOnIPT(), indParams), "");
-        cohortDsd.addColumn("prisoners", "Prisoners on TPT", ReportUtils.map(iptIndicators.prisonersOnIPT(), indParams), "");
-        cohortDsd.addColumn("hcw", "Health Care Workers on TPT", ReportUtils.map(iptIndicators.hcwOnIPT(), indParams), "");
+        cohortDsd.addColumn("plhiv", "HIV+ on IPT", ReportUtils.map(iptIndicators.plhivOnIPT(), indParams), "");
+        cohortDsd.addColumn("prisoners", "Prisoners on IPT", ReportUtils.map(iptIndicators.prisonersOnIPT(), indParams), "");
+        cohortDsd.addColumn("hcw", "Health Care Workers on IPT", ReportUtils.map(iptIndicators.hcwOnIPT(), indParams), "");
         cohortDsd.addColumn("childrenExposedTB", "Children Exposed to TB", ReportUtils.map(iptIndicators.childrenExposedTB(), indParams), "");
-        cohortDsd.addColumn("completedIPT", "Completed TPT", ReportUtils.map(iptIndicators.completedIPT(), indParams), "");
+        cohortDsd.addColumn("completedIPT", "Completed IPT", ReportUtils.map(iptIndicators.completedIPT(), indParams), "");
 
         return cohortDsd;
     }

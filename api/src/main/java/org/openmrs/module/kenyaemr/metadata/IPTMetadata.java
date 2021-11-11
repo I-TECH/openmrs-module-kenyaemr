@@ -22,7 +22,7 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.patientI
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.program;
 
 /**
- * IPT metadata bundle
+ * TPT metadata bundle
  */
 @Component
 @Requires({ CommonMetadata.class })

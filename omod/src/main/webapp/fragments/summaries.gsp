@@ -165,7 +165,7 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td>Dapsone: ${onDapsone}</td>
-                <td>IPT: ${onIpt}</td>
+                <td>TPT: ${onIpt}</td>
                 <td>&nbsp;</td>
             </tr>
 
