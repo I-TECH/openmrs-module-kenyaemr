@@ -1158,7 +1158,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select patient_id \n" +
                 "from kenyaemr_etl.etl_patient_program \n" +
-                "where program='IPT' and date_completed between date(:startDate) and date(:endDate) and date_enrolled  between DATE_SUB(date(:startDate), INTERVAL 1 YEAR) and DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and outcome=1267 " +
+                "where program='TPT' and date_completed between date(:startDate) and date(:endDate) and date_enrolled  between DATE_SUB(date(:startDate), INTERVAL 1 YEAR) and DATE_SUB(date(:endDate), INTERVAL 1 YEAR) and outcome=1267 " +
                 ";";
         cd.setName("completedIPT12Months");
         cd.setQuery(sqlQuery);
