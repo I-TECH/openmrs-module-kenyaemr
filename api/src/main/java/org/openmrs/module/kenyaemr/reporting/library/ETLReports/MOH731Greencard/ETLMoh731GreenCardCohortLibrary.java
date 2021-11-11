@@ -1164,7 +1164,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("IPT 12 months cohort who have completed");
+        cd.setDescription("TPT 12 months cohort who have completed");
 
         return cd;
     }
