@@ -13,13 +13,8 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.*;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiedOfCovid19CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareStableUnder4MonthstcaUnder15CohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.DiffCareUndocumentedStabilityCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EverHospitalizedCovid19CohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.EverPositiveCovid19CohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.FullyVaccinatedCovid19CohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.NotVaccinatedCovid19CohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.PartiallyVaccinatedCovid19CohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731CohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -30,6 +25,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import reporting.library.shared.covid.Covid19VaccinationCohortLibrary;
 
 import java.util.Arrays;
 
@@ -40,6 +36,8 @@ public class DashBoardCohorts {
 
     @Autowired
     private ETLMoh731CohortLibrary moh731Cohorts;
+
+    private Covid19VaccinationCohortLibrary covid19VaccinationCohortLibrary = new Covid19VaccinationCohortLibrary();
 
     /**
      * If your use case allows it you should always use #allPatients(EvaluationContext); this method will not cache
@@ -603,49 +601,49 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         }
     }
 
-    public static EvaluatedCohort fullyVaccinated(EvaluationContext context) {
+    public EvaluatedCohort fullyVaccinated(EvaluationContext context) {
         try {
-            return getService().evaluate(new FullyVaccinatedCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.onArtFullyVaccinated(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating fully vaccinated patients", var2);
         }
     }
 
-    public static EvaluatedCohort partiallyVaccinated(EvaluationContext context) {
+    public EvaluatedCohort partiallyVaccinated(EvaluationContext context) {
         try {
-            return getService().evaluate(new PartiallyVaccinatedCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.onArtPartiallyVaccinated(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating partially vaccinated patients", var2);
         }
     }
 
-    public static EvaluatedCohort notVaccinated(EvaluationContext context) {
+    public EvaluatedCohort notVaccinated(EvaluationContext context) {
         try {
-            return getService().evaluate(new NotVaccinatedCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.onArtNotVaccinatedCovid19(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating never vaccinated patients", var2);
         }
     }
 
-    public static EvaluatedCohort everTestedCovid19(EvaluationContext context) {
+    public EvaluatedCohort everTestedCovid19(EvaluationContext context) {
         try {
-            return getService().evaluate(new EverPositiveCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.onArtEverInfected(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating ever tested positive for Covid-19", var2);
         }
     }
 
-    public static EvaluatedCohort everHospitalizedOfCovid19(EvaluationContext context) {
+    public EvaluatedCohort everHospitalizedOfCovid19(EvaluationContext context) {
         try {
-            return getService().evaluate(new EverHospitalizedCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.everHospitalised(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating ever hospitalized for Covid-19", var2);
         }
     }
 
-    public static EvaluatedCohort diedOfCovid19(EvaluationContext context) {
+    public EvaluatedCohort diedOfCovid19(EvaluationContext context) {
         try {
-            return getService().evaluate(new DiedOfCovid19CohortDefinition(), context);
+            return getService().evaluate(covid19VaccinationCohortLibrary.diedDueToCovid(), context);
         } catch (EvaluationException var2) {
             throw new IllegalStateException("Error evaluating patients who died of Covid-19", var2);
         }

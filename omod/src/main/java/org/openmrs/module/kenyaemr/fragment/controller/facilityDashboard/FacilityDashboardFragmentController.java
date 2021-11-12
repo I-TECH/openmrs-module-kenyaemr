@@ -49,6 +49,7 @@ public class FacilityDashboardFragmentController {
 				currInCareOnARTOver15F = 0, undocumentedStability = 0, fullyVaccinatedCovid19 = 0,partiallyVaccinatedCovid19 = 0,notVaccinatedCovid19 = 0,
 				everPositiveForCovid19 = 0,everHospitalizedOfCovid19 = 0,diedOfCovid19 = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
+
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
 
@@ -65,7 +66,6 @@ public class FacilityDashboardFragmentController {
 		evaluationContext.addParameterValue("startDate", startDate);
 		evaluationContext.addParameterValue("endDate", endDate);
 		evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
-
 
 		Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
 		allPatients = all != null? all.size(): 0;
@@ -197,23 +197,26 @@ public class FacilityDashboardFragmentController {
 
 		Set<Integer> undocumentedPatientStability = DashBoardCohorts.undocumentedPatientStability(evaluationContext).getMemberIds();
 		undocumentedStability = undocumentedPatientStability != null? undocumentedPatientStability.size(): 0;
+		DashBoardCohorts dashBoardCohorts = new DashBoardCohorts();
 
-		Set<Integer> fullyVaccinated = DashBoardCohorts.fullyVaccinated(evaluationContext).getMemberIds();
+		evaluationContext.addParameterValue("endDate", new Date());
+
+		Set<Integer> fullyVaccinated = dashBoardCohorts.fullyVaccinated(evaluationContext).getMemberIds();
 		fullyVaccinatedCovid19 = fullyVaccinated != null? fullyVaccinated.size(): 0;
 
-		Set<Integer> partiallyVaccinated = DashBoardCohorts.partiallyVaccinated(evaluationContext).getMemberIds();
+		Set<Integer> partiallyVaccinated = dashBoardCohorts.partiallyVaccinated(evaluationContext).getMemberIds();
 		partiallyVaccinatedCovid19 = partiallyVaccinated != null? partiallyVaccinated.size(): 0;
 
-		Set<Integer> notVaccinated = DashBoardCohorts.notVaccinated(evaluationContext).getMemberIds();
+		Set<Integer> notVaccinated = dashBoardCohorts.notVaccinated(evaluationContext).getMemberIds();
 		notVaccinatedCovid19 = notVaccinated != null? notVaccinated.size(): 0;
 
-		Set<Integer> everTestedPositiveCovid19 = DashBoardCohorts.everTestedCovid19(evaluationContext).getMemberIds();
+		Set<Integer> everTestedPositiveCovid19 = dashBoardCohorts.everTestedCovid19(evaluationContext).getMemberIds();
 		everPositiveForCovid19 = everTestedPositiveCovid19 != null? everTestedPositiveCovid19.size(): 0;
 
-		Set<Integer> everHospitalized = DashBoardCohorts.everHospitalizedOfCovid19(evaluationContext).getMemberIds();
+		Set<Integer> everHospitalized = dashBoardCohorts.everHospitalizedOfCovid19(evaluationContext).getMemberIds();
 		everHospitalizedOfCovid19 = everHospitalized != null? everHospitalized.size(): 0;
 
-		Set<Integer> covid19Deaths = DashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
+		Set<Integer> covid19Deaths = dashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
 		diedOfCovid19 = covid19Deaths != null? covid19Deaths.size(): 0;
 
 		model.addAttribute("allPatients", allPatients);
