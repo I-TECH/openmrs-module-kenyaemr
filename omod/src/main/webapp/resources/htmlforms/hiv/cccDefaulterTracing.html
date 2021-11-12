@@ -30,6 +30,13 @@
             jq('#tbl-other-reasons').hide();
 
             beforeSubmit.push(function () {
+                var reasonForMissedAppointment = jq('#missed-appointment-reasons option:selected').val();
+                var contact_status = getValue('contact-status.value');
+                if(contact_status ==1267 &amp;&amp; (reasonForMissedAppointment == "" || reasonForMissedAppointment == undefined
+                    || reasonForMissedAppointment == 'undefined' || reasonForMissedAppointment == null || reasonForMissedAppointment == 'null')) {
+                    getField('missed-appointment-reasons.error').html('Please specify reasons for missing appointment').show();
+                    return false;
+                }
             });
         });
 
@@ -221,7 +228,7 @@
                                            Client stopped medications,
                                            Client sick at home/admitted,
                                            Other"
-                             style="dropdown" required="true"/>
+                             style="dropdown" />
                     </td>
                     <td>
                         <table id="tbl-other-reasons">
