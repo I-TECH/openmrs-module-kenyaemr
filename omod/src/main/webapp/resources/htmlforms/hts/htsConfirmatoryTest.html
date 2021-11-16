@@ -16,6 +16,7 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
@@ -606,6 +607,15 @@
                     jq('#tbl-other-disability').hide();
                 }
             }
+            //var priority population
+            if(IS_KDoD_SITE==false)
+            {
+                jq('#dodOnly').hide();
+            }
+            else
+            {
+                jq('#dodOnly').show();
+            }
 
              //Consent validation
             jq('.consent input').change(consentSelected);
@@ -1025,6 +1035,8 @@
                         </includeIf>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Prisoner" style="checkbox" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
+                             answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Not applicable" style="checkbox" id="other" /><br/>
                     </td>

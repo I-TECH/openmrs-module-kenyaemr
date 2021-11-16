@@ -16,6 +16,7 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
@@ -539,6 +540,14 @@
             jq("#hts-entry-point option[value='160522']").hide();    //ER
             jq("#hts-entry-point option[value='5622']").hide();    //O
 
+            if(IS_KDoD_SITE==false)
+            {
+                jq('#dodOnly').hide();
+            }
+            else
+            {
+                jq('#dodOnly').show();
+            }
 
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
@@ -973,7 +982,9 @@
                              answerLabel="Transgender" style="checkbox"  id="transgender"/><br/>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Other" style="checkbox" id="other" /><br/>
+
                     </td>
+
                 </tr>
             </table>
             <table id="priority-population">
@@ -989,6 +1000,8 @@
                         </includeIf>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Prisoner" style="checkbox" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
+                             answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
                         <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Not applicable" style="checkbox" id="other" /><br/>
                     </td>
