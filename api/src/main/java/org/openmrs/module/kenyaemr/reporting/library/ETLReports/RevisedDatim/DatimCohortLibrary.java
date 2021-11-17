@@ -2247,6 +2247,41 @@ public class DatimCohortLibrary {
         cd.setDescription("Tested Negative Mobile Outreach");
         return cd;
     }
+
+    /*Social Networks Positive*/
+    public CohortDefinition testedPositiveSNS() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
+                "       and hts.patient_given_result =\"Yes\"\n" +
+                "       and hts.test_strategy =\"SNS - Social Networks\"\n" +
+                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_SNS_POSITIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive Social Network");
+        return cd;
+    }
+
+    /*Social Networks Negative*/
+    public CohortDefinition testedNegativeSNS() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
+                "       and hts.patient_given_result =\"Yes\"\n" +
+                "       and hts.test_strategy =\"SNS - Social Networks\"\n" +
+                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_SNS_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Negative Social Network");
+        return cd;
+    }
+
     /*Newly Started ART While Pregnant*/
     public CohortDefinition newlyStartedARTWhilePregnant() {
         String sqlQuery = "select net.patient_id\n" +

@@ -697,6 +697,24 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * Tested Positive Social Network
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveSNS() {
+        return cohortIndicator("Tested Positive Social Network", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveSNS(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Negative Social Network
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeSNS() {
+        return cohortIndicator("Tested Positive Social Network", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeSNS(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number Newly Started ART While BreastFeeding
      * @return the indicator
      */
