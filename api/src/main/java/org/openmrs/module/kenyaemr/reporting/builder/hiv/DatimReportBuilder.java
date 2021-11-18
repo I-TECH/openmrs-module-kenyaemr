@@ -716,6 +716,12 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
+        // Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_COMPLETED_TPT", "Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_COMPLETED_TPT", "Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
         //3. KP_PREV
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",
                 ReportUtils.map(datimIndicators.kpPrev("(\"FSW\")"), indParams), kpAgeDisaggregation,
