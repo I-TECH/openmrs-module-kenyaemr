@@ -4617,7 +4617,7 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("previouslyOnART", ReportUtils.map(previouslyOnART(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("prevOnIPTandCompleted", ReportUtils.map(prevOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
         cd.setCompositionString("previouslyOnART AND prevOnIPTandCompleted");
         return cd;
