@@ -4120,6 +4120,24 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         return cd;
 
     }
+
+    //Number of individuals who were tested HIV Negative using Index testing services
+    public CohortDefinition contactsDocumentedNegative() {
+
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
+                "where (c.relationship_type in(972, 1528)) and c.voided = 0 and t.voided =0\n" +
+                "group by c.id\n" +
+                "having mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\"\n" +
+                "   and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_INDEX_DOCUMENTED_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of children with documented negative status below 14 yrs using Index testing services");
+        return cd;
+
+    }
     //Known HIV Positive contacts
     public CohortDefinition knownPositiveContact() {
 

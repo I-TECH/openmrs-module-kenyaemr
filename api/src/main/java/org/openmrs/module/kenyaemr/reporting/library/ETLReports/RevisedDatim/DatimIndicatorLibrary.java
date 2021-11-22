@@ -1089,6 +1089,13 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * HTS_INDEX_DOCUMENTED_NEGATIVE Number of children with documented negative status below 14 yrs using Index testing services
+     */
+    public CohortIndicator contactsDocumentedNegative() {
+        return cohortIndicator("Number of children with documented negative status below 14 yrs using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactsDocumentedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * HTS_INDEX_KNOWN_POSITIVE Known HIV Positive contacts
      */
     public CohortIndicator contactKnownPositive() {
