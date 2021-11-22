@@ -15,6 +15,7 @@
 <htmlform>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_extras.css"></link>
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
@@ -487,6 +488,9 @@
         //On Ready
         $(document).ready(function () {
             //pop type
+
+            var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
             jq("#key-population").hide();
             jq("#priority-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
@@ -677,7 +681,154 @@
                 getField('hiv-final-result.value').val(1138);
             }
 
-        });
+        // add code for ML feature
+
+    // handle ML prediction button
+	jq("#btn-ml-prediction").click(function () {
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+		var latestMaritalStatus = "<lookup expression="fn.latestObs(1054).getValueCoded()"/>";
+		var monthsSinceLastTest = getValue('duration_months.value');
+		var populationType = getValue('population-type.value');
+		var isDisabled = getValue('has-disability.value');
+		var everTested = getValue("ever-tested.value");
+		var testedAs = getValue("couple-testing.value");
+		var entryPoint = getValue("hts-entry-point.value");
+		var testStrategy = getValue("strategy.value");
+		var tbScreening = getValue("tb-screening.value");
+		var selfTested = getValue("hb-self-test.value");
+
+		var predictionVariables = {
+			AgeAtTest: pAge,
+			MonthsSinceLastTest: monthsSinceLastTest,
+			Gender_Male: pgender == 'M' ? 1 : 0,
+			KeyPopulationType_GP: 0,
+			KeyPopulationType_SW: 0,
+			MaritalStatus_Married: 0,
+			MaritalStatus_Divorced: 0,
+			MaritalStatus_Polygamous: 0,
+			MaritalStatus_Widowed: 0,
+			MaritalStatus_Minor: 0,
+			PatientDisabled_Not_Disabled: 0,
+			EverTestedForHIV_Yes: 0,
+			ClientTestedAs_Individual: 0,
+			EntryPoint_VCT: 0,
+			EntryPoint_OPD: 0,
+			EntryPoint_MTC: 0,
+			EntryPoint_IPD: 0,
+			EntryPoint_MOBILE: 0,
+			EntryPoint_Other: 0,
+			EntryPoint_HB: 0,
+			EntryPoint_PEDS: 0,
+			TestingStrategy_VCT: 0,
+			TestingStrategy_HB: 0,
+			TestingStrategy_MOBILE: 0,
+			TestingStrategy_HP: 0,
+			TestingStrategy_NP: 0,
+			TBScreening_No_Presumed_TB: 0,
+			ClientSelfTested_No: 0
+		};
+
+        // convert marital status
+		if (latestMaritalStatus == 5555) { // married monogamous
+			predictionVariables.MaritalStatus_Married = 1;
+		} else if (latestMaritalStatus == 159715) { // married polygamous
+			predictionVariables.MaritalStatus_Polygamous = 1;
+		} else if (latestMaritalStatus == 1058) { // divorced
+			predictionVariables.MaritalStatus_Divorced = 1;
+		} else if (latestMaritalStatus == 1058) { // divorced
+			predictionVariables.MaritalStatus_Divorced = 1;
+		} else if (latestMaritalStatus == 1059) { // widowed
+			predictionVariables.MaritalStatus_Widowed = 1;
+		}
+
+		if (pAge &lt; 15) {
+			predictionVariables.MaritalStatus_Minor = 1;
+		}
+
+		// convert population type
+		if (populationType == 164928) {
+			predictionVariables.KeyPopulationType_GP = 1;
+		} else if (populationType == 164929) {
+			predictionVariables.KeyPopulationType_SW = 1;
+		}
+
+		// convert disability status
+		if (isDisabled == 1066) {
+			predictionVariables.PatientDisabled_Not_Disabled = 1;
+		}
+
+		// convert ever tested for hiv status
+		if (everTested == 1065) {
+			predictionVariables.EverTestedForHIV_Yes = 1;
+		}
+
+		// converter for tested as i.e. individual, couple:
+		if (testedAs == 164957) {
+			predictionVariables.ClientTestedAs_Individual = 1;
+		}
+
+		// convert entry point
+
+		if (entryPoint == 159940) { // VCT
+			predictionVariables.EntryPoint_VCT = 1;
+		} else if (entryPoint == 160542) { // OPD
+			predictionVariables.EntryPoint_OPD = 1;
+		} else if (entryPoint == 160456) { // Maternity
+			predictionVariables.EntryPoint_MTC = 1;
+		} else if (entryPoint == 5485) { // IPD
+			predictionVariables.EntryPoint_IPD = 1;
+		} else if (entryPoint == 159939) { // mobile
+			predictionVariables.EntryPoint_MOBILE = 1;
+		} else if (entryPoint == 159938) { // HB
+			predictionVariables.EntryPoint_HB = 1;
+		} else if (entryPoint == 162181) { // Paed
+			predictionVariables.EntryPoint_PEDS = 1;
+		} else if (entryPoint == 5622) { // Other
+			predictionVariables.EntryPoint_Other = 1;
+		}
+
+		// convert strategy
+
+		if (testStrategy == 159938) { // HB
+			predictionVariables.TestingStrategy_HB = 1;
+		} else if (testStrategy == 159939) { // Mobile
+			predictionVariables.TestingStrategy_MOBILE = 1;
+		} else if (testStrategy == 164163) { // HP
+			predictionVariables.TestingStrategy_HP = 1;
+		} else if (testStrategy == 164953) { // NP
+			predictionVariables.TestingStrategy_NP = 1;
+		} else if (testStrategy == 164954 || testStrategy == 164955) { // VCT
+			predictionVariables.TestingStrategy_VCT = 1;
+		}
+
+		// convert HIV self test
+		if (selfTested == 1066) {
+			predictionVariables.ClientSelfTested_No = 1;
+		}
+
+        var predResponse = '';
+		jq.ajax({
+			url: '/' + ctxPath + '/ws/rest/v1/edata/casefindingscore',
+			type: "POST",
+			contentType: 'application/json',
+			data: JSON.stringify(predictionVariables),
+			async: false,
+			success: function (response, textStatus, jqXHR) {
+				jq('#lbl-ml-prediction').text('Risk level: ' + JSON.stringify(response.result["probability(1)"]));
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+	});
+
+
+        // ----- end of ML feature
+
+
+     });
 
         var referralSelected = function () {
             var val = jq(this).val();
@@ -1238,7 +1389,19 @@
                     </td>
                 </tr>
             </table>
-            <br />
+            <br/>
+            <div>
+                <table>
+                    <tr>
+                        <td>
+                            <button type="button" class="ke-program-followup-button" id="btn-ml-prediction">Get
+                                prediction
+                            </button>
+                        </td>
+                        <td><label id="lbl-ml-prediction"></label></td>
+                    </tr>
+                </table>
+            </div>
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
