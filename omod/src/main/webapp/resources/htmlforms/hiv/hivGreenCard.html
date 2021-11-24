@@ -84,6 +84,7 @@ Green Card follow-up visit form
         var SELF = 978;
         var REFILL_DOCUMENTATION = 159802;
         var TS = 161642;
+        var PREVIOUSLY_BREASTFEEDING = "<lookup expression="fn.latestObs(5632).getValueCoded()"/>"; // this is breastfeeding last obs
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
@@ -873,7 +874,7 @@ Green Card follow-up visit form
                 jq('#pregnant:text').val("NO");
             }
 //8. breast feeding
-            if(PATIENT_BREASTFEEDING == 'true') {
+           if(PREVIOUSLY_BREASTFEEDING == 1065 || PATIENT_BREASTFEEDING == 'true') {
                 jq('#breast-feeding:text').val("YES");
             }else{
                 jq('#breast-feeding:text').val("NO");
@@ -881,6 +882,7 @@ Green Card follow-up visit form
         }
         function onLmpChange() {
             jq('#pregnancyOption :input').prop('disabled', false);
+            jq('#breastfeeding :input').prop('disabled', false);
         }
         //Ckeckbox to remove pregnancy details
         function onMenopauseClick() {
@@ -958,6 +960,7 @@ Green Card follow-up visit form
             var otherVaccSelected = jq('#otherVacc');
             var hasMenses = jq('#hasLMP');
             var pregOption = jq('#pregnancyOption');
+            var breastfeedingOption = jq('#breastfeeding');
             var preIntention = jq('#pregnancyIntention');
             var generalExamSelected = jq('#general-exam-findings');
             var systemsFindingsSelected = jq('#systems-review');
@@ -1000,7 +1003,7 @@ Green Card follow-up visit form
                 jq('#greencard').smartWizard('enableFinish', true);
                 clearRadios([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
                     workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
-                    adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
+                    adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, breastfeedingOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
                     skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected, stabilityAssessment]);
                 jq('#weight input').val('');
                 jq('#height input').val('');
@@ -1925,6 +1928,7 @@ Green Card follow-up visit form
             var recentLMPPresent = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
             var menopause = getValue('menopause.value');
             var isPregnant = getValue('pregnancyOption.value');
+            var isBreastfeeding = getValue('breastfeeding.value');
             var pregnancyIntention = getValue('pregnancyIntention.value');
             var onfpMethodChecked = getField('fplanning.value').val();
             var fpMethodsChecked = jq("#onFp input:checkbox:checked");
@@ -2093,6 +2097,13 @@ Green Card follow-up visit form
                     return false;
                 } else {
                     getField('pregnancyOption.error').html('Please specify if patient is pregnant.').hide();
+                }
+                if (patientHasLMP == 1065 &amp;&amp; isBreastfeeding == false &amp;&amp; menopause != 113928) {
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('breastfeeding.error').html('Please specify if patient is breast feeding.').show();
+                    return false;
+                } else {
+                    getField('breastfeeding.error').html('Please specify if patient is breast feeding.').hide();
                 }
                 if (patientHasLMP == 1066 &amp;&amp; onfpMethodChecked == false) {
                     jq('#fp-details').show();
@@ -3382,7 +3393,7 @@ Management<br />
                         <table id="if-patient-pregnant">
                             <tr>
                                 <td>
-                                    <strong>Patient Pregnant?:  <span style="color:red;">*</span></strong>
+                                    <strong>Patient Pregnant?  <span style="color:red;">*</span></strong>
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          labelText="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -3390,6 +3401,19 @@ Management<br />
                                 </td>
                                 <td>
                                     <span class="value"><recentObs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Patient Breastfeeding? <span style="color:red;">*</span></strong>
+                                    <obs conceptId="5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         labelText="&#160;&#160;&#160;&#160;&#160;&#160;"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes,No"
+                                         style="radio" id="breastfeeding" />
+                                </td>
+                                <td>
+                                    <span class="value"><recentObs conceptId="5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
                             </tr>
                         </table>
