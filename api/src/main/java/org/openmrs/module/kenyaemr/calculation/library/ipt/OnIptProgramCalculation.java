@@ -61,7 +61,7 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 
 	@Override
 	public String getFlagMessage() {
-		return "On IPT";
+		return "On TPT";
 	}
 
 }
