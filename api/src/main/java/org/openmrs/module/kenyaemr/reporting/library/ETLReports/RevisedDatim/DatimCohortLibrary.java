@@ -63,10 +63,10 @@ public class DatimCohortLibrary {
                 "                join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
                 "                where e.program = 'HIV'\n" +
                 "                group by e.patient_id) e  \n" +
+                "                inner join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
                 "                left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV' \n" +
-                "                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
                 "                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id  \n" +
-                "                where date(e.date_started) between date(:startDate) and :endDate\n" +
+                "                where date(e.date_started) between date(:startDate) and date(:endDate)\n" +
                 "                group by e.patient_id  \n" +
                 "                having TI_on_art=0 \n" +
                 "                )net;";
@@ -105,8 +105,8 @@ public class DatimCohortLibrary {
                 "                join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
                 "                where e.program = 'HIV'\n" +
                 "                group by e.patient_id) e  \n" +
+                "                inner join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
                 "                left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV' \n" +
-                "                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id  \n" +
                 "                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id  \n" +
                 "                where date(e.date_started) < date(:startDate) \n" +
                 "                group by e.patient_id  \n" +
@@ -2294,9 +2294,9 @@ public class DatimCohortLibrary {
     /*Social Networks Positive*/
     public CohortDefinition testedPositiveSNS() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.test_strategy =\"SNS - Social Networks\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive'\n" +
+                "       and hts.patient_given_result ='Yes'\n" +
+                "       and hts.test_strategy ='SNS - Social Networks'\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2311,9 +2311,9 @@ public class DatimCohortLibrary {
     /*Social Networks Negative*/
     public CohortDefinition testedNegativeSNS() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.test_strategy =\"SNS - Social Networks\"\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative'\n" +
+                "       and hts.patient_given_result ='Yes'\n" +
+                "       and hts.test_strategy ='SNS - Social Networks'\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -4121,23 +4121,61 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
 
     }
 
-    //Number of individuals who were tested HIV Negative using Index testing services
-    public CohortDefinition contactsDocumentedNegative() {
+    /**
+     *     Number of individuals children or siblings who were reported HIV Negative using Index testing services
+     *     Composition component - reported Negative
+     */
 
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-                "where (c.relationship_type in(972, 1528)) and c.voided = 0 and t.voided =0\n" +
-                "group by c.id\n" +
-                "having mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\"\n" +
-                "   and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
+    public CohortDefinition contactsReportedNegative() {
+
+        String sqlQuery = "select c.patient_id from  kenyaemr_hiv_testing_patient_contact c  where c.relationship_type in(972, 1528) and c.voided = 0\n" +
+                "                 group by c.patient_id\n" +
+                "                 having mid(max(concat(c.date_created,c.baseline_hiv_status)),20) ='Negative'\n" +
+                "                 and max(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_DOCUMENTED_NEGATIVE");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of children with documented negative status below 14 yrs using Index testing services");
+        cd.setDescription("Number of children contacts with documented negative status below 14 yrs using Index testing services");
         return cd;
 
     }
+    /**
+     *Proportion of  clients who have a hiv test documented in the EMR
+     * Composition component - documented tested
+     * @return
+     */
+    public CohortDefinition clientsWithDocumentedTest() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
+                "where  hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DOCUMENTED_TESTED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients who have a hiv test documented in the EMR");
+        return cd;
+
+    }
+    /**
+     *Proportion of Children 1-14 yrs with reported Negative status and without any documented status in EMR
+     * HTS_INDEX_DOCUMENTED_NEGATIVE Datim indicator
+     * Composition startedOnART + prevOnIPTandCompleted
+     * @return
+     */
+    public CohortDefinition  contactsReportedNegativeUndocumented() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("contactsReportedNegative", ReportUtils.map(contactsReportedNegative(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("clientsWithDocumentedTest", ReportUtils.map(clientsWithDocumentedTest(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("contactsReportedNegative AND NOT clientsWithDocumentedTest");
+        return cd;
+    }
+
+
     //Known HIV Positive contacts
     public CohortDefinition knownPositiveContact() {
 
@@ -4593,12 +4631,12 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     public CohortDefinition prevOnIPTandCompleted() {
 
         String sqlQuery = "select i.patient_id from\n" +
-                "  (select i.patient_id, max(i.visit_date) as initiation_date,max(o.visit_date),o.outcome\n" +
-                "     from kenyaemr_etl.etl_ipt_initiation i join kenyaemr_etl.etl_ipt_outcome o\n" +
-                "         on o.patient_id =i.patient_id and o.outcome = 1267\n" +
-                "     group by i.patient_id\n" +
-                "     having max(i.visit_date) between date_sub(:startDate , interval 6 MONTH) and date_sub(:endDate, interval 6 MONTH)\n" +
-                "            and max(o.visit_date) between date(:startDate) and date(:endDate)) i;;";
+                "            (select i.patient_id, max(i.date_enrolled) as initiation_date,max(o.visit_date),o.outcome\n" +
+                "               from kenyaemr_etl.etl_patient_program i join kenyaemr_etl.etl_ipt_outcome o\n" +
+                "                  on o.patient_id =i.patient_id and o.outcome = 1267\n" +
+                "                   group by i.patient_id\n" +
+                "                     having initiation_date between date_sub(:startDate , interval 6 MONTH) and date_sub(:endDate, interval 6 MONTH)\n" +
+                "                          and max(o.visit_date) between date(:startDate) and date(:endDate)) i;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TB_PREV_NEWLY_ENROLLED_COMPLETED");

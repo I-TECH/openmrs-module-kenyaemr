@@ -1089,10 +1089,12 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * HTS_INDEX_DOCUMENTED_NEGATIVE Number of children with documented negative status below 14 yrs using Index testing services
+     * HTS_INDEX_DOCUMENTED_NEGATIVE Number of children with reported negative status
+     * Without any documented test in the EMR
+     * below 14 yrs using Index testing services
      */
-    public CohortIndicator contactsDocumentedNegative() {
-        return cohortIndicator("Number of children with documented negative status below 14 yrs using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactsDocumentedNegative(),
+    public CohortIndicator contactsReportedNegative() {
+        return cohortIndicator("Number of children contacts with reported negative status without documented tests below 14 yrs using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactsReportedNegativeUndocumented(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
