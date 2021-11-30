@@ -489,6 +489,14 @@
         $(document).ready(function () {
             //pop type
 
+		    var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
+
+		    if(mlCaseFindingEnabled === 'true') {
+		        jq('#div-ml-prediction').show();
+		    } else {
+		        jq('#div-ml-prediction').hide();
+		    }
+
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
             jq("#key-population").hide();
@@ -686,6 +694,7 @@
     // handle ML prediction button
 	jq("#btn-ml-prediction").click(function () {
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+		var casefindingURL = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.endpoint')"/>";
 		var latestMaritalStatus = "<lookup expression="fn.latestObs(1054).getValueCoded()"/>";
 		var monthsSinceLastTest = getValue('duration_months.value');
 		var populationType = getValue('population-type.value');
@@ -808,7 +817,7 @@
 
         var predResponse = '';
 		jq.ajax({
-			url: '/' + ctxPath + '/ws/rest/v1/edata/casefindingscore',
+			url: '/' + ctxPath + casefindingURL,
 			type: "POST",
 			contentType: 'application/json',
 			data: JSON.stringify(predictionVariables),
@@ -1390,7 +1399,7 @@
                 </tr>
             </table>
             <br/>
-            <div>
+            <div id="div-ml-prediction">
                 <table>
                     <tr>
                         <td>
