@@ -36,8 +36,12 @@ public class IPTIndicationDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,(case init.ipt_indication when 138571 then \"1\" when 162277 then \"4\" when 162278 then \"3\" when 1555 then \"5\" when 5619 then \"6\"  else \"\" end) as ipt_indication from kenyaemr_etl.etl_ipt_initiation init\n" +
-                "    where date(init.visit_date) between date(:startDate) and date(:endDate) and init.voided = 0;";
+        String qry = "select init.patient_id,(case init.ipt_indication when 138571 then 1\n" +
+                "                        when 162277 then 4\n" +
+                "                        when 162278 then 3\n" +
+                "                        when 1555 then 5\n" +
+                "                        when 5619 then 6  else \"\" end)\n" +
+                "  as ipt_indication from kenyaemr_etl.etl_ipt_initiation init;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
