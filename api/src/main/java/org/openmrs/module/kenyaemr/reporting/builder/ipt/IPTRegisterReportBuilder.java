@@ -132,8 +132,8 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("WeightAtStart", new WeightAtStartDataDefinition(), "");
         dsd.addColumn("Height", new HeightDataDefinition(), "");
         dsd.addColumn("BMI or Z Score or MUAC", new BMIZScoreMUACDataDefinition(), "");
-        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
-        dsd.addColumn("Indication for IPT", new IPTIndicationDataDefinition(), "");
+        dsd.addColumn("TPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
+        dsd.addColumn("Indication for TPT", new IPTIndicationDataDefinition(), "");
         dsd.addColumn("INH Dose(Mg)", new INHDataDefinition(), "");
         dsd.addColumn("VTB 6(Pyridoxine)Dose", new VTBDataDefinition(), "");
         dsd.addColumn("Treatment start date", new TreatmentStartDateDataDefinition(), "");
@@ -149,9 +149,9 @@ public class IPTRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Date started CTX", new CTXDapsoneStartDateDataDefinition(), "");
         dsd.addColumn("Started ART", new StartedARTDataDefinition(), "");
         dsd.addColumn("ART Start Date and Regimen", new DateStartedARTDataDefinition(), "");
-        dsd.addColumn("IPT Outcome", new IPTOutcomeDataDefinition(), "");
-        dsd.addColumn("IPT Outcome Date", new IPTOutcomeDateDataDefinition(), "");
-        dsd.addColumn("Reasons for IPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(), "");
+        dsd.addColumn("TPT Outcome", new IPTOutcomeDataDefinition(), "");
+        dsd.addColumn("TPT Outcome Date", new IPTOutcomeDateDataDefinition(), "");
+        dsd.addColumn("Reasons for TPT Discontinuation", new IPTDiscontinuationReasonDataDefinition(), "");
         dsd.addColumn("M6 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 6",150,210), defParam, null);
         dsd.addColumn("M12 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 12",330,390), defParam, null);
         dsd.addColumn("M18 TB Status and Date", mapPostIPTTBStatusDateDateDataDefinition("TB status and Date - Month 18",510,570), defParam, null);
