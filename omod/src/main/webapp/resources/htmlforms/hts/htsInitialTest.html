@@ -16,6 +16,39 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_extras.css"></link>
+    <style>
+   .ke-ml-high-risk {
+    padding: 10px 20px;
+    background-color: orange;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-low-risk {
+    padding: 10px 20px;
+    background-color: green;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-medium-risk {
+    padding: 10px 20px;
+    background-color: yellowgreen;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-very-high-risk {
+    padding: 10px 20px;
+    background-color: darkred;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+    </style>
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
@@ -816,21 +849,40 @@
 		}
 
         var predResponse = '';
-		jq.ajax({
-			url: '/' + ctxPath + casefindingURL,
-			type: "POST",
-			contentType: 'application/json',
-			data: JSON.stringify(predictionVariables),
-			async: false,
-			success: function (response, textStatus, jqXHR) {
-				jq('#lbl-ml-prediction').text('Risk level: ' + JSON.stringify(response.result["probability(1)"]));
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-			}
-		});
+        if (casefindingURL !='') {
+            jq.ajax({
+                url: '/' + ctxPath + casefindingURL,
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(predictionVariables),
+                async: false,
+                success: function (response, textStatus, jqXHR) {
+                var probabilityForPositivity = response.result["probability(1)"];
+                var lowRiskThreshold = 0.048281834;
+                var mediumRiskThreshold = 0.195130497;
+                var highRiskThreshold = 0.538404703;
+
+                if (probabilityForPositivity &lt;= lowRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('Low Risk Client');
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
+                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
+                } else if (probabilityForPositivity &gt; lowRiskThreshold &amp;&amp; probabilityForPositivity &lt;= mediumRiskThreshold ) {
+                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
+                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
+                } else if(probabilityForPositivity &gt; mediumRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('High Risk Client');
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
+                    jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
+                }
+                    //jq('#lbl-ml-prediction').text('Risk level: ' + JSON.stringify(response.result["probability(1)"]));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    jq('#lbl-ml-prediction').text('An error occurred while fetching risk score. Please contact system administrator');
+                }
+            });
+		}
+
 	});
 
 
@@ -1404,13 +1456,16 @@
                     <tr>
                         <td>
                             <button type="button" class="ke-program-followup-button" id="btn-ml-prediction">Get
-                                prediction
+                                risk category
                             </button>
                         </td>
-                        <td><label id="lbl-ml-prediction"></label></td>
+                        <td width="50px"></td>
+                        <td><div id="ml-prediction-risk-category"></div></td>
+                        <td><div id="ml-prediction-desc" style="font-style:italic"></div></td>
                     </tr>
                 </table>
             </div>
+            <br/>
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
