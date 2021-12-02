@@ -1165,38 +1165,27 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment
+     * Newly enrolled into PrEP KPs
      */
 
-    public CohortIndicator newlyEnrolledInPrEPHIVPos() {
-        return cohortIndicator("Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPHIVPos(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator newlyEnrolledInPrEPKP(Integer kpType) {
+        return cohortIndicator("Number of KPs who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPKP(kpType), "startDate=${startDate},endDate=${endDate}"));
     }
-    /**
-     * Newly eonrolled to prep with a recent HIV negative results within 3 months into enrolment
-     */
-
-    public CohortIndicator newlyEnrolledInPrEPHIVNeg() {
-        return cohortIndicator("Newly eonrolled to prep with a recent HIV negative results within 3 months into enrolment", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPHIVNeg(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
     /**
      * Previously enrolled on IPT and have completed during this reporting period
      */
-
     public CohortIndicator previouslyOnIPTCompleted() {
         return cohortIndicator("Number of individuals who were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Newly initiated on ART Previously enrolled on IPT and have completed during this reporting period
      */
-
     public CohortIndicator newARTpreviouslyOnIPTCompleted() {
         return cohortIndicator("Number of individuals who are newly initiated on ART and were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTprevOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Previously initiated on ART and enrolled on IPT and have completed during this reporting period
      */
-
     public CohortIndicator previouslyARTandIPTCompleted() {
         return cohortIndicator("Number of individuals who are previously initiated on ART and were previously on TPT and have now completed", ReportUtils.<CohortDefinition>map(datimCohorts.previousOnARTandIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }

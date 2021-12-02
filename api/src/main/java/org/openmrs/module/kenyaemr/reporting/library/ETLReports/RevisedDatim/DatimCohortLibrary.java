@@ -4689,6 +4689,22 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         return cd;
     }
     /**
+     * Number of KP individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
+     * PrEP_CT_KP indicator
+     * @return
+     */
+    public CohortDefinition newlyEnrolledInPrEPKP(Integer kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientInPrEPByKPType", ReportUtils.map(patientInPrEPByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND patientInPrEPByKPType");
+        return cd;
+
+    }
+
+    /**
      * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period disagreggated by HIV status
      * PrEP_CT_HIV_OTHER indicator
      * @return
@@ -4758,9 +4774,8 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
     public CohortDefinition newlyEnrolledInPrEP() {
 
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
-                "        left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
                 "group by e.patient_id\n" +
-                "        having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate;";
+                "having min(date(e.visit_date)) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PrEP_NEWLY_ENROLLED");
@@ -4768,54 +4783,6 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Newly enrolled on PrEP");
-        return cd;
-
-    }
-    /**
-     * Newly eonrolled to prep with a recent HIV Positive results within 3 months into enrolment
-     * PrEP_NEWLY_ENROLLED indicator
-     * @return
-     */
-    public CohortDefinition newlyEnrolledInPrEPHIVPos() {
-
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
-                "                           left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
-                "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
-                "where e.voided = 0 and t.voided = 0\n" +
-                "group by e.patient_id\n" +
-                "having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
-                "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Positive\";";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PrEP_NEWLY_ENROLLED_HIVPOS");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Newly enrolled on PrEP HIV Positive 3 months after enrolment");
-        return cd;
-
-    }
-    /**
-     * Newly eonrolled to prep with a recent HIV Negative results within 3 months into enrolment
-     * PrEP_NEWLY_ENROLLED indicator
-     * @return
-     */
-    public CohortDefinition newlyEnrolledInPrEPHIVNeg() {
-
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
-                "                           left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
-                "                           join kenyaemr_etl.etl_hts_test t on t.patient_id = e.patient_id\n" +
-                "where e.voided = 0 and t.voided = 0\n" +
-                "group by e.patient_id\n" +
-                "having max(date(e.visit_date)) between date_sub(:endDate , interval 3 MONTH) and :endDate and max(t.visit_date) between max(date(e.visit_date)) and DATE_ADD(max(date(e.visit_date)), INTERVAL 3 MONTH)\n" +
-                "   and mid(max(concat(t.visit_date,t.final_test_result)),11) = \"Negative\";";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PrEP_NEWLY_ENROLLED_HIVNEG");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Newly enrolled on PrEP HIV Negative 3 months after enrolment");
         return cd;
 
     }
