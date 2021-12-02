@@ -4475,7 +4475,281 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         cd.setDescription("Currently on ART and Breastfeeding");
         return cd;
     }
+    /**
+     * Patients previously enrolled in PrEP (more than three months before effective date)
+     *
+     * @return
+     */
+    public CohortDefinition previouslyOnPrEP() {
 
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e group by e.patient_id having max(e.visit_date) < date(:startDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("previouslyOnPrEP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients previously enrolled in PrEP");
+        return cd;
+
+    }
+    /**
+     * Patients re-enrolled enrolled in PrEP within the reporting period
+     *
+     * @return
+     */
+    public CohortDefinition reenrolledOnPrEP() {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e group by e.patient_id having min(e.visit_date) < date(:startDate) and max(e.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("reenrolledOnPrEP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients re-enrolled in PrEP");
+        return cd;
+
+    }
+    /**
+     * Patients with a PrEP followup visit within the reporting period
+     *
+     * @return
+     */
+    public CohortDefinition patientWithPrEPFollowup() {
+
+        String sqlQuery = "select f.patient_id from kenyaemr_etl.etl_prep_followup f where f.visit_date between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientWithPrEPFollowup");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients re-enrolled in PrEP");
+        return cd;
+    }
+    /**
+     * Patients with a PrEP followup visit within the reporting period and reported pregnancy
+     *
+     * @return
+     */
+    public CohortDefinition pregnantPatientInPrEPFollowup() {
+
+        String sqlQuery = "select f.patient_id from kenyaemr_etl.etl_prep_followup f group by f.patient_id having max(f.visit_date) between date(:startDate) and date(:endDate) and mid(max(concat(f.visit_date,f.pregnant)),11)= 'Yes';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("pregnantPatientInPrEPFollowup");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Pregnant PrEP client during followup");
+        return cd;
+    }
+
+    /**
+     * Patients with a PrEP followup visit within the reporting period and reported breastfeeding
+     *
+     * @return
+     */
+    public CohortDefinition breastfeedingPatientInPrEPFollowup() {
+
+        String sqlQuery = "select f.patient_id from kenyaemr_etl.etl_prep_followup f group by f.patient_id having max(f.visit_date) between date(:startDate) and date(:endDate) and mid(max(concat(f.visit_date,f.breastfeeding)),11)= 'Yes';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("breastfeedingPatientInPrEPFollowup");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Breastfeeding PrEP client during followup");
+        return cd;
+    }
+
+    /**
+     * Patients with a PrEP followup visit and tested HIV Negative
+     *
+     * @return
+     *//**
+     * Patients with a PrEP followup visit and not tested for HIV during that visit
+     *
+     * @return
+     */
+    public CohortDefinition patientInPrEPFollowupNoHIVTest() {
+
+        String sqlQuery = " select f.patient_id from kenyaemr_etl.etl_prep_followup f\n" +
+                "    left join (select t.patient_id as hts_done, t.visit_date as hts_date, t.final_test_result from kenyaemr_etl.etl_hts_test t where t.visit_date <= date(:endDate))t on f.patient_id = t.hts_done and f.visit_date = t.hts_date\n" +
+                "    where t.hts_done is null\n" +
+                "    group by f.patient_id\n" +
+                "    having max(f.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientInPrEPFollowupHIVPositive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PrEP patient tested HIV Positive during PrEP visit");
+        return cd;
+    }
+    /**
+     * Patients with a PrEP followup visit and Positive HIV test result during that visit
+     *
+     * @return
+     */
+    public CohortDefinition patientInPrEPFollowupHIVPositive() {
+
+        String sqlQuery = "select f.patient_id from kenyaemr_etl.etl_prep_followup f\n" +
+                "inner join (select t.patient_id as hts_done, t.visit_date as hts_date, t.final_test_result from kenyaemr_etl.etl_hts_test t where t.visit_date <= date(:endDate))t on f.patient_id = t.hts_done and f.visit_date = t.hts_date\n" +
+                "where t.final_test_result = 'Positive' \n" +
+                "group by f.patient_id\n" +
+                "having max(f.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientInPrEPFollowupHtsStatus");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PrEP patient by HTS status");
+        return cd;
+    }
+
+    /**
+     * Patients with a PrEP followup visit and Negative HIV test result during that visit
+     *
+     * @return
+     */
+    public CohortDefinition patientInPrEPFollowupHIVNegative() {
+
+        String sqlQuery = "select f.patient_id from kenyaemr_etl.etl_prep_followup f\n" +
+                "inner join (select t.patient_id as hts_done, t.visit_date as hts_date, t.final_test_result from kenyaemr_etl.etl_hts_test t where t.visit_date <= date(:endDate))t on f.patient_id = t.hts_done and f.visit_date = t.hts_date\n" +
+                "where t.final_test_result = 'Negative' \n" +
+                "group by f.patient_id\n" +
+                "having max(f.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientInPrEPFollowupHtsStatus");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PrEP patient by HTS status");
+        return cd;
+    }
+    /**
+     * Patients with a PrEP followup visit and their HIV test status during that visit
+     *
+     * @return
+     */
+    public CohortDefinition patientInPrEPByKPType(Integer kpType) {
+
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e where e.visit_date <= date(:endDate) group by e.patient_id having mid(max(concat(e.visit_date,e.kp_type)),11) = "+kpType+";";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientInPrEPByKPType");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PrEP patient by KP type");
+        return cd;
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
+     * PrEP_CT indicator
+     * @return
+     */
+    public CohortDefinition prepCT() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("previouslyOnPrEP", ReportUtils.map(previouslyOnPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("reenrolledOnPrEP", ReportUtils.map(reenrolledOnPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientWithPrEPFollowup", ReportUtils.map(patientWithPrEPFollowup(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(previouslyOnPrEP AND patientWithPrEPFollowup) OR reenrolledOnPrEP");
+        return cd;
+
+    }
+
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period disagreggated by HIV Positive status
+     * PrEP_CT_HIV_POS indicator
+     * @return
+     */
+    public CohortDefinition prepCTByHIVPositiveStatus() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientInPrEPFollowupHIVPositive", ReportUtils.map(patientInPrEPFollowupHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND patientInPrEPFollowupHIVPositive");
+        return cd;
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period disagreggated by HIV Negative status
+     * PrEP_CT_HIV_NEG indicator
+     * @return
+     */
+    public CohortDefinition prepCTByHIVNegativeStatus() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientInPrEPFollowupHIVNegative", ReportUtils.map(patientInPrEPFollowupHIVNegative(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND patientInPrEPFollowupHIVNegative");
+        return cd;
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period disagreggated by HIV status
+     * PrEP_CT_HIV_OTHER indicator
+     * @return
+     */
+    public CohortDefinition prepCTNotTestedForHIV() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientInPrEPFollowupNoHIVTest", ReportUtils.map(patientInPrEPFollowupNoHIVTest(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND patientInPrEPFollowupNoHIVTest");
+        return cd;
+    }
+    /**
+     * Number of KP individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
+     * PrEP_CT_KP indicator
+     * @return
+     */
+    public CohortDefinition prepCTKP(Integer kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientInPrEPByKPType", ReportUtils.map(patientInPrEPByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND patientInPrEPByKPType");
+        return cd;
+
+    }
+
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period while pregnant
+     * PrEP_CT_PG indicator
+     * @return
+     */
+    public CohortDefinition prepCTPregnant() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("pregnantPatientInPrEPFollowup", ReportUtils.map(pregnantPatientInPrEPFollowup(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND pregnantPatientInPrEPFollowup");
+        return cd;
+    }
+
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period while Breastfeeding
+     * PrEP_CT_BF indicator
+     * @return
+     */
+    public CohortDefinition prepCTBreastfeeding() {
+
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("breastfeedingPatientInPrEPFollowup", ReportUtils.map(breastfeedingPatientInPrEPFollowup(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND breastfeedingPatientInPrEPFollowup");
+        return cd;
+    }
     /**
      * Number of individuals who were newly enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
      * PrEP_NEWLY_ENROLLED indicator
@@ -4542,35 +4816,6 @@ public CohortDefinition txMLLTFUonDrugsOver3Months() {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Newly enrolled on PrEP HIV Negative 3 months after enrolment");
-        return cd;
-
-    }
-
-    /**
-     * Number of individuals who were currently enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
-     * PrEP_CURR_ENROLLED indicator
-     * @return
-     */
-    public CohortDefinition currEnrolledInPrEP() {
-
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
-                "left join(select d.patient_id,max(date(d.visit_date)) last_disc_date from kenyaemr_etl.etl_prep_discontinuation d ) d on d.patient_id = e.patient_id\n" +
-                "where d.patient_id is null  and (e.visit_date between\n" +
-                "    date(case MONTH(:startDate) when 1 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
-                "                                when 3 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
-                "                                when 5 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
-                "                                when 7 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n" +
-                "                                when 9 then replace('"+startOfYear+"','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"+startOfYear+"','0000',YEAR(:startDate))\n" +
-                "                                when 11 then replace('"+startOfYear+"','0000',YEAR(:startDate))\n" +
-                "                                when 12 then replace('"+startOfYear+"','0000',YEAR(:startDate)) else null end) and date(:endDate))\n" +
-                "group by e.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PrEP_CURR_ENROLLED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Currently enrolled on PrEP");
         return cd;
 
     }

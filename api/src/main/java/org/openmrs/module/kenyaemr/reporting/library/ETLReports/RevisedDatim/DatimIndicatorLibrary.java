@@ -1112,7 +1112,51 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Persons aged ≥15 years newly diagnosed with HIV-1 infection", ReportUtils.<CohortDefinition>map(datimCohorts.recentHIVInfections(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
+     */
 
+    public CohortIndicator prepCT() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCT(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period and tested HIV negative in that visit
+     */
+    public CohortIndicator prepCTByHIVNegativeStatus() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation and tested HIV Negative status", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTByHIVNegativeStatus(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period and tested HIV positive in that visit
+     */
+    public CohortIndicator prepCTByHIVPositiveStatus() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTByHIVPositiveStatus(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period without HIV test during visit
+     */
+    public CohortIndicator prepCTNotTestedForHIV() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation ", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTNotTestedForHIV(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of KP individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
+     */
+    public CohortIndicator prepCTKP(Integer kpType) {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTKP(kpType), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period while pregnant
+     */
+    public CohortIndicator prepCTPregnant() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTPregnant(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period while Breastfeeding
+     */
+    public CohortIndicator prepCTBreastfeeding() {
+        return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Newly enrolled into PrEP
      */
@@ -1133,13 +1177,6 @@ public class DatimIndicatorLibrary {
 
     public CohortIndicator newlyEnrolledInPrEPHIVNeg() {
         return cohortIndicator("Newly eonrolled to prep with a recent HIV negative results within 3 months into enrolment", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPHIVNeg(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * Newly enrolled into PrEP
-     */
-
-    public CohortIndicator currentlyEnrolledInPrEP() {
-        return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.currEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
