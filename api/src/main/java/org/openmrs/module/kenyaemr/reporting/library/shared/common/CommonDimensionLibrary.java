@@ -95,6 +95,11 @@ public class CommonDimensionLibrary {
         // previous one
         dim.addCohortDefinition("50+", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${onDate}"));
         dim.addCohortDefinition("25+", map(commonCohortLibrary.agedAtLeast(25), "effectiveDate=${onDate}"));
+        //mer2.6
+        dim.addCohortDefinition("50-54", map(commonCohortLibrary.agedAtLeastAgedAtMost(50, 54), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("55-59", map(commonCohortLibrary.agedAtLeastAgedAtMost(55, 59), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("60-64", map(commonCohortLibrary.agedAtLeastAgedAtMost(60, 64), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("65+", map(commonCohortLibrary.agedAtLeast(65), "effectiveDate=${onDate}"));
         //Age group in months
         dim.addCohortDefinition("0-2", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(0, 2), "effectiveDate=${onDate}"));
         dim.addCohortDefinition("2-12", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(2, 12), "effectiveDate=${onDate}"));

@@ -119,6 +119,15 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters m45_to49 = new ColumnParameters(null, "45-49, Male", "gender=M|age=45-49");
         ColumnParameters fAbove50 = new ColumnParameters(null, "50+, Female", "gender=F|age=50+");
         ColumnParameters mAbove50 = new ColumnParameters(null, "50+, Male", "gender=M|age=50+");
+          //MER 2.6 additional dissagregations
+        ColumnParameters f50_to54 = new ColumnParameters(null, "50-54, Female", "gender=F|age=50-54");
+        ColumnParameters m50_to54 = new ColumnParameters(null, "50-54, Male", "gender=M|age=50-54");
+        ColumnParameters f55_to59 = new ColumnParameters(null, "55-59, Female", "gender=F|age=55-59");
+        ColumnParameters m55_to59 = new ColumnParameters(null, "55-59, Male", "gender=M|age=55-59");
+        ColumnParameters f60_to64 = new ColumnParameters(null, "60-64, Female", "gender=F|age=60-64");
+        ColumnParameters m60_to64 = new ColumnParameters(null, "60-64, Male", "gender=M|age=60-64");
+        ColumnParameters fAbove65 = new ColumnParameters(null, "65+, Female", "gender=F|age=65+");
+        ColumnParameters mAbove65 = new ColumnParameters(null, "65+, Male", "gender=M|age=65+");
 
         ColumnParameters fUnder15 = new ColumnParameters(null, "<15, Female", "gender=F|age=<15");
         ColumnParameters mUnder15 = new ColumnParameters(null, "<15, Male", "gender=M|age=<15");
@@ -171,6 +180,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         ColumnParameters mCAbove50 = new ColumnParameters(null, "50+, Male", "contactGender=M|contactFineAge=50+");
         //End of patient contacts
 
+        List<ColumnParameters> datimTxCurrDisaggregation =
+                Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
+                        f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49,
+                        f50_to54, m50_to54, f55_to59, m55_to59, f60_to64, m60_to64, fAbove65, mAbove65, colTotal);
+
         List<ColumnParameters> datimNewAgeDisaggregation =
                 Arrays.asList(fInfant, mInfant, f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
                         f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50, colTotal);
@@ -204,6 +218,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> contactAgeSexFineDisaggregation =
                 Arrays.asList(fCInfant, mCInfant, fC1_to4, mC1_to4, fC5_to9, mC5_to9, fC10_to14, mC10_to14, fC15_to19, mC15_to19, fC20_to24, mC20_to24,
                         fC25_to29, mC25_to29, fC30_to34, mC30_to34, fC35_to39, mC35_to39, fC40_to44, mC40_to44, fC45_to49, mC45_to49, fCAbove50, mCAbove50, colTotal);
+        List<ColumnParameters> contactAgeSexDocumentedNegativeDisaggregation = Arrays.asList(fC1_to4, mC1_to4, fC5_to9, mC5_to9, fC10_to14, mC10_to14, colTotal);
+
         //End of patient contact Disaggregations
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
@@ -245,6 +261,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //HTS_INDEX New Negatives
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_NEGATIVE", "Contacts tested HIV Negative", ReportUtils.map(datimIndicators.contactTestedNegative(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+
+        //HTS_INDEX_DOCUMENTED_NEGATIVE
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_DOCUMENTED_NEGATIVE", "Contacts Under 14 with Documented HIV Negative Status", ReportUtils.map(datimIndicators.contactsReportedNegative(), indParams), contactAgeSexDocumentedNegativeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+
 
         //HTS_INDEX Known Positive
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_KNOWN_POSITIVE", "Contacts Known HIV Positive", ReportUtils.map(datimIndicators.contactKnownPositive(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
@@ -328,6 +348,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //MO Negative
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_MOBILE_NEGATIVE", "Tested Negative Mobile Outreach", ReportUtils.map(datimIndicators.testedNegativeMobile(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+
+        //15. Social Networks SNS
+        //SNS Positive
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_SNS_POSITIVE", "Tested Positive Social Network", ReportUtils.map(datimIndicators.testedPositiveSNS(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+
+        //SNS Negative
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_SNS_NEGATIVE", "Tested Negative Social Network", ReportUtils.map(datimIndicators.testedNegativeSNS(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //PWID Negative
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_KP_PWID_NEG", "PWID Tested Negative", ReportUtils.map(datimIndicators.pwidTestedNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
@@ -435,7 +462,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //TX_CURR
 
         //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
-        EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimTxCurrDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"));
 
         //Number of Pregnant women with HIV infection receiving antiretroviral therapy (ART)
         cohortDsd.addColumn("TX_CURR_PREGNANT", "Pregnant women with HIV receiving ART", ReportUtils.map(datimIndicators.pregnantCurrentlyOnART(), indParams), "");
@@ -708,6 +735,12 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+
+        // Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_COMPLETED_TPT", "Patients newly enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_COMPLETED_TPT", "Patients previously enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         //3. KP_PREV
         EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",

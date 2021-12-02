@@ -697,6 +697,24 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * Tested Positive Social Network
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveSNS() {
+        return cohortIndicator("Tested Positive Social Network", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveSNS(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Tested Negative Social Network
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeSNS() {
+        return cohortIndicator("Tested Positive Social Network", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeSNS(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number Newly Started ART While BreastFeeding
      * @return the indicator
      */
@@ -1071,6 +1089,15 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * HTS_INDEX_DOCUMENTED_NEGATIVE Number of children with reported negative status
+     * Without any documented test in the EMR
+     * below 14 yrs using Index testing services
+     */
+    public CohortIndicator contactsReportedNegative() {
+        return cohortIndicator("Number of children contacts with reported negative status without documented tests below 14 yrs using Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactsReportedNegativeUndocumented(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * HTS_INDEX_KNOWN_POSITIVE Known HIV Positive contacts
      */
     public CohortIndicator contactKnownPositive() {
@@ -1120,9 +1147,22 @@ public class DatimIndicatorLibrary {
      */
 
     public CohortIndicator previouslyOnIPTCompleted() {
-        return cohortIndicator("Number of individuals who were previously on IPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number of individuals who were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Newly initiated on ART Previously enrolled on IPT and have completed during this reporting period
+     */
 
+    public CohortIndicator newARTpreviouslyOnIPTCompleted() {
+        return cohortIndicator("Number of individuals who are newly initiated on ART and were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTprevOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Previously initiated on ART and enrolled on IPT and have completed during this reporting period
+     */
+
+    public CohortIndicator previouslyARTandIPTCompleted() {
+        return cohortIndicator("Number of individuals who are previously initiated on ART and were previously on TPT and have now completed", ReportUtils.<CohortDefinition>map(datimCohorts.previousOnARTandIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of beneficiaries served by PEPFAR OVC comprehensive programs for children and families affected by HIV
      */
