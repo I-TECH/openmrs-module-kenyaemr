@@ -743,6 +743,40 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.txRTT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * TX_RTT_KP Number of KPs restarted Treatment during the reporting period
+     * @return the indicator
+     */
+    public CohortIndicator txRTTKP(Integer kpType) {
+        return cohortIndicator("Number KPs restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTKP(kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_RTT_IIT_UNDER_3_MONTHS Number of patients restarted Treatment during the reporting period after IIT for less than 3 months
+     * @return the indicator
+     */
+    public CohortIndicator txRTTIITBelow3Months() {
+        return cohortIndicator("Number of patients restarted Treatment during the reporting period after IIT for less than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTIITBelow3Months(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_RTT_IIT_3_TO_5_MONTHS Number of patients restarted Treatment during the reporting period after IIT for 3 TO 5 months
+     * @return the indicator
+     */
+    public CohortIndicator txRTTIIT3To5Months() {
+        return cohortIndicator("Number of patients restarted Treatment during the reporting period after IIT for 3 to 5 months", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTIIT3To5Months(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_RTT_IIT_ATLEAST_6_MONTHS Number of patients restarted Treatment during the reporting period after IIT for atleast 6 months
+     * @return the indicator
+     */
+    public CohortIndicator txRTTIITAtleast6Months() {
+        return cohortIndicator("Number of patients restarted Treatment during the reporting period after IIT for atleast 6 months", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTIITAtleast6Months(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * TX_PVLS KP on ART with suppressed viral load results within the past 12 months.
      */
@@ -829,112 +863,75 @@ public class DatimIndicatorLibrary {
     }
 
     /**
+     * TX_ML KP Stop reason
+     */
+    public CohortIndicator txmlKPStopReason(Integer kpType, Integer stopReason) {
+        return cohortIndicator("TX ml KPs by stop reason", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPPatientStopReason(kpType,stopReason),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML KP IIT
+     */
+    public CohortIndicator txMLIITKpUnder3MonthsInTx(Integer iit,Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpUnder3MonthsInTx(iit,kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_ML KP IIT
+     */
+    public CohortIndicator txMLIITKp3To5MonthsInTx(Integer iit,Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKp3To5MonthsInTx(iit,kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_ML KP IIT
+     */
+    public CohortIndicator txMLIITKpAtleast6Months(Integer iit,Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpAtleast6Months(iit,kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML Cause of death
+     */
+    public CohortIndicator txMLCauseOfDeath(Integer deathReason) {
+        return cohortIndicator("TX ml death reason", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientByCauseOfDeath(deathReason),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_ML specific Cause of death
+     */
+    public CohortIndicator txMLSpecificCauseOfDeath(Integer specificDeathReason) {
+        return cohortIndicator("TX ml specific death reason", ReportUtils.<CohortDefinition>map(datimCohorts.txMLSpecificCauseOfDeath(specificDeathReason),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
      */
-    public CohortIndicator txMlDied() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txMlDied(),
+    public CohortIndicator txmlPatientByTXStopReason(Integer reason) {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientByTXStopReason(reason),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
+     * TX_ML IIT ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator txMLLTFUonDrugsUnder3Months() {
-        return cohortIndicator("LTFU patients who have been on drugs for less than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.txMLLTFUonDrugsUnder3Months(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML LTFU ON DRUGS >3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for more than 3 months
-     */
-    public CohortIndicator txMLLTFUonDrugsOver3Months() {
-        return cohortIndicator("LTFU patients who have been on drugs for more than 3 months", ReportUtils.<CohortDefinition>map(datimCohorts.txMLLTFUonDrugsOver3Months(),
+    public CohortIndicator txMLIITUnder3MonthsInTx(Integer iit) {
+        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITUnder3MonthsInTx(iit),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * TX_ML_DIED_TB Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of TB
+     * TX_ML IIT ON DRUGS 3-5 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator onARTMissedAppointmentDiedTB() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of TB", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedTB(),
+    public CohortIndicator txMLIIT3To5MonthsInTx(Integer iit) {
+        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIIT3To5MonthsInTx(iit),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
-     * TX_ML_DIED_CANCER Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of Cancer
+     * TX_ML IIT ON DRUGS 6+ MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator onARTMissedAppointmentDiedCancer() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of Cancer", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedCancer(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_DIED_OTHER_INFECTIOUS_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other infectious disease
-     */
-    public CohortIndicator onARTMissedAppointmentDiedOtherInfectious() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of other Infectious disease", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedOtherInfectious(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_DIED_OTHER_DISEASE Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of other disease/condition
-     */
-    public CohortIndicator onARTMissedAppointmentDiedOtherDisease() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of other Infectious disease", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedOtherDisease(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_DIED_NATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of natural causes
-     */
-    public CohortIndicator onARTMissedAppointmentDiedNatural() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of natural causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedNatural(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_DIED_NONNATURAL Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of non-natural causes
-     */
-    public CohortIndicator onARTMissedAppointmentDiedNonNatural() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of non-natural causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedNonNatural(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_DIED_UNKNOWN Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed) as a result of unknown causes
-     */
-    public CohortIndicator onARTMissedAppointmentDiedUnknown() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death as a result of unknown causes", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentDiedUnknown(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
-     */
-    public CohortIndicator txMLTrfOut() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to undocumented transfer", ReportUtils.<CohortDefinition>map(datimCohorts.txMLTrfOut(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
-     */
-    public CohortIndicator txMLStoppedTreatment() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact because they stopped treatment", ReportUtils.<CohortDefinition>map(datimCohorts.txMLStoppedTreatment(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_TRACED_UNLOCATED Number of ART patients with no clinical contact since their last expected contact due to un-traceability
-     */
-    public CohortIndicator onARTMissedAppointmentUntraceable() {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact and were untraceable", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentUntraceable(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * TX_ML_NO_TRACE_ATTEMPTED Number of ART patients with no clinical contact since their last expected contact with no tracing attempted
-     */
-    public CohortIndicator onARTMissedAppointmentNotTraced() {
-        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact and no tracing attempted", ReportUtils.<CohortDefinition>map(datimCohorts.onARTMissedAppointmentNotTraced(),
+    public CohortIndicator txMLIITAtleast6MonthsInTx(Integer iit) {
+        return cohortIndicator("TX_ML_IIT_ATLEAST6_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITAtleast6MonthsInTx(iit),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
