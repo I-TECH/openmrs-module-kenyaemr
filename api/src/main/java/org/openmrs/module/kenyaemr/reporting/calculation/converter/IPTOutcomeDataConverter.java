@@ -80,10 +80,16 @@ public class IPTOutcomeDataConverter implements DataConverter {
 				label = "Transferred Out";
 				break;
 			case 112141:
-				label = "TB infected";
+				label = "Active TB Disease - ATB";
 				break;
 			case 102:
-				label = "Drug toxicity";
+				label = "Adverse drug reaction - ADR";
+				break;
+			case 159598:
+				label = "Poor adherence - PA";
+				break;
+			case 5622:
+				label = "Others - OTR";
 				break;
 			default:
 				label = "";
