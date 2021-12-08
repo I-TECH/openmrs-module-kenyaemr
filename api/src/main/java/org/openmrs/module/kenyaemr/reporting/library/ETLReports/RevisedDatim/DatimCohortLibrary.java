@@ -3733,7 +3733,7 @@ public class DatimCohortLibrary {
         String sqlQuery = "select c.patient_id from  kenyaemr_hiv_testing_patient_contact c  where c.relationship_type in(972, 1528) and c.voided = 0\n" +
                 "                 group by c.patient_id\n" +
                 "                 having mid(max(concat(c.date_created,c.baseline_hiv_status)),20) ='Negative'\n" +
-                "                 and max(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);;";
+                "                 and max(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_DOCUMENTED_NEGATIVE");
         cd.setQuery(sqlQuery);
