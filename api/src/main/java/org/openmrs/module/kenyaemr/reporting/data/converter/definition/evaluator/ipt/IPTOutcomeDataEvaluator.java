@@ -35,9 +35,19 @@ public class IPTOutcomeDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select init.patient_id,(case o.outcome when 1267 then \"TC\" when 5240 then \"LTF\" when 159836 then \"TNC\" when 160034 then \"D\" when 159492 then \"TO\"\n" +
-                "     else \"\" end) as ipt_outcome from kenyaemr_etl.etl_ipt_initiation init left outer join kenyaemr_etl.etl_ipt_outcome o on init.patient_id = o.patient_id\n" +
-                "where init.voided = 0;";
+        String qry = "select init.patient_id,\n" +
+                "  (case o.outcome when 1267 then 'TC'\n" +
+                "                  when 5240 then 'LTF'\n" +
+                "                  when 159836 then 'TNC'\n" +
+                "                  when 112141 then 'TNC'\n" +
+                "                  when 102 then 'TNC'\n" +
+                "                  when 5622 then 'TNC'                  \n" +
+                "                  when 160034 then 'D'\n" +
+                "                  when 159492 then 'TO'\n" +
+                "                else \"\"  end) as ipt_outcome\n" +
+                "     from kenyaemr_etl.etl_ipt_initiation init\n" +
+                "     left outer join kenyaemr_etl.etl_ipt_outcome o on init.patient_id = o.patient_id\n" +
+                "     where init.voided = 0;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");
