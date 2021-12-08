@@ -41,6 +41,7 @@
 				<ref bean="kenyaemr.common.form.cervicalCancerScreening"/>
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
+				<ref bean="kenyaemr.common.form.hivSelfTesting"/>
 
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
@@ -469,7 +470,23 @@
 		<property name="htmlform" value="kenyaemr:hiv/genderBasedViolenceScreening.html"/>
 		<property name="order" value="200001"/>
 	</bean>
-
+	<!-- HIV Self Test form -->
+	<bean id="kenyaemr.common.form.hivSelfTesting" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="810fc592-f5f8-467a-846e-e177ba48a4e5" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+			</set>
+		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsInitialTestCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hts/hivSelfTesting.html" />
+		<property name="order" value="201095" />
+	</bean>
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.etlMissedAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
