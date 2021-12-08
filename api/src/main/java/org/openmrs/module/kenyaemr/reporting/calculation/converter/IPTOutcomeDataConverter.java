@@ -65,7 +65,7 @@ public class IPTOutcomeDataConverter implements DataConverter {
 		}
 		switch (answer){
 			case 1267:
-				label = "Completed";
+				label = "Treatment completed";
 				break;
 			case 5240:
 				label = "Lost to followup";
