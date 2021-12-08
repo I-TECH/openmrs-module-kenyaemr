@@ -16,109 +16,80 @@
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
-        var LATEST_SELF_REPORTED_STATUS = "<lookup expression="fn.latestObs(165153).getValueCoded()"/>";
-        var LATEST_TEST_TYPE = "<lookup expression="fn.latestObs(164956).getValueCoded()"/>";
         var pgender = "<lookup expression="patient.gender" />";
-
-
-        $.fn.noText = function () {/*use the jquery prototype technology to make a chainable clear field method*/
-            if (this.is('clinicVisit_form')) { /*check to c if you the element type is an input*/
-                this.val('');
-                /*clear the input field*/
-            }
-            return this;
-            /*means it is chainable*/
-        };
-
-
-
-        var test_resultsChanged = function () {
-            $('#pep_prep').find('*').prop('disabled', false);
-            var testResult = getValue("test_results.value");
-
-            if (testResult == 703) {
-                jq("#selftxt input").val('');
-                jq("#selftxt input").prop("disabled", true);
-                jq('#self_tested input').prop('disabled', true).addClass('disabled');
-
-            }
-            else if (testResult == 703 || testResult == 138571) {
-                jq("#linked_to_art input").prop("disabled", false).removeClass('disabled');
-                jq('#care_and_treatment').find("select").prop("selectedIndex", 0).removeClass('disabled');
-                jq('#care_and_treatment').find('*').prop('disabled', false);
-                // $("#pep_prep").attr('disabled',"true");
-                $('#pepandprep').find('*').prop('disabled', true);
-                $('#pepandprep').find('select').prop('disabled', true);
-                $('#pepandprep').find('input:text').val('');
-                $('#pepandprep').find("select").prop("selectedIndex", 0).addClass('disabled');
-                jq("#selftxt input").prop("disabled", false);
-                jq('#self_tested input').prop('disabled', false).removeClass('disabled');
-
-            }
-
-
-            else {
-                jq("#linked_to_art input").prop("disabled", true).addClass('disabled');
-                jq("#txtart input").prop("disabled", true).addClass('disabled');
-                jq("#linked_to_art input").prop('checked', false);
-                jq("#txtart input").val('');
-                $('#care_and_treatment').find('*').prop('disabled', true);
-                $('#care_and_treatment').find('input:text').val('');
-                $('#care_and_treatment').find("select").prop("selectedIndex", 0).addClass('disabled');
-                jq("#linkedFacility input").prop("disabled", true).addClass('disabled');
-
-                $('#pepandprep').find('*').prop('disabled', false);
-                $('#pepandprep').find('select').prop('disabled', false);
-                $('#pepandprep').find("select").prop("selectedIndex", 0).removeClass('disabled');
-
-                jq("#selftxt input").prop("disabled", false);
-                jq('#self_tested input').prop('disabled', false).removeClass('disabled');
-            }
-
-        }
 
         //On Ready
         $(document).ready(function () {
 
+            jq("#key-population").hide();
+            jq("#priority-population").hide();
+            jq("#test-results").hide();
 
-            var keyPop = getValue('population-type.value');
+            jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq('#everTested :input[type=radio]').change(everTestedSelected);
 
-            if (keyPop == 164929) {
-                jq("#general_population").show();
-                jq("#priority_population").hide();
+            //Gender validations
+            if (pgender == 'F') {
+                jq("#key_pop_type input[value=160578]").prop("checked", false);
+                jq("#key_pop_type input[value=165084]").prop("checked", false);
+                jq("#key_pop_type input[value=160578]").prop("disabled", true);
+                jq("#key_pop_type input[value=165084]").prop("disabled", true);
             }
-            else if(keyPop == 138643){
-                jq("#priority_population").show();
-                jq("#general_population").hide();
-            }
-            else{
-                jq("#priority_population").hide();
-                jq("#general_population").hide();
-            }
+            if (pgender == 'M') {
+                jq("#key_pop_type input[value=165083]").prop("checked", false);
+                jq("#key_pop_type input[value=165083]").prop("disabled", true);
 
-
-            jq("#self-test-demo input").prop("disabled", false);
+            }
 
         });
-        //Before Submit
 
-        clearHiddenSections = function (parentObj) {
-
-
-            for (var i = 0; i &lt; parentObj.length; i++) {
-                parentObj[i].find('input[type=radio]').each(function () {
-                    this.checked = false;
-                });
-                parentObj[i].find('input[type=checkbox]').each(function () {
-                    this.checked = false;
-                });
-                parentObj[i].find('input[type=text]').each(function () {
-                    this.val("");
-                });
-                parentObj[i].find('select').each(function () {
-                    this.selectedIndex = 0;
-                });
+        var populationTypeSelected = function () {
+            var val = jq(this).val();
+            var keypop = jq('#key-population');
+            var pripop = jq('#priority-population');
+            if (val == 164929 ){
+                jq("#key-population").show();
+                jq("#priority-population").hide();
             }
+            if (val == 138643 ){
+                jq("#priority-population").show();
+                jq("#key-population").hide();
+            }
+            if(val == 164928){
+                jq("#key-population").hide();
+                jq("#priority-population").hide();
+                clearHiddenSections(keypop);
+                clearHiddenSections(pripop);
+            }
+        }
+
+        var everTestedSelected = function () {
+            var val = jq(this).val();
+            var testResults = jq('#testResults');
+            if (val == 1065) {
+                jq("#test-results").show();
+            }
+            if(val == 1066){
+                jq("#test-results").hide();
+                clearHiddenSections(testResults);
+            }
+        }
+
+        //Before Submit
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
         }
     </script>
     <style>
@@ -152,6 +123,32 @@
     <div class="ke-form-header">
         <table width="100%">
             <tr>
+                <td>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+                                var keyPop = getValue('population-type.value');
+                                var everTested = getValue('everTested.value');
+
+                                if (keyPop == 164929) {
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                                }
+                                if(keyPop == 138643){
+                                    jq("#priority-population").show();
+                                    jq("#key-population").hide();
+                                }
+
+                                if (everTested == 1065) {
+                                    jq("#test-results").show();
+                                }
+                                if(everTested == 1066){
+                                    jq("#test-results").hide();
+                                }
+                            });
+                        </script>
+                    </ifMode>
+                </td>
                 <td>Date:
                     <encounterDate id="encounter-date" showTime="true"/>
                 </td>
@@ -167,325 +164,91 @@
             </tr>
         </table>
     </div>
-    <!--=============Work flow==================-->
-    <ifMode mode="VIEW" include="true">
-        <div>
-            <table style="width: 100%">
-                <tr>
-                    <td align="left">
-                        Observation Date:
-                    </td>
-                    <td>
-                        Unique Client Number
-                    </td>
-                    <td align="right">
-                        Gender Identity:
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        16-Jan-2019
-                    </td>
-                    <td>
-                        Test
-                    </td>
-                    <td align="right">
-                        Test
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-    </ifMode>
-    <!-- ============ end work flow =================-->
     <div class="ke-form-content">
-
-
         <fieldset>
             <legend>Population Info</legend>
-            <div>
-                Population type : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+           <table class="simple-table">
+                  <tr>
+                      <td>
+                     Population type :
+                    </td>
+                    <td>
                 <obs conceptId="164930"
                      answerConceptIds="164928,164929,138643"
                      answerLabels="General Population,Key Population,Priority Population" id="population-type"
                      style="radio" />
-            </div>
-
-            <p>
-
-            </p>
-
-            <p>
-
-            </p>
-            <p>
-
-            </p>
-
-            <p>
-
-            </p>
-            <table >
-                <tr>
+                      </td>
+                  </tr>
+                <tr id="key-population">
                     <td>
-
-                        <div>
-                            Key Population type : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="164930"
+                            Key Population type :
+                    </td>
+                    <td>
+                            <obs conceptId="160581" id="key_pop_type"
                                  answerConceptIds="165083,160578,105,165100,162277"
                                  answerLabels="FSW,MSM,PWID,Transgender,People in Prison and other closed settings"
                                  style="radio" />
-                        </div>
-
-                        <p>
-
-                        </p>
-
-                        <p>
-
-                        </p>
-
-
-
-
                     </td>
-
                 </tr>
-            </table>
-            <table>
-                <tr>
+                <tr id="priority-population">
                     <td>
-
-                        <div>
-                            Priority Population type : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="164930"
+                            Priority Population type :
+                    </td><td>
+                            <obs conceptId="138643"
                                  answerConceptIds="159674,162198,165192,1175"
                                  answerLabels="Fisher Folk,Truck Driver,Military,Not Applicable"
                                  style="radio" />
-                        </div>
-
-
-
-                    </td>
+                        </td>
                 </tr>
             </table>
             <br />
 
         </fieldset>
-
         <!--        ============HIV TESTING HISTORY===========================-->
-
         <fieldset>
             <legend>HIV Testing History</legend>
             <table class="simple-table">
-
                 <tr>
                     <td>
-
-                        <div>
-                            Ever tested for HIV? : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="164930"
-                                 answerConceptIds="1065,1066"
-                                 answerLabels="Yes,No" id="evertested"
-                                 style="radio" />
-                        </div>
-                        <P>
-
-                        </P>
-                        <P>
-
-                        </P>
-                        <P>
-
-                        </P>
-
-                        <div>
-                            Knowledge of HIV Status ? : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="164930"
-                                 answerConceptIds="703,664,1067,1175"
-                                 answerLabels="Positive,Negative,Unknown,Not Applicable" id="population-type"
-                                 style="radio" />
-                        </div>
-
+                            Ever tested for HIV? :
                     </td>
-
-
+                    <td>
+                            <obs conceptId="164401"
+                                 answerConceptIds="1065,1066"
+                                 answerLabels="Yes,No" id="everTested"
+                                 style="radio" />
+                     </td>
                 </tr>
-
-
-
+            <tr id="test-results">
+                <td>
+                            Knowledge of HIV Status ? :
+                </td>
+                <td>
+                            <obs conceptId="165233"
+                                 answerConceptIds="703,664,1067,1175"
+                                 answerLabels="Positive,Negative,Unknown,Not Applicable" id="testResults"
+                                 style="radio" />
+                 </td>
+                </tr>
             </table>
-
         </fieldset>
-
-        <!--        ======================HIV SELF TESTING=========================-->
-
-
         <fieldset>
             <legend>Self testing</legend>
             <table class="simple-table">
-
                 <tr>
                     <td>
 
                         <div>
                             Had a HIV Self Test in the past 12 months? : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                            <obs conceptId="164930"
+                            <obs conceptId="164952"
                                  answerConceptIds="1065,1066"
                                  answerLabels="Yes,No" id="population-type"
                                  style="radio" />
                         </div>
-
-
-
                     </td>
                 </tr>
-
             </table>
-
         </fieldset>
-
-
-
-        <!--        ===========================CARE AND TREATMENT=====================-->
-        <div id="currentHiv">
-
-            <fieldset>
-                <legend>Current HIV Self Test Services</legend>
-                <table>
-
-                    <td>Number of kits used
-                        <p>
-                            <obs id="kits" conceptId="165223" class="remarks"
-                                 />
-                        </p>
-                    </td>
-                </table>
-                <table class="simple-table">
-                    <tr>
-                        <td><p><b>Reasons for taking a HIV Self Testing kit</b></p></td>
-                        <td><p><b>Name of HIV Self Kit issued</b></p></td>
-                        <td><p><b>HIV Self Kit lot number</b></p></td>
-                        <td><p><b>HIV Self Test Kit Lot Expiry Date</b></p></td>
-
-
-                    </tr>
-                    <tr>
-
-                        <td>
-                            <p>
-                                <obs id="reason_for_test" conceptId="164126"
-                                     answerConceptIds="165217,163568,5622"
-                                     answerLabels="Self Test,Sexual Partner/Spouse Testing, Friend or other family member,Other Testing"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown"/>
-                            </p>
-                            <p>
-                                <obs id="care_provided" conceptId="165239"
-                                     answerConceptIds="165217,163568,5622"
-                                     answerLabels="Self Test,Sexual Partner/Spouse Testing, Friend or other family member,Other Testing"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown"/>
-                            </p>
-                            <p>
-                                <obs id="care_provided" conceptId="165239"
-                                     answerConceptIds="165217,163568,5622"
-                                     answerLabels="Self Test,Sexual Partner/Spouse Testing, Friend or other family member,Other Testing"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown"/>
-                            </p>
-                            <p>
-                                <obs id="care_provided" conceptId="165239"
-                                     answerConceptIds="165217,163568,5622"
-                                     answerLabels="Self Test,Sexual Partner/Spouse Testing, Friend or other family member,Other Testing"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown"/>
-                            </p>
-                            <p>
-                                <obs id="care_provided" conceptId="165239"
-                                     answerConceptIds="165217,163568,5622"
-                                     answerLabels="Self Test,Sexual Partner/Spouse Testing, Friend or other family member,Other Testing"
-                                     answerSeparator="&lt;br /&gt;" style="dropdown"/>
-                            </p>
-
-
-                        </td>
-                        <td>
-                            <p>
-                                <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
-                                     answerLabels="Sure Check, Oraquick, Biosure,Insti,Atomo,Other"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
-                                     answerLabels="Sure Check, Oraquick, Biosure,Insti,Atomo,Other"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
-                                     answerLabels="Sure Check, Oraquick, Biosure,Insti,Atomo,Other"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
-                                     answerLabels="Sure Check, Oraquick, Biosure,Insti,Atomo,Other"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
-                                     answerLabels="Sure Check, Oraquick, Biosure,Insti,Atomo,Other"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                <obs id="kitLotNumber" conceptId="164964"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="kitLotNumber" conceptId="164964"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="kitLotNumber" conceptId="164964"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                 <obs id="kitLotNumber" conceptId="164964"
-                                        style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                            <p>
-                                <obs id="kitLotNumber" conceptId="164964"
-                                     style="dropdown" answerSeparator="&lt;br /&gt;"/>
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                                />
-                            </p>
-                            <p>
-                                <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                                />
-                            </p>
-                            <p>
-                                <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                                />
-                            </p>
-                            <p>
-                                <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                                />
-                            </p>
-                            <p>
-                                <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
-                                />
-                            </p>
-                        </td>
-
-                    </tr>
-
-                </table>
-
-            </fieldset>
-        </div>
-
-
     </div>
     <div class="ke-form-footer">
         <submit/>

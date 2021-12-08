@@ -472,7 +472,7 @@
 	</bean>
 	<!-- HIV Self Test form -->
 	<bean id="kenyaemr.common.form.hivSelfTesting" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="c3c439ea-4cf5-11ec-81d3-0242ac130003" />
+		<property name="targetUuid" value="810fc592-f5f8-467a-846e-e177ba48a4e5" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.registration" />
@@ -485,7 +485,7 @@
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.hts.PatientsEligibleForHtsInitialTestCalculation" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/hivSelfTesting.html" />
-		<property name="order" value="201082" />
+		<property name="order" value="201095" />
 	</bean>
 	<!-- ===================== Reports ===================== -->
 
