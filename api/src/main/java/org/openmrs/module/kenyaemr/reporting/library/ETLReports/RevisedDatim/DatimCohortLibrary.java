@@ -8,6 +8,8 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
+import jdk.nashorn.internal.runtime.Context;
+import org.joda.time.LocalDate;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation;
@@ -19,6 +21,8 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -32,10 +36,6 @@ import java.util.Date;
 public class DatimCohortLibrary {
 
     static String startOfYear = "0000-10-01";
-
-    final String TRANSGENDER_SW = "\"Transgender\" and c.year_started_sex_work is not null";
-
-    final String TRANSGENDER_NOT_SW = "\"Transgender\" and c.year_started_sex_work is null";
 
     /**
      * Patients started on ART during the reporting period (last 3 months)
@@ -4518,124 +4518,231 @@ public class DatimCohortLibrary {
     }
 
     /**
-     *  Number of KPs who received prevention services
-     * KP_PREV
+     * KP_PREV for the current semi-annual reporting period
+     * @return
      */
-    public CohortDefinition kpPrev(String kpType) {
-        if (kpType.equals("TRANSGENDER_SW")) {
-            kpType = TRANSGENDER_SW;
-        } else if (kpType.equals("TRANSGENDER_NOT_SW")) {
-            kpType = TRANSGENDER_NOT_SW;
-        }
-        SqlCohortDefinition cd = new SqlCohortDefinition();
+    public CohortDefinition kpPrevCurrentPeriod() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "  inner join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
+                "  left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "  left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+                "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
+                "                                             when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10) when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace(@startOfYear, '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
+                "                                             when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
+                "                                             else date(:startDate) end) and date(:endDate))\n" +
+                "or (p.first_peer_enc between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
+                "                                            when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10) when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
+                "                                            when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
+                "                                            else date(:startDate) end) and date(:endDate)) and c.voided=0)) group by c.client_id;";
 
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n"
-                + "    inner join (select e.client_id,max(e.visit_date) as enrolment_date,mid(max(concat(e.visit_date,e.ever_tested_for_hiv)),11) as ever_tested_for_hiv,mid(max(concat(e.visit_date,e.share_test_results)),11) as hiv_status_at_enrolment from kenyaemr_etl.etl_client_enrollment e group by e.client_id ) e on c.client_id = e.client_id\n"
-                + "    left join (select t.patient_id,min(t.visit_date) as first_hts_date,mid(min(concat(t.final_test_result)),11) as first_hiv_results from kenyaemr_etl.etl_hts_test t group by t.patient_id)t on c.client_id = t.patient_id\n"
-                + "    left join (select v.client_id, min(v.visit_date) as first_clinical_visit_date from kenyaemr_etl.etl_clinical_visit v group by v.client_id)v on c.client_id = v.client_id\n"
-                + "    left join (select p.client_id, min(p.visit_date) as first_peer_enc from kenyaemr_etl.etl_peer_calendar p group by p.client_id)p on c.client_id = p.client_id\n"
-                + "where((((e.ever_tested_for_hiv = 'No' or e.hiv_status_at_enrolment in('Yes I tested negative','No I do not want to share',null)) and (t.first_hts_date between\n"
-                + "date(case MONTH(:startDate) when 1 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 3 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 5 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 7 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 9 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate))\n"
-                + "        when 11 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) when 12 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) else null end) and date(:endDate)))\n"
-                + "or (v.first_clinical_visit_date between (case MONTH(:startDate) when 1 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "       when 3 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "       when 5 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "       when 7 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "       when 9 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate))\n"
-                + "       when 11 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) when 12 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) else null end) and date(:endDate))\n"
-                + "or (p.first_peer_enc between (case MONTH(:startDate) when 1 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 2 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 3 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 4 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 5 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 6 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 7 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 8 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR))))\n"
-                + "        when 9 then replace('"
-                + startOfYear
-                + "','0000',(YEAR(date_sub(:startDate, INTERVAL 1 YEAR)))) when 10 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate))\n"
-                + "        when 11 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) when 12 then replace('"
-                + startOfYear
-                + "','0000',YEAR(:startDate)) else null end) and date(:endDate))) and c.key_population_type = "
-                + kpType
-                + " and c.voided=0)\n" + "group by c.client_id;\n";
-        cd.setName("kpPrev");
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevCurrentPeriod");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("kpPrev");
-
+        cd.setDescription("KPs with visit within the reporting period");
         return cd;
     }
 
+    /**
+     * KP_PREV for the previous period (Half year). This is required for de-duplication when getting KP_PREV clients
+     * @return
+     */
+    public CohortDefinition kpPrevPreviousPeriod() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "                          inner join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
+                "                          left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "                          left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+                "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 6 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 7 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 8 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 9 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 11 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 12 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 1 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    when 2 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH) when 3 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    else date_sub(date(:startDate), INTERVAL 6 MONTH) end) and date_sub(date(:endDate), INTERVAL 6 MONTH))\n" +
+                "         or (p.first_peer_enc between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 6 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 7 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 8 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 9 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 11 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 12 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 1 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    when 2 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH) when 3 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    else date_sub(date(:startDate), INTERVAL 6 MONTH) end) and date_sub(date(:endDate), INTERVAL 6 MONTH)) and c.voided=0)) group by c.client_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevPreviousPeriod");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KPs with visit during previous reporting period");
+        return cd;
+    }
+
+    /**
+     * KPs in KP program who were newly tested/referred for HTS within the last 3 months
+     * @return
+     */
+    public CohortDefinition kpPrevOfferedHTSServices() {
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.counselled_for_hiv = 'Yes' and v.hiv_tested in ('Yes','Declined','Referred for testing');";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevOfferedHTSServices");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KP offered HTS");
+        return cd;
+    }
+    /**
+     * KPs in KP program who were newly tested/referred for HTS within the last 3 months
+     * @return
+     */
+    public CohortDefinition kpPrevNewlyTestedOrReferredSql() {
+        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested in ('Yes','Referred for testing'))v\n" +
+                "left join\n" +
+                "    (select t.patient_id from kenyaemr_etl.etl_hts_test t where timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevNewlyTestedOrReferred");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KP newly tested or referred");
+        return cd;
+    }
+
+    /**
+     * KPs in KP program  who received a clinical service within the reporting period
+     * @return
+     */
+    public CohortDefinition kpPrevReceivedService() {
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v\n" +
+                "       where (v.condom_use_education = 'Yes' or v.post_abortal_care = 'Yes' or v.female_condoms_no > 0 or v.male_condoms_no > 0 or v.lubes_no > 0 or v.sti_screened = 'Y' or v.sti_treated ='Yes' or v.sti_referred = 'Yes'\n" +
+                "    or v.linked_to_art='Yes' or v.tb_screened='Y' or v.tb_treated = 'Y' or v.tb_referred = 'Yes'\n" +
+                "          or (v.hepatitisB_screened = 'Y' and v.hepatitisB_treated = 'Vaccinated') or v.hepatitisB_referred ='Yes'\n" +
+                "          or (v.hepatitisC_screened = 'Y' and v.hepatitisC_treated = 'Vaccinated') or v.hepatitisC_referred ='Yes'\n" +
+                "          or (v.fp_screened = 'Yes' and v.fp_eligibility = 'Eligible' and v.fp_treated in ('Y','on-going'))) and\n" +
+                "             v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
+                "    when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10)\n" +
+                "    when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
+                "    when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
+                "    else date(:startDate) end) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevReceivedService");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KP received service");
+        return cd;
+    }
+
+    /**
+     * KPs who are known positive prior to enrolment into the program.
+     * @return
+     */
+    public CohortDefinition kpPrevKnownPositiveSql() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "                left join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate) and e.share_test_results = 'Yes I tested positive')e  on c.client_id = e.client_id\n" +
+                "left join (select h.patient_id from kenyaemr_etl.etl_hiv_enrollment h where h.visit_date < date(:startDate)) h on c.client_id = h.patient_id\n" +
+                "where e.client_id is not null or h.patient_id is not null;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevKnownPositiveSql");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KPs known positive");
+        return cd;
+    }
+
+    /**
+     * KPs who had a a service within the reporting period and declined HTS and /or referral
+     * @return
+     */
+    public CohortDefinition kpPrevDeclinedTestingSql() {
+        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested ='Declined')v\n" +
+                "       left join\n" +
+                "        (select t.patient_id from kenyaemr_etl.etl_hts_test t where timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevDeclinedTestingSql");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KPs declined testing");
+        return cd;
+    }
+
+    /**
+     * Get KPs by KP type in KP Program
+     * @param kpType
+     * @return
+     */
+    public CohortDefinition kpProgramByKpType(String kpType) {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.key_population_type)),11) = '"+kpType+"';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpProgramByKpType");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KPs by type from KP Program");
+        return cd;
+    }
+
+    /**
+     * Number of key populations reached with individual and/or small group-level HIV prevention interventions designed for the target population
+     * @param kpType
+     * @return
+     */
+    public CohortDefinition kpPrev(String kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrevCurrentPeriod",ReportUtils.map(kpPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevPreviousPeriod",ReportUtils.map(kpPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpProgramByKpType",ReportUtils.map(kpProgramByKpType(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevReceivedService",ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevOfferedHTSServices",ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND kpProgramByKpType AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        return cd;
+    }
+
+    /**
+     * KP_PREV by KPs known positive by MSM, TG, FSW, PWID, people in prisons and other closed settings
+     * @param kpType
+     * @return
+     */
+    public CohortDefinition kpPrevKnownPositive(String kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrev",ReportUtils.map(kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("kpPrev AND kpPrevKnownPositiveSql");
+        return cd;
+    }
+
+    /**
+     *KP_PREV by KPs newly tested and/or referred for testing by MSM, TG, FSW, PWID
+     * @param kpType
+     * @return
+     */
+    public CohortDefinition kpPrevNewlyTestedOrReferred(String kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrev",ReportUtils.map(kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevNewlyTestedOrReferred",ReportUtils.map(kpPrevNewlyTestedOrReferredSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("kpPrev AND kpPrevNewlyTestedOrReferred");
+        return cd;
+    }
+
+    /**
+     * KP_PREV by KPs declined testing and/or referral by MSM, TG, FSW, PWID, people in prisons and other closed settings
+     * @param kpType
+     * @return
+     */
+    public CohortDefinition kpPrevDeclinedTesting(String kpType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrev",ReportUtils.map(kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevDeclinedTesting",ReportUtils.map(kpPrevDeclinedTestingSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(kpPrev AND kpPrevDeclinedTesting");
+        return cd;
+    }
     /**
      *Physical and/or emotional violence (other Post-GBV) care
      * GEND_GBV_SEXUAL_VIOLENCE Disaggreagtion

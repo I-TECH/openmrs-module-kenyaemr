@@ -493,7 +493,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //Treatment Indicators
         //TX_New
-        //TX_New
         //Disaggregated by Age / Sex
         EmrReportingUtils.addRow(cohortDsd, "TX_New", "Newly Started ART", ReportUtils.map(datimIndicators.newlyStartedARTByAgeSex(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
@@ -829,9 +828,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Tested Positive Other
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Other_Positive", "Tested Positive Other", ReportUtils.map(datimIndicators.testedPositiveOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
-        // Number of people newly enrolled on Prep
-        EmrReportingUtils.addRow(cohortDsd, "PrEP_NEWLY_ENROLLED", "Number of people newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEP(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
-
         // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
@@ -841,28 +837,34 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_COMPLETED_TPT", "Patients previously enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
-        //3. KP_PREV
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_FSW", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("(\"FSW\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSM", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("(\"MSM\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_MSW", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("(\"MSW\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWUD", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("(\"PWUD\")"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_PWID", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("(\"PWID\")"), indParams), kpAgeGenderDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_SW", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_SW"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
-        EmrReportingUtils.addRow(cohortDsd, "KP_PREV_TG_NOT_SW", "Received care for the first time this year",
-                ReportUtils.map(datimIndicators.kpPrev("TRANSGENDER_NOT_SW"), indParams), kpAgeDisaggregation,
-                Arrays.asList("01", "02", "03", "04", "05"));
+        //KP_PREV by KP type
+        cohortDsd.addColumn("KP_PREV_MSM", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("MSM"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_TG", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("Transgender"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_FSW", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("FSW"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_PWID", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("PWID"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("People in prison and other closed settings"), indParams), "");
+
+        //KP_PREV by KP type by Testing services
+
+        //Known Positive
+        cohortDsd.addColumn("KP_PREV_MSM_KNOWN_POSITVE", "Known Positive",ReportUtils.map(datimIndicators.kpPrevKnownPositive("MSM"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_TG_KNOWN_POSITVE", "Known Positive",ReportUtils.map(datimIndicators.kpPrevKnownPositive("Transgender"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_FSW_KNOWN_POSITVE", "Known Positive",ReportUtils.map(datimIndicators.kpPrevKnownPositive("FSW"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_PWID_KNOWN_POSITVE", "Known Positive",ReportUtils.map(datimIndicators.kpPrevKnownPositive("PWID"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS_KNOWN_POSITVE", "Known Positive",ReportUtils.map(datimIndicators.kpPrevKnownPositive("People in prison and other closed settings"), indParams), "");
+
+        //Newly tested and/or referred for HTS
+        cohortDsd.addColumn("KP_PREV_MSM_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.kpPrevNewlyTestedOrReferred("MSM"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_TG_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.kpPrevNewlyTestedOrReferred("Transgender"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_FSW_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.kpPrevNewlyTestedOrReferred("FSW"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_PWID_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.kpPrevNewlyTestedOrReferred("PWID"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.kpPrevNewlyTestedOrReferred("People in prison and other closed settings"), indParams), "");
+        //Declined testing and/or referral
+        cohortDsd.addColumn("KP_PREV_MSM_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("MSM"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_TG_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("Transgender"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_FSW_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("FSW"), indParams), "");
+        cohortDsd.addColumn("KP_PREV_PWID_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("PWID"), indParams),"");
+        cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("People in prison and other closed settings"), indParams), "");
 
         /*GEND_GBV
         Number of people receiving post-gender-based violence (GBV) clinical care based on the minimum package*/

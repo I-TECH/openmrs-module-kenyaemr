@@ -1093,13 +1093,39 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number of KPs received prevention services
+     * Number of key populations reached with individual and/or small group-level HIV prevention interventions designed for the target population
      */
     public CohortIndicator kpPrev(String kpType) {
         return cohortIndicator("Number of KPs received prevention services",
                 ReportUtils.map(datimCohorts.kpPrev(kpType), "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * KP_PREV disaggregated by Number of Known Positive KPs received prevention services
+     * @param kpType
+     * @return
+     */
+    public CohortIndicator kpPrevKnownPositive(String kpType) {
+        return cohortIndicator("Number of Known Positive KPs received prevention services",
+                ReportUtils.map(datimCohorts.kpPrevKnownPositive(kpType), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * KP_PREV disaggregated by Number of KPs received prevention services and newly tested or referred for HTS
+     * @param kpType
+     * @return
+     */
+    public CohortIndicator kpPrevNewlyTestedOrReferred(String kpType) {
+        return cohortIndicator("Number of KPs received prevention services and newly tested or referred for HTS",
+                ReportUtils.map(datimCohorts.kpPrevNewlyTestedOrReferred(kpType), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * KP_PREV disaggregated by Number of KPs received prevention services and declined HTS
+     * @param kpType
+     * @return
+     */
+    public CohortIndicator kpPrevDeclinedTesting(String kpType) {
+        return cohortIndicator("Number of KPs received prevention services and declined HTS",
+                ReportUtils.map(datimCohorts.kpPrevDeclinedTesting(kpType), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of beneficiaries for Sexual violence (post-rape care)
      */
