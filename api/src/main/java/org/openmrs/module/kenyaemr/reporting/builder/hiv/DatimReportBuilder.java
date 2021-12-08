@@ -231,7 +231,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> contactAgeSexFineDisaggregation =
                 Arrays.asList(fCInfant, mCInfant, fC1_to4, mC1_to4, fC5_to9, mC5_to9, fC10_to14, mC10_to14, fC15_to19, mC15_to19, fC20_to24, mC20_to24,
                         fC25_to29, mC25_to29, fC30_to34, mC30_to34, fC35_to39, mC35_to39, fC40_to44, mC40_to44, fC45_to49, mC45_to49, fCAbove50, mCAbove50, colTotal);
-        List<ColumnParameters> contactAgeSexDocumentedNegativeDisaggregation = Arrays.asList(fC1_to4, mC1_to4, fC5_to9, mC5_to9, fC10_to14, mC10_to14, colTotal);
+        List<ColumnParameters> contactAgeSexDocumentedNegativeDisaggregation = Arrays.asList(f1_to4, m1_to4, f5_to9, m5_to9, f10_to14, m10_to14, colTotal);
 
         //End of patient contact Disaggregations
 
