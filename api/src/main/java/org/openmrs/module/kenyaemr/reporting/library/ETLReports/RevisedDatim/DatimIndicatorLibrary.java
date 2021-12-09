@@ -780,40 +780,62 @@ public class DatimIndicatorLibrary {
     /**
      * TX_PVLS KP on ART with suppressed viral load results within the past 12 months.
      */
-    public CohortIndicator onARTKpWithVLLast12Months(String testType,Integer kpType) {
-        return cohortIndicator("KP on ART with suppressed VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.onARTKpWithSuppVLLast12Months(testType,kpType),
+    public CohortIndicator kpOnARTVLLast12Months(String testType,Integer kpType) {
+        return cohortIndicator("KP on ART with VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.kpOnARTVLLast12Months(testType,kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_PVLS_DENOMINATOR Number of Patients on ART with viral load test within the past 12 months Disaggregated by Sex/Age
      */
-    public CohortIndicator onARTWithVLLast12Months() {
-        return cohortIndicator("On ART with VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.txpvlsDenominator(),
+    public CohortIndicator onARTWithVLLast12Months(String testType) {
+        return cohortIndicator("On ART with VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.txpvlsDenominator(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * TX_PVLS Number pregnant women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months and either pregnant or breastfeeding.
+     * TX_PVLS_DENOMINATOR_PREGNANT Number of Pregnant Patients on ART with viral load test within the past 12 months
      */
-    public CohortIndicator pregnantOrBFOnARTWithSuppressedVLLast12Months(String testType) {
-        return cohortIndicator("Pregnant Women on ART with Suppressed VL within last 12 Months and either pregnant or breastfeeding.", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOrBFOnARTWithSuppressedVLLast12Months(testType),
+    public CohortIndicator txpvlsDenominatorPregnant(String testType) {
+        return cohortIndicator("Pregnant On ART with VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.txpvlsDenominatorPregnant(testType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_PVLS_DENOMINATOR_BF Number of Breastfeeding Patients on ART with viral load test within the past 12 months
+     */
+    public CohortIndicator txpvlsDenominatorBreastfeeding(String testType) {
+        return cohortIndicator("Breastfeeding On ART with VL within last 12 Months by sex/age", ReportUtils.<CohortDefinition>map(datimCohorts.txpvlsDenominatorBreastfeeding(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * TX_PVLS Number pregnant women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
+     * TX_PVLS Number pregnant women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months and pregnant
      */
+    public CohortIndicator pregnantOnARTWithSuppressedVLLast12Months(String testType) {
+        return cohortIndicator("Pregnant Women on ART with Suppressed VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOnARTWithSuppressedVLLast12Months(testType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_PVLS Number breastfeeding women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
+     */
+    public CohortIndicator breastFeedingOnARTWithSuppressedVLLast12Months(String testType) {
+        return cohortIndicator("Breastfeeding Women on ART with Suppressed VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.breastfeedingOnARTWithSuppressedVLLast12Months(testType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+/*    *//**
+     * TX_PVLS Number pregnant women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
+     *//*
     public CohortIndicator pregnantAndBFOnARTWithSuppressedVLLast12Months(String testType) {
         return cohortIndicator("Pregnant Women on ART with Suppressed VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantAndBFOnARTWithSuppressedVLLast12Months(testType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-    /**
+    *//**
      * TX_PVLS Number pregnant women on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months.
-     */
+     *//*
     public CohortIndicator pregnantOnARTSuppTargetedVLLast12Months() {
         return cohortIndicator("Pregnant Women on ART with Suppressed targeted VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOnARTWithSuppressedTargetedVLLast12Months(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }
+    }*/
     /**
      * TX_PVLS Indication by Key Population Type
      */
