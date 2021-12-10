@@ -207,7 +207,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
                 Arrays.asList(fUnder10, f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
 
         List<ColumnParameters> datimPMTCTCXCAAgeDisaggregation =
-                Arrays.asList(f10_to14, f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
+                Arrays.asList(f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
 
         List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m, colTotal);
 
@@ -639,18 +639,18 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML  KPs Transferred out
-        cohortDsd.addColumn( "TX_ML_PWID_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
 
-        //TX_ML KPs Transferred out
-        cohortDsd.addColumn( "TX_ML_PWID_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
+        //TX_ML KPs stopped Tx
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_IIT_PRISONS_CLOSED_SETTINGS_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
 
         //TX_ML Cause of death
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_HIV_TB", "HIV disease resulting in TB", ReportUtils.map(datimIndicators.txMLCauseOfDeath(HIV_DISEASE_RESULTING_IN_TB_CONCEPT), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
