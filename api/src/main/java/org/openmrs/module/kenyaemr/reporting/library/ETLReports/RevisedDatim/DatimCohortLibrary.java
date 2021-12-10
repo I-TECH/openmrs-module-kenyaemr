@@ -4469,7 +4469,90 @@ public class DatimCohortLibrary {
         return cd;
 
     }
+    /**
+     *Proportion of patients who Initiated TPT within 6 months of starting ART
+     * @return
+     */
+    public CohortDefinition initiatedTPTWithin6MonthsStartingART() {
 
+        String sqlQuery = "select t.patient_id from\n" +
+                "  (select p.patient_id,p.initiation_date as initiation_date,de.arv_start_date as arv_start_date\n" +
+                "   from (select p.patient_id, max(p.date_enrolled) as initiation_date\n" +
+                "         from kenyaemr_etl.etl_patient_program p where  p.program ='TPT' and p.date_enrolled <= date(:endDate)\n" +
+                "         group by p.patient_id)p\n" +
+                "    inner join (select de.patient_id,min(de.date_started) as arv_start_date from kenyaemr_etl.etl_drug_event de\n" +
+                "     where de.program ='HIV' and de.date_started <=date(:endDate) group by de.patient_id)de on p.patient_id = de.patient_id\n" +
+                "  group by patient_id\n" +
+                "  having date(initiation_date) >= date(arv_start_date) and timestampdiff(MONTH,date(arv_start_date),date(initiation_date)) < 6)t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TB_PREV_NEWLY_ENROLLED_ART_INITIATED_TPT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initiated TPT within 6 months of starting ART");
+        return cd;
+
+    }
+
+    /**
+     *Proportion of patients who Initiated TPT Afetr 6 months of starting ART
+     *  @return
+     */
+    public CohortDefinition initiatedTPTAfter6MonthsStartingART() {
+
+        String sqlQuery = "select t.patient_id from\n" +
+                "  (select p.patient_id,p.initiation_date as initiation_date,de.arv_start_date as arv_start_date\n" +
+                "   from (select p.patient_id, max(p.date_enrolled) as initiation_date\n" +
+                "         from kenyaemr_etl.etl_patient_program p where  p.program ='TPT' and p.date_enrolled <= date(:endDate) group by p.patient_id)p\n" +
+                "    inner join (select de.patient_id,min(de.date_started) as arv_start_date\n" +
+                "                from kenyaemr_etl.etl_drug_event de where de.program ='HIV' and de.date_started <=date(:endDate)\n" +
+                "                group by de.patient_id)de on p.patient_id = de.patient_id\n" +
+                "  group by patient_id\n" +
+                "  having date(initiation_date) >= date(arv_start_date) and timestampdiff(MONTH,date(arv_start_date),date(initiation_date)) >= 6)t;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TB_PREV_ENROLLED_ART_INITIATED_TPT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Initiated TPT After 6 months of starting ART");
+        return cd;
+
+    }
+
+    /**
+     *Proportion of NEW ON ART patients who started on a standard course of TB Preventive Treatment (TPT)
+     * within 6 months of starting ART
+     * TB_PREV_NEWLY_ENROLLED_ART_INITIATED_TPT Datim indicator
+     * Composition startedOnART + initiatedTPTWithin6MonthsStartingART
+     * @return
+     */
+    public CohortDefinition  newOnARTprevOnIPTandInitiated() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initiatedTPTWithin6MonthsStartingART", ReportUtils.map(initiatedTPTWithin6MonthsStartingART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("startedOnART AND initiatedTPTWithin6MonthsStartingART");
+        return cd;
+    }
+    /**
+     *Proportion of PREVIOUS ON ART patients who started on a standard course of TB Preventive Treatment (TPT)
+     * Afetr 6 months of starting ART
+     * TB_PREV_ENROLLED_ART_INITIATED_TPT Datim indicator
+     * Composition startedOnART + initiatedTPTAfter6MonthsStartingART
+     * @return
+     */
+    public CohortDefinition  previousOnARTandIPTandInitiated() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("previouslyOnART", ReportUtils.map(previouslyOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initiatedTPTAfter6MonthsStartingART", ReportUtils.map(initiatedTPTAfter6MonthsStartingART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("previouslyOnART AND initiatedTPTAfter6MonthsStartingART");
+        return cd;
+    }
     /**
      *Proportion of  patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
      * Composition
