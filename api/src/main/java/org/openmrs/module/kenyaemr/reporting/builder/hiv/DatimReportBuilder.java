@@ -883,13 +883,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_INITIATED_TPT", "Patients newly enrolled on ART and initiated TPT therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTInitiated(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT)
-        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_INITIATED_TPT", "Patients previously enrolled on ART and initiated TPT therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTInitiated(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_PREVIOUSLY_ENROLLED_ART_INITIATED_TPT", "Patients previously enrolled on ART and initiated TPT therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTInitiated(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         // Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_COMPLETED_TPT", "Patients newly enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
-        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_COMPLETED_TPT", "Patients previously enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_PREVIOUSLY_ENROLLED_ART_COMPLETED_TPT", "Patients previously enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         //KP_PREV by KP type
         cohortDsd.addColumn("KP_PREV_MSM", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("MSM"), indParams),"");
