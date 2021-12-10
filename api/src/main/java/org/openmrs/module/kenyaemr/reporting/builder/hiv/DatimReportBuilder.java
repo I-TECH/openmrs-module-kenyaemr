@@ -879,8 +879,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Tested Positive Other
         EmrReportingUtils.addRow(cohortDsd, "HTS_TST_Other_Positive", "Tested Positive Other", ReportUtils.map(datimIndicators.testedPositiveOther(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
-        // Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
-        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_COMPLETED", "Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.previouslyOnIPTCompleted(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        // Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT)
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_INITIATED_TPT", "Patients newly enrolled on ART and initiated TPT therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTInitiated(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
+
+        // Proportion of Previously enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT)
+        EmrReportingUtils.addRow(cohortDsd, "TB_PREV_ENROLLED_ART_INITIATED_TPT", "Patients previously enrolled on ART and initiated TPT therapy", ReportUtils.map(datimIndicators.previouslyARTandIPTInitiated(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
 
         // Proportion of Newly enrolled on ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
         EmrReportingUtils.addRow(cohortDsd, "TB_PREV_NEWLY_ENROLLED_ART_COMPLETED_TPT", "Patients newly enrolled on ART and TPT in the previous reporting period who completed therapy", ReportUtils.map(datimIndicators.newARTpreviouslyOnIPTCompleted(), indParams),  datimTXTBOnART, Arrays.asList("01", "02", "03", "04", "05"));
