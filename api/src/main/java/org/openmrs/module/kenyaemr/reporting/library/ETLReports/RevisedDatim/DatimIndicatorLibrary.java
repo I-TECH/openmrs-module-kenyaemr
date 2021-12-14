@@ -635,13 +635,44 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-
     /**
      * FSW Tested Negative
      * @return the indicator
      */
     public CohortIndicator fswTestedNegative() {
         return cohortIndicator("FSW Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.fswTestedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TG Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator tgTestedNegative() {
+        return cohortIndicator("TG Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.tgTestedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TG Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator tgTestedPositive() {
+        return cohortIndicator("TG Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.tgTestedPositive(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Prisoners Tested Negative
+     * @return the indicator
+     */
+    public CohortIndicator prisonersTestedNegative() {
+        return cohortIndicator("Prisoners Tested Negative", ReportUtils.<CohortDefinition>map(datimCohorts.prisonersTestedNegative(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Prisoners Tested Positive
+     * @return the indicator
+     */
+    public CohortIndicator prisonersTestedPositive() {
+        return cohortIndicator("Prisoners Tested Positive", ReportUtils.<CohortDefinition>map(datimCohorts.prisonersTestedPositive(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -957,8 +988,16 @@ public class DatimIndicatorLibrary {
     /**
      * TX_ML KP Stop reason
      */
+    public CohortIndicator txmlKPPatientDied(Integer kpType) {
+        return cohortIndicator("TX ml KPs who died", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPPatientDied(kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML KP Stop reason other than death
+     */
     public CohortIndicator txmlKPStopReason(Integer kpType, Integer stopReason) {
-        return cohortIndicator("TX ml KPs by stop reason", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPPatientStopReason(kpType,stopReason),
+        return cohortIndicator("TX ml KPs by who died by stop reason", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPStopReason(kpType,stopReason),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -1003,6 +1042,13 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator txmlPatientByTXStopReason(Integer reason) {
         return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientByTXStopReason(reason),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
+     */
+    public CohortIndicator txmlPatientDied() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientDied(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
