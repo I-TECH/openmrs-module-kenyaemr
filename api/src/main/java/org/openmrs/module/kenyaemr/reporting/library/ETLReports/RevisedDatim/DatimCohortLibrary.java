@@ -3816,13 +3816,12 @@ public class DatimCohortLibrary {
         return cd;
     }
     /**
-     * TX_ML Number of ART patients with no clinical contact since their last expected contact
+     * Patients current on ART at the beginning of the reporting period . This is a component of TX_ML
      * @return
      */
-    public CohortDefinition txML() {
+    public CohortDefinition currentOnARTAtStartOfReportingPeriod() {
 
-        String sqlQuery = "select tx_ml.patient_id from (select t.patient_id,t.date_started,t.latest_vis_date,t.latest_tca from(\n" +
-                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+        String sqlQuery = "SELECT a.patient_id from (select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "max(d.visit_date) as date_discontinued,\n" +
@@ -3842,11 +3841,24 @@ public class DatimCohortLibrary {
                 "group by patient_id\n" +
                 "having (started_on_drugs is not null and started_on_drugs <> '') and (\n" +
                 "( (disc_patient is null and date_add(date(latest_tca), interval 30 DAY)  >= date_sub(date(:endDate),INTERVAL 3 MONTH)) or (date(latest_tca) > date(date_discontinued) and date(latest_vis_date)> date(date_discontinued) and date_add(date(latest_tca), interval 30 DAY)  >= date_sub(date(:endDate), INTERVAL 3 MONTH)))\n" +
-                ")\n" +
-                ") t\n" +
-                "inner join\n" +
-                "(\n" +
-                "select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
+                "))a;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("currentOnARTAtStartOfReportingPeriod");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients current on ART at the beginning of the reporting period");
+        return cd;
+
+    }
+
+    /**
+     * Patients with IIT by the end of the reporting period. A component of TX_ML
+     * @return
+     */
+    public CohortDefinition iitAtEndOfReportingPeriod() {
+
+        String sqlQuery = "select b.patient_id from (select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
                 "max(fup.visit_date) as latest_vis_date,\n" +
                 "mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
                 "max(d.visit_date) as date_discontinued,\n" +
@@ -3862,16 +3874,28 @@ public class DatimCohortLibrary {
                 "where fup.visit_date <= date(:endDate)\n" +
                 "group by patient_id\n" +
                 "having (\n" +
-                "(((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(date(:endDate), date(latest_tca)) between 1 and 90)\n" +
-                ") e on t.patient_id = e.patient_id) tx_ml;";
+                "(((date(latest_tca) < :endDate) and (date(latest_vis_date) < date(latest_tca))) ) and ((date(latest_tca) > date(date_discontinued) and date(latest_vis_date) > date(date_discontinued)) or disc_patient is null ) and datediff(date(:endDate), date(latest_tca)) between 1 and 90))b;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_ML");
+        cd.setName("iitAtEndOfReportingPeriod");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of ART patients with no clinical contact since their last expected contact");
+        cd.setDescription("Patients with IIT by the end of the reporting period");
         return cd;
+    }
 
+    /**
+     * Number of ART patients with no clinical contact since their last expected contact
+     * @return
+     */
+    public CohortDefinition txML() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND iitAtEndOfReportingPeriod");
+        return cd;
     }
     /**
      * TX_ML patients by Treatment stop reason
