@@ -219,45 +219,136 @@ public class DatimIndicatorLibrary {
      * HIV Positive women on ART screened Negative for cervical cancer 1st time
      * @return the indicator
      */
-    public CohortIndicator firstTimescreenedCXCANegative() {
-        return cohortIndicator("HIV Positive women on ART screened Negative for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator firstTimeCXCASCRNNegative() {
+        return cohortIndicator("HIV Positive women on ART screened Negative for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimeCXCASCRNNegative(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * HIV Positive women on ART screened Positive for cervical cancer 1st time
      * @return the indicator
      */
-    public CohortIndicator firstTimescreenedCXCAPositive() {
-        return cohortIndicator("HIV Positive women on ART screened Positive for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator firstTimeCXCASCRNPositive() {
+        return cohortIndicator("HIV Positive women on ART screened Positive for cervical cancer 1st time", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimeCXCASCRNPositive(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * HIV Positive women on ART screened Negative for cervical cancer 1st time
      * @return the indicator
      */
-    public CohortIndicator firstTimescreenedCXCAPresumed() {
-        return cohortIndicator("HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator firstTimeCXCASCRNPresumed() {
+        return cohortIndicator("HIV Positive women on ART with Presumed cervical cancer 1st time screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstTimeCXCASCRNPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART re-screened Negative for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCASCRNNegative() {
+        return cohortIndicator("HIV Positive Women on ART re-screened Negative for cervical cancere", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCASCRNNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART re-screened Positive for cervical cancer
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCASCRNPositive() {
+        return cohortIndicator("HIV Positive women on ART re-screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCASCRNPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV Positive women on ART with presumed cervical cancer during re-screening
+     * @return the indicator
+     */
+    public CohortIndicator rescreenedCXCASCRNPresumed() {
+        return cohortIndicator("HIV Positive women on ART with presumed cervical cancer during re-screening", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCASCRNPresumed(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Women on ART and Cx treatment screened Negative for cervical cancer
      * @return the indicator
      */
-    public CohortIndicator postTreatmentscreenedCXCANegative() {
-        return cohortIndicator("Women on ART and Cx treatment screened Negative for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator postTreatmentCXCASCRNNegative() {
+        return cohortIndicator("Women on ART and Cx treatment screened Negative for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCASCRNNegative(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Women on ART and Cx treatment screened Positive for cervical cancer
      * @return the indicator
      */
-    public CohortIndicator postTreatmentscreenedCXCAPositive() {
-        return cohortIndicator("Women on ART and Cx treatment screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator postTreatmentCXCASCRNPositive() {
+        return cohortIndicator("Women on ART and Cx treatment screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCASCRNPositive(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Women on ART and Cx treatment screened Positive for cervical cancer
      * @return the indicator
      */
-    public CohortIndicator postTreatmentscreenedCXCAPresumed() {
-        return cohortIndicator("Women on ART and Cx treatment screened Presumed for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator postTreatmentCXCASCRNPresumed() {
+        return cohortIndicator("Women on ART and Cx treatment screened Presumed for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.postTreatmentCXCASCRNPresumed(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received Cryotherapy cancer treatment in their first CACX screening
+     * @return
+     */
+    public CohortIndicator firstScreeningCXCATXCryotherapy() {
+        return cohortIndicator("HIV positive Women on ART and received Cryotherapy cancer treatment in their first CACX screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstScreeningCXCATXCryotherapy(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received Thermocoagulation cancer treatment in their first CACX screening
+     * @return
+     */
+    public CohortIndicator firstScreeningCXCATXThermocoagulation() {
+        return cohortIndicator("HIV positive Women on ART and received Thermocoagulation cancer treatment in their first CACX screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstScreeningCXCATXThermocoagulation(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received LEEP cancer treatment in their first CACX screening
+     * @return
+     */
+    public CohortIndicator firstScreeningCXCATXLEEP() {
+        return cohortIndicator("HIV positive Women on ART and received LEEP cancer treatment in their first CACX screening", ReportUtils.<CohortDefinition>map(datimCohorts.firstScreeningCXCATXLEEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV positive Women on ART and received Cryotherapy,Thermocoagulation or Leep cancer treatment when rescreened after previous negative
+     * @return
+     */
+    public CohortIndicator rescreenedCXCATxCryotherapy() {
+        return cohortIndicator("HIV positive Women on ART and received Cryotherapy,Thermocoagulation or Leep cancer treatment when rescreened after previous negative", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCATXCryotherapy(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received Thermocoagulation cancer treatment when rescreened after previous negative
+     * @return
+     */
+    public CohortIndicator rescreenedCXCATXThermocoagulation() {
+        return cohortIndicator("HIV positive Women on ART and received Thermocoagulation cancer treatment when rescreened after previous negative", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCATXThermocoagulation(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received LEEP cancer treatment when rescreened after previous negative
+     * @return
+     */
+    public CohortIndicator rescreenedCXCATXLEEP() {
+        return cohortIndicator("HIV positive Women on ART and received LEEP cancer treatment in their first CACX screening", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCATXLEEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * HIV positive Women on ART and received Cryotherapy cancer treatment during Post-Treatment follow-up
+     * @return
+     */
+    public CohortIndicator postTxFollowupCXCATxCryotherapy() {
+        return cohortIndicator("HIV positive Women on ART and received Cryotherapy cancer treatment during Post-Treatment follow-up", ReportUtils.<CohortDefinition>map(datimCohorts.postTxFollowupCXCATxCryotherapy(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received Thermocoagulation cancer treatment during Post-Treatment follow-up
+     * @return
+     */
+    public CohortIndicator postTxFollowupCXCATXThermocoagulation() {
+        return cohortIndicator("HIV positive Women on ART and received Thermocoagulation cancer treatment during Post-Treatment follow-up", ReportUtils.<CohortDefinition>map(datimCohorts.postTxFollowupCXCATXThermocoagulation(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HIV positive Women on ART and received LEEP cancer treatment during Post-Treatment follow-up
+     * @return
+     */
+    public CohortIndicator postTxFollowupCXCATXLEEP() {
+        return cohortIndicator("HIV positive Women on ART and received LEEP cancer treatment during Post-Treatment follow-up", ReportUtils.<CohortDefinition>map(datimCohorts.postTxFollowupCXCATXLEEP(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Number of OVC Current on ART reported to implementing partner
@@ -272,27 +363,6 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator ovcNotOnART() {
         return cohortIndicator("Number of OVC Not on ART reported to implementing partner", ReportUtils.<CohortDefinition>map(datimCohorts.ovcNotOnART(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * HIV Positive women on ART re-screened Negative for cervical cancer
-     * @return the indicator
-     */
-    public CohortIndicator rescreenedCXCANegative() {
-        return cohortIndicator("HIV Positive Women on ART re-screened Negative for cervical cancere", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCANegative(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * HIV Positive women on ART re-screened Positive for cervical cancer
-     * @return the indicator
-     */
-    public CohortIndicator rescreenedCXCAPositive() {
-        return cohortIndicator("HIV Positive women on ART re-screened Positive for cervical cancer", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCAPositive(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * HIV Positive women on ART with presumed cervical cancer during re-screening
-     * @return the indicator
-     */
-    public CohortIndicator rescreenedCXCAPresumed() {
-        return cohortIndicator("HIV Positive women on ART with presumed cervical cancer during re-screening", ReportUtils.<CohortDefinition>map(datimCohorts.rescreenedCXCAPresumed(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
