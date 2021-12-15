@@ -579,7 +579,54 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Tested NegativeOther", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeOther(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * Tested Negative at the STI Clinic
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeSTIClinic() {
+        return cohortIndicator("Tested Negative STI clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeSTIClinic(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Tested Positive at the STI Clinic
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveSTIClinic() {
+        return cohortIndicator("Tested Positive STI clinic", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveSTIClinic(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Tested Negative at the Emergency ward
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeEmergencyWard() {
+        return cohortIndicator("Tested Negative emergency ward", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeEmergencyWard(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Tested Positive at the Emergency ward
+     * @return the indicator
+     */
+    public CohortIndicator testedPositiveEmergencyWard() {
+        return cohortIndicator("Tested Positive emergency ward", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveEmergencyWard(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Tested Positive at the VMMC services
+     * @return the indicator
+     */
+    public CohortIndicator testedPositveVMMCServices() {
+        return cohortIndicator("Tested Positive VMMC services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositveVMMCServices(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Tested Negative at the VMMC services
+     * @return the indicator
+     */
+    public CohortIndicator testedNegativeVMMCServices() {
+        return cohortIndicator("Tested Negative VMMC services", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeVMMCServices(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Tested PositiveOther
      * @return the indicator
@@ -1083,7 +1130,7 @@ public class DatimIndicatorLibrary {
      * HTS_INDEX_CONTACTS_ELICITED
      */
     public CohortIndicator htsIndexContactsElicited() {
-        return cohortIndicator("Number of male contacts under 15 years elicited", ReportUtils.<CohortDefinition>map(datimCohorts.htsIndexContactsElicited(),
+        return cohortIndicator("Number of male contacts elicited", ReportUtils.<CohortDefinition>map(datimCohorts.htsIndexContactsElicited(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
