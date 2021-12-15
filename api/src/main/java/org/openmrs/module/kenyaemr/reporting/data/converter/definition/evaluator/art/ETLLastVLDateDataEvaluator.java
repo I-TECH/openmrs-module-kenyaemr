@@ -34,9 +34,7 @@ public class ETLLastVLDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,\n" +
-                "max(visit_date) as last_vl_date from kenyaemr_etl.etl_laboratory_extract\n" +
-                "GROUP BY patient_id;";
+        String qry = "select patient_id, max(visit_date) as last_vl_date from kenyaemr_etl.etl_laboratory_extract where lab_test in (1305,856) GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
