@@ -29,7 +29,7 @@ public class HTSStrategyConverter implements DataConverter {
             return  "";
         }
 
-        else if(value.equals("HP:Provider Initiated Testing(PITC)")) {
+        else if(value.equals("HP: Hospital Patient Testing")) {
             return "HP";
         }
         else if(value.equals("NP: HTS for non-patients")){

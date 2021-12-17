@@ -156,7 +156,7 @@ public class HtsHistoryFragmentController {
 
 	String htsStrategyConverter (Concept key) {
 		Map<Concept, String> htsStrategyList = new HashMap<Concept, String>();
-		htsStrategyList.put(conceptService.getConcept(164163), "HP:Provider Initiated Testing(PITC)");
+		htsStrategyList.put(conceptService.getConcept(164163), "HP: Hospital Patient Testing");
 		htsStrategyList.put(conceptService.getConcept(164953), "NP: HTS for non-patients");
 		htsStrategyList.put(conceptService.getConcept(164954), "VI:Integrated VCT Center");
 		htsStrategyList.put(conceptService.getConcept(164955), "Stand Alone VCT Center");
