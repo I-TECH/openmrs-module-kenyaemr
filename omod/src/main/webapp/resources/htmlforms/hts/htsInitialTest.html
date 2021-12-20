@@ -884,14 +884,14 @@
                                 }
 
                                 //Setting
-                                var onSettingSelected = function() {
-                                    var val = jq(this).val();
-                                    jq("#strategy option[value='161557']").show();  //IT
-                                    jq("#strategy option[value='159939']").show();  //MO
-                                    jq("#strategy option[value='166606']").show();  //SNS
-                                    jq("#strategy option[value='5622']").show();     //O
-                                    jq("#hts-entry-point option[value='5622']").show();     //O
-                                    if (val == 1537 ) {   //Facility setting selected
+                                var setting = getValue("setting.value");
+                                //Defaults
+                                jq("#strategy option[value='161557']").show();  //IT
+                                jq("#strategy option[value='159939']").show();  //MO
+                                jq("#strategy option[value='166606']").show();  //SNS
+                                jq("#strategy option[value='5622']").show();     //O
+                                jq("#hts-entry-point option[value='5622']").show();     //O
+                                if (setting == 1537 ) {   //Facility setting selected
                                         //Strategy
                                         jq("#strategy option[value='164163']").show();  //PITC
                                         jq("#strategy option[value='164953']").show();  //NP
@@ -915,7 +915,7 @@
                                         jq("#hts-entry-point option[value='159938']").hide();    //HBT
                                         jq("#hts-entry-point option[value='159939']").hide();    //MO
 
-                                    }else if(val == 163488 ) {
+                                    }else if(val == 163488 ) { //Community setting selected
                                         // strategy
                                         jq("#strategy option[value='164163']").hide();  //PITC
                                         jq("#strategy option[value='164953']").hide();  //NP
@@ -940,7 +940,6 @@
                                         jq("#hts-entry-point option[value='160522']").hide();    //ER
 
                                     }
-                                };
                             });
                         </script>
                     </ifMode>
@@ -1152,6 +1151,7 @@
                                            Index testing,
                                            SNS - Social Networks,
                                            O: Others"
+                             required="true"
                         />
                     </td>
                     <td>
@@ -1206,6 +1206,7 @@
                                            Home Based Testing,
                                            Mobile Outreach,
                                            Other"
+                             required="true"
                         />
                     </td>
                 </tr>

@@ -921,13 +921,13 @@
                                 }
 
                                 //Setting
-                                var onSettingSelected = function() {
-                                    var val = jq(this).val();
-                                    jq("#strategy option[value='161557']").show();  //IT
-                                    jq("#strategy option[value='159939']").show();  //MO
-                                    jq("#strategy option[value='166606']").show();  //SNS
-                                    jq("#strategy option[value='5622']").show();     //O
-                                    jq("#hts-entry-point option[value='5622']").show();     //O
+                                var setting = getValue("setting.value");
+                                //Defaults
+                                jq("#strategy option[value='161557']").show();  //IT
+                                jq("#strategy option[value='159939']").show();  //MO
+                                jq("#strategy option[value='166606']").show();  //SNS
+                                jq("#strategy option[value='5622']").show();     //O
+                                jq("#hts-entry-point option[value='5622']").show();     //O
                                     if (val == 1537 ) {   //Facility setting selected
                                         //Strategy
                                         jq("#strategy option[value='164163']").show();  //PITC
@@ -977,7 +977,6 @@
                                         jq("#hts-entry-point option[value='160522']").hide();    //ER
 
                                     }
-                                };
                             });
                         </script>
                     </ifMode>
@@ -1187,6 +1186,7 @@
                                            Index testing,
                                            SNS - Social Networks,
                                            O: Others"
+                             required="true"
                              />
 
                     </td>
@@ -1242,6 +1242,7 @@
                                            Home Based Testing,
                                            Mobile Outreach,
                                            Other"
+                             required="true"
                         />
                     </td>
                 </tr>
