@@ -3915,6 +3915,36 @@ public class DatimCohortLibrary {
     }
 
     /**
+     * Number of New On ART patients who are not Current on At
+     * A component of TxML
+     * @return
+     */
+    public CohortDefinition newOnARTAndNotTxCur() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txcurr",
+                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyStartedArt AND NOT txcurr");
+        return cd;
+    }
+
+    /**
+     * Number of ART patients with no clinical contact since their last expected contact
+     * @return
+     */
+    public CohortDefinition currentOnARTAtStartIitAtEndOfReportingPeriod() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND iitAtEndOfReportingPeriod");
+        return cd;
+    }
+
+    /**
      * Number of ART patients with no clinical contact since their last expected contact
      * @return
      */
@@ -3922,9 +3952,10 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND iitAtEndOfReportingPeriod");
+        cd.addSearch("currentOnARTAtStartIitAtEndOfReportingPeriod",ReportUtils.map(currentOnARTAtStartIitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("newOnARTAndNotTxCur", ReportUtils.map(newOnARTAndNotTxCur(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("transferredOutAndVerified", ReportUtils.map(transferredOutAndVerified(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentOnARTAtStartIitAtEndOfReportingPeriod OR newOnARTAndNotTxCur OR transferredOutAndVerified");
         return cd;
     }
     /**
@@ -5407,6 +5438,26 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Receiving Post-exposure prophylaxis (PEP)");
+        return cd;
+    }
+
+    /**
+     * Number of People Trasferred within the reporting period and verified
+     * @return
+     */
+    public CohortDefinition transferredOutAndVerified(){
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where d.program_name = 'HIV'\n" +
+                "                          and date(d.effective_discontinuation_date)\n" +
+                "                          between date(:startDate)\n" +
+                "                          and date(:endDate)\n" +
+                "                          and d.discontinuation_reason = 159492 and d.trf_out_verified =1065;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TRANS_VERIFIED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Transferred and Verified within period");
         return cd;
     }
 
