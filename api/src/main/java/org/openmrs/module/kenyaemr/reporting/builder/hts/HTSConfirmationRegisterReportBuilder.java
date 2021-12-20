@@ -19,6 +19,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSConfirmationRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSEntryPointConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSRiskAssessedConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSStrategyConverter;
@@ -131,7 +132,7 @@ public class HTSConfirmationRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("clientTestedAs", new IndividualORCoupleTestDataDefinition(), null);
         dsd.addColumn("monthsSinceLastTest", new HTSMonthsSinceLastTestDataDefinition(), null);
         dsd.addColumn("testingStrategy", new HTSTestStrategyDataDefinition(), null, new HTSStrategyConverter());
-        dsd.addColumn("testEntryPoint", new HTSTestEntryPointDataDefinition(),null);
+        dsd.addColumn("testEntryPoint", new HTSTestEntryPointDataDefinition(),null,new HTSEntryPointConverter());
         dsd.addColumn("hivTest1", new HIVTestOneDataDefinition(), null);
         dsd.addColumn("hivTest2", new HIVTestTwoDataDefinition(), null);
         dsd.addColumn("finalResult", new FinalResultDataDefinition(), null);
