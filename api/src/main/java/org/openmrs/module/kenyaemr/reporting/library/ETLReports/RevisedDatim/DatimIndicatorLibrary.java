@@ -755,7 +755,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator indexTestedPositive() {
-        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimCohorts.indextestedPositive(),
+        return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimCohorts.indexTestedPositive(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -847,7 +847,14 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Total HEI Cohort", ReportUtils.<CohortDefinition>map(datimCohorts.totalHEICohort(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     * PMTCT_FO_DENOMINATOR
+     * @return the indicator
+     */
+    public CohortIndicator pmtctFoDenominator() {
+        return cohortIndicator("Number of HIV-exposed infants who were born 24 months prior to the reporting period and registered in the birth cohort", ReportUtils.<CohortDefinition>map(datimCohorts.pmtctFoDenominator(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * PMTCT_FO HEI Cohort HIV infected
      * @return the indicator
