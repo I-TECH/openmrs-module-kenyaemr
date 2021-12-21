@@ -289,24 +289,33 @@
             });
         }
 	</script>
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+
+                //Died as cause of death
+                var val = getField("idReason.value").val();
+                var verifiedObs = getField("tr-verified-obs.value").val();
+                if (val == 160034){
+                    jq("#reason-died").show();
+                }else if (val == 159492) {
+                    jq("#reason-trf").show();
+                } else {
+                    jq("#reason-died").hide();
+                    jq("#reason-trf").hide();
+                }
+
+                if(verifiedObs == 1065) {
+                    jq('#ptrfVerification').show();
+                }
+
+            });
+        </script>
+    </ifMode>
 	<div class="ke-form-header">
 		<table style="width: 100%">
 			<tr>
 				<td>
-					<ifMode mode="EDIT">
-						<script type="text/javascript">
-                            jq(function(){
-
-                                //Died as cause of death
-                                var val = getField("idReason.value").val();
-                                if (val == 160034){
-                                    jq("#reason-died").show();
-                                }else{
-                                    jq("#reason-died").hide();
-                                }
-                            });
-						</script>
-					</ifMode>
 				</td>
 			</tr>
 		</table>
@@ -317,23 +326,16 @@
 			<legend>Discontinue HIV Care</legend>
 			<table >
 				<tr>
-					<td>Encounter Date:</td>
+					<td width="200px">Encounter Date:</td>
 					<td><encounterDate id="encounter-date" showTime="true" /></td>
-					<td></td>
-					<td></td>
-				</tr><br/>
+				</tr>
 				<tr>
 					<td>Effective discontinuation date</td>
 					<td><obs id= "discontinue-date" conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr><br></br>
+				</tr>
 				<tr>
 					<td>Reason:</td>
 					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Transferred Out,Died,Lost to Follow,Cannot afford Treatment,Other,Unknown" id="idReason" /></td>
-					<td></td>
-					<td></td>
 				</tr>
 
 			</table><br/>
@@ -341,17 +343,15 @@
 				<div id="pdied">
 					<table>
 						<tr>
-							<td>Date of Death, if Known:</td>
+							<td width="200px">Date of Death, if Known:</td>
 							<td><obs conceptId="1543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							<td></td>
-							<td></td>
 						</tr>
 					</table>
 				</div><br/>
 				<div id="cause-death">
 					<table id="general-death-cause">
 						<tr>
-							<td>Death reason:</td>
+							<td width="200px">Death reason:</td>
 							<td><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="163324AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
 							                                                                            160159AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -365,14 +365,13 @@
 									               Other HIV disease resulting in other diseases or conditions leading to death,
 									               Other natural causes not directly related to HIV,
 									               Non-natural causes,
-									               Unknown cause" id="death-reason" /></td>
-							<td><span style="color:red;">*</span></td>
-							<td></td>
+									               Unknown cause" id="death-reason" /><span style="color:red;">*</span></td>
+							
 						</tr>
 					</table><br/>
 					<table id="specific-death-cause">
 						<tr id="cause-of-death">
-							<td>Specific cause of death:</td>
+							<td width="200px">Specific cause of death:</td>
 							<td><obs conceptId="1748AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 									 answerConceptIds="165609,
 									                    145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -419,18 +418,17 @@
 														HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others,
 														HIV disease resulting in Unspecified HIV disease"
 									 id="specific-cause-of-death" /></td>
-							<td></td>
-							<td></td>
+						
 						</tr>
 					</table>
 					<table id="other-death-causes">
 						<tr id ="other-natural">
-							<td>Other natural causes:</td>
-							<td ><br/><obs conceptId="162580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+							<td width="200px">Other natural causes:</td>
+							<td ><obs conceptId="162580AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
 						</tr>
 						<tr id="other-non-natural">
 							<td>Non-natural causes:</td>
-							<td ><br/><obs conceptId="160218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+							<td ><obs conceptId="160218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
 						</tr>
 					</table>
 				</div>
@@ -439,23 +437,27 @@
 				<div id="ptransferred">
 					<table>
 						<tr>
-							<td><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-							<td ><br/><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+							<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+							<td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+                        </tr>
+                        <tr>
 							<td>Date Transferred Out<br /></td>
-							<td><br/><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+							<td><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
 						</tr>
 					</table>
 				</div>
 				<div id="ptrfVerification">
 					<table>
 						<tr>
-							<td><br/>Transfer out verified?</td>
-							<td ><br/><obs conceptId="1285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							<td width="200px">Transfer out verified?</td>
+							<td ><obs conceptId="1285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										   answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										   answerLabel="Yes,No"
 										   style="radio" id="tr-verified-obs"/> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                        </tr>
+                        <tr>
 							<td>Date verified</td>
-							<td><br/><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
+							<td><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
 						</tr>
 					</table>
 				</div>
