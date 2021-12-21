@@ -40,12 +40,7 @@ public class HTSRegisterCohortDefinitionEvaluator implements EncounterQueryEvalu
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
-		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test t\n" +
-				"  inner join openmrs.person p on p.person_id=t.patient_id and p.voided=0\n" +
-				"  where t.test_type = 1\n" +
-				"      and t.hts_entry_point not in (160538,160456,1623)\n" +
-				"      and t.voided = 0\n" +
-				"      and date(t.visit_date) BETWEEN date(:startDate) AND date(:endDate);";
+		String qry = "SELECT encounter_id from kenyaemr_etl.etl_hts_test t inner join person p on p.person_id=t.patient_id and p.voided=0 where t.test_type = 1 and t.voided = 0 and date(t.visit_date) BETWEEN date(:startDate) AND date(:endDate) ; ";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

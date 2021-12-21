@@ -697,6 +697,7 @@
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
             var hasDisability = getValue('has-disability.value');
+            var resultGiven = getField('results-given.value').val();
             var hivTest1 = getField('hiv-test1-result.value').val();
             var hivTest2 = getField('hiv-test2-result.value').val();
             var kitName1 = getField('kit-name-1.value').val();
@@ -725,7 +726,13 @@
             }else{
                 getField('hiv-test1-result.error').html('Please specify HIV Test 1 results.').hide();
             }
-            if (hivTest1 != false &amp;&amp; kitName1 == false ) {      //check hiv test 1 kitname mandatory
+           if (clientConsent == 'true' &amp;&amp; resultGiven == false ) {      //check whether results were given
+                getField('results-given.error').html('Please specify whether results were given.').show();
+               return false;
+            }else{
+               getField('results-given.error').html('Please specify whether results were given.').hide();
+            }
+           if (hivTest1 != false &amp;&amp; kitName1 == false ) {      //check hiv test 1 kitname mandatory
                 getField('kit-name-1.error').html('Please specify HIV Test 1 kit name.').show();
                 return false;
             }else{
@@ -1318,7 +1325,7 @@
                             <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
                                 <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="YES,NO"/>
+                                     style="dropdown" answerLabels="YES,NO" id="results-given"/>
                             </td>
                         </tr>
                     </table>
