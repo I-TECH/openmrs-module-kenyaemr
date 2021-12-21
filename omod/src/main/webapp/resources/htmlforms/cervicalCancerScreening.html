@@ -38,6 +38,12 @@
         jq('#post_tx_complication select').change(postTxComplicationsSelected);
         jq('#treatment select').change(otherTreatmentSelected);
         jq('#referred_out :input[type=radio]').change(onReferralSelected);
+        // Options for selected screening methods
+        jq('#via_screening_result select').change(viaMethodSelected);
+        jq('#vili_screening_result select').change(viliMethodSelected);
+        jq('#colposcopy_screening_result select').change(colMethodSelected);
+        jq('#pap_smear_screening_result select').change(papMethodSelected);
+        jq('#hpv_screening_result select').change(hpvMethodSelected);
 
 
 	});
@@ -116,10 +122,53 @@
 
         }
       }
+        var viaMethodSelected = function(){
+            var val = getValue("via_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+			}
+        }
+
+        var viliMethodSelected = function(){
+            var val = getValue("vili_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var colMethodSelected = function(){
+            var val = getValue("colposcopy_screening_result.value");
+            if(val == 1115){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var papMethodSelected = function(){
+            var val = getValue("pap_smear_screening_result.value");
+            if(val == 1115){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var hpvMethodSelected = function(){
+            var val = getValue("hpv_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
 
     beforeSubmit.push(function() {
         var screeningMethod = getValue("screening_method.value");
-        console.log("Screening method ==>"+screeningMethod);
 
         if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == '') {
             getField("via_screening_result.error").html("Required field").show();
@@ -304,7 +353,8 @@
 								<td>
 									<obs id="screening_type" conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 										answerConceptIds="164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165389"
-										answerLabels="First time screening,Re-screening after previous negative results,Post treatment followup screening" style="dropdown" />
+										answerLabels="First time screening,Re-screening after previous negative results,Post treatment followup screening"
+										 required="true" style="dropdown" />
 								</td>
 							</tr>
 							<tr id="tr_post_tx_complication">
