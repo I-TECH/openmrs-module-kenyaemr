@@ -101,14 +101,16 @@ public class Covid19VaccinationCohortLibrary {
         return cd;
     }
 
-    public CohortDefinition aged18AndAbove() {
+    // Covid vaccine age for now is 15+ , this can be adjusted accordingly depending on the recommended age limits
+
+    public CohortDefinition covidVaccineAgeCohort() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 18;\n";
-        cd.setName("aged18andAbove");
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_demographics where timestampdiff(YEAR ,dob,date(:endDate))>= 15;\n";
+        cd.setName("covidVaccineAgeCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("aged18andAbove");
+        cd.setDescription("covidVaccineAgeCohort");
 
         return cd;
     }
@@ -165,8 +167,8 @@ public class Covid19VaccinationCohortLibrary {
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("partiallyVaccinated",
                 ReportUtils.map(partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND partiallyVaccinated");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND partiallyVaccinated");
         return cd;
     }
 
@@ -184,8 +186,8 @@ public class Covid19VaccinationCohortLibrary {
         cd.addSearch("partiallyVaccinated",
                 ReportUtils.map(partiallyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND NOT (partiallyVaccinated OR fullyVaccinated)");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND NOT (partiallyVaccinated OR fullyVaccinated)");
         return cd;
     }
 
@@ -202,8 +204,8 @@ public class Covid19VaccinationCohortLibrary {
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("covid19AssessedPatients",
                 ReportUtils.map(covid19AssessedPatients(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND NOT covid19AssessedPatients");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND NOT covid19AssessedPatients");
         return cd;
     }
 
@@ -219,8 +221,8 @@ public class Covid19VaccinationCohortLibrary {
         cd.addSearch("txcurr",
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("fullyVaccinated", ReportUtils.map(fullyVaccinated(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND fullyVaccinated");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND fullyVaccinated");
         return cd;
     }
 
@@ -236,8 +238,8 @@ public class Covid19VaccinationCohortLibrary {
         cd.addSearch("txcurr",
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("everInfected", ReportUtils.map(everInfected(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND everInfected");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND everInfected");
         return cd;
     }
 
@@ -253,8 +255,8 @@ public class Covid19VaccinationCohortLibrary {
         cd.addSearch("txcurr",
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("everHospitalised", ReportUtils.map(everHospitalised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18AndAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18AndAbove AND everHospitalised");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND everHospitalised");
         return cd;
     }
 
@@ -269,8 +271,8 @@ public class Covid19VaccinationCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18andAbove");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort");
         return cd;
     }
 
@@ -287,8 +289,8 @@ public class Covid19VaccinationCohortLibrary {
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("firstDoseVerified",
                 ReportUtils.map(firstDoseVerifiedSQl(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18andAbove AND firstDoseVerified");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND firstDoseVerified");
         return cd;
     }
 
@@ -305,8 +307,8 @@ public class Covid19VaccinationCohortLibrary {
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("secondDoseVerified",
                 ReportUtils.map(secondDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18andAbove AND secondDoseVerified");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND secondDoseVerified");
         return cd;
     }
 
@@ -323,8 +325,8 @@ public class Covid19VaccinationCohortLibrary {
                 ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("boosterDoseVerified",
                 ReportUtils.map(boosterDoseVerifiedSQL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("aged18andAbove", ReportUtils.map(aged18AndAbove(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND aged18andAbove AND boosterDoseVerified");
+        cd.addSearch("covidVaccineAgeCohort", ReportUtils.map(covidVaccineAgeCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND covidVaccineAgeCohort AND boosterDoseVerified");
         return cd;
     }
 }
