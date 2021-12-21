@@ -35,19 +35,7 @@ public class ReasonForMissedAppointmentDataEvaluator implements EncounterDataEva
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id,\n" +
-                "  (case reason_for_missed_appointment  when 165609 then 'Client has covid-19 infection'\n" +
-                "                     when 165610 then 'COVID-19 restrictions'\n" +
-                "                     when 164407 then 'Client refilled drugs from another facility'\n" +
-                "                     when 159367 then 'Client has enough drugs'\n" +
-                "                     when 162619 then 'Client travelled'\n" +
-                "                     when 126240 then 'Client could not get an off from work/school'\n" +
-                "                     when 160583 then 'Client is sharing drugs with partner'\n" +
-                "                     when 162192 then 'Client forgot clinic dates'\n" +
-                "                     when 164349 then 'Client stopped medications'\n" +
-                "                     when 1654 then 'Client sick at home/admitted'\n" +
-                "                     when 5622 then 'Other' else ''  end) as reason_for_missed_appointment\n" +
-                "from kenyaemr_etl.etl_ccc_defaulter_tracing;\n ";
+        String qry = "select encounter_id, reason_for_missed_appointment from kenyaemr_etl.etl_ccc_defaulter_tracing;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -821,172 +821,172 @@
         });
     </script>
 
+    <ifMode mode="ENTER">
+        <script type="text/javascript">
+            jq(function(){
+                setValue("encounter-date.value", "");
+            });
+        </script>
+    </ifMode>
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                //facility referral
+                var val = getField("referral-to.value").val();
+                var default_location = "<lookup expression="kenyaemr.location()" />";
+                if (val == 164407) {
+                    jq('#tbl-other-facility').show();
+                    jq('#tbl-this-facility').hide();
+                    getField('this-facility.value').val("");
+                }if(val == 163266){
+                    jq('#tbl-this-facility').show();
+                    jq('#tbl-other-facility').hide();
+                    getField('other-facility.value').val("");
+                    getField('this-facility.value').val(default_location);
+                }
+                //if key pop show which type
+                var popTypeSelected = getValue('population-type.value');
+                if (popTypeSelected == 164929 ){
+                    jq("#key-population").show();
+                    jq("#priority-population").hide();
+                }
+                if (popTypeSelected == 138643 ){
+                    jq("#priority-population").show();
+                    jq("#key-population").hide();
+                }
+                //First test
+                var firstTest = getField("hiv-test1-result.value").val();
+                //Negative
+                if(firstTest ==664) {
+
+                    jq("#hiv-test2-result select").prop("disabled", true);
+                    jq(".kit-name2 select").prop("disabled", true);
+                    jq(".lot-number2 input").prop("disabled", true);
+                    jq("#expiry-date2 input").prop("disabled", true);
+                    getField('hiv-final-result.value').val(664);
+                    jq('#ccc-no input').prop("disabled", true);
+                }
+                //Positive
+                if(firstTest ==703){
+                    jq("#hiv-test2").show();
+                    jq("#hiv-test2-result select").prop("disabled", false);
+                    jq(".kit-name2 select").prop("disabled", false);
+                    jq(".lot-number2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                }
+                //Invalid
+                if(firstTest ==163611){
+                    jq("#hiv-test2").show();
+                    jq("#hiv-test2-result select").prop("disabled", false);
+                    jq(".kit-name2 select").prop("disabled", false);
+                    jq(".lot-number2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                }
+                //Final test
+                var secondTest = getField("hiv-test2-result.value").val();
+                //Negative
+                if(secondTest ==664) {
+                    jq(".kit-name2 select").prop("disabled", true);
+                    jq(".lot-number2 input").prop("disabled", true);
+                    jq("#expiry-date2 input").prop("disabled", true);
+                    getField('hiv-final-result.value').val(664);
+                    jq('#ccc-no input').prop("disabled", true);
+                }
+                //Positive
+                if(secondTest ==703){
+                    jq(".kit-name2 select").prop("disabled", false);
+                    jq(".lot-number2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(703);
+                    jq('#ccc-no input').prop("disabled", false);
+                    jq('#fs-referral').show();
+                }
+                //Invalid
+                if(secondTest ==163611){
+                    jq(".kit-name2 select").prop("disabled", false);
+                    jq(".lot-number2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(1138);
+                }
+                //Invalid
+                if(secondTest ==1175){
+                    jq(".kit-name2 select").prop("disabled", false);
+                    jq(".lot-number2 input").prop("disabled", false);
+                    jq("#expiry-date2 input").prop("disabled", false);
+                    getField('hiv-final-result.value').val(1138);
+                }
+
+
+                var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
+
+                if(syphylisTest1Results != ""){
+                    jq('#dual-results-1').show();
+                }
+
+                //Setting
+                var setting = getValue("setting.value");
+                //Defaults
+                jq("#strategy option[value='161557']").show();  //IT
+                jq("#strategy option[value='159939']").show();  //MO
+                jq("#strategy option[value='166606']").show();  //SNS
+                jq("#strategy option[value='5622']").show();     //O
+                jq("#hts-entry-point option[value='5622']").show();     //O
+                if (setting == 1537 ) {   //Facility setting selected
+                    //Strategy
+                    jq("#strategy option[value='164163']").show();  //PITC
+                    jq("#strategy option[value='164953']").show();  //NP
+                    jq("#strategy option[value='164954']").show();   //VI
+                    jq("#strategy option[value='164955']").hide();    //VS
+                    jq("#strategy option[value='159938']").hide();    //HB
+                    //Entry point
+                    jq("#hts-entry-point option[value='5485']").show();    //IPD
+                    jq("#hts-entry-point option[value='160542']").show();    //OPD
+                    jq("#hts-entry-point option[value='162181']").show();    //PC
+                    jq("#hts-entry-point option[value='160552']").show();    //NC
+                    jq("#hts-entry-point option[value='160538']").show();    //ANC
+                    jq("#hts-entry-point option[value='160456']").show();    //MAT
+                    jq("#hts-entry-point option[value='1623']").show();    //PNC
+                    jq("#hts-entry-point option[value='160541']").show();    //TB
+                    jq("#hts-entry-point option[value='159940']").show();    //VCT
+                    jq("#hts-entry-point option[value='162223']").show();    //VMMC
+                    jq("#hts-entry-point option[value='160546']").show();    //STI
+                    jq("#hts-entry-point option[value='160522']").show();    //ER
+                    jq("#hts-entry-point option[value='163096']").hide();    //CT
+                    jq("#hts-entry-point option[value='159938']").hide();    //HBT
+                    jq("#hts-entry-point option[value='159939']").hide();    //MO
+
+                }else if(setting == 163488 ) {
+                    // strategy
+                    jq("#strategy option[value='164163']").hide();  //PITC
+                    jq("#strategy option[value='164953']").hide();  //NP
+                    jq("#strategy option[value='164954']").hide();   //VI
+                    jq("#strategy option[value='164955']").show();    //VS
+                    jq("#strategy option[value='159938']").show();    //HB
+                    //Entry point
+                    jq("#hts-entry-point option[value='163096']").show();    //CT
+                    jq("#hts-entry-point option[value='159938']").show();    //HBT
+                    jq("#hts-entry-point option[value='159939']").show();    //MO
+                    jq("#hts-entry-point option[value='5485']").hide();    //IPD
+                    jq("#hts-entry-point option[value='160542']").hide();    //OPD
+                    jq("#hts-entry-point option[value='162181']").hide();    //PC
+                    jq("#hts-entry-point option[value='160552']").hide();    //NC
+                    jq("#hts-entry-point option[value='160538']").hide();    //ANC
+                    jq("#hts-entry-point option[value='160456']").hide();    //MAT
+                    jq("#hts-entry-point option[value='1623']").hide();    //PNC
+                    jq("#hts-entry-point option[value='160541']").hide();    //TB
+                    jq("#hts-entry-point option[value='159940']").hide();    //VCT
+                    jq("#hts-entry-point option[value='162223']").hide();    //VMMC
+                    jq("#hts-entry-point option[value='160546']").hide();    //STI
+                    jq("#hts-entry-point option[value='160522']").hide();    //ER
+
+                }
+            });
+        </script>
+    </ifMode>
     <div class="ke-form-header">
         <table style="width: 100%">
             <tr>
                 <td>
-                    <ifMode mode="ENTER">
-                        <script type="text/javascript">
-                            jq(function(){
-                                setValue("encounter-date.value", "");
-                            });
-                        </script>
-                    </ifMode>
-                    <ifMode mode="EDIT">
-                        <script type="text/javascript">
-                            jq(function(){
-                                //facility referral
-                                var val = getField("referral-to.value").val();
-                                var default_location = "<lookup expression="kenyaemr.location()" />";
-                                if (val == 164407) {
-                                    jq('#tbl-other-facility').show();
-                                    jq('#tbl-this-facility').hide();
-                                    getField('this-facility.value').val("");
-                                }if(val == 163266){
-                                    jq('#tbl-this-facility').show();
-                                    jq('#tbl-other-facility').hide();
-                                    getField('other-facility.value').val("");
-                                    getField('this-facility.value').val(default_location);
-                                }
-                                //if key pop show which type
-                                var popTypeSelected = getValue('population-type.value');
-                                if (popTypeSelected == 164929 ){
-                                    jq("#key-population").show();
-                                    jq("#priority-population").hide();
-                                }
-                                if (popTypeSelected == 138643 ){
-                                    jq("#priority-population").show();
-                                    jq("#key-population").hide();
-                                }
-                                //First test
-                                var firstTest = getField("hiv-test1-result.value").val();
-                                //Negative
-                                if(firstTest ==664) {
-
-                                    jq("#hiv-test2-result select").prop("disabled", true);
-                                    jq(".kit-name2 select").prop("disabled", true);
-                                    jq(".lot-number2 input").prop("disabled", true);
-                                    jq("#expiry-date2 input").prop("disabled", true);
-                                    getField('hiv-final-result.value').val(664);
-                                    jq('#ccc-no input').prop("disabled", true);
-                                }
-                                //Positive
-                                if(firstTest ==703){
-                                    jq("#hiv-test2").show();
-                                    jq("#hiv-test2-result select").prop("disabled", false);
-                                    jq(".kit-name2 select").prop("disabled", false);
-                                    jq(".lot-number2 input").prop("disabled", false);
-                                    jq("#expiry-date2 input").prop("disabled", false);
-                                }
-                                //Invalid
-                                if(firstTest ==163611){
-                                    jq("#hiv-test2").show();
-                                    jq("#hiv-test2-result select").prop("disabled", false);
-                                    jq(".kit-name2 select").prop("disabled", false);
-                                    jq(".lot-number2 input").prop("disabled", false);
-                                    jq("#expiry-date2 input").prop("disabled", false);
-                                }
-                                //Final test
-                                var secondTest = getField("hiv-test2-result.value").val();
-                                //Negative
-                                if(secondTest ==664) {
-                                    jq(".kit-name2 select").prop("disabled", true);
-                                    jq(".lot-number2 input").prop("disabled", true);
-                                    jq("#expiry-date2 input").prop("disabled", true);
-                                    getField('hiv-final-result.value').val(664);
-                                    jq('#ccc-no input').prop("disabled", true);
-                                }
-                                //Positive
-                                if(secondTest ==703){
-                                    jq(".kit-name2 select").prop("disabled", false);
-                                    jq(".lot-number2 input").prop("disabled", false);
-                                    jq("#expiry-date2 input").prop("disabled", false);
-                                    getField('hiv-final-result.value').val(703);
-                                    jq('#ccc-no input').prop("disabled", false);
-                                    jq('#fs-referral').show();
-                                }
-                                //Invalid
-                                if(secondTest ==163611){
-                                    jq(".kit-name2 select").prop("disabled", false);
-                                    jq(".lot-number2 input").prop("disabled", false);
-                                    jq("#expiry-date2 input").prop("disabled", false);
-                                    getField('hiv-final-result.value').val(1138);
-                                }
-                                //Invalid
-                                if(secondTest ==1175){
-                                    jq(".kit-name2 select").prop("disabled", false);
-                                    jq(".lot-number2 input").prop("disabled", false);
-                                    jq("#expiry-date2 input").prop("disabled", false);
-                                    getField('hiv-final-result.value').val(1138);
-                                }
-
-
-                                var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
-
-                                if(syphylisTest1Results != ""){
-                                    jq('#dual-results-1').show();
-                                }
-
-                                //Setting
-                                var setting = getValue("setting.value");
-                                //Defaults
-                                jq("#strategy option[value='161557']").show();  //IT
-                                jq("#strategy option[value='159939']").show();  //MO
-                                jq("#strategy option[value='166606']").show();  //SNS
-                                jq("#strategy option[value='5622']").show();     //O
-                                jq("#hts-entry-point option[value='5622']").show();     //O
-                                    if (val == 1537 ) {   //Facility setting selected
-                                        //Strategy
-                                        jq("#strategy option[value='164163']").show();  //PITC
-                                        jq("#strategy option[value='164953']").show();  //NP
-                                        jq("#strategy option[value='164954']").show();   //VI
-                                        jq("#strategy option[value='164955']").hide();    //VS
-                                        jq("#strategy option[value='159938']").hide();    //HB
-                                        //Entry point
-                                        jq("#hts-entry-point option[value='5485']").show();    //IPD
-                                        jq("#hts-entry-point option[value='160542']").show();    //OPD
-                                        jq("#hts-entry-point option[value='162181']").show();    //PC
-                                        jq("#hts-entry-point option[value='160552']").show();    //NC
-                                        jq("#hts-entry-point option[value='160538']").show();    //ANC
-                                        jq("#hts-entry-point option[value='160456']").show();    //MAT
-                                        jq("#hts-entry-point option[value='1623']").show();    //PNC
-                                        jq("#hts-entry-point option[value='160541']").show();    //TB
-                                        jq("#hts-entry-point option[value='159940']").show();    //VCT
-                                        jq("#hts-entry-point option[value='162223']").show();    //VMMC
-                                        jq("#hts-entry-point option[value='160546']").show();    //STI
-                                        jq("#hts-entry-point option[value='160522']").show();    //ER
-                                        jq("#hts-entry-point option[value='163096']").hide();    //CT
-                                        jq("#hts-entry-point option[value='159938']").hide();    //HBT
-                                        jq("#hts-entry-point option[value='159939']").hide();    //MO
-
-                                    }else if(val == 163488 ) {
-                                        // strategy
-                                        jq("#strategy option[value='164163']").hide();  //PITC
-                                        jq("#strategy option[value='164953']").hide();  //NP
-                                        jq("#strategy option[value='164954']").hide();   //VI
-                                        jq("#strategy option[value='164955']").show();    //VS
-                                        jq("#strategy option[value='159938']").show();    //HB
-                                        //Entry point
-                                        jq("#hts-entry-point option[value='163096']").show();    //CT
-                                        jq("#hts-entry-point option[value='159938']").show();    //HBT
-                                        jq("#hts-entry-point option[value='159939']").show();    //MO
-                                        jq("#hts-entry-point option[value='5485']").hide();    //IPD
-                                        jq("#hts-entry-point option[value='160542']").hide();    //OPD
-                                        jq("#hts-entry-point option[value='162181']").hide();    //PC
-                                        jq("#hts-entry-point option[value='160552']").hide();    //NC
-                                        jq("#hts-entry-point option[value='160538']").hide();    //ANC
-                                        jq("#hts-entry-point option[value='160456']").hide();    //MAT
-                                        jq("#hts-entry-point option[value='1623']").hide();    //PNC
-                                        jq("#hts-entry-point option[value='160541']").hide();    //TB
-                                        jq("#hts-entry-point option[value='159940']").hide();    //VCT
-                                        jq("#hts-entry-point option[value='162223']").hide();    //VMMC
-                                        jq("#hts-entry-point option[value='160546']").hide();    //STI
-                                        jq("#hts-entry-point option[value='160522']").hide();    //ER
-
-                                    }
-                            });
-                        </script>
-                    </ifMode>
                     HTS date: <encounterDate id="encounter-date" showTime="true" required="true"/>
                 </td>
                 <td>HTS Provider : <encounterProvider default="currentUser" /></td>
