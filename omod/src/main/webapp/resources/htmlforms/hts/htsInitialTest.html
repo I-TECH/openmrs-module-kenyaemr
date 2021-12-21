@@ -738,10 +738,12 @@
 		var testStrategy = getValue("strategy.value");
 		var tbScreening = getValue("tb-screening.value");
 		var selfTested = getValue("hb-self-test.value");
+        var monthsSinceLastTestInt = parseInt(monthsSinceLastTest);
+
 
 		var predictionVariables = {
 			AgeAtTest: pAge,
-			MonthsSinceLastTest: monthsSinceLastTest,
+			MonthsSinceLastTest: monthsSinceLastTestInt &gt; 0 ? monthsSinceLastTestInt : 0,
 			Gender_Male: pgender == 'M' ? 1 : 0,
 			KeyPopulationType_GP: 0,
 			KeyPopulationType_SW: 0,
