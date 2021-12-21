@@ -480,7 +480,7 @@ public class DatimCohortLibrary {
                 "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
                 "left join (select t.visit_date as test_date,t.patient_id, t.final_test_result as test_result from kenyaemr_etl.etl_hts_test t\n" +
                 "where t.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "and t.hts_entry_point ='PMTCT ANC'\n" +
+                "and t.hts_entry_point =160538\n" +
                 "and t.final_test_result = 'Positive') t on e.patient_id = t.patient_id\n" +
                 "where ((t.test_date = av.visit_date and t.test_result = 'Positive') or (av.hiv_status = 'Positive'))\n" +
                 "group by e.patient_id\n" +
@@ -508,7 +508,7 @@ public class DatimCohortLibrary {
                 "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
                 "left join (select t.visit_date as test_date,t.patient_id, t.final_test_result as test_result from kenyaemr_etl.etl_hts_test t\n" +
                 "    where t.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "    and t.hts_entry_point ='PMTCT ANC'\n" +
+                "    and t.hts_entry_point =160538\n" +
                 "    and t.final_test_result = 'Negative') t on e.patient_id = t.patient_id\n" +
                 "where ((t.test_date = av.visit_date and t.test_result = 'Negative') or (av.hiv_status = 'Negative'))\n" +
                 "group by e.patient_id\n" +
@@ -2238,7 +2238,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
+                "  and hts.hts_entry_point=5485\n" +
                 "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2256,7 +2256,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.hts_entry_point=\"In Patient Department(IPD)\"\n" +
+                "  and hts.hts_entry_point=5485\n" +
                 "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2276,7 +2276,7 @@ public class DatimCohortLibrary {
                 "            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
                 "            where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
+                "and hts.hts_entry_point =162181\n" +
                 "and timestampdiff(year,d.DOB,:endDate)<5\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
@@ -2297,7 +2297,7 @@ public class DatimCohortLibrary {
                 "            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
                 "            where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point =\"Peadiatric Clinic\"\n" +
+                "and hts.hts_entry_point =162181\n" +
                 "and timestampdiff(year,d.DOB,:endDate)<5\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
@@ -2314,7 +2314,7 @@ public class DatimCohortLibrary {
     /* Malnutrition Clinics Negative <5*/
     public CohortDefinition testedNegativeMalnutritionClinics() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='Nutrition Clinic'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160552\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2330,7 +2330,7 @@ public class DatimCohortLibrary {
     /* Malnutrition Clinics Positive <5*/
     public CohortDefinition testedPositiveMalnutritionClinics() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='Nutrition Clinic'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160552\n" +
                 "                and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2348,7 +2348,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "   and hts.patient_given_result =\"Yes\"\n" +
-                "     and hts.hts_entry_point =\"TB\"\n" +
+                "     and hts.hts_entry_point =160541\n" +
                 "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2366,7 +2366,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "   and hts.patient_given_result =\"Yes\"\n" +
-                "     and hts.hts_entry_point =\"TB\"\n" +
+                "     and hts.hts_entry_point =160541\n" +
                 "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2384,7 +2384,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point in (\"Other\",\"Out Patient Department(OPD)\")\n" +
+                "and hts.hts_entry_point in (5622,160542)\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2402,7 +2402,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedNegativeSTIClinic() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='STI Clinic'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160546\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_STI_CLINIC_NEGATIVE");
@@ -2417,7 +2417,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedPositiveSTIClinic() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='STI Clinic'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160546\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_STI_CLINIC_POSITIVE");
@@ -2432,7 +2432,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedPositiveEmergencyWard() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='Emergency'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160522\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_EMERGENCY_WARD_POSITIVE");
@@ -2447,7 +2447,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedNegativeEmergencyWard() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='Emergency'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160522\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_EMERGENCY_WARD_NEGATIVE");
@@ -2462,7 +2462,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedPositveVMMCServices() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='VMMC'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =162223\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_VMMC_POSITIVE");
@@ -2477,7 +2477,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedNegativeVMMCServices() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point ='VMMC'\n" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =162223\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_VMMC_NEGATIVE");
@@ -2648,7 +2648,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point in (\"Other\",\"Out Patient Department(OPD)\")\n" +
+                "and hts.hts_entry_point in (5622,160542)\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2666,7 +2666,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "   and hts.patient_given_result =\"Yes\"\n" +
-                "   and hts.hts_entry_point in (\"VCT\",\"CCC\")\n" +
+                "   and hts.hts_entry_point in (159940,162050)\n" +
                 "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2684,7 +2684,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "   and hts.patient_given_result =\"Yes\"\n" +
-                "   and hts.hts_entry_point in (\"VCT\",\"CCC\")\n" +
+                "   and hts.hts_entry_point in (159940,162050)\n" +
                 "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2745,7 +2745,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
                 "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.hts_entry_point =\"Mobile Outreach\"\n" +
+                "       and hts.hts_entry_point =159939\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2761,7 +2761,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
                 "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.hts_entry_point =\"Mobile Outreach\"\n" +
+                "       and hts.hts_entry_point =159939\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2778,7 +2778,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive'\n" +
                 "       and hts.patient_given_result ='Yes'\n" +
-                "       and hts.test_strategy ='SNS - Social Networks'\n" +
+                "       and hts.test_strategy =166606\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2795,7 +2795,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative'\n" +
                 "       and hts.patient_given_result ='Yes'\n" +
-                "       and hts.test_strategy ='SNS - Social Networks'\n" +
+                "       and hts.test_strategy =166606\n" +
                 "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2806,6 +2806,243 @@ public class DatimCohortLibrary {
         cd.setDescription("Tested Negative Social Network");
         return cd;
     }
+
+    /**
+     *HTS TEST Compositions by Entry Points
+     * PMTCT which is a combination of PMTCT ANC,PMTCT MAT,PMTCT PNC
+     * Compositions for HTS_TEST excluding pmtct
+     *
+     * @return
+     */
+    public CohortDefinition testedPmtct() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
+                "        where hts.hts_entry_point in (160538,160456,1623)\n" +
+                "        and hts.test_type =1\n" +
+                "        and hts.patient_given_result ='Yes'\n" +
+                "        and hts.voided =0 and hts.visit_date\n" +
+                "        between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested HTS");
+        return cd;
+    }
+
+    /**
+     *HTS TEST Compositions by Strategies
+     * HP: Hospital Patient Testing
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedHospitalPatient() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =164163\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_HP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested HP");
+        return cd;
+    }
+
+    /**HTS Strategies
+     *NP: HTS for non-patients
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedNonPatient() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =164953\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_NP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested NP");
+        return cd;
+    }
+    /**HTS Strategies
+     * VI:Integrated VCT Center
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedIntegratedVCT() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =164954\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_VI");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested VI");
+        return cd;
+    }
+    /**HTS Strategies
+     * Stand Alone VCT Center
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedStandAloneVCT() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =164955\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_VS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested VS");
+        return cd;
+    }
+    /**HTS Strategies
+     * HB: Home Based Testing
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedHomeBasedTesting() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =159938\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_HB");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested HB");
+        return cd;
+    }
+    /**HTS Strategies
+     * MO: Mobile Outreach HTS
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedMobileOutreach() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =159939\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_MO");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested MO");
+        return cd;
+    }
+    /**HTS Strategies
+     * Index testing
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedIndexTesting() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =161557\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_IT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested IT");
+        return cd;
+    }
+
+    /**HTS Strategies
+     * Social Networks
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedSocialNetworks() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =166606\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_SNS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested SNS");
+        return cd;
+    }
+    /**HTS Strategies
+     * O:Others
+     * Compositions for HTS_TST Datim indicators
+     *
+     * @return
+     */
+    public CohortDefinition testedOthers() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.test_strategy =5622\n" +
+                "                and hts.test_type =1\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_O");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested O");
+        return cd;
+    }
+
 
     /*Newly Started ART While Pregnant*/
     public CohortDefinition newlyStartedARTWhilePregnant() {
@@ -3915,6 +4152,36 @@ public class DatimCohortLibrary {
     }
 
     /**
+     * Number of New On ART patients who are not Current on At
+     * A component of TxML
+     * @return
+     */
+    public CohortDefinition newOnARTAndNotTxCur() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txcurr",
+                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyStartedArt AND NOT txcurr");
+        return cd;
+    }
+
+    /**
+     * Number of ART patients with no clinical contact since their last expected contact
+     * @return
+     */
+    public CohortDefinition currentOnARTAtStartIitAtEndOfReportingPeriod() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND iitAtEndOfReportingPeriod");
+        return cd;
+    }
+
+    /**
      * Number of ART patients with no clinical contact since their last expected contact
      * @return
      */
@@ -3922,9 +4189,10 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND iitAtEndOfReportingPeriod");
+        cd.addSearch("currentOnARTAtStartIitAtEndOfReportingPeriod",ReportUtils.map(currentOnARTAtStartIitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("newOnARTAndNotTxCur", ReportUtils.map(newOnARTAndNotTxCur(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("transferredOutAndVerified", ReportUtils.map(transferredOutAndVerified(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentOnARTAtStartIitAtEndOfReportingPeriod OR newOnARTAndNotTxCur OR transferredOutAndVerified");
         return cd;
     }
     /**
@@ -5407,6 +5675,26 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Receiving Post-exposure prophylaxis (PEP)");
+        return cd;
+    }
+
+    /**
+     * Number of People Trasferred within the reporting period and verified
+     * @return
+     */
+    public CohortDefinition transferredOutAndVerified(){
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where d.program_name = 'HIV'\n" +
+                "                          and date(d.effective_discontinuation_date)\n" +
+                "                          between date(:startDate)\n" +
+                "                          and date(:endDate)\n" +
+                "                          and d.discontinuation_reason = 159492 and d.trf_out_verified =1065;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("TRANS_VERIFIED");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Transferred and Verified within period");
         return cd;
     }
 

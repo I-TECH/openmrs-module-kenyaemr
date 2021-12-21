@@ -224,7 +224,7 @@
                             Knowledge of HIV Status ? :
                 </td>
                 <td>
-                            <obs conceptId="165233"
+                            <obs conceptId="159427"
                                  answerConceptIds="703,664,1067,1175"
                                  answerLabels="Positive,Negative,Unknown,Not Applicable" id="testResults"
                                  style="radio" />
@@ -247,6 +247,55 @@
                         </div>
                     </td>
                 </tr>
+            </table>
+        </fieldset>
+    </div>
+
+    <!--        ===========================CARE AND TREATMENT=====================-->
+    <div id="currentHiv">
+
+        <fieldset>
+            <legend>Current HIV Self Test Services</legend>
+            <table class="simple-table">
+                <tr>
+                    <th>Reasons for taking HIV STK</th>
+                    <th>Name of HIV STK Issued</th>
+                    <th>HIV STK Lot Number</th>
+                    <th>HIV STK Lot Expiry Date</th>
+                </tr>
+                <repeat>
+                    <template>
+                        <obsgroup groupingConceptId="165221">
+                            <tr>
+                          <td>
+                              <obs id="reason_for_test" conceptId="164126"
+                                    answerConceptIds="165217,163568,5622"
+                                    answerLabels="Self Test,Sexual Partner/Spouse Testing,Friend or other family member,Other Testing"
+                                    answerSeparator="&lt;br /&gt;" style="dropdown"/>
+                    </td>
+                    <td>
+                            <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
+                                 answerLabels="Sure Check,Oraquick,Biosure,Insti,Atomo,Other"
+                                 style="dropdown" answerSeparator="&lt;br /&gt;"/>
+                    </td>
+                    <td>
+                            <obs id="kitLotNumber" conceptId="164964"
+                                 style="dropdown" answerSeparator="&lt;br /&gt;"/>
+                    </td>
+                    <td>
+                            <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
+                    </td>
+                            </tr>
+                        </obsgroup>
+                    </template>
+                    <render n="1" concept=" " />
+                    <render n="2" concept=" " />
+                    <render n="3" concept=" " />
+                    <render n="4" concept=" " />
+                    <render n="5" concept=" " />
+                </repeat>
+
             </table>
         </fieldset>
     </div>

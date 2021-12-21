@@ -29,31 +29,31 @@ public class HTSStrategyConverter implements DataConverter {
             return  "";
         }
 
-        else if(value.equals("HP: Hospital Patient Testing")) {
+        else if(value.equals("164163")) {
             return "HP";
         }
-        else if(value.equals("NP: HTS for non-patients")){
+        else if(value.equals("164953")){
             return "NP";
         }
-        else if(value.equals("VI:Integrated VCT Center")){
+        else if(value.equals("164954")){
             return "VI";
         }
-        else if(value.equals("Stand Alone VCT Center")){
+        else if(value.equals("164955")){
             return "VS";
         }
-        else if(value.equals("Home Based Testing")){
+        else if(value.equals("159938")){
             return "HB";
         }
-        else if(value.equals("MO: Mobile Outreach HTS")){
+        else if(value.equals("159939")){
             return "MO";
         }
-        else if(value.equals("Index testing")){
+        else if(value.equals("161557")){
             return "Index testing";
         }
-        else if(value.equals("SNS - Social Networks")){
+        else if(value.equals("166606")){
             return "SNS";
         }
-        else if(value.equals("Other")){
+        else if(value.equals("5622")){
             return "O";
         }
 
