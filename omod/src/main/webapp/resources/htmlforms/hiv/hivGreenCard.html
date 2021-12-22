@@ -2269,6 +2269,19 @@ Green Card follow-up visit form
             }else{
                 getField('stability.error').html('Please specify stability status.').hide();
             }
+
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "true" &amp;&amp; fastTrackCareError == "") {
+                getField('fast-track.error').html('Please specify differentiated care model.').show();
+                return false;
+            }else{
+                getField('fast-track.error').html('Please specify differentiated care model.').hide();
+            }
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "false" &amp;&amp; standardCareError == "") {
+                getField('standard.error').html('Please specify differentiated care model.').show();
+                return false;
+            }else{
+                getField('standard.error').html('Please specify differentiated care model.').hide();
+            }
             if (tca_date == "") {
                 getField('returnVisitDate.error').html('Please specify return visit date for patient.').show();
                 return false;
@@ -2406,6 +2419,7 @@ Management<br />
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
                                 jq('#standard select').prop('disabled', false);
+                                getField('standard.value').prop("selectedIndex", 1);
                                 jq('#fast-track select').prop('disabled', true);
                             }else {
                                 jq("#tbl-fast-track").show();
@@ -4158,6 +4172,7 @@ Management<br />
                                      style="dropdown"
                                      answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
                                 />
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                         <tr id="tbl-standard">
@@ -4168,6 +4183,7 @@ Management<br />
                                      style="dropdown"
                                      answerLabels="Standard Care"
                                 />
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                     </table>
