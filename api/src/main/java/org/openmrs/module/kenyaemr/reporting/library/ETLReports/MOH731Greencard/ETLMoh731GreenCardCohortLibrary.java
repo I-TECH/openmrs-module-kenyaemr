@@ -1626,20 +1626,24 @@ public class ETLMoh731GreenCardCohortLibrary {
     // Known Positive at 1st ANC HV02-03
     public CohortDefinition knownPositiveAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.test_date,e.1st_anc_visit,av.visit_date from\n" +
-                "       (select e.patient_id, max(e.visit_date) as latest_enrollment_date,mid(max(concat(e.visit_date,e.first_anc_visit_date)),11) as 1st_anc_visit,\n" +
-                "        mid(max(concat(e.visit_date,e.hiv_status)),11) as HIV_status from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "       group by e.patient_id having HIV_status = 703) e\n" +
-                "       inner join\n" +
-                "       (select av.patient_id,av.visit_date as visit_date, av.final_test_result as hiv_status from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
-                "               and av.visit_date between date(:startDate) and date(:endDate)) av on e.patient_id = av.patient_id\n" +
-                "       left join (select max(t.visit_date) as test_date,t.patient_id, mid(max(concat(t.visit_date,t.final_test_result)),11) as test_result from kenyaemr_etl.etl_hts_test t\n" +
-                "          group by t.patient_id\n" +
-                "            having test_result = 'Positive') t on e.patient_id = t.patient_id\n" +
-                "       where ((t.test_date < av.visit_date) or (e.HIV_status = 703))\n" +
-                "       group by e.patient_id\n" +
-                "       having coalesce(1st_anc_visit,visit_date) between date(:startDate) and date(:endDate)\n" +
-                "       )n;";
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select mch.patient_id, mch.latest_mch_enrolment_date, mch.service_type, e.latest_hiv_enrollment_date,mch.hiv_status_at_enrolment,t.test_result,t.latest_hiv_test_date\n" +
+                "from (select mch.patient_id,\n" +
+                "     max(mch.visit_date)                                       latest_mch_enrolment_date,\n" +
+                "     mid(max(concat(mch.visit_date, mch.service_type)), 11) as service_type,\n" +
+                "     mch.hiv_status as hiv_status_at_enrolment\n" +
+                "from kenyaemr_etl.etl_mch_enrollment mch where mch.visit_date between date(:startDate) and date(:endDate)\n" +
+                "group by mch.patient_id)mch\n" +
+                "left join (select e.patient_id, max(e.visit_date) as latest_hiv_enrollment_date\n" +
+                "           from kenyaemr_etl.etl_hiv_enrollment e where e.visit_date < date(:endDate)\n" +
+                "           group by e.patient_id)e on mch.patient_id = e.patient_id\n" +
+                "left join (select t.patient_id, max(t.visit_date) as latest_hiv_test_date,mid(max(concat(t.visit_date,t.final_test_result)),11) as test_result\n" +
+                "          from kenyaemr_etl.etl_hts_test t where t.visit_date < date(:endDate)\n" +
+                "          group by t.patient_id)t on mch.patient_id = t.patient_id\n" +
+                "group by mch.patient_id\n" +
+                "having mch.service_type = 1622\n" +
+                "and (mch.latest_mch_enrolment_date > e.latest_hiv_enrollment_date or hiv_status_at_enrolment = 703 or (mch.latest_mch_enrolment_date > t.latest_hiv_test_date\n" +
+                "and t.test_result = 'Positive')))a;";
 
         cd.setName("Known Positive at First ANC");
         cd.setQuery(sqlQuery);
@@ -1649,28 +1653,24 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
-    //    Initial test at ANC  HV02-04
-    public CohortDefinition initialHIVTestInMchmsAntenatal(){
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select distinct v.patient_id\n" +
-                "         from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "                     left outer join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= v.patient_id\n" +
-                "                     left outer join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
-                "                     left outer join kenyaemr_etl.etl_mch_postnatal_visit p on p.patient_id=ld.patient_id\n" +
-                "                   where date(v.visit_date) between date(:startDate) and date(:endDate) and\n" +
-                "                         e.hiv_status !=703 and\n" +
-                "                         ld.final_test_result is null and\n" +
-                "                         p.final_test_result is null and\n" +
-                "                         v.final_test_result is not null ;";
-
-        cd.setName("Initial HIV Test at ANC");
-        cd.setQuery(sqlQuery);
+    /**
+     * Clients withInitial test at ANC 1 HV02-04     *
+     * Composed using negativePMTCTANC1 OR positivePMTCTANC1
+     *
+     * @return
+     */
+    public CohortDefinition initialHIVTestInMchmsAntenatal() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Initial HIV Test at ANC");
-
+        cd.addSearch("negativePMTCTANC1",
+                ReportUtils.map(datimCohortLibrary.negativePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positivePMTCTANC1",
+                ReportUtils.map(datimCohortLibrary.positivePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(negativePMTCTANC1 OR positivePMTCTANC1");
         return cd;
     }
+
     //    Initial test at Labour and Delivery  HV02-05
     public CohortDefinition testedForHivInMchmsDelivery(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
