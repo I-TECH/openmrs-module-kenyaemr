@@ -8,21 +8,14 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
-import jdk.nashorn.internal.runtime.Context;
-import org.joda.time.LocalDate;
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DurationToNextAppointmentDataDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -2202,94 +2195,16 @@ public class DatimCohortLibrary {
         return cd;
 //TODO: de.visitdate =>last(enrollment.visitdate), left join on delivery + postnatal  dates which should be greater than art date : Done
     }
-
-    //TODO Review with BA why all HTS indicators are based on PITC strategy
-
-    //TODO : Review all HTS indicators with BA
-    /* Inpatient Services Negative*/
-    public CohortDefinition testedNegativeInpatientServices() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.hts_entry_point=5485\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Inpatient_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Inpatient Services");
-        return cd;
-
-    }
-
-    /* Inpatient Services Positive*/
-    public CohortDefinition testedPositiveInpatientServices() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "  and hts.patient_given_result =\"Yes\"\n" +
-                "  and hts.hts_entry_point=5485\n" +
-                "  and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Inpatient_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Inpatient Services");
-        return cd;
-
-    }
-
-    /* Paediatric services Positive <5*/
-    public CohortDefinition testedPositivePaediatricServices() {
-
+    /**
+     * Infants tested HIV Negative < 5 for Pediatrics and malnutrition clinics
+     * @return
+     */
+    public CohortDefinition initialNegativeHIVTestResultInfants() {
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
-                "            where hts.final_test_result =\"Positive\"\n" +
-                "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point =162181\n" +
-                "and timestampdiff(year,d.DOB,:endDate)<5\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Paediatric_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Paediatric Services");
-        return cd;
-
-    }
-
-    /* Paediatric services Negative <5*/
-    public CohortDefinition testedNegativePaediatricServices() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
-                "            where hts.final_test_result =\"Negative\"\n" +
-                "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point =162181\n" +
-                "and timestampdiff(year,d.DOB,date(:endDate))<5\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Paediatric_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Paediatric Services");
-        return cd;
-
-    }
-
-    /* Malnutrition Clinics Negative <5*/
-    public CohortDefinition testedNegativeMalnutritionClinics() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160552\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
+                "    inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
+                "    where hts.test_type =1 and hts.final_test_result ='Negative' and hts.patient_given_result ='Yes'\n" +
+                "    and timestampdiff(year,d.DOB,date(:endDate))<5\n" +
+                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_Malnutrition_Negative");
         cd.setQuery(sqlQuery);
@@ -2300,164 +2215,23 @@ public class DatimCohortLibrary {
 
     }
 
-    /* Malnutrition Clinics Positive <5*/
-    public CohortDefinition testedPositiveMalnutritionClinics() {
+    /**
+     * Infants tested HIV Positive < 5 for Pediatrics and malnutrition clinics
+     * @return
+     */
+    public CohortDefinition positiveHIVTestResultInfants() {
 
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160552\n" +
-                "                and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
+                "    inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hts.patient_id\n" +
+                "    where hts.test_type =2 and hts.final_test_result ='Positive' and hts.patient_given_result ='Yes'\n" +
+                "    and timestampdiff(year,d.DOB,date(:endDate))<5\n" +
+                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_Malnutrition_Positive");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested Positive Malnutrition Clinics");
-        return cd;
-
-    }
-
-    /* TB Clinic Negative*/
-    public CohortDefinition testedNegativeTBClinic() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "   and hts.patient_given_result =\"Yes\"\n" +
-                "     and hts.hts_entry_point =160541\n" +
-                "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_TB_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative at TB Clinic");
-        return cd;
-
-    }
-
-    /* TB Clinic Positive*/
-    public CohortDefinition testedPositiveTBClinic() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "   and hts.patient_given_result =\"Yes\"\n" +
-                "     and hts.hts_entry_point =160541\n" +
-                "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_TB_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive at TB Clinic");
-        return cd;
-
-    }
-
-    /*Tested Negative Other*/
-    public CohortDefinition testedNagativeOther() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point in (5622,160542)\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Other_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Other");
-        return cd;
-
-    }
-
-    /**
-     *HTS_TST Tested Negative STI Clinic
-     * @return
-     */
-    public CohortDefinition testedNegativeSTIClinic() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160546\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_STI_CLINIC_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative STI Clinic");
-        return cd;
-    }
-    /**
-     *HTS_TST Tested Positive STI Clinic
-     * @return
-     */
-    public CohortDefinition testedPositiveSTIClinic() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160546\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_STI_CLINIC_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative STI Clinic");
-        return cd;
-    }
-    /**
-     *HTS_TST Tested Positive emergency ward
-     * @return
-     */
-    public CohortDefinition testedPositiveEmergencyWard() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160522\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_EMERGENCY_WARD_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Emergency ward");
-        return cd;
-    }
-    /**
-     *HTS_TST Tested Negative emergency ward
-     * @return
-     */
-    public CohortDefinition testedNegativeEmergencyWard() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =160522\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_EMERGENCY_WARD_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Emergency ward");
-        return cd;
-    }
-    /**
-     *HTS_TST Tested Positive VMMC services
-     * @return
-     */
-    public CohortDefinition testedPositveVMMCServices() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive' and hts.patient_given_result ='Yes' and hts.hts_entry_point =162223\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_VMMC_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Emergency ward");
-        return cd;
-    }
-    /**
-     *HTS_TST Tested Negative VMMC services
-     * @return
-     */
-    public CohortDefinition testedNegativeVMMCServices() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative' and hts.patient_given_result ='Yes' and hts.hts_entry_point =162223\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_VMMC_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative VMMC services");
         return cd;
     }
 
@@ -2492,6 +2266,7 @@ public class DatimCohortLibrary {
         cd.setDescription("PWID Tested Negative");
         return cd;
     }
+
     public CohortDefinition msmTestedPositive() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
@@ -2616,190 +2391,6 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /*Tested Positive Other*/
-    public CohortDefinition testedPositiveOther() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "and hts.patient_given_result =\"Yes\"\n" +
-                "and hts.hts_entry_point in (5622,160542)\n" +
-                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Other_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Other");
-        return cd;
-
-    }
-
-    /*Tested Negative VCT*/
-    public CohortDefinition testedNagativeVCT() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "   and hts.patient_given_result =\"Yes\"\n" +
-                "   and hts.hts_entry_point in (159940,162050)\n" +
-                "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_VCT_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative VCT");
-        return cd;
-
-    }
-
-    /*Tested Positive VCT*/
-    public CohortDefinition testedPositiveVCT() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "   and hts.patient_given_result =\"Yes\"\n" +
-                "   and hts.hts_entry_point in (159940,162050)\n" +
-                "   and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_VCT_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive VCT");
-        return cd;
-
-    }
-    /**
-     * Received Index testing
-     * @return
-     */
-    public CohortDefinition recievedIndexTesting() {
-
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 'Index testing' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Index_Testing");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Index Tested");
-        return cd;
-
-    }
-    /* Index Negative*/
-    public CohortDefinition indexTestedNegative() {
-
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.final_test_result='Negative' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Index_Negative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Index Tested Negative");
-        return cd;
-
-    }
-
-    /* Index Positive*/
-    public CohortDefinition indexTestedPositive() {
-
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.final_test_result='Positive' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_Index_Positive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Index Tested Positive");
-        return cd;
-
-    }
-    /*Mobile Outreach Positive*/
-    public CohortDefinition testedPositiveMobile() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Positive\"\n" +
-                "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.hts_entry_point =159939\n" +
-                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_MOBILE_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Mobile Outreach");
-        return cd;
-    }
-    /*Mobile Outreach Negative*/
-    public CohortDefinition testedNegativeMobile() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result =\"Negative\"\n" +
-                "       and hts.patient_given_result =\"Yes\"\n" +
-                "       and hts.hts_entry_point =159939\n" +
-                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_MOBILE_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Mobile Outreach");
-        return cd;
-    }
-
-    /**
-     * Received hts test through SNS
-     * @return
-     */
-    public CohortDefinition testedSNS() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.patient_given_result ='Yes'\n" +
-                "       and hts.test_strategy ='SNS - Social Networks'\n" +
-                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_SNS_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Social Network");
-        return cd;
-    }
-    /*Social Networks Positive*/
-    public CohortDefinition testedPositiveSNS() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Positive'\n" +
-                "       and hts.patient_given_result ='Yes'\n" +
-                "       and hts.test_strategy =166606\n" +
-                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_SNS_POSITIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive Social Network");
-        return cd;
-    }
-
-    /*Social Networks Negative*/
-    public CohortDefinition testedNegativeSNS() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.final_test_result ='Negative'\n" +
-                "       and hts.patient_given_result ='Yes'\n" +
-                "       and hts.test_strategy =166606\n" +
-                "       and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_SNS_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative Social Network");
-        return cd;
-    }
-
     /**
      *HTS TEST Compositions by Entry Points
      * PMTCT which is a combination of PMTCT ANC,PMTCT MAT,PMTCT PNC
@@ -2811,7 +2402,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
                 "        where hts.hts_entry_point in (160538,160456,1623)\n" +
-                "        and hts.test_type =1\n" +
                 "        and hts.patient_given_result ='Yes'\n" +
                 "        and hts.voided =0 and hts.visit_date\n" +
                 "        between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2822,6 +2412,98 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested HTS");
+        return cd;
+    }
+    /**
+     * Tested positive PMTCT at ANC-1
+     */
+    public CohortDefinition testedPositivePmtctANC1() {
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 2 and t.final_test_result = 'Positive' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
+                "    on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Positive' or t.patient_id is not null);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HTS Positive at PMTCT ANC-1");
+        return cd;
+    }
+    /**
+     * Tested negative PMTCT at ANC-1
+     */
+    public CohortDefinition testedNegativePmtctANC1() {
+        String sqlQuery = "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "  left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result = 'Negative' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
+                "    on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Negative' or t.patient_id is not null);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HTS Negative at PMTCT ANC-1");
+        return cd;
+    }
+    /**
+     * Tested Positive PMTCT post ANC-1
+     */
+    public CohortDefinition testedPositivePmtctPostANC1() {
+        String sqlQuery = "select e.patient_id from\n" +
+                "kenyaemr_etl.etl_mch_enrollment e\n" +
+                "left join (select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number >1\n" +
+                "   and av.visit_date between date_sub(date(:endDate),interval 3 MONTH) and date(:endDate) group by av.patient_id having\n" +
+                "   mid(max(concat(av.visit_date,av.final_test_result)),11) ='Positive')av on av.patient_id = e.patient_id\n" +
+                "left join (select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where\n" +
+                "   d.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by d.patient_id having\n" +
+                "   mid(max(concat(d.visit_date,d.final_test_result)),11) ='Positive')d on d.patient_id = e.patient_id\n" +
+                "left join (select pv.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pv where\n" +
+                "   pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
+                "   mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Positive') pv on pv.patient_id = e.patient_id\n" +
+                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
+                "   t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
+                "   mid(max(concat(t.visit_date,t.final_test_result)),11) ='Positive' and mid(max(concat(t.visit_date,t.test_type)),11) =2)t on t.patient_id = e.patient_id\n" +
+                "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
+                "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
+                "group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested positive at PMTCT post ANC-1");
+        return cd;
+    }
+    /**
+     * Tested Negative PMTCT post ANC-1
+     */
+    public CohortDefinition testedNegativePmtctPostANC1() {
+        String sqlQuery = "select e.patient_id from\n" +
+                "kenyaemr_etl.etl_mch_enrollment e\n" +
+                "left join (select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number >1\n" +
+                "   and av.visit_date between date_sub(date(:endDate),interval 3 MONTH) and date(:endDate) group by av.patient_id having\n" +
+                "   mid(max(concat(av.visit_date,av.final_test_result)),11) ='Negative')av on av.patient_id = e.patient_id\n" +
+                "left join (select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where\n" +
+                "   d.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by d.patient_id having\n" +
+                "   mid(max(concat(d.visit_date,d.final_test_result)),11) ='Negative')d on d.patient_id = e.patient_id\n" +
+                "left join (select pv.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pv where\n" +
+                "   pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
+                "   mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Negative') pv on pv.patient_id = e.patient_id\n" +
+                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
+                "   t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
+                "   mid(max(concat(t.visit_date,t.final_test_result)),11) ='Negative')t on t.patient_id = e.patient_id\n" +
+                "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
+                "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
+                "group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested negative at PMTCT post ANC-1");
         return cd;
     }
 
@@ -2836,7 +2518,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164163\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2860,7 +2541,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164953\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2883,7 +2563,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164954\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2906,7 +2585,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164955\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2929,7 +2607,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =159938\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2952,7 +2629,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =159939\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2975,7 +2651,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =161557\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -2999,7 +2674,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =166606\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -3022,7 +2696,6 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =5622\n" +
-                "                and hts.test_type =1\n" +
                 "                and hts.patient_given_result ='Yes'\n" +
                 "                and hts.voided =0 and hts.visit_date\n" +
                 "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
@@ -3036,7 +2709,502 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * Tested at Pediatrics clinic
+     * @return
+     */
+    public CohortDefinition testedPediatricClinics() {
 
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.hts_entry_point =162181\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_PEDIATRICS_CLINICS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at Pediatric clinics");
+        return cd;
+    }
+    /**
+     * Tested at Malnutrition clinic
+     * @return
+     */
+    public CohortDefinition testedMalnutritionClinics() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.hts_entry_point =160552\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_MALNUTRITION_CLINICS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at Malnutrition clinics");
+        return cd;
+    }
+    /**
+     * Tested at TB clinic
+     * @return
+     */
+    public CohortDefinition testedTBClinic() {
+
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
+                "                where hts.hts_entry_point =160541\n" +
+                "                and hts.patient_given_result ='Yes'\n" +
+                "                and hts.voided =0 and hts.visit_date\n" +
+                "                between date(:startDate) and date(:endDate) group by hts.patient_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_TB_CLINIC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at TB clinic");
+        return cd;
+    }
+
+    /**
+     * Tested HIV at in-patient department
+     * @return
+     */
+    public CohortDefinition testedInpatientServices() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.hts_entry_point = 5485 and hts.patient_given_result ='Yes'\n" +
+                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_INPATIENT");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Inpatient Services");
+        return cd;
+    }
+    /**
+     * Tested HIV at others - Others, OPD
+     * @return
+     */
+    public CohortDefinition testedOthersOPD() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.hts_entry_point in (5622,160542) and hts.patient_given_result ='Yes'\n" +
+                "    and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_OTHERS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested in Others or OPD");
+        return cd;
+    }
+    /**
+     *HTS_TST Tested at STI Clinic
+     * @return
+     */
+    public CohortDefinition testedSTIClinic() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.hts_entry_point =160546 and hts.patient_given_result ='Yes' \n" +
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_STI_CLINIC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at STI Clinic");
+        return cd;
+    }
+
+    /**
+     *HTS_TST Tested at emergency ward
+     * @return
+     */
+    public CohortDefinition testedEmergencyWard() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.hts_entry_point = 160522 and hts.patient_given_result ='Yes'\n" +
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_EMERGENCY_WARD");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at Emergency ward");
+        return cd;
+    }
+    /**
+     *HTS_TST Tested at VMMC services
+     * @return
+     */
+    public CohortDefinition testedVMMCServices() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.hts_entry_point = 162223 and hts.patient_given_result ='Yes'\n" +
+                "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_VMMC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested at VMMC services");
+        return cd;
+    }
+    /**
+     * Patients who received initial HIV test with Negative result within a reporting period
+     */
+    public CohortDefinition initialNegativeHIVTestResult() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.test_type =1 and hts.final_test_result ='Negative' and hts.patient_given_result ='Yes'" +
+                " and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested negative for HIV");
+        return cd;
+    }
+    /**
+     * Patients who received initial HIV test with Positive result within a reporting period
+     */
+    public CohortDefinition positiveHIVTestResult() {
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.test_type =2 and hts.final_test_result ='Positive' and hts.patient_given_result ='Yes'" +
+                " and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST_Positive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive for HIV");
+        return cd;
+    }
+    /**
+     * HTS_TST_INDEX_TESTING clients who tested HIV Negative
+     * @return
+     */
+    public CohortDefinition indexTestedNegative() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedIndexTesting AND initialNegativeHIVTestResult");
+        return cd;
+    }
+    /**
+     * HTS_TST_INDEX_TESTING clients who tested HIV Positive
+     * @return
+     */
+    public CohortDefinition indexTestedPositive() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedIndexTesting AND positiveHIVTestResult");
+        return cd;
+    }
+
+    /**
+     * HTS_TST_VCT_TESTING clients who tested HIV Negative
+     * @return
+     */
+    public CohortDefinition testedNegativeVCT() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedIntegratedVCT",ReportUtils.map(testedIntegratedVCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedStandAloneVCT",ReportUtils.map(testedStandAloneVCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedIntegratedVCT OR testedStandAloneVCT) AND initialNegativeHIVTestResult");
+        return cd;
+    }
+
+    /**
+     * HTS_TST_VCT_TESTING clients who tested HIV Positive
+     * @return
+     */
+    public CohortDefinition testedPositiveVCT() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedIntegratedVCT",ReportUtils.map(testedIntegratedVCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedStandAloneVCT",ReportUtils.map(testedStandAloneVCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedIntegratedVCT OR testedStandAloneVCT) AND positiveHIVTestResult");
+        return cd;
+    }
+
+    /**
+     * Patients tested Negative at the pediatrics clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativePaediatricServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("initialNegativeHIVTestResultInfants",ReportUtils.map(initialNegativeHIVTestResultInfants(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPediatricClinics",ReportUtils.map(testedPediatricClinics(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedPediatricClinics AND initialNegativeHIVTestResultInfants) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * Patients tested positive at the pediatrics clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositivePaediatricServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPediatricClinics",ReportUtils.map(testedPediatricClinics(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResultInfants",ReportUtils.map(positiveHIVTestResultInfants(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedPediatricClinics AND positiveHIVTestResultInfants) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * Patients tested negative at the malnutrition clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeMalnutritionClinics() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedMalnutritionClinics",ReportUtils.map(testedMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResultInfants",ReportUtils.map(initialNegativeHIVTestResultInfants(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedMalnutritionClinics AND initialNegativeHIVTestResultInfants) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested positive at the malnutrition clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveMalnutritionClinics() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedMalnutritionClinics",ReportUtils.map(testedMalnutritionClinics(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResultInfants",ReportUtils.map(positiveHIVTestResultInfants(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedMalnutritionClinics AND positiveHIVTestResultInfants) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested Negative at the TB clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeTBClinic() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedTBClinic",ReportUtils.map(testedTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedTBClinic AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested positive at the malnutrition clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveTBClinic() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedTBClinic",ReportUtils.map(testedTBClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedTBClinic AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested Negative at the in-patient department and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeInpatientServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedInpatientServices",ReportUtils.map(testedInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedInpatientServices AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested positive at the in-patient department and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveInpatientServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedInpatientServices",ReportUtils.map(testedInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedInpatientServices AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * Patients tested Negative at Others or OPD and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeOther() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedOthersOPD",ReportUtils.map(testedOthersOPD(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedOthersOPD AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     * Patients tested positive at the in-patient department and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveOther() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedOthersOPD",ReportUtils.map(testedOthersOPD(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedOthersOPD AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     *HTS_TST: Tested positive under Social network service modality
+     * @return
+     */
+    public CohortDefinition testedPositiveSNS() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedSocialNetworks AND positiveHIVTestResult");
+        return cd;
+    }
+
+    /**
+     * HTS_TST: Tested negative under Social network service modality
+     * @return
+     */
+    public CohortDefinition testedNegativeSNS() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedSocialNetworks AND initialNegativeHIVTestResult");
+        return cd;
+    }
+    /**
+     *HTS_TST: Tested positive in STI clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveSTIClinic() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedSTIClinic",ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedSTIClinic AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * HTS_TST: Tested negative in STI Clinic and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeSTIClinic() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedSTIClinic",ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedSTIClinic AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     *HTS_TST: Tested positive in Emergency ward and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveEmergencyWard() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedEmergencyWard",ReportUtils.map(testedEmergencyWard(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedEmergencyWard AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * HTS_TST: Tested negative in Emergency ward and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeEmergencyWard() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedEmergencyWard",ReportUtils.map(testedEmergencyWard(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedEmergencyWard AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+    /**
+     *HTS_TST: Tested positive in VMMC Services and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedPositiveVMMCServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedVMMCServices",ReportUtils.map(testedVMMCServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedVMMCServices AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
+
+    /**
+     * HTS_TST: Tested negative in VMMC services and not in either HTS_index or sns_testing
+     * @return
+     */
+    public CohortDefinition testedNegativeVMMCServices() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedVMMCServices",ReportUtils.map(testedVMMCServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedVMMCServices AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        return cd;
+    }
     /*Newly Started ART While Pregnant*/
     public CohortDefinition newlyStartedARTWhilePregnant() {
         String sqlQuery = "select net.patient_id\n" +
@@ -4512,20 +4680,6 @@ public class DatimCohortLibrary {
 
     }
 
-    //HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
-    public CohortDefinition acceptedIndexServices() {
-
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_ACCEPTED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of indexes accepted Index Services");
-        return cd;
-
-    }
-
     //HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
     public CohortDefinition hivPositiveContact() {
 
@@ -4655,100 +4809,52 @@ public class DatimCohortLibrary {
 
     /*Number Tested Negative PMTCT services ANC-1 only*/
     public CohortDefinition negativePMTCTANC1() {
-
-        String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result = 'Negative' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
-                "         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
-                "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Negative' or t.patient_id is not null);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_PMTCT_ANC1_Negative");
-        cd.setQuery(sqlQuery);
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative PMTCT services ANC-1");
+        cd.addSearch("testedNegativePmtctANC1",ReportUtils.map(testedNegativePmtctANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctANC1 AND NOT (testedIndexTesting OR testedSocialNetworks)");
         return cd;
 
     }
 
     /*Number Tested Positive PMTCT services ANC-1 only*/
     public CohortDefinition positivePMTCTANC1() {
-
-        String sqlQuery = "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 2 and t.final_test_result = 'Positive' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
-                "         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
-                "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Positive' or t.patient_id is not null);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_PMTCT_ANC1_Positive");
-        cd.setQuery(sqlQuery);
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive PMTCT services ANC-1");
+        cd.addSearch("testedPositivePmtctANC1",ReportUtils.map(testedPositivePmtctANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctANC1 AND NOT (testedIndexTesting OR testedSocialNetworks)");
         return cd;
 
     }
 
     /*Number Tested Negative PMTCT services Post ANC-1 (including labour and delivery and BF)*/
     public CohortDefinition negativePMTCTPostANC1() {
-
-        String sqlQuery = "select e.patient_id from\n" +
-                "kenyaemr_etl.etl_mch_enrollment e\n" +
-                "left join (select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number >1\n" +
-                "    and av.visit_date between date_sub(date(:endDate),interval 3 MONTH) and date(:endDate) group by av.patient_id having\n" +
-                "    mid(max(concat(av.visit_date,av.final_test_result)),11) ='Negative')av on av.patient_id = e.patient_id\n" +
-                "left join (select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where\n" +
-                "    d.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by d.patient_id having\n" +
-                "    mid(max(concat(d.visit_date,d.final_test_result)),11) ='Negative')d on d.patient_id = e.patient_id\n" +
-                "left join (select pv.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pv where\n" +
-                "    pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
-                "    mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Negative') pv on pv.patient_id = e.patient_id\n" +
-                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
-                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
-                "    mid(max(concat(t.visit_date,t.final_test_result)),11) ='Negative')t on t.patient_id = e.patient_id\n" +
-                "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
-                "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
-                "group by e.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_PMTCT_POSTANC1_Negative");
-        cd.setQuery(sqlQuery);
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Negative PMTCT services Post ANC-1");
+        cd.addSearch("testedNegativePmtctPostANC1",ReportUtils.map(testedNegativePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1 AND NOT (testedIndexTesting OR testedSocialNetworks)");
         return cd;
 
     }
 
     /*Number Tested Positive PMTCT services Post ANC-1 (including labour and delivery and BF)*/
     public CohortDefinition positivePMTCTPostANC1() {
-
-        String sqlQuery = "select e.patient_id from\n" +
-                "kenyaemr_etl.etl_mch_enrollment e\n" +
-                "left join (select av.patient_id from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number >1\n" +
-                "    and av.visit_date between date_sub(date(:endDate),interval 3 MONTH) and date(:endDate) group by av.patient_id having\n" +
-                "    mid(max(concat(av.visit_date,av.final_test_result)),11) ='Positive')av on av.patient_id = e.patient_id\n" +
-                "left join (select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where\n" +
-                "    d.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by d.patient_id having\n" +
-                "    mid(max(concat(d.visit_date,d.final_test_result)),11) ='Positive')d on d.patient_id = e.patient_id\n" +
-                "left join (select pv.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pv where\n" +
-                "    pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
-                "    mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Positive') pv on pv.patient_id = e.patient_id\n" +
-                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
-                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
-                "    mid(max(concat(t.visit_date,t.final_test_result)),11) ='Positive' and mid(max(concat(t.visit_date,t.test_type)),11) =2)t on t.patient_id = e.patient_id\n" +
-                "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
-                "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
-                "group by e.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_TST_PMTCT_POSTANC1_Positive");
-        cd.setQuery(sqlQuery);
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested Positive PMTCT services Post ANC-1");
+        cd.addSearch("testedPositivePmtctPostANC1",ReportUtils.map(testedPositivePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1 AND NOT (testedIndexTesting OR testedSocialNetworks)");
         return cd;
 
     }

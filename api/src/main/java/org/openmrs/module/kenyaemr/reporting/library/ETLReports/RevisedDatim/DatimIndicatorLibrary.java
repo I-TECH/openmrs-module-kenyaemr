@@ -13,7 +13,6 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DurationToNextAppointmentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -576,7 +575,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator testedNegativeOther() {
-        return cohortIndicator("Tested NegativeOther", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeOther(),
+        return cohortIndicator("Tested NegativeOther", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeOther(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -616,7 +615,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator testedPositveVMMCServices() {
-        return cohortIndicator("Tested Positive VMMC services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositveVMMCServices(),
+        return cohortIndicator("Tested Positive VMMC services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveVMMCServices(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -728,7 +727,7 @@ public class DatimIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator testedNegativeVCT() {
-        return cohortIndicator("Tested NegativeVCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedNagativeVCT(),
+        return cohortIndicator("Tested NegativeVCT", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeVCT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -756,24 +755,6 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator indexTestedPositive() {
         return cohortIndicator("PITC Index Positive", ReportUtils.<CohortDefinition>map(datimCohorts.indexTestedPositive(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Tested Negative Mobile outreach
-     * @return the indicator
-     */
-    public CohortIndicator testedNegativeMobile() {
-        return cohortIndicator("Tested Negative Mobile outreach", ReportUtils.<CohortDefinition>map(datimCohorts.testedNegativeMobile(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Tested Positive Mobile outreach
-     * @return the indicator
-     */
-    public CohortIndicator testedPositiveMobile() {
-        return cohortIndicator("Tested Positive Mobile outreach", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveMobile(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -977,20 +958,6 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
-/*    *//**
-     * TX_PVLS Number pregnant women on ART with suppressed viral load results (<1,000 copies/ml) within the past 12 months.
-     *//*
-    public CohortIndicator pregnantAndBFOnARTWithSuppressedVLLast12Months(String testType) {
-        return cohortIndicator("Pregnant Women on ART with Suppressed VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantAndBFOnARTWithSuppressedVLLast12Months(testType),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-    *//**
-     * TX_PVLS Number pregnant women on ART with suppressed targeted viral load results (<1,000 copies/ml) within the past 12 months.
-     *//*
-    public CohortIndicator pregnantOnARTSuppTargetedVLLast12Months() {
-        return cohortIndicator("Pregnant Women on ART with Suppressed targeted VL within last 12 Months", ReportUtils.<CohortDefinition>map(datimCohorts.pregnantOnARTWithSuppressedTargetedVLLast12Months(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }*/
     /**
      * TX_PVLS Indication by Key Population Type
      */
@@ -1145,7 +1112,7 @@ public class DatimIndicatorLibrary {
      * HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
      */
     public CohortIndicator acceptedIndexServices() {
-        return cohortIndicator("Number of individuals who accepted Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.acceptedIndexServices(),
+        return cohortIndicator("Number of individuals who accepted Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.testedIndexTesting(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
