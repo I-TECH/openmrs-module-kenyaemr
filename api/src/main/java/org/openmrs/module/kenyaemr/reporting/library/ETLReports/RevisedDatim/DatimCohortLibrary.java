@@ -472,7 +472,7 @@ public class DatimCohortLibrary {
     public CohortDefinition patientHIVPositiveResultsAtANC() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result='Positive')t on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result='Positive' and t.hts_entry_point = 160538)t on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
                 "    where v.anc_visit_number = 1 and v.visit_date between date(:startDate) and date(:endDate) and (v.final_test_result = 'Positive' or t.patient_id is not null);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testPositiveResultsANC");
@@ -487,7 +487,7 @@ public class DatimCohortLibrary {
     public CohortDefinition patientHIVNegativeResultsATANC() {
 
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result='Negative')t on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result='Negative' and t.hts_entry_point = 160538)t on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
                 "    where v.anc_visit_number = 1 and v.visit_date between date(:startDate) and date(:endDate) and (v.final_test_result = 'Negative' or t.patient_id is not null);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("testNegativeResultsANC");
@@ -2271,7 +2271,7 @@ public class DatimCohortLibrary {
                 "            where hts.final_test_result =\"Negative\"\n" +
                 "and hts.patient_given_result =\"Yes\"\n" +
                 "and hts.hts_entry_point =162181\n" +
-                "and timestampdiff(year,d.DOB,:endDate)<5\n" +
+                "and timestampdiff(year,d.DOB,date(:endDate))<5\n" +
                 "and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2689,7 +2689,7 @@ public class DatimCohortLibrary {
     /* Index Negative*/
     public CohortDefinition indexTestedNegative() {
 
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 'Index testing' and t.final_test_result='Negative' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.final_test_result='Negative' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_Index_Negative");
@@ -2704,7 +2704,7 @@ public class DatimCohortLibrary {
     /* Index Positive*/
     public CohortDefinition indexTestedPositive() {
 
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 'Index testing' and t.final_test_result='Positive' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.final_test_result='Positive' and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_Index_Positive");
@@ -4515,9 +4515,7 @@ public class DatimCohortLibrary {
     //HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
     public CohortDefinition acceptedIndexServices() {
 
-        String sqlQuery = "select c.patient_related_to from kenyaemr_hiv_testing_patient_contact c\n" +
-                "                                     where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)\n" +
-                "                                          and date(c.date_created) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate) group by c.patient_related_to;";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.test_strategy = 161557 and t.patient_given_result = 'Yes' and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_ACCEPTED");
         cd.setQuery(sqlQuery);
@@ -4534,7 +4532,7 @@ public class DatimCohortLibrary {
         String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
                 "                         group by c.id\n" +
-                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Positive' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 'Index testing'\n" +
+                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Positive' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 161557\n" +
                 "  and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_POSITIVE");
@@ -4552,7 +4550,7 @@ public class DatimCohortLibrary {
         String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
                 "                         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
                 "                         group by c.id\n" +
-                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Negative' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 'Index testing'\n" +
+                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Negative' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 161557\n" +
                 "  and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_NEGATIVE");
@@ -4625,7 +4623,7 @@ public class DatimCohortLibrary {
                 "              from kenyaemr_etl.etl_hts_test t group by t.patient_id having hts_date < date_sub(date(:endDate), INTERVAL 3 MONTH))t on c.patient_id = t.patient_id\n" +
                 "              left join (select tr.client_id, mid(max(concat(date(tr.date_created),tr.status)),11) as trace_status from kenyaemr_hiv_testing_client_trace tr where date(tr.date_created) between date_sub(date(:endDate), INTERVAL 3 MONTH)\n" +
                 "                    and date(:endDate) group by tr.client_id)tr on c.id = tr.client_id\n" +
-                "              where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and ((t.test_result = 'Positive' and test_strategy = 'Index testing') or tr.trace_status = 'Contacted and Linked' or c.baseline_hiv_status ='Positive')\n" +
+                "              where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and ((t.test_result = 'Positive' and test_strategy = 161557) or tr.trace_status = 'Contacted and Linked' or c.baseline_hiv_status ='Positive')\n" +
                 "              group by c.id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_KNOWN_POSITIVE");
@@ -4660,7 +4658,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result = 'Negative' and  t.visit_date <= date(:endDate))t\n" +
+                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 1 and t.final_test_result = 'Negative' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
                 "         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
                 "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Negative' or t.patient_id is not null);";
 
@@ -4679,7 +4677,7 @@ public class DatimCohortLibrary {
 
         String sqlQuery = "select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 2 and t.final_test_result = 'Positive' and  t.visit_date <= date(:endDate))t\n" +
+                "       left join (select t.patient_id, t.visit_date from kenyaemr_etl.etl_hts_test t where t.test_type = 2 and t.final_test_result = 'Positive' and t.hts_entry_point = 160538 and  t.visit_date <= date(:endDate))t\n" +
                 "         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
                 "where v.anc_visit_number = 1 and v.visit_date between date (:startDate) and date(:endDate) and (v.final_test_result = 'Positive' or t.patient_id is not null);";
 
@@ -4708,7 +4706,7 @@ public class DatimCohortLibrary {
                 "    pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
                 "    mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Negative') pv on pv.patient_id = e.patient_id\n" +
                 "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
-                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by t.patient_id having\n" +
+                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
                 "    mid(max(concat(t.visit_date,t.final_test_result)),11) ='Negative')t on t.patient_id = e.patient_id\n" +
                 "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
                 "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
@@ -4739,7 +4737,7 @@ public class DatimCohortLibrary {
                 "    pv.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by pv.patient_id having\n" +
                 "    mid(max(concat(pv.visit_date,pv.final_test_result)),11) ='Positive') pv on pv.patient_id = e.patient_id\n" +
                 "left join (select t.patient_id,t.visit_date from kenyaemr_etl.etl_hts_test t where\n" +
-                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) group by t.patient_id having\n" +
+                "    t.visit_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate) and t.hts_entry_point in (160538,160456,1623) group by t.patient_id having\n" +
                 "    mid(max(concat(t.visit_date,t.final_test_result)),11) ='Positive' and mid(max(concat(t.visit_date,t.test_type)),11) =2)t on t.patient_id = e.patient_id\n" +
                 "left join (select v.patient_id,v.visit_date from kenyaemr_etl.etl_mch_antenatal_visit v where v.anc_visit_number =1)v on e.patient_id = v.patient_id\n" +
                 "where av.patient_id is not null or d.patient_id is not null or pv.patient_id is not null or (t.visit_date > v.visit_date and t.patient_id is not null)\n" +
