@@ -306,10 +306,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_ACCEPTED", "Indexes who accepted Index testing services", ReportUtils.map(datimIndicators.acceptedIndexServices(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX New Positives
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_POSITIVE", "Contacts tested HIV Positive", ReportUtils.map(datimIndicators.contactTestedPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX New Negatives
-        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_NEGATIVE", "Contacts tested HIV Negative", ReportUtils.map(datimIndicators.contactTestedNegative(), indParams), contactAgeSexFineDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_NEGATIVE", "Contacts tested HIV Negative", ReportUtils.map(datimIndicators.contactTestedNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
 
         //HTS_INDEX_DOCUMENTED_NEGATIVE
         EmrReportingUtils.addRow(cohortDsd, "HTS_INDEX_DOCUMENTED_NEGATIVE", "Contacts Under 14 with Documented HIV Negative Status", ReportUtils.map(datimIndicators.contactsReportedNegative(), indParams), contactAgeSexDocumentedNegativeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
@@ -415,13 +415,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //PRISONERS_CLOSED_SETTINGS POSITIVE
         cohortDsd.addColumn( "HTS_TST_KP_PRISONERS_CLOSED_SETTINGS_POS", "People in prisons and other closed settings Tested Positive", ReportUtils.map(datimIndicators.prisonersTestedPositive(), indParams), "");
-
-        //14. Mobile Outreach
-        //MO Positive
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_MOBILE_POSITIVE", "Tested Positive Mobile Outreach", ReportUtils.map(datimIndicators.testedPositiveMobile(), indParams), datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31","32","33"));
-
-        //MO Negative
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_MOBILE_NEGATIVE", "Tested Negative Mobile Outreach", ReportUtils.map(datimIndicators.testedNegativeMobile(), indParams), datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31","32","33"));
 
         //15. Social Networks SNS
         //SNS Positive
