@@ -2884,7 +2884,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("testedIndexTesting AND initialNegativeHIVTestResult");
+        cd.addSearch("patientContactCohort",ReportUtils.map(patientContactCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedIndexTesting AND initialNegativeHIVTestResult AND patientContactCohort");
         return cd;
     }
     /**
@@ -2897,7 +2898,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("testedIndexTesting AND positiveHIVTestResult");
+        cd.addSearch("patientContactCohort",ReportUtils.map(patientContactCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedIndexTesting AND positiveHIVTestResult AND patientContactCohort");
         return cd;
     }
 
@@ -4680,38 +4682,63 @@ public class DatimCohortLibrary {
 
     }
 
-    //HTS_INDEX_POSITIVE Number of individuals who were tested Positive using Index testing services
-    public CohortDefinition hivPositiveContact() {
-
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-                "                         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
-                "                         group by c.id\n" +
-                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Positive' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 161557\n" +
-                "  and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
+    /**
+     * Number of patient contacts
+     * @return
+     */
+    public CohortDefinition patientContactCohort() {
+        String sqlQuery = "select patient_id from openmrs.kenyaemr_hiv_testing_patient_contact c\n" +
+                "         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0\n" +
+                "         group by c.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_POSITIVE");
+        cd.setName("PATIENT_CONTACT");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of individuals who were tested Positive using Index testing services");
+        cd.setDescription("Number of individuals who are patient contacts");
+        return cd;
+    }
+    /**
+     * Patient contacts accepted index testing
+     * @return
+     */
+    public CohortDefinition contactsAcceptedIndexTesting() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("patientContactCohort", ReportUtils.map(patientContactCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("patientContactCohort AND testedIndexTesting");
         return cd;
 
     }
-
-    //Number of individuals who were tested HIV Negative using Index testing services
-    public CohortDefinition hivNegativeContact() {
-
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id\n" +
-                "                         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and t.voided =0\n" +
-                "                         group by c.id\n" +
-                "                           having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Negative' and mid(max(concat(t.visit_date,t.test_strategy)),11) = 161557\n" +
-                "  and max(t.visit_date) between date_sub( date(:endDate), INTERVAL  3 MONTH )and date(:endDate);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_INDEX_NEGATIVE");
-        cd.setQuery(sqlQuery);
+    /**
+     * HIV Positive patient contacts
+     * @return
+     */
+    public CohortDefinition hivPositiveContact() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number of individuals who were tested HIV Negative using Index testing services");
+        cd.addSearch("patientContactCohort", ReportUtils.map(patientContactCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("positiveHIVTestResult", ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("patientContactCohort AND positiveHIVTestResult AND testedIndexTesting");
+        return cd;
+
+    }
+    /**
+     * Contacts tested HIV negative
+     * @return
+     */
+    public CohortDefinition hivNegativeContact() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("patientContactCohort", ReportUtils.map(patientContactCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initialNegativeHIVTestResult", ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("patientContactCohort AND initialNegativeHIVTestResult AND testedIndexTesting");
         return cd;
 
     }

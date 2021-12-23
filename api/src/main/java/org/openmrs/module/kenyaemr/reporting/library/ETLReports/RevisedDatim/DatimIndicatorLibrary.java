@@ -1112,7 +1112,7 @@ public class DatimIndicatorLibrary {
      * HTS_INDEX_ACCEPTED Number of individuals who were offered and accepted index testing services
      */
     public CohortIndicator acceptedIndexServices() {
-        return cohortIndicator("Number of individuals who accepted Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.testedIndexTesting(),
+        return cohortIndicator("Number of individuals who accepted Index testing services", ReportUtils.<CohortDefinition>map(datimCohorts.contactsAcceptedIndexTesting(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
