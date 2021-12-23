@@ -55,6 +55,7 @@ public class EmrConstants {
 	public static final String GP_EXTERNAL_HELP_URL = MODULE_ID + ".externalHelpUrl";
 	public static final String GP_DHIS2_DATASET_MAPPING = MODULE_ID + ".adxDatasetMapping";
 	public static final String GP_3PM_DATASET_MAPPING = KP_MODULE_ID + ".adx3pmDatasetMapping";
+	public static final String GP_DATA_TOOL_URL = "kenyaemr.web.datatool.url";
 
 	/**
 	 * Default global property values
