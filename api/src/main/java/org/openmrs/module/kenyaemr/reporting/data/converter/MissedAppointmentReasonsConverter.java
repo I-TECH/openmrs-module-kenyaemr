@@ -29,6 +29,9 @@ public class MissedAppointmentReasonsConverter implements DataConverter {
             return  "";
         }
 
+        else if(value.equals(165609)) {
+            return "Client has covid-19 infection";
+        }
         else if(value.equals(165610)) {
             return "COVID-19 restrictions";
         }
