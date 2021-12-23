@@ -513,7 +513,11 @@
 </script>
 
 <div class="ke-page-content">
-    <div style="font-size: 18px; color: #006056; font-style: normal; font-weight: bold">Facility Dashboard</div>
+    <div style="font-size: 18px; color: #006056; font-style: normal; font-weight: bold">Facility Dashboard
+    <% if (dataToolUrl) { %>
+        <span id="datatoolUrl"> | <a href="${dataToolUrl}" target="_blank">Data tool</a></span>
+    <% } %>
+    </div>
 
     <div id="program-tabs" class="ke-tabs">
         <div class="ke-tabmenu">
@@ -880,4 +884,5 @@
         <br/>
         <br/>
     </div>
+
 </div>

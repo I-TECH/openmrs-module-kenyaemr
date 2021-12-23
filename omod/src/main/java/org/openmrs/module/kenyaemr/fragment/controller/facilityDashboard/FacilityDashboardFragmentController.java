@@ -11,6 +11,9 @@ package org.openmrs.module.kenyaemr.fragment.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -219,6 +222,13 @@ public class FacilityDashboardFragmentController {
 		Set<Integer> covid19Deaths = dashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
 		diedOfCovid19 = covid19Deaths != null? covid19Deaths.size(): 0;
 
+		// external link for data tool
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DATA_TOOL_URL);
+		String datatoolUrl = null;
+		if(gp != null) {
+			datatoolUrl = gp.getPropertyValue();
+		}
+
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
 		model.addAttribute("onArt", patientsOnArt);
@@ -269,6 +279,8 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("everPositiveForCovid19", everPositiveForCovid19);
 		model.addAttribute("everHospitalizedOfCovid19", everHospitalizedOfCovid19);
 		model.addAttribute("diedOfCovid19", diedOfCovid19);
+		model.addAttribute("dataToolUrl", datatoolUrl);
+
 
 		return null;
 	}

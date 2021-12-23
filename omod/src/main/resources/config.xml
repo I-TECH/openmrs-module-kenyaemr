@@ -91,4 +91,12 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>kenyaemr.web.datatool.url</property>
+		<defaultValue>http://localhost:3000</defaultValue>
+		<description>
+			URL for data tool in KenyaEMR
+		</description>
+	</globalProperty>
+
 </module>
