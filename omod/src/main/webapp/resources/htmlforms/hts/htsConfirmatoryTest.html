@@ -916,13 +916,6 @@
                     getField('hiv-final-result.value').val(1138);
                 }
 
-
-                var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
-
-                if(syphylisTest1Results != ""){
-                    jq('#dual-results-1').show();
-                }
-
                 //Setting
                 var setting = getValue("setting.value");
                 //Defaults
@@ -980,6 +973,12 @@
                     jq("#hts-entry-point option[value='160522']").hide();    //ER
 
                 }
+                var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
+
+                if(syphylisTest1Results != ""){
+                    jq('#dual-results-1').show();
+                }
+
             });
         </script>
     </ifMode>
