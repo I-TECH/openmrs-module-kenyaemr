@@ -4687,9 +4687,11 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition patientContactCohort() {
-        String sqlQuery = "select patient_id from openmrs.kenyaemr_hiv_testing_patient_contact c\n" +
-                "         where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0\n" +
-                "         group by c.patient_id;";
+        String sqlQuery = "select patient_id from kenyaemr_hiv_testing_patient_contact c\n" +
+                "                   where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617))\n" +
+                "                         and c.patient_id is not NULL\n" +
+                "                         and c.voided = 0\n" +
+                "                    group by c.patient_id;\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PATIENT_CONTACT");
         cd.setQuery(sqlQuery);
