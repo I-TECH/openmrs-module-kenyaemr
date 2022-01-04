@@ -4801,13 +4801,8 @@ public class DatimCohortLibrary {
     //Known HIV Positive contacts
     public CohortDefinition knownPositiveContact() {
 
-        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c left join\n" +
-                "                     (select t.patient_id, max(t.visit_date) as hts_date, mid(max(concat(t.visit_date,t.final_test_result)),11) as test_result, mid(max(concat(t.visit_date,t.test_strategy)),11) as test_strategy\n" +
-                "              from kenyaemr_etl.etl_hts_test t group by t.patient_id having hts_date < date_sub(date(:endDate), INTERVAL 3 MONTH))t on c.patient_id = t.patient_id\n" +
-                "              left join (select tr.client_id, mid(max(concat(date(tr.date_created),tr.status)),11) as trace_status from kenyaemr_hiv_testing_client_trace tr where date(tr.date_created) between date_sub(date(:endDate), INTERVAL 3 MONTH)\n" +
-                "                    and date(:endDate) group by tr.client_id)tr on c.id = tr.client_id\n" +
-                "              where (c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)) and c.voided = 0 and ((t.test_result = 'Positive' and test_strategy = 161557) or tr.trace_status = 'Contacted and Linked' or c.baseline_hiv_status ='Positive')\n" +
-                "              group by c.id;";
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617) and c.voided = 0 " +
+                "and c.baseline_hiv_status ='Positive' and date(c.date_created) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_INDEX_KNOWN_POSITIVE");
         cd.setQuery(sqlQuery);
