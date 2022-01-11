@@ -42,6 +42,7 @@
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
 				<ref bean="kenyaemr.common.form.hivSelfTesting"/>
+				<ref bean="kenyakeypop.form.kpDepressionScreening"/>
 
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
@@ -486,6 +487,25 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hts/hivSelfTesting.html" />
 		<property name="order" value="201095" />
+	</bean>
+
+	<!-- client Depression Screening -->
+	<bean id="kenyakeypop.form.kpDepressionScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5fe533ee-0c40-4a1f-a071-dc4d0fbb0c17" />
+
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyakeypop.app.keypopulation.provider" />
+			</set>
+		</property>
+		<!--<property name="showIfCalculation" value="org.openmrs.module.kenyakeypop.calculation.library.kp.EligibleForClinicalServices" />-->
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyakeypop:kpDepressionScreening.html" />
+		<property name="order" value="201012" />
 	</bean>
 	<!-- ===================== Reports ===================== -->
 
