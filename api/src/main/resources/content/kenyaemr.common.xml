@@ -502,7 +502,7 @@
 				<ref bean="kenyakeypop.app.keypopulation.provider" />
 			</set>
 		</property>
-		<!--<property name="showIfCalculation" value="org.openmrs.module.kenyakeypop.calculation.library.kp.EligibleForClinicalServices" />-->
+		<property name="showIfCalculation" value="org.openmrs.module.kenyakeypop.calculation.library.kp.EligibleForDepressionScreening" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyakeypop:kpDepressionScreening.html" />
 		<property name="order" value="201012" />
