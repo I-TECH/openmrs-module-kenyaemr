@@ -10,16 +10,25 @@
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Program;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculate the bmi at last visit
@@ -31,7 +40,12 @@ public class BMIAtLastVisitCalculation extends AbstractPatientCalculation {
 
 		CalculationResultMap weightMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.WEIGHT_KG), cohort, context);
 		CalculationResultMap heightMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.HEIGHT_CM), cohort, context);
+		CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), cohort, context);
 
+		Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
+		Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, cohort, context);
+
+		PersonService service = Context.getPersonService();
 
 
 		CalculationResultMap ret = new CalculationResultMap();
@@ -43,8 +57,10 @@ public class BMIAtLastVisitCalculation extends AbstractPatientCalculation {
 
 			Obs lastWeightObs = EmrCalculationUtils.obsResultForPatient(weightMap, ptId);
 			Obs lastHeightObs = EmrCalculationUtils.obsResultForPatient(heightMap, ptId);
+			//find pregnancy obs
+			Obs pregnantStatus = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
 
-			if (lastHeightObs !=null && lastWeightObs != null) {
+			if (lastHeightObs !=null && lastWeightObs != null && service.getPerson(ptId).getAge() > 12 && !(inMchcsProgram.contains(ptId) || (pregnantStatus != null && pregnantStatus.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES))))){
 				visitHeight = lastHeightObs.getValueNumeric();
 				visitWeight = lastWeightObs.getValueNumeric();
 				Double bmi = visitWeight / ((visitHeight/100) * (visitHeight/100));
