@@ -58,6 +58,14 @@
 
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var latestHeight = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>");
+   //If client is > 25 years prepopluate height
+            if (pAge &gt; 24) {
+                getField('height.value').val(latestHeight);
+            }else{
+                getField('height.value').val("");
+            }
 
             if (pgender === 'F') {
                 beforeSubmit.push(function () {
@@ -152,7 +160,7 @@
                 <tr>
                     <td>Weight</td>
                     <td>
-                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
                         kg
                     </td>
                     <td>
