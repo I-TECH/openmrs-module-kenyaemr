@@ -34,10 +34,22 @@
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
-            if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
-                bmi = weightKg / (heightM * heightM);
-                recent_bmi = bmi.toFixed(2);
-                jq('#recent-calculated-bmi').html(recent_bmi);
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            //If client is > 25 years prepopluate height
+            if (pAge &gt; 24) {
+                getField('height.value').val(heightM*100);
+            }else{
+                getField('height.value').val("");
+            }
+
+            if (weightKg != "" &amp;&amp; heightM !="") {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    recent_bmi = bmi.toFixed(2);
+                    jq('#recent-calculated-bmi').html(recent_bmi);
+                }
+            }else{
+                jq('#recent-calculated-bmi').html("");
             }
         }
 
@@ -58,14 +70,6 @@
 
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
-            var pAge = parseInt('<lookup expression="patient.age"/>');
-            var latestHeight = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>");
-   //If client is > 25 years prepopluate height
-            if (pAge &gt; 24) {
-                getField('height.value').val(latestHeight);
-            }else{
-                getField('height.value').val("");
-            }
 
             if (pgender === 'F') {
                 beforeSubmit.push(function () {
@@ -170,7 +174,7 @@
                 <tr>
                     <td>Height</td>
                     <td>
-                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
                         cm
                     </td>
                     <td>

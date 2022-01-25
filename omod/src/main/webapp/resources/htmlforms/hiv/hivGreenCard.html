@@ -818,6 +818,12 @@ Green Card follow-up visit form
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
+   //If client is > 25 years prepopluate height
+            if (pAge &gt; 24) {
+                getField('height.value').val(heightM*100);
+            }else{
+                getField('height.value').val("");
+            }
             if (pAge &gt; 14) {
                 if (weightKg >0 &amp;&amp; heightM >0) {
                     bmi = weightKg / (heightM * heightM);
@@ -1865,6 +1871,8 @@ Green Card follow-up visit form
             var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
             var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
+            var patientWeight =getValue('weight.value');
+            var patientHeight =getValue('height.value');
             var populationType =getValue('population-type.value');
             var adultWhoStage =getField('whoStage-adult.value').val();
             var childWhoStage =getField('whoStage-child.value').val();
@@ -1882,6 +1890,20 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('person-present.error').html('Please specify person present').hide();
+            }
+            if (patientWeight == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('weight.error').html('Please specify patient weight').show();
+                return false;
+            }else{
+                getField('weight.error').html('Please specify patient weight').hide();
+            }
+            if (patientHeight == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('height.error').html('Please specify patient height').show();
+                return false;
+            }else{
+                getField('height.error').html('Please specify patient height').hide();
             }
             if (populationType == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
@@ -2656,6 +2678,7 @@ Management<br />
                             <td>
                                 <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 kg
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                             <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                             <td rowspan="4">
@@ -2673,6 +2696,7 @@ Management<br />
                             <td>
                                 <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 cm
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                             <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
