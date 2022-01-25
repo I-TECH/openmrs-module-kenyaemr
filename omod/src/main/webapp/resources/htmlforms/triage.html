@@ -36,7 +36,7 @@
             var recent_bmi ='';
             var pAge = parseInt('<lookup expression="patient.age"/>');
             //If client is > 25 years prepopluate height
-            if (pAge &gt; 24) {
+            if (pAge &gt; 24 &amp;&amp; heightM !="" ) {
                 getField('height.value').val(heightM*100);
             }else{
                 getField('height.value').val("");
@@ -61,10 +61,10 @@
 
             //limit letters only in text field
             jQuery('#rsn').keypress(function(event) {
-            var code = (event.keyCode ? event.keyCode : event.which);
-            //alert(code)
-            if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
-                event.preventDefault();
+                var code = (event.keyCode ? event.keyCode : event.which);
+                //alert(code)
+                if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                    event.preventDefault();
             });
 
 
@@ -182,11 +182,11 @@
                     </td>
                 </tr>
                 <includeIf velocityTest="$patient.age &gt; 14">
-                <tr>
-                    <td>BMI</td>
-                    <td><span id="calculated-bmi" class="value"></span></td>
-                    <td><span id="recent-calculated-bmi"></span></td>
-                </tr>
+                    <tr>
+                        <td>BMI</td>
+                        <td><span id="calculated-bmi" class="value"></span></td>
+                        <td><span id="recent-calculated-bmi"></span></td>
+                    </tr>
                 </includeIf>
                 <tr>
                     <td>MUAC</td>

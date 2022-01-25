@@ -819,7 +819,7 @@ Green Card follow-up visit form
             var bmi = '';
             var recent_bmi ='';
    //If client is > 25 years prepopluate height
-            if (pAge &gt; 24) {
+            if (pAge &gt; 24 &amp;&amp; heightM !="") {
                 getField('height.value').val(heightM*100);
             }else{
                 getField('height.value').val("");
