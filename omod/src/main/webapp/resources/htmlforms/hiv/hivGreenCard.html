@@ -818,8 +818,8 @@ Green Card follow-up visit form
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
-   //If client is > 25 years prepopluate height
-            if (pAge &gt; 24 &amp;&amp; heightM !="") {
+   //If client is > 19 years prepopluate height
+            if (pAge &gt; 19 &amp;&amp; heightM !="") {
                 getField('height.value').val(heightM*100);
             }else{
                 getField('height.value').val("");
