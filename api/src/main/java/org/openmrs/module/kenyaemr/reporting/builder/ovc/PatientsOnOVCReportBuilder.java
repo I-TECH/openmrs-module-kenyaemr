@@ -18,6 +18,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.ovc.ImplementingPartnerSupportingOVCCalculation;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.OVCMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ovc.PatientsOnOVCCohortDefinition;
@@ -79,11 +80,16 @@ public class PatientsOnOVCReportBuilder extends AbstractHybridReportBuilder {
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, OVCMetadata._PatientIdentifierType.CPIMS_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
+        PatientIdentifierType cccNo = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+        DataDefinition cccNoIdentifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(cccNo.getName(), cccNo), identifierFormatter);
+
+
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
+        dsd.addColumn("CCC No", cccNoIdentifierDef, "");
         dsd.addColumn("CPMIS No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("Age", new AgeDataDefinition(), "", null);
