@@ -65,7 +65,14 @@ public class TXCurrMonthlyLinelistReportBuilder extends AbstractReportBuilder {
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cohortDsd.addColumn("Number of patients present in the current report but missing in previous report", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportMonthly(), indParams), "");
+        cohortDsd.addColumn("New on ART", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportMonthlyNewlyEnrolled(), indParams), "");
+        cohortDsd.addColumn("Return to Care", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportMonthlyReEnrollment(), indParams), "");
+        cohortDsd.addColumn("Transfer in", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportMonthlyTrfIn(), indParams), "");
         cohortDsd.addColumn("Number of patients present in the previous report but missing in the current report", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportMonthly(), indParams), "");
+        cohortDsd.addColumn("Died", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportDiedMonthly(), indParams), "");
+        cohortDsd.addColumn("Lost to followup", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportLTFUMonthly(), indParams), "");
+        cohortDsd.addColumn("Transferred Out", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportTrfOutMonthly(), indParams), "");
+        cohortDsd.addColumn("Stopped Treatment", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportStoppedTxMonthly(), indParams), "");
 
         return cohortDsd;
 
