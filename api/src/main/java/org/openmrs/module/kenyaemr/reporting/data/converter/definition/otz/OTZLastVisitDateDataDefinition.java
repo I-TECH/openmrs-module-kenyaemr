@@ -7,15 +7,16 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.art;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.otz;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+import java.util.Date;
 
 /**
- *  Last Visit Date Data Definition
+ *  OTZ Last Visit Date Data Definition
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class OTZLastVisitDateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
@@ -42,6 +43,6 @@ public class OTZLastVisitDateDataDefinition extends BaseDataDefinition implement
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Double.class;
+        return Date.class;
     }
 }
