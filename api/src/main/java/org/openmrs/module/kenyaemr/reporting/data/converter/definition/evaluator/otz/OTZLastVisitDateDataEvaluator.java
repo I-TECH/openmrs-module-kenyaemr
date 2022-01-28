@@ -7,10 +7,10 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.otz;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WeightAtArtDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.otz.OTZLastVisitDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Current Weight Data Definition
+ * Evaluates Last Visit Date DataDefinition
  */
-@Handler(supports=WeightAtArtDataDefinition.class, order=50)
-public class WeightAtArtDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= OTZLastVisitDateDataDefinition.class, order=50)
+public class OTZLastVisitDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,8 +35,8 @@ public class WeightAtArtDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "  mid(max(concat(visit_date,weight)),11) as weight from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "GROUP BY patient_id;";
+                "           max(visit_date) as last_visit_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "\tGROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

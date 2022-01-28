@@ -18,6 +18,9 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadResultCalculation;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.otz.OTZNextAppointmentDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.otz.OTZLastVisitDateDataDefinition;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.otz.PatientsOnOTZCohortDefinition;
@@ -36,6 +39,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -88,6 +92,8 @@ public class PatientsOnOTZReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("Age", new AgeDataDefinition(), "", null);
         dsd.addColumn("Current Regimen", new CalculationDataDefinition("Current Regimen", new CurrentArtRegimenCalculation()), "", null);
+        dsd.addColumn("Last Visit Date", new OTZLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Next Appointment Date", new OTZNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
         dsd.addColumn("Last VL Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
 
