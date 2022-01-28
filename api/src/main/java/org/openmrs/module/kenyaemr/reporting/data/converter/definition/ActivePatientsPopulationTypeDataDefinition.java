@@ -18,21 +18,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * Population Type Data Definition
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PopulationTypeActiveDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class ActivePatientsPopulationTypeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PopulationTypeActiveDataDefinition() {
+    public ActivePatientsPopulationTypeDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate population type only
      */
-    public PopulationTypeActiveDataDefinition(String name) {
+    public ActivePatientsPopulationTypeDataDefinition(String name) {
         super(name);
     }
 
