@@ -157,6 +157,7 @@ Green Card follow-up visit form
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
             jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
+            jq('#tbl-other-complaint').hide();
 //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
             jq('#person-present input').click(onPersonPresentChange);
@@ -241,6 +242,8 @@ Green Card follow-up visit form
             jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq("#complaint-field select").change(otherComplaintSelected);
+
 //Stability assessment
             jq("#stability").change(stabilitySelected);       //boolean
             jq("#returnVisitReason select").change(returnReasonSelected);       //non boolean
@@ -1035,6 +1038,7 @@ Green Card follow-up visit form
                 jq('#resp input').val('');
                 jq('#oxygen input').val('');
                 jq('#tbrxdate input').val('');
+                jq('#obs-other-complaint input').val('');
             }
         }
         function onVisitScheduledChange() {
@@ -1081,6 +1085,14 @@ Green Card follow-up visit form
                 getField('complaint-field.error').html('Please specify the complaints.').hide();
             }else {
                 jq("#tbl-complaints-today").show();
+            }
+        }
+        var otherComplaintSelected = function () {
+            var selectedComplaint = getField('complaint-field.value').val();
+            if (selectedComplaint == 5622){
+                jq('#tbl-other-complaint').show();
+            }else{
+                jq('#tbl-other-complaint').hide();
             }
         }
         var complaintDurationInput = function() {
@@ -2414,6 +2426,7 @@ Management<br />
                             var keypop = getValue('population-type.value');
                             var everOnIPT = getValue('ever-on-ipt.value');
                             var complaintsToday = getValue('complaints-today.value');
+                            var selectedComplaint = getField('complaint-field.value').val();
                             var knownAllergies = getValue('known-allergies.value');
                             var chronicIllness = getValue('chronic-illness.value');   //non boolean
                             var adverseReactions = getValue('adverse-reactions.value');   // boolean
@@ -2483,6 +2496,11 @@ Management<br />
                                 jq("#tbl-complaints-today").show();
                             }else{
                                 jq("#tbl-complaints-today").hide();
+                            }
+                            if (selectedComplaint == 5622){
+                                jq("#tbl-other-complaint").show();
+                            }else{
+                                jq("#tbl-other-complaint").hide();
                             }
                             if (knownAllergies == 'true'){
                                 jq("#tbl-known-allergies").show();
@@ -2824,6 +2842,16 @@ Management<br />
                             <render n="4" concept="complaint"/>
                             <render n="5" concept="complaint"/>
                         </repeat>
+                    </table>
+                    <table id="tbl-other-complaint">
+                        <tr>
+                            <th  style="color: #888" >Specify other complaints</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <obs conceptId="165250" rows="3" cols="80" id="obs-other-complaint"/>
+                            </td>
+                        </tr>
                     </table>
                     <table>
                         <tr>
