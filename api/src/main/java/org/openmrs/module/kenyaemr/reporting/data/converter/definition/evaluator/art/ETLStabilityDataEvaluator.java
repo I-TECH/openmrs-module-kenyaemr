@@ -37,7 +37,7 @@ public class ETLStabilityDataEvaluator implements PersonDataEvaluator {
 
         String qry="select patient_id,\n" +
                 "  (case cic.stability when 1 then \"Stable\" when 2 then \"Unstable\" else \"\" end) as Stability\n" +
-                "                          from(select c.patient_id,f.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca  from kenyaemr_etl.etl_current_in_care c\n" +
+                "                          from(select c.patient_id,c.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca  from kenyaemr_etl.etl_current_in_care c\n" +
                 "                                        inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
                 "                                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic ;";
 
