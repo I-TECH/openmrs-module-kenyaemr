@@ -130,11 +130,12 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("Stability", new ETLStabilityDataDefinition(), "");
-        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
         dsd.addColumn("Self Visit Date", new ETLHivSelfVisitDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
+        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+
 
         return dsd;
     }
