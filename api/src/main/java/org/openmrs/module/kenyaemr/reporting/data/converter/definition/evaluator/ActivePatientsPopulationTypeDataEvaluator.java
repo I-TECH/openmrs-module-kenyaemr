@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates a VisitIdDataDefinition to produce a VisitData
+ * Evaluates a ActivePatientsPopulationTypeDataDefinition to produce a Person pop type Data
  */
 @Handler(supports=ActivePatientsPopulationTypeDataDefinition.class, order=50)
 public class ActivePatientsPopulationTypeDataEvaluator implements PersonDataEvaluator {
