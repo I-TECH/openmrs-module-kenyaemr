@@ -3509,28 +3509,33 @@ public class DatimCohortLibrary {
     public CohortDefinition experiencedIITPreviousReportingPeriod() {
 
         String sqlQuery = "select  e.patient_id\n" +
-                "             from (\n" +
-                "             select fup_prev_period.patient_id,\n" +
-                "                    max(fup_prev_period.visit_date) as prev_period_latest_vis_date,\n" +
-                "                    mid(max(concat(fup_prev_period.visit_date,fup_prev_period.next_appointment_date)),11) as prev_period_latest_tca,\n" +
-                "                    max(d.visit_date) as date_discontinued,\n" +
-                "                    d.patient_id as disc_patient,\n" +
-                "                    fup_reporting_period.first_visit_after_IIT as first_visit_after_IIT\n" +
-                "             from kenyaemr_etl.etl_patient_hiv_followup fup_prev_period\n" +
-                "                    join (select fup_reporting_period.patient_id,min(fup_reporting_period.visit_date) as first_visit_after_IIT from kenyaemr_etl.etl_patient_hiv_followup fup_reporting_period where fup_reporting_period.visit_date >= date_sub(date(:endDate) , interval 3 MONTH) group by fup_reporting_period.patient_id)fup_reporting_period on fup_reporting_period.patient_id = fup_prev_period.patient_id\n" +
-                "                    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup_prev_period.patient_id\n" +
-                "                    join kenyaemr_etl.etl_hiv_enrollment e on fup_prev_period.patient_id=e.patient_id\n" +
-                "                    left outer JOIN\n" +
-                "                      (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                       where date(visit_date) <= curdate()  and program_name='HIV'\n" +
-                "                       group by patient_id\n" +
-                "                      ) d on d.patient_id = fup_prev_period.patient_id\n" +
-                "             where fup_prev_period.visit_date < date_sub(date(:endDate) , interval 3 MONTH)\n" +
-                "             group by patient_id\n" +
-                "             having (\n" +
-                "                        (((date(prev_period_latest_tca) < date(:endDate)) and (date(prev_period_latest_vis_date) < date(prev_period_latest_tca)))) and ((date(prev_period_latest_tca) > date(date_discontinued) and date(prev_period_latest_vis_date) > date(date_discontinued)) or disc_patient is null )\n" +
-                "                          and timestampdiff(day, date(prev_period_latest_tca),date(:startDate)) > 30)\n" +
-                "             )e;";
+                "from (\n" +
+                "         select fup_prev_period.patient_id,\n" +
+                "                max(fup_prev_period.visit_date) as prev_period_latest_vis_date,\n" +
+                "                mid(max(concat(fup_prev_period.visit_date,fup_prev_period.next_appointment_date)),11) as prev_period_latest_tca,\n" +
+                "                max(d.visit_date) as date_discontinued,\n" +
+                "                d.patient_id as disc_patient,\n" +
+                "                fup_reporting_period.first_visit_after_IIT as first_visit_after_IIT,\n" +
+                "                fup_reporting_period.first_tca_after_IIT as first_tca_after_IIT\n" +
+                "         from kenyaemr_etl.etl_patient_hiv_followup fup_prev_period\n" +
+                "                  join (select fup_reporting_period.patient_id,min(fup_reporting_period.visit_date) as first_visit_after_IIT,min(fup_reporting_period.next_appointment_date) as first_tca_after_IIT from kenyaemr_etl.etl_patient_hiv_followup fup_reporting_period where fup_reporting_period.visit_date >= date_sub(date(:endDate) , interval 3 MONTH) group by fup_reporting_period.patient_id)fup_reporting_period on fup_reporting_period.patient_id = fup_prev_period.patient_id\n" +
+                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup_prev_period.patient_id\n" +
+                "                  join kenyaemr_etl.etl_hiv_enrollment e on fup_prev_period.patient_id=e.patient_id\n" +
+                "                  left outer JOIN\n" +
+                "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "               where date(visit_date) <= curdate()  and program_name='HIV'\n" +
+                "               group by patient_id\n" +
+                "              ) d on d.patient_id = fup_prev_period.patient_id\n" +
+                "         where fup_prev_period.visit_date < date_sub(date(:endDate) , interval 3 MONTH)\n" +
+                "         group by patient_id\n" +
+                "         having (\n" +
+                "                        (((date(prev_period_latest_tca) < date(:endDate)) and\n" +
+                "                          (date(prev_period_latest_vis_date) < date(prev_period_latest_tca)))) and\n" +
+                "                        ((date(fup_reporting_period.first_visit_after_IIT) > date(date_discontinued) and\n" +
+                "                          date(fup_reporting_period.first_tca_after_IIT) > date(date_discontinued)) or\n" +
+                "                         disc_patient is null)\n" +
+                "                     and timestampdiff(day, date(prev_period_latest_tca),DATE_SUB(date(:endDate),INTERVAL 3 MONTH)) > 30)\n" +
+                "     )e;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("experiencedIITPreviousReportingPeriod");
