@@ -35,11 +35,15 @@ public class ETLStabilityDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry="select patient_id,\n" +
-                "  (case cic.stability when 1 then \"Stable\" when 2 then \"Unstable\" else \"\" end) as Stability\n" +
-                "                          from(select c.patient_id,c.stability stability,f.person_present patient_present,c.latest_vis_date latest_visit_date,f.visit_date fup_visit_date,c.latest_tca ltca  from kenyaemr_etl.etl_current_in_care c\n" +
-                "                                        inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-                "                                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic ;";
+        String qry="select fup.patient_id,\n" +
+                "  (case fup.stability when 1 then \"Stable\" when 2 then \"Unstable\" else \"\" end) as Stability\n" +
+                "from\n" +
+                "  (select f.patient_id,\n" +
+                "     mid(max(concat(f.visit_date,f.stability)),11) as stability,\n" +
+                "     f.person_present person_present,\n" +
+                "     f.visit_date visit_date\n" +
+                "   from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "   where person_present = 978 and f.voided = 0 group by f.patient_id) fup;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
