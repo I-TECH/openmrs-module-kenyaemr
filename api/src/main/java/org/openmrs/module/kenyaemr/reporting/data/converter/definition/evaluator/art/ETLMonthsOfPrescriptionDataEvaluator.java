@@ -34,20 +34,15 @@ public class ETLMonthsOfPrescriptionDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry="select patient_id,\n" +
-                "CASE \n" +
-                "WHEN refill_date is null then \n" +
-                "round(DATEDIFF(date(mid(max(concat(visit_date, next_appointment_date )),11)), date(max(visit_date)))/30)\n" +
-                "ELSE\n" +
-                "round(DATEDIFF( date(mid(max(concat(visit_date,refill_date )),11)), date(max(visit_date)))/30)\n" +
-                "END AS months_of_prescription\n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "GROUP BY patient_id;";
+        String qry="SELECT patient_id, TIMESTAMPDIFF(MONTH, date(max(visit_date)), date(mid(max(concat(visit_date,next_appointment_date )),11))) as months_of_prescription\n" +
+                "FROM kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "WHERE (select date(mid(max(concat(visit_date,next_appointment_date )),11))) is not null\n" +
+                "GROUP BY patient_id;\n";
 
-        SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        queryBuilder.append(qry);
-        Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
-        c.setData(data);
+                SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+                queryBuilder.append(qry);
+                Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
+                c.setData(data);
         return c;
     }
 }
