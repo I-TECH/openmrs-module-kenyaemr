@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulter
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ProviderCommentsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReasonForMissedAppointmentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.HonouredAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingTypeDataDefinition;
@@ -120,7 +121,8 @@ public class CCCDefaulterTracingRegisterReportBuilder extends AbstractReportBuil
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Reason for missed appointment", new ReasonForMissedAppointmentDataDefinition(),"", new MissedAppointmentReasonsConverter());
-        dsd.addColumn("Return to Care Date", new ReturnToCareDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Date promised to come", new ReturnToCareDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Honoured appointment date", new HonouredAppointmentDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Comments", new ProviderCommentsDataDefinition(),"");
         dsd.addColumn("Provider", providerDataDefinition,"", new EncounterProviderConverter());
 
