@@ -103,7 +103,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
-
+        AgeAtReportingDataDefinition ageAtReportingDataDefinition = new AgeAtReportingDataDefinition();
+        ageAtReportingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
@@ -111,6 +112,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("CCC No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
         //dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
         dsd.addColumn("Population Type", new ActivePatientsPopulationTypeDataDefinition(), "");
