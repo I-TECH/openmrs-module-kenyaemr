@@ -11,12 +11,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.AgeAtReportingDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
-import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -31,20 +28,6 @@ import java.util.Map;
  */
 @Handler(supports=AgeAtReportingDataDefinition.class, order=50)
 public class AgeAtReportingDataEvaluator implements PersonDataEvaluator {
-
-//    @Autowired
-//    PersonDataService personDataService;
-//    /*
-//         * @should return all ages at reporting for the given context
-//         * @see PersonDataEvaluator#evaluate(PersonDataDefinition, EvaluationContext)
-//         */
-//    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-//        AgeDataDefinition ageDataDefinition = (AgeDataDefinition) definition;
-//        Date endDate = (Date) context.getParameterValue("endDate");
-//        ageDataDefinition.setEffectiveDate(endDate);
-//        EvaluatedPersonData ageAtReportingData = personDataService.evaluate(ageDataDefinition, context);
-//        return ageAtReportingData;
-//    }
 
     @Autowired
     private EvaluationService evaluationService;
