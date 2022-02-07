@@ -36,8 +36,7 @@ public class ETLMonthsOfPrescriptionDataEvaluator implements PersonDataEvaluator
 
         String qry="SELECT patient_id, TIMESTAMPDIFF(MONTH, date(max(visit_date)), date(mid(max(concat(visit_date,next_appointment_date )),11))) as months_of_prescription\n" +
                 "FROM kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "WHERE (select date(mid(max(concat(visit_date,next_appointment_date )),11))) is not null\n" +
-                "GROUP BY patient_id;\n";
+                "WHERE next_appointment_date is not null GROUP BY patient_id;";
 
                 SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
                 queryBuilder.append(qry);
