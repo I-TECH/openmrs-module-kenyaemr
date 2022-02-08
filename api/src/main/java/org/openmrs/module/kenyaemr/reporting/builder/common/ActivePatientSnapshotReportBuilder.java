@@ -26,6 +26,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ActivePatientsPopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -102,7 +103,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
-
+        AgeAtReportingDataDefinition ageAtReportingDataDefinition = new AgeAtReportingDataDefinition();
+        ageAtReportingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
@@ -110,8 +112,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("CCC No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
         dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+        dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
         //dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
+        dsd.addColumn("Population Type", new ActivePatientsPopulationTypeDataDefinition(), "");
         dsd.addColumn("Date confirmed positive", new CalculationDataDefinition("Date confirmed positive", new DateConfirmedHivPositiveCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Art Start Date", new ETLArtStartDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
@@ -128,11 +132,13 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("Stability", new ETLStabilityDataDefinition(), "");
+        dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Self Visit Date", new ETLHivSelfVisitDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
         dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+
 
         return dsd;
     }

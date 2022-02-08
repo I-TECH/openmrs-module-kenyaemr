@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLFirstRegimenDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLDifferentiatedCareModelDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLStabilityDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -24,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates Stability Data Definition
+ * Evaluates Differentiated care model Data Definition
  */
-@Handler(supports= ETLStabilityDataDefinition.class, order=50)
-public class ETLStabilityDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= ETLDifferentiatedCareModelDataDefinition.class, order=50)
+public class ETLDifferentiatedCareModelDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -36,14 +36,20 @@ public class ETLStabilityDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry="select fup.patient_id,\n" +
-                "  (case fup.stability when 1 then \"Stable\" when 2 then \"Unstable\" else \"\" end) as Stability\n" +
-                "from\n" +
-                "  (select f.patient_id,\n" +
-                "     mid(max(concat(f.visit_date,f.stability)),11) as stability,\n" +
-                "     f.person_present person_present,\n" +
-                "     f.visit_date visit_date\n" +
-                "   from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "   where person_present = 978 and f.voided = 0 group by f.patient_id) fup;";
+                "     (case fup.differentiated_care\n" +
+                "      when 164942 then \"Standard Care\"\n" +
+                "        when 164943 then \"Fast Track\"\n" +
+                "        when 164944 then \"Community ART Distribution - HCW Led\"\n" +
+                "        when 164945 then \"Community ART Distribution - Peer Led\"\n" +
+                "        when 164946 then \"Facility ART Distribution Group\" else \"\" end) as differentiated_care_model\n" +
+                "        from\n" +
+                "         (select f.patient_id,\n" +
+                "          mid(max(concat(f.visit_date,f.differentiated_care)),11) as differentiated_care,\n" +
+                "          f.stability stability,\n" +
+                "          f.person_present person_present,\n" +
+                "          f.visit_date visit_date\n" +
+                "        from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "        where stability is not null and person_present = 978 and f.voided = 0 group by f.patient_id) fup;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
