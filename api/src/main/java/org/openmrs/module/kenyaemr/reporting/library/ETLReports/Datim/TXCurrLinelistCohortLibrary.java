@@ -421,7 +421,7 @@ public CohortDefinition patientsDied() {
 
         String sqlQuery = "select dt.patient_id from kenyaemr_etl.etl_ccc_defaulter_tracing dt where dt.is_final_trace =1267 and dt.true_status =164435 and date(dt.visit_date) between DATE_SUB(date(:endDate),INTERVAL 1 MONTH) and date(:endDate)\n" +
                 "union\n" +
-                "select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d where d.discontinuation_reason =164435 and date(d.visit_date) between DATE_SUB(date(:endDate),INTERVAL 1 MONTH) and date(:endDate);";
+                "select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d where d.discontinuation_reason =164349 and date(d.visit_date) between DATE_SUB(date(:endDate),INTERVAL 1 MONTH) and date(:endDate);";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("patientStoppedTxPrevMonth");
