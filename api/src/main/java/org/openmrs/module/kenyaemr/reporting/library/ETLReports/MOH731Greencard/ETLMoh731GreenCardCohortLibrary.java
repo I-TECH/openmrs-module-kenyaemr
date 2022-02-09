@@ -750,32 +750,47 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     public CohortDefinition inHivProgramAndOnCtxProphylaxis() {
-        String sqlQuery=" select  e.patient_id\n" +
+        String sqlQuery="select e.patient_id\n" +
                 "from (\n" +
-                "select fup.visit_date,fup.patient_id,\n" +
-                "    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-                "    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-                "  max(d.visit_date) as date_discontinued,\n" +
-                "  d.patient_id as disc_patient,\n" +
-                "  max(if(dr.is_ctx=1, 1, if(dr.is_dapsone =1, 1, 0))) as prophylaxis_given, \n" +
-                "max(if(fup.ctx_dispensed in (105281,74250,1065), 1, 0)) as ctx_dispensed,\n" +
-                "max(if(fup.dapsone_dispensed in (105281,74250,1065), 1, 0)) as dapsone_dispensed\n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "left join kenyaemr_etl.etl_pharmacy_extract dr on date(fup.visit_date) = date(dr.visit_date) and dr.patient_id = fup.patient_id \n" +
-                "left outer JOIN\n" +
-                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "  where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "  group by patient_id\n" +
-                "  ) d on d.patient_id = fup.patient_id\n" +
-                "where fup.visit_date <= date(:endDate)\n" +
-                "group by fup.patient_id,fup.visit_date\n" +
-                "having (\n" +
-                "  (date(latest_tca) > date(:endDate) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (date(latest_vis_date) >= date(date_discontinued) or disc_patient is null) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) or\n" +
-                "(((latest_tca between date(:startDate) and date(:endDate)) and ((date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) or ((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30)) and (date(latest_tca) >= date(date_discontinued) or disc_patient is null ) and (ctx_dispensed = 1 or dapsone_dispensed=1 or prophylaxis_given = 1 )) )\n" +
-                ") e" +
-                "; ";
+                "         select fup.visit_date,\n" +
+                "                fup.patient_id,\n" +
+                "                max(e.visit_date)                                                      as enroll_date,\n" +
+                "                greatest(max(fup.visit_date), ifnull(max(d.visit_date), '0000-00-00')) as latest_vis_date,\n" +
+                "                greatest(mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11),\n" +
+                "                         ifnull(max(d.visit_date), '0000-00-00'))                      as latest_tca,\n" +
+                "                max(d.visit_date)                                                      as date_discontinued,\n" +
+                "                d.effective_disc_date                                                  as effective_disc_date,\n" +
+                "                d.patient_id                                                           as disc_patient,\n" +
+                "                max(if(dr.is_ctx = 1, 1, if(dr.is_dapsone = 1, 1, 0)))                 as prophylaxis_given,\n" +
+                "                max(if(fup.ctx_dispensed in (105281, 74250, 1065), 1, 0))              as ctx_dispensed,\n" +
+                "                max(if(fup.dapsone_dispensed in (105281, 74250, 1065), 1, 0))          as dapsone_dispensed\n" +
+                "         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
+                "                  join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
+                "                  left join kenyaemr_etl.etl_pharmacy_extract dr\n" +
+                "                            on date(fup.visit_date) = date(dr.visit_date) and dr.patient_id = fup.patient_id\n" +
+                "                  left outer JOIN\n" +
+                "              (select patient_id,\n" +
+                "                      coalesce(date(effective_discontinuation_date), visit_date) visit_date,\n" +
+                "                      max(date(effective_discontinuation_date)) as               effective_disc_date\n" +
+                "               from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "               where date(visit_date) <= date(:endDate)\n" +
+                "                 and program_name = 'HIV'\n" +
+                "               group by patient_id\n" +
+                "              ) d on d.patient_id = fup.patient_id\n" +
+                "         where fup.visit_date <= date(:endDate)\n" +
+                "         group by fup.patient_id, fup.visit_date\n" +
+                "         having (\n" +
+                "                        ((ctx_dispensed = 1 or dapsone_dispensed = 1 or prophylaxis_given = 1))\n" +
+                "                        AND\n" +
+                "                        (((timestampdiff(DAY, date(latest_tca), date(:endDate)) <= 30 or\n" +
+                "                           timestampdiff(DAY, date(latest_tca), date(curdate())) <= 30) and\n" +
+                "                          ((date(d.effective_disc_date) > date(:endDate) or\n" +
+                "                            date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
+                "                            and\n" +
+                "                         (date(latest_vis_date) >= date(date_discontinued) or\n" +
+                "                          date(latest_tca) >= date(date_discontinued) or disc_patient is null))\n" +
+                "                    ))e;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("inHivProgramAndOnCtxProphylaxis");
