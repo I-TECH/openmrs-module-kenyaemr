@@ -13,6 +13,79 @@
 -->
 <htmlform>
 
+	<script type="text/javascript">
+
+		jq(document).ready(function() {
+
+			jq("#reason-trf").hide();
+
+			jq("#idReason select").change(function() {
+				if((getValue('idReason.value')) == 159492) {
+					jq("#reason-trf").show();
+					jq('#ptransferred :input').prop('disabled', false);
+					jq('#ptrfVerification :input').prop('disabled', false);
+				}
+				else {
+					jq("#reason-trf").hide();
+					clearHiddenSections(jq('#ptransferred'));
+					clearHiddenSections(jq('#ptrfVerification'));
+				}
+			});
+
+			jq("#tr-verified-obs").change(function(){
+				if (getValue('tr-verified-obs.value') == 1066 || getValue('tr-verified-obs.value') == "") {
+					jq('#trf-verification-date :input').val('');
+					jq('#trf-verification-date :input').prop('disabled',true);
+				}
+				else
+				{
+					jq('#trf-verification-date :input').prop('disabled',false);
+				}
+			});
+
+			beforeSubmit.push(function() {
+				var trfVerified = getValue('tr-verified-obs.value');
+				var trfVerificationDate = getField("trf-verification-date.value").val();
+
+				if (trfVerified == 1065 &amp;&amp; trfVerificationDate == "") {
+					getField('trf-verification-date.error').html('Please enter date transfer was verified').show();
+					return false;
+				}else{
+					getField('trf-verification-date.error').html('Please enter date transfer was verified').hide();
+				}
+			});
+		});
+		clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+	</script>
+
+	<ifMode mode="EDIT">
+		<script type="text/javascript">
+            jq(function(){
+
+                var val = getField("idReason.value").val();
+                var verifiedObs = getValue("tr-verified-obs.value");
+                var trfVerificationDate = getField("trf-verification-date.value").val();
+                if (val == 159492) {
+                    jq("#reason-trf").show();
+                } else {
+                    jq("#reason-trf").hide();
+                }
+
+                if(verifiedObs == 1065) {
+                    jq('#ptrfVerification').show();
+                }
+
+            });
+        </script>
+	</ifMode>
+
 	<style type="text/css">
 		table.hei {
 		border-collapse: collapse;
@@ -44,11 +117,45 @@
 				</tr>
 				<tr>
 					<td>Reason</td>
-					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Completed,Died,Transferred Out"/></td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Completed,Died,Transferred Out" id="idReason"/></td>
 				</tr>
 				<completeProgram programId="c2ecdf11-97cd-432a-a971-cfd9bd296b83"/>
 			</tbody>
 		</table>
+
+		<div id="reason-trf" align="center" class="hei">
+			<div id="ptransferred">
+				<table class="hei">
+					<tr>
+						<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
+						<td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+					</tr>
+					<tr>
+						<td>Date Transferred Out<br /></td>
+						<td><obs conceptId="160649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " /></td>
+					</tr>
+				</table>
+			</div>
+			<div id="ptrfVerification">
+				<table class="hei">
+					<tr>
+						<td width="220px">Transfer out verified?</td>
+						<td ><obs conceptId="1285AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								  answerLabel="Yes,No"
+								  style="radio" id="tr-verified-obs"/> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+					</tr>
+					<tr>
+						<td>Date verified<br /></td>
+						<td><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<br/>
+		<hr/>
+		<br/>
+
 	</div>
 	<div class="ke-form-footer">
 		<submit />
