@@ -171,4 +171,44 @@
 		</sql>
 	</changeSet>
 
+	<!--Removing scheduled Openmrs based Autoclose visits task-->
+	<changeSet id="${project.parent.artifactId}-20220209-1120" author="pwangoo">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="1">
+				SELECT COUNT(*) FROM scheduler_task_config
+				WHERE schedulable_class = 'org.openmrs.scheduler.tasks.AutoCloseVisitsTask'
+				And name = 'Auto Close Visits Task'
+			</sqlCheck>
+		</preConditions>
+		<comment>Deleting Openmrs AutoCloseVisitsTask Task from 'schedule_task_config' table</comment>
+		<delete tableName="scheduler_task_config">
+			<where>schedulable_class='org.openmrs.scheduler.tasks.AutoCloseVisitsTask'</where>
+		</delete>
+	</changeSet>
+
+	<!--Adding scheduled Openmrs based Autoclose visits task-->
+	<changeSet id="${project.parent.artifactId}-20220210-1120" author="pwangoo">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">
+				SELECT COUNT(*) FROM scheduler_task_config
+				WHERE schedulable_class = 'org.openmrs.module.kenyaemr.task.AutoCloseActiveVisitsTask'
+				And name = 'Autoclose active visits Task'
+			</sqlCheck>
+		</preConditions>
+		<comment>Inserting Autoclose active visits Task into 'schedule_task_config' table</comment>
+		<insert tableName="scheduler_task_config">
+			<column name="name" value="Autoclose active visits Task" />
+			<column name="description" value="Stops all active outpatient kenyaemr visits" />
+			<column name="schedulable_class" value="org.openmrs.module.kenyaemr.task.AutoCloseActiveVisitsTask" />
+			<column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss" />
+			<column name="start_time" valueDate="2022-02-09T23:59:59" />
+			<column name="repeat_interval" value="7200" />
+			<column name="date_created" valueDate="CURRENT_TIMESTAMP" />
+			<column name="created_by" value="1" />
+			<column name="start_on_startup" value="0" />
+			<column name="started" value="0" />
+			<column name="uuid" value="c2e923d1-723d-4e33-a055-67c959b4490c" />
+		</insert>
+	</changeSet>
+
 </databaseChangeLog>
