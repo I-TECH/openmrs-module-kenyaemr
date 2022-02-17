@@ -49,6 +49,7 @@
 				<ref bean="kenyaemr.mchms.report.ancRegister"/>
 				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
 				<ref bean="kenyaemr.mchms.report.pncRegister"/>
+				<ref bean="kenyaemr.mchms.report.currentlyEnrolledInMCH"/>
 			</set>
 		</property>
 		<property name="fragments">
@@ -261,5 +262,14 @@
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/PNC_Register_Template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:12,dataset:pncRegister" />
+	</bean>
+	<!-- Currently enrolled on MCH -->
+	<bean id="kenyaemr.mchms.report.currentlyEnrolledInMCH" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="a94d4b4d-57e1-4af8-8886-0fea927228df" />
+		<property name="name" value="Patients currently on MCH" />
+		<property name="description" value="Patients currently on MCH program" />
+		<property name="apps">
+			<set><ref bean="kenyaemr.app.reports" />
+			</set></property>
 	</bean>
 </beans>
