@@ -267,7 +267,7 @@
 	<bean id="kenyaemr.mchms.report.currentlyEnrolledInMCH" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="a94d4b4d-57e1-4af8-8886-0fea927228df" />
 		<property name="name" value="Patients currently in MCH" />
-		<property name="description" value="Patients currently on MCH program" />
+		<property name="description" value="Patients currently in MCH program" />
 		<property name="apps">
 			<set><ref bean="kenyaemr.app.reports" />
 			</set></property>
