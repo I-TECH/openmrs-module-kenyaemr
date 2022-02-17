@@ -16,8 +16,10 @@ import org.joda.time.Months;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.OrderService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -30,7 +32,11 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LessThanThreeMonthsOnARTCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.MoreThanThreeMonthsOnARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -51,6 +57,14 @@ import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSi
 public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
     /**
+     * Needs vl test calculation
+     * INITIAL VL (without previous vls)
+     * Immediately = Pregnant + Breastfeeding + Already on ART   *
+     * After 3 months = unsuppressed ALL
+     * Aftre 6 months = Children (0-24) + Pregnant_Breastfeeding + Newly on ART    *
+     * After 12 months = suppressed
+     *
+     *
      * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
      */
     @Override
@@ -61,115 +75,70 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        PatientService patientService = Context.getPatientService();
 
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
-
-        // need to exclude those on ART already
-        Set<Integer> onArt = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
-        // need to exclude those with vl orders
+        //Cohorts to consider
+        //  Pregnant
+        Set<Integer> pregnant = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
+        // Breastfeeding
+        Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
+        // New on ART defined as less than 3 months on ART
+        Set<Integer> newOnArt = CalculationUtils.patientsThatPass(calculate(new LessThanThreeMonthsOnARTCalculation(), cohort, context));
+        // Already on ART defined as more than 3 months on ART
+        Set<Integer> alreadyOnArt = CalculationUtils.patientsThatPass(calculate(new MoreThanThreeMonthsOnARTCalculation(), cohort, context));
+        // VL Suppressed for last results
+        Set<Integer> suppressed = CalculationUtils.patientsThatPass(calculate(new SuppressedVLPatientsCalculation(), cohort, context));
+        // VL UnSuppressed for last results
+        Set<Integer> unsuppressed = CalculationUtils.patientsThatPass(calculate(new UnSuppressedVLPatientsCalculation(), cohort, context));
+        // Patients with pending vl results
         Set<Integer> pendingVlResults = CalculationUtils.patientsThatPass(calculate(new PendingViralLoadResultCalculation(), cohort, context));
-        //check for last viral load recorded
+        //Dates for comparison
+       //check for last viral load recorded
         CalculationResultMap viralLoadLast = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
         //check for last ldl
         CalculationResultMap ldlLast = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
-        //get a list of all the viral load
-        CalculationResultMap viralLoadList = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), cohort, context);
-        //check for non detectables
-        CalculationResultMap ldlViralLoad = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), cohort, context);
+        //check for last vl date
+        CalculationResultMap lastVlDate = calculate(new LastViralLoadResultDateCalculation(), cohort, context);
 
-        CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
-
-        //get the initial art start date
-        CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:cohort) {
-            OrderService orderService = Context.getOrderService();
+            Patient patient = patientService.getPatient(ptId);
             boolean needsViralLoadTest = false;
+
             Obs lastViralLoadObs = EmrCalculationUtils.obsResultForPatient(viralLoadLast, ptId);
             Obs lastLdlObs = EmrCalculationUtils.obsResultForPatient(ldlLast, ptId);
-            Date dateInitiated = EmrCalculationUtils.datetimeResultForPatient(artStartDate, ptId);
-            ListResult listResult = (ListResult) viralLoadList.get(ptId);
-            List<Obs> listObsViralLoads = CalculationUtils.extractResultValues(listResult);
-            ListResult ldlList = (ListResult) ldlViralLoad.get(ptId);
-            List<List> listLdl = CalculationUtils.extractResultValues(ldlList);
-            //find pregnancy obs
-            Obs pregnantStatus = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
-            // Newly initiated and more than 3 months without ldl,vl or orders
-            if(inHivProgram.contains(ptId) && onArt.contains(ptId) && !pendingVlResults.contains(ptId)){
-                if(listObsViralLoads.size() == 0 && listLdl.size() == 0 && dateInitiated != null && (daysSince(dateInitiated, context) >= 183)) {
+            Date lastVlDateValue = EmrCalculationUtils.datetimeResultForPatient(lastVlDate, ptId);
+
+            // Needs vl immediately : In hiv + Already on ART + Pregnant + Breastfeeding + without pending vl
+            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && alreadyOnArt.contains(ptId) && (pregnant.contains(ptId) || breastFeeding.contains(ptId))){
+                needsViralLoadTest = true;
+            }
+            // Needs vl after 3 months : In hiv +  Unsuppressed  + without pending vl
+            if(inHivProgram.contains(ptId) && unsuppressed.contains(ptId) && !pendingVlResults.contains(ptId) ){
+                if(lastVlDateValue != null && daysSince(lastVlDateValue, context) >= 92){
                     needsViralLoadTest = true;
                 }
-                // vl flag should be 3 months after last vl if unsuppressed --with both ldl and vl
-                if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() >= 1000 && (daysSince(lastViralLoadObs.getObsDatetime(), context) >= 92)) {
+            }
+            // Needs vl after 6 months : In hiv +  without pending vl + (Newly on ART  + Pregnant + Breastfeeding + Children (< 24 years))
+            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && (pregnant.contains(ptId) || breastFeeding.contains(ptId) || patient.getAge() < 24 || newOnArt.contains(ptId) )){
+                if(lastVlDateValue != null && daysSince(lastVlDateValue, context) >= 183){
                     needsViralLoadTest = true;
-
-                    if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 365)) {
-                        needsViralLoadTest = false;
-                    }
-                }
-                // vl flag should be 12 months after last vl if suppressed --with both ldl and vl
-                if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() < 1000 && (daysSince(lastViralLoadObs.getObsDatetime(), context) >= 365)) {
-                    needsViralLoadTest = true;
-
-                    if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 365)) {
-                        needsViralLoadTest = false;
-                    }
-                }
-                // vl flag should be 12 months for clients with only ldl if suppressed
-                if(lastLdlObs != null && listObsViralLoads.size() == 0 && (daysSince(lastLdlObs.getObsDatetime(), context) < 365)) {
-                    needsViralLoadTest = false;
-                }
-                if(lastLdlObs != null && listObsViralLoads.size() == 0 && (daysSince(lastLdlObs.getObsDatetime(), context) >= 365)) {
-                    needsViralLoadTest = true;
-                }
-
-                //check for pregnancy and artInitiation
-                if(pregnantStatus != null && pregnantStatus.getValueCoded().equals(Dictionary.getConcept(Dictionary.YES)) && dateInitiated != null) {
-                    Date whenVLWillBeDue = DateUtil.adjustDate(DateUtil.adjustDate(dateInitiated, 6, DurationUnit.MONTHS), -1, DurationUnit.DAYS);
-
-                    // vl flag should be 6 months after art start date if no previous vl
-                    if(lastViralLoadObs == null && lastLdlObs == null && (context.getNow().after(whenVLWillBeDue))){
-                        needsViralLoadTest = true;
-                    }
-                    // vl flag should be 3 months after last vl if unsuppressed
-                    if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() >= 1000 && (monthsBetween(lastViralLoadObs.getObsDatetime(), context.getNow()) >= 3)) {
-                        needsViralLoadTest = true;
-
-                        if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 183)) {
-                            needsViralLoadTest = false;
-                        }
-                    }
-                    // vl flag should be 6 months after last vl if suppressed
-                    if(lastViralLoadObs != null && lastViralLoadObs.getValueNumeric() < 1000 && (monthsBetween(lastViralLoadObs.getObsDatetime(), context.getNow()) >= 6)) {
-                        needsViralLoadTest = true;
-
-                        if(lastLdlObs != null && (daysSince(lastLdlObs.getObsDatetime(), context) < 183)) {
-                            needsViralLoadTest = false;
-                        }
-                    }
-
-                    // vl flag should be 6 months after last vl if suppressed
-                    if(lastViralLoadObs != null && listObsViralLoads.size() == 0 && daysSince(lastViralLoadObs.getObsDatetime(), context) >= 183) {
-                        needsViralLoadTest = true;
-                    }
-                    if(lastViralLoadObs != null && listObsViralLoads.size() == 0 && daysSince(lastViralLoadObs.getObsDatetime(), context) < 183) {
-                        needsViralLoadTest = false;
-                    }
                 }
 
             }
+            // Needs vl after 12 months : In hiv +  without pending vl + suppressed
+            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && suppressed.contains(ptId)){
+                if(lastVlDateValue != null && daysSince(lastVlDateValue, context) >=  365){
+                    needsViralLoadTest = true;
+                  }
+               }
+
             ret.put(ptId, new BooleanResult(needsViralLoadTest, this));
         }
         return  ret;
 
     }
-
-    int monthsBetween(Date d1, Date d2) {
-        DateTime dateTime1 = new DateTime(d1.getTime());
-        DateTime dateTime2 = new DateTime(d2.getTime());
-        return Math.abs(Months.monthsBetween(dateTime1, dateTime2).getMonths());
-    }
-
 }

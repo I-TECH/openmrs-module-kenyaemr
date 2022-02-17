@@ -13,6 +13,7 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.*;
@@ -26,14 +27,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates the recorded pregnancy status of patients
+ * Calculates the recorded Breastfeeding status of patients
  */
 public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
     /**
 	 * Evaluates the calculation
      * @should calculate null for deceased patients
 	 * @should calculate null for patients with no recorded status
-	 * @should calculate last recorded breastfeeding status for all patients
+	 * @should calculate last recorded breastfeeding status for all patients on PNC
+	 * @should calculate last recorded breastfeeding status for all patients on Hiv Greencard
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -42,16 +44,25 @@ public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
 
 		Concept ExclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
 		Concept MixedBreastFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
+		Concept YES = Dictionary.getConcept(Dictionary.YES);
+		Concept BreastFeedingHivFollowupQuestion = Context.getConceptService().getConcept(5632);
 		CalculationResultMap infantFeedingStatusObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), aliveAndFemale, context);
+		CalculationResultMap breastFeedingFollowupObs = Calculations.lastObs(BreastFeedingHivFollowupQuestion, aliveAndFemale, context);
+
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean breastFeeding = false;
 
 			Obs feedingStatusObs = EmrCalculationUtils.obsResultForPatient(infantFeedingStatusObs, ptId);
+			Obs bfHivFollowupStatusObs = EmrCalculationUtils.obsResultForPatient(breastFeedingFollowupObs, ptId);
 
 			if (feedingStatusObs != null && (feedingStatusObs.getValueCoded().equals(ExclusiveBreastFeeding) || feedingStatusObs.getValueCoded().equals(MixedBreastFeeding)) ) {
 				breastFeeding = true;
 			}
+			if (bfHivFollowupStatusObs != null && (bfHivFollowupStatusObs.getValueCoded().equals(YES)) ) {
+				breastFeeding = true;
+			}
+
 
 			ret.put(ptId, new BooleanResult(breastFeeding, this));
 		}
