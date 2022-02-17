@@ -23,28 +23,4 @@ import java.util.Date;
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientsOnMCHCohortDefinition")
 public class PatientsOnMCHCohortDefinition extends BaseCohortDefinition {
-@ConfigurationProperty
-    private Date startate;
-
-@ConfigurationProperty
-    private Date endDate;
-
-    public PatientsOnMCHCohortDefinition() {
-    }
-
-    public Date getStartate() {
-        return startate;
-    }
-
-    public void setStartate(Date startate) {
-        this.startate = startate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 }
