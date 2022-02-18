@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.calculation.library.BreastFeedingStartDateCal
 import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.PregnancyStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LessThanThreeMonthsOnARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.MoreThanThreeMonthsOnARTCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.OnArtCalculation;
@@ -88,11 +89,14 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         CalculationResultMap pregnancyStartDate = calculate(new PregnancyStartDateCalculation(), cohort, context);
         //check for last breastfeeding start date
         CalculationResultMap breastFeedingStarDate = calculate(new BreastFeedingStartDateCalculation(), cohort, context);
+        //get the initial art start date
+        CalculationResultMap artStartDate = calculate(new InitialArtStartDateCalculation(), cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:cohort) {
             Patient patient = patientService.getPatient(ptId);
             boolean needsViralLoadTest = false;
+            Date dateArtInitiated = EmrCalculationUtils.datetimeResultForPatient(artStartDate, ptId);
             Date lastVlDateValue = EmrCalculationUtils.datetimeResultForPatient(lastVlDate, ptId);
             Date lastPregStartDate = EmrCalculationUtils.datetimeResultForPatient(pregnancyStartDate, ptId);
             Date lastBFStarDate = EmrCalculationUtils.datetimeResultForPatient(breastFeedingStarDate, ptId);
@@ -104,15 +108,20 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 }
             }
             // Needs vl after 3 months : In hiv +  Unsuppressed  + without pending vl
-            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && unsuppressed.contains(ptId)){
-                if(lastVlDateValue != null && daysSince(lastVlDateValue, context) >= 92){
+            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId)){
+                if(lastVlDateValue != null) {
+                    if (unsuppressed.contains(ptId) && daysSince(lastVlDateValue, context) >= 92) {
+                        needsViralLoadTest = true;
+                    }
+                }
+                if(lastVlDateValue == null && newOnArt.contains(ptId) && (pregnant.contains(ptId) || breastFeeding.contains(ptId) && daysSince(dateArtInitiated, context) >= 92)){
                     needsViralLoadTest = true;
                 }
             }
             // Needs vl after 6 months : In hiv +  without pending vl + (Newly on ART  + Pregnant + Breastfeeding + Children (< 24 years))
             if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId)){
                 if(lastVlDateValue != null){
-                    if(newOnArt.contains(ptId) && (pregnant.contains(ptId) || breastFeeding.contains(ptId)) && daysSince(lastVlDateValue, context) >= 183){
+                    if(daysSince(lastVlDateValue, context) >= 183){
                         needsViralLoadTest = true;
                     }
                     if(patient.getAge() < 24 && daysSince(lastVlDateValue, context) >= 183){
