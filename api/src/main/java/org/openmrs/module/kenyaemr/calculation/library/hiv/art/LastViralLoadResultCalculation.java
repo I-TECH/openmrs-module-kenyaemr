@@ -45,7 +45,7 @@ public class LastViralLoadResultCalculation extends AbstractPatientCalculation {
             Obs numericVLObs = EmrCalculationUtils.obsResultForPatient(numericViralLoadValues, ptId);
             Obs ldlVLObs = EmrCalculationUtils.obsResultForPatient(ldlViralLoadValues, ptId);
             if(numericVLObs != null && ldlVLObs == null){
-                object = SimpleObject.create("lastVl", numericVLObs.getValueNumeric()+" copies/ml", "lastVlDate", numericVLObs.getObsDatetime());
+                object = SimpleObject.create("lastVl", numericVLObs.getValueNumeric(), "lastVlDate", numericVLObs.getObsDatetime());
             }
            if(numericVLObs == null && ldlVLObs != null){
                object = SimpleObject.create("lastVl", "LDL", "lastVlDate", ldlVLObs.getObsDatetime());
@@ -61,7 +61,7 @@ public class LastViralLoadResultCalculation extends AbstractPatientCalculation {
                 }
 
                 if(lastViralLoadPicked.getConcept().equals(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD))) {
-                    object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric()+" copies/ml", "lastVlDate", numericVLObs.getObsDatetime());
+                    object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric(), "lastVlDate", numericVLObs.getObsDatetime());
                 }
                 else {
                     object = SimpleObject.create("lastVl", "LDL", "lastVlDate", ldlVLObs.getObsDatetime());
