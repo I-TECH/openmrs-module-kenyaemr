@@ -1,0 +1,242 @@
+<!--
+        ~ The contents of this file are subject to the OpenMRS Public License
+        ~ Version 1.0 (the "License"); you may not use this file except in
+        ~ compliance with the License. You may obtain a copy of the License at
+        ~ http://license.openmrs.org
+        ~
+        ~ Software distributed under the License is distributed on an "AS IS"
+        ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+        ~ License for the specific language governing rights and limitations
+        ~ under the License.
+        ~
+        ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+        -->
+
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <style type="text/css">
+            .simple-table {
+                border: solid 1px #DDEEEE;
+                border-collapse: collapse;
+                border-spacing: 0;
+                font: normal 13px Arial, sans-serif;
+                padding: 10px;
+            }
+
+            .simple-table thead th {
+                background-color: #DDEFEF;
+                border: solid 1px #DDEEEE;
+                color: #336B6B;
+                text-align: left;
+                text-shadow: 1px 1px 1px #fff;
+            }
+
+            .simple-table td {
+                border: solid 1px #DDEEEE;
+                color: #333;
+                padding: 10px;
+                text-shadow: 1px 1px 1px #fff;
+            }
+
+            table.tb1 {
+                vertical-align: baseline;
+                text-align: left;
+                margin: 5px;
+            }
+
+            table.tb1 tr th, table.tb1 tr td {
+                border: 0;
+                padding: 8px;
+                border: 0
+
+            }
+        </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // if none in medications is selected
+            jq("#tbl-medications").show();
+            jq('#no-medication :input[type=checkbox]').change(onMedicationSelected);
+            jq('#medications-select :input[type=checkbox]').change(generalExamSelected);
+        });
+
+        var onMedicationSelected = function(){
+            var val = jq(this).val();
+            if(val == 1066) {
+              jq("#tbl-medications").hide();
+            } else {
+              jq("#tbl-medications").show();
+           }
+        }
+
+        var generalExamSelected = function(){
+            var val = jq(this).val();
+            var generalExamsChecked = jq("#medications-select input:checkbox:checked");
+            console.log("im here", generalExamsChecked );
+            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+                jq("#tbl-medications").hide();
+            }
+            if(generalExamsChecked.length ==0){
+                jq("#tbl-medications").show();
+            }
+        }
+
+    </script>
+
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+
+            });
+        </script>
+    </ifMode>
+
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <ifMode mode="ENTER">
+                </ifMode>
+                <td>Encounter date:
+                    <encounterDate id="encounter-date" showTime="true" />
+                </td>
+                <td>VMMC P.O Assessment Provider::
+                    <encounterProvider default="currentUser" />
+                </td>
+                <td>Location::
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset id="tbl-circumcision-method">
+            <legend>Post-Operation Info</legend>
+
+            <table class ="simple-table">
+
+                <tr class="patient-details">
+                    <td>BP</td>
+                    <td>
+                        <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic"/>
+                        /
+                        <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic"/>
+                        mmHg
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
+                            conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr class="patient-details">
+                    <td>Pulse Rate</td>
+                    <td>
+                        <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="pulse"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr class="patient-details">
+                    <td>Temperature</td>
+                    <td>
+                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="temp"/> &#176;C
+                    </td>
+                    <td>
+                        <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Penis elevated against abdomen?</td>
+                    <td>
+                        <obs id="penis-elevated" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Client given post procedure instruction?</td>
+                    <td>
+                        <obs id="post-procedure-instructions" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Explain: </td>
+                    <td> <obs id="post-procedure-instructions" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" /> </td>
+                </tr>
+                <tr>
+
+                    <td>
+                        <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <tr id="complaints-checked">
+                                <td>Post operation medication given?</td>
+                                <td>
+                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="None" style="checkbox" id="medications-select" /><br/>
+                                </td>
+                                <td>
+                                    <table id="tbl-medications" class="simple-table tb1">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Analgesic" style="checkbox" /><br/>
+                                            </td>
+                                            <td>
+                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Antibiotics" style="checkbox" /><br/>
+                                            </td>
+                                            <td>
+                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="TTCV" style="checkbox" /><br/>
+                                            </td>
+                                            <td>
+                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabel="Other" style="checkbox" /><br/>
+                                            </td>
+                                            <td> Specify: </td>
+                                            <td>
+                                                <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </obsgroup>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Scheduled removal date: </td>
+                    <td>
+                        <obs conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="removal-date" required="true" allowFutureDates="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Scheduled next visit(devise removal/review): </td>
+                    <td>
+                        <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="next-visit-date" required="true" allowFutureDates="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Discharged by: </td>
+                    <td> <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discharged-by"  /> </td>
+                </tr>
+                <tr>
+                    <td>Cadre: </td>
+                    <td>
+                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </fieldset>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+
+</htmlform>

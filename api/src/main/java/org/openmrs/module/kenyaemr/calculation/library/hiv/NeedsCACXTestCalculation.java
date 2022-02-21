@@ -78,7 +78,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
         // check for last screening results
         ConceptService conceptService = Context.getConceptService();
         CalculationResultMap cacxLast = Calculations.lastObs(conceptService.getConcept(SCREENING_RESULT), cohort, context);
-        
+
         CalculationResultMap ret = new CalculationResultMap();
         for(Integer ptId:aliveAndFemale) {
             Patient patient = patientService.getPatient(ptId);
