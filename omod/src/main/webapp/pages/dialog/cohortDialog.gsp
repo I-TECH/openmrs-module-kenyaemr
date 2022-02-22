@@ -20,7 +20,7 @@
 				<th>Unique Patient Number</th>
                 <th>HIV Enrollment Date</th>
                 <th>ART Start Date</th>
-				<th>Last VL</th>
+				<th>Last VL(copies/ml)</th>
 				<th>Last VL Date</th>
 			</tr>
 		</thead>
