@@ -1,0 +1,91 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
+    </script>
+
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Encounter Date: <encounterDate id="encounter-date" showTime="true"/> </td>
+                <td>VMMC Enrollment Provider : <encounterProvider default="currentUser" /></td>
+                <td align="right">Location:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/> </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>VMMC Enrollment Info </legend>
+            <table class ="simple-table" id="social-status-table">
+               <tr>
+                   <td>
+                       Referred by:
+                   </td>
+                   <td>
+                       <obs id="referral-by" conceptId="160482"
+                            answerConceptIds="165650,1577,1555,5622"
+                            style="radio" answerLabels="Self referral,Nurse,Community Health Worker,Other" />
+                   </td>
+                   <td>
+                       <table id="tbl-other-referral">
+                           <tr>
+                               <td>  &#160;&#160;&#160; Name :
+                                   <obs id="other-referral" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                   &#160;&#160;&#160;
+                               </td>
+                           </tr>
+                       </table>
+                   </td>
+               </tr>
+
+            </table>
+        </fieldset>
+
+        <enrollInProgram programId="228538f4-cad9-476b-84c3-ab0086150bcc"/>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
