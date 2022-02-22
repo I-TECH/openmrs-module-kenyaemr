@@ -12,25 +12,30 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
+	<style type="text/css">
+		table.tb1 {
+			border: 1px solid grey;
+			vertical-align: baseline;
+			text-align: left;
+		}
+		table.tb1 tr th, table.tb1 tr td {
+			border: 0;
+			padding: 5px;
+		}
+	</style>
 	<div class="ke-form-header">
-		<table style="width: 100%">
-			<tr>
-				<td>
-				</td>
-			</tr>
-		</table>
 	</div>
 
 	<div class="ke-form-content">
-		<fieldset>
-			<legend>Discontinue Vmmc</legend>
-			<table >
+		<table align="center" border="0" class="tb" cellspacing="10">
+			<legend>Discontinuation Info</legend>
+			<table class="tb1" width="100%">
 				<tr>
 					<td width="200px">Encounter Date:</td>
 					<td><encounterDate id="encounter-date" showTime="true" /></td>
 				</tr>
 				<tr>
-					<td>Effective discontinuation date</td>
+					<td>Discontinuation date</td>
 					<td><obs id= "discontinue-date" conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
 				</tr>
 				<tr>
@@ -38,17 +43,9 @@
 					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="162130AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 159808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 160067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 159766AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 112992AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 138405AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 							 answerLabels="Patient has healed,Died,Consent is not provided,Assent is not provided,Client has condition hindering them from going through VMMC,STI,Newly Diagnosed HIV,Transferred Out" id="idReason" /></td>
 				</tr>
-
-
-			</table><br/>
-
-			Signed  at <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
-
-			<br/>
-
-		</fieldset>
-
-		<completeProgram programId="228538f4-cad9-476b-84c3-ab0086150bcc" />
+			</table>
+			<completeProgram programId="228538f4-cad9-476b-84c3-ab0086150bcc" />
+		</table>
 	</div>
 
 	<div class="ke-form-footer">
