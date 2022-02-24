@@ -15,9 +15,59 @@
 <htmlform>
 
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <style>
+   .ke-ml-high-risk {
+    padding: 10px 20px;
+    background-color: orange;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-low-risk {
+    padding: 10px 20px;
+    background-color: green;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-medium-risk {
+    padding: 10px 20px;
+    background-color: yellowgreen;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-very-high-risk {
+    padding: 10px 20px;
+    background-color: darkred;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-getscore-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #155cd2;
+    color: #ffffff;
+    /*font-family: Montserrat;*/
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-getscore-button:hover {
+    background-color:#002ead;
+      transition: 0.7s;
+}
+    </style>
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
+
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
@@ -304,6 +354,12 @@
                 jq("#couple-discordant input").prop("disabled", false);
                 jq("#tb-screening input").prop("disabled", false);
 
+                if(mlCaseFindingEnabled === 'true') {
+		            jq('#div-ml-prediction').show();
+                } else {
+                    jq('#div-ml-prediction').hide();
+                }
+
             }
             if (val == 'false' ){
                 jq('#couple-testing input').prop("disabled", true);
@@ -320,6 +376,7 @@
                 jq("#couple-discordant input").prop("disabled", true);
                 jq("#tb-screening input").prop("disabled", true);
 
+                jq('#div-ml-prediction').hide();
 
                 clearHiddenSections(jq('#tbl-couple-testing'));
                 clearHiddenSections(jq('#hiv-test1-result'));
@@ -485,6 +542,10 @@
 
         //On Ready
         $(document).ready(function () {
+            jq('#div-ml-prediction').hide();
+
+            var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
             //pop type
             jq("#key-population").hide();
             jq("#priority-population").hide();
@@ -712,6 +773,210 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
             }
+
+        // add code for ML feature
+
+    // handle ML prediction button
+	jq("#btn-ml-prediction").click(function () {
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+		var casefindingURL = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.endpoint')"/>";
+		var latestMaritalStatus = "<lookup expression="fn.latestObs(1054).getValueCoded()"/>";
+		var monthsSinceLastTest = getValue('duration_months.value');
+		var populationType = getValue('population-type.value');
+		var isDisabled = getValue('has-disability.value');
+		var everTested = getValue("ever-tested.value");
+		var testedAs = getValue("couple-testing.value");
+		var entryPoint = getValue("hts-entry-point.value");
+		var testStrategy = getValue("strategy.value");
+		var tbScreening = getValue("tb-screening.value");
+		var selfTested = getValue("client-done-test.value");
+        var monthsSinceLastTestInt = parseInt(monthsSinceLastTest);
+
+        if (populationType == '' || isDisabled == '' || everTested == '' || entryPoint == '' || testStrategy == '' || tbScreening == '' || selfTested == '' || testedAs == '') {
+            jq('#ml-prediction-desc').html('Please ensure that you have provided answers to all questions above');
+            return;
+        }
+
+		var predictionVariables = {
+			AgeAtTest: pAge,
+			MonthsSinceLastTest: monthsSinceLastTestInt &gt; 0 ? monthsSinceLastTestInt : 0,
+			GenderMale: pgender == 'M' ? 1 : 0,
+			GenderFemale: pgender == 'F' ? 1 : 0,
+			KeyPopulationTypeGP: 0,
+			KeyPopulationTypeSW: 0,
+			MaritalStatusMarried: 0,
+			MaritalStatusDivorced: 0,
+			MaritalStatusPolygamous: 0,
+			MaritalStatusWidowed: 0,
+			MaritalStatusMinor: 0,
+			PatientDisabledNotDisabled: 0,
+			PatientDisabledDisabled: 0,
+			EverTestedForHIVYes: 0,
+			EverTestedForHIVNo: 0,
+			ClientTestedAsIndividual: 0,
+			ClientTestedAsCouple: 0,
+			EntryPointVCT: 0,
+			EntryPointOPD: 0,
+			EntryPointMTC: 0,
+			EntryPointIPD: 0,
+			EntryPointMOBILE: 0,
+			EntryPointOther: 0,
+			EntryPointHB: 0,
+			EntryPointPEDS: 0,
+			TestingStrategyVCT: 0,
+			TestingStrategyHB: 0,
+			TestingStrategyMOBILE: 0,
+			TestingStrategyHP: 0,
+			TestingStrategyNP: 0,
+			TBScreeningNoPresumedTB: 0,
+			TBScreeningPresumedTB: 0,
+			ClientSelfTestedNo: 0,
+			ClientSelfTestedYes: 0
+		};
+
+        // convert marital status
+		if (latestMaritalStatus == 5555) { // married monogamous
+			predictionVariables.MaritalStatusMarried = 1;
+		} else if (latestMaritalStatus == 159715) { // married polygamous
+			predictionVariables.MaritalStatusPolygamous = 1;
+		} else if (latestMaritalStatus == 1058) { // divorced
+			predictionVariables.MaritalStatusDivorced = 1;
+		} else if (latestMaritalStatus == 1059) { // widowed
+			predictionVariables.MaritalStatusWidowed = 1;
+		}
+
+		if (pAge &lt; 15) {
+			predictionVariables.MaritalStatusMinor = 1;
+		}
+
+		// convert population type
+		if (populationType == 164928) {
+			predictionVariables.KeyPopulationTypeGP = 1;
+		} else if (populationType == 164929) {
+			predictionVariables.KeyPopulationTypeSW = 1;
+		}
+
+		// convert disability status
+		if (isDisabled == 1066) {
+			predictionVariables.PatientDisabledNotDisabled = 1;
+		} else if (isDisabled == 1065) {
+		    predictionVariables.PatientDisabledDisabled = 1;
+		}
+
+		// convert ever tested for hiv status
+		if (everTested == 1065) {
+			predictionVariables.EverTestedForHIVYes = 1;
+		} else if (everTested == 1066) {
+		    predictionVariables.EverTestedForHIVNo = 1;
+		}
+
+		// converter for tested as i.e. individual, couple:
+		if (testedAs == 164957) {
+			predictionVariables.ClientTestedAsIndividual = 1;
+		} else if (testedAs == 164958) {
+		    predictionVariables.ClientTestedAsCouple = 1;
+		}
+
+		// convert entry point
+
+		if (entryPoint == 159940) { // VCT
+			predictionVariables.EntryPointVCT = 1;
+		} else if (entryPoint == 160542) { // OPD
+			predictionVariables.EntryPointOPD = 1;
+		} else if (entryPoint == 160456) { // Maternity
+			predictionVariables.EntryPointMTC = 1;
+		} else if (entryPoint == 5485) { // IPD
+			predictionVariables.EntryPointIPD = 1;
+		} else if (entryPoint == 159939) { // mobile
+			predictionVariables.EntryPointMOBILE = 1;
+		} else if (entryPoint == 159938) { // HB
+			predictionVariables.EntryPointHB = 1;
+		} else if (entryPoint == 162181) { // Paed
+			predictionVariables.EntryPointPEDS = 1;
+		} else if (entryPoint == 5622) { // Other
+			predictionVariables.EntryPointOther = 1;
+		}
+
+		// convert strategy
+
+		if (testStrategy == 159938) { // HB
+			predictionVariables.TestingStrategyHB = 1;
+		} else if (testStrategy == 159939) { // Mobile
+			predictionVariables.TestingStrategyMOBILE = 1;
+		} else if (testStrategy == 164163) { // HP
+			predictionVariables.TestingStrategyHP = 1;
+		} else if (testStrategy == 164953) { // NP
+			predictionVariables.TestingStrategyNP = 1;
+		} else if (testStrategy == 164954 || testStrategy == 164955) { // VCT
+			predictionVariables.TestingStrategyVCT = 1;
+		}
+
+		// convert HIV self test
+		if (selfTested == 1066) {
+			predictionVariables.ClientSelfTestedNo = 1;
+		} else if (selfTested == 1065) {
+		    predictionVariables.ClientSelfTestedYes = 1;
+		}
+
+		// convert TB screening
+		if (tbScreening == 1660 || tbScreening == 160737) {
+			predictionVariables.TBScreeningNoPresumedTB = 1;
+		} else if (tbScreening == 142177 || tbScreening == 1111) {
+		    predictionVariables.TBScreeningPresumedTB = 1;
+		}
+
+        var mlFormattedDate = moment(new Date()).format('YYYY-MM-DD');
+        var modelConfigs = {
+            "modelId":"hts_xgb",
+            "encounterDate":mlFormattedDate,
+		    "facilityId":""
+        }
+        var mlScoringRequestPayload = {
+            modelConfigs: modelConfigs,
+            variableValues: predictionVariables
+        }
+
+        var predResponse = '';
+        if (casefindingURL !='') {
+            jq.ajax({
+                url: '/' + ctxPath + casefindingURL,
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(mlScoringRequestPayload),
+                async: false,
+                success: function (response, textStatus, jqXHR) {
+                var probabilityForPositivity = response.result["probability(1)"];
+                var lowRiskThreshold = 0.048281834;
+                var mediumRiskThreshold = 0.195130497;
+                var highRiskThreshold = 0.538404703;
+                var className = jq('#ml-prediction-risk-category').attr("class");
+                if (probabilityForPositivity &lt;= lowRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('Low Risk Client');
+                    jq('#ml-prediction-risk-category').removeClass(className);
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
+                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
+                } else if (probabilityForPositivity &gt; lowRiskThreshold &amp;&amp; probabilityForPositivity &lt;= mediumRiskThreshold ) {
+                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
+                    jq('#ml-prediction-risk-category').removeClass(className);
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
+                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
+                } else if(probabilityForPositivity &gt; mediumRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('High Risk Client');
+                    jq('#ml-prediction-risk-category').removeClass(className);
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
+                    jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
+                }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    jq('#lbl-ml-prediction').text('An error occurred while fetching risk score. Please contact system administrator');
+                }
+            });
+		}
+
+	});
+
+
+        // ----- end of ML feature
 
         });
 
@@ -1254,6 +1519,17 @@
                 </tr>
             </table>
         </fieldset>
+        <fieldset id="tb-screening">
+            <legend>TB Screening</legend>
+            <table id="tbl-tb-screening">
+                <tr>
+                    <td>Tb Screening results: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="No TB Signs,Presumed TB,Not Done,On TB Treatment" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
         <fieldset>
             <legend>HIV Testing</legend>
             <table id="tbl-consent">
@@ -1264,6 +1540,7 @@
                     </td>
                 </tr>
             </table>
+
             <table id="tbl-couple-testing">
                 <tr>
                     <td>Client tested as? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -1274,6 +1551,22 @@
                 </tr>
             </table>
             <br />
+            <br/>
+            <div id="div-ml-prediction">
+                <table>
+                    <tr>
+                        <td>
+                            <button type="button" class="ke-getscore-button" id="btn-ml-prediction">Get
+                                risk category
+                            </button>
+                        </td>
+                        <td width="50px"></td>
+                        <td><div id="ml-prediction-risk-category"></div></td>
+                        <td><div id="ml-prediction-desc" style="font-style:italic"></div></td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>
@@ -1376,17 +1669,6 @@
                         <obs id="couple-discordant" conceptId="6096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="YES,NO,N/A"/>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset id="tb-screening">
-            <legend>TB Screening</legend>
-            <table id="tbl-tb-screening">
-                <tr>
-                    <td>Tb Screening results: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="tb-screening" conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1111AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" answerLabels="No TB Signs,Presumed TB,Not Done,On TB Treatment" />
                     </td>
                 </tr>
             </table>
