@@ -104,7 +104,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
                 }
 
                 // no cervical cancer screening done within the past year
-                if(cacxAssmnt != null && lastCacxResult == null) {
+                if(lastCacxResult == null) {
                     needsCacxTest = true;
                 }
 
