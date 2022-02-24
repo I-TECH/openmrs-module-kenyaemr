@@ -50,15 +50,12 @@ public class LastCacxTestDateCalculation extends BaseEmrCalculation {
         CalculationResultMap cacxScreenResult = Calculations.lastObs(Context.getConceptService().getConcept(165196), cohort, context);
         // check for last cacx assesment
         CalculationResultMap cacxLastAssmnet = Calculations.lastObs(Context.getConceptService().getConcept(164934), cohort, context);
-        // check for last screening method
-        CalculationResultMap cacxLastMethod = Calculations.lastObs(Context.getConceptService().getConcept(163589), cohort, context);
         //get a list of all the cacx screening
         CalculationResultMap cacxAssmntList = Calculations.allObs(Context.getConceptService().getConcept(164934), aliveAndFemale, context);
 
         for (Integer ptId : cohort) {
             SimpleObject object = null;
             Obs cacxScreenResultObs = EmrCalculationUtils.obsResultForPatient(cacxScreenResult, ptId);
-            Obs cacxScreenMethodObs = EmrCalculationUtils.obsResultForPatient(cacxLastMethod, ptId);
             Obs lastCacxAssmntObs = EmrCalculationUtils.obsResultForPatient(cacxLastAssmnet, ptId);
 
             //assesed but not screened

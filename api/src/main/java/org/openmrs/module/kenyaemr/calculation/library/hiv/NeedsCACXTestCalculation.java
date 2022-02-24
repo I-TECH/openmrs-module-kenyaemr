@@ -13,7 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Obs;
+import org.openmrs.Program;
+import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -37,7 +40,11 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.ui.framework.SimpleObject;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.List;
+import java.util.Date;
+import java.util.Set;
 
 import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 
@@ -104,12 +111,12 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
                 }
 
                 // no cervical cancer screening done within the past year
-                if(cacxAssmnt != null && lastCacxResult == null) {
+                if(lastCacxResult == null) {
                     needsCacxTest = true;
                 }
 
                 // cacx flag should be 12 months after last cacx if negative
-                if(cacxAssmnt != null && lastCacxResult != null && lastCacxResult == "Negitive"  && (daysSince(lastCacxResultDate, context) >= 365)) {
+                if(lastCacxResult != null && (lastCacxResult == "Negative" || lastCacxResult == "Normal")  && (daysSince(lastCacxResultDate, context) >= 365)) {
                     needsCacxTest = true;
                 }
 
@@ -117,6 +124,12 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
                 if(lastCacxResult != null && lastCacxResult == "Positive"  && (daysSince(lastCacxResultDate, context) >= 183)) {
                     needsCacxTest = true;
                 }
+
+                // cacx flag should remain if there is any suspicion
+                if(lastCacxResult != null && (lastCacxResult != "Negative" || lastCacxResult != "Normal" || lastCacxResult != "Positive" )) {
+                    needsCacxTest = true;
+                }
+
             }
             ret.put(ptId, new BooleanResult(needsCacxTest, this));
         }
