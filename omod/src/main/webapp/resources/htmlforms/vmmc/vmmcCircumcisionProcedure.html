@@ -1,0 +1,379 @@
+<!--
+        ~ The contents of this file are subject to the OpenMRS Public License
+        ~ Version 1.0 (the "License"); you may not use this file except in
+        ~ compliance with the License. You may obtain a copy of the License at
+        ~ http://license.openmrs.org
+        ~
+        ~ Software distributed under the License is distributed on an "AS IS"
+        ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+        ~ License for the specific language governing rights and limitations
+        ~ under the License.
+        ~
+        ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+        -->
+
+<htmlform>
+    <script>
+
+    jQuery(function($) {
+
+        var CONVENTIONAL = 159619;
+        var DEVICE = 164204;
+        var SLEEVE_RESELECTION = 164029;
+        var DORSAL_SLIT = 1933;
+        var FORCEPS_GUIDE = 157783;
+        var OTHER_CONVENTIONAL = 5622;
+        var SHANGRING = 165396;
+        var OTHER_DEVICE = 5622;
+        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
+        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(164258).getValueCoded()"/>";
+        var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
+        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
+
+        var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
+        var CONVENTIONAL_METHOD = CONVENTIONAL_METHOD_CONCEPT.replace(/[^\d]/g, '');
+        var DEVICE_CIRCUMCISION = DEVICE_CIRCUMCISION_CONCEPT.replace(/[^\d]/g, '');
+
+        //Defaults
+        jq('#tbl-device-size').hide();
+        jq('#tbl-adverse-effects').hide();
+        jq('#tbl-conventional-surgical').hide();
+        jq('#tbl-device-circumcision').hide();
+
+        //Check if conventional checked
+            jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
+
+        //Check if any adverse events
+            jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
+
+        console.log("CIRCUMCISION_METHOD", CIRCUMCISION_METHOD);
+        console.log("CONVENTIONAL_METHOD", CONVENTIONAL_METHOD);
+
+        if(CIRCUMCISION_METHOD == CONVENTIONAL) {
+            jq("#circumcision-method input[value=159619]").prop("checked", true);
+            jq('#tbl-conventional-surgical').show();
+
+              if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
+                jq("#conventional-method input[value=164029]").prop("checked", true);
+              } else if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
+                jq("#conventional-method input[value=1933]").prop("checked", true);
+              } else if( CONVENTIONAL_METHOD == FORCEPS_GUIDE) {
+                jq("#conventional-method input[value=157783]").prop("checked", true);
+              } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
+                jq("#conventional-method input[value=5622]").prop("checked", true);
+              }
+
+        } else if(CIRCUMCISION_METHOD == DEVICE) {
+            jq("#circumcision-method input[value=164204]").prop("checked", true);
+            jq('#tbl-device-circumcision').show();
+            jq('#tbl-device-size').show();
+
+              if(DEVICE_CIRCUMCISION == SHANGRING) {
+                jq("#device-name input[value=165396]").prop("checked", true);
+              } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
+                jq("#device-name input[value=5622]").prop("checked", true);
+              }
+
+              if(DEVICE_SIZE !== 'undefined') {
+                setValue('device_size.value',DEVICE_SIZE);
+              }
+        }
+
+    });
+
+    var onAdverseEventsSelected = function () {
+        getField('adverse_events.error').html('Adverse events should not be empty').hide();
+        var val = jq(this).val();
+        if(val == 1065 ) {
+          jq('#tbl-adverse-effects').show();
+        } else {
+          jq('#tbl-adverse-effects').hide();
+        }
+    }
+
+    var onMethodSelected = function () {
+        var val = jq(this).val();
+        if(val == 159619 ) {
+          jq('#tbl-conventional-surgical').show();
+          jq('#tbl-device-circumcision').hide();
+        } else if(val == 164204) {
+          jq('#tbl-device-circumcision').show();
+          jq('#tbl-device-size').show();
+          jq('#tbl-conventional-surgical').hide();
+        };
+    }
+
+    </script>
+
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                var CONVENTIONAL = 159619;
+                var DEVICE = 164204;
+                var YES = 1065;
+
+                var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
+                var ADVERSE_EFFECT = getValue('adverse_events.value');
+
+                console.log("adv eff", ADVERSE_EFFECT);
+                if(ADVERSE_EFFECT == YES ) {
+                  jq('#tbl-adverse-effects').show();
+                }
+
+                if(CIRCUMCISION_METHOD == CONVENTIONAL) {
+                    jq('#tbl-conventional-surgical').show();
+                    jq('#tbl-device-circumcision').hide();
+                    jq('#tbl-device-size').hide();
+                } else if(CIRCUMCISION_METHOD == DEVICE) {
+                    jq('#tbl-device-circumcision').show();
+                    jq('#tbl-device-size').show();
+                    jq('#tbl-conventional-surgical').hide();
+                }
+
+            });
+        </script>
+    </ifMode>
+
+    <style type="text/css">
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+            padding: 10px;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        table.tb1 {
+			vertical-align: baseline;
+			text-align: left;
+			margin: 5px;
+		}
+
+		table.tb1 tr th, table.tb1 tr td {
+			border: 0;
+			padding: 8px;
+			border: 0
+
+		}
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <ifMode mode="ENTER">
+                </ifMode>
+                <td>Enrollment date:
+                    <encounterDate id="encounter-date" showTime="true" />
+                </td>
+                <td>VMMC Procedure Provider:
+                    <encounterProvider default="currentUser" />
+                </td>
+                <td>Enrolled at:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="ke-form-content">
+        <fieldset id="tbl-circumcision-method">
+            <legend>Method Of Circumcision</legend>
+
+            <table class ="simple-table">
+                <tr>
+                    <td> Method: </td>
+                    <td>
+                        <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Conventional Surgical,Device Circumcision"
+                             style="radio"
+                             answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
+                        <br/>
+                    </td>
+                    <td>
+                        <table id="tbl-conventional-surgical" class="tb1 simple-table">
+                            <tr>
+                                <td>
+                                    <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Sleeve resection,
+                                           Dorsal Slit,
+                                           Forceps Guide,
+                                           Other"
+                                         style="radio"/>
+                                    <br/>
+                                </td>
+
+                                <td> Specify: </td>
+                                <td>
+                                    <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tbl-device-circumcision" class="tb1 simple-table">
+                            <tr>
+                                <td>
+                                    Device name:
+
+                                    <obs id="device-name" conceptId="164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="165396,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Shangring,Other"
+                                         style="radio" />
+
+                                    Size:
+                                    <obs id="device-size" conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+
+                                </td>
+                                <td> Specify: </td>
+                                <td>
+                                    <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                </td>
+                                <td>
+                                    <table id="tbl-device-size" class="tb1 simple-table">
+                                        <tr>
+                                            <td>Device size: </td>
+                                            <td><obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="device_size" /></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </fieldset>
+
+        <fieldset id="tbl-circumcision-procedure">
+            <legend>Circumcision Procedure</legend>
+            <table width="100%" margin="0" class="simple-table">
+                <tr>
+                    <td> Anaesthesia used: Type:
+                        <obs conceptId="164254AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" />
+                    </td>
+                    <td> Concentration(mg):
+                        <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                    </td>
+                    <td> Volume(ml):
+                        <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
+                        <obs conceptId="163138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" allowFutureDates="false" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
+                        hour clock:
+                        <obs conceptId="163137AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_slit" allowFutureDates="false" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Was there an Adverse Event during circumcision?
+                        <obs id="adverse_events" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" />
+                    </td>
+                </tr>
+
+            </table>
+
+            <table width="100%" id="tbl-adverse-effects" class="simple-table">
+                <tr>
+                    <td>Record any Adverse Events that occurred during Circumscision Procedure:</td>
+                    <td>
+                        Type of adverse event:
+                        <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Bleeding,Anaesthetic Reaction,Damage to the penis,Pain"
+                             id="adverse_event_types" />
+                    </td>
+
+                    <td>
+                        Severity:
+                        <obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Severe,Moderate,Mild" id="severity" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Management of Adverse Events if any:  <br> </br>
+                        <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset id="tbl-personnel-in-charge">
+            <legend>Personnel in charge</legend>
+            <table align="center" width="100%" class="tb1">
+                <tr>
+                    <td>Name of Clinician:
+                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Cadre:
+                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Name of Assistant Clinician:
+                        <obs conceptId="164141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="assistant_clinician" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Cadre:
+                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="MO,CO,Nurse" id="assistant_clinician_cadre" style="radio" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Theatre Register Number:
+                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <enrollInProgram programId="228538f4-cad9-476b-84c3-ab0086150bcc" />
+
+    </div>
+
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+
+</htmlform>
