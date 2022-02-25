@@ -24,6 +24,7 @@
 		<property name="visitForms" >
 			<set>
 				<ref bean="kenyaemr.vmmc.form.procedure" />
+				<ref bean="kenyaemr.vmmc.form.medicalHistoryExamination" />
 			</set>
 		</property>
 
@@ -82,6 +83,21 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcCircumcisionProcedure.html" />
+	</bean>
+
+	<!--VMMC Medical History and Examination Form -->
+	<bean id="kenyaemr.vmmc.form.medicalHistoryExamination" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="d42aeb3d-d5d2-4338-a154-f75ddac78b59" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcMedicalHistoryExamination.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

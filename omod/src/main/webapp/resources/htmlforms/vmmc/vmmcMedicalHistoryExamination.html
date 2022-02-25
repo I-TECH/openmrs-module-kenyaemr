@@ -1,0 +1,583 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
+
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var patientId = <lookup expression="patient.patientId"/>;
+        var HIV_POSITIVE = 703;
+        var HIV_NEGATIVE = 664;
+        var UNKNOWN = 1067;
+        var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+        var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
+        var PATIENT_LAST_ADHERENCE = "<lookup expression="fn.latestObs(1658).getValueCoded()"/>";
+        var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+        var TCA_DATE =  "<lookup expression="fn.latestObs(5096).getValueDatetime()"/>";
+        var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
+        var LATEST_VIRAL_LOAD_VALUE = "<lookup expression="fn.latestObs(856).valueNumeric"/>"
+        var LATEST_VIRAL_CD4_COUNT = "<lookup expression="fn.latestObs(5497).valueNumeric"/>"
+        var LATEST_LDL_DATE = "<lookup expression="fn.latestObs(1305).getObsDatetime()"/>";
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+        var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        //On Ready
+        $(document).ready(function () {
+            //Defaults
+            onPatientHivStatusChange();
+            includePatientsCccNumberIfExists();
+            jq('#upnError').hide();
+            jq('#tbl-this-facility').hide();
+            jq('#tbl-other-facility').hide();
+            jq("#upn-concept input[type=text]").blur(validatePatientIdentifiers);
+            jq('#tbl-enrolled-positive-details').hide();
+            jq('#tbl-reported-positive-details').hide();
+            jq('#tbl-other-complaint').hide();
+            jq('#tbl-other-treatment').hide();
+            //Selected
+            getField('patient-hiv-status.value').change(onPatientHivStatusChange);
+            jq('#care-facility select').change(careFacilitySelected);
+            jq('#complaints-checked :input[type=checkbox]').change(complaintSelected);
+            jq('#treatment-checked :input[type=checkbox]').change(treatmentSelected);
+
+            //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
+            if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) {
+                if (HIV_TEST_DATE != "") {
+                    var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                    getField('patient-hiv-test-date.value').val(formattedTestDate);
+                }
+                if (TCA_DATE != "") {
+                    var formattedTcaDate = moment(moment(TCA_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                    getField('patient-tca-date.value').val(formattedTcaDate);
+                }
+                jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#patient-tca-date input').prop('disabled', false);
+                getField('patient-hiv-status.value').val(HIV_POSITIVE);
+                jq('#hiv-known-positive:text').val('Positive');
+
+                if (PATIENT_ON_ART == "true") {
+                    jq('#current-regimen').html(REGIMEN_NAME);
+                } else {
+                    jq('#current-regimen').html("None");
+                }
+                console.log("Adherence score ==>"+PATIENT_LAST_ADHERENCE);
+                if (PATIENT_LAST_ADHERENCE == 159405) {
+                      jq('#adherence-score').html("Good");
+                    } else if (PATIENT_LAST_ADHERENCE == 163794) {
+                        jq('#adherence-score').html("Fair");
+                    } else if (PATIENT_LAST_ADHERENCE == 159407) {
+                        jq('#adherence-score').html("Poor");
+                   }else{
+                    jq('#adherence-score').html("None");
+                   }
+
+                //Validation of recent HIV tests between vl and ldl
+                if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE != "") {
+                    //Latest VL or LDl
+                    var isLatestVlBeforeLatestLDl = moment(moment(moment(LATEST_VIRAL_LOAD_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(LATEST_LDL_DATE, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+                    if (isLatestVlBeforeLatestLDl) {
+                        jq('#vl-value:text').val('LDL');
+                    } else {
+                        jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
+                    }
+                }else if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE == ""){
+                    jq('#vl-value:text').val(LATEST_VIRAL_LOAD_VALUE);
+
+                }else if(LATEST_LDL_DATE != "" &amp;&amp; LATEST_VIRAL_LOAD_DATE == ""){
+                    jq('#vl-value:text').val('LDL');
+                }else if(LATEST_LDL_DATE == "" &amp;&amp; LATEST_VIRAL_LOAD_DATE == ""){
+                    jq('#vl-value:text').val('');
+                }
+                //Prepopulate cd4 count for enrolled clients
+                if(LATEST_VIRAL_CD4_COUNT != "" ){
+                    jq('#cd4-count:text').val(LATEST_VIRAL_CD4_COUNT);
+                }
+            }
+            if(PATIENT_IS_ENROLLED_HIV){
+                jq('#tbl-enrolled-positive-details').show();
+                jq('#tbl-reported-positive-details').hide();
+            }else{
+                jq('#tbl-reported-positive-details').show();
+                jq('#tbl-enrolled-positive-details').hide();
+            }
+
+
+
+
+
+        });
+
+         // Called when 'HIV Status' field is changed
+        function onPatientHivStatusChange() {
+            var patientHivStatus = getValue('patient-hiv-status.value');
+            if (patientHivStatus == '' || patientHivStatus == UNKNOWN) {
+                jq('#patient-hiv-test-date input').prop('disabled', true);
+                jq('#tbl-enrolled-positive-details').hide();
+                jq('#tbl-reported-positive-details').hide();
+                setValue('patient-hiv-test-date.value', null);
+            }
+            if (patientHivStatus == HIV_NEGATIVE) {
+                jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#tbl-enrolled-positive-details').hide();
+                jq('#tbl-reported-positive-details').hide();
+            }
+            if (patientHivStatus == HIV_POSITIVE &amp;&amp; PATIENT_IS_ENROLLED_HIV) {
+                jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#tbl-enrolled-positive-details').show();
+                jq('#tbl-reported-positive-details').hide();
+            }
+            if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+                jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#tbl-enrolled-positive-details').hide();
+                jq('#tbl-reported-positive-details').show();
+            }
+            var isMismatch = (PATIENT_IS_ENROLLED_HIV);
+            jq('#patient-hiv-status-mismatch').toggle(isMismatch);
+        }
+
+        function validatePatientIdentifiers() {
+            var upnEntered = jq('#upn-concept input[type=text]').val();
+            if(upnEntered == "") {
+                jq('#upnError').text("");
+                jq('#upnError').text("CCC Number should not be empty!");
+                jq('#upnError').show();
+                jq('#hiv-id input[type=text]').val("");
+                getField('upn-concept.value').val("");
+            }else if (!isNaN(upnEntered)) {
+                if ((/^[0-9]{10}$/.test(upnEntered) === false) &amp;&amp; (/^[0-9]{11}$/.test(upnEntered) === false)) {
+
+                    jq('#upnError').text("");
+                    jq('#upnError').text("Invalid CCC Number Format! Should be mfl-clinic number, each 5 digits");
+                    jq('#upnError').show();
+                    jq('#hiv-id input[type=text]').val("");
+                } else {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', {upn: upnEntered}, function (data) {
+
+                        if (data.upnExists === true) {
+                            jq('#upnError').text("");
+                            jq('#upnError').text("A patient with similar CCC already exists. Please correct before proceeding");
+                            jq('#upnError').show();
+                            jq('#hiv-id input[type=text]').focus();
+                        } else {
+                            jq('#upnError').text("");
+                            jq('#hiv-id input[type=text]').val(upnEntered);
+                        }
+                    });
+                }
+            } else {
+                jq('#hiv-id input[type=text]').val("");
+                getField('upn-concept.value').val("");
+            }
+        }
+
+        //CCC Number
+        function includePatientsCccNumberIfExists() {
+            var cccNumber;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientUniquePatientNumber.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    cccNumber = data;
+                    getField('upn-concept.value').val(cccNumber);
+                    getField('upn-concept.value').prop("readonly", true);
+                }
+            });
+        }
+        // Facility of hiv care
+        var careFacilitySelected = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (val == 164407) {
+                jq('#tbl-other-facility').show();
+                jq('#tbl-this-facility').hide();
+                getField('this-facility.value').val("");
+            }if(val == 163266){
+                jq('#tbl-this-facility').show();
+                getField('this-facility.value').val(default_location);
+                jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
+            }
+        }
+        //Other complaint selected
+        var complaintSelected = function(){
+            var val = jq(this).val();
+            if(val == 5622 ){
+                jq('#tbl-other-complaint').show();
+            }else {
+                jq('#tbl-other-complaint').hide();
+                getField('other-complaint.value').val("");
+            }
+        }
+        //Other treatment selected
+        var treatmentSelected = function(){
+            var val = jq(this).val();
+            if(val == 5622 ){
+                jq('#tbl-other-treatment').show();
+            }else {
+                jq('#tbl-other-treatment').hide();
+                getField('tbl-other-treatment.value').val("");
+            }
+        }
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+        </script>
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+
+
+            });
+        </script>
+    </ifMode>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Encounter Date: <encounterDate id="encounter-date" showTime="true"/> </td>
+                <td>VMMC Physical Examination Provider : <encounterProvider default="currentUser" /></td>
+                <td align="right">Location:<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/> </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>VMMC source Info </legend>
+            <table class ="simple-table">
+               <tr>
+                   <td> Assent given? </td>
+                   <td>
+                       <obs id="assent-given" conceptId="1651"
+                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            answerLabel="Yes,No"
+                            style="radio" />
+                       <br/>
+                   </td>
+                   <td> &#160;&#160;&#160;&#160;&#160; If Yes - Parent/ Guardian Consent given? </td>
+                   <td>
+                       <obs id="consent-given" conceptId="1710"
+                            style="yes_no" />
+                       <br/>
+                   </td>
+               </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Referrals </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td> Client referred for other services </td>
+                    <td>
+                        <obs id="referred" conceptId="165093"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio" />
+                        <br/>
+                    </td>
+                    <td>
+                       <table>
+                           <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                              <tr id="services-referred">
+                                  <td>  Referred for which services: <br/>
+                               <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
+                                           answerLabel="STI Treatment" style="checkbox" /><br/>
+                                <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165270"
+                                     answerLabel="PrEP Services" style="checkbox" /><br/>
+                                <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Condom dispensing" style="checkbox" /><br/>
+                                </td>
+                           </tr>
+                           </obsgroup>
+                       </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Knowledge of HIV Status </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td>HIV Status:</td>
+                    <td>
+                        <obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             id="patient-hiv-status"
+                             answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Positive,Negative,Unknown"/>
+                        <span id="hivStar" style="color:red;"><strong>*</strong></span>
+                        <div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+                    </td>
+                    <td width="250">HIV Test Date:</td>
+                    <td>
+                        <obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                    <td width="250">Date started on ART:</td>
+                    <td>
+                        <obs id="art-start-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table  class ="simple-table" id="tbl-enrolled-positive-details">
+            <tr>
+                <td width="250">CCC Number:</td>
+                <td>
+                    <div> <span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false"/></span> </div>
+                </td>
+                <td width="250">Current Regimen:</td>
+                <td>
+                    <span id="current-regimen" class="value"></span>
+                </td>
+                <td width="250">Adherence to drugs</td>
+                <td>
+                    <span id="adherence-score" class="value"></span>
+                </td>
+            </tr>
+            <tr>
+                <td width="250">Last VL:</td>
+                <td>
+                    <input type="text" name="vl-value" id="vl-value" readonly="True" />
+                </td>
+                <td width="250">CD4 Count:</td>
+                <td>
+                    <input type="text" name="cd4-count" id="cd4-count" readonly="True" />
+                </td>
+                <td width="250">Date of next appointment:</td>
+                <td>
+                    <obs id="patient-tca-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                </td>
+
+            </tr>
+        </table>
+        <table  class ="simple-table" id="tbl-reported-positive-details">
+                <tr>
+                    <td width="250">CCC Number:</td>
+                    <td>                       
+                        <div> <obs class="upn" conceptId="162053" id="upn-concept" size ="20" /></div>
+                        <span id="upnError" class="error"></span>
+                    </td>
+                    <td width="250">Current Regimen:</td>
+                    <td>
+                        <obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="AZT/3TC/DTG,
+								               TDF/3TC/DTG,
+								               ABC/3TC/DTG,
+								               TDF-3TC-EFV,
+								               D4T/3TC/NVP,
+											   AZT/3TC/EFV,
+											   D4T/3TC/EFV,
+											   3TC/NVP/AZT,
+											   EDF/3TC/EFV,
+											   EFV/FTC/TDF,
+											   3TC/LPV/TDF/r,
+											   ABC/3TC/AZT,
+										       ABC/NVP/3TC,
+											   3TC/ABC/LPV/r,
+							                   3TC/NVP/TDF,
+                                               3TC/NVP/AZT,
+                                               3TC/AZT/LPV/r,
+                                               AZT-3TC-ATV/r,
+                                               TDF-3TC-ATV/r,
+                                               3TC/D4T/LPV/r,
+                                               3TC/ABC/EFV,
+                                               ABC/LPV/R/TDF,
+                                               ABC/DDI/LPV/r"
+                        />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td width="250">HIV Viral Load</td>
+                    <td>
+                        <obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        copies/ml
+
+                    <obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" />
+                    </td>
+                    <td width="250">CD4 Count:</td>
+                    <td>
+                        <obs id="cd4-count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        cells/uL
+                    </td>
+
+                </tr>
+            <tr>
+                <td>Facility of HIV Care :  </td>
+                <td>
+                    <obs id="care-facility" conceptId="165239"
+                         answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         style="dropdown" answerLabels="This health facility,Other health facility" />
+                </td>
+                <td>
+                    <br/>
+                    <table id="tbl-other-facility">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Facility name :
+                                <obs id="other-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <table id="tbl-this-facility">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Name :
+                                <obs id="this-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Medical History and Physical Examination </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td>
+
+                            <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <tr>
+                                <td>  Client's known history of: <br/></td>
+                                <td>
+                                    <obs conceptId="1628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Bleeding Disorder" style="checkbox" /><br/>
+                                    <obs conceptId="1628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Diabetes " style="checkbox" /><br/>
+                                </td>
+                            </tr>
+                            </obsgroup>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                            <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr id="complaints-checked">
+                                    <td>  Client presenting with: <br/></td>
+                                    <td>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Urethral Discharge" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118990AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Genital Sore" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Pain on Urination" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="125203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Swelling of the scrotum" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163831AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Difficulty in retracting foreskin" style="checkbox" /><br/>
+                                    </td>
+                                    <td>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130845AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Difficulty in returning foreskin to normal" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Concerns about erection/sexual function" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163813AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Epispadia" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Hypospadia" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Others" style="checkbox" /><br/>
+                                    </td>
+                                            <td>
+                                                <br/>
+                                                <table id="tbl-other-complaint">
+                                                    <tr>
+                                                        <td>  &#160;&#160;&#160; Specify :
+                                                            <obs id="other-complaint" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                                            &#160;&#160;&#160;
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                </tr>
+                            </obsgroup>
+                    </td>
+
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Other Treatments </legend>
+            <table class ="simple-table">
+                <tr id="treatment-checked">
+                    <td> Client undergoing treatment for: </td>
+                    <td>
+                        <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Anemia" style="checkbox" /><br/>
+                        <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Diabetes " style="checkbox" /><br/>
+                        <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="HIV/AIDS" style="checkbox" /><br/>
+                        <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Other " style="checkbox" /><br/>
+                    </td>
+                    <td>
+                        <br/>
+                        <table id="tbl-other-treatment">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-treatment" conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>

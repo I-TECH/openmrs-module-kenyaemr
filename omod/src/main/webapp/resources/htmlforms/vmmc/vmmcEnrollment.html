@@ -12,12 +12,9 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
-
-    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
-    <script type="text/javascript">
-
-    </script>
+    <macros>
+        <macro key="countyNames" value="Nairobi,Mombasa,Kilifi,Kwale,Homa-Bay,Kisumu,Migori,Kisii,Uasin-Gishu,Bomet,Busia,Kiambu,Nyeri,Muranga,Kirinyaga,Nyandarua,Machakos,Kitui,Makueni,Embu,Meru,Isiolo,Marsabit,Turkana,Mandera,Lamu,West Pokot,Bungoma,Vihiga,Kakamega,Siaya,Nyamira,Kericho,Trans Nzoia,Nakuru,Laikipia,Tharaka Nith,Garissa,Taita Taveta,Tana River,Samburu,Elgeyo Marakwet,Nandi,Baringo,Narok,Kajiado,Wajir" />
+    </macros>
 
     <style>
         .simple-table {
@@ -44,6 +41,83 @@
         }
     </style>
 
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        //On Ready
+        $(document).ready(function () {
+            //Defaults
+            jq("#tbl-other-referral").hide();
+            jq("#tbl-other-information-source").hide();
+
+            //Referred by selected
+            jq("#referral-by :input[type=radio]").change(referredBySelected);
+            jq("#information-source :input[type=radio]").change(informationSourceSelected);
+
+        });
+
+        var referredBySelected = function () {
+            var val = jq(this).val();
+            if (val == 5622 ){
+                jq("#tbl-other-referral").show();
+
+            }else {
+                jq("#tbl-other-referral").hide();
+                clearHiddenSections(jq("#other-referral"));
+            }
+        };
+
+        var informationSourceSelected = function () {
+            var val = jq(this).val();
+            if (val == 5622 ){
+                jq("#tbl-other-information-source").show();
+
+            }else {
+                jq("#tbl-other-information-source").hide();
+                clearHiddenSections(jq("#tbl-other-information-source"));
+            }
+        };
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+        </script>
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                var referredBy = getValue('referral-by.value');
+                var informationSource = getValue('information-source.value');
+
+
+                if (referredBy == 5622 ){
+                    jq("#tbl-other-referral").show();
+
+                }else {
+                    jq("#tbl-other-referral").hide();
+                }
+
+                if (informationSource == 5622 ){
+                    jq("#tbl-other-information-source").show();
+
+                }else {
+                    jq("#tbl-other-information-source").hide();
+                }
+
+            });
+        </script>
+    </ifMode>
+
     <div class="ke-form-header">
         <table style="width: 100%">
             <tr>
@@ -57,7 +131,7 @@
     <div class="ke-form-content">
         <fieldset>
             <legend>VMMC Enrollment Info </legend>
-            <table class ="simple-table" id="social-status-table">
+            <table class ="simple-table">
                <tr>
                    <td>
                        Referred by:
@@ -70,14 +144,40 @@
                    <td>
                        <table id="tbl-other-referral">
                            <tr>
-                               <td>  &#160;&#160;&#160; Name :
-                                   <obs id="other-referral" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                               <td>  &#160;&#160;&#160; Specify :
+                                   <obs id="other-referral" conceptId="165143" />
                                    &#160;&#160;&#160;
                                </td>
                            </tr>
                        </table>
                    </td>
                </tr>
+                <tr>
+                    <td>
+                        Main source of VMMC Information:
+                    </td>
+                    <td>
+                        <obs id="information-source" conceptId="162568"
+                             answerConceptIds="159388,1565,163121,1555,160542,5486,5622"
+                             style="radio" answerLabels="Radio/Tv,Print Media,Road Show,Mobilizer CHW,OPD/MCH/HT,Social Media,Other" />
+                    </td>
+                    <td>
+                        <table id="tbl-other-information-source">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-information-source" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        County of Origin :
+                    </td>
+                    <td><obs id="county" conceptId="CIEL:161564"  answers="$countyNames" answerLabels="$countyNames"/></td>
+                </tr>
 
             </table>
         </fieldset>
