@@ -57,14 +57,14 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
     Integer SCREENING_RESULT = 164934;
     Concept POSITIVE = Dictionary.getConcept(Dictionary.POSITIVE);
     Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
-    String NORMAL = "Normal";
-    String SUSPICIOUS_FOR_CANCER = "suspected cervical cancer";
-    String OTHER = "Other";
-    String ABNORMAL = "Abnormal";
-    String LOW_GRADE_LESION = "Abnormal Pap Smear, Low Grade Squamous Intraepithelial Lesion (LGSIL)";
-    String HIGH_GRADE_LESION = "Papanicolaou Smear of Cervix with High Grade Squamous Intraepithelial Lesion (HGSIL)\n";
-    String INVASIVE_CANCER = "carcinoma of uterine cervix, invasive";
-    String PRESUMED_CANCER = "\tPresumed diagnosis";
+    Integer NORMAL = 1115;
+    Integer SUSPICIOUS_FOR_CANCER = 159008;
+    Integer OTHER = 5622;
+    Integer ABNORMAL = 1116;
+    Integer LOW_GRADE_LESION =  145808;
+    Integer HIGH_GRADE_LESION = 145805;
+    Integer INVASIVE_CANCER = 155424;
+    Integer PRESUMED_CANCER = 159393;
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
