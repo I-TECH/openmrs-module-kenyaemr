@@ -85,7 +85,7 @@
             jq('#other-treatments').hide();
             jq('#medical-history').hide();
             jq('#eligibility-confirmation').hide();
-            jq('#circumcision-method').hide();
+            jq('#fs-circumcision-method').hide();
             jq('#tr-consent').hide();
             jq('#tr-assent').hide();
             jq('#sti-services-referred :input').prop('disabled', true);
@@ -100,12 +100,13 @@
             jq('#prev-surgical-operation').change(otherSurgerySelected);
             jq('#tetanus-booster-given').change(tetanusBoosterSelected);
             jq('#tetanus-booster-proof').change(tetanusBoosterProofSelected);
-            jq('#consent-given').change(consentSelected);
             jq('#circumcision-method').change(methodSelected);
             jq('#assent-given').change(assentGivenSelected);
             jq('#consent-given').change(consentGivenSelected);
             jq('#prep-referred').change(prepReferredSelected);
             jq('#sti-referred').change(stiReferredSelected);
+            jq('#good-health').change(goodHealthSelected);
+            jq('#counselled').change(counselledSelected);
 
             //Show assent or consent depending with age
             if (pAge &gt; 17){
@@ -182,10 +183,8 @@
             } else{
                 jq('#art-start-date').html("");
             }
-
-
-
         });
+        // End on ready
 
          // Called when 'HIV Status' field is changed
          function onPatientHivStatusChange() {
@@ -356,67 +355,88 @@
                 jq('#vaccinated-alert').hide();
             }
         }
-        //Consent selected
-        var consentSelected = function(){
-            var val = getValue('consent-given.value');
-            if(val == 'true'  ){
-                jq("#consented input[value=1065]").prop("checked", true);
-                jq("#consented input[value=1065]").prop("disabled", true);
-            }else {
-                jq("#consented input[value=1065]").prop("checked", false);
-                jq("#consented input[value=1065]").prop("disabled", false);
-            }
-        }
         //Method selected
         var methodSelected = function(){
             var val = getValue('circumcision-method.value');
             if(val == 159619){
                 jq('#tr-conventional-method-types').show();
                 jq('#tr-device-method-types').hide();
+                clearHiddenSections(jq('#device-name'));
             }
             if(val == 164204){
                 jq('#tr-device-method-types').show();
                 jq('#tr-conventional-method-types').hide();
+                clearHiddenSections(jq('#conventional-method'));
             }
         }
         //Assent Given selected
         var assentGivenSelected = function(){
             var val = getValue('assent-given.value');
+            var consent_given = jq('#consent-given');
             if(val == 1065){
                 jq('#tr-consent').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#prep-referred'));
+                clearHiddenSections(jq('#prep-services-referred'));
+                clearHiddenSections(jq('#sti-referred'));
+                clearHiddenSections(jq('#sti-services-referred'));
             }
             if(val == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq('#tr-consent').hide();
                 jq('#sti-referrals').show();
+                clearHiddenSections(consent_given);
             }
             if(val == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#tr-consent').hide();
                 jq('#prep-referrals').show();
+                clearHiddenSections(consent_given);
             }
         }
         //Consent Given selected
         var consentGivenSelected = function(){
             var val = getValue('consent-given.value');
+            var patient_status = jq('#patient-hiv-status');
+
             if(val == 'true' &amp;&amp; PATIENT_IS_ENROLLED_HIV ){
                 jq('#hiv-status-details').show();
                 jq('#medical-history').show();
+                jq('#other-treatments').show();
+                jq('#consented-alert').show();
+                jq('#eligibility-confirmation').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#sti-referred'));
+                clearHiddenSections(jq('#sti-services-referred'));
             }
             if(val == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
                 jq('#hiv-status-details').show();
+                jq('#medical-history').show();
+                jq('#other-treatments').show();
+                jq('#consented-alert').show();
+                jq('#eligibility-confirmation').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#prep-referred'));
+                clearHiddenSections(jq('#prep-services-referred'));
             }
             if(val == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq('#sti-referrals').show();
+                jq('#consented-alert').hide();
+                jq('#medical-history').hide();
+                jq('#other-treatments').hide();
                 jq('#hiv-status-details').hide();
+                jq('#eligibility-confirmation').hide();
+                clearHiddenSections(patient_status);
             }
             if(val == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#prep-referrals').show();
+                jq('#consented-alert').hide();
+                jq('#medical-history').hide();
+                jq('#other-treatments').hide();
                 jq('#hiv-status-details').hide();
+                jq('#eligibility-confirmation').hide();
+                clearHiddenSections(patient_status);
             }
         }
         //Prep Referred  selected
@@ -426,6 +446,7 @@
                 jq('#prep-services-referred :input').prop('disabled', false);
             }else{
                 jq('#prep-services-referred :input').prop('disabled', true);
+                clearHiddenSections(jq('#prep-services-referred'));
             }
 
         }
@@ -436,6 +457,7 @@
                 jq('#sti-services-referred :input').prop('disabled', false);
             }else{
                 jq('#sti-services-referred :input').prop('disabled', true);
+                clearHiddenSections(jq('#sti-services-referred'));
             }
         }
 
@@ -446,21 +468,85 @@
                 jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
                 jq(this).prop("disabled",false);
                 jq('#other-treatments').hide();
+                jq('#eligibility-confirmation').hide();
                 jq('#sti-referrals').show();
             }else if(val == 123529 &amp;&amp; complaintsChecked.length ==1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq("#complaints-checked input[type=checkbox]").prop("disabled", true);
                 jq(this).prop("disabled", false);
                 jq('#other-treatments').hide();
+                jq('#eligibility-confirmation').hide();
                 jq('#prep-referrals').show();
             }else{
                 jq("#complaints-checked input[type=checkbox]").prop("disabled",false);
                 jq('#prep-referrals').hide();
                 jq('#sti-referrals').hide();
                 jq('#other-treatments').show();
+                jq('#eligibility-confirmation').show();
+
             }
 
             if(complaintsChecked.length ==0){
                 jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+            }
+        }
+        //Eligibility questions
+        //In good health selected
+        var goodHealthSelected = function(){
+            var val = getValue('good-health.value');
+            var counselled = getValue('counselled.value');
+            if(val == 'true' &amp;&amp; counselled == 1065 ){
+                jq('#fs-circumcision-method').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#prep-referred'));
+                clearHiddenSections(jq('#prep-services-referred'));
+                clearHiddenSections(jq('#sti-referred'));
+                clearHiddenSections(jq('#sti-services-referred'));
+
+            }
+            if(val == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq('#sti-referrals').show();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#conventional-method'));
+
+            }
+            if(val == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                jq('#prep-referrals').show();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#conventional-method'));
+
+            }
+        }
+        //counselled selected
+        var counselledSelected = function(){
+            var val = getValue('counselled.value');
+            var goodHealth = getValue('good-health.value');
+            if(val == 1065 &amp;&amp; goodHealth =='true'){
+                jq('#fs-circumcision-method').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#prep-referred'));
+                clearHiddenSections(jq('#prep-services-referred'));
+                clearHiddenSections(jq('#sti-referred'));
+                clearHiddenSections(jq('#sti-services-referred'));
+
+            }
+            if(val == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq('#sti-referrals').show();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#explain-noneligibility'));
+               // clearHiddenSections(jq('#sti-services-referred'));
+            }
+            if(val == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                jq('#prep-referrals').show();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#explain-noneligibility'));
             }
         }
         //Clear hidden sections
@@ -482,7 +568,81 @@
     <ifMode mode="EDIT">
         <script type="text/javascript">
             jq(function(){
+                //assent
+                var assent = getValue('assent-given.value');
+                if(assent == 1065){
+                    jq('#tr-consent').show();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+                if(assent == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                    jq('#tr-consent').hide();
+                    jq('#sti-referrals').show();
+                }
+                if(assent == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                    jq('#tr-consent').hide();
+                    jq('#prep-referrals').show();
+                }
+                //consent
+                var consent = getValue('consent-given.value');
+                if(consent == 'true' &amp;&amp; PATIENT_IS_ENROLLED_HIV ){
+                    jq('#hiv-status-details').show();
+                    jq('#medical-history').show();
+                    jq('#other-treatments').show();
+                    jq('#consented-alert').show();
+                    jq('#eligibility-confirmation').show();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+                if(consent == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
+                    jq('#hiv-status-details').show();
+                    jq('#medical-history').show();
+                    jq('#other-treatments').show();
+                    jq('#consented-alert').show();
+                    jq('#eligibility-confirmation').show();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+                if(consent == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                    jq('#sti-referrals').show();
+                    jq('#consented-alert').hide();
+                    jq('#medical-history').hide();
+                    jq('#other-treatments').hide();
+                    jq('#hiv-status-details').hide();
+                }
+                if(consent == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                    jq('#prep-referrals').show();
+                    jq('#consented-alert').hide();
+                    jq('#medical-history').hide();
+                    jq('#other-treatments').hide();
+                    jq('#hiv-status-details').hide();
+                }
 
+                //eligibility
+                var goodHealth = getValue('good-health.value');
+                var counselled = getValue('counselled.value');
+                if(goodHealth == 'true' &amp;&amp; counselled == 1065 ){
+                    jq('#fs-circumcision-method').show();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+                if(PATIENT_IS_ENROLLED_HIV &amp;&amp; (goodHealth == 'false' || counselled ==1066 )){
+                    jq('#sti-referrals').show();
+                    jq('#fs-circumcision-method').hide();
+                }
+                if(!PATIENT_IS_ENROLLED_HIV &amp;&amp; (goodHealth == 'false' || counselled ==1066 )){
+                    jq('#prep-referrals').show();
+                    jq('#fs-circumcision-method').hide();
+                }
+                var method = getValue('circumcision-method.value');
+                if(method == 159619){
+                    jq('#tr-conventional-method-types').show();
+                    jq('#tr-device-method-types').hide();
+                }
+                if(method == 164204){
+                    jq('#tr-device-method-types').show();
+                    jq('#tr-conventional-method-types').hide();
+                }
 
             });
         </script>
@@ -932,7 +1092,7 @@
                     </td>
                     <td> Consented: </td>
                     <td>
-                       Working on consent alert
+                        <div id="consented-alert" class="ke-warning">Patient has consented</div>
                         <br/>
                     </td>
                     <td> Tetanus vaccination status: </td>
@@ -948,7 +1108,7 @@
                 </tr>
             </table>
         </fieldset>
-        <fieldset id="circumcision-method">
+        <fieldset id="fs-circumcision-method">
             <legend>Method of Circumcision chosen by client: </legend>
             <table class ="simple-table">
                 <tr>
