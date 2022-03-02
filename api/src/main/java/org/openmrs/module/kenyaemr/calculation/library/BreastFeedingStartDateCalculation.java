@@ -10,32 +10,33 @@
 package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.kenyacore.calculation.*;
+import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
+import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.MchMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates the recorded Breastfeeding status of patients
+ * Calculates the recorded Breastfeeding start date for patients
  */
-public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
+public class BreastFeedingStartDateCalculation extends AbstractPatientCalculation  {
     /**
 	 * Evaluates the calculation
      * @should calculate null for deceased patients
-	 * @should calculate null for patients with no recorded status
-	 * @should calculate last recorded breastfeeding status for all patients on PNC
-	 * @should calculate last recorded breastfeeding status for all patients on Hiv Greencard
+	 * @should calculate null for patients with no recorded breast feeding status
+	 * @should calculate last recorded breastfeeding Date for all patients on PNC
+	 * @should calculate last recorded breastfeeding Date for all patients on Hiv Greencard
      */
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -45,26 +46,25 @@ public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
 		Concept ExclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
 		Concept MixedBreastFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
 		Concept YES = Dictionary.getConcept(Dictionary.YES);
-		Concept BreastFeedingHivFollowupQuestion = Dictionary.getConcept(Dictionary.CURRENTLY_BREASTFEEDING);
+		Concept BreastFeedingHivFollowupQuestion = Context.getConceptService().getConcept(5632);
 		CalculationResultMap infantFeedingStatusObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), aliveAndFemale, context);
 		CalculationResultMap breastFeedingFollowupObs = Calculations.lastObs(BreastFeedingHivFollowupQuestion, aliveAndFemale, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
-			boolean breastFeeding = false;
+			Date breastFeedingStarDate = null;
 
 			Obs feedingStatusObs = EmrCalculationUtils.obsResultForPatient(infantFeedingStatusObs, ptId);
 			Obs bfHivFollowupStatusObs = EmrCalculationUtils.obsResultForPatient(breastFeedingFollowupObs, ptId);
 
 			if (feedingStatusObs != null && (feedingStatusObs.getValueCoded().equals(ExclusiveBreastFeeding) || feedingStatusObs.getValueCoded().equals(MixedBreastFeeding)) ) {
-				breastFeeding = true;
+				breastFeedingStarDate = feedingStatusObs.getObsDatetime();
 			}
 			if (bfHivFollowupStatusObs != null && (bfHivFollowupStatusObs.getValueCoded().equals(YES)) ) {
-				breastFeeding = true;
+				breastFeedingStarDate = bfHivFollowupStatusObs.getObsDatetime();
 			}
 
-
-			ret.put(ptId, new BooleanResult(breastFeeding, this));
+			ret.put(ptId, new SimpleResult(breastFeedingStarDate, this));
 		}
 
 		return ret;
