@@ -277,9 +277,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("goodAdherence:").append(goodAdherence6Months).append(",");
             sb.append("isPregnant:").append(isPregnant).append(",");
             sb.append("isBreastFeeding:").append(isBreastFeeding).append(",");
-            sb.append("isEnrolledInHIV:").append(patientEverInHivProgram);
+            sb.append("isEnrolledInHIV:").append(patientEverInHivProgram).append(",");
+            sb.append("artStartDate:").append(artStartDate);
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
-            // sb.append("artStartDate:").append(artStartDate).append(",");
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }

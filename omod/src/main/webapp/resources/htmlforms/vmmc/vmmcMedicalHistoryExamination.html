@@ -56,11 +56,12 @@
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+        var ART_START_DATE = GREENCARD_VELOCITY.split(",")[13].split(":")[1];
+        var pAge = parseInt('<lookup expression="patient.age"/>');
         //On Ready
         $(document).ready(function () {
             //Defaults
             onPatientHivStatusChange();
-            includePatientsCccNumberIfExists();
             jq('#upnError').hide();
             jq('#tbl-this-facility').hide();
             jq('#tbl-other-facility').hide();
@@ -69,11 +70,49 @@
             jq('#tbl-reported-positive-details').hide();
             jq('#tbl-other-complaint').hide();
             jq('#tbl-other-treatment').hide();
+            jq('#tbl-hb-levels').hide();
+            jq('#tbl-sugar-levels').hide();
+            jq("#tbl-known-allergies").hide();
+            jq('#tbl-other-surgery').hide();
+            jq('#tbl-booster-date').hide();
+            jq('#tr-conventional-method-types').hide();
+            jq('#tr-device-method-types').hide();
+            jq('#no-hiv-data-alert').hide();
+           //workflow
+            jq('#prep-referrals').hide();
+            jq('#sti-referrals').hide();
+            jq('#hiv-status-details').hide();
+            jq('#other-treatments').hide();
+            jq('#medical-history').hide();
+            jq('#eligibility-confirmation').hide();
+            jq('#circumcision-method').hide();
+            jq('#tr-consent').hide();
+            jq('#tr-assent').hide();
+            jq('#sti-services-referred :input').prop('disabled', true);
+            jq('#prep-services-referred :input').prop('disabled', true);
+            jq('#complaints-checked :input[type=checkbox]').change(complaintsSelected);
             //Selected
-            getField('patient-hiv-status.value').change(onPatientHivStatusChange);
+            jq('#patient-hiv-status').change(onPatientHivStatusChange);
             jq('#care-facility select').change(careFacilitySelected);
             jq('#complaints-checked :input[type=checkbox]').change(complaintSelected);
             jq('#treatment-checked :input[type=checkbox]').change(treatmentSelected);
+            jq('#known-allergies').change(knownAllergiesSelected);       //boolean
+            jq('#prev-surgical-operation').change(otherSurgerySelected);
+            jq('#tetanus-booster-given').change(tetanusBoosterSelected);
+            jq('#tetanus-booster-proof').change(tetanusBoosterProofSelected);
+            jq('#consent-given').change(consentSelected);
+            jq('#circumcision-method').change(methodSelected);
+            jq('#assent-given').change(assentGivenSelected);
+            jq('#consent-given').change(consentGivenSelected);
+            jq('#prep-referred').change(prepReferredSelected);
+            jq('#sti-referred').change(stiReferredSelected);
+
+            //Show assent or consent depending with age
+            if (pAge &gt; 17){
+                jq('#tr-consent').show();
+            }else{
+                jq('#tr-assent').show();
+            }
 
             //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
             if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) {
@@ -88,24 +127,12 @@
                 jq('#patient-hiv-test-date input').prop('disabled', false);
                 jq('#patient-tca-date input').prop('disabled', false);
                 getField('patient-hiv-status.value').val(HIV_POSITIVE);
-                jq('#hiv-known-positive:text').val('Positive');
 
                 if (PATIENT_ON_ART == "true") {
                     jq('#current-regimen').html(REGIMEN_NAME);
                 } else {
                     jq('#current-regimen').html("None");
                 }
-                console.log("Adherence score ==>"+PATIENT_LAST_ADHERENCE);
-                if (PATIENT_LAST_ADHERENCE == 159405) {
-                      jq('#adherence-score').html("Good");
-                    } else if (PATIENT_LAST_ADHERENCE == 163794) {
-                        jq('#adherence-score').html("Fair");
-                    } else if (PATIENT_LAST_ADHERENCE == 159407) {
-                        jq('#adherence-score').html("Poor");
-                   }else{
-                    jq('#adherence-score').html("None");
-                   }
-
                 //Validation of recent HIV tests between vl and ldl
                 if(LATEST_VIRAL_LOAD_DATE != "" &amp;&amp; LATEST_LDL_DATE != "") {
                     //Latest VL or LDl
@@ -127,44 +154,79 @@
                 if(LATEST_VIRAL_CD4_COUNT != "" ){
                     jq('#cd4-count:text').val(LATEST_VIRAL_CD4_COUNT);
                 }
+            }else{
+                jq('#tbl-enrolled-positive-details').hide();
+                jq('#hiv-test-art-date').hide();
             }
             if(PATIENT_IS_ENROLLED_HIV){
                 jq('#tbl-enrolled-positive-details').show();
                 jq('#tbl-reported-positive-details').hide();
-            }else{
-                jq('#tbl-reported-positive-details').show();
-                jq('#tbl-enrolled-positive-details').hide();
+                jq('#enrolled-hiv :input').prop('checked', true);
+                  //Prepopulate adherence score
+                var adherence = PATIENT_LAST_ADHERENCE.replace(/[^\d]/g, '');
+                if (adherence ==159405) {
+                    jq('#adherence-score').html("Good");
+                } else if (adherence ==163794) {
+                    jq('#adherence-score').html("Fair");
+                } else if (adherence ==159407) {
+                    jq('#adherence-score').html("Poor");
+                }else{
+                    jq('#adherence-score').html("None");
+                }
             }
 
-
+           // Prepopulate ART start date
+            if (ART_START_DATE !="") {
+                var formattedArtStartDate = moment(moment(ART_START_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+                jq('#art-start-date').html(formattedArtStartDate);
+            } else{
+                jq('#art-start-date').html("");
+            }
 
 
 
         });
 
          // Called when 'HIV Status' field is changed
-        function onPatientHivStatusChange() {
-            var patientHivStatus = getValue('patient-hiv-status.value');
-            if (patientHivStatus == '' || patientHivStatus == UNKNOWN) {
+         function onPatientHivStatusChange() {
+                var patientHivStatus = getValue('patient-hiv-status.value');
+            if (patientHivStatus == '' || patientHivStatus == UNKNOWN &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq('#patient-hiv-test-date input').prop('disabled', true);
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').hide();
                 setValue('patient-hiv-test-date.value', null);
+                jq('#no-hiv-data-alert').show();
+                jq('#hiv-test-art-date').hide();
+                jq('#medical-history').hide();
+                jq('#prep-referrals').show();
+                jq('#sti-referrals').hide();
             }
             if (patientHivStatus == HIV_NEGATIVE) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#medical-history').show();
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').hide();
+                jq('#no-hiv-data-alert').hide();
+                jq('#prep-referrals').hide();
+                jq('#sti-referrals').hide();
+
             }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; PATIENT_IS_ENROLLED_HIV) {
-                jq('#patient-hiv-test-date input').prop('disabled', false);
-                jq('#tbl-enrolled-positive-details').show();
-                jq('#tbl-reported-positive-details').hide();
-            }
+                 jq('#patient-hiv-test-date input').prop('disabled', false);
+                 jq('#tbl-enrolled-positive-details').show();
+                 jq('#medical-history').show();
+                 jq('#tbl-reported-positive-details').hide();
+                 jq('#no-hiv-data-alert').hide();
+                 jq('#sti-referrals').hide();
+             }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#medical-history').show();
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').show();
+                jq('#no-hiv-data-alert').hide();
+                jq('#sti-referrals').hide();
+
             }
             var isMismatch = (PATIENT_IS_ENROLLED_HIV);
             jq('#patient-hiv-status-mismatch').toggle(isMismatch);
@@ -205,17 +267,6 @@
             }
         }
 
-        //CCC Number
-        function includePatientsCccNumberIfExists() {
-            var cccNumber;
-            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientUniquePatientNumber.action', {patientId: patientId}, function (data) {
-                if (data != null || data != "") {
-                    cccNumber = data;
-                    getField('upn-concept.value').val(cccNumber);
-                    getField('upn-concept.value').prop("readonly", true);
-                }
-            });
-        }
         // Facility of hiv care
         var careFacilitySelected = function () {
             var val = jq(this).val();
@@ -246,9 +297,170 @@
             var val = jq(this).val();
             if(val == 5622 ){
                 jq('#tbl-other-treatment').show();
+            } else if(val == 121629 ){
+                jq('#tbl-hb-levels').show();
+            }else if(val == 142484 ){
+                jq('#tbl-sugar-levels').show();
             }else {
                 jq('#tbl-other-treatment').hide();
-                getField('tbl-other-treatment.value').val("");
+                jq('#tbl-sugar-levels').hide();
+                jq('#tbl-hb-levels').hide();
+                getField('other-treatment.value').val("");
+                getField('sugar-levels.value').val("");
+                getField('hb-levels.value').val("");
+            }
+        }
+
+        var knownAllergiesSelected = function() {
+            var val = getValue('known-allergies.value');
+            var allergy = jq('.allergen select').val('');
+            var reaction = jq('.reaction select').val('');
+            var severity = jq('.severity select').val('');
+            var date = jq('.allergy-date input').val('');
+            if (val == "false" || val == 1066){
+                jq("#tbl-known-allergies").hide();
+                clearHiddenSections([allergy, reaction, severity, date]);
+                getField('allergy-field.error').html('Please specify the allergy.').hide();
+            }else {
+                jq("#tbl-known-allergies").show();
+            }
+        }
+        //Other surgery selected
+        var otherSurgerySelected = function(){
+            var val = getValue('prev-surgical-operation.value');
+            if(val == 1065 ){
+                jq('#tbl-other-surgery').show();
+            }else {
+                jq('#tbl-other-surgery').hide();
+                getField('other-surgery.value').val("");
+            }
+        }
+        //Tetanus booster selected
+        var tetanusBoosterSelected = function(){
+            var val = getValue('tetanus-booster-given.value');
+            if(val == 1065 ){
+                jq('#tbl-booster-date').show();
+                jq('#vaccinated-alert').show();
+            }else {
+                jq('#tbl-booster-date').hide();
+                jq('#vaccinated-alert').hide();
+                getField('tbl-booster-date.value').val("");
+            }
+        }
+        //Tetanus booster selected
+        var tetanusBoosterProofSelected = function(){
+            var val = getValue('tetanus-booster-proof.value');
+            if(val == 1065 ){
+                jq('#vaccinated-alert').show();
+            }else {
+                jq('#vaccinated-alert').hide();
+            }
+        }
+        //Consent selected
+        var consentSelected = function(){
+            var val = getValue('consent-given.value');
+            if(val == 'true'  ){
+                jq("#consented input[value=1065]").prop("checked", true);
+                jq("#consented input[value=1065]").prop("disabled", true);
+            }else {
+                jq("#consented input[value=1065]").prop("checked", false);
+                jq("#consented input[value=1065]").prop("disabled", false);
+            }
+        }
+        //Method selected
+        var methodSelected = function(){
+            var val = getValue('circumcision-method.value');
+            if(val == 159619){
+                jq('#tr-conventional-method-types').show();
+                jq('#tr-device-method-types').hide();
+            }
+            if(val == 164204){
+                jq('#tr-device-method-types').show();
+                jq('#tr-conventional-method-types').hide();
+            }
+        }
+        //Assent Given selected
+        var assentGivenSelected = function(){
+            var val = getValue('assent-given.value');
+            if(val == 1065){
+                jq('#tr-consent').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+            }
+            if(val == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq('#tr-consent').hide();
+                jq('#sti-referrals').show();
+            }
+            if(val == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                jq('#tr-consent').hide();
+                jq('#prep-referrals').show();
+            }
+        }
+        //Consent Given selected
+        var consentGivenSelected = function(){
+            var val = getValue('consent-given.value');
+            if(val == 'true' &amp;&amp; PATIENT_IS_ENROLLED_HIV ){
+                jq('#hiv-status-details').show();
+                jq('#medical-history').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+            }
+            if(val == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
+                jq('#hiv-status-details').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+            }
+            if(val == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq('#sti-referrals').show();
+                jq('#hiv-status-details').hide();
+            }
+            if(val == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                jq('#prep-referrals').show();
+                jq('#hiv-status-details').hide();
+            }
+        }
+        //Prep Referred  selected
+        var prepReferredSelected = function(){
+            var val = getValue('prep-referred.value');
+            if(val == 1065 ){
+                jq('#prep-services-referred :input').prop('disabled', false);
+            }else{
+                jq('#prep-services-referred :input').prop('disabled', true);
+            }
+
+        }
+        //Sti Referred  selected
+        var stiReferredSelected = function(){
+            var val = getValue('sti-referred.value');
+            if(val == 1065 ){
+                jq('#sti-services-referred :input').prop('disabled', false);
+            }else{
+                jq('#sti-services-referred :input').prop('disabled', true);
+            }
+        }
+
+        var complaintsSelected = function(){
+            var val = jq(this).val();
+            var complaintsChecked = jq("#complaints-checked input:checkbox:checked");
+            if(val == 123529 &amp;&amp; complaintsChecked.length ==1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
+                jq(this).prop("disabled",false);
+                jq('#other-treatments').hide();
+                jq('#sti-referrals').show();
+            }else if(val == 123529 &amp;&amp; complaintsChecked.length ==1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+                jq("#complaints-checked input[type=checkbox]").prop("disabled", true);
+                jq(this).prop("disabled", false);
+                jq('#other-treatments').hide();
+                jq('#prep-referrals').show();
+            }else{
+                jq("#complaints-checked input[type=checkbox]").prop("disabled",false);
+                jq('#prep-referrals').hide();
+                jq('#sti-referrals').hide();
+                jq('#other-treatments').show();
+            }
+
+            if(complaintsChecked.length ==0){
+                jq("#general-exam-findings input[value=1107]").prop("disabled",false);
             }
         }
         //Clear hidden sections
@@ -287,19 +499,26 @@
     </div>
 
     <div class="ke-form-content">
-        <fieldset>
+        <fieldset id="vmmc-source-info">
             <legend>VMMC source Info </legend>
             <table class ="simple-table">
-               <tr>
+               <tr id="tr-assent">
                    <td> Assent given? </td>
                    <td>
-                       <obs id="assent-given" conceptId="1651"
+                       <obs id="assent-given" conceptId="162696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabel="Yes,No"
                             style="radio" />
                        <br/>
                    </td>
+               </tr>
+               <tr id="tr-consent">
+                   <includeIf velocityTest="$patient.age &lt; 18">
                    <td> &#160;&#160;&#160;&#160;&#160; If Yes - Parent/ Guardian Consent given? </td>
+                   </includeIf>
+                   <includeIf velocityTest="$patient.age &gt; 17">
+                       <td> &#160;&#160;&#160;&#160;&#160; Consent given? </td>
+                   </includeIf>
                    <td>
                        <obs id="consent-given" conceptId="1710"
                             style="yes_no" />
@@ -308,38 +527,8 @@
                </tr>
             </table>
         </fieldset>
-        <fieldset>
-            <legend>Referrals </legend>
-            <table class ="simple-table">
-                <tr>
-                    <td> Client referred for other services </td>
-                    <td>
-                        <obs id="referred" conceptId="165093"
-                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Yes,No"
-                             style="radio" />
-                        <br/>
-                    </td>
-                    <td>
-                       <table>
-                           <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                              <tr id="services-referred">
-                                  <td>  Referred for which services: <br/>
-                               <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
-                                           answerLabel="STI Treatment" style="checkbox" /><br/>
-                                <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165270"
-                                     answerLabel="PrEP Services" style="checkbox" /><br/>
-                                <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabel="Condom dispensing" style="checkbox" /><br/>
-                                </td>
-                           </tr>
-                           </obsgroup>
-                       </table>
-                    </td>
-                </tr>
-            </table>
-        </fieldset>
-        <fieldset>
+
+        <fieldset id="hiv-status-details">
             <legend>Knowledge of HIV Status </legend>
             <table class ="simple-table">
                 <tr>
@@ -351,14 +540,21 @@
                              answerLabels="Positive,Negative,Unknown"/>
                         <span id="hivStar" style="color:red;"><strong>*</strong></span>
                         <div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
+                        <div id="no-hiv-data-alert" class="ke-warning">Patient does not have HTS data, perform HTS if patient is not a known positive</div>
                     </td>
-                    <td width="250">HIV Test Date:</td>
                     <td>
-                        <obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    </td>
-                    <td width="250">Date started on ART:</td>
-                    <td>
-                        <obs id="art-start-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        <table id="hiv-test-art-date">
+                            <tr>
+                                <td width="250">HIV Test Date:</td>
+                                <td>
+                                    <obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                </td>
+                                <td width="250">Date started on ART:</td>
+                                <td>
+                                    <obs id="art-start-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
@@ -480,7 +676,7 @@
             </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset id="medical-history">
             <legend>Medical History and Physical Examination </legend>
             <table class ="simple-table">
                 <tr>
@@ -546,7 +742,7 @@
                 </tr>
             </table>
         </fieldset>
-        <fieldset>
+        <fieldset id="other-treatments">
             <legend>Other Treatments </legend>
             <table class ="simple-table">
                 <tr id="treatment-checked">
@@ -557,7 +753,7 @@
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="142484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Diabetes " style="checkbox" /><br/>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="HIV/AIDS" style="checkbox" /><br/>
+                             answerLabel="HIV/AIDS" style="checkbox"  id="enrolled-hiv" /><br/>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Other " style="checkbox" /><br/>
                     </td>
@@ -570,6 +766,301 @@
                                     &#160;&#160;&#160;
                                 </td>
                             </tr>
+                        </table>
+                        <table id="tbl-hb-levels">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Current HB Levels:
+                                    <obs id="hb-levels" conceptId="21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tbl-sugar-levels">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Current Sugar Levels:
+                                    <obs id="sugar-levels" conceptId="887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+           <tr>
+           <td>
+                Any known allergies? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
+           </td>
+            <td>
+            <table id="tbl-known-allergies">
+                <tr>
+                    <td colspan="2">Record any known allergies<br/>
+                        <table>
+                            <tr>
+                                <th>Causative agent</th>
+                                <th>Reaction</th>
+                                <th>Severity</th>
+                                <th>Date of Onset</th>
+                            </tr>
+                            <repeat>
+                                <template>
+                                    <obsgroup groupingConceptId="121689AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td><obs class="allergen" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="162543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162545AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            162176AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabels="Beef,Caffeine,Chocolate,Dairy Food,Eggs,Fish,Milk Protein,Peanuts,Shellfish,Soy,Strawberries,Wheat,Adhesive Tape,Bee Stings,Dust,Latex,Mold,Pollen,Ragweed,Other"
+                                                     style="dropdown" id="allergy-field"
+                                            />
+                                            </td>
+                                            <td><obs class="reaction" conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148888AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,148787AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,120148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,143264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,118773AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140238AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,140039AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,139084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            111061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121677AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159347AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,121AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabels="Unknown,Anaemia,Anaphylaxis,Angioedema,Arrhythmia,Bronchospasm,Cough,Diarrhea,Dystonia,Fever,Flushing,GI upset,Headache,Hepatotoxicity,Hives,Hypertension,Itching,Mental status change,Musculoskeletal pain,Myalgia,Rash,Other"
+                                                     style="dropdown"
+                                            /></td>
+                                            <td><obs class="severity" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                            <td><obs class="allergy-date" conceptId="160753AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  allowFutureDates="false" labelText=" " /></td>
+                                        </tr>
+                                    </obsgroup>
+                                </template>
+                                <render n="1" concept=" " />
+                                <render n="2" concept=" " />
+                                <render n="3" concept=" " />
+                                <render n="4" concept=" " />
+                                <render n="5" concept=" " />
+                            </repeat>
+                              </table>
+                                 </td>
+                            </tr>
+                        </table>
+                        </td>
+                   </tr>
+                <tr>
+                    <td>
+                        Client ever had a surgical operation?
+                        <obs conceptId="164896AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"  id="prev-surgical-operation" />
+                    </td>
+                    <td>
+                        <br/>
+                        <table id="tbl-other-surgery">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-surgery" conceptId="163393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Client has documented proof of having received Tetanus Booster Vaccine within the last 5 years?
+                        <obs conceptId="54AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"  id="tetanus-booster-proof" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Client given Tetanus Booster Vaccine?
+                        <obs conceptId="161536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"  id="tetanus-booster-given" />
+                    </td>
+                    <td>
+                        <table id="tbl-booster-date">
+                            <tr>
+                                <td>
+                        <obs class="tetanus-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>BP</td>
+                    <td>
+                        <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic"/>
+                        /
+                        <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic"/>
+                        mmHg
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
+                            conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>Pulse Rate</td>
+                    <td>
+                        <obs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="resp"/>
+                    </td>
+                    <td><span class="value"><recentObs conceptId="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                </tr>
+                <tr>
+                    <td>Temp</td>
+                    <td>
+                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="temp"/> &#176;C
+                    </td>
+                    <td>
+                        <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="eligibility-confirmation">
+            <legend>Confirmation of client's eligibility </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td> In good health: </td>
+                    <td>
+                        <obs id="good-health" conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                               style="yes_no" />
+                        <br/>
+                    </td>
+                    <td> Counseled: </td>
+                    <td>
+                        <obs id="counselled" conceptId="165070"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No"
+                             style="radio"/>
+                        <br/>
+                    </td>
+                    <td> Consented: </td>
+                    <td>
+                       Working on consent alert
+                        <br/>
+                    </td>
+                    <td> Tetanus vaccination status: </td>
+                    <td>
+                        <div id="vaccinated-alert" class="ke-warning">Patient is vaccinated</div>
+                    </td>
+                </tr>
+                <tr>
+                        <td> If No for any of the above, explain: </td>
+                            <td>
+                                <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                            </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="circumcision-method">
+            <legend>Method of Circumcision chosen by client: </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td> Method: </td>
+                    <td>
+                        <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Conventional Surgical,Device Circumcision"
+                             style="radio"
+                             answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
+                        <br/>
+                    </td>
+                    <td>
+                        <table>
+                            <tr id="tr-conventional-method-types">
+                                <td>
+                                    <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Sleeve resection,
+                                                       Dorsal Slit,
+                                                       Forceps Guide,
+                                                       Other"
+                                         style="radio"/>
+                                    <br/>
+                                  </td>
+                                   <td> Specify: </td>
+                                    <td>
+                                        <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                    </td>
+                                </tr>
+                            <tr id="tr-device-method-types">
+                                <td>
+                                    Device name:
+
+                                    <obs id="device-name" conceptId="164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="165396,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Shangring,Other"
+                                         style="radio" />
+                                </td>
+                                <td>
+                                    Size:
+                                    <obs id="device-size" conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+
+                                </td>
+                                <td> Specify: </td>
+                                <td>
+                                    <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                </td>
+                            </tr>
+                       </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="prep-referrals">
+            <legend>Referrals </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td> Client referred for other services </td>
+                    <td>
+                        <obs id="prep-referred" conceptId="165093"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio" />
+                        <br/>
+                    </td>
+                    <td>
+                        <table>
+                            <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr id="prep-services-referred">
+                                    <td>  Referred for which services: <br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
+                                             answerLabel="STI Treatment" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165270"
+                                             answerLabel="PrEP Services" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Condom dispensing" style="checkbox" /><br/>
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="sti-referrals">
+            <legend>Referrals </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td> Client referred for other services </td>
+                    <td>
+                        <obs id="sti-referred" conceptId="165093"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio" />
+                        <br/>
+                    </td>
+                    <td>
+                        <table>
+                            <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr id="sti-services-referred">
+                                    <td>  Referred for which services: <br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
+                                             answerLabel="STI Treatment" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Condom dispensing" style="checkbox" /><br/>
+                                    </td>
+                                </tr>
+                            </obsgroup>
                         </table>
                     </td>
                 </tr>
