@@ -7,4 +7,4 @@
 	def onClick = "ui.navigate('/" + contextPath + "/" + url + "')"
 %>
 <script type="text/javascript" src="./moduleResources/kenyaemr/scripts/highcharts.js"></script>
-${ ui.includeFragment("kenyaemr", "facilityDashboard/facilityDashboard") }
+${ ui.includeFragment("kenyaemr", "facilityDashboard/miniFacilityDashboard") }
