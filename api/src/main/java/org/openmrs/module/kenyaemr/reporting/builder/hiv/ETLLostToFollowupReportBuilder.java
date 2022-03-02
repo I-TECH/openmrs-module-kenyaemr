@@ -93,7 +93,7 @@ public class ETLLostToFollowupReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 		dsd.addColumn("Physical Address", new CalculationDataDefinition("Physical Address", new PhysicalAddressCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-		//	dsd.addColumn("Physical Address", new PhysicalAddressDataDefinition(), "");
+
 	}
 
 	@Override
