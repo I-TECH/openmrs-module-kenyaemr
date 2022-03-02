@@ -45,7 +45,7 @@ public class IsBreastFeedingCalculation extends AbstractPatientCalculation  {
 		Concept ExclusiveBreastFeeding = Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY);
 		Concept MixedBreastFeeding = Dictionary.getConcept(Dictionary.MIXED_FEEDING);
 		Concept YES = Dictionary.getConcept(Dictionary.YES);
-		Concept BreastFeedingHivFollowupQuestion = Context.getConceptService().getConcept(5632);
+		Concept BreastFeedingHivFollowupQuestion = Dictionary.getConcept(Dictionary.CURRENTLY_BREASTFEEDING);
 		CalculationResultMap infantFeedingStatusObs = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), aliveAndFemale, context);
 		CalculationResultMap breastFeedingFollowupObs = Calculations.lastObs(BreastFeedingHivFollowupQuestion, aliveAndFemale, context);
 
