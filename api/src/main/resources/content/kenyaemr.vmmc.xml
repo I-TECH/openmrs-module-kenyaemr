@@ -21,6 +21,11 @@
 		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.EligibleForVmmcProgramCalculation" />
 		<property name="defaultEnrollmentForm" ref="kenyaemr.vmmc.form.enrollment" />
 		<property name="defaultCompletionForm" ref="kenyaemr.vmmc.form.completion" />
+		<property name="visitForms" >
+			<set>
+				<ref bean="kenyaemr.vmmc.form.procedure" />
+			</set>
+		</property>
 
 		<property name="fragments">
 			<map>
@@ -62,6 +67,21 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/completion.png" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcDiscontinuation.html" />
+	</bean>
+
+	<!--VMMC Procedure Form -->
+	<bean id="kenyaemr.vmmc.form.procedure" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5ee93f48-960b-11ec-b909-0242ac120002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcCircumcisionProcedure.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

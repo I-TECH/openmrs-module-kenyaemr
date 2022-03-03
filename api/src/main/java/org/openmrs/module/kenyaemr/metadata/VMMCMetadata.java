@@ -27,11 +27,13 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 	public static final class _EncounterType {
 		public static final String VMMC_DISCONTINUATION = "4f02dfed-a2ec-40c2-b546-85dab5831871";
 		public static final String VMMC_ENROLLMENT = "85019fbe-9339-49f7-8341-e9a04311bb99";
+		public static final String VMMC_PROCEDURE = "35c6fcc2-960b-11ec-b909-0242ac120002";
 	}
 
 	public static final class _Form {
 		public static final String VMMC_DISCONTINUATION_FORM = "bc6a9e7d-58f7-43c0-8334-d8011fef4000";
 		public static final String VMMC_ENROLLMENT_FORM = "a74e3e4a-9e2a-41fb-8e64-4ba8a71ff984";
+		public static final String VMMC_PROCEDURE_FORM = "5ee93f48-960b-11ec-b909-0242ac120002";
 	}
 
 
@@ -50,10 +52,12 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 	public void install() {
 		install(encounterType("VMMC Enrollment", "Enrollment onto VMMC program", _EncounterType.VMMC_ENROLLMENT));
 		install(encounterType("VMMC Discontinuation", "Discontinuation from VMMC program", _EncounterType.VMMC_DISCONTINUATION));
+		install(encounterType("VMMC Procedure", "VMMC procedure encounter", _EncounterType.VMMC_PROCEDURE));
+
 
 		install(form("VMMC Enrollment Form", null, _EncounterType.VMMC_ENROLLMENT, "1", _Form.VMMC_ENROLLMENT_FORM));
 		install(form("VMMC Discontinuation Form", null, _EncounterType.VMMC_DISCONTINUATION, "1", _Form.VMMC_DISCONTINUATION_FORM));
-
+		install(form("VMMC Procedure Form", null, _EncounterType.VMMC_PROCEDURE, "1", _Form.VMMC_PROCEDURE_FORM));
 
 		//Installing identifiers
 		install(program("VMMC", "VMMC program", _Concept.VMMC, _Program.VMMC));
