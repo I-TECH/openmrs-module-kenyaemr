@@ -34,10 +34,10 @@ public class HonouredAppointmentDateDataEvaluator implements EncounterDataEvalua
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id\n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup v\n" +
-                "inner join kenyaemr_etl.etl_ccc_defaulter_tracing d on d.visit_date= v.booking_date\n" +
-                "where v.visit_date = d.booking_date";
+        String qry = "select d.encounter_id,date(d.visit_date)\n" +
+                "                from kenyaemr_etl.etl_ccc_defaulter_tracing d\n" +
+                "                inner join kenyaemr_etl.etl_patient_hiv_followup v on d.patient_id= v.patient_id\n" +
+                "                where date(d.booking_date) = date(v.next_appointment_date)\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
