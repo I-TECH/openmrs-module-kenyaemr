@@ -25,6 +25,7 @@
 			<set>
 				<ref bean="kenyaemr.vmmc.form.procedure" />
 				<ref bean="kenyaemr.vmmc.form.medicalHistoryExamination" />
+				<ref bean="kenyaemr.vmmc.form.clientFollowup" />
 			</set>
 		</property>
 
@@ -98,6 +99,21 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcMedicalHistoryExamination.html" />
+	</bean>
+
+	<!--VMMC Client Followup Form -->
+	<bean id="kenyaemr.vmmc.form.clientFollowup" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="08873f91-7161-4f90-931d-65b131f2b12b" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcClientFollowup.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->

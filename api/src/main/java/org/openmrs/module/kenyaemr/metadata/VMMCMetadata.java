@@ -29,6 +29,7 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 		public static final String VMMC_ENROLLMENT = "85019fbe-9339-49f7-8341-e9a04311bb99";
 		public static final String VMMC_PROCEDURE = "35c6fcc2-960b-11ec-b909-0242ac120002";
 		public static final String VMMC_MEDICAL_HISTORY_EXAMINATION = "a2010bf5-2db0-4bf4-819f-8a3cffbcb21b";
+		public static final String VMMC_CLIENT_FOLLOWUP = "2504e865-638e-4a63-bf08-7e8f03a376f3";
 	}
 
 	public static final class _Form {
@@ -36,6 +37,7 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 		public static final String VMMC_ENROLLMENT_FORM = "a74e3e4a-9e2a-41fb-8e64-4ba8a71ff984";
 		public static final String VMMC_PROCEDURE_FORM = "5ee93f48-960b-11ec-b909-0242ac120002";
 		public static final String VMMC_MEDICAL_HISTORY_EXAMINATION_FORM = "d42aeb3d-d5d2-4338-a154-f75ddac78b59";
+		public static final String VMMC_CLIENT_FOLLOWUP_FORM = "08873f91-7161-4f90-931d-65b131f2b12b";
 	}
 
 
@@ -56,12 +58,14 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 		install(encounterType("VMMC Discontinuation", "Discontinuation from VMMC program", _EncounterType.VMMC_DISCONTINUATION));
 		install(encounterType("VMMC Procedure", "VMMC procedure encounter", _EncounterType.VMMC_PROCEDURE));
 		install(encounterType("VMMC Medical History and Examination", "VMMC Medical History and Examination", _EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION));
+		install(encounterType("VMMC Client Follow up", "VMMC Client Follow up", _EncounterType.VMMC_CLIENT_FOLLOWUP));
 
 
 		install(form("VMMC Enrollment Form", null, _EncounterType.VMMC_ENROLLMENT, "1", _Form.VMMC_ENROLLMENT_FORM));
 		install(form("VMMC Discontinuation Form", null, _EncounterType.VMMC_DISCONTINUATION, "1", _Form.VMMC_DISCONTINUATION_FORM));
 		install(form("VMMC Procedure Form", null, _EncounterType.VMMC_PROCEDURE, "1", _Form.VMMC_PROCEDURE_FORM));
 		install(form("VMMC Medical History and Examination Form", null, _EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION, "1", _Form.VMMC_MEDICAL_HISTORY_EXAMINATION_FORM));
+		install(form("VMMC Client Follow-Up Form", null, _EncounterType.VMMC_CLIENT_FOLLOWUP, "1", _Form.VMMC_CLIENT_FOLLOWUP_FORM));
 
 		//Installing identifiers
 		install(program("VMMC", "VMMC program", _Concept.VMMC, _Program.VMMC));
