@@ -197,12 +197,16 @@
                 jq('#no-hiv-data-alert').show();
                 jq('#hiv-test-art-date').hide();
                 jq('#medical-history').hide();
+                jq('#other-treatments').hide();
+                jq('#eligibility-confirmation').hide();
                 jq('#prep-referrals').show();
                 jq('#sti-referrals').hide();
             }
             if (patientHivStatus == HIV_NEGATIVE) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
                 jq('#medical-history').show();
+                jq('#other-treatments').show();
+                jq('#eligibility-confirmation').show();
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').hide();
                 jq('#no-hiv-data-alert').hide();
@@ -214,6 +218,8 @@
                  jq('#patient-hiv-test-date input').prop('disabled', false);
                  jq('#tbl-enrolled-positive-details').show();
                  jq('#medical-history').show();
+                jq('#other-treatments').show();
+                jq('#eligibility-confirmation').show();
                  jq('#tbl-reported-positive-details').hide();
                  jq('#no-hiv-data-alert').hide();
                  jq('#sti-referrals').hide();
@@ -221,6 +227,8 @@
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
                 jq('#medical-history').show();
+                jq('#other-treatments').show();
+                jq('#eligibility-confirmation').show();
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').show();
                 jq('#no-hiv-data-alert').hide();
@@ -362,6 +370,8 @@
                 jq('#tr-conventional-method-types').show();
                 jq('#tr-device-method-types').hide();
                 clearHiddenSections(jq('#device-name'));
+                getField('device-size.value').val("");
+
             }
             if(val == 164204){
                 jq('#tr-device-method-types').show();
@@ -745,7 +755,7 @@
                 </td>
                 <td width="250">Date of next appointment:</td>
                 <td>
-                    <obs id="patient-tca-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    <obs id="patient-tca-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                 </td>
 
             </tr>
