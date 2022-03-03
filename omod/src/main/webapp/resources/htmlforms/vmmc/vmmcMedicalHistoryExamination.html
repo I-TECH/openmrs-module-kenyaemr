@@ -78,6 +78,7 @@
             jq('#tr-conventional-method-types').hide();
             jq('#tr-device-method-types').hide();
             jq('#no-hiv-data-alert').hide();
+            jq('#vaccinated-alert').hide();
            //workflow
             jq('#prep-referrals').hide();
             jq('#sti-referrals').hide();
@@ -757,10 +758,41 @@
                 <td>
                     <obs id="patient-tca-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                 </td>
-
             </tr>
         </table>
         <table  class ="simple-table" id="tbl-reported-positive-details">
+            <tr>
+                <td>Facility of HIV Care :  </td>
+                <td>
+                    <obs id="care-facility" conceptId="165239"
+                         answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         style="dropdown" answerLabels="This health facility,Other health facility" />
+
+                    <br/>
+                    <table id="tbl-other-facility">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Facility name :
+                                <obs id="other-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <table id="tbl-this-facility">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Name :
+                                <obs id="this-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="250">Date of next appointment:</td>
+                <td>
+                    <obs id="patient-tca-date" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+                </td>
+            </tr>
                 <tr>
                     <td width="250">CCC Number:</td>
                     <td>                       
@@ -813,37 +845,7 @@
                         <obs id="cd4-count" conceptId="5497AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                         cells/uL
                     </td>
-
                 </tr>
-            <tr>
-                <td>Facility of HIV Care :  </td>
-                <td>
-                    <obs id="care-facility" conceptId="165239"
-                         answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                         style="dropdown" answerLabels="This health facility,Other health facility" />
-                </td>
-                <td>
-                    <br/>
-                    <table id="tbl-other-facility">
-                        <tr>
-                            <td>  &#160;&#160;&#160; Facility name :
-                                <obs id="other-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                                &#160;&#160;&#160;
-                            </td>
-                        </tr>
-                    </table>
-                    <br/>
-                    <table id="tbl-this-facility">
-                        <tr>
-                            <td>  &#160;&#160;&#160; Name :
-                                <obs id="this-facility" conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
-                                &#160;&#160;&#160;
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
             </table>
         </fieldset>
         <fieldset id="medical-history">
