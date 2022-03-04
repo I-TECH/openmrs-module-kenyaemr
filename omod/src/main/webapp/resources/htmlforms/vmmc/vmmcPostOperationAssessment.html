@@ -56,18 +56,8 @@
         $(document).ready(function () {
             // if none in medications is selected
             jq("#tbl-medications").show();
-            jq('#no-medication :input[type=checkbox]').change(onMedicationSelected);
             jq('#medications-select :input[type=checkbox]').change(generalExamSelected);
         });
-
-        var onMedicationSelected = function(){
-            var val = jq(this).val();
-            if(val == 1066) {
-              jq("#tbl-medications").hide();
-            } else {
-              jq("#tbl-medications").show();
-           }
-        }
 
         var generalExamSelected = function(){
             var val = jq(this).val();
@@ -85,9 +75,23 @@
 
     <ifMode mode="EDIT">
         <script type="text/javascript">
-            jq(function(){
+            $(document).ready(function () {
+            // if none in medications is selected
+            jq("#tbl-medications").show();
+            jq('#medications-select :input[type=checkbox]').change(generalExamSelected);
+        });
 
-            });
+        var generalExamSelected = function(){
+            var val = jq(this).val();
+            var generalExamsChecked = jq("#medications-select input:checkbox:checked");
+            console.log("im here", generalExamsChecked );
+            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+                jq("#tbl-medications").hide();
+            }
+            if(generalExamsChecked.length ==0){
+                jq("#tbl-medications").show();
+            }
+        }
         </script>
     </ifMode>
 
