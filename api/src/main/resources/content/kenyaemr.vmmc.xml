@@ -26,6 +26,7 @@
 				<ref bean="kenyaemr.vmmc.form.procedure" />
 				<ref bean="kenyaemr.vmmc.form.medicalHistoryExamination" />
 				<ref bean="kenyaemr.vmmc.form.clientFollowup" />
+				<ref bean="kenyaemr.vmmc.form.postOperationAssessment" />
 			</set>
 		</property>
 
@@ -114,6 +115,21 @@
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcClientFollowup.html" />
+	</bean>
+
+	<!--VMMC PostOperation Assessment Form -->
+	<bean id="kenyaemr.vmmc.form.postOperationAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="620b3404-9ae5-11ec-b909-0242ac120002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcPostOperationAssessment.html" />
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
