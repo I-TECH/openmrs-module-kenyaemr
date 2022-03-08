@@ -560,6 +560,19 @@
                 clearHiddenSections(jq('#explain-noneligibility'));
             }
         }
+        //Before Submit
+        beforeSubmit.push(function() {
+            var circumcisionMethod = getValue('circumcision-method.value');
+            var counselled = getValue('counselled.value');
+            var goodHealth = getValue('good-health.value');
+            if(counselled == 1065 &amp;&amp; goodHealth =='true' &amp;&amp; circumcisionMethod == false){ //choose circumcision method preferred
+                getField('circumcision-method.error').html('Please specify circumcision method.').show();
+                return false;
+            }else {
+                getField('circumcision-method.error').html('Please specify circumcision method.').hide();
+            }
+            return true;
+        });
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -1124,7 +1137,7 @@
             <legend>Method of Circumcision chosen by client: </legend>
             <table class ="simple-table">
                 <tr>
-                    <td> Method: </td>
+                    <td> Method:  <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
