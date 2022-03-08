@@ -43,52 +43,23 @@
         var patientId = <lookup expression="patient.patientId"/>;
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var CIRCUMCISION_DATE =  "<lookup expression="fn.latestObs(163137).getValueDatetime()"/>";
-        var SEVERE = 1500;
-        var MODERATE = 1499;
-        var MILD = 1498;
-        var PAIN = 114403;
-        var BLEEDING = 147241;
-        var APPEARANCE = 152045;
-        var HEMATOMA = 156567 ;
-        var INFECTION = 139510 ;
-        var URINATING = 118771 ;
-        var DISRUPTION = 163799 ;
 
         //On Ready
         $(document).ready(function () {
             //Defaults
             jq('#tbl-adverse-effects').hide();
-            jq("#pain-moderate").hide();
-            jq("#pain-severe").hide();
-            jq("#bleeding-mild").hide();
-            jq("#bleeding-moderate").hide();
-            jq("#bleeding-severe").hide();
-            jq("#appearance-mild").hide();
-            jq("#appearance-moderate").hide();
-            jq("#appearance-severe").hide();
-            jq("#hematoma-mild").hide();
-            jq("#hematoma-moderate").hide();
-            jq("#hematoma-severe").hide();
-            jq("#infection-mild").hide();
-            jq("#infection-moderate").hide();
-            jq("#infection-severe").hide();
-            jq("#urinating-mild").hide();
-            jq("#urinating-moderate").hide();
-            jq("#urinating-severe").hide();
-            jq("#disruption-mild").hide();
-            jq("#disruption-moderate").hide();
-            jq("#disruption-severe").hide();
 
             // if none in medications is selected
             jq("#medication-given").show();
-            jq("#tbl-medications").hide();
+            jq("#tbl-medications").show();
             jq('#no-medication :input[type=checkbox]').change(onMedicationSelected);
             jq('#medications-select :input[type=checkbox]').change(noMedicationSelected);
 
-            //Check level of severity
-            jq("#severity-level select").change(onSeverityChange);
             //Check adverse event type
-            jq("#adverse-event-types select").change(onAdverseEventChange);
+           // jq("#adverse-event-types select").change(onAdverseEventChange);
+
+            //Check description type
+           // jq('#event-description').change(onEventDescriptionChange);
 
             //Check if any adverse events
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
@@ -112,7 +83,6 @@
         var noMedicationSelected = function(){
             var val = jq(this).val();
             var generalExamsChecked = jq("#medications-select input:checkbox:checked");
-            console.log("im here", generalExamsChecked );
             if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
                 jq("#tbl-medications").hide();
             }
@@ -130,75 +100,6 @@
                 return daysDiff;
 
             }
-
-        var onSeverityChange = function () {
-            var severityLevel = getField('severity-level.value').val();
-            var adverseEventTypes = getField('adverse-event-types.value').val();
-
-            if(adverseEventTypes == PAIN &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Results in disability for 4-7 days");
-            }
-            if(adverseEventTypes == PAIN &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Results in disability for more than 7 days");
-            }
-            if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Dressing soaked through with blood ata routine follow-up visit");
-            }
-            if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Bleeding that requires a special return to the clinic for medical attention");
-            }
-            if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Bleeding that requires surgical re-exploration");
-            }
-            if(adverseEventTypes == APPEARANCE &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("May be some concern by client but appearance within normal range");
-            }
-            if(adverseEventTypes == APPEARANCE &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Scarring, costmetic problem but operation not required");
-            }
-            if(adverseEventTypes == APPEARANCE &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Rotation or other problem,requires cosmetic correction");
-            }
-            if(adverseEventTypes == HEMATOMA &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("More swelling than usual, but no significant discomfort");
-            }
-            if(adverseEventTypes == HEMATOMA &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Significant tenderness and discomfort, but surgical re-exploration not required");
-            }
-            if(adverseEventTypes == HEMATOMA &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Surgical re-exploration required");
-            }
-            if(adverseEventTypes == INFECTION &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Erythema more than 1 cm beyond incision line");
-            }
-            if(adverseEventTypes == INFECTION &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Purulent discharge from the wound");
-            }
-            if(adverseEventTypes == INFECTION &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Cellulitis or wound necrosis");
-            }
-            if(adverseEventTypes == URINATING &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Transient complaint that resolves without treatment");
-            }
-            if(adverseEventTypes == URINATING &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Partial obstruction");
-            }
-            if(adverseEventTypes == URINATING &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Cannot urinate");
-            }
-            if(adverseEventTypes == DISRUPTION &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("1 to 2 adjascent stitches missing");
-            }
-            if(adverseEventTypes == DISRUPTION &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Re-stitching of atleast 3 stitches required");
-            }
-            if(adverseEventTypes == DISRUPTION &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Patient incapacitated - bed rest required");
-            }
-
-
-        }
-
         var onAdverseEventsSelected = function () {
             getField('adverse_events.error').html('Adverse events should not be empty').hide();
             var val = jq(this).val();
@@ -207,16 +108,10 @@
             }
             if(val == 1066 ) {
                 jq('#tbl-adverse-effects').hide();
-                jq('#message:text').val("");
-                getField('adverse-event-types.value').prop("selectedIndex", 0);
-                getField('severity-level.value').prop("selectedIndex", 0);
+
             }
         }
 
-        var onAdverseEventChange = function () {
-            jq('#message:text').val("");
-            getField('severity-level.value').prop("selectedIndex", 0);
-        }
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -294,44 +189,80 @@
                                          style="radio" />
                                 </td>
                             </tr>
-
                         </table>
-
                         <table width="100%" id="tbl-adverse-effects" class="simple-table">
                             <tr>
                                 <td>Record any Adverse Events that occurred during Circumscision Procedure:</td>
                                 <td>
-                                    Type of adverse event:
-                                    <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           152045AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           156567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           139510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           118771AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           163799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         style="dropdown" answerLabels="Pain,
-                                                                        Bleeding,
-                                                                        Problems with appearance,
-                                                                        Hematoma/Swelling,
-                                                                        Infection/Swelling,
-                                                                        Difficulty or pain when urinating,
-                                                                        Wound disruption (without signs of hematoma or infection)"
+                                    <table>
+                                        <tr>
+                                            <th>Type of adverse event</th>
+                                            <th>Description</th>
+                                            <th>Severity</th>
+                                        </tr>
+                                        <repeat>
+                                            <template>
+                                                <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                    <tr>
+                                                        <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               152045AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               156567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               139510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               118771AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                               163799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                            style="dropdown" answerLabels="Pain,
+                                                                                    Bleeding,
+                                                                                    Problems with appearance,
+                                                                                    Hematoma/Swelling,
+                                                                                    Infection/Swelling,
+                                                                                    Difficulty or pain when urinating,
+                                                                                    Wound disruption (without signs of hematoma or infection)"
 
-                                         id="adverse-event-types" />
-                                </td>
-
-                                <td>
-                                    Severity:
-                                    <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td> Recommendation: </td>
-                                <td>
-                                    <input type="text" name="message" id="message" readonly="True" size="100" />
+                                                     id="adverse-event-types" />
+                                                </td>
+                                                        <td>
+                                                            <select name="event-description" class="event-description" id="event-description">
+                                                                <option value="none"></option>
+                                                                <option value="pain-moderate">Results in disability for 4-7 days</option>
+                                                                <option value="pain-severe">Results in disability for more than 7 days</option>
+                                                                <option value="bleeding-mild">Dressing soaked through with blood at a routine follow-up visit</option>
+                                                                <option value="bleeding-moderate">Bleeding that requires a special return to the clinic for medical attention</option>
+                                                                <option value="bleeding-severe">Bleeding that requires surgical re-exploration</option>
+                                                                <option value="appearance-mild">May be some concern by client but appearance within normal range</option>
+                                                                <option value="appearance-moderate">Scarring, costmetic problem but operation not required</option>
+                                                                <option value="appearance-severe">Rotation or other problem,requires cosmetic correction</option>
+                                                                <option value="hematoma-mild">More swelling than usual, but no significant discomfort</option>
+                                                                <option value="hematoma-moderate">Significant tenderness and discomfort, but surgical re-exploration not required</option>
+                                                                <option value="hematoma-severe">Surgical re-exploration required</option>
+                                                                <option value="infection-mild">Erythema more than 1 cm beyond incision line</option>
+                                                                <option value="infection-moderate">Purulent discharge from the wound</option>
+                                                                <option value="infection-severe">Cellulitis or wound necrosis</option>
+                                                                <option value="urinating-mild">Transient complaint that resolves without treatment</option>
+                                                                <option value="urinating-moderate">Partial obstruction</option>
+                                                                <option value="urinating-severe">Cannot urinate</option>
+                                                                <option value="disruption-mild">1 to 2 adjascent stitches missing</option>
+                                                                <option value="disruption-moderate">Re-stitching of atleast 3 stitches required</option>
+                                                                <option value="disruption-severe">Patient incapacitated - bed rest required</option>
+                                                            </select>
+                                                        </td>
+                                                      <td>
+                                                    Severity:
+                                                    <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                  </td>
+                                                    </tr>
+                                                </obsgroup>
+                                            </template>
+                                            <render n="1" concept=" " />
+                                            <render n="2" concept=" " />
+                                            <render n="3" concept=" " />
+                                            <render n="4" concept=" " />
+                                            <render n="5" concept=" " />
+                                        </repeat>
+                                    </table>
                                 </td>
                             </tr>
                         </table>

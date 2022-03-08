@@ -115,6 +115,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCPostOperationCalculation" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcClientFollowup.html" />
 	</bean>
 
@@ -130,6 +131,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCPostOperationCalculation" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcPostOperationAssessment.html" />
 	</bean>
 
