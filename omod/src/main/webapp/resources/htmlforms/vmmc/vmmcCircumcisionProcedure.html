@@ -13,10 +13,7 @@
         -->
 
 <htmlform>
-    <script>
-
-    jQuery(function($) {
-
+    <script type="text/javascript">
         var CONVENTIONAL = 159619;
         var DEVICE = 164204;
         var SLEEVE_RESELECTION = 164029;
@@ -25,83 +22,191 @@
         var OTHER_CONVENTIONAL = 5622;
         var SHANGRING = 165396;
         var OTHER_DEVICE = 5622;
+        var SEVERE = 1500;
+        var MODERATE = 1499;
+        var MILD = 1498;
+        var BLEEDING = 147241;
+        var ANAESTHETIC = 135693;
+        var DAMAGE = 156911;
+        var PAIN = 114403;
+        var EXESSIVE_SKIN_REMOVED = 110094;
         var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
         var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(164258).getValueCoded()"/>";
         var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
-        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
+        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(164204).getValueCoded()"/>";
 
         var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
         var CONVENTIONAL_METHOD = CONVENTIONAL_METHOD_CONCEPT.replace(/[^\d]/g, '');
         var DEVICE_CIRCUMCISION = DEVICE_CIRCUMCISION_CONCEPT.replace(/[^\d]/g, '');
 
-        //Defaults
-        jq('#tbl-device-size').hide();
-        jq('#tbl-adverse-effects').hide();
-        jq('#tbl-conventional-surgical').hide();
-        jq('#tbl-device-circumcision').hide();
+        $(document).ready(function () {
 
-        //Check if conventional checked
+            //Defaults
+            jq('#tbl-device-size').hide();
+            jq('#tbl-adverse-effects').hide();
+            jq('#tbl-conventional-surgical').hide();
+            jq('#tbl-device-circumcision').hide();
+            jq("#tbl-concentration").hide();
+            jq("#tbl-volume").hide();
+
+            jq("#pain-intervened").hide();
+            jq("#controlled-bleeding").hide();
+            jq("#bleeding-dressing").hide();
+            jq("#bleeding-transfusion").hide();
+            jq("#palpitations").hide();
+            jq("#anaphylactic-shock").hide();
+            jq("#add-material-time").hide();
+            jq("#skin-tight").hide();
+            jq("#reoperation").hide();
+            jq("#mild-bruising").hide();
+            jq("#abrasion").hide();
+            jq("#shaft-severed").hide();
+
+            //Check anaesthesia used
+            jq("#anaesthesia :input[type=radio]").change(onAnaesthesiaSelected);
+
+            //Check if conventional checked
             jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
 
-        //Check if any adverse events
+            //Check level of severity
+            jq("#severity-level select").change(onSeverityChange);
+
+            //Check if any adverse events
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
 
-        console.log("CIRCUMCISION_METHOD", CIRCUMCISION_METHOD);
-        console.log("CONVENTIONAL_METHOD", CONVENTIONAL_METHOD);
+            //Check adverse event type
+            jq("#adverse-event-types select").change(onAdverseEventChange);
 
-        if(CIRCUMCISION_METHOD == CONVENTIONAL) {
-            jq("#circumcision-method input[value=159619]").prop("checked", true);
-            jq('#tbl-conventional-surgical').show();
+            if(CIRCUMCISION_METHOD == CONVENTIONAL) {
+                jq("#circumcision-method input[value=159619]").prop("checked", true);
+                jq('#tbl-conventional-surgical').show();
 
-              if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
-                jq("#conventional-method input[value=164029]").prop("checked", true);
-              } else if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
-                jq("#conventional-method input[value=1933]").prop("checked", true);
-              } else if( CONVENTIONAL_METHOD == FORCEPS_GUIDE) {
-                jq("#conventional-method input[value=157783]").prop("checked", true);
-              } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
-                jq("#conventional-method input[value=5622]").prop("checked", true);
-              }
+                  if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
+                    jq("#conventional-method input[value=164029]").prop("checked", true);
+                  } else if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
+                    jq("#conventional-method input[value=1933]").prop("checked", true);
+                  } else if( CONVENTIONAL_METHOD == FORCEPS_GUIDE) {
+                    jq("#conventional-method input[value=157783]").prop("checked", true);
+                  } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
+                    jq("#conventional-method input[value=5622]").prop("checked", true);
+                  }
 
-        } else if(CIRCUMCISION_METHOD == DEVICE) {
-            jq("#circumcision-method input[value=164204]").prop("checked", true);
-            jq('#tbl-device-circumcision').show();
-            jq('#tbl-device-size').show();
+            } else if(CIRCUMCISION_METHOD == DEVICE) {
+                jq("#circumcision-method input[value=164204]").prop("checked", true);
+                jq('#tbl-device-circumcision').show();
+                jq('#tbl-device-size').show();
 
-              if(DEVICE_CIRCUMCISION == SHANGRING) {
-                jq("#device-name input[value=165396]").prop("checked", true);
-              } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
-                jq("#device-name input[value=5622]").prop("checked", true);
-              }
+                  if(DEVICE_CIRCUMCISION == SHANGRING) {
+                    jq("#device-name input[value=165396]").prop("checked", true);
+                  } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
+                    jq("#device-name input[value=5622]").prop("checked", true);
+                  }
 
-              if(DEVICE_SIZE !== 'undefined') {
-                setValue('device_size.value',DEVICE_SIZE);
-              }
+                  if(DEVICE_SIZE !== 'undefined') {
+                    setValue('device_size.value',DEVICE_SIZE);
+                  }
+            }
+
+        }); // end doc ready
+
+        var onAnaesthesiaSelected = function () {
+            var val = jq(this).val();
+            if(val == 161914 ) {
+                jq("#tbl-concentration").show();
+                jq("#tbl-volume").hide();
+            } else if(val == 162797) {
+                jq("#tbl-volume").show();
+                jq("#tbl-concentration").hide();
+            }
         }
 
-    });
+        var onSeverityChange = function () {
+            var severityLevel = getField('severity-level.value').val();
+            var adverseEventTypes = getField('adverse-event-types.value').val();
 
-    var onAdverseEventsSelected = function () {
-        getField('adverse_events.error').html('Adverse events should not be empty').hide();
-        var val = jq(this).val();
-        if(val == 1065 ) {
-          jq('#tbl-adverse-effects').show();
-        } else {
-          jq('#tbl-adverse-effects').hide();
+            if(adverseEventTypes == PAIN &amp;&amp; severityLevel == SEVERE) {
+                jq('#message:text').val("Pain that requires additional intervention");
+            }
+
+            if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MILD) {
+                jq('#message:text').val("Bleeding that is easily controller");
+            } else if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MODERATE) {
+                jq('#message:text').val("Bleeding that requires pressure dressing to control ");
+            } else if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == SEVERE) {
+                jq('#message:text').val("Bleeding that requires transfusion or transfer to another facility");
+            }
+
+            if(adverseEventTypes == ANAESTHETIC &amp;&amp; severityLevel == MODERATE) {
+                jq('#message:text').val("Palpitations, vaso-vagal reaction or emesis");
+            } else if(adverseEventTypes == ANAESTHETIC &amp;&amp; severityLevel == SEVERE) {
+                jq('#message:text').val("Anaphylactic shock or other reaction requiring transfer to another facility");
+            }
+
+            if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == MILD) {
+                jq('#message:text').val("Adds time or material needs to the procedure, but does not result in any discemible");
+            } else if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == MODERATE) {
+                jq('#message:text').val("Skin is tight, but additional operative work is not neccessary");
+            } else if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == SEVERE) {
+                jq('#message:text').val("Require re-operation of transfer to another facility to correct the problem");
+            }
+
+            if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == MILD) {
+                jq('#message:text').val("Mild bruising or abrasion, not requiring treatment");
+            } else if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == MODERATE) {
+                jq('#message:text').val("Bruising or abrasion of the glans of the shaft penis requiring pressure dressing");
+            } else if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == SEVERE) {
+                jq('#message:text').val("Part or all of the glans or shaft of the penis severed");
+            }
+
         }
-    }
 
-    var onMethodSelected = function () {
-        var val = jq(this).val();
-        if(val == 159619 ) {
-          jq('#tbl-conventional-surgical').show();
-          jq('#tbl-device-circumcision').hide();
-        } else if(val == 164204) {
-          jq('#tbl-device-circumcision').show();
-          jq('#tbl-device-size').show();
-          jq('#tbl-conventional-surgical').hide();
-        };
-    }
+        var onAdverseEventsSelected = function () {
+            getField('adverse_events.error').html('Adverse events should not be empty').hide();
+            var val = jq(this).val();
+            if(val == 1065 ) {
+              jq('#tbl-adverse-effects').show();
+            } else {
+              jq('#tbl-adverse-effects').hide();
+              jq('#message:text').val("");
+              getField('adverse-event-types.value').prop("selectedIndex", 0);
+              getField('severity-level.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var onAdverseEventChange = function () {
+            jq('#message:text').val("");
+            getField('severity-level.value').prop("selectedIndex", 0);
+        }
+
+        var onMethodSelected = function () {
+            var val = jq(this).val();
+            if(val == 159619 ) {
+              jq('#tbl-conventional-surgical').show();
+              jq('#tbl-device-circumcision').hide();
+              clearHiddenSections(jq('#device-name'));
+              getField('device_size.value').val("");
+            } else if(val == 164204) {
+              jq('#tbl-device-circumcision').show();
+              jq('#tbl-device-size').show();
+              jq('#tbl-conventional-surgical').hide();
+            };
+        }
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
 
     </script>
 
@@ -114,8 +219,16 @@
 
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
+                var ANAESTHESIA = getValue('anaesthesia.value');
 
-                console.log("adv eff", ADVERSE_EFFECT);
+                if(ANAESTHESIA == 161914 ) {
+                    jq("#tbl-concentration").show();
+                    jq("#tbl-volume").hide();
+                } else if(ANAESTHESIA == 162797) {
+                    jq("#tbl-volume").show();
+                    jq("#tbl-concentration").hide();
+                }
+
                 if(ADVERSE_EFFECT == YES ) {
                   jq('#tbl-adverse-effects').show();
                 }
@@ -124,11 +237,20 @@
                     jq('#tbl-conventional-surgical').show();
                     jq('#tbl-device-circumcision').hide();
                     jq('#tbl-device-size').hide();
+                    clearHiddenSections(jq('#device-name'));
+                    getField('device_size.value').val("");
                 } else if(CIRCUMCISION_METHOD == DEVICE) {
                     jq('#tbl-device-circumcision').show();
                     jq('#tbl-device-size').show();
                     jq('#tbl-conventional-surgical').hide();
                 }
+
+                jq(function(){
+                var ADVERSE_EFFECT = getValue('adverse_events.value');
+                     if(ADVERSE_EFFECT == YES ) {
+                        jq('#tbl-adverse-effects').show();
+                    }
+                });
 
             });
         </script>
@@ -156,6 +278,11 @@
             color: #333;
             padding: 10px;
             text-shadow: 1px 1px 1px #fff;
+        }
+
+        .results {
+            font-weight: bold;
+            color: blue;
         }
 
         table.tb1 {
@@ -210,13 +337,13 @@
                                 <td>
                                     <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Sleeve resection,
-                                           Dorsal Slit,
-                                           Forceps Guide,
-                                           Other"
+                                                       Dorsal Slit,
+                                                       Forceps Guide,
+                                                       Other"
                                          style="radio"/>
                                     <br/>
                                 </td>
@@ -237,9 +364,6 @@
                                          answerLabels="Shangring,Other"
                                          style="radio" />
 
-                                    Size:
-                                    <obs id="device-size" conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-
                                 </td>
                                 <td> Specify: </td>
                                 <td>
@@ -249,7 +373,7 @@
                                     <table id="tbl-device-size" class="tb1 simple-table">
                                         <tr>
                                             <td>Device size: </td>
-                                            <td><obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="device_size" /></td>
+                                            <td><obs conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="device_size" /></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -270,11 +394,25 @@
                              answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" />
                     </td>
-                    <td> Concentration(mg):
-                        <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
-                    </td>
-                    <td> Volume(ml):
-                        <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                    <td>
+                        <table id="tbl-concentration">
+                            <tr>
+                                <td>
+                                    Concentration(mg):
+                                    <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table id="tbl-volume">
+                            <tr>
+                                <td>
+                                    Volume(ml):
+                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                </td>
+                            </tr>
+                        </table>
+
                     </td>
                 </tr>
 
@@ -308,19 +446,22 @@
                     <td>
                         Type of adverse event:
                         <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Bleeding,Anaesthetic Reaction,Damage to the penis,Pain"
-                             id="adverse_event_types" />
+                             answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="Bleeding,Anaesthetic Reaction,Excessive skin removed, Damage to the penis,Pain"
+                             id="adverse-event-types" />
                     </td>
 
                     <td>
                         Severity:
-                        <obs conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Severe,Moderate,Mild" id="severity" />
+                             style="dropdown" answerLabels="Severe,Moderate,Mild" />
                     </td>
                 </tr>
-
+                <tr>
+                    <td> Description of AE: <input class="results" type="text" name="message" id="message" readonly="True" size="100" />
+                    </td>
+                </tr>
                 <tr>
                     <td>Management of Adverse Events if any:  <br> </br>
                         <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" />

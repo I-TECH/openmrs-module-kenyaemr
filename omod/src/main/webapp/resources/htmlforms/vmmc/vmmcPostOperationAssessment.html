@@ -62,7 +62,6 @@
         var generalExamSelected = function(){
             var val = jq(this).val();
             var generalExamsChecked = jq("#medications-select input:checkbox:checked");
-            console.log("im here", generalExamsChecked );
             if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
                 jq("#tbl-medications").hide();
             }
@@ -78,17 +77,16 @@
             $(document).ready(function () {
             // if none in medications is selected
             jq("#tbl-medications").show();
-            jq('#medications-select :input[type=checkbox]').change(generalExamSelected);
+            jq('#medications-select :input[type=checkbox]').change(medicationSelected);
         });
 
-        var generalExamSelected = function(){
+        var medicationSelected = function(){
             var val = jq(this).val();
-            var generalExamsChecked = jq("#medications-select input:checkbox:checked");
-            console.log("im here", generalExamsChecked );
-            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
+            var medicationChecked = jq("#medications-select input:checkbox:checked");
+            if(val == 1107 &amp;&amp; medication.length ==1){
                 jq("#tbl-medications").hide();
             }
-            if(generalExamsChecked.length ==0){
+            if(medicationChecked.length ==0){
                 jq("#tbl-medications").show();
             }
         }
@@ -171,42 +169,42 @@
 
                     <td>
                         <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                            <tr id="complaints-checked">
-                                <td>Post operation medication given?</td>
+                <tr id="complaints-checked">
+                    <td>Post operation medication given?</td>
+                    <td>
+                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="None" style="checkbox" id="medications-select" /><br/>
+                    </td>
+                    <td>
+                        <table id="tbl-medications" class="simple-table tb1">
+                            <tr>
                                 <td>
-                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="None" style="checkbox" id="medications-select" /><br/>
+                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Analgesic" style="checkbox" /><br/>
                                 </td>
                                 <td>
-                                    <table id="tbl-medications" class="simple-table tb1">
-                                        <tr>
-                                            <td>
-                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabel="Analgesic" style="checkbox" /><br/>
-                                            </td>
-                                            <td>
-                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabel="Antibiotics" style="checkbox" /><br/>
-                                            </td>
-                                            <td>
-                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabel="TTCV" style="checkbox" /><br/>
-                                            </td>
-                                            <td>
-                                                <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerLabel="Other" style="checkbox" /><br/>
-                                            </td>
-                                            <td> Specify: </td>
-                                            <td>
-                                                <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Antibiotics" style="checkbox" /><br/>
+                                </td>
+                                <td>
+                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="TTCV" style="checkbox" /><br/>
+                                </td>
+                                <td>
+                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Other" style="checkbox" /><br/>
+                                </td>
+                                <td> Specify: </td>
+                                <td>
+                                    <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
                                 </td>
                             </tr>
-                        </obsgroup>
-
+                        </table>
                     </td>
+                </tr>
+                </obsgroup>
+
+                </td>
                 </tr>
 
                 <tr>
@@ -216,7 +214,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Scheduled next visit(devise removal/review): </td>
+                    <td>Scheduled next visit(device removal/review): </td>
                     <td>
                         <obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="next-visit-date" required="true" allowFutureDates="true" />
                     </td>
