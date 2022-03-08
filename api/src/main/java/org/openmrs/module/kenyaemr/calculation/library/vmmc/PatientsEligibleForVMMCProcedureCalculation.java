@@ -89,14 +89,14 @@ public class PatientsEligibleForVMMCProcedureCalculation extends AbstractPatient
                     lastHtsEnc = lastHtsRetestEnc;
                 }
             }
-            if (lastHtsEnc != null && lastHtsEnc.getEncounterDatetime().equals(lastVmmcMedicalHistoryEnc.getEncounterDatetime())) {
+            if (lastHtsEnc != null && lastVmmcMedicalHistoryEnc != null && lastHtsEnc.getEncounterDatetime().equals(lastVmmcMedicalHistoryEnc.getEncounterDatetime())) {
                 patientHasSameDayPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
             }
 
             boolean patientWantsConventionalMethod = lastVmmcMedicalHistoryEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcMedicalHistoryEnc, vmmcMethodQuestion, vmmcConventionalMethodAnswer) : false;
             boolean patientWantsDeviceMethod = lastVmmcMedicalHistoryEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcMedicalHistoryEnc, vmmcMethodQuestion, vmmcDeviceMethodAnswer) : false;
 
-            if (inVmmcProgram.contains(ptId) && !patientHasSameDayPositiveTestResult && (patientWantsConventionalMethod || patientWantsDeviceMethod )) {
+            if (inVmmcProgram.contains(ptId) && lastVmmcMedicalHistoryEnc != null && !patientHasSameDayPositiveTestResult && (patientWantsConventionalMethod || patientWantsDeviceMethod )) {
                     eligible = true;
               }
                 ret.put(ptId, new BooleanResult(eligible, this));

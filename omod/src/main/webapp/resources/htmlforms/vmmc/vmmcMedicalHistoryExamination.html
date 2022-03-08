@@ -178,11 +178,12 @@
             }
 
            // Prepopulate ART start date
-            if (ART_START_DATE !="") {
+            if (ART_START_DATE != "null") {
+                console.log("Art start date ==>"+ART_START_DATE);
                 var formattedArtStartDate = moment(moment(ART_START_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                 jq('#art-start-date').html(formattedArtStartDate);
             } else{
-                jq('#art-start-date').html("");
+                jq('#art-start-date').html("ART Start date not available ");
             }
         });
         // End on ready
@@ -205,6 +206,8 @@
             }
             if (patientHivStatus == HIV_NEGATIVE) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#hiv-test-art-date').show();
+                jq('#tr-art-start-date').hide();
                 jq('#medical-history').show();
                 jq('#other-treatments').show();
                 jq('#eligibility-confirmation').show();
@@ -217,16 +220,20 @@
             }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; PATIENT_IS_ENROLLED_HIV) {
                  jq('#patient-hiv-test-date input').prop('disabled', false);
+                 jq('#hiv-test-art-date').show();
+                jq('#tr-art-start-date').show();
                  jq('#tbl-enrolled-positive-details').show();
                  jq('#medical-history').show();
-                jq('#other-treatments').show();
-                jq('#eligibility-confirmation').show();
+                 jq('#other-treatments').show();
+                 jq('#eligibility-confirmation').show();
                  jq('#tbl-reported-positive-details').hide();
                  jq('#no-hiv-data-alert').hide();
                  jq('#sti-referrals').hide();
              }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
+                jq('#hiv-test-art-date').show();
+                jq('#tr-art-start-date').show();
                 jq('#medical-history').show();
                 jq('#other-treatments').show();
                 jq('#eligibility-confirmation').show();
@@ -728,11 +735,13 @@
                     </td>
                     <td>
                         <table id="hiv-test-art-date">
-                            <tr>
+                            <tr id="hiv-start-date">
                                 <td width="250">HIV Test Date:</td>
                                 <td>
                                     <obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
                                 </td>
+                            </tr>
+                            <tr id="tr-art-start-date">
                                 <td width="250">Date started on ART:</td>
                                 <td>
                                     <obs id="art-start-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
