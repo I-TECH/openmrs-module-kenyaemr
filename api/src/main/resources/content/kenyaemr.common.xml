@@ -72,6 +72,7 @@
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
+				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -699,4 +700,16 @@
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:regimenHistory" />
 	</bean>
 
+	<!--	Cervical Cancer Register-->
+	<bean id="kenyaemr.cacx.report.cacxRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="39e14658-9e32-11ec-b909-0242ac120002" />
+		<property name="name" value="Cervical Cancer Register" />
+		<property name="description" value="Cervical Cancer Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:cacx_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:CACXInformation" />
+	</bean>
 </beans>
