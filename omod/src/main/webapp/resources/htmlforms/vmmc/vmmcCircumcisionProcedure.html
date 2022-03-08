@@ -22,14 +22,7 @@
         var OTHER_CONVENTIONAL = 5622;
         var SHANGRING = 165396;
         var OTHER_DEVICE = 5622;
-        var SEVERE = 1500;
-        var MODERATE = 1499;
-        var MILD = 1498;
-        var BLEEDING = 147241;
-        var ANAESTHETIC = 135693;
-        var DAMAGE = 156911;
-        var PAIN = 114403;
-        var EXESSIVE_SKIN_REMOVED = 110094;
+
         var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
         var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(164258).getValueCoded()"/>";
         var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
@@ -49,33 +42,14 @@
             jq("#tbl-concentration").hide();
             jq("#tbl-volume").hide();
 
-            jq("#pain-intervened").hide();
-            jq("#controlled-bleeding").hide();
-            jq("#bleeding-dressing").hide();
-            jq("#bleeding-transfusion").hide();
-            jq("#palpitations").hide();
-            jq("#anaphylactic-shock").hide();
-            jq("#add-material-time").hide();
-            jq("#skin-tight").hide();
-            jq("#reoperation").hide();
-            jq("#mild-bruising").hide();
-            jq("#abrasion").hide();
-            jq("#shaft-severed").hide();
-
             //Check anaesthesia used
             jq("#anaesthesia :input[type=radio]").change(onAnaesthesiaSelected);
 
             //Check if conventional checked
             jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
 
-            //Check level of severity
-            jq("#severity-level select").change(onSeverityChange);
-
             //Check if any adverse events
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
-
-            //Check adverse event type
-            jq("#adverse-event-types select").change(onAdverseEventChange);
 
             if(CIRCUMCISION_METHOD == CONVENTIONAL) {
                 jq("#circumcision-method input[value=159619]").prop("checked", true);
@@ -120,62 +94,16 @@
             }
         }
 
-        var onSeverityChange = function () {
-            var severityLevel = getField('severity-level.value').val();
-            var adverseEventTypes = getField('adverse-event-types.value').val();
-
-            if(adverseEventTypes == PAIN &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Pain that requires additional intervention");
-            }
-
-            if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Bleeding that is easily controller");
-            } else if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Bleeding that requires pressure dressing to control ");
-            } else if(adverseEventTypes == BLEEDING &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Bleeding that requires transfusion or transfer to another facility");
-            }
-
-            if(adverseEventTypes == ANAESTHETIC &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Palpitations, vaso-vagal reaction or emesis");
-            } else if(adverseEventTypes == ANAESTHETIC &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Anaphylactic shock or other reaction requiring transfer to another facility");
-            }
-
-            if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Adds time or material needs to the procedure, but does not result in any discemible");
-            } else if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Skin is tight, but additional operative work is not neccessary");
-            } else if(adverseEventTypes == EXESSIVE_SKIN_REMOVED &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Require re-operation of transfer to another facility to correct the problem");
-            }
-
-            if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == MILD) {
-                jq('#message:text').val("Mild bruising or abrasion, not requiring treatment");
-            } else if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == MODERATE) {
-                jq('#message:text').val("Bruising or abrasion of the glans of the shaft penis requiring pressure dressing");
-            } else if(adverseEventTypes == DAMAGE &amp;&amp; severityLevel == SEVERE) {
-                jq('#message:text').val("Part or all of the glans or shaft of the penis severed");
-            }
-
-        }
-
-        var onAdverseEventsSelected = function () {
+         var onAdverseEventsSelected = function () {
             getField('adverse_events.error').html('Adverse events should not be empty').hide();
             var val = jq(this).val();
             if(val == 1065 ) {
-              jq('#tbl-adverse-effects').show();
-            } else {
-              jq('#tbl-adverse-effects').hide();
-              jq('#message:text').val("");
-              getField('adverse-event-types.value').prop("selectedIndex", 0);
-              getField('severity-level.value').prop("selectedIndex", 0);
+                jq('#tbl-adverse-effects').show();
             }
-        }
+            if(val == 1066 ) {
+                jq('#tbl-adverse-effects').hide();
 
-        var onAdverseEventChange = function () {
-            jq('#message:text').val("");
-            getField('severity-level.value').prop("selectedIndex", 0);
+            }
         }
 
         var onMethodSelected = function () {
@@ -184,11 +112,13 @@
               jq('#tbl-conventional-surgical').show();
               jq('#tbl-device-circumcision').hide();
               clearHiddenSections(jq('#device-name'));
+              clearHiddenSections(jq('#device-size'));
               getField('device_size.value').val("");
             } else if(val == 164204) {
               jq('#tbl-device-circumcision').show();
               jq('#tbl-device-size').show();
               jq('#tbl-conventional-surgical').hide();
+              clearHiddenSections(jq('#conventional-method'));
             };
         }
 
@@ -237,7 +167,6 @@
                     jq('#tbl-conventional-surgical').show();
                     jq('#tbl-device-circumcision').hide();
                     jq('#tbl-device-size').hide();
-                    clearHiddenSections(jq('#device-name'));
                     getField('device_size.value').val("");
                 } else if(CIRCUMCISION_METHOD == DEVICE) {
                     jq('#tbl-device-circumcision').show();
@@ -245,14 +174,8 @@
                     jq('#tbl-conventional-surgical').hide();
                 }
 
-                jq(function(){
-                var ADVERSE_EFFECT = getValue('adverse_events.value');
-                     if(ADVERSE_EFFECT == YES ) {
-                        jq('#tbl-adverse-effects').show();
-                    }
-                });
-
             });
+
         </script>
     </ifMode>
 
@@ -272,7 +195,6 @@
             text-align: left;
             text-shadow: 1px 1px 1px #fff;
         }
-
         .simple-table td {
             border: solid 1px #DDEEEE;
             color: #333;
@@ -438,35 +360,75 @@
                     </td>
                 </tr>
 
-            </table>
+                <tr>
+                    <table width="100%" id="tbl-adverse-effects" class="simple-table">
+                        <tr>
+                            <td>Record any Adverse Events that occurred during Circumscision Procedure:</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <th>Type of adverse event</th>
+                                        <th>Description</th>
+                                        <th>Severity</th>
+                                    </tr>
+                                    <repeat>
+                                        <template>
+                                            <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                                <tr>
+                                                    <td>
+                                                        <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             style="dropdown" answerLabels="Pain,Bleeding,Anaesthetic Reaction,Excessive skin removed, Damage to the penis"
+                                                             id="adverse-event-types" />
+                                                    </td>
+                                                    <td>
+                                                        <select name="event-description" class="event-description" id="event-description">
+                                                            <option value="none"></option>
+                                                            <option value="pain-severe">Pain that requires additional intervention</option>
+                                                            <option value="bleeding-mild">Bleeding that is easily controller</option>
+                                                            <option value="bleeding-moderate">Bleeding that requires pressure dressing to control</option>
+                                                            <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility</option>
+                                                            <option value="anaesthesia-moderate">Palpitations, vaso-vagal reaction or emesis</option>
+                                                            <option value="anaesthesia-severe">Anaphylactic shock or other reaction requiring transfer to another facility</option>
+                                                            <option value="excessive-skin-mild">Adds time or material needs to the procedure, but does not result in any discemible</option>
+                                                            <option value="excessive-skin-moderate">Skin is tight, but additional operative work is not neccessary</option>
+                                                            <option value="excessive-skin-severe">Require re-operation of transfer to another facility to correct the problem</option>
+                                                            <option value="damage-mild">Mild bruising or abrasion, not requiring treatment</option>
+                                                            <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing</option>
+                                                            <option value="damage-severe">Part or all of the glans or shaft of the penis severed</option>
 
-            <table width="100%" id="tbl-adverse-effects" class="simple-table">
-                <tr>
-                    <td>Record any Adverse Events that occurred during Circumscision Procedure:</td>
-                    <td>
-                        Type of adverse event:
-                        <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Bleeding,Anaesthetic Reaction,Excessive skin removed, Damage to the penis,Pain"
-                             id="adverse-event-types" />
-                    </td>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        Severity:
+                                                        <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                    </td>
+                                                </tr>
+                                            </obsgroup>
+                                        </template>
+                                        <render n="1" concept=" " />
+                                        <render n="2" concept=" " />
+                                        <render n="3" concept=" " />
+                                        <render n="4" concept=" " />
+                                        <render n="5" concept=" " />
+                                    </repeat>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </tr>
 
-                    <td>
-                        Severity:
-                        <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="dropdown" answerLabels="Severe,Moderate,Mild" />
-                    </td>
-                </tr>
-                <tr>
-                    <td> Description of AE: <input class="results" type="text" name="message" id="message" readonly="True" size="100" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Management of Adverse Events if any:  <br> </br>
-                        <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" />
-                    </td>
-                </tr>
+                <table class="simple-table">
+                    <tr>
+                        <td>Management of Adverse Events if any:  <br> </br>
+
+                            <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" />
+                        </td>
+                    </tr>
+                </table>
+
             </table>
         </fieldset>
 
