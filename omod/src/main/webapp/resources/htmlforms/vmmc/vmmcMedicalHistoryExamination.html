@@ -179,7 +179,6 @@
 
            // Prepopulate ART start date
             if (ART_START_DATE != "null") {
-                console.log("Art start date ==>"+ART_START_DATE);
                 var formattedArtStartDate = moment(moment(ART_START_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                 jq('#art-start-date').html(formattedArtStartDate);
             } else{
