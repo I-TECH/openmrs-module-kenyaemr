@@ -21,4 +21,6 @@ public class VmmcConstants {
 
     public static final Form vmmcMedicalHistoryExaminationForm = MetadataUtils.existing(Form.class, VMMCMetadata._Form.VMMC_MEDICAL_HISTORY_EXAMINATION_FORM);
     public static final EncounterType vmmcMedicalHistoryEncType = MetadataUtils.existing(EncounterType.class, VMMCMetadata._EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION);
+    public static final Form vmmcCircumcisionProcedureForm = MetadataUtils.existing(Form.class, VMMCMetadata._Form.VMMC_PROCEDURE_FORM);
+    public static final EncounterType vmmcCircumcisionProcedureEncType = MetadataUtils.existing(EncounterType.class, VMMCMetadata._EncounterType.VMMC_PROCEDURE);
 }
