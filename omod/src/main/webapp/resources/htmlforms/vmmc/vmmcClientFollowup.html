@@ -108,6 +108,9 @@
             }
             if(val == 1066 ) {
                 jq('#tbl-adverse-effects').hide();
+                getField('adverse-event-types.value').prop("selectedIndex", 0);
+                getField('severity-level.value').prop("selectedIndex", 0);
+                jq("#event-description option[value='none']").prop('selected', true);
 
             }
         }
@@ -132,7 +135,7 @@
         <script type="text/javascript">
             jq(function(){
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
-                 if(ADVERSE_EFFECT == YES ) {
+                 if(ADVERSE_EFFECT == 1065 ) {
                     jq('#tbl-adverse-effects').show();
                 }
 
