@@ -112,12 +112,14 @@
               jq('#tbl-conventional-surgical').show();
               jq('#tbl-device-circumcision').hide();
               clearHiddenSections(jq('#device-name'));
+              clearHiddenSections(jq('#device-name-specify'));
               clearHiddenSections(jq('#device-size'));
               getField('device_size.value').val("");
             } else if(val == 164204) {
               jq('#tbl-device-circumcision').show();
               jq('#tbl-device-size').show();
               jq('#tbl-conventional-surgical').hide();
+              clearHiddenSections(jq('#conventional-specify'));
               clearHiddenSections(jq('#conventional-method'));
             };
         }
@@ -272,7 +274,7 @@
 
                                 <td> Specify: </td>
                                 <td>
-                                    <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                    <obs id="conventional-specify" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
                                 </td>
                             </tr>
                         </table>
@@ -289,7 +291,7 @@
                                 </td>
                                 <td> Specify: </td>
                                 <td>
-                                    <obs id="explain-noneligibility" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                    <obs id="device-name-specify" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
                                 </td>
                                 <td>
                                     <table id="tbl-device-size" class="tb1 simple-table">
@@ -456,7 +458,7 @@
 
                 <tr>
                     <td>Cadre:
-                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs conceptId="5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="MO,CO,Nurse" id="assistant_clinician_cadre" style="radio" />
                     </td>
