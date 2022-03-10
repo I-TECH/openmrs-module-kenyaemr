@@ -10,10 +10,10 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cacx;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXNationalIdDataDefinition;
-import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXCountyDataDefinition;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -25,16 +25,16 @@ import java.util.Map;
 /**
  * Evaluates CACX County
  */
-@Handler(supports=CACXNationalIdDataDefinition.class, order=50)
-public class CACXNationalIdDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=CACXCountyDataDefinition.class, order=50)
+public class CACXCountyDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "SELECT t.patient_id, national_id_no from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_patient_demographics d on t.patient_id = d.patient_id;";
+        String qry = "SELECT t.encounter_id, d.county from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_person_address d on t.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
