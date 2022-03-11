@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cacx;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXCountyDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXMethodDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates CACX County
+ * Evaluates CACX Screening Method
  */
-@Handler(supports=CACXCountyDataDefinition.class, order=50)
-public class CACXCountyDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=CACXMethodDataDefinition.class, order=50)
+public class CACXMethodDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,8 @@ public class CACXCountyDataEvaluator implements PersonDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "SELECT t.encounter_id, d.county from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_person_address d on t.patient_id = d.patient_id;";
+        String qry = "select encounter_id, screening_method from kenyaemr_etl.etl_cervical_cancer_screening;";
+//        String qry = "select encounter_id, mid(max(concat(visit_date,screening_result)),11) as screening_method from kenyaemr_etl.etl_cervical_cancer_screening;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

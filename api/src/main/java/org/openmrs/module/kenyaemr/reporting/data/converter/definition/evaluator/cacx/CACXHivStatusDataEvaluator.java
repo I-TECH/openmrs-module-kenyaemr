@@ -11,9 +11,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXHivStatusDataDefinition;
-import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -27,23 +27,19 @@ import java.util.Map;
  * Evaluates CacxScreeningDataDefinition to produce hiv status
  */
 @Handler(supports= CACXHivStatusDataDefinition.class, order=50)
-public class CACXHivStatusDataEvaluator implements PersonDataEvaluator {
+public class CACXHivStatusDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "SELECT t.patient_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id GROUP BY t.patient_id;  ";
+        String qry = "SELECT t.encounter_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id;";
+//        String qry = "SELECT t.patient_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id GROUP BY t.patient_id;  ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
-        Date startDate = (Date)context.getParameterValue("startDate");
-        Date endDate = (Date)context.getParameterValue("endDate");
-        queryBuilder.addParameter("endDate", endDate);
-        queryBuilder.addParameter("startDate", startDate);
-
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

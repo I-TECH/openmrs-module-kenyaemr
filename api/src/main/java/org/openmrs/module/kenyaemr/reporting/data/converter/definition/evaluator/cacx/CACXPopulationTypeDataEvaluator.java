@@ -11,9 +11,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXPopulationTypeDataDefinition;
-import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
-import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
+import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -27,15 +27,15 @@ import java.util.Date;
  * Evaluates CACX County
  */
 @Handler(supports=CACXPopulationTypeDataDefinition.class, order=50)
-public class CACXPopulationTypeDataEvaluator implements PersonDataEvaluator {
+public class CACXPopulationTypeDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
+    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select t.patient_id,\n" +
+        String qry = "select t.encounter_id,\n" +
                 "CONCAT_WS(' ',fup.population_type,fup.key_population_type) as Population_Type\n" +
                 "from  (SELECT patient_id, mid(max(concat(visit_date,(case population_type \n" +
                 "when 164928 then \"General Population\"\n" +
@@ -45,15 +45,11 @@ public class CACXPopulationTypeDataEvaluator implements PersonDataEvaluator {
                 "when 162277 then \"People in prison and other closed settings\"\n" +
                 "when 165100 then \"Transgender\" when 160578\n" +
                 "then \"Men who have sex with men\"\n" +
-                "when 160579 then \"Female sex Worker\" else \"\" end),\"\")),11) as key_population_type FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup inner join kenyaemr_etl.etl_cervical_cancer_screening t GROUP BY t.patient_id;";
+                "when 160579 then \"Female sex Worker\" else \"\" end),\"\")),11) as key_population_type" +
+                " FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup inner join kenyaemr_etl.etl_cervical_cancer_screening t;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
-        Date startDate = (Date)context.getParameterValue("startDate");
-        Date endDate = (Date)context.getParameterValue("endDate");
-        queryBuilder.addParameter("endDate", endDate);
-        queryBuilder.addParameter("startDate", startDate);
-
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

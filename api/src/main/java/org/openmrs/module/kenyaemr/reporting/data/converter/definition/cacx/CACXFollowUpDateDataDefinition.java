@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx;
 
 import org.openmrs.module.reporting.data.BaseDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
@@ -21,7 +21,7 @@ import java.util.Date;
  * CACX Follow Up Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class CACXFollowUpDateDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class CACXFollowUpDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
