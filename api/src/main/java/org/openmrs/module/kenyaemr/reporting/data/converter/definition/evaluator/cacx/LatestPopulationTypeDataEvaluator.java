@@ -35,18 +35,16 @@ public class LatestPopulationTypeDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select t.encounter_id,\n" +
-                "CONCAT_WS(' ',fup.population_type,fup.key_population_type) as Population_Type\n" +
-                "from  (SELECT patient_id, mid(max(concat(visit_date,(case population_type \n" +
-                "when 164928 then \"General Population\"\n" +
-                "when 164929 then \"Key Population\" else \"None\" end), \"\")),11) as population_type,\n" +
+        String qry = "select t.encounter_id,CONCAT_WS(' ',fup.population_type,fup.key_population_type) as Population_Type from  (SELECT patient_id, mid(max(concat(visit_date,(case population_type\n" +
+                "when 164928 then 'General Population'\n" +
+                "when 164929 then 'Key Population' else 'None' end), '')),11) as population_type,\n" +
                 "mid(max(concat(visit_date,(case key_population_type \n" +
-                "when 105 then \"People who inject drugs\"\n" +
-                "when 162277 then \"People in prison and other closed settings\"\n" +
-                "when 165100 then \"Transgender\" when 160578\n" +
-                "then \"Men who have sex with men\"\n" +
-                "when 160579 then \"Female sex Worker\" else \"\" end),\"\")),11) as key_population_type" +
-                " FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup inner join kenyaemr_etl.etl_cervical_cancer_screening t;";
+                "when 105 then 'People who inject drugs' \n" +
+                "when 162277 then 'People in prison and other closed settings' \n" +
+                "when 165100 then 'Transgender' when 160578\n" +
+                "then 'Men who have sex with men'\n" +
+                "when 160579 then 'Female sex Worker' else '' end),'')),11) as key_population_type\n" +
+                "FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup inner join kenyaemr_etl.etl_cervical_cancer_screening t;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
