@@ -29,7 +29,6 @@ import java.util.Set;
 import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
         private String vlMessage;
-        protected static final Log log = LogFactory.getLog(ViralLoadCategoriesCalculation.class);
         /*
         KHP3-525: Get the Last VL load- Categorize them into Unsuppressed (>1000), high viremia (400-999), low viremia (0-399)
         * If VL level is above 1000 in the last 12 months, the patient is unsuppressed
@@ -85,17 +84,14 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
                 //If VL level is above 1000 in the last 12 months, the patient is unsuppressed
                 if ((lastVlResultValue >= 1000)) {
                         vlMessage = "Unsuppressed";
-                        log.info("UNSUPPRESSED==="+lastVlResultValue);
                 }
                 //If VL level is between 400 and 999 in the last 12 months, the patient has high viremia
                 if (lastVlResultValue >= 400 && lastVlResultValue <= 999) {
                         vlMessage = "High Viremia";
-                        log.info("High Viremia==="+lastVlResultValue);
                 }
                 //If VL level is between 0 and 399 in the last 12 months, the patient has low viremia
                 if (lastVlResultValue == 0 && lastVlResultValue <= 399) {
                         vlMessage = "Low Virema";
-                        log.info("Low Viremia==="+lastVlResultValue);
                 }
         }
 
