@@ -36,7 +36,6 @@ public class CACXRemarksDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select encounter_id, referral_reason from kenyaemr_etl.etl_cervical_cancer_screening;";
-//        String qry = "select encounter_id, mid(max(concat(visit_date,referral_reason)),11) as referral_reason from kenyaemr_etl.etl_cervical_cancer_screening;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

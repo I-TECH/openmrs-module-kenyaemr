@@ -36,7 +36,6 @@ public class CACXHivStatusDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "SELECT t.encounter_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id;";
-//        String qry = "SELECT t.patient_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id GROUP BY t.patient_id;  ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

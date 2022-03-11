@@ -19,7 +19,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.CACXRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXMethodDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXPopulationTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.LatestPopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXVisitTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXScreeningResultsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXFollowUpDateDataDefinition;
@@ -93,9 +93,9 @@ public class CACXRegisterReportBuilder extends AbstractReportBuilder {
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName} {middleName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-//        PatientIdentifierType nationalId = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.ID_NUMBER);
-//        DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
-//        DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nationalId.getName(), nationalId), identifierFormatter);
+        PatientIdentifierType nationalId = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+        DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
+        DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nationalId.getName(), nationalId), identifierFormatter);
 
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
@@ -103,12 +103,12 @@ public class CACXRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Visit Type", new CACXVisitTypeDataDefinition(), null);
         dsd.addColumn("Name", nameDef, "");
-//        dsd.addColumn("ID Number", identifierDef, "");
+        dsd.addColumn("ID Number", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Phone Number", new PersonAttributeDataDefinition(phoneNumber), "");
         dsd.addColumn("Age in years", new AgeDataDefinition(), "");
         dsd.addColumn("HIV Status", new CACXHivStatusDataDefinition(), null);
-        dsd.addColumn("Population Type", new CACXPopulationTypeDataDefinition(), null);
+        dsd.addColumn("Population Type", new LatestPopulationTypeDataDefinition(), null);
         dsd.addColumn("County of Residence", new CalculationDataDefinition("County", new CountyAddressCalculation()), "", null);
         dsd.addColumn("Screening Method", new CACXMethodDataDefinition(), null);
         dsd.addColumn("Screening Modalities", new CACXScreeningResultsDataDefinition(), null);

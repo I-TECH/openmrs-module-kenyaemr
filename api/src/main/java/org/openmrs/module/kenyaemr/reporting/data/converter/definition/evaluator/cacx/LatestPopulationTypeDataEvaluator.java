@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cacx;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXPopulationTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.LatestPopulationTypeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -26,8 +26,8 @@ import java.util.Date;
 /**
  * Evaluates CACX County
  */
-@Handler(supports=CACXPopulationTypeDataDefinition.class, order=50)
-public class CACXPopulationTypeDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports=LatestPopulationTypeDataDefinition.class, order=50)
+public class LatestPopulationTypeDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
