@@ -633,8 +633,6 @@
             var deviceSize = getField('device-size.value').val();
             var prepReferred = getValue('prep-referred.value');
             var stiReferred = getValue('sti-referred.value');
-console.log("consentGiven => "+consentGiven);
-console.log("patientHivStatus => "+patientHivStatus);
             if(pAge &lt; 18 &amp;&amp; assentGiven ==""){
                 getField('assent-given.error').html('Please provide assent.').show();
                 return false;
