@@ -79,6 +79,9 @@
             jq('#tr-device-method-types').hide();
             jq('#no-hiv-data-alert').hide();
             jq('#vaccinated-alert').hide();
+            jq('#tb-other-conventional-method').hide();
+            jq('#tb-other-device-name').hide();
+
            //workflow
             jq('#prep-referrals').hide();
             jq('#sti-referrals').hide();
@@ -95,7 +98,8 @@
             //Selected
             jq('#patient-hiv-status').change(onPatientHivStatusChange);
             jq('#care-facility select').change(careFacilitySelected);
-            jq('#complaints-checked :input[type=checkbox]').change(complaintSelected);
+            jq("#complaints-today").change(hasComplaintSelected);       //boolean
+            jq("#undergoing-treatment").change(hasTreatmentSelected);
             jq('#treatment-checked :input[type=checkbox]').change(treatmentSelected);
             jq('#known-allergies').change(knownAllergiesSelected);       //boolean
             jq('#prev-surgical-operation').change(otherSurgerySelected);
@@ -108,6 +112,8 @@
             jq('#sti-referred').change(stiReferredSelected);
             jq('#good-health').change(goodHealthSelected);
             jq('#counselled').change(counselledSelected);
+            jq('#conventional-method').change(conventionalMethodSelected);
+            jq('#device-name').change(deviceMethodSelected);
 
             //Show assent or consent depending with age
             if (pAge &gt; 17){
@@ -184,6 +190,7 @@
             } else{
                 jq('#art-start-date').html("ART Start date not available ");
             }
+
         });
         // End on ready
 
@@ -229,6 +236,7 @@
                  jq('#tbl-reported-positive-details').hide();
                  jq('#no-hiv-data-alert').hide();
                  jq('#sti-referrals').hide();
+
              }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
@@ -297,16 +305,7 @@
                 getField('other-facility.value').val("");
             }
         }
-        //Other complaint selected
-        var complaintSelected = function(){
-            var val = jq(this).val();
-            if(val == 5622 ){
-                jq('#tbl-other-complaint').show();
-            }else {
-                jq('#tbl-other-complaint').hide();
-                getField('other-complaint.value').val("");
-            }
-        }
+
         //Other treatment selected
         var treatmentSelected = function(){
             var val = jq(this).val();
@@ -332,7 +331,7 @@
             var reaction = jq('.reaction select').val('');
             var severity = jq('.severity select').val('');
             var date = jq('.allergy-date input').val('');
-            if (val == "false" || val == 1066){
+            if (val == 'false' ){
                 jq("#tbl-known-allergies").hide();
                 clearHiddenSections([allergy, reaction, severity, date]);
                 getField('allergy-field.error').html('Please specify the allergy.').hide();
@@ -479,33 +478,49 @@
             }
         }
 
+        var hasComplaintSelected = function() {
+            var val = getValue('complaints-today.value');
+            if (val == 'true'){
+                jq("#complaints-checked input[type=checkbox]").prop("disabled",false);
+            }else{
+                jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
+                jq("#complaints-checked input[type=checkbox]").prop("checked",false);
+            }
+        }
+        var hasTreatmentSelected = function() {
+            var val = getValue('undergoing-treatment.value');
+            if (val == 1065){
+                jq("#treatment-checked input[type=checkbox]").prop("disabled",false);
+            }else{
+                jq("#treatment-checked input[type=checkbox]").prop("disabled",true);
+                jq("#treatment-checked input[type=checkbox]").prop("checked",false);
+            }
+        }
         var complaintsSelected = function(){
             var val = jq(this).val();
             var complaintsChecked = jq("#complaints-checked input:checkbox:checked");
-            if(val == 123529 &amp;&amp; complaintsChecked.length ==1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
-                jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
-                jq(this).prop("disabled",false);
-                jq('#other-treatments').hide();
-                jq('#eligibility-confirmation').hide();
-                jq('#sti-referrals').show();
-            }else if(val == 123529 &amp;&amp; complaintsChecked.length ==1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
-                jq("#complaints-checked input[type=checkbox]").prop("disabled", true);
-                jq(this).prop("disabled", false);
-                jq('#other-treatments').hide();
-                jq('#eligibility-confirmation').hide();
-                jq('#prep-referrals').show();
-            }else{
-                jq("#complaints-checked input[type=checkbox]").prop("disabled",false);
-                jq('#prep-referrals').hide();
-                jq('#sti-referrals').hide();
-                jq('#other-treatments').show();
-                jq('#eligibility-confirmation').show();
-
+            //TODO: Confirm the actions to do if checked urethral discharge
+//            if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+//                jq('#other-treatments').hide();
+//                jq('#eligibility-confirmation').hide();
+//                jq('#sti-referrals').show();
+//            }else if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+//                jq('#other-treatments').hide();
+//                jq('#eligibility-confirmation').hide();
+//                jq('#prep-referrals').show();
+//            }else{
+//                jq('#prep-referrals').hide();
+//                jq('#sti-referrals').hide();
+//                jq('#other-treatments').show();
+//                jq('#eligibility-confirmation').show();
+//            }
+            if(val == 5622 ){
+                jq('#tbl-other-complaint').show();
+            }else {
+                jq('#tbl-other-complaint').hide();
+                getField('other-complaint.value').val("");
             }
 
-            if(complaintsChecked.length ==0){
-                jq("#general-exam-findings input[value=1107]").prop("disabled",false);
-            }
         }
         //Eligibility questions
         //In good health selected
@@ -567,17 +582,228 @@
                 clearHiddenSections(jq('#explain-noneligibility'));
             }
         }
+
+        var conventionalMethodSelected = function() {
+            var conventionalMethod = getValue('conventional-method.value');
+            if(conventionalMethod == 5622) {
+                jq('#tb-other-conventional-method').show();
+            }else{
+                jq('#tb-other-conventional-method').hide();
+                getField('other-conventional-method.value').val("");
+            }
+        }
+        var deviceMethodSelected = function() {
+            var deviceName = getValue('device-name.value');
+            if(deviceName == 5622) {
+                jq('#tb-other-device-name').show();
+            }else{
+                jq('#tb-other-device-name').hide();
+                getField('other-device-name.value').val("");
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
+            var assentGiven = getValue('assent-given.value');
+            var consentGiven = getValue('consent-given.value');
+            var patientHivStatus = getField('patient-hiv-status.value').val();
+            var careFacility = getField('care-facility.value').val();
+            var otherFacility = getField('other-facility.value').val();
+            var reportedUPN = getField('upn-concept.value').val();
+            var lastVl = getField('vl.value').val();
+            var lastLdlChecked = jq("#ldl input:checkbox:checked");
+            var patientRegimen = getField('patient-regimen.value').val();
+            var complaintsToday = getValue('complaints-today.value');
+            var complaintsChecked = jq("#complaints-checked input:checkbox:checked");
+            var treatmentToday = getValue('undergoing-treatment.value');
+            var treatmentChecked = jq("#treatment-checked input:checkbox:checked");
+            var allergen = getField('allergy-field.value').val();
+            var knownAllergies = getValue('known-allergies.value');   //boolean
+            var prevSurgery = getValue('prev-surgical-operation.value');
+            var ttBoosterProof = getValue('tetanus-booster-proof.value');
+            var ttBoosterGiven = getValue('tetanus-booster-given.value');
+            var ttBoosterDate = getValue('tetanus-booster-date.value');
             var circumcisionMethod = getValue('circumcision-method.value');
             var counselled = getValue('counselled.value');
             var goodHealth = getValue('good-health.value');
+            var explainNonEligibility = getField('explain-noneligibility.value').val();
+            var conventionalMethod = getValue('conventional-method.value');
+            var deviceMethod = getValue('device-name.value');
+            var otherConventionalMethod = getField('other-conventional-method.value').val();
+            var otherDeviceName = getField('other-device-name.value').val();
+            var deviceSize = getField('device-size.value').val();
+            var prepReferred = getValue('prep-referred.value');
+            var stiReferred = getValue('sti-referred.value');
+console.log("consentGiven => "+consentGiven);
+console.log("patientHivStatus => "+patientHivStatus);
+            if(pAge &lt; 18 &amp;&amp; assentGiven ==""){
+                getField('assent-given.error').html('Please provide assent.').show();
+                return false;
+            }else {
+                getField('assent-given.error').html('Please provide assent.').hide();
+            }
+            if((pAge &lt; 18 &amp;&amp; assentGiven == 1065 &amp;&amp; consentGiven ==false) || (pAge &gt; 17 &amp;&amp; consentGiven ==false) ){
+                getField('consent-given.error').html('Please provide consent.').show();
+                return false;
+            }else {
+                getField('consent-given.error').html('Please provide consent.').hide();
+            }
+            if(consentGiven == 'true' &amp;&amp; patientHivStatus == false ){
+                getField('patient-hiv-status.error').html('Please specify patient HIV status.').show();
+                return false;
+            }else {
+                getField('patient-hiv-status.error').html('Please specify patient HIV status.').hide();
+            }
+            if((patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; careFacility == false) ){
+                getField('care-facility.error').html('Please specify facility which patient receives care from.').show();
+                return false;
+            }else {
+                getField('care-facility.error').html('Please specify facility which patient receives care from.').hide();
+            }
+            if((patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; careFacility == 164407 &amp;&amp;otherFacility == "" ) ){
+                getField('other-facility.error').html('Please specify facility which patient receives care from.').show();
+                return false;
+            }else {
+                getField('other-facility.error').html('Please specify facility which patient receives care from.').hide();
+            }
+            if((patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; reportedUPN == "") ){
+                getField('upn-concept.error').html('Please specify patient CCC Number.').show();
+                return false;
+            }else {
+                getField('upn-concept.error').html('Please specify patient CCC Number.').hide();
+            }
+            if((patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; lastVl =="" &amp;&amp; lastLdlChecked .length ==0) ){
+                getField('vl.error').html('Please specify patient last viral load results.').show();
+                return false;
+            }else {
+                getField('vl.error').html('Please specify patient last viral load results.').hide();
+            }
+            if((patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; patientRegimen == false) ){
+                getField('patient-regimen.error').html('Please specify patient regimen.').show();
+                return false;
+            }else {
+                getField('patient-regimen.error').html('Please specify patient regimen.').hide();
+            }
+            if(consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; complaintsToday == false){
+                getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
+                return false;
+            }else {
+                getField('complaints-today.error').html('Please specify  if patient has any complaints today.').hide();
+            }
+            if(complaintsToday == 'true' &amp;&amp; complaintsChecked.length ==0){
+                getField('complaint-error.error').html('Please specify patient complaints.').show();
+                return false;
+            }else {
+                getField('complaint-error.error').html('Please specify patient complaints.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; treatmentToday == false ) {
+                getField('undergoing-treatment.error').html('Please specify if patient is undergoing treatment.').show();
+                return false;
+            }else{
+                getField('undergoing-treatment.error').html('Please specify if patient is undergoing treatment.').hide();
+            }
+            if(treatmentToday == 1065 &amp;&amp; treatmentChecked.length ==0){
+                getField('treatment-error.error').html('Please specify patient treatment.').show();
+                return false;
+            }else {
+                getField('treatment-error.error').html('Please specify patient treatment.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; knownAllergies == false ) {
+                getField('known-allergies.error').html('Please specify if patient has any known allergies.').show();
+                return false;
+            }else{
+                getField('known-allergies.error').html('Please specify if patient has any known allergies.').hide();
+            }
+            if (knownAllergies == 'true' &amp;&amp; allergen == '') {
+                getField('allergy-field.error').html('Please specify the allergy.').show();
+                return false;
+            }else{
+                getField('allergy-field.error').html('Please specify the allergy.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; prevSurgery == false) {
+                getField('prev-surgical-operation.error').html('Please specify if patient had previous surgical operations.').show();
+                return false;
+            }else{
+                getField('prev-surgical-operation.error').html('Please specify if patient had previous surgical operations.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; ttBoosterProof == false) {
+                getField('tetanus-booster-proof.error').html('Please specify if patient has proof of receiving Tetanus Booster Vaccine.').show();
+                return false;
+            }else{
+                getField('tetanus-booster-proof.error').html('Please specify if patient has proof of receiving Tetanus Booster Vaccine.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; ttBoosterGiven == false) {
+                getField('tetanus-booster-given.error').html('Please specify if patient has been given Tetanus Booster Vaccine.').show();
+                return false;
+            }else{
+                getField('tetanus-booster-given.error').html('Please specify if patient has been given Tetanus Booster Vaccine.').hide();
+            }
+            if (ttBoosterGiven == 1065 &amp;&amp; ttBoosterDate == "") {
+                getField('tetanus-booster-date.error').html('Please specify when patient was given Tetanus Booster Vaccine.').show();
+                return false;
+            }else{
+                getField('tetanus-booster-date.error').html('Please specify when patient was given Tetanus Booster Vaccine.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; goodHealth == false) {
+                getField('good-health.error').html('Please specify whether patient is in good health.').show();
+                return false;
+            }else{
+                getField('good-health.error').html('Please specify whether patient is in good health.').hide();
+            }
+            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; counselled == false) {
+                getField('counselled.error').html('Please specify whether patient has been counselled.').show();
+                return false;
+            }else{
+                getField('counselled.error').html('Please specify whether patient has been counselled.').hide();
+            }
             if(counselled == 1065 &amp;&amp; goodHealth =='true' &amp;&amp; circumcisionMethod == false){ //choose circumcision method preferred
                 getField('circumcision-method.error').html('Please specify circumcision method.').show();
                 return false;
             }else {
                 getField('circumcision-method.error').html('Please specify circumcision method.').hide();
             }
+            if(((counselled == 1065 &amp;&amp; goodHealth == 'false') || (counselled == 1066 &amp;&amp; goodHealth == 'false') || (counselled == 1066 &amp;&amp; goodHealth == 'true')) &amp;&amp; explainNonEligibility == ""){
+                getField('explain-noneligibility.error').html('Please specify reason for non eligibility.').show();
+                return false;
+            }else {
+                getField('explain-noneligibility.error').html('Please specify reason for non eligibility.').hide();
+            }
+            if(circumcisionMethod == 159619 &amp;&amp; conventionalMethod == false){
+                getField('conventional-method.error').html('Please specify conventional circumcision method.').show();
+                return false;
+            }else {
+                getField('conventional-method.error').html('Please specify conventional circumcision method.').hide();
+            }
+            if(conventionalMethod == 5622 &amp;&amp; otherConventionalMethod == ""){
+                getField('other-conventional-method.error').html('Please specify other conventional circumcision method.').show();
+                return false;
+            }else {
+                getField('other-conventional-method.error').html('Please specify other conventional circumcision method.').hide();
+            }
+            if(deviceMethod == 5622 &amp;&amp; otherDeviceName == ""){
+                getField('other-device-name.error').html('Please specify other circumcision device name.').show();
+                return false;
+            }else {
+                getField('other-device-name.error').html('Please specify other circumcision device name.').hide();
+            }
+            if(circumcisionMethod == 164204 &amp;&amp; deviceMethod == false){
+                getField('device-name.error').html('Please specify device name.').show();
+                return false;
+            }else {
+                getField('device-name.error').html('Please specify device name.').hide();
+            }
+            if(circumcisionMethod == 164204 &amp;&amp; deviceSize == ""){
+                getField('device-size.error').html('Please specify device size.').show();
+                return false;
+            }else {
+                getField('device-size.error').html('Please specify device size.').hide();
+            }
+            if(consentGiven == 'true' &amp;&amp; patientHivStatus == UNKNOWN &amp;&amp; prepReferred == false){
+                getField('prep-referred.error').html('Please specify  referral service.').show();
+                return false;
+            }else {
+                getField('prep-referred.error').html('Please specify  referral service.').hide();
+            }
+
             return true;
         });
         //Clear hidden sections
@@ -616,8 +842,11 @@
                 }
                 //consent
                 var consent = getValue('consent-given.value');
+                var patientHivStatus = getField('patient-hiv-status.value').val();
                 if(consent == 'true' &amp;&amp; PATIENT_IS_ENROLLED_HIV ){
                     jq('#hiv-status-details').show();
+                    jq('#hiv-test-art-date').show();
+                    jq('#tbl-enrolled-positive-details').show();
                     jq('#medical-history').show();
                     jq('#other-treatments').show();
                     jq('#consented-alert').show();
@@ -625,8 +854,21 @@
                     jq('#sti-referrals').hide();
                     jq('#prep-referrals').hide();
                 }
-                if(consent == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
+                if(consent == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == HIV_POSITIVE ){
                     jq('#hiv-status-details').show();
+                    jq('#hiv-test-art-date').show();
+                    jq('#tbl-reported-positive-details').show();
+                    jq('#medical-history').show();
+                    jq('#other-treatments').show();
+                    jq('#consented-alert').show();
+                    jq('#eligibility-confirmation').show();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+
+                if(consent == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == HIV_NEGATIVE ){
+                    jq('#hiv-status-details').show();
+                    jq('#hiv-test-art-date').show();
                     jq('#medical-history').show();
                     jq('#other-treatments').show();
                     jq('#consented-alert').show();
@@ -674,7 +916,33 @@
                     jq('#tr-device-method-types').show();
                     jq('#tr-conventional-method-types').hide();
                 }
-
+                var knownAllergies = getValue('known-allergies.value');   //boolean
+                if (knownAllergies == 'true'){
+                    jq("#tbl-known-allergies").show();
+                }else{
+                    jq("#tbl-known-allergies").hide();
+                }
+                // Booster date
+                var ttBoosterGiven = getValue('tetanus-booster-given.value');
+                if (ttBoosterGiven == 1065){
+                    jq("#tbl-booster-date").show();
+                }else{
+                    jq("#tbl-booster-date").hide();
+                }
+              var conventionalMethod = getValue('conventional-method.value');
+                    if(conventionalMethod == 5622) {
+                        jq('#tb-other-conventional-method').show();
+                    }else{
+                        jq('#tb-other-conventional-method').hide();
+                        getField('other-conventional-method.value').val("");
+                    }
+             var deviceName = getValue('device-name.value');
+                    if(deviceName == 5622) {
+                        jq('#tb-other-device-name').show();
+                    }else{
+                        jq('#tb-other-device-name').hide();
+                        getField('other-device-name.value').val("");
+                    }
             });
         </script>
     </ifMode>
@@ -735,7 +1003,7 @@
                     </td>
                     <td>
                         <table id="hiv-test-art-date">
-                            <tr id="hiv-start-date">
+                            <tr id="hiv-test-date">
                                 <td width="250">HIV Test Date:</td>
                                 <td>
                                     <obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -893,7 +1161,10 @@
                     <td>
                             <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr id="complaints-checked">
-                                    <td>  Client presenting with: <br/></td>
+                                    <td>  Client presenting with complaint: <br/><br/>
+                                        <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+                                        <span style="color:red;"><strong>*</strong></span>
+                                          </td>
                                     <td>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Urethral Discharge" style="checkbox" /><br/>
@@ -916,7 +1187,8 @@
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Hypospadia" style="checkbox" /><br/>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Others" style="checkbox" /><br/>
+                                             answerLabel="Others" style="checkbox" id="complaint-error" />  <span style="color:red;"><strong>*</strong></span><br/>
+
                                     </td>
                                             <td>
                                                 <br/>
@@ -940,7 +1212,12 @@
             <legend>Other Treatments </legend>
             <table class ="simple-table">
                 <tr id="treatment-checked">
-                    <td> Client undergoing treatment for: </td>
+                    <td> Client undergoing treatment :
+                        <obs id="undergoing-treatment" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" answerLabels="Yes,No"
+                        /><span style="color:red;"><strong>*</strong></span>
+                    </td>
                     <td>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Anemia" style="checkbox" /><br/>
@@ -949,7 +1226,7 @@
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="HIV/AIDS" style="checkbox"  id="enrolled-hiv" /><br/>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Other " style="checkbox" /><br/>
+                             answerLabel="Other " style="checkbox" id="treatment-error" /><span style="color:red;"><strong>*</strong></span><br/>
                     </td>
                     <td>
                         <br/>
@@ -983,6 +1260,7 @@
            <td>
                 Any known allergies? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                 <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
+               <span style="color:red;"><strong>*</strong></span>
            </td>
             <td>
             <table id="tbl-known-allergies">
@@ -1036,7 +1314,7 @@
                         <obs conceptId="164896AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="prev-surgical-operation" />
+                             style="radio"  id="prev-surgical-operation" /><span style="color:red;"><strong>*</strong></span>
                     </td>
                     <td>
                         <br/>
@@ -1056,7 +1334,7 @@
                         <obs conceptId="54AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="tetanus-booster-proof" />
+                             style="radio"  id="tetanus-booster-proof" /><span style="color:red;"><strong>*</strong></span>
                     </td>
                 </tr>
                 <tr>
@@ -1065,13 +1343,13 @@
                         <obs conceptId="161536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="tetanus-booster-given" />
+                             style="radio"  id="tetanus-booster-given" /><span style="color:red;"><strong>*</strong></span>
                     </td>
                     <td>
                         <table id="tbl-booster-date">
                             <tr>
                                 <td>
-                        <obs class="tetanus-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        <obs id="tetanus-booster-date" conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 </td>
                             </tr>
                         </table>
@@ -1171,10 +1449,16 @@
                                          style="radio"/>
                                     <br/>
                                   </td>
-                                   <td> Specify: </td>
-                                    <td>
-                                        <obs id="other-conventional-method" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
-                                    </td>
+                                   <td>
+                                   <table id="tb-other-conventional-method">
+                                       <tr>
+                                           <td> Specify: </td>
+                                            <td>
+                                                <obs id="other-conventional-method" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                            </td>
+                                       </tr>
+                                   </table>
+                                   </td>
                                 </tr>
                             <tr id="tr-device-method-types">
                                 <td>
@@ -1185,9 +1469,15 @@
                                          answerLabels="Shangring,Other"
                                          style="radio" />
                                 </td>
+                                <td>
+                                    <table id="tb-other-device-name">
+                                        <tr>
                                 <td> Specify: </td>
                                 <td>
                                     <obs id="other-device-name" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                </td>
+                                        </tr>
+                                    </table>
                                 </td>
 
                                 <td>
