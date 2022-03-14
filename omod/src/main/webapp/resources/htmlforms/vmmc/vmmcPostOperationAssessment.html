@@ -81,9 +81,6 @@
             var ttcvMedication = jq("#medication-ttcv input:checkbox:checked");
             var otherMedication = jq("#medication-other input:checkbox:checked");
 
-            console.log("otherMedication", otherMedication);
-            console.log("specifyMedication", specifyMedication);
-
             if(analgesicMedication.length == 0 &amp;&amp; antibioticsMedication.length == 0 &amp;&amp; ttcvMedication.length == 0  &amp;&amp; otherMedication.length == 0) {
                 getField('medication-none.error').html('Please specify if any medication was given').show();
                 return false;

@@ -159,13 +159,6 @@
             var adverseEventsVal = getValue('adverse_events.value');
             var managementVal = getValue('severity_management.value');
 
-            console.log("anaesthesiaVal", anaesthesiaVal);
-            console.log("concentrationVal", concentrationVal);
-            console.log("volumeVal", volumeVal);
-
-            console.log("adverseEventsVal", adverseEventsVal);
-            console.log("managementVal", managementVal);
-
             if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
                 return false;
