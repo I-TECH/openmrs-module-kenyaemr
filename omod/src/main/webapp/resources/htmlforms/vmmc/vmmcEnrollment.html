@@ -76,7 +76,45 @@
                 clearHiddenSections(jq("#tbl-other-information-source"));
             }
         };
-
+        //Before Submit
+        beforeSubmit.push(function() {
+            var referredBy = getValue('referral-by.value');
+            var otherReferred = jq('#other-referral input[type=text]').val();
+            var infoSource = getValue('information-source.value');
+            var otherInfoSource = jq('#other-information-source input[type=text]').val();
+            var county = getField('county.value').val();
+            if(referredBy == ""){
+                getField('referral-by.error').html('Please specify referral source').show();
+                return false;
+            }else {
+                getField('referral-by.error').html('Please specify referral source').hide();
+            }
+            if(referredBy == 5622  &amp;&amp; otherReferred == ""){
+                getField('other-referral.error').html('Please specify other referral source').show();
+                return false;
+            }else {
+                getField('referral-by.error').html('Please specify referral source').hide();
+            }
+            if(infoSource == ""){
+                getField('information-source.error').html('Please specify information source').show();
+                return false;
+            }else {
+                getField('information-source.error').html('Please specify information source').hide();
+            }
+            if(infoSource == 5622  &amp;&amp; otherInfoSource == ""){
+                getField('other-information-source.error').html('Please specify other information source').show();
+                return false;
+            }else {
+                getField('other-information-source.error').html('Please specify other information source').hide();
+            }
+            if(county == false){
+                getField('county.error').html('Please specify county of origin').show();
+                return false;
+            }else {
+                getField('county.error').html('Please specify county of origin').hide();
+            }
+            return true;
+        });
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
             parentObj.find('input[type=radio]').each(function() {
@@ -139,14 +177,15 @@
                    <td>
                        <obs id="referral-by" conceptId="160482"
                             answerConceptIds="165650,1577,1555,5622"
-                            style="radio" answerLabels="Self referral,Nurse,Community Health Worker,Other" />
+                            style="radio" answerLabels="Self referral,Nurse,Community Health Worker,Other"/>
+                       <span style="color:red;"><strong>*</strong></span>
                    </td>
                    <td>
                        <table id="tbl-other-referral">
                            <tr>
                                <td>  &#160;&#160;&#160; Specify :
                                    <obs id="other-referral" conceptId="165143" />
-                                   &#160;&#160;&#160;
+                                   <span style="color:red;"><strong>*</strong></span>
                                </td>
                            </tr>
                        </table>
@@ -159,14 +198,15 @@
                     <td>
                         <obs id="information-source" conceptId="162568"
                              answerConceptIds="159388,1565,163121,1555,160542,5486,5622"
-                             style="radio" answerLabels="Radio/Tv,Print Media,Road Show,Mobilizer CHW,OPD/MCH/HT,Social Media,Other" />
+                             style="radio" answerLabels="Radio/Tv,Print Media,Road Show,Mobilizer CHW,OPD/MCH/HT,Social Media,Other"/>
+                        <span style="color:red;"><strong>*</strong></span>
                     </td>
                     <td>
                         <table id="tbl-other-information-source">
                             <tr>
                                 <td>  &#160;&#160;&#160; Specify :
-                                    <obs id="other-information-source" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                                    &#160;&#160;&#160;
+                                    <obs id="other-information-source" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                                    <span style="color:red;"><strong>*</strong></span>
                                 </td>
                             </tr>
                         </table>
@@ -176,7 +216,9 @@
                     <td>
                         County of Origin :
                     </td>
-                    <td><obs id="county" conceptId="CIEL:161564"  answers="$countyNames" answerLabels="$countyNames"/></td>
+                    <td><obs id="county" conceptId="CIEL:161564"  answers="$countyNames" answerLabels="$countyNames"/>
+                        <span style="color:red;"><strong>*</strong></span>
+                    </td>
                 </tr>
 
             </table>
