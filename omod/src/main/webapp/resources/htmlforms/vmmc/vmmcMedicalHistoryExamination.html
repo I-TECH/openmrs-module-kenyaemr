@@ -389,26 +389,97 @@
         //Assent Given selected
         var assentGivenSelected = function(){
             var val = getValue('assent-given.value');
-            var consent_given = jq('#consent-given');
-            if(val == 1065){
+            if(val == 1065 &amp;&amp; PATIENT_IS_ENROLLED_HIV ){
+                jq('#tr-consent').show();
+                jq('#sti-referrals').hide();
+                jq('#prep-referrals').hide();
+                clearHiddenSections(jq('#sti-referred'));
+                clearHiddenSections(jq('#sti-services-referred'));
+            }
+            if(val == 1065 &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
                 jq('#tr-consent').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
                 clearHiddenSections(jq('#prep-referred'));
                 clearHiddenSections(jq('#prep-services-referred'));
-                clearHiddenSections(jq('#sti-referred'));
-                clearHiddenSections(jq('#sti-services-referred'));
             }
             if(val == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq('#tr-consent').hide();
                 jq('#sti-referrals').show();
-                clearHiddenSections(consent_given);
+                jq('#tr-consent').hide();
+                jq('#consented-alert').hide();
+                jq('#medical-history').hide();
+                jq('#other-treatments').hide();
+                jq('#hiv-status-details').hide();
+                jq('#eligibility-confirmation').hide();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#consent-given'));
+                clearHiddenSections(jq('#patient-hiv-status'));
+                clearHiddenSections(jq('#care-facility'));
+                clearHiddenSections(jq('#other-facility'));
+                clearHiddenSections(jq('#upn-concept'));
+                clearHiddenSections(jq('#vl'));
+                clearHiddenSections(jq('#ldl'));
+                clearHiddenSections(jq('#patient-regimen'));
+                clearHiddenSections(jq('#disorder'));
+                clearHiddenSections(jq('#complaints-today'));
+                clearHiddenSections(jq('#complaints-checked'));
+                clearHiddenSections(jq('#undergoing-treatment'));
+                clearHiddenSections(jq('#treatment-checked'));
+                clearHiddenSections(jq('#known-allergies'));
+                clearHiddenSections(jq('#prev-surgical-operation'));
+                clearHiddenSections(jq('#tetanus-booster-proof'));
+                clearHiddenSections(jq('#tetanus-booster-given'));
+                clearHiddenSections(jq('#tetanus-booster-date'));
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#counselled'));
+                clearHiddenSections(jq('#good-health'));
+                clearHiddenSections(jq('#explain-noneligibility'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#device-name'));
+                clearHiddenSections(jq('#other-conventional-method'));
+                clearHiddenSections(jq('#other-device-name'));
+                clearHiddenSections(jq('#device-size'));
+
             }
             if(val == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#tr-consent').hide();
                 jq('#prep-referrals').show();
-                clearHiddenSections(consent_given);
-            }
+                jq('#tr-consent').hide();
+                jq('#consented-alert').hide();
+                jq('#medical-history').hide();
+                jq('#other-treatments').hide();
+                jq('#hiv-status-details').hide();
+                jq('#eligibility-confirmation').hide();
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#consent-given'));
+                clearHiddenSections(jq('#patient-hiv-status'));
+                clearHiddenSections(jq('#care-facility'));
+                clearHiddenSections(jq('#other-facility'));
+                clearHiddenSections(jq('#upn-concept'));
+                clearHiddenSections(jq('#vl'));
+                clearHiddenSections(jq('#ldl'));
+                clearHiddenSections(jq('#patient-regimen'));
+                clearHiddenSections(jq('#disorder'));
+                clearHiddenSections(jq('#complaints-today'));
+                clearHiddenSections(jq('#complaints-checked'));
+                clearHiddenSections(jq('#undergoing-treatment'));
+                clearHiddenSections(jq('#treatment-checked'));
+                clearHiddenSections(jq('#known-allergies'));
+                clearHiddenSections(jq('#prev-surgical-operation'));
+                clearHiddenSections(jq('#tetanus-booster-proof'));
+                clearHiddenSections(jq('#tetanus-booster-given'));
+                clearHiddenSections(jq('#tetanus-booster-date'));
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#counselled'));
+                clearHiddenSections(jq('#good-health'));
+                clearHiddenSections(jq('#explain-noneligibility'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#device-name'));
+                clearHiddenSections(jq('#other-conventional-method'));
+                clearHiddenSections(jq('#other-device-name'));
+                clearHiddenSections(jq('#device-size'));
+              }
         }
         //Consent Given selected
         var consentGivenSelected = function(){
@@ -425,7 +496,7 @@
                 jq('#prep-referrals').hide();
                 clearHiddenSections(jq('#sti-referred'));
                 clearHiddenSections(jq('#sti-services-referred'));
-            }
+               }
             if(val == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV ){
                 jq('#hiv-status-details').show();
                 jq('#medical-history').show();
@@ -444,7 +515,33 @@
                 jq('#other-treatments').hide();
                 jq('#hiv-status-details').hide();
                 jq('#eligibility-confirmation').hide();
-                clearHiddenSections(patient_status);
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#patient-hiv-status'));
+                clearHiddenSections(jq('#care-facility'));
+                clearHiddenSections(jq('#other-facility'));
+                clearHiddenSections(jq('#upn-concept'));
+                clearHiddenSections(jq('#vl'));
+                clearHiddenSections(jq('#ldl'));
+                clearHiddenSections(jq('#patient-regimen'));
+                clearHiddenSections(jq('#disorder'));
+                clearHiddenSections(jq('#complaints-today'));
+                clearHiddenSections(jq('#complaints-checked'));
+                clearHiddenSections(jq('#undergoing-treatment'));
+                clearHiddenSections(jq('#treatment-checked'));
+                clearHiddenSections(jq('#known-allergies'));
+                clearHiddenSections(jq('#prev-surgical-operation'));
+                clearHiddenSections(jq('#tetanus-booster-proof'));
+                clearHiddenSections(jq('#tetanus-booster-given'));
+                clearHiddenSections(jq('#tetanus-booster-date'));
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#counselled'));
+                clearHiddenSections(jq('#good-health'));
+                clearHiddenSections(jq('#explain-noneligibility'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#device-name'));
+                clearHiddenSections(jq('#other-conventional-method'));
+                clearHiddenSections(jq('#other-device-name'));
+                clearHiddenSections(jq('#device-size'));
             }
             if(val == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#prep-referrals').show();
@@ -453,7 +550,34 @@
                 jq('#other-treatments').hide();
                 jq('#hiv-status-details').hide();
                 jq('#eligibility-confirmation').hide();
-                clearHiddenSections(patient_status);
+                jq('#fs-circumcision-method').hide();
+                clearHiddenSections(jq('#patient-hiv-status'));
+                clearHiddenSections(jq('#care-facility'));
+                clearHiddenSections(jq('#other-facility'));
+                clearHiddenSections(jq('#upn-concept'));
+                clearHiddenSections(jq('#vl'));
+                clearHiddenSections(jq('#ldl'));
+                clearHiddenSections(jq('#patient-regimen'));
+                clearHiddenSections(jq('#disorder'));
+                clearHiddenSections(jq('#complaints-today'));
+                clearHiddenSections(jq('#complaints-checked'));
+                clearHiddenSections(jq('#undergoing-treatment'));
+                clearHiddenSections(jq('#treatment-checked'));
+                clearHiddenSections(jq('#known-allergies'));
+                clearHiddenSections(jq('#prev-surgical-operation'));
+                clearHiddenSections(jq('#tetanus-booster-proof'));
+                clearHiddenSections(jq('#tetanus-booster-given'));
+                clearHiddenSections(jq('#tetanus-booster-date'));
+                clearHiddenSections(jq('#circumcision-method'));
+                clearHiddenSections(jq('#counselled'));
+                clearHiddenSections(jq('#good-health'));
+                clearHiddenSections(jq('#explain-noneligibility'));
+                clearHiddenSections(jq('#conventional-method'));
+                clearHiddenSections(jq('#device-name'));
+                clearHiddenSections(jq('#other-conventional-method'));
+                clearHiddenSections(jq('#other-device-name'));
+                clearHiddenSections(jq('#device-size'));
+
             }
         }
         //Prep Referred  selected
@@ -645,7 +769,7 @@
             }else {
                 getField('consent-given.error').html('Please provide consent.').hide();
             }
-            if(consentGiven == 'true' &amp;&amp; patientHivStatus == false ){
+           if(consentGiven == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == false ){
                 getField('patient-hiv-status.error').html('Please specify patient HIV status.').show();
                 return false;
             }else {
@@ -796,12 +920,23 @@
                 getField('device-size.error').html('Please specify device size.').hide();
             }
             if(consentGiven == 'true' &amp;&amp; patientHivStatus == UNKNOWN &amp;&amp; prepReferred == false){
-                getField('prep-referred.error').html('Please specify  referral service.').show();
+                getField('prep-referred.error').html('Please specify referral service.').show();
                 return false;
             }else {
                 getField('prep-referred.error').html('Please specify  referral service.').hide();
             }
-
+            if(consentGiven == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; prepReferred == false){
+                getField('prep-referred.error').html('Please specify referral service.').show();
+                return false;
+            }else {
+                getField('prep-referred.error').html('Please specify  referral service.').hide();
+            }
+            if(consentGiven == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV  &amp;&amp; stiReferred == false){
+                getField('sti-referred.error').html('Please specify referral service.').show();
+                return false;
+            }else {
+                getField('sti-referred.error').html('Please specify referral service.').hide();
+            }
             return true;
         });
         //Clear hidden sections
@@ -831,12 +966,22 @@
                     jq('#prep-referrals').hide();
                 }
                 if(assent == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
-                    jq('#tr-consent').hide();
                     jq('#sti-referrals').show();
+                    jq('#tr-consent').hide();
+                    jq('#consented-alert').hide();
+                    jq('#medical-history').hide();
+                    jq('#other-treatments').hide();
+                    jq('#hiv-status-details').hide();
+                    jq('#fs-circumcision-method').hide();
                 }
                 if(assent == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
-                    jq('#tr-consent').hide();
                     jq('#prep-referrals').show();
+                    jq('#tr-consent').hide();
+                    jq('#consented-alert').hide();
+                    jq('#medical-history').hide();
+                    jq('#other-treatments').hide();
+                    jq('#hiv-status-details').hide();
+                    jq('#fs-circumcision-method').hide();
                 }
                 //consent
                 var consent = getValue('consent-given.value');
@@ -880,6 +1025,7 @@
                     jq('#medical-history').hide();
                     jq('#other-treatments').hide();
                     jq('#hiv-status-details').hide();
+                    jq('#fs-circumcision-method').hide();
                 }
                 if(consent == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                     jq('#prep-referrals').show();
@@ -887,6 +1033,7 @@
                     jq('#medical-history').hide();
                     jq('#other-treatments').hide();
                     jq('#hiv-status-details').hide();
+                    jq('#fs-circumcision-method').hide();
                 }
 
                 //eligibility
@@ -966,6 +1113,7 @@
                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabel="Yes,No"
                             style="radio" />
+                       <span style="color:red;"><strong>*</strong></span>
                        <br/>
                    </td>
                </tr>
@@ -979,6 +1127,7 @@
                    <td>
                        <obs id="consent-given" conceptId="1710"
                             style="yes_no" />
+                       <span style="color:red;"><strong>*</strong></span>
                        <br/>
                    </td>
                </tr>
@@ -1050,7 +1199,7 @@
         </table>
         <table  class ="simple-table" id="tbl-reported-positive-details">
             <tr>
-                <td>Facility of HIV Care :  </td>
+                <td>Facility of HIV Care : <span style="color:red;"><strong>*</strong></span> </td>
                 <td>
                     <obs id="care-facility" conceptId="165239"
                          answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1082,12 +1231,12 @@
                 </td>
             </tr>
                 <tr>
-                    <td width="250">CCC Number:</td>
+                    <td width="250">CCC Number: <span style="color:red;"><strong>*</strong></span></td>
                     <td>                       
                         <div> <obs class="upn" conceptId="162053" id="upn-concept" size ="20" /></div>
                         <span id="upnError" class="error"></span>
                     </td>
-                    <td width="250">Current Regimen:</td>
+                    <td width="250">Current Regimen: <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1121,7 +1270,7 @@
 
                 </tr>
                 <tr>
-                    <td width="250">HIV Viral Load</td>
+                    <td width="250">HIV Viral Load <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="vl" conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                         copies/ml
@@ -1143,7 +1292,7 @@
                     <td>
 
                             <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                            <tr>
+                            <tr id="disorder">
                                 <td>  Client's known history of: <br/></td>
                                 <td>
                                     <obs conceptId="1628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1498,7 +1647,7 @@
                         <obs id="prep-referred" conceptId="165093"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
-                             style="radio" />
+                             style="radio" /><span style="color:red;"><strong>*</strong></span>
                         <br/>
                     </td>
                     <td>
@@ -1529,7 +1678,7 @@
                         <obs id="sti-referred" conceptId="165093"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
-                             style="radio" />
+                             style="radio" /><span style="color:red;"><strong>*</strong></span>
                         <br/>
                     </td>
                     <td>
