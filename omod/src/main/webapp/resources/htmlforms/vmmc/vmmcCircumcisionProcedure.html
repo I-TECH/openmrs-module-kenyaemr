@@ -88,9 +88,11 @@
             if(val == 161914 ) {
                 jq("#tbl-concentration").show();
                 jq("#tbl-volume").hide();
+                clearHiddenSections(jq('#volume'));
             } else if(val == 162797) {
                 jq("#tbl-volume").show();
                 jq("#tbl-concentration").hide();
+                clearHiddenSections(jq('#concentration'));
             }
         }
 
@@ -149,6 +151,9 @@
             var circumcisionMethod = getValue('circumcision-method.value');
             var deviceSize = getValue('device_size.value');
 
+            var otherConventional = getValue('conventional-specify.value');
+            var otherDevice = getValue('device-name-specify.value');
+
             var conventionalVal = getValue('conventional-method.value');
             var deviceVal = getValue('device-name.value');
 
@@ -162,35 +167,50 @@
             if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
                 return false;
+            } else {
+                getField('conventional-specify.error').html('Please specify other method').hide();
             }
 
             if(deviceVal== 5622  &amp;&amp; otherDevice == ""){
                 getField('device-name-specify.error').html('Please specify other method').show();
                 return false;
+            } else {
+                getField('device-name-specify.error').html('Please specify other method').hide();
             }
 
-            if(circumcisionMethod == 16420  &amp;&amp; deviceSize == ""){
+            if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "" &amp;&amp; deviceVal == 5622){
+                getField('device_size.error').html('Please specify the device size').hide();
+            } else if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "") {
                 getField('device_size.error').html('Please specify the device size').show();
                 return false;
+            } else {
+                getField('device_size.error').html('Please specify the device size').hide();
             }
 
             // if local anaesthesia , concentration mandatory
             if(anaesthesiaVal == 161914  &amp;&amp; concentrationVal == ""){
                 getField('concentration.error').html('Please specify the concentration in mg').show();
                 return false;
+            } else {
+                getField('concentration.error').html('Please specify the concentration in mg').hide();
             }
 
             // if tropical anaesthesia, volume mandatory
             if(anaesthesiaVal == 162797  &amp;&amp; volumeVal == ""){
                 getField('volume.error').html('Please specify the volume in ml').show();
                 return false;
+            } else {
+                getField('volume.error').html('Please specify the volume in ml').hide();
             }
 
             // if adverse effects , fill management-->
            if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
                 getField('severity_management.error').html('Please specify the management of adverse events').show();
                return false;
+           } else {
+                getField('severity_management.error').html('Please specify the management of adverse events').hide();
            }
+           return true;
 
         });
 

@@ -56,18 +56,40 @@
         $(document).ready(function () {
             // if none in medications is selected
             jq("#tbl-medications").show();
-            jq('#medications-select :input[type=checkbox]').change(generalExamSelected);
+            jq('#medication-none :input[type=checkbox]').change(medicationSelected);
         });
 
-        var generalExamSelected = function(){
+        var medicationSelected = function(){
             var val = jq(this).val();
-            var generalExamsChecked = jq("#medications-select input:checkbox:checked");
+            var medicationChecked = jq("#medication-none input:checkbox:checked");
             if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
                 jq("#tbl-medications").hide();
+                clearHiddenSections(jq('#medication-analgesic'));
+                clearHiddenSections(jq('#medication-antibiotics'));
+                clearHiddenSections(jq('#medication-ttcv'));
+                clearHiddenSections(jq('#medication-other'));
+                clearHiddenSections(jq('#other-medication'));
             }
-            if(generalExamsChecked.length ==0){
+            if(medicationChecked.length ==0){
                 jq("#tbl-medications").show();
+                clearHiddenSections(jq('#medication-none'));
             }
+        }
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
         }
 
         //Before Submit
@@ -80,16 +102,22 @@
             var antibioticsMedication = jq("#medication-antibiotics input:checkbox:checked");
             var ttcvMedication = jq("#medication-ttcv input:checkbox:checked");
             var otherMedication = jq("#medication-other input:checkbox:checked");
+            var noMedication = jq("#medication-none input:checkbox:checked");
 
-            if(analgesicMedication.length == 0 &amp;&amp; antibioticsMedication.length == 0 &amp;&amp; ttcvMedication.length == 0  &amp;&amp; otherMedication.length == 0) {
+            if(analgesicMedication.length == 0 &amp;&amp; noMedication.length == 0 &amp;&amp; antibioticsMedication.length == 0 &amp;&amp; ttcvMedication.length == 0  &amp;&amp; otherMedication.length == 0) {
                 getField('medication-none.error').html('Please specify if any medication was given').show();
                 return false;
+            } else {
+                getField('medication-none.error').html('Please specify if any medication was given').hide();
             }
 
             if(otherMedication.length > 0 &amp;&amp; specifyMedication == "" ) {
                 getField('other-medication.error').html('Please specify other medication').show();
                 return false;
+            } else {
+                getField('other-medication.error').html('Please specify other medication').hide();
             }
+            return true;
         });
 
     </script>
@@ -99,18 +127,39 @@
             $(document).ready(function () {
                 // if none in medications is selected
                 jq("#tbl-medications").show();
-                jq('#medications-select :input[type=checkbox]').change(medicationSelected);
+                jq('#medication-none :input[type=checkbox]').change(medicationSelected);
             });
 
             var medicationSelected = function(){
                 var val = jq(this).val();
-                var medicationChecked = jq("#medications-select input:checkbox:checked");
-                if(val == 1107 &amp;&amp; medication.length ==1){
+                var medicationChecked = jq("#medication-none input:checkbox:checked");
+                if(val == 1107 &amp;&amp; medicationChecked.length ==1){
                     jq("#tbl-medications").hide();
+                    clearHiddenSections(jq('#medication-analgesic'));
+                    clearHiddenSections(jq('#medication-antibiotics'));
+                    clearHiddenSections(jq('#medication-ttcv'));
+                    clearHiddenSections(jq('#medication-other'));
+                    clearHiddenSections(jq('#other-medication'));
                 }
                 if(medicationChecked.length ==0){
                     jq("#tbl-medications").show();
                 }
+            }
+
+            //Clear hidden sections
+            clearHiddenSections = function(parentObj) {
+                parentObj.find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=text]').each(function() {
+                    jq(this).val("");
+                });
+                parentObj.find('select').each(function() {
+                    this.selectedIndex =0;
+                });
             }
 
         </script>
