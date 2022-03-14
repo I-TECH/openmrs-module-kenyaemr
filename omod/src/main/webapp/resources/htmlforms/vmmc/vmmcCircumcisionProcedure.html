@@ -102,6 +102,9 @@
             }
             if(val == 1066 ) {
                 jq('#tbl-adverse-effects').hide();
+                getField('adverse-event-types.value').prop("selectedIndex", 0);
+                getField('severity-level.value').prop("selectedIndex", 0);
+                jq("#event-description option[value='none']").prop('selected', true);
 
             }
         }
@@ -139,6 +142,64 @@
                 this.selectedIndex =0;
             });
         }
+
+        //Before Submit
+        beforeSubmit.push(function() {
+
+            var circumcisionMethod = getValue('circumcision-method.value');
+            var deviceSize = getValue('device_size.value');
+
+            var conventionalVal = getValue('conventional-method.value');
+            var deviceVal = getValue('device-name.value');
+
+            var anaesthesiaVal = getValue('anaesthesia.value');
+            var concentrationVal = getValue('concentration.value');
+            var volumeVal = getValue('volume.value');
+
+            var adverseEventsVal = getValue('adverse_events.value');
+            var managementVal = getValue('severity_management.value');
+
+            console.log("anaesthesiaVal", anaesthesiaVal);
+            console.log("concentrationVal", concentrationVal);
+            console.log("volumeVal", volumeVal);
+
+            console.log("adverseEventsVal", adverseEventsVal);
+            console.log("managementVal", managementVal);
+
+            if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
+                getField('conventional-specify.error').html('Please specify other method').show();
+                return false;
+            }
+
+            if(deviceVal== 5622  &amp;&amp; otherDevice == ""){
+                getField('device-name-specify.error').html('Please specify other method').show();
+                return false;
+            }
+
+            if(circumcisionMethod == 16420  &amp;&amp; deviceSize == ""){
+                getField('device_size.error').html('Please specify the device size').show();
+                return false;
+            }
+
+            // if local anaesthesia , concentration mandatory
+            if(anaesthesiaVal == 161914  &amp;&amp; concentrationVal == ""){
+                getField('concentration.error').html('Please specify the concentration in mg').show();
+                return false;
+            }
+
+            // if tropical anaesthesia, volume mandatory
+            if(anaesthesiaVal == 162797  &amp;&amp; volumeVal == ""){
+                getField('volume.error').html('Please specify the volume in ml').show();
+                return false;
+            }
+
+            // if adverse effects , fill management-->
+           if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
+                getField('severity_management.error').html('Please specify the management of adverse events').show();
+               return false;
+           }
+
+        });
 
     </script>
 
@@ -246,12 +307,12 @@
 
             <table class ="simple-table">
                 <tr>
-                    <td> Method: </td>
+                    <td> Method: <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Conventional Surgical,Device Circumcision"
-                             style="radio"
+                             style="radio" required="true"
                              answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
                         <br/>
                     </td>
@@ -316,14 +377,14 @@
                     <td> Anaesthesia used: Type:
                         <obs conceptId="164254AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" />
+                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" required="true"  />
                     </td>
                     <td>
                         <table id="tbl-concentration">
                             <tr>
                                 <td>
                                     Concentration(mg):
-                                    <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                    <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" /><span style="color:red;"><strong>*</strong></span>
                                 </td>
                             </tr>
                         </table>
@@ -332,7 +393,7 @@
                             <tr>
                                 <td>
                                     Volume(ml):
-                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" /><span style="color:red;"><strong>*</strong></span>
                                 </td>
                             </tr>
                         </table>
@@ -342,14 +403,14 @@
 
                 <tr>
                     <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
-                        <obs conceptId="163138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" allowFutureDates="false" />
+                        <obs conceptId="163138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
                     </td>
                 </tr>
 
                 <tr>
                     <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
                         hour clock:
-                        <obs conceptId="163137AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_slit" allowFutureDates="false" />
+                        <obs conceptId="163137AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_slit" required="true"  allowFutureDates="false" />
                     </td>
                 </tr>
 
@@ -358,7 +419,7 @@
                         Was there an Adverse Event during circumcision?
                         <obs id="adverse_events" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" />
+                             required="true" style="radio" />
                     </td>
                 </tr>
 
@@ -438,7 +499,7 @@
             <table align="center" width="100%" class="tb1">
                 <tr>
                     <td>Name of Clinician:
-                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" />
+                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" required="true"  />
                     </td>
                 </tr>
 
@@ -446,7 +507,7 @@
                     <td>Cadre:
                         <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
+                             answerLabels="MO,CO,Nurse" id="clinician_cadre" required="true"  style="radio" />
                     </td>
                 </tr>
 
