@@ -73,6 +73,7 @@
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
 				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
+				<ref bean="kenyaemr.common.report.VMMCRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -711,5 +712,18 @@
 			</set></property>
 		<property name="template" value="kenyaemr:cacx_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:CACXInformation" />
+	</bean>
+
+	<!-- Vmmc Register-->
+	<bean id="kenyaemr.common.report.VMMCRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="681df61a-a37d-11ec-b909-0242ac120002" />
+		<property name="name" value="VMMC Register" />
+		<property name="description" value="VMMC Theatre Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:vmmc_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:VMMCInformation" />
 	</bean>
 </beans>
