@@ -16,9 +16,7 @@
     <script type="text/javascript">
         var CONVENTIONAL = 159619;
         var DEVICE = 164204;
-        var SLEEVE_RESELECTION = 164029;
         var DORSAL_SLIT = 1933;
-        var FORCEPS_GUIDE = 157783;
         var OTHER_CONVENTIONAL = 5622;
         var SHANGRING = 165396;
         var OTHER_DEVICE = 5622;
@@ -39,11 +37,6 @@
             jq('#tbl-adverse-effects').hide();
             jq('#tbl-conventional-surgical').hide();
             jq('#tbl-device-circumcision').hide();
-            jq("#tbl-concentration").hide();
-            jq("#tbl-volume").hide();
-
-            //Check anaesthesia used
-            jq("#anaesthesia :input[type=radio]").change(onAnaesthesiaSelected);
 
             //Check if conventional checked
             jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
@@ -55,12 +48,8 @@
                 jq("#circumcision-method input[value=159619]").prop("checked", true);
                 jq('#tbl-conventional-surgical').show();
 
-                  if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
-                    jq("#conventional-method input[value=164029]").prop("checked", true);
-                  } else if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
+                  if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
                     jq("#conventional-method input[value=1933]").prop("checked", true);
-                  } else if( CONVENTIONAL_METHOD == FORCEPS_GUIDE) {
-                    jq("#conventional-method input[value=157783]").prop("checked", true);
                   } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
                     jq("#conventional-method input[value=5622]").prop("checked", true);
                   }
@@ -82,19 +71,6 @@
             }
 
         }); // end doc ready
-
-        var onAnaesthesiaSelected = function () {
-            var val = jq(this).val();
-            if(val == 161914 ) {
-                jq("#tbl-concentration").show();
-                jq("#tbl-volume").hide();
-                clearHiddenSections(jq('#volume'));
-            } else if(val == 162797) {
-                jq("#tbl-volume").show();
-                jq("#tbl-concentration").hide();
-                clearHiddenSections(jq('#concentration'));
-            }
-        }
 
          var onAdverseEventsSelected = function () {
             getField('adverse_events.error').html('Adverse events should not be empty').hide();
@@ -157,12 +133,17 @@
             var conventionalVal = getValue('conventional-method.value');
             var deviceVal = getValue('device-name.value');
 
-            var anaesthesiaVal = getValue('anaesthesia.value');
             var concentrationVal = getValue('concentration.value');
             var volumeVal = getValue('volume.value');
 
             var adverseEventsVal = getValue('adverse_events.value');
             var managementVal = getValue('severity_management.value');
+
+            var timeOfLastSlit = getValue('time_of_slit.value');
+            var theatreNumber = getValue('theatre_number.value');
+
+            var assistantClinician = getValue('assistant_clinician.value');
+            var assistantClinicianCadre = getValue('assistant_clinician_cadre.value');
 
             if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
@@ -178,9 +159,7 @@
                 getField('device-name-specify.error').html('Please specify other method').hide();
             }
 
-            if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "" &amp;&amp; deviceVal == 5622){
-                getField('device_size.error').html('Please specify the device size').hide();
-            } else if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "") {
+            if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "") {
                 getField('device_size.error').html('Please specify the device size').show();
                 return false;
             } else {
@@ -188,7 +167,7 @@
             }
 
             // if local anaesthesia , concentration mandatory
-            if(anaesthesiaVal == 161914  &amp;&amp; concentrationVal == ""){
+            if(concentrationVal == ""){
                 getField('concentration.error').html('Please specify the concentration in mg').show();
                 return false;
             } else {
@@ -196,7 +175,7 @@
             }
 
             // if tropical anaesthesia, volume mandatory
-            if(anaesthesiaVal == 162797  &amp;&amp; volumeVal == ""){
+            if(volumeVal == ""){
                 getField('volume.error').html('Please specify the volume in ml').show();
                 return false;
             } else {
@@ -210,6 +189,23 @@
            } else {
                 getField('severity_management.error').html('Please specify the management of adverse events').hide();
            }
+
+           // if time of last slit, theatre number mandatory
+            if(timeOfLastSlit != "" &amp;&amp; theatreNumber == ""){
+                getField('theatre_number.error').html('Please specify the theatre number').show();
+                return false;
+            } else {
+                getField('theatre_number.error').html('Please specify the theatre number').hide();
+            }
+
+            // if assistant clinician, assistant clinician cadre is mandatory
+            if(assistantClinician != "" &amp;&amp; assistantClinicianCadre == ""){
+                getField('assistant_clinician_cadre.error').html('Please specify the assistant clinician cadre').show();
+                return false;
+            } else {
+                getField('assistant_clinician_cadre.error').html('Please specify the assistant clinician cadre').hide();
+            }
+
            return true;
 
         });
@@ -225,15 +221,6 @@
 
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
-                var ANAESTHESIA = getValue('anaesthesia.value');
-
-                if(ANAESTHESIA == 161914 ) {
-                    jq("#tbl-concentration").show();
-                    jq("#tbl-volume").hide();
-                } else if(ANAESTHESIA == 162797) {
-                    jq("#tbl-volume").show();
-                    jq("#tbl-concentration").hide();
-                }
 
                 if(ADVERSE_EFFECT == YES ) {
                   jq('#tbl-adverse-effects').show();
@@ -334,13 +321,9 @@
                             <tr>
                                 <td>
                                     <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                         answerConceptIds="1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                            5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Sleeve resection,
-                                                       Dorsal Slit,
-                                                       Forceps Guide,
+                                         answerLabels="Dorsal Slit,
                                                        Other"
                                          style="radio"/>
                                     <br/>
@@ -385,32 +368,47 @@
 
         <fieldset id="tbl-circumcision-procedure">
             <legend>Circumcision Procedure</legend>
-            <table width="100%" margin="0" class="simple-table">
+            <table width="80%" margin="0" class="simple-table">
                 <tr>
                     <td> Anaesthesia used: Type:
                         <obs conceptId="164254AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" required="true"  />
                     </td>
+                </tr>
+
+                <tr>
                     <td>
-                        <table id="tbl-concentration">
+                        <table width="100%" margin="0" class="simple-table">
                             <tr>
-                                <td>
-                                    Concentration(mg):
-                                    <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" /><span style="color:red;"><strong>*</strong></span>
-                                </td>
+                                <th>Agent</th>
+                                <th>Concentration(mg):</th>
+                                <th>Volume(ml):</th>
                             </tr>
-                        </table>
+                            <repeat>
+                                <template>
+                                    <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                        <table id="tbl-volume">
-                            <tr>
-                                <td>
-                                    Volume(ml):
-                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" /><span style="color:red;"><strong>*</strong></span>
-                                </td>
-                            </tr>
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="	4c8c7fc3-b0f3-4977-b460-37d100e7fade"
+                                                     answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Lignocaine,Bupivacaine"
+                                                     id="agents" required="true"  />
+                                            </td>
+                                            <td>
+                                               <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" /><span style="color:red;"><strong>*</strong></span>
+                                            </td>
+                                            <td>
+                                                <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" /><span style="color:red;"><strong>*</strong></span>
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+                                </template>
+                                <render n="1" concept=" " />
+                                <render n="2" concept=" " />
+                            </repeat>
                         </table>
-
                     </td>
                 </tr>
 
@@ -444,7 +442,7 @@
                                 <table>
                                     <tr>
                                         <th>Type of adverse event</th>
-                                        <th>Description</th>
+                                        <th>Description of adverse event</th>
                                         <th>Severity</th>
                                     </tr>
                                     <repeat>
@@ -540,7 +538,7 @@
 
                 <tr>
                     <td>Theatre Register Number:
-                        <obs conceptId="165416AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
+                        <obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
                     </td>
                 </tr>
             </table>
