@@ -624,20 +624,13 @@
             var val = jq(this).val();
             var complaintsChecked = jq("#complaints-checked input:checkbox:checked");
             //TODO: Confirm the actions to do if checked urethral discharge
-//            if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
-//                jq('#other-treatments').hide();
-//                jq('#eligibility-confirmation').hide();
-//                jq('#sti-referrals').show();
-//            }else if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
-//                jq('#other-treatments').hide();
-//                jq('#eligibility-confirmation').hide();
-//                jq('#prep-referrals').show();
-//            }else{
-//                jq('#prep-referrals').hide();
-//                jq('#sti-referrals').hide();
-//                jq('#other-treatments').show();
-//                jq('#eligibility-confirmation').show();
-//            }
+            if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                jq("#good-health input[value=false]").prop("checked", true);
+                jq('#sti-referrals').show();
+            }else if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+                jq("#good-health input[value=false]").prop("checked", true);
+                jq('#prep-referrals').show();
+            }
             if(val == 5622 ){
                 jq('#tbl-other-complaint').show();
             }else {
