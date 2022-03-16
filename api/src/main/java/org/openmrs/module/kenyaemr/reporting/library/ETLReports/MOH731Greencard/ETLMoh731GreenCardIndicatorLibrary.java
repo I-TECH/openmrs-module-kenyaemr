@@ -1178,6 +1178,60 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     public CohortIndicator hivExposedInfantsWithin2MonthsAndEligibleForCTX() {
         return cohortIndicator("Hiv Exposed Infants within 2 months", map(moh731Cohorts.hivExposedInfantsWithin2MonthsAndEligibleForCTX(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * VMMC
+     * Number circumcised  HV04-01
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcised() {
+        return cohortIndicator("Number circumcised", map(moh731Cohorts.numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number circumcised  HIV Positive HV04-08
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcisedHivPositive() {
+        return cohortIndicator("Number circumcised Hiv Positive", map(moh731Cohorts.numberCircumcisedHivPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number circumcised Hiv Negative HV04-09
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcisedHivNegative() {
+        return cohortIndicator("Number circumcised Hiv Negative", map(moh731Cohorts.numberCircumcisedHivNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number circumcised Hiv Unknown HV04-10
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcisedHivUnknown() {
+        return cohortIndicator("Number circumcised Hiv Unknown", map(moh731Cohorts.numberCircumcisedHivUnknown(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number circumcised Surgically HV04-11
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcisedSurgically() {
+        return cohortIndicator("Number circumcised surgically", map(moh731Cohorts.numberCircumcisedSurgically(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number circumcised using device method HV04-12
+     *
+     * @return indicator
+     */
+    public CohortIndicator numberCircumcisedUsingDevice() {
+        return cohortIndicator("Number circumcised using device method", map(moh731Cohorts.numberCircumcisedUsingDevice(), "startDate=${startDate},endDate=${endDate}"));
+    }
 }
 
 
