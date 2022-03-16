@@ -344,6 +344,11 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV04-10", "Circumcised HIV NK", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedHivUnknown(), indParams),"");
         cohortDsd.addColumn("HV04-11", "Circumcised Surgical", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedSurgically(), indParams),"");
         cohortDsd.addColumn("HV04-12", "Circumcised Device", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedUsingDevice(), indParams),"");
+        cohortDsd.addColumn("HV04-13", "AE During Moderate", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithModerateAEDuringProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-14", "AE During Severe", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithSevereAEDuringProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-15", "AE Post Moderate", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithModerateAEPostProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-16", "AE Post Servere", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithSevereAEPostProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-17", "Follow Up Visit <14 days", ReportUtils.map(moh731GreenCardIndicators.followedUpWithin14daysOfVMMCProcedure(), indParams),"");
         return cohortDsd;
 
     }

@@ -2743,210 +2743,78 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
     /**
      * VMMC
-     * Number circumcised  HV04-01
-     *
-     * @return indicator
+     * HV04-13
+     *Number of males circumcised with moderate Adverse Events during procedutre
+     * @return
      */
-    public CohortDefinition numberCircumcised(){
-
+    public CohortDefinition circumcisedWithModerateAEDuringProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-procedure'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1499;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "                from kenyaemr_etl. etl_vmmc_circumcision_procedure p\n" +
-                "                join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "                where  date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcised");
+        cd.setName("VMMC_MODERATE_AE_DURING");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised");
-
-        return cd;
-    }
-    /**
-     * vmmc medical history positive
-     *
-     * @return indicator
-     */
-    public CohortDefinition vmmcMedicalHistoryHivPositive(){
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "from kenyaemr_etl.etl_vmmc_medical_history p\n" +
-                "  join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "where p.hiv_status= 703 and date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcisedHivPositive");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised Hiv Positive");
-
-        return cd;
-    }
-    /**
-     * vmmc medical history Negative
-     *
-     * @return indicator
-     */
-
-    public CohortDefinition vmmcMedicalHistoryHivNegative(){
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "from kenyaemr_etl.etl_vmmc_medical_history p\n" +
-                "  join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "where p.hiv_status= 664 and date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcisedHivNegative");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised Hiv Negative");
-
-        return cd;
-    }
-    /**
-     * vmmc medical history Unknown
-     *
-     * @return indicator
-     */
-
-    public CohortDefinition vmmcMedicalHistoryHivUnknown(){
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "from kenyaemr_etl.etl_vmmc_medical_history p\n" +
-                "  join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "where p.hiv_status= 1067 and date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcisedHivUnknown");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised Hiv Unknown");
-
-        return cd;
-    }
-
-    /**
-     * VMMC
-     * Number circumcised Hiv Positive HV04-08
-     *
-     * @return indicator
-     */
-    public CohortDefinition numberCircumcisedHivPositive() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("numberCircumcised",ReportUtils.map(numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("vmmcMedicalHistoryHivPositive", ReportUtils.map(vmmcMedicalHistoryHivPositive(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("numberCircumcised AND vmmcMedicalHistoryHivPositive");
+        cd.setDescription("Number of males circumcised with moderate AE during procedure");
         return cd;
     }
     /**
      * VMMC
-     * Number circumcised Hiv Negative HV04-09
-     *
-     * @return indicator
+     * HV04-14
+     *Number of males circumcised with severe Adverse Events during procedutre
+     * @return
      */
-    public CohortDefinition numberCircumcisedHivNegative() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("numberCircumcised",ReportUtils.map(numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("vmmcMedicalHistoryHivNegative", ReportUtils.map(vmmcMedicalHistoryHivNegative(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("numberCircumcised AND vmmcMedicalHistoryHivNegative");
-        return cd;
-    }
-    /**
-     * VMMC
-     * Number circumcised Hiv Unknown HV04-10
-     *
-     * @return indicator
-     */
-    public CohortDefinition numberCircumcisedHivUnknown() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("numberCircumcised",ReportUtils.map(numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("vmmcMedicalHistoryHivUnknown", ReportUtils.map(vmmcMedicalHistoryHivUnknown(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("numberCircumcised AND vmmcMedicalHistoryHivUnknown");
-        return cd;
-    }
-    /**
-     * vmmc medical procedure method surgical
-     *
-     * @return indicator
-     */
-
-    public CohortDefinition circumcisionMethodSurgical(){
-
+    public CohortDefinition circumcisedWithSevereAEDuringProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-procedure'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1500;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "from kenyaemr_etl. etl_vmmc_circumcision_procedure p\n" +
-                "  join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "where  p.circumcision_method = 159619 and date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcisedSurgical");
+        cd.setName("VMMC_SEVERE_AE_DURING");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised Surgical");
-
+        cd.setDescription("Number of males circumcised with severe AE during procedure");
         return cd;
     }
     /**
-     * vmmc medical procedure method device
-     *
-     * @return indicator
+     * VMMC
+     * HV04-15
+     *Number of males circumcised with moderate Adverse Events post procedutre
+     * @return
      */
-
-    public CohortDefinition circumcisionMethodDevice(){
-
+    public CohortDefinition circumcisedWithModerateAEPostProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-followup'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1499;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct p.patient_id\n" +
-                "from kenyaemr_etl. etl_vmmc_circumcision_procedure p\n" +
-                "  join kenyaemr_etl.etl_patient_demographics d on d.patient_id = p.patient_id\n" +
-                "where  p.circumcision_method = 164204 and date(p.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("numberCircumcisedDevice");
+        cd.setName("VMMC_MODERATE_AE_POST");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number circumcised Device");
-
-        return cd;
-    }
-
-    /**
-     * VMMC
-     * Number circumcised using surgical method HV04-11
-     *
-     * @return indicator
-     */
-    public CohortDefinition numberCircumcisedSurgically() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("numberCircumcised",ReportUtils.map(numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("circumcisionMethodSurgical", ReportUtils.map(circumcisionMethodSurgical(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("numberCircumcised AND circumcisionMethodSurgical");
+        cd.setDescription("Number of males circumcised with moderate AE post procedure");
         return cd;
     }
     /**
      * VMMC
-     * Number circumcised using device method HV04-12
-     *
-     * @return indicator
+     * HV04-16
+     *Number of males circumcised with severe Adverse Events post procedutre
+     * @return
      */
-    public CohortDefinition numberCircumcisedUsingDevice() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    public CohortDefinition circumcisedWithSevereAEPostProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-followup'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1500;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SEVERE_AE_POST");
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("numberCircumcised",ReportUtils.map(numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("circumcisionMethodDevice", ReportUtils.map(circumcisionMethodDevice(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("numberCircumcised AND circumcisionMethodDevice");
+        cd.setDescription("Number of males circumcised with severe AE post procedure");
         return cd;
     }
 }

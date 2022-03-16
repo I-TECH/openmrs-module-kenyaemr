@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,8 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class ETLMoh731GreenCardIndicatorLibrary {
     @Autowired
     private ETLMoh731GreenCardCohortLibrary moh731Cohorts;
+    @Autowired
+    private DatimCohortLibrary datimCohorts;
 
     // Green card additions
 
@@ -1185,7 +1188,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcised() {
-        return cohortIndicator("Number circumcised", map(moh731Cohorts.numberCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised", map(datimCohorts.malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * VMMC
@@ -1194,7 +1197,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcisedHivPositive() {
-        return cohortIndicator("Number circumcised Hiv Positive", map(moh731Cohorts.numberCircumcisedHivPositive(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised Hiv Positive", map(datimCohorts.malesCircumcisedTestedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * VMMC
@@ -1203,7 +1206,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcisedHivNegative() {
-        return cohortIndicator("Number circumcised Hiv Negative", map(moh731Cohorts.numberCircumcisedHivNegative(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised Hiv Negative", map(datimCohorts.malesCircumcisedTestedHIVNegative(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * VMMC
@@ -1212,7 +1215,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcisedHivUnknown() {
-        return cohortIndicator("Number circumcised Hiv Unknown", map(moh731Cohorts.numberCircumcisedHivUnknown(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised Hiv Unknown", map(datimCohorts.malesCircumcisedIndeterminateHIVResult(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * VMMC
@@ -1221,7 +1224,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcisedSurgically() {
-        return cohortIndicator("Number circumcised surgically", map(moh731Cohorts.numberCircumcisedSurgically(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised surgically", map(datimCohorts.vmmcSurgical(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * VMMC
@@ -1230,7 +1233,57 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator numberCircumcisedUsingDevice() {
-        return cohortIndicator("Number circumcised using device method", map(moh731Cohorts.numberCircumcisedUsingDevice(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised using device method", map(datimCohorts.vmmcDevice(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number of males circumcised with moderate Adverse Events during procedure
+     * HV04-13
+     *
+     * @return indicator
+     */
+    public CohortIndicator circumcisedWithModerateAEDuringProcedure() {
+        return cohortIndicator("Number circumcised with moderate Adverse Events during procedutre", map(moh731Cohorts.circumcisedWithModerateAEDuringProcedure(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number of males circumcised with severe Adverse Events during procedure
+     * HV04-14
+     *
+     * @return indicator
+     */
+    public CohortIndicator circumcisedWithSevereAEDuringProcedure() {
+        return cohortIndicator("Number circumcised with sever Adverse Events during procedutre", map(moh731Cohorts.circumcisedWithSevereAEDuringProcedure(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number of males circumcised with moderate Adverse Events post procedure
+     * HV04-15
+     *
+     * @return indicator
+     */
+    public CohortIndicator circumcisedWithModerateAEPostProcedure() {
+        return cohortIndicator("Number circumcised with moderate Adverse Events post procedutre", map(moh731Cohorts.circumcisedWithModerateAEPostProcedure(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number of males circumcised with severe Adverse Events post procedure
+     * HV04-16
+     *
+     * @return indicator
+     */
+    public CohortIndicator circumcisedWithSevereAEPostProcedure() {
+        return cohortIndicator("Number circumcised with severe Adverse Events post procedutre", map(moh731Cohorts.circumcisedWithSevereAEPostProcedure(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * VMMC
+     * Number of males circumcised followed up within 14 days of VMMC procedure
+     * HV04-17
+     *
+     * @return indicator
+     */
+    public CohortIndicator followedUpWithin14daysOfVMMCProcedure() {
+        return cohortIndicator("Number circumcised have a followup visit withn 14 days post procedutre", map(datimCohorts.followedUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
     }
 }
 
