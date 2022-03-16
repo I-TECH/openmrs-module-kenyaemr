@@ -489,7 +489,76 @@ public class DatimIndicatorLibrary {
     public CohortIndicator testedPositiveInpatientServices() {
         return cohortIndicator("Tested PositiveInpatient Services", ReportUtils.<CohortDefinition>map(datimCohorts.testedPositiveInpatientServices(), "startDate=${startDate},endDate=${endDate}"));
     }
-
+    /**
+     *"Number of males circumcised
+     * @return the indicator
+     */
+    public CohortIndicator malesCircumcised() {
+        return cohortIndicator("Number of males circumcised", ReportUtils.<CohortDefinition>map(datimCohorts.malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised and tested HIV positive at VMMC site
+     * @return the indicator
+     */
+    public CohortIndicator malesCircumcisedTestedHIVPositive() {
+        return cohortIndicator("Number of males circumcised and tested HIV positive at VMMC site", ReportUtils.<CohortDefinition>map(datimCohorts.malesCircumcisedTestedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised and tested HIV negative at VMMC site
+     * @return the indicator
+     */
+    public CohortIndicator malesCircumcisedTestedHIVNegative() {
+        return cohortIndicator("Number of males circumcised and tested HIV negative at VMMC site", ReportUtils.<CohortDefinition>map(datimCohorts.malesCircumcisedTestedHIVNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised with indeterminate HIV result at VMMC site or not tested at VMMC site
+     * @return the indicator
+     */
+    public CohortIndicator malesCircumcisedIndeterminateHIVResult() {
+        return cohortIndicator("Number of males circumcised with indeterminate HIV result at VMMC site or not tested at VMMC site", ReportUtils.<CohortDefinition>map(datimCohorts.malesCircumcisedIndeterminateHIVResult(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised through surgical procedure
+     * @return the indicator
+     */
+    public CohortIndicator vmmcSurgical() {
+        return cohortIndicator("Number of males circumcised through surgical procedure", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcSurgical(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised using device
+     * @return the indicator
+     */
+    public CohortIndicator vmmcDevice() {
+        return cohortIndicator("Number of males circumcised using device", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcDevice(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised through surgical procedure and followed up within 14 days
+     * @return the indicator
+     */
+    public CohortIndicator vmmcSurgicalFollowupWithin14Days() {
+        return cohortIndicator("Number of males circumcised through surgical procedure and followed up within 14 days", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcSurgicalFollowupWithin14Days(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised through surgical procedure and did not follow up within 14 days
+     * @return the indicator
+     */
+    public CohortIndicator vmmcSurgicalNoFollowupWithin14Days() {
+        return cohortIndicator("Number of males circumcised through surgical procedure and did not follow up within 14 days", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcSurgicalNoFollowupWithin14Days(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised using device and followed up within 14 days
+     * @return the indicator
+     */
+    public CohortIndicator vmmcDeviceFollowupWithin14Days() {
+        return cohortIndicator("Number of males circumcised using device and followed up within 14 days", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcDeviceFollowupWithin14Days(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Number of males circumcised using device and did not follow up within 14 days
+     * @return the indicator
+     */
+    public CohortIndicator vmmcDeviceNoFollowupWithin14Days() {
+        return cohortIndicator("Number of males circumcised using device and did not follow up within 14 days", ReportUtils.<CohortDefinition>map(datimCohorts.vmmcDeviceNoFollowupWithin14Days(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number Tested NegativePMTCT services ANC-1 only
      * @return the indicator
