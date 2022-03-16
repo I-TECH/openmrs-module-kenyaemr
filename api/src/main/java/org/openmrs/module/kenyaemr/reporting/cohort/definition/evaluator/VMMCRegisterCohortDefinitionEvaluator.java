@@ -52,7 +52,7 @@ public class VMMCRegisterCohortDefinitionEvaluator implements CohortDefinitionEv
 		Date startDate = (Date) context.getParameterValue("startDate");
 		Date endDate = (Date) context.getParameterValue("endDate");
 
-		String qry = "SELECT t.patient_id from kenyaemr_etl.etl_vmmc_enrolment t inner join kenyaemr_etl.etl_patient_demographics d on t.patient_id = d.patient_id and date(t.visit_date) BETWEEN date(:startDate) AND date(:endDate) GROUP BY t.patient_id;";
+		String qry = "SELECT t.patient_id from kenyaemr_etl.etl_vmmc_circumcision_procedure t inner join kenyaemr_etl.etl_patient_demographics d on t.patient_id = d.patient_id and date(t.visit_date) BETWEEN date(:startDate) AND date(:endDate) GROUP BY t.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

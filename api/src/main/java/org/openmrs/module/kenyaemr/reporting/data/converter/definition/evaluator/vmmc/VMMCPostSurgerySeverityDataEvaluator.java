@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.vmmc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCLatestPopulationTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCPostSurgerySeverityDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -21,13 +21,12 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.Date;
 
 /**
- * Evaluates Population type
+ * Evaluates VMMCPostSurgerySeverityDataDefinition to produce PostSurgerySeverity
  */
-@Handler(supports= VMMCLatestPopulationTypeDataDefinition.class, order=50)
-public class VMMCLatestPopulationTypeDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=VMMCPostSurgerySeverityDataDefinition.class, order=50)
+public class VMMCPostSurgerySeverityDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,16 +34,9 @@ public class VMMCLatestPopulationTypeDataEvaluator implements PersonDataEvaluato
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select t.patient_id,CONCAT_WS(' ',fup.population_type,fup.key_population_type) as Population_Type from  (SELECT patient_id, mid(max(concat(visit_date,(case population_type when 164928 then 'General Population' " +
-                "when 164929 then 'Key Population' else 'None' end), '')),11) as population_type, mid(max(concat(visit_date,(case key_population_type when 105 then 'People who inject drugs' when 162277 then 'People in prison and other closed settings'" +
-                " when 165100 then 'Transgender' when 160578 then 'Men who have sex with men' when 160579 then 'Female sex Worker' else '' end),'')),11) as key_population_type FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id)" +
-                " fup inner join kenyaemr_etl.etl_vmmc_enrolment t GROUP BY t.patient_id;";
+        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_client_followup GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        Date startDate = (Date)context.getParameterValue("startDate");
-        Date endDate = (Date)context.getParameterValue("endDate");
-        queryBuilder.addParameter("endDate", endDate);
-        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

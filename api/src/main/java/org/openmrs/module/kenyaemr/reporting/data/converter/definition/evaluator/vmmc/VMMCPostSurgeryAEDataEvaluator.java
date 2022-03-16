@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.vmmc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCAESeverityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCPostSurgeryAEDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates VMMCAESeverityDataDefinition to produce VMMC Adverse Event Severity
+ * Evaluates VMMCPostSurgeryAEDataDefinition to produce PostSurgeryAE
  */
-@Handler(supports= VMMCAESeverityDataDefinition.class, order=50)
-public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=VMMCPostSurgeryAEDataDefinition.class, order=50)
+public class VMMCPostSurgeryAEDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,7 @@ public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
+        String qry = "select patient_id, case has_adverse_event when 1065 then 'Yes' when 1066 then 'No' else '' end as has_adverse_event from kenyaemr_etl.etl_vmmc_client_followup GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

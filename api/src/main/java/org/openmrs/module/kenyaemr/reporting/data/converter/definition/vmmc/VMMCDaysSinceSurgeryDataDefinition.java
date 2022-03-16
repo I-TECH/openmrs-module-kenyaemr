@@ -13,31 +13,29 @@ import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
-
 /**
- * Vmmc Population Type Column
+ * Definition for VMMC DaysSinceSurgery
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class VMMCLatestPopulationTypeDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class VMMCDaysSinceSurgeryDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
-
     /**
      * Default Constructor
      */
-    public VMMCLatestPopulationTypeDataDefinition() {
+    public VMMCDaysSinceSurgeryDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public VMMCLatestPopulationTypeDataDefinition(String name) {
+    public VMMCDaysSinceSurgeryDataDefinition(String name) {
         super(name);
     }
 
-    //***** INSTCACXE METHODS *****
 
+//***** INSTANCE METHODS *****
     /**
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */

@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.Date;
 
 /**
  * Evaluates VMMCAdverseEventsDataDefinition to produce VMMC Adverse Events
@@ -38,10 +37,6 @@ public class VMMCAdverseEventsDataEvaluator implements PersonDataEvaluator {
         String qry = "select patient_id, case has_adverse_event when 1065 then 'Yes' when 1066 then 'No' else '' end as has_adverse_event from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        Date startDate = (Date)context.getParameterValue("startDate");
-        Date endDate = (Date)context.getParameterValue("endDate");
-        queryBuilder.addParameter("endDate", endDate);
-        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

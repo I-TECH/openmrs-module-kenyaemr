@@ -724,6 +724,6 @@
 				<ref bean="kenyaemr.app.reports" />
 			</set></property>
 		<property name="template" value="kenyaemr:vmmc_register_template.xls" />
-		<property name="repeatingSection" value="sheet:1,row:6,dataset:VMMCInformation" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:VMMCInformation" />
 	</bean>
 </beans>

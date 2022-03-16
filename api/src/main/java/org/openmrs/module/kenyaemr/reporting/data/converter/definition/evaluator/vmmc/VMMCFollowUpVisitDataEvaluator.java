@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.vmmc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCAESeverityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCFollowUpVisitDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates VMMCAESeverityDataDefinition to produce VMMC Adverse Event Severity
+ * Evaluates VmmcEndTimeDataDefinition to produce end time
  */
-@Handler(supports= VMMCAESeverityDataDefinition.class, order=50)
-public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=VMMCFollowUpVisitDataDefinition.class, order=50)
+public class VMMCFollowUpVisitDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,7 @@ public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
+        String qry = "select patient_id, date(next_appointment_date) from kenyaemr_etl.etl_vmmc_post_operation_assessment GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

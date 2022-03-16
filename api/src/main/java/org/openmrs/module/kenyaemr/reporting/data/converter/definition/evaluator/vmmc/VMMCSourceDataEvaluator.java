@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.vmmc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCAESeverityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCSourceDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates VMMCAESeverityDataDefinition to produce VMMC Adverse Event Severity
+ * Evaluates VMMCSourceDataDefinition to produce Source
  */
-@Handler(supports= VMMCAESeverityDataDefinition.class, order=50)
-public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= VMMCSourceDataDefinition.class, order=50)
+public class VMMCSourceDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,9 @@ public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
+        String qry = "select patient_id, case source_of_vmmc_info when 159388 then 'Radio/Tv' when 1565 then 'Print Media'when 163121 then 'Road Show'" +
+                " when 1555 then 'Mobilizer CHWl' when 1555 then 'Mobilizer CHWl' when 160542 then'OPD/MCH/HT' when 5486 then 'Social Media' when 5622 then" +
+                " other_source_of_vmmc_info else '' end as source_of_vmmc_info from kenyaemr_etl.etl_vmmc_enrolment GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

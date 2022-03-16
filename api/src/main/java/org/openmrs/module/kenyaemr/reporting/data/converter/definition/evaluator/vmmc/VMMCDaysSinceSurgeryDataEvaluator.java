@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.vmmc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCAESeverityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.vmmc.VMMCDaysSinceSurgeryDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates VMMCAESeverityDataDefinition to produce VMMC Adverse Event Severity
+ * Evaluates VmmcDaysSinceSurgeryDataDefinition to produce DaysSinceSurgery
  */
-@Handler(supports= VMMCAESeverityDataDefinition.class, order=50)
-public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
+@Handler(supports=VMMCDaysSinceSurgeryDataDefinition.class, order=50)
+public class VMMCDaysSinceSurgeryDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +34,8 @@ public class VMMCAESeverityDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
+        String qry = "SELECT t.patient_id,TIMESTAMPDIFF(DAY, date(t.visit_date), date(v.visit_date)) FROM kenyaemr_etl.etl_vmmc_circumcision_procedure t" +
+                " INNER JOIN kenyaemr_etl.etl_vmmc_client_followup v on t.patient_id = v.patient_id GROUP BY v.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

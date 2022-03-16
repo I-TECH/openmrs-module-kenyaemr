@@ -20,7 +20,6 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -38,10 +37,6 @@ public class VMMCHivStatusDataEvaluator implements PersonDataEvaluator {
         String qry = "select patient_id, case hiv_status when 703 then 'Positive' when 664 then 'Negative' when 1067 then 'Unknown' else '' end as hiv_status from kenyaemr_etl.etl_vmmc_medical_history GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        Date startDate = (Date)context.getParameterValue("startDate");
-        Date endDate = (Date)context.getParameterValue("endDate");
-        queryBuilder.addParameter("endDate", endDate);
-        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
