@@ -184,11 +184,9 @@
             }
 
            // Prepopulate ART start date
-            if (ART_START_DATE != "null") {
+            if (ART_START_DATE != "null" &amp;&amp; PATIENT_IS_ENROLLED_HIV) {
                 var formattedArtStartDate = moment(moment(ART_START_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                 jq('#art-start-date').html(formattedArtStartDate);
-            } else{
-                jq('#art-start-date').html("ART Start date not available ");
             }
 
         });
