@@ -2701,6 +2701,237 @@ public class DatimCohortLibrary {
         cd.setCompositionString("(testedInpatientServices AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
         return cd;
     }
+    /**
+     *Number of males circumcised
+     * @return
+     */
+    public CohortDefinition malesCircumcised() {
+        String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_vmmc_circumcision_procedure p where p.visit_date between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_CIRC");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised");
+        return cd;
+    }
+    /**
+     *Number tested HIV POSITIVE at VMMC site
+     * @return
+     */
+    public CohortDefinition testedHIVPositiveAtVMMCSite() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "left join (select h.patient_id,h.hiv_test_date from kenyaemr_etl.etl_vmmc_medical_history h where h.hiv_status = 703 and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h on e.patient_id = h.patient_id\n" +
+                "left join (select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Positive' and t.test_type = 2 and t.hts_entry_point = 162223 and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
+                "where (h.patient_id is not null or t.patient_id is not null) and e.visit_date <=date(h.hiv_test_date);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SITE_HIV_POSITIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number tested HIV POSITIVE at VMMC site");
+        return cd;
+    }
+    /**
+     *Number tested HIV Negative at VMMC site
+     * @return
+     */
+    public CohortDefinition testedHIVNegativeAtVMMCSite() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                " left join (select h.patient_id,h.hiv_test_date from kenyaemr_etl.etl_vmmc_medical_history h where h.hiv_status = 664 and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h on e.patient_id = h.patient_id\n" +
+                " left join (select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Negative' and t.test_type = 1 and t.hts_entry_point = 162223 and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
+                "where (h.patient_id is not null or t.patient_id is not null) and e.visit_date <=date(h.hiv_test_date);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SITE_HIV_NEGATIVE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number tested HIV NEGATIVE at VMMC site");
+        return cd;
+    }
+    /**
+     *Number tested HIV Indeterminate at VMMC site
+     * @return
+     */
+    public CohortDefinition testedHIVIndeterminateAtVMMCSite() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "         left join (select h.patient_id, h.hiv_test_date\n" +
+                "                    from kenyaemr_etl.etl_vmmc_medical_history h\n" +
+                "                    where (h.hiv_status = 1067 and date(h.hiv_test_date) between date(:startDate) and date(:endDate))\n" +
+                "                       or (h.hiv_status != 1067 and\n" +
+                "                           date(h.hiv_test_date) not between date(:startDate) and date(:endDate))) h\n" +
+                "                   on e.patient_id = h.patient_id\n" +
+                "         left join (select t.patient_id\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    where ((t.final_test_result = 'Inconclusive' and t.hts_entry_point = 162223 and\n" +
+                "                            t.visit_date between date(:startDate) and date(:endDate)) or\n" +
+                "                           (t.final_test_result in ('Negative', 'Positive')\n" +
+                "                               and t.hts_entry_point != 162223 and\n" +
+                "                            t.visit_date not between date(:startDate) and date(:endDate)))\n" +
+                ") t on e.patient_id = t.patient_id\n" +
+                "where ((h.patient_id is not null and e.visit_date <= date(h.hiv_test_date)) or t.patient_id is not null);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SITE_HIV_INDETERMINATE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number tested HIV Indeterminate at VMMC site");
+        return cd;
+    }
+    /**
+     *Number of males circumcised and tested HIV positive at VMMC site
+     * @return
+     */
+    public CohortDefinition malesCircumcisedTestedHIVPositive() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+     cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+     cd.addSearch("testedHIVPositiveAtVMMCSite",ReportUtils.map(testedHIVPositiveAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("malesCircumcised AND malesCircumcised");
+        return cd;
+    }
+    /**
+     *Number of males circumcised and tested HIV negative at VMMC site
+     * @return
+     */
+    public CohortDefinition malesCircumcisedTestedHIVNegative() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedHIVNegativeAtVMMCSite",ReportUtils.map(testedHIVNegativeAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("malesCircumcised AND testedHIVNegativeAtVMMCSite");
+        return cd;
+    }
+    /**
+     *Number of males circumcised with indeterminate HIV result at VMMC site or not tested at VMMC site
+     * @return
+     */
+    public CohortDefinition malesCircumcisedIndeterminateHIVResult() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedHIVIndeterminateAtVMMCSite",ReportUtils.map(testedHIVIndeterminateAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("malesCircumcised AND testedHIVIndeterminateAtVMMCSite");
+        return cd;
+    }
+    /**
+     *Number of males circumcised through surgical procedure
+     * @return
+     */
+    public CohortDefinition vmmcSurgical() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 159619;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SURGICAL");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised through surgical procedure");
+        return cd;
+    }
+    /**
+     *Number of males circumcised using device
+     * @return
+     */
+    public CohortDefinition vmmcDevice() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 164204;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_DEVICE");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised using device");
+        return cd;
+    }
+    /**
+     *Number of clients who followed up within 14 days of VMMC procedure
+     * @return
+     */
+    public CohortDefinition followedUpWithin14daysOfVMMCProcedure() {
+        String sqlQuery = "select c.patient_id from kenyaemr_etl.etl_vmmc_circumcision_procedure c\n" +
+                "inner join kenyaemr_etl.etl_vmmc_client_followup f on c.patient_id = f.patient_id\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and timestampdiff(DAY ,c.visit_date,f.visit_date) <= 14;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_FOLLOWUP_WITHIN_14_DAYS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of clients who followed up within 14 days of VMMC procedure");
+        return cd;
+    }
+    /**
+     *Number of clients who did not follow up within 14 days of VMMC procedure or within the reporting period
+     * @return
+     */
+    public CohortDefinition noFollowUpWithin14daysOfVMMCProcedure() {
+        String sqlQuery = "select c.patient_id from kenyaemr_etl.etl_vmmc_circumcision_procedure c\n" +
+                "                             left join (select f.patient_id, f.visit_date from kenyaemr_etl.etl_vmmc_client_followup f where f.visit_date between date(:startDate) and date(:endDate))f on c.patient_id = f.patient_id\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and (timestampdiff(DAY ,c.visit_date,f.visit_date) >14 or f.patient_id is null);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_NO_FOLLOWUP_WITHIN_14_DAYS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of clients who did not follow up within 14 days of VMMC procedure or within the reporting period");
+        return cd;
+    }
+    /**
+     *Number of males circumcised through surgical procedure and followed up within 14 days
+     * @return
+     */
+    public CohortDefinition vmmcSurgicalFollowupWithin14Days() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("vmmcSurgical",ReportUtils.map(vmmcSurgical(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("followedUpWithin14daysOfVMMCProcedure",ReportUtils.map(followedUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("vmmcSurgical AND followedUpWithin14daysOfVMMCProcedure");
+        return cd;
+    }
+    /**
+     *Number of males circumcised through surgical procedure and did not follow up within 14 days
+     * @return
+     */
+    public CohortDefinition vmmcSurgicalNoFollowupWithin14Days() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("vmmcSurgical",ReportUtils.map(vmmcSurgical(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("noFollowUpWithin14daysOfVMMCProcedure",ReportUtils.map(noFollowUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("vmmcSurgical AND noFollowUpWithin14daysOfVMMCProcedure");
+        return cd;
+    }
+    /**
+     *Number of males circumcised using device and followed up within 14 days
+     * @return
+     */
+    public CohortDefinition vmmcDeviceFollowupWithin14Days() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("vmmcDevice",ReportUtils.map(vmmcDevice(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("followedUpWithin14daysOfVMMCProcedure",ReportUtils.map(followedUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("vmmcDevice AND followedUpWithin14daysOfVMMCProcedure");
+        return cd;
+    }
+    /**
+     *Number of males circumcised using device and did not follow up within 14 days
+     * @return
+     */
+    public CohortDefinition vmmcDeviceNoFollowupWithin14Days() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("vmmcDevice",ReportUtils.map(vmmcDevice(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("noFollowUpWithin14daysOfVMMCProcedure",ReportUtils.map(noFollowUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("vmmcDevice AND noFollowUpWithin14daysOfVMMCProcedure");
+        return cd;
+    }
 
     /**
      * Patients tested Negative at Others or OPD and not in either HTS_index or sns_testing

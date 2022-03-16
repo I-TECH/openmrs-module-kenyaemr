@@ -114,12 +114,27 @@ public class CommonCohortLibrary {
 	 */
 	public CohortDefinition agedAtLeastAgedAtMostInMonths(int minAge, int maxAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
-		cd.setName("aged between "+minAge+" and "+maxAge+" years");
+		cd.setName("aged between "+minAge+" and "+maxAge+" months");
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 		cd.setMinAge(minAge);
 		cd.setMaxAge(maxAge);
 		cd.setMinAgeUnit(DurationUnit.MONTHS);
 		cd.setMaxAgeUnit(DurationUnit.MONTHS);
+		return cd;
+	}
+
+	/**
+	 * patients who are at least minAge months old and at most days old on ${effectiveDate}
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition agedAtLeastAgedAtMostDays(int minAge, int maxAge) {
+		AgeCohortDefinition cd = new AgeCohortDefinition();
+		cd.setName("aged between "+minAge+" and "+maxAge+" days");
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		cd.setMaxAge(maxAge);
+		cd.setMinAgeUnit(DurationUnit.DAYS);
+		cd.setMaxAgeUnit(DurationUnit.DAYS);
 		return cd;
 	}
 
