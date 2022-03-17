@@ -55,24 +55,38 @@
     <script type="text/javascript">
         $(document).ready(function () {
             // if none in medications is selected
-            jq("#tbl-medications").show();
-            jq('#medication-none :input[type=checkbox]').change(medicationSelected);
+            jq("#medications-selected").hide();
+            jq("#tbl-other-medication").hide();
+            jq("#tbl-procedure-mngment").hide();
+            jq("#meds-given :input[type=radio]").change(onMedicationsGiven);
+            jq('#medication-given :input[type=checkbox]').change(onMedicationSelected);
+            jq('#post-procedure-instructions :input[type=radio]').change(procedureMngmntSelected);
         });
 
-        var medicationSelected = function(){
+        var onMedicationsGiven = function(){
             var val = jq(this).val();
-            var medicationChecked = jq("#medication-none input:checkbox:checked");
-            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
-                jq("#tbl-medications").hide();
-                clearHiddenSections(jq('#medication-analgesic'));
-                clearHiddenSections(jq('#medication-antibiotics'));
-                clearHiddenSections(jq('#medication-ttcv'));
-                clearHiddenSections(jq('#medication-other'));
-                clearHiddenSections(jq('#other-medication'));
+            if(val == 1065){
+                jq("#medications-selected").show();
+                }else{
+                jq("#medications-selected").hide();
             }
-            if(medicationChecked.length ==0){
-                jq("#tbl-medications").show();
-                clearHiddenSections(jq('#medication-none'));
+          }
+        var onMedicationSelected = function(){
+            var val = jq(this).val();
+            if(val == 5622 ){
+                jq("#tbl-other-medication").show();
+            }else {
+                jq("#tbl-other-medication").hide();
+                getField('other-medication.value').val("");
+            }
+        }
+
+        var procedureMngmntSelected = function(){
+            var val = jq(this).val();
+            if(val == 1065) {
+                jq("#tbl-procedure-mngment").show();
+            } else {
+                jq("#tbl-procedure-mngment").hide();
             }
         }
 
@@ -96,26 +110,77 @@
         beforeSubmit.push(function() {
 
             // validations on medication
-            var specifyMedication = getValue('other-medication.value');
+            var medicationGiven = getValue('meds-given.value');
+            var systolicVal = getValue('systolic.value');
+            var diastolicVal = getValue('diastolic.value');
+            var pulseVal = getValue('pulse.value');
+            var tempVal = getValue('temp.value');
+            var elevatedVal = getValue('penis-elevated.value');
+            var postProcedureVal = getValue('post-procedure-instructions.value');
+            var dischargedByVal = getValue('discharged-by.value');
+            var clinicianCadreVal = getValue('clinician_cadre.value');
 
-            var analgesicMedication = jq("#medication-analgesic input:checkbox:checked");
-            var antibioticsMedication = jq("#medication-antibiotics input:checkbox:checked");
-            var ttcvMedication = jq("#medication-ttcv input:checkbox:checked");
-            var otherMedication = jq("#medication-other input:checkbox:checked");
-            var noMedication = jq("#medication-none input:checkbox:checked");
-
-            if(analgesicMedication.length == 0 &amp;&amp; noMedication.length == 0 &amp;&amp; antibioticsMedication.length == 0 &amp;&amp; ttcvMedication.length == 0  &amp;&amp; otherMedication.length == 0) {
-                getField('medication-none.error').html('Please specify if any medication was given').show();
+            if(systolicVal == "" ) {
+                getField('systolic.error').html('Please specify the blood pressure').show();
                 return false;
             } else {
-                getField('medication-none.error').html('Please specify if any medication was given').hide();
+                getField('systolic.error').html('Please specify the blood pressure').hide();
             }
 
-            if(otherMedication.length > 0 &amp;&amp; specifyMedication == "" ) {
-                getField('other-medication.error').html('Please specify other medication').show();
+            if(diastolicVal == "" ) {
+                getField('diastolic.error').html('Please specify the blood pressure').show();
                 return false;
             } else {
-                getField('other-medication.error').html('Please specify other medication').hide();
+                getField('diastolic.error').html('Please specify the blood pressure').hide();
+            }
+
+            if(pulseVal == "" ) {
+                getField('pulse.error').html('Please specify the pulse rate').show();
+                return false;
+            } else {
+                getField('pulse.error').html('Please specify the pulse rate').hide();
+            }
+
+            if(tempVal == "" ) {
+                getField('temp.error').html('Please specify the temperature').show();
+                return false;
+            } else {
+                getField('temp.error').html('Please specify the temperature').hide();
+            }
+
+            if(elevatedVal == "" ) {
+                getField('penis-elevated.error').html('Please specify if the penis is elevated against abdomen').show();
+                return false;
+            } else {
+                getField('penis-elevated.error').html('Please specify if the penis is elevated against abdomen').hide();
+            }
+
+            if(postProcedureVal == "" ) {
+                getField('post-procedure-instructions.error').html('Please specify the post procedure instructions').show();
+                return false;
+            } else {
+                getField('post-procedure-instructions.error').html('Please specify the post procedure instructions').hide();
+            }
+
+            if(dischargedByVal == "" ) {
+                getField('discharged-by.error').html('Please specify the person who discharged the client').show();
+                return false;
+            } else {
+                getField('discharged-by.error').html('Please specify the person who discharged the client').hide();
+            }
+
+            if(clinicianCadreVal == "" ) {
+                getField('clinician_cadre.error').html('Please specify the cadre').show();
+                return false;
+            } else {
+                getField('clinician_cadre.error').html('Please specify the cadre').hide();
+            }
+
+            if(medicationGiven == false ){
+                getField('meds-given.error').html('Please specify whether patient was given medication').show();
+                return false;
+            } else {
+                getField('meds-given.error').html('Please specify whether patient was given medication').hide();
             }
             return true;
         });
@@ -125,41 +190,24 @@
     <ifMode mode="EDIT">
         <script type="text/javascript">
             $(document).ready(function () {
-                // if none in medications is selected
-                jq("#tbl-medications").show();
-                jq('#medication-none :input[type=checkbox]').change(medicationSelected);
+                jq("#meds-given :input[type=radio]").change(onMedicationsGiven);
+                var medicationVal = getValue('meds-given.value');
+
+                if(medicationVal == 1065) {
+                   jq("#medications-selected").show();
+                } else {
+                    jq("#medications-selected").hide();
+                }
+
             });
 
-            var medicationSelected = function(){
+            var onMedicationsGiven = function(){
                 var val = jq(this).val();
-                var medicationChecked = jq("#medication-none input:checkbox:checked");
-                if(val == 1107 &amp;&amp; medicationChecked.length ==1){
-                    jq("#tbl-medications").hide();
-                    clearHiddenSections(jq('#medication-analgesic'));
-                    clearHiddenSections(jq('#medication-antibiotics'));
-                    clearHiddenSections(jq('#medication-ttcv'));
-                    clearHiddenSections(jq('#medication-other'));
-                    clearHiddenSections(jq('#other-medication'));
+                if(val == 1065){
+                    jq("#medications-selected").show();
+                    }else{
+                    jq("#medications-selected").hide();
                 }
-                if(medicationChecked.length ==0){
-                    jq("#tbl-medications").show();
-                }
-            }
-
-            //Clear hidden sections
-            clearHiddenSections = function(parentObj) {
-                parentObj.find('input[type=radio]').each(function() {
-                    this.checked = false;
-                });
-                parentObj.find('input[type=checkbox]').each(function() {
-                    this.checked = false;
-                });
-                parentObj.find('input[type=text]').each(function() {
-                    jq(this).val("");
-                });
-                parentObj.find('select').each(function() {
-                    this.selectedIndex =0;
-                });
             }
 
         </script>
@@ -191,92 +239,86 @@
             <table class ="simple-table">
 
                 <tr class="patient-details">
-                    <td>BP</td>
+                    <td>BP <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
-                        <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic" required="true"/>
+                        <obs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="systolic"/>
                         /
-                        <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic" required="true"/>
+                        <obs conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="diastolic"/>
                         mmHg
                     </td>
                     <td><span class="value"><recentObs conceptId="5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> / <recentObs
                             conceptId="5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
                 <tr class="patient-details">
-                    <td>Pulse Rate</td>
+                    <td>Pulse Rate <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
-                        <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="pulse" required="true"/>
+                        <obs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="pulse" />
                     </td>
                     <td><span class="value"><recentObs conceptId="5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                 </tr>
                 <tr class="patient-details">
-                    <td>Temperature</td>
+                    <td>Temperature <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
-                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="temp" required="true"/> &#176;C
+                        <obs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="temp" /> &#176;C
                     </td>
                     <td>
                         <span class="value"><recentObs conceptId="5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                     </td>
                 </tr>
                 <tr>
-                    <td>Penis elevated against abdomen?</td>
+                    <td>Penis elevated against abdomen? <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
                         <obs id="penis-elevated" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" required="true" />
+                             style="radio" />
                     </td>
                 </tr>
                 <tr>
-                    <td>Client given post procedure instruction?</td>
+                    <td>Client given post procedure instruction? <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
                         <obs id="post-procedure-instructions" conceptId="166639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             style="radio" required="true" />
+                             style="radio" />
                     </td>
                 </tr>
-                <tr>
+                <tr id="tbl-procedure-mngment">
                     <td>Explain: </td>
                     <td> <obs id="post-procedure-instructions" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="5" cols="50" /> </td>
                 </tr>
                 <tr>
+                    <td>Post operation medication given? <span style="color:red;"><strong>*</strong></span>
+                        &#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs  conceptId="162736AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                              style="radio" answerLabels="Yes,No" id="meds-given" />
 
-                    <td>
-                        <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="medications">
-                <tr id="complaints-checked">
-                    <td>Post operation medication given?</td>
-                    <td>
-                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="None" style="checkbox" id="medication-none" /><br/>
                     </td>
                     <td>
-                        <table id="tbl-medications" class="simple-table tb1">
-                            <tr id="medication-checked">
-                                <td>
-                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Analgesic" style="checkbox" id="medication-analgesic" /><br/>
-                                </td>
-                                <td>
-                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Antibiotics" style="checkbox" id="medication-antibiotics" /><br/>
-                                </td>
-                                <td>
-                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="TTCV" style="checkbox" id="medication-ttcv" /><br/>
-                                </td>
-                                <td>
-                                    <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabel="Other" style="checkbox" id="medication-other" /><br/>
-                                </td>
-                                <td> Specify: </td>
-                                <td>
-                                    <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
-                                </td>
-                            </tr>
+                        <table id="medications-selected">
+                            <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr id="medication-given">
+                                    <td>
+                                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Analgesic" style="checkbox" id="analgesic" /> <br/>
+                                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Antibiotics" style="checkbox" id="antibiotics" /> <br/>
+                                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="TTCV" style="checkbox" id="ttcv"  /> <br/>
+                                        <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Other" style="checkbox" id="other" /> <br/>
+                                        <table id="tbl-other-medication" >
+                                            <tr>
+                                                <td>
+                                                    Specify:
+                                                    <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </obsgroup>
                         </table>
                     </td>
-                </tr>
-                </obsgroup>
-
-                </td>
                 </tr>
 
                 <tr>
@@ -292,15 +334,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Discharged by: </td>
-                    <td> <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discharged-by" required="true" /> </td>
+                    <td>Discharged by: <span style="color:red;"><strong>*</strong></span>  </td>
+                    <td> <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discharged-by" /> </td>
                 </tr>
                 <tr>
-                    <td>Cadre: </td>
+                    <td>Cadre: <span style="color:red;"><strong>*</strong></span>  </td>
                     <td>
                         <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="MO,CO,Nurse" id="clinician_cadre" required="true" style="radio" />
+                             answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
                     </td>
                 </tr>
 
