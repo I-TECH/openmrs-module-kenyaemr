@@ -34,7 +34,8 @@ public class VMMCPostSurgerySeverityDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, severity from kenyaemr_etl.etl_vmmc_client_followup GROUP BY patient_id;";
+        String qry = "SELECT patient_id, GROUP_CONCAT(DISTINCT CASE severity WHEN 1500 then 'Severe' WHEN 1499 then 'Moderate' " +
+                "WHEN 1498 then 'Mild' ELSE '' END SEPARATOR ', ') FROM kenyaemr_etl.etl_adverse_events WHERE form = 'vmmc-followup' GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
