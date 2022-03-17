@@ -81,6 +81,9 @@
             jq('#vaccinated-alert').hide();
             jq('#tb-other-conventional-method').hide();
             jq('#tb-other-device-name').hide();
+            jq('#tbl-device-size').hide();
+            jq('#reasons-unknown').hide();
+            jq('#non-eligibility').show();
 
            //workflow
             jq('#prep-referrals').hide();
@@ -201,6 +204,7 @@
                 jq('#tbl-reported-positive-details').hide();
                 setValue('patient-hiv-test-date.value', null);
                 jq('#no-hiv-data-alert').show();
+                jq('#reasons-unknown').show();
                 jq('#hiv-test-art-date').hide();
                 jq('#medical-history').hide();
                 jq('#other-treatments').hide();
@@ -221,6 +225,7 @@
                 jq('#no-hiv-data-alert').hide();
                 jq('#prep-referrals').hide();
                 jq('#sti-referrals').hide();
+                jq('#reasons-unknown').hide();
 
             }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; PATIENT_IS_ENROLLED_HIV) {
@@ -234,6 +239,7 @@
                  jq('#tbl-reported-positive-details').hide();
                  jq('#no-hiv-data-alert').hide();
                  jq('#sti-referrals').hide();
+                jq('#reasons-unknown').hide();
 
              }
             if (patientHivStatus == HIV_POSITIVE &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
@@ -247,6 +253,7 @@
                 jq('#tbl-reported-positive-details').show();
                 jq('#no-hiv-data-alert').hide();
                 jq('#sti-referrals').hide();
+                jq('#reasons-unknown').hide();
 
             }
             var isMismatch = (PATIENT_IS_ENROLLED_HIV);
@@ -374,6 +381,7 @@
             if(val == 159619){
                 jq('#tr-conventional-method-types').show();
                 jq('#tr-device-method-types').hide();
+                jq('#tb-other-conventional-method').hide();
                 clearHiddenSections(jq('#device-name'));
                 getField('device-size.value').val("");
 
@@ -381,6 +389,7 @@
             if(val == 164204){
                 jq('#tr-device-method-types').show();
                 jq('#tr-conventional-method-types').hide();
+                jq('#tbl-device-size').hide();
                 clearHiddenSections(jq('#conventional-method'));
             }
         }
@@ -646,6 +655,7 @@
                 jq('#fs-circumcision-method').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
+                jq('#non-eligibility').hide();
                 clearHiddenSections(jq('#prep-referred'));
                 clearHiddenSections(jq('#prep-services-referred'));
                 clearHiddenSections(jq('#sti-referred'));
@@ -654,6 +664,7 @@
             }
             if(val == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq('#sti-referrals').show();
+                jq('#non-eligibility').show();
                 jq('#fs-circumcision-method').hide();
                 clearHiddenSections(jq('#circumcision-method'));
                 clearHiddenSections(jq('#conventional-method'));
@@ -661,6 +672,7 @@
             }
             if(val == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#prep-referrals').show();
+                jq('#non-eligibility').show();
                 jq('#fs-circumcision-method').hide();
                 clearHiddenSections(jq('#circumcision-method'));
                 clearHiddenSections(jq('#conventional-method'));
@@ -675,6 +687,7 @@
                 jq('#fs-circumcision-method').show();
                 jq('#sti-referrals').hide();
                 jq('#prep-referrals').hide();
+                jq('#non-eligibility').hide();
                 clearHiddenSections(jq('#prep-referred'));
                 clearHiddenSections(jq('#prep-services-referred'));
                 clearHiddenSections(jq('#sti-referred'));
@@ -684,6 +697,7 @@
             if(val == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq('#sti-referrals').show();
                 jq('#fs-circumcision-method').hide();
+                jq('#non-eligibility').show();
                 clearHiddenSections(jq('#circumcision-method'));
                 clearHiddenSections(jq('#conventional-method'));
                 clearHiddenSections(jq('#explain-noneligibility'));
@@ -692,6 +706,7 @@
             if(val == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#prep-referrals').show();
                 jq('#fs-circumcision-method').hide();
+                jq('#non-eligibility').show();
                 clearHiddenSections(jq('#circumcision-method'));
                 clearHiddenSections(jq('#conventional-method'));
                 clearHiddenSections(jq('#explain-noneligibility'));
@@ -709,13 +724,17 @@
         }
         var deviceMethodSelected = function() {
             var deviceName = getValue('device-name.value');
-            if(deviceName == 5622) {
+            if (deviceName == 5622) {
                 jq('#tb-other-device-name').show();
-            }else{
+                jq('#tbl-device-size').hide();
+            }
+            if (deviceName == 165396) {
+                jq('#tbl-device-size').show();
                 jq('#tb-other-device-name').hide();
-                getField('other-device-name.value').val("");
             }
         }
+
+
         //Before Submit
         beforeSubmit.push(function() {
             var assentGiven = getValue('assent-given.value');
@@ -916,6 +935,20 @@
             }else {
                 getField('prep-referred.error').html('Please specify  referral service.').hide();
             }
+            if(pAge &lt; 18 &amp;&amp; assentGiven == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; prepReferred == false){
+                console.log("Here");
+                getField('prep-referred.error').html('Please specify referral service.').show();
+                return false;
+            }else {
+                getField('prep-referred.error').html('Please specify  referral service.').hide();
+            }
+            if(pAge &lt; 18 &amp;&amp; assentGiven == 1066 &amp;&amp; PATIENT_IS_ENROLLED_HIV &amp;&amp;  stiReferred == false){
+                getField('sti-referred.error').html('Please specify referral service.').show();
+                return false;
+            }else {
+                getField('sti-referred.error').html('Please specify referral service.').hide();
+            }
+
             if(consentGiven == 'false' &amp;&amp; !PATIENT_IS_ENROLLED_HIV  &amp;&amp; prepReferred == false){
                 getField('prep-referred.error').html('Please specify referral service.').show();
                 return false;
@@ -1010,7 +1043,18 @@
                     jq('#sti-referrals').hide();
                     jq('#prep-referrals').hide();
                 }
-                if(consent == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+                if(consent == 'true' &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == UNKNOWN ){
+                    jq('#reasons-unknown').show();
+                    jq('#hiv-status-details').show();
+                    jq('#hiv-test-art-date').hide();
+                    jq('#medical-history').hide();
+                    jq('#other-treatments').hide();
+                    jq('#consented-alert').hide();
+                    jq('#eligibility-confirmation').hide();
+                    jq('#sti-referrals').hide();
+                    jq('#prep-referrals').hide();
+                }
+               if(consent == 'false' &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                     jq('#sti-referrals').show();
                     jq('#consented-alert').hide();
                     jq('#medical-history').hide();
@@ -1034,6 +1078,7 @@
                     jq('#fs-circumcision-method').show();
                     jq('#sti-referrals').hide();
                     jq('#prep-referrals').hide();
+                    jq('#non-eligibility').hide();
                 }
                 if(PATIENT_IS_ENROLLED_HIV &amp;&amp; (goodHealth == 'false' || counselled ==1066 )){
                     jq('#sti-referrals').show();
@@ -1075,10 +1120,14 @@
              var deviceName = getValue('device-name.value');
                     if(deviceName == 5622) {
                         jq('#tb-other-device-name').show();
-                    }else{
-                        jq('#tb-other-device-name').hide();
-                        getField('other-device-name.value').val("");
+                        jq('#tbl-device-size').hide();
                     }
+
+                   if(deviceName == 165396) {
+                    jq('#tbl-device-size').show();
+                    jq('#tb-other-device-name').hide();
+                  }
+
             });
         </script>
     </ifMode>
@@ -1154,6 +1203,14 @@
                                 </td>
                             </tr>
                         </table>
+                    </td>
+                </tr>
+                <tr id="reasons-unknown">
+                    <td>
+                        Why are the clients results unknown ?
+                    </td>
+                    <td>
+                        <obs id="reason-unknown" conceptId="165435AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="40"/>
                     </td>
                 </tr>
             </table>
@@ -1325,7 +1382,7 @@
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Hypospadia" style="checkbox" /><br/>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Others" style="checkbox" id="complaint-error" />  <span style="color:red;"><strong>*</strong></span><br/>
+                                             answerLabel="Others" style="checkbox" id="complaint-error" />  <br/>
 
                                     </td>
                                             <td>
@@ -1350,11 +1407,11 @@
             <legend>Other Treatments </legend>
             <table class ="simple-table">
                 <tr id="treatment-checked">
-                    <td> Client undergoing treatment :
+                    <td> Client undergoing treatment : <span style="color:red;"><strong>*</strong></span>
                         <obs id="undergoing-treatment" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No"
-                        /><span style="color:red;"><strong>*</strong></span>
+                        />
                     </td>
                     <td>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1364,7 +1421,7 @@
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138571AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="HIV/AIDS" style="checkbox"  id="enrolled-hiv" /><br/>
                         <obs conceptId="1794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Other " style="checkbox" id="treatment-error" /><span style="color:red;"><strong>*</strong></span><br/>
+                             answerLabel="Other " style="checkbox" id="treatment-error" /><br/>
                     </td>
                     <td>
                         <br/>
@@ -1396,9 +1453,9 @@
                 </tr>
            <tr>
            <td>
-                Any known allergies? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                Any known allergies? &#160; <span style="color:red;"><strong>*</strong></span>
                 <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
-               <span style="color:red;"><strong>*</strong></span>
+
            </td>
             <td>
             <table id="tbl-known-allergies">
@@ -1448,11 +1505,11 @@
                    </tr>
                 <tr>
                     <td>
-                        Client ever had a surgical operation?
+                        Client ever had a surgical operation? <span style="color:red;"><strong>*</strong></span>
                         <obs conceptId="164896AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="prev-surgical-operation" /><span style="color:red;"><strong>*</strong></span>
+                             style="radio"  id="prev-surgical-operation" />
                     </td>
                     <td>
                         <br/>
@@ -1468,20 +1525,20 @@
                 </tr>
                 <tr>
                     <td>
-                        Client has documented proof of having received Tetanus Booster Vaccine within the last 5 years?
+                        Client has documented proof of having received Tetanus Booster Vaccine within the last 5 years? <span style="color:red;"><strong>*</strong></span>
                         <obs conceptId="54AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="tetanus-booster-proof" /><span style="color:red;"><strong>*</strong></span>
+                             style="radio"  id="tetanus-booster-proof" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Client given Tetanus Booster Vaccine?
+                        Client given Tetanus Booster Vaccine? <span style="color:red;"><strong>*</strong></span>
                         <obs conceptId="161536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Yes,No"
-                             style="radio"  id="tetanus-booster-given" /><span style="color:red;"><strong>*</strong></span>
+                             style="radio"  id="tetanus-booster-given" />
                     </td>
                     <td>
                         <table id="tbl-booster-date">
@@ -1526,13 +1583,13 @@
             <legend>Confirmation of client's eligibility </legend>
             <table class ="simple-table">
                 <tr>
-                    <td> In good health: </td>
+                    <td> In good health:  <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="good-health" conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                style="yes_no" />
                         <br/>
                     </td>
-                    <td> Counseled: </td>
+                    <td> Counseled: <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
                         <obs id="counselled" conceptId="165070"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1550,7 +1607,7 @@
                         <div id="vaccinated-alert" class="ke-warning">Patient is vaccinated</div>
                     </td>
                 </tr>
-                <tr>
+                <tr id="non-eligibility">
                         <td> If No for any of the above, explain: </td>
                             <td>
                                 <obs id="explain-noneligibility" conceptId="162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
@@ -1578,11 +1635,9 @@
                                     <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                            1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           157783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                            5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Sleeve resection,
                                                        Dorsal Slit,
-                                                       Forceps Guide,
                                                        Other"
                                          style="radio"/>
                                     <br/>
@@ -1617,12 +1672,16 @@
                                         </tr>
                                     </table>
                                 </td>
-
-                                <td>
-                                    Size:
-                                    <obs id="device-size" conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-
-                                </td>
+                               <td>
+                                   <table id="tbl-device-size">
+                                       <tr>
+                                            <td>
+                                                Size:
+                                                <obs id="device-size" conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="20" />
+                                            </td>
+                                       </tr>
+                                   </table>
+                               </td>
                             </tr>
                        </table>
                     </td>
@@ -1633,12 +1692,13 @@
             <legend>Referrals </legend>
             <table class ="simple-table">
                 <tr>
-                    <td> Client referred for other services </td>
+                    <td> Client referred for other services
+                        <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
                         <obs id="prep-referred" conceptId="165093"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
-                             style="radio" /><span style="color:red;"><strong>*</strong></span>
+                             style="radio" />
                         <br/>
                     </td>
                     <td>
@@ -1651,7 +1711,15 @@
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165270"
                                              answerLabel="PrEP Services" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Condom dispensing" style="checkbox" /><br/>
+                                             answerLabel="Condom Promotion" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="GBV Counselling" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Reproductive Health" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Drug Abuse" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Other" style="checkbox" /><br/>
                                     </td>
                                 </tr>
                             </obsgroup>
@@ -1664,12 +1732,13 @@
             <legend>Referrals </legend>
             <table class ="simple-table">
                 <tr>
-                    <td> Client referred for other services </td>
+                    <td> Client referred for other services
+                        <span style="color:red;"><strong>*</strong></span></td>
                     <td>
                         <obs id="sti-referred" conceptId="165093"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabel="Yes,No"
-                             style="radio" /><span style="color:red;"><strong>*</strong></span>
+                             style="radio" />
                         <br/>
                     </td>
                     <td>
@@ -1680,7 +1749,15 @@
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
                                              answerLabel="STI Treatment" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Condom dispensing" style="checkbox" /><br/>
+                                             answerLabel="Condom Promotion" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="GBV Counselling" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Reproductive Health" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Drug Abuse" style="checkbox" /><br/>
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Other" style="checkbox" /><br/>
                                     </td>
                                 </tr>
                             </obsgroup>
