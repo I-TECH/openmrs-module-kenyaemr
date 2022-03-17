@@ -2741,5 +2741,80 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
-
+    /**
+     * VMMC
+     * HV04-13
+     *Number of males circumcised with moderate Adverse Events during procedutre
+     * @return
+     */
+    public CohortDefinition circumcisedWithModerateAEDuringProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-procedure'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1499;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_MODERATE_AE_DURING");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised with moderate AE during procedure");
+        return cd;
+    }
+    /**
+     * VMMC
+     * HV04-14
+     *Number of males circumcised with severe Adverse Events during procedutre
+     * @return
+     */
+    public CohortDefinition circumcisedWithSevereAEDuringProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-procedure'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1500;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SEVERE_AE_DURING");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised with severe AE during procedure");
+        return cd;
+    }
+    /**
+     * VMMC
+     * HV04-15
+     *Number of males circumcised with moderate Adverse Events post procedutre
+     * @return
+     */
+    public CohortDefinition circumcisedWithModerateAEPostProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-followup'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1499;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_MODERATE_AE_POST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised with moderate AE post procedure");
+        return cd;
+    }
+    /**
+     * VMMC
+     * HV04-16
+     *Number of males circumcised with severe Adverse Events post procedutre
+     * @return
+     */
+    public CohortDefinition circumcisedWithSevereAEPostProcedure() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
+                "  inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
+                "  inner join kenyaemr_etl.etl_adverse_events a on e.patient_id = a.patient_id and a.form ='vmmc-followup'\n" +
+                "where c.visit_date between date(:startDate) and date(:endDate) and a.severity = 1500;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("VMMC_SEVERE_AE_POST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of males circumcised with severe AE post procedure");
+        return cd;
+    }
 }

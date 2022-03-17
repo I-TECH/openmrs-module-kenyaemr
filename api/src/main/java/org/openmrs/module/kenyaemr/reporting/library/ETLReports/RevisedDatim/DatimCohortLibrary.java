@@ -2787,9 +2787,9 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-     cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-     cd.addSearch("testedHIVPositiveAtVMMCSite",ReportUtils.map(testedHIVPositiveAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("malesCircumcised AND malesCircumcised");
+        cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedHIVPositiveAtVMMCSite",ReportUtils.map(testedHIVPositiveAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("malesCircumcised AND testedHIVPositiveAtVMMCSite");
         return cd;
     }
     /**
