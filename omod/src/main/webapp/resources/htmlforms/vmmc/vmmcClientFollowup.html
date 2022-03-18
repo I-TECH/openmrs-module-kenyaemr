@@ -48,20 +48,11 @@
         $(document).ready(function () {
             //Defaults
             jq('#tbl-adverse-effects').hide();
-
-            // if none in medications is selected
-            jq("#medication-given").show();
-            jq("#tbl-medications").show();
-            jq('#no-medication :input[type=checkbox]').change(onMedicationSelected);
-            jq('#medications-select :input[type=checkbox]').change(noMedicationSelected);
-
-            //Check adverse event type
-           // jq("#adverse-event-types select").change(onAdverseEventChange);
-
-            //Check description type
-           // jq('#event-description').change(onEventDescriptionChange);
-
-            //Check if any adverse events
+            jq('#adverse-event-management').hide();
+            jq("#medications-selected").hide();
+            jq("#tbl-other-medication").hide();
+            jq("#meds-given :input[type=radio]").change(onMedicationsGiven);
+            jq('#medication-given :input[type=checkbox]').change(onMedicationSelected);
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
 
             if (CIRCUMCISION_DATE) {
@@ -72,24 +63,25 @@
         });
         // End on ready
 
+        var onMedicationsGiven = function(){
+            var val = jq(this).val();
+            if(val == 1065){
+                jq("#medications-selected").show();
+                }else{
+                jq("#medications-selected").hide();
+            }
+          }
         var onMedicationSelected = function(){
             var val = jq(this).val();
-            if(val == 1066) {
-                jq("#tbl-medications").hide();
-            } else {
-                jq("#tbl-medications").show();
+            if(val == 5622 ){
+                jq("#tbl-other-medication").show();
+            }else {
+                jq("#tbl-other-medication").hide();
+                getField('other-medication.value').val("");
             }
+
         }
-        var noMedicationSelected = function(){
-            var val = jq(this).val();
-            var generalExamsChecked = jq("#medications-select input:checkbox:checked");
-            if(val == 1107 &amp;&amp; generalExamsChecked.length ==1){
-                jq("#tbl-medications").hide();
-            }
-            if(generalExamsChecked.length ==0){
-                jq("#tbl-medications").show();
-            }
-        }
+
         //Calculate date since circumcision
         function calculateDateSinceCircumcision(circDate) {
                 var today = new Date();
@@ -105,15 +97,52 @@
             var val = jq(this).val();
             if(val == 1065 ) {
                 jq('#tbl-adverse-effects').show();
+                jq('#adverse-event-management').show();
             }
             if(val == 1066 ) {
                 jq('#tbl-adverse-effects').hide();
+                jq('#adverse-event-management').hide();
                 getField('adverse-event-types.value').prop("selectedIndex", 0);
                 getField('severity-level.value').prop("selectedIndex", 0);
+                getField('management.value').val("");
                 jq("#event-description option[value='none']").prop('selected', true);
 
             }
         }
+        //Before Submit
+        beforeSubmit.push(function() {
+
+            var adverseEventsVal = getValue('adverse_events.value');
+            var visitType = getValue('visit-type.value');
+            var medsGiven = getValue('meds-given.value');
+            var dischargedBy = getField('discharged-by.value').val();
+            if(visitType == false ){
+                getField('visit-type.error').html('Please specify whether patient visit was scheduled').show();
+                return false;
+            } else {
+                getField('visit-type.error').html('Please specify whether patient visit was scheduled').hide();
+            }
+            if(adverseEventsVal == false ){
+                getField('adverse_events.error').html('Please specify whether patient has adverse events').show();
+                return false;
+            } else {
+                getField('adverse_events.error').html('Please specify whether patient has adverse events').hide();
+            }
+            if(medsGiven == false ){
+                getField('meds-given.error').html('Please specify whether patient was given medication').show();
+                return false;
+            } else {
+                getField('meds-given.error').html('Please specify whether patient was given medication').hide();
+            }
+            if(dischargedBy == "" ){
+                getField('discharged-by.error').html('Please specify who discharged the patient').show();
+                return false;
+            } else {
+                getField('discharged-by.error').html('Please specify who discharged the patient').hide();
+            }
+            return true;
+
+        });
 
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
@@ -135,8 +164,13 @@
         <script type="text/javascript">
             jq(function(){
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
+                var MEDS_GIVEN = getValue('meds-given.value');
                  if(ADVERSE_EFFECT == 1065 ) {
-                    jq('#tbl-adverse-effects').show();
+                     jq('#tbl-adverse-effects').show();
+                     jq('#adverse-event-management').show();
+                }
+                if(MEDS_GIVEN == 1065){
+                    jq("#medications-selected").show();
                 }
 
             });
@@ -159,7 +193,7 @@
             <table class ="simple-table">
                 <tr>
                     <td>
-                        Type of Visit:
+                        Type of Visit: <span style="color:red;"><strong>*</strong></span>
                     </td>
                     <td>
                         <obs id="visit-type" conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -186,7 +220,7 @@
                         <table id="adverse-event">
                             <tr>
                                 <td>
-                                    Was there an Adverse Event during circumcision?
+                                    Was there an Adverse Event post circumcision (during follow up)?  <span style="color:red;"><strong>*</strong></span>
                                     <obs id="adverse_events" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" />
@@ -228,26 +262,26 @@
                                                         <td>
                                                             <select name="event-description" class="event-description" id="event-description">
                                                                 <option value="none"></option>
-                                                                <option value="pain-moderate">Results in disability for 4-7 days</option>
-                                                                <option value="pain-severe">Results in disability for more than 7 days</option>
-                                                                <option value="bleeding-mild">Dressing soaked through with blood at a routine follow-up visit</option>
-                                                                <option value="bleeding-moderate">Bleeding that requires a special return to the clinic for medical attention</option>
-                                                                <option value="bleeding-severe">Bleeding that requires surgical re-exploration</option>
-                                                                <option value="appearance-mild">May be some concern by client but appearance within normal range</option>
-                                                                <option value="appearance-moderate">Scarring, costmetic problem but operation not required</option>
-                                                                <option value="appearance-severe">Rotation or other problem,requires cosmetic correction</option>
-                                                                <option value="hematoma-mild">More swelling than usual, but no significant discomfort</option>
-                                                                <option value="hematoma-moderate">Significant tenderness and discomfort, but surgical re-exploration not required</option>
-                                                                <option value="hematoma-severe">Surgical re-exploration required</option>
-                                                                <option value="infection-mild">Erythema more than 1 cm beyond incision line</option>
-                                                                <option value="infection-moderate">Purulent discharge from the wound</option>
-                                                                <option value="infection-severe">Cellulitis or wound necrosis</option>
-                                                                <option value="urinating-mild">Transient complaint that resolves without treatment</option>
-                                                                <option value="urinating-moderate">Partial obstruction</option>
-                                                                <option value="urinating-severe">Cannot urinate</option>
-                                                                <option value="disruption-mild">1 to 2 adjascent stitches missing</option>
-                                                                <option value="disruption-moderate">Re-stitching of atleast 3 stitches required</option>
-                                                                <option value="disruption-severe">Patient incapacitated - bed rest required</option>
+                                                                <option value="pain-moderate">Results in disability for 4-7 days (P2)</option>
+                                                                <option value="pain-severe">Results in disability for more than 7 days (P2)</option>
+                                                                <option value="bleeding-mild">Dressing soaked through with blood at a routine follow-up visit (B2)</option>
+                                                                <option value="bleeding-moderate">Bleeding that requires a special return to the clinic for medical attention (B2)</option>
+                                                                <option value="bleeding-severe">Bleeding that requires surgical re-exploration (B2)</option>
+                                                                <option value="appearance-mild">May be some concern by client but appearance within normal range (PA2)</option>
+                                                                <option value="appearance-moderate">Scarring, costmetic problem but operation not required (PA2)</option>
+                                                                <option value="appearance-severe">Rotation or other problem,requires cosmetic correction (PA2)</option>
+                                                                <option value="hematoma-mild">More swelling than usual, but no significant discomfort (HS2)</option>
+                                                                <option value="hematoma-moderate">Significant tenderness and discomfort, but surgical re-exploration not required (HS2)</option>
+                                                                <option value="hematoma-severe">Surgical re-exploration required (HS2)</option>
+                                                                <option value="infection-mild">Erythema more than 1 cm beyond incision line (IS2)</option>
+                                                                <option value="infection-moderate">Purulent discharge from the wound (IS2)</option>
+                                                                <option value="infection-severe">Cellulitis or wound necrosis (IS2)</option>
+                                                                <option value="urinating-mild">Transient complaint that resolves without treatment (DU2)</option>
+                                                                <option value="urinating-moderate">Partial obstruction (DU2)</option>
+                                                                <option value="urinating-severe">Cannot urinate (DU2)</option>
+                                                                <option value="disruption-mild">1 to 2 adjascent stitches missing (WD2)</option>
+                                                                <option value="disruption-moderate">Re-stitching of atleast 3 stitches required (WD2)</option>
+                                                                <option value="disruption-severe">Patient incapacitated - bed rest required (WD2)</option>
                                                             </select>
                                                         </td>
                                                       <td>
@@ -270,72 +304,67 @@
                         </table>
                     </td>
                 </tr>
-            </table>
-        </fieldset>
-        <fieldset id="fs-adverse-event-management">
-            <legend>Adverse Event Management </legend>
-                  <table class ="simple-table">
-                            <tr>
-                                <td>Management of Adverse Events if any:  <br> </br>
-                                    <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80" id="severity_management" />
-                                </td>
-
-                            </tr>
-                      <tr>
-                          <td>
-                              <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                      <tr id="medication-given">
-                          <td>Medication given if any:</td>
-                          <td>
-                              <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                   answerLabel="None" style="checkbox" id="medications-select" /><br/>
+                 <tr id="adverse-event-management">
+                     <td>Management of Adverse Events if any:  <br> </br>
+                            <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80" id="management" />
                           </td>
-                          <td>
-                              <table id="tbl-medications" class="simple-table tb1">
-                                  <tr>
-                                      <td>
-                                          <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                               answerLabel="Analgesic" style="checkbox" /><br/>
-                                      </td>
-                                      <td>
-                                          <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                               answerLabel="Antibiotics" style="checkbox" /><br/>
-                                      </td>
-                                      <td>
-                                          <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                               answerLabel="TTCV" style="checkbox" /><br/>
-                                      </td>
-                                      <td>
-                                          <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                               answerLabel="Other" style="checkbox" /><br/>
-                                      </td>
-                                      <td> Specify: </td>
-                                      <td>
-                                          <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
-                                      </td>
-                                  </tr>
+                 </tr>
+            </table>
+            <table class="simple-table">
+                  <tr>
+                      <td>Medication given if any: <span style="color:red;"><strong>*</strong></span>
+                          &#160;&#160;&#160;&#160;&#160;&#160;
+                                    <obs  conceptId="162736AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    style="radio" answerLabels="Yes,No" id="meds-given" />
+
+                                </td>
+                           <td>
+                              <table id="medications-selected">
+                                  <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                  <tr id="medication-given">
+                                        <td>
+                                   <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="103294AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   answerLabel="Analgesic" style="checkbox" /> <br/>
+                                   <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1195AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   answerLabel="Antibiotics" style="checkbox" /> <br/>
+                                   <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="84879AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   answerLabel="TTCV" style="checkbox" /> <br/>
+                                   <obs conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   answerLabel="Other" style="checkbox" /> <br/>
+                                      <table id="tbl-other-medication" >
+                                           <tr>
+                                               <td>
+                                          Specify:
+                                           <obs id="other-medication" conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                               </td>
+                                           </tr>
+                                       </table>
+                                     </td>
+                                    </tr>
+                                  </obsgroup>
                               </table>
                           </td>
                       </tr>
-                      </obsgroup>
 
-                      </td>
-                      </tr>
-                      <tr>
-                          <td>Client Reviewed and Discharged by: </td>
-                          <td> <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discharged-by"  /> </td>
+                   <tr>
+                          <td>Client Reviewed and Discharged by:  <span style="color:red;"><strong>*</strong></span></td>
+                           <td><obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="discharged-by"  /></td>
                       </tr>
                       <tr>
                           <td>Cadre: </td>
-                          <td>
-                              <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+
+                            <td>  <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                    answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                    answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
-                          </td>
+                            </td>
                       </tr>
                       <tr>
                           <td>
-                              <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80" id="clinical-notes"/>
+                              Clinical notes:
+                          </td>
+                          <td>
+                              <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="40" id="clinical-notes"/>
                           </td>
                       </tr>
 
