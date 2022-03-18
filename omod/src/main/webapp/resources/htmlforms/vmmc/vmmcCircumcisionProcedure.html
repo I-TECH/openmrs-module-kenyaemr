@@ -51,7 +51,7 @@
             jq("#device-name :input[type=radio]").change(onDeviceMethodSelected);
 
             //check for other agent
-            getField('agents.value').change(onAgentSelected);
+            jq("#other-agent :input[type=checkbox]").change(onAgentSelected);
 
             if(CIRCUMCISION_METHOD == CONVENTIONAL) {
                 jq("#circumcision-method input[value=159619]").prop("checked", true);
@@ -86,8 +86,12 @@
 
         var onAgentSelected = function () {
             var val = jq(this).val();
-            if(val == 5622) {
+            var otherChecked = jq("#other-agent input:checkbox:checked");
+
+            if(otherChecked.length == 1) {
                 jq('#tbl-other-agent').show();
+            } else {
+                jq('#tbl-other-agent').hide();
             }
         }
 
@@ -274,6 +278,14 @@
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
 
+                var otherChecked = jq("#other-agent input:checkbox:checked");
+
+                if(otherChecked.length == 1) {
+                    jq('#tbl-other-agent').show();
+                } else {
+                    jq('#tbl-other-agent').hide();
+                }
+
                 if(ADVERSE_EFFECT == YES ) {
                   jq('#tbl-adverse-effects').show();
                 }
@@ -445,51 +457,62 @@
                                 <th>Agent</th>
                                 <th>Concentration(mg):</th>
                                 <th>Volume(ml):</th>
-                                <th></th>
                             </tr>
-                            <repeat>
-                                <template>
-                                    <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                        <tr>
-                                            <td>
-                                                <obs conceptId="165139"
-                                                     answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
-                                                     style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine, Others"
-                                                     id="agents"  />
-                                            </td>
-                                            <td>
-                                                <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
-                                            </td>
+                            <tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                            <td>
-                                                <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
-                                            </td>
-                                        </tr>
-                                    </obsgroup>
-                                </template>
-                                <render n="1" concept=" " />
-                                <render n="2" concept=" " />
-                                <render n="3" concept=" " />
-                            </repeat>
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="165139"
+                                                         answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+                                                         style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine"
+                                                         id="agents"  />
+                                                </td>
+                                                <td>
+                                                    <obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                                </td>
+
+                                                <td>
+                                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                    </template>
+                                    <render n="1" concept=" " />
+                                    <render n="2" concept=" " />
+                                    <render n="3" concept=" " />
+                                </repeat>
+                            </tr>
 
                         </table>
 
-                        <br/>
-                        <table id="tbl-other-agent">
+                        <table>
                             <tr>
-                                <td>  &#160;&#160;&#160; Specify :
-                                    <obs id="other-agent" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                                    &#160;&#160;&#160;
+                                <td>
+                                    <obs id="other-agent" type="checkbox" conceptId="165139" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other Agent" />
+                                </td>
+                                <td>
+                                    <table >
+                                        <tr id="tbl-other-agent">
+                                            <td>  &#160;&#160;&#160; Specify :
+                                                <obs id="other-specify-agent" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                                &#160;&#160;&#160;
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                         </table>
+
                     </td>
                 </tr>
 
                 <tr>
                     <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
-                        <obs conceptId="163138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
+                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
                     </td>
                 </tr>
 
@@ -595,7 +618,7 @@
                                         <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" required="true"  />
                                     </td>
                                     <td>
-                                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        <obs conceptId="163556AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="MO,CO,Nurse" id="clinician_cadre" required="true"  style="radio" />
                                     </td>
