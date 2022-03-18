@@ -1147,27 +1147,26 @@
             <legend>VMMC source Info </legend>
             <table class ="simple-table">
                <tr id="tr-assent">
-                   <td> Assent given? </td>
+                   <td> Assent given?  <span style="color:red;"><strong>*</strong></span> </td>
                    <td>
                        <obs id="assent-given" conceptId="162696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabel="Yes,No"
                             style="radio" />
-                       <span style="color:red;"><strong>*</strong></span>
+
                        <br/>
                    </td>
                </tr>
                <tr id="tr-consent">
                    <includeIf velocityTest="$patient.age &lt; 18">
-                   <td> &#160;&#160;&#160;&#160;&#160; If Yes - Parent/ Guardian Consent given? </td>
+                   <td> &#160;&#160;&#160;&#160;&#160; If Yes - Parent/ Guardian Consent given?  <span style="color:red;"><strong>*</strong></span></td>
                    </includeIf>
                    <includeIf velocityTest="$patient.age &gt; 17">
-                       <td> &#160;&#160;&#160;&#160;&#160; Consent given? </td>
+                       <td> &#160;&#160;&#160;&#160;&#160; Consent given?  <span style="color:red;"><strong>*</strong></span></td>
                    </includeIf>
                    <td>
                        <obs id="consent-given" conceptId="1710"
                             style="yes_no" />
-                       <span style="color:red;"><strong>*</strong></span>
                        <br/>
                    </td>
                </tr>
@@ -1356,9 +1355,9 @@
                     <td>
                             <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr id="complaints-checked">
-                                    <td>  Client presenting with complaint: <br/><br/>
+                                    <td>  Client presenting with complaint:  <span style="color:red;"><strong>*</strong></span><br/><br/>
                                         <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
-                                        <span style="color:red;"><strong>*</strong></span>
+
                                           </td>
                                     <td>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
