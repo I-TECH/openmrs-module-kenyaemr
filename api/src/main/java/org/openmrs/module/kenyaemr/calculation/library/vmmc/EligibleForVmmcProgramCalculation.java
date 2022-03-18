@@ -37,7 +37,7 @@ public class EligibleForVmmcProgramCalculation extends AbstractPatientCalculatio
 
 		for (int ptId : cohort) {
 
-			boolean eligible = "M".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() > 10? true: false;
+			boolean eligible = "M".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() >= 15? true: false;
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
