@@ -17,6 +17,7 @@
         var CONVENTIONAL = 159619;
         var DEVICE = 164204;
         var DORSAL_SLIT = 1933;
+        var SLEEVE_RESELECTION = 164029;
         var OTHER_CONVENTIONAL = 5622;
         var SHANGRING = 165396;
         var OTHER_DEVICE = 5622;
@@ -34,9 +35,11 @@
 
             //Defaults
             jq('#tbl-device-size').hide();
+            jq('#tbl-other-device-size').hide();
             jq('#tbl-adverse-effects').hide();
             jq('#tbl-conventional-surgical').hide();
             jq('#tbl-device-circumcision').hide();
+            jq('#tbl-other-agent').hide();
 
             //Check if conventional checked
             jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
@@ -44,12 +47,20 @@
             //Check if any adverse events
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
 
+            //check if shangring
+            jq("#device-name :input[type=radio]").change(onDeviceMethodSelected);
+
+            //check for other agent
+            jq("#other-agent :input[type=checkbox]").change(onAgentSelected);
+
             if(CIRCUMCISION_METHOD == CONVENTIONAL) {
                 jq("#circumcision-method input[value=159619]").prop("checked", true);
                 jq('#tbl-conventional-surgical').show();
 
                   if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
                     jq("#conventional-method input[value=1933]").prop("checked", true);
+                  } else if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
+                    jq("#conventional-method input[value=164029]").prop("checked", true);
                   } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
                     jq("#conventional-method input[value=5622]").prop("checked", true);
                   }
@@ -57,12 +68,13 @@
             } else if(CIRCUMCISION_METHOD == DEVICE) {
                 jq("#circumcision-method input[value=164204]").prop("checked", true);
                 jq('#tbl-device-circumcision').show();
-                jq('#tbl-device-size').show();
 
                   if(DEVICE_CIRCUMCISION == SHANGRING) {
                     jq("#device-name input[value=165396]").prop("checked", true);
+                    jq('#tbl-device-size').show();
                   } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
                     jq("#device-name input[value=5622]").prop("checked", true);
+                    jq('#tbl-other-device-size').hide();
                   }
 
                   if(DEVICE_SIZE !== 'undefined') {
@@ -71,6 +83,17 @@
             }
 
         }); // end doc ready
+
+        var onAgentSelected = function () {
+            var val = jq(this).val();
+            var otherChecked = jq("#other-agent input:checkbox:checked");
+
+            if(otherChecked.length == 1) {
+                jq('#tbl-other-agent').show();
+            } else {
+                jq('#tbl-other-agent').hide();
+            }
+        }
 
          var onAdverseEventsSelected = function () {
             getField('adverse_events.error').html('Adverse events should not be empty').hide();
@@ -98,11 +121,21 @@
               getField('device_size.value').val("");
             } else if(val == 164204) {
               jq('#tbl-device-circumcision').show();
-              jq('#tbl-device-size').show();
               jq('#tbl-conventional-surgical').hide();
               clearHiddenSections(jq('#conventional-specify'));
               clearHiddenSections(jq('#conventional-method'));
             };
+        }
+
+        var onDeviceMethodSelected = function () {
+            var val = jq(this).val();
+                if(val == 5622 ) {
+                    jq('#tbl-other-device-size').show();
+                    jq('#tbl-device-size').hide();
+                } else if(val == 165396) {
+                    jq('#tbl-device-size').show();
+                    jq('#tbl-other-device-size').hide();
+                }
         }
 
         //Clear hidden sections
@@ -133,8 +166,8 @@
             var conventionalVal = getValue('conventional-method.value');
             var deviceVal = getValue('device-name.value');
 
-            var concentrationVal = getValue('concentration.value');
-            var volumeVal = getValue('volume.value');
+            var anaesthesiaVal = getValue('anaesthesia.value');
+            var agentVal = getValue('agents.value');
 
             var adverseEventsVal = getValue('adverse_events.value');
             var managementVal = getValue('severity_management.value');
@@ -144,6 +177,9 @@
 
             var assistantClinician = getValue('assistant_clinician.value');
             var assistantClinicianCadre = getValue('assistant_clinician_cadre.value');
+
+            var surgeonName = getValue('clinician.value');
+            var surgeonCadre = getValue('clinician_cadre.value');
 
             if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
@@ -166,23 +202,29 @@
                 getField('device_size.error').html('Please specify the device size').hide();
             }
 
-            // if local anaesthesia , concentration mandatory
-            if(concentrationVal == ""){
-                getField('concentration.error').html('Please specify the concentration in mg').show();
+            // local or tropical
+            if(anaesthesiaVal == "") {
+                getField('anaesthesia.error').html('Please specify the anaesthesia used').show();
                 return false;
             } else {
-                getField('concentration.error').html('Please specify the concentration in mg').hide();
+                getField('anaesthesia.error').html('Please specify the anaesthesia used').hide();
             }
 
-            // if tropical anaesthesia, volume mandatory
-            if(volumeVal == ""){
-                getField('volume.error').html('Please specify the volume in ml').show();
+            if(agentVal == "") {
+                getField('agents.error').html('Please specify the agent used').show();
                 return false;
             } else {
-                getField('volume.error').html('Please specify the volume in ml').hide();
+                getField('agents.error').html('Please specify the agent used').hide();
             }
 
-            // if adverse effects , fill management-->
+            // if adverse effects , fill management
+            if(adverseEventsVal == ""){
+                getField('adverse_events.error').html('Please specify if there were any adverse events').show();
+               return false;
+           } else {
+                getField('adverse_events.error').html('Please specify if there were any adverse events').hide();
+           }
+
            if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
                 getField('severity_management.error').html('Please specify the management of adverse events').show();
                return false;
@@ -190,8 +232,22 @@
                 getField('severity_management.error').html('Please specify the management of adverse events').hide();
            }
 
+           if(surgeonName == ""){
+                getField('clinician.error').html('Please specify the name of the clinician').show();
+               return false;
+           } else {
+                getField('clinician.error').html('Please specify the name of the clinician').hide();
+           }
+
+           if(surgeonCadre == ""){
+                getField('clinician_cadre.error').html('Please specify the cadre of the clinician').show();
+               return false;
+           } else {
+                getField('clinician_cadre.error').html('Please specify the cadre of the clinician').hide();
+           }
+
            // if time of last slit, theatre number mandatory
-            if(timeOfLastSlit != "" &amp;&amp; theatreNumber == ""){
+            if(theatreNumber == ""){
                 getField('theatre_number.error').html('Please specify the theatre number').show();
                 return false;
             } else {
@@ -221,6 +277,14 @@
 
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
+
+                var otherChecked = jq("#other-agent input:checkbox:checked");
+
+                if(otherChecked.length == 1) {
+                    jq('#tbl-other-agent').show();
+                } else {
+                    jq('#tbl-other-agent').hide();
+                }
 
                 if(ADVERSE_EFFECT == YES ) {
                   jq('#tbl-adverse-effects').show();
@@ -307,12 +371,12 @@
 
             <table class ="simple-table">
                 <tr>
-                    <td> Method: <span style="color:red;"><strong>*</strong></span></td>
+                    <td> Method: <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
                         <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerLabels="Conventional Surgical,Device Circumcision"
-                             style="radio" required="true"
+                             style="radio"
                              answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
                         <br/>
                     </td>
@@ -321,9 +385,10 @@
                             <tr>
                                 <td>
                                     <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                            5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Dorsal Slit,
+                                         answerLabels="Sleeve resection,Dorsal Slit,
                                                        Other"
                                          style="radio"/>
                                     <br/>
@@ -346,10 +411,18 @@
                                          style="radio" />
 
                                 </td>
-                                <td> Specify: </td>
+
                                 <td>
-                                    <obs id="device-name-specify" conceptId="162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                    <table id="tbl-other-device-size" class="tb1 simple-table">
+                                        <tr>
+                                            <td> Specify: </td>
+                                            <td>
+                                                <obs id="device-name-specify" conceptId="162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
+
                                 <td>
                                     <table id="tbl-device-size" class="tb1 simple-table">
                                         <tr>
@@ -373,7 +446,7 @@
                     <td> Anaesthesia used: Type:
                         <obs conceptId="164254AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio" required="true"  />
+                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio"  />
                     </td>
                 </tr>
 
@@ -385,36 +458,61 @@
                                 <th>Concentration(mg):</th>
                                 <th>Volume(ml):</th>
                             </tr>
-                            <repeat>
-                                <template>
-                                    <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                        <tr>
-                                            <td>
-                                                <obs conceptId="	4c8c7fc3-b0f3-4977-b460-37d100e7fade"
-                                                     answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="dropdown" answerLabels="Lignocaine,Bupivacaine"
-                                                     id="agents" required="true"  />
-                                            </td>
-                                            <td>
-                                               <obs conceptId="160047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" /><span style="color:red;"><strong>*</strong></span>
-                                            </td>
-                                            <td>
-                                                <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" /><span style="color:red;"><strong>*</strong></span>
+                            <tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                                            <tr>
+                                                <td>
+                                                    <obs conceptId="165139"
+                                                         answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+                                                         style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine"
+                                                         id="agents"  />
+                                                </td>
+                                                <td>
+                                                    <obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                                </td>
+
+                                                <td>
+                                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                    </template>
+                                    <render n="1" concept=" " />
+                                    <render n="2" concept=" " />
+                                    <render n="3" concept=" " />
+                                </repeat>
+                            </tr>
+
+                        </table>
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <obs id="other-agent" type="checkbox" conceptId="165139" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other Agent" />
+                                </td>
+                                <td>
+                                    <table >
+                                        <tr id="tbl-other-agent">
+                                            <td>  &#160;&#160;&#160; Specify :
+                                                <obs id="other-specify-agent" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                                &#160;&#160;&#160;
                                             </td>
                                         </tr>
-                                    </obsgroup>
-                                </template>
-                                <render n="1" concept=" " />
-                                <render n="2" concept=" " />
-                            </repeat>
+                                    </table>
+                                </td>
+                            </tr>
                         </table>
+
                     </td>
                 </tr>
 
                 <tr>
                     <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
-                        <obs conceptId="163138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
+                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
                     </td>
                 </tr>
 
@@ -427,11 +525,12 @@
 
                 <tr>
                     <td>
-                        Was there an Adverse Event during circumcision?
+                        Was there an Adverse Event during circumcision? <span style="color:red;"><strong>*</strong></span>
                         <obs id="adverse_events" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             required="true" style="radio" />
+                             style="radio" />
                     </td>
+
                 </tr>
 
                 <tr>
@@ -458,18 +557,18 @@
                                                     <td>
                                                         <select name="event-description" class="event-description" id="event-description">
                                                             <option value="none"></option>
-                                                            <option value="pain-severe">Pain that requires additional intervention</option>
-                                                            <option value="bleeding-mild">Bleeding that is easily controller</option>
-                                                            <option value="bleeding-moderate">Bleeding that requires pressure dressing to control</option>
-                                                            <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility</option>
-                                                            <option value="anaesthesia-moderate">Palpitations, vaso-vagal reaction or emesis</option>
-                                                            <option value="anaesthesia-severe">Anaphylactic shock or other reaction requiring transfer to another facility</option>
-                                                            <option value="excessive-skin-mild">Adds time or material needs to the procedure, but does not result in any discemible</option>
-                                                            <option value="excessive-skin-moderate">Skin is tight, but additional operative work is not neccessary</option>
-                                                            <option value="excessive-skin-severe">Require re-operation of transfer to another facility to correct the problem</option>
-                                                            <option value="damage-mild">Mild bruising or abrasion, not requiring treatment</option>
-                                                            <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing</option>
-                                                            <option value="damage-severe">Part or all of the glans or shaft of the penis severed</option>
+                                                            <option value="pain-severe">Pain that requires additional intervention(P1)</option>
+                                                            <option value="bleeding-mild">Bleeding that is easily controller(B1)</option>
+                                                            <option value="bleeding-moderate">Bleeding that requires pressure dressing to control(B1)</option>
+                                                            <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility(B1)</option>
+                                                            <option value="anaesthesia-moderate">Palpitations, vaso-vagal reaction or emesis(A1)</option>
+                                                            <option value="anaesthesia-severe">Anaphylactic shock or other reaction requiring transfer to another facility(A1)</option>
+                                                            <option value="excessive-skin-mild">Adds time or material needs to the procedure, but does not result in any discemible(E1)</option>
+                                                            <option value="excessive-skin-moderate">Skin is tight, but additional operative work is not neccessary(E1)</option>
+                                                            <option value="excessive-skin-severe">Require re-operation of transfer to another facility to correct the problem(E1)</option>
+                                                            <option value="damage-mild">Mild bruising or abrasion, not requiring treatment(D1)</option>
+                                                            <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing(D1)</option>
+                                                            <option value="damage-severe">Part or all of the glans or shaft of the penis severed(D1)</option>
 
                                                         </select>
                                                     </td>
@@ -490,17 +589,15 @@
                                 </table>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td>Management of Adverse Events if any:  </td>
+
+                            <td> <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" /></td>
+                        </tr>
+
                     </table>
                 </tr>
-
-                <table class="simple-table">
-                    <tr>
-                        <td>Management of Adverse Events if any:  <br> </br>
-
-                            <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" />
-                        </td>
-                    </tr>
-                </table>
 
             </table>
         </fieldset>
@@ -508,43 +605,61 @@
         <fieldset id="tbl-personnel-in-charge">
             <legend>Personnel in charge</legend>
             <table align="center" width="100%" class="tb1">
-                <tr>
-                    <td>Name of Clinician:
-                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" required="true"  />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Cadre:
-                        <obs conceptId="1542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="MO,CO,Nurse" id="clinician_cadre" required="true"  style="radio" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Name of Assistant Clinician:
-                        <obs conceptId="164141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="assistant_clinician" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Cadre:
-                        <obs conceptId="5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="MO,CO,Nurse" id="assistant_clinician_cadre" style="radio" />
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Theatre Register Number:
-                        <obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
-                    </td>
-                </tr>
+                <table style="width: 70%;" border="0">
+                    <tr>
+                        <th align="left">Name of Clinician</th>
+                        <th align="left">Cadre</th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="164919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" required="true"  />
+                                    </td>
+                                    <td>
+                                        <obs conceptId="163556AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="MO,CO,Nurse" id="clinician_cadre" required="true"  style="radio" />
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="clinician"/>
+                    </repeat>
+                </table>
+                <table style="width: 68%;" border="0">
+                    <tr>
+                        <th align="left">Name of Assistant Clinician</th>
+                        <th align="left">Cadre</th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="164524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician"  />
+                                    </td>
+                                    <td>
+                                        <obs conceptId="5619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="MO,CO,Nurse" id="assistant_clinician_cadre" style="radio" />
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="assistant"/>
+                    </repeat>
+                </table>
+                <table align="center" width="100%" class="tb1">
+                    <tr>
+                        <td>Theatre Register Number:
+                            <obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
+                        </td>
+                    </tr>
+                </table>
             </table>
         </fieldset>
-
-        <enrollInProgram programId="228538f4-cad9-476b-84c3-ab0086150bcc" />
 
     </div>
 
