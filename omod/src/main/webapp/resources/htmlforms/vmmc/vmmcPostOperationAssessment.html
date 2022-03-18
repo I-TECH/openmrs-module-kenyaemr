@@ -119,6 +119,15 @@
             var postProcedureVal = getValue('post-procedure-instructions.value');
             var dischargedByVal = getValue('discharged-by.value');
             var clinicianCadreVal = getValue('clinician_cadre.value');
+            var removalDate = getValue('removal-date.value');
+            var scheduledApp = getValue('next-visit-date.value');
+
+            if( removalDate > scheduledApp) {
+                getField('next-visit-date.error').html('The next appointment date should not be less than the removal date').show();
+                return false;
+            } else {
+                getField('next-visit-date.error').html('The next appointment date should not be less than the removal date').hide();
+            }
 
             if(systolicVal == "" ) {
                 getField('systolic.error').html('Please specify the blood pressure').show();
