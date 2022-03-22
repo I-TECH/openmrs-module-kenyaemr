@@ -2720,10 +2720,20 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedHIVPositiveAtVMMCSite() {
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
-                "left join (select h.patient_id,h.hiv_test_date from kenyaemr_etl.etl_vmmc_medical_history h where h.hiv_status = 703 and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h on e.patient_id = h.patient_id\n" +
-                "left join (select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Positive' and t.test_type = 2 and t.hts_entry_point = 162223 and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
-                "where (h.patient_id is not null or t.patient_id is not null) and e.visit_date <=date(h.hiv_test_date);";
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_vmmc_circumcision_procedure e\n" +
+                "         left join (select h.patient_id, h.hiv_test_date\n" +
+                "                    from kenyaemr_etl.etl_vmmc_medical_history h\n" +
+                "                    where h.hiv_status = 703\n" +
+                "                      and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h\n" +
+                "                   on e.patient_id = h.patient_id\n" +
+                "         left join (select t.patient_id,t.visit_date\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    where t.final_test_result = 'Positive'\n" +
+                "                      and t.test_type = 2\n" +
+                "                      and t.hts_entry_point = 162223\n" +
+                "                      and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
+                "where e.visit_date between date(:startDate) and date(:endDate) and ((h.patient_id is not null and e.visit_date >= date(h.hiv_test_date)) or (t.patient_id is not null and e.visit_date >= date(t.visit_date)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("VMMC_SITE_HIV_POSITIVE");
         cd.setQuery(sqlQuery);
@@ -2737,10 +2747,19 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition testedHIVNegativeAtVMMCSite() {
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e\n" +
-                " left join (select h.patient_id,h.hiv_test_date from kenyaemr_etl.etl_vmmc_medical_history h where h.hiv_status = 664 and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h on e.patient_id = h.patient_id\n" +
-                " left join (select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Negative' and t.test_type = 1 and t.hts_entry_point = 162223 and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
-                "where (h.patient_id is not null or t.patient_id is not null) and e.visit_date <=date(h.hiv_test_date);";
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_vmmc_circumcision_procedure e\n" +
+                "         left join (select h.patient_id, h.hiv_test_date\n" +
+                "                    from kenyaemr_etl.etl_vmmc_medical_history h\n" +
+                "                    where h.hiv_status = 664\n" +
+                "                      and date(h.hiv_test_date) between date(:startDate) and date(:endDate)) h\n" +
+                "                   on e.patient_id = h.patient_id\n" +
+                "         left join (select t.patient_id,t.visit_date\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    where t.final_test_result = 'Negative'\n" +
+                "                      and t.hts_entry_point = 162223\n" +
+                "                      and t.visit_date between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
+                "where e.visit_date between date(:startDate) and date(:endDate) and ((h.patient_id is not null and e.visit_date >= date(h.hiv_test_date)) or (t.patient_id is not null and e.visit_date >= date(t.visit_date)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("VMMC_SITE_HIV_NEGATIVE");
         cd.setQuery(sqlQuery);
@@ -2749,36 +2768,7 @@ public class DatimCohortLibrary {
         cd.setDescription("Number tested HIV NEGATIVE at VMMC site");
         return cd;
     }
-    /**
-     *Number tested HIV Indeterminate at VMMC site
-     * @return
-     */
-    public CohortDefinition testedHIVIndeterminateAtVMMCSite() {
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_vmmc_enrolment e\n" +
-                "         left join (select h.patient_id, h.hiv_test_date\n" +
-                "                    from kenyaemr_etl.etl_vmmc_medical_history h\n" +
-                "                    where (h.hiv_status = 1067 and date(h.hiv_test_date) between date(:startDate) and date(:endDate))\n" +
-                "                       or (h.hiv_status != 1067 and\n" +
-                "                           date(h.hiv_test_date) not between date(:startDate) and date(:endDate))) h\n" +
-                "                   on e.patient_id = h.patient_id\n" +
-                "         left join (select t.patient_id\n" +
-                "                    from kenyaemr_etl.etl_hts_test t\n" +
-                "                    where ((t.final_test_result = 'Inconclusive' and t.hts_entry_point = 162223 and\n" +
-                "                            t.visit_date between date(:startDate) and date(:endDate)) or\n" +
-                "                           (t.final_test_result in ('Negative', 'Positive')\n" +
-                "                               and t.hts_entry_point != 162223 and\n" +
-                "                            t.visit_date not between date(:startDate) and date(:endDate)))\n" +
-                ") t on e.patient_id = t.patient_id\n" +
-                "where ((h.patient_id is not null and e.visit_date <= date(h.hiv_test_date)) or t.patient_id is not null);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("VMMC_SITE_HIV_INDETERMINATE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Number tested HIV Indeterminate at VMMC site");
-        return cd;
-    }
+
     /**
      *Number of males circumcised and tested HIV positive at VMMC site
      * @return
@@ -2814,8 +2804,9 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("malesCircumcised",ReportUtils.map(malesCircumcised(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("testedHIVIndeterminateAtVMMCSite",ReportUtils.map(testedHIVIndeterminateAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("malesCircumcised AND testedHIVIndeterminateAtVMMCSite");
+        cd.addSearch("testedHIVPositiveAtVMMCSite",ReportUtils.map(testedHIVPositiveAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedHIVNegativeAtVMMCSite",ReportUtils.map(testedHIVNegativeAtVMMCSite(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("malesCircumcised AND NOT (testedHIVPositiveAtVMMCSite OR testedHIVNegativeAtVMMCSite)");
         return cd;
     }
     /**
