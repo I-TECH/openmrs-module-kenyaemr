@@ -1086,30 +1086,38 @@ public class DatimIndicatorLibrary {
     /**
      * TX_ML KP Stop reason other than death
      */
-    public CohortIndicator txmlKPStopReason(Integer kpType, Integer stopReason) {
-        return cohortIndicator("TX ml KPs by who died by stop reason", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPStopReason(kpType,stopReason),
+    public CohortIndicator txmlKPStopReason(Integer kpType) {
+        return cohortIndicator("TX ml KPs by who stop treatment", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPStopReason(kpType),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * TX_ML KP transferred out
+     */
+    public CohortIndicator txmlKPsTransferredOut(Integer kpType) {
+        return cohortIndicator("TX ml KPs by who transferred out", ReportUtils.<CohortDefinition>map(datimCohorts.txmlKPSTransferredOut(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
      * TX_ML KP IIT
      */
-    public CohortIndicator txMLIITKpUnder3MonthsInTx(Integer iit,Integer kpType) {
-        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpUnder3MonthsInTx(iit,kpType),
+    public CohortIndicator txMLIITKpUnder3MonthsInTx(Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpUnder3MonthsInTx(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_ML KP IIT
      */
-    public CohortIndicator txMLIITKp3To5MonthsInTx(Integer iit,Integer kpType) {
-        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKp3To5MonthsInTx(iit,kpType),
+    public CohortIndicator txMLIITKp3To5MonthsInTx(Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKp3To5MonthsInTx(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_ML KP IIT
      */
-    public CohortIndicator txMLIITKpAtleast6Months(Integer iit,Integer kpType) {
-        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpAtleast6Months(iit,kpType),
+    public CohortIndicator txMLIITKpAtleast6Months(Integer kpType) {
+        return cohortIndicator("TX ml KPs by IIT", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITKpAtleast6Months(kpType),
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
@@ -1130,8 +1138,8 @@ public class DatimIndicatorLibrary {
     /**
      * TX_ML_DIED Number of ART patients with no clinical contact since their last expected contact due to Death (confirmed)
      */
-    public CohortIndicator txmlPatientByTXStopReason(Integer reason) {
-        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientByTXStopReason(reason),
+    public CohortIndicator txmlPatientByTXStopReason() {
+        return cohortIndicator("ART patients with no clinical contact since their last expected contact due to death", ReportUtils.<CohortDefinition>map(datimCohorts.txmlPatientByTXStopReason(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -1142,24 +1150,31 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
+     * TX_ML_TO Number of ART patients with no clinical contact since their last expected contact due to Transfer out (verified)
+     */
+    public CohortIndicator txmlTrfOut() {
+        return cohortIndicator("Number of ART patients with no clinical contact since their last expected contact due to Transfer out (verified)", ReportUtils.<CohortDefinition>map(datimCohorts.txmlTrfOut(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * TX_ML IIT ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator txMLIITUnder3MonthsInTx(Integer iit) {
-        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITUnder3MonthsInTx(iit),
+    public CohortIndicator txMLIITUnder3MonthsInTx() {
+        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITUnder3MonthsInTx(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_ML IIT ON DRUGS 3-5 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator txMLIIT3To5MonthsInTx(Integer iit) {
-        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIIT3To5MonthsInTx(iit),
+    public CohortIndicator txMLIIT3To5MonthsInTx() {
+        return cohortIndicator("TX_ML_IIT_UNDER3_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIIT3To5MonthsInTx(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * TX_ML IIT ON DRUGS 6+ MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
      */
-    public CohortIndicator txMLIITAtleast6MonthsInTx(Integer iit) {
-        return cohortIndicator("TX_ML_IIT_ATLEAST6_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITAtleast6MonthsInTx(iit),
+    public CohortIndicator txMLIITAtleast6MonthsInTx() {
+        return cohortIndicator("TX_ML_IIT_ATLEAST6_MONTHS_Tx", ReportUtils.<CohortDefinition>map(datimCohorts.txMLIITAtleast6MonthsInTx(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**

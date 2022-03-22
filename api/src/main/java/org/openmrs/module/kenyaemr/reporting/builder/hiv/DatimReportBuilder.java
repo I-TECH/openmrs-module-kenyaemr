@@ -43,9 +43,9 @@ public class DatimReportBuilder extends AbstractReportBuilder {
     static final int PWID_CONCEPT = 105;
     static final int TG_CONCEPT = 165100;
     static final int PRISONERS_CLOSED_SETTINGS_CONCEPT = 162277;
-    static final int IIT_CONCEPT = 5240;
-    static final int TRF_OUT_CONCEPT = 1693;
-    static final int STOPPED_TX_CONCEPT = 164435;
+   // static final int IIT_CONCEPT = 5240;
+   // static final int TRF_OUT_CONCEPT = 1693;
+    //static final int STOPPED_TX_CONCEPT = 164435;
     static final int HIV_DISEASE_RESULTING_IN_TB_CONCEPT = 163324;
     static final int HIV_DISEASE_RESULTING_IN_CANCER = 116030;
     static final int  HIV_DISEASE_RESULTING_IN_INFECTIOUS_PARASITIC_DISEASE_CONCEPT = 160159;
@@ -724,19 +724,19 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_DIED", "ART patients with missed appointment due to death", ReportUtils.map(datimIndicators.txmlPatientDied(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML LTFU ON DRUGS <3 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for less than 3 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITUnder3MonthsInTx(IIT_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITUnder3MonthsInTx(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML LTFU ON DRUGS 3-5 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for 3-5 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIIT3To5MonthsInTx(IIT_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIIT3To5MonthsInTx(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML LTFU ON DRUGS >6 MONTHS Number of ART patients with no clinical contact since their last expected contact and have been on drugs for 3-5 months
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITAtleast6MonthsInTx(IIT_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITAtleast6MonthsInTx(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML_PREV_UNDOCUMENTED_TRF Number of ART patients with no clinical contact since their last expected contact due to Previously undocumented transfer
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRF_OUT", "ART patients with missed appointment due to transfer out", ReportUtils.map(datimIndicators.txmlPatientByTXStopReason(TRF_OUT_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_TRF_OUT", "ART patients with missed appointment due to transfer out", ReportUtils.map(datimIndicators.txmlTrfOut(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML_STOPPED_TREATMENT Number of ART patients with no clinical contact since their last expected contact because they stopped treatment
-        EmrReportingUtils.addRow(cohortDsd, "TX_ML_STOPPED_TREATMENT", "ART patients with missed appointment because they stopped treatment", ReportUtils.map(datimIndicators.txmlPatientByTXStopReason(STOPPED_TX_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_ML_STOPPED_TREATMENT", "ART patients with missed appointment because they stopped treatment", ReportUtils.map(datimIndicators.txmlPatientByTXStopReason(), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
 
         //TX_ML_KPs who died
         cohortDsd.addColumn( "TX_ML_PWID_DIED", "PWID KPs who died", ReportUtils.map(datimIndicators.txmlKPPatientDied(PWID_CONCEPT), indParams),"");
@@ -745,39 +745,39 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_ML_FSW_DIED", "FSW KPs TXML who died", ReportUtils.map(datimIndicators.txmlKPPatientDied(FSW_CONCEPT), indParams), "");
         cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_DIED", "Prisoners KPs TXML who died", ReportUtils.map(datimIndicators.txmlKPPatientDied(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
         //TX_ML  KPs IIT < 3 MONTHS
-        cohortDsd.addColumn( "TX_ML_PWID_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(IIT_CONCEPT,PWID_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(IIT_CONCEPT,MSM_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(IIT_CONCEPT,TG_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(IIT_CONCEPT,FSW_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(IIT_CONCEPT,PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(TG_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(FSW_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_UNDER_3_MONTHS", "IIT After being on Treatment for <3 months", ReportUtils.map(datimIndicators.txMLIITKpUnder3MonthsInTx(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML  KPs IIT 3-5 MONTHS
-        cohortDsd.addColumn( "TX_ML_PWID_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(IIT_CONCEPT,PWID_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(IIT_CONCEPT,MSM_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(IIT_CONCEPT,TG_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(IIT_CONCEPT,FSW_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(IIT_CONCEPT,PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(TG_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(FSW_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_3_TO_5_MONTHS", "IIT After being on Treatment for 3-5 months", ReportUtils.map(datimIndicators.txMLIITKp3To5MonthsInTx(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML  KPs IIT 6+ MONTHS
-        cohortDsd.addColumn( "TX_ML_PWID_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,PWID_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,MSM_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,TG_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,FSW_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(IIT_CONCEPT,PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(TG_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(FSW_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_6_MONTHS_AND_ABOVE", "IIT After being on Treatment for 6+ months", ReportUtils.map(datimIndicators.txMLIITKpAtleast6Months(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML  KPs Transferred out
-        cohortDsd.addColumn( "TX_ML_PWID_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,TRF_OUT_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,TRF_OUT_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPsTransferredOut(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPsTransferredOut(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPsTransferredOut(TG_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPsTransferredOut(FSW_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_PRISONS_CLOSED_SETTINGS_IIT_TOUT", "Transferred Out", ReportUtils.map(datimIndicators.txmlKPsTransferredOut(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML KPs stopped Tx
-        cohortDsd.addColumn( "TX_ML_PWID_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
-        cohortDsd.addColumn("TX_ML_MSM_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_TG_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn("TX_ML_FSW_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT,STOPPED_TX_CONCEPT), indParams), "");
-        cohortDsd.addColumn( "TX_ML_IIT_PRISONS_CLOSED_SETTINGS_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT,STOPPED_TX_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "TX_ML_PWID_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn("TX_ML_MSM_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_TG_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(TG_CONCEPT), indParams), "");
+        cohortDsd.addColumn("TX_ML_FSW_IIT_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(FSW_CONCEPT), indParams), "");
+        cohortDsd.addColumn( "TX_ML_IIT_PRISONS_CLOSED_SETTINGS_STOPPED_TX", "Refused (Stopped) Treatment", ReportUtils.map(datimIndicators.txmlKPStopReason(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams),"");
 
         //TX_ML Cause of death
         EmrReportingUtils.addRow(cohortDsd, "TX_ML_HIV_TB", "HIV disease resulting in TB", ReportUtils.map(datimIndicators.txMLCauseOfDeath(HIV_DISEASE_RESULTING_IN_TB_CONCEPT), indParams),  datimExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "25", "26", "27","28","29","30","31","32","33"));
