@@ -51,9 +51,40 @@
             jq('#adverse-event-management').hide();
             jq("#medications-selected").hide();
             jq("#tbl-other-medication").hide();
+            jq('#event-description-pain').prop('disabled', true);
+            jq('#event-description-bleeding').prop('disabled', true);
+            jq('#event-description-appearance').prop('disabled', true);
+            jq('#event-description-hematoma').prop('disabled', true);
+            jq('#event-description-infection').prop('disabled', true);
+            jq('#event-description-urinating').prop('disabled', true);
+            jq('#event-description-disruption').prop('disabled', true);
+            jq('#severity-pain select').prop('disabled', true);
+            jq('#severity-bleeding select').prop('disabled', true);
+            jq('#severity-appearance select').prop('disabled', true);
+            jq('#severity-hematoma select').prop('disabled', true);
+            jq('#severity-infection select').prop('disabled', true);
+            jq('#severity-urinating select').prop('disabled', true);
+            jq('#severity-disruption select').prop('disabled', true);
+
             jq("#meds-given :input[type=radio]").change(onMedicationsGiven);
             jq('#medication-given :input[type=checkbox]').change(onMedicationSelected);
             jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
+            //Autopopulation Severity for selected AE description
+            jq('#event-description-pain').change(adverseEventPainSelected);
+            jq('#event-description-bleeding').change(adverseEventBleedingSelected);
+            jq('#event-description-appearance').change(adverseEventAppearanceSelected);
+            jq('#event-description-hematoma').change(adverseEventHematomaSelected);
+            jq('#event-description-infection').change(adverseEventInfectionSelected);
+            jq('#event-description-urinating').change(adverseEventUrinatingSelected);
+            jq('#event-description-disruption').change(adverseEventDisruptionSelected);
+            jq('#adverse-event-pain :input[type=checkbox]').change(onPainSelected);
+            jq('#adverse-event-bleeding :input[type=checkbox]').change(onBleedingSelected);
+            jq('#adverse-event-appearance :input[type=checkbox]').change(onAppearanceSelected);
+            jq('#adverse-event-hematoma :input[type=checkbox]').change(onHematomaSelected);
+            jq('#adverse-event-infection :input[type=checkbox]').change(onInfectionSelected);
+            jq('#adverse-event-urinating :input[type=checkbox]').change(onUrinatingSelected);
+            jq('#adverse-event-disruption :input[type=checkbox]').change(onDisruptionSelected);
+
 
             if (CIRCUMCISION_DATE) {
                 var circDate = Date.parse(CIRCUMCISION_DATE);
@@ -102,12 +133,209 @@
             if(val == 1066 ) {
                 jq('#tbl-adverse-effects').hide();
                 jq('#adverse-event-management').hide();
-                getField('adverse-event-types.value').prop("selectedIndex", 0);
-                getField('severity-level.value').prop("selectedIndex", 0);
                 getField('management.value').val("");
-                jq("#event-description option[value='none']").prop('selected', true);
 
             }
+        }
+        // Adverse event pain selected
+        var adverseEventPainSelected = function () {
+            var val = jq(this).val();
+            if (val == "pain-moderate") {
+                getField('severity-pain.value').prop("selectedIndex", 2);
+            }
+            if (val == "pain-severe") {
+                getField('severity-pain.value').prop("selectedIndex", 1);
+            }
+            if (val == "pain-none") {
+                getField('severity-pain.value').prop("selectedIndex", 0);
+            }
+
+        }
+        // Adverse event bleeding selected
+        var adverseEventBleedingSelected = function () {
+            var val = jq(this).val();
+            if (val == "bleeding-mild") {
+                getField('severity-bleeding.value').prop("selectedIndex", 3);
+            }
+            if (val == "bleeding-moderate") {
+                getField('severity-bleeding.value').prop("selectedIndex", 2);
+            }
+            if (val == "bleeding-severe") {
+                getField('severity-bleeding.value').prop("selectedIndex", 1);
+            }
+            if (val == "bleeding-none") {
+                getField('severity-bleeding.value').prop("selectedIndex", 0);
+            }
+        }
+        // Adverse event appearance selected
+        var adverseEventAppearanceSelected = function () {
+            var val = jq(this).val();
+            if (val == "appearance-mild") {
+                getField('severity-appearance.value').prop("selectedIndex", 3);
+            }
+            if (val == "appearance-moderate") {
+                getField('severity-appearance.value').prop("selectedIndex", 2);
+            }
+            if (val == "appearance-severe") {
+                getField('severity-appearance.value').prop("selectedIndex", 1);
+            }
+            if (val == "appearance-none") {
+                getField('severity-appearance.value').prop("selectedIndex", 0);
+            }
+        }
+        // Adverse event hematoma selected
+        var adverseEventHematomaSelected = function () {
+            var val = jq(this).val();
+            if (val == "hematoma-mild") {
+                getField('severity-hematoma.value').prop("selectedIndex", 3);
+            }
+            if (val == "hematoma-moderate") {
+                getField('severity-hematoma.value').prop("selectedIndex", 2);
+            }
+            if (val == "hematoma-severe") {
+                getField('severity-hematoma.value').prop("selectedIndex", 1);
+            }
+            if (val == "hematoma-none") {
+                getField('severity-hematoma.value').prop("selectedIndex", 0);
+            }
+        }
+        // Adverse event infection selected
+        var adverseEventInfectionSelected = function () {
+            var val = jq(this).val();
+            if (val == "infection-mild") {
+                getField('severity-infection.value').prop("selectedIndex", 3);
+            }
+            if (val == "infection-moderate") {
+                getField('severity-infection.value').prop("selectedIndex", 2);
+            }
+            if (val == "infection-severe") {
+                getField('severity-infection.value').prop("selectedIndex", 1);
+            }
+            if (val == "infection-none") {
+                getField('severity-infection.value').prop("selectedIndex", 0);
+            }
+        }
+        // Adverse event trouble urinating selected
+        var adverseEventUrinatingSelected = function () {
+            var val = jq(this).val();
+            if (val == "urinating-mild") {
+                getField('severity-urinating.value').prop("selectedIndex", 3);
+            }
+            if (val == "urinating-moderate") {
+                getField('severity-urinating.value').prop("selectedIndex", 2);
+            }
+            if (val == "urinating-severe") {
+                getField('severity-urinating.value').prop("selectedIndex", 1);
+            }
+            if (val == "urinating-none") {
+                getField('severity-urinating.value').prop("selectedIndex", 0);
+            }
+        }
+        // Adverse event wound disruption selected
+        var adverseEventDisruptionSelected = function () {
+            var val = jq(this).val();
+            if (val == "disruption-mild") {
+                getField('severity-disruption.value').prop("selectedIndex", 3);
+            }
+            if (val == "disruption-moderate") {
+                getField('severity-disruption.value').prop("selectedIndex", 2);
+            }
+            if (val == "disruption-severe") {
+                getField('severity-disruption.value').prop("selectedIndex", 1);
+            }
+            if (val == "disruption-none") {
+                getField('severity-disruption.value').prop("selectedIndex", 0);
+            }
+        }
+        var onPainSelected = function(){
+            var val = jq(this).val();
+            var painChecked = jq("#adverse-event-pain input:checkbox:checked");
+            if(val == 114403){
+                jq('#event-description-pain').prop('disabled', false);
+                jq('#severity-pain select').prop('disabled', false);
+                jq('#severity-pain').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-pain').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+        }
+        var onBleedingSelected = function(){
+            var val = jq(this).val();
+            var bleedingChecked = jq("#adverse-event-bleeding input:checkbox:checked");
+            if(val == 147241){
+                jq('#event-description-bleeding').prop('disabled', false);
+                jq('#severity-bleeding select').prop('disabled', false);
+                jq('#severity-bleeding').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-bleeding').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+
+        }
+        var onAppearanceSelected = function(){
+            var val = jq(this).val();
+            var appearanceChecked = jq("#adverse-event-appearance input:checkbox:checked");
+            if(val == 152045){
+                jq('#event-description-appearance').prop('disabled', false);
+                jq('#severity-appearance select').prop('disabled', false);
+                jq('#severity-appearance').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-appearance').prop('disabled', true);
+                jq('#severity-appearance select').prop('disabled', true);
+            }
+
+        }
+        var onHematomaSelected = function(){
+            var val = jq(this).val();
+            var hematomaChecked = jq("#adverse-event-hematoma input:checkbox:checked");
+            if(val == 156567){
+                jq('#event-description-hematoma').prop('disabled', false);
+                jq('#severity-hematoma select').prop('disabled', false);
+                jq('#severity-hematoma').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-hematoma').prop('disabled', true);
+                jq('#severity-hematoma select').prop('disabled', true);
+            }
+
+        }
+        var onInfectionSelected = function(){
+            var val = jq(this).val();
+            var infectionChecked = jq("#adverse-event-infection input:checkbox:checked");
+            if(val == 139510){
+                jq('#event-description-infection').prop('disabled', false);
+                jq('#severity-infection select').prop('disabled', false);
+                jq('#severity-infection').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-infection').prop('disabled', true);
+                jq('#severity-infection select').prop('disabled', true);
+            }
+
+        }
+        var onUrinatingSelected = function(){
+            var val = jq(this).val();
+            var urinatingChecked = jq("#adverse-event-urinating input:checkbox:checked");
+            if(val == 118771){
+                jq('#event-description-urinating').prop('disabled', false);
+                jq('#severity-urinating select').prop('disabled', false);
+                jq('#severity-urinating').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-urinating').prop('disabled', true);
+                jq('#severity-urinating select').prop('disabled', true);
+            }
+
+        }
+        var onDisruptionSelected = function(){
+            var val = jq(this).val();
+            var disruptionChecked = jq("#adverse-event-disruption input:checkbox:checked");
+            if(val == 163799){
+                jq('#event-description-disruption').prop('disabled', false);
+                jq('#severity-disruption select').prop('disabled', false);
+                jq('#severity-disruption').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-disruption').prop('disabled', true);
+                jq('#severity-disruption select').prop('disabled', true);
+            }
+
         }
         //Before Submit
         beforeSubmit.push(function() {
@@ -237,67 +465,159 @@
                                             <th>Description</th>
                                             <th>Severity</th>
                                         </tr>
-                                        <repeat>
-                                            <template>
                                                 <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                     <tr>
                                                         <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               152045AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               156567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               139510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               118771AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                                               163799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                            style="dropdown" answerLabels="Pain,
-                                                                                    Bleeding,
-                                                                                    Problems with appearance,
-                                                                                    Hematoma/Swelling,
-                                                                                    Infection/Swelling,
-                                                                                    Difficulty or pain when urinating,
-                                                                                    Wound disruption (without signs of hematoma or infection)"
-
-                                                     id="adverse-event-types" />
-                                                </td>
+                                                                   answerConceptId="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                                   style="checbox" answerLabel="Pain"
+                                                                   id="adverse-event-pain" />
+                                                       </td>
                                                         <td>
-                                                            <select name="event-description" class="event-description" id="event-description">
-                                                                <option value="none"></option>
+                                                            <select name="event-description-pain" class="event-description-pain" id="event-description-pain">
+                                                                <option value="pain-none">Select</option>
                                                                 <option value="pain-moderate">Results in disability for 4-7 days (P2)</option>
                                                                 <option value="pain-severe">Results in disability for more than 7 days (P2)</option>
-                                                                <option value="bleeding-mild">Dressing soaked through with blood at a routine follow-up visit (B2)</option>
-                                                                <option value="bleeding-moderate">Bleeding that requires a special return to the clinic for medical attention (B2)</option>
-                                                                <option value="bleeding-severe">Bleeding that requires surgical re-exploration (B2)</option>
-                                                                <option value="appearance-mild">May be some concern by client but appearance within normal range (PA2)</option>
-                                                                <option value="appearance-moderate">Scarring, costmetic problem but operation not required (PA2)</option>
-                                                                <option value="appearance-severe">Rotation or other problem,requires cosmetic correction (PA2)</option>
-                                                                <option value="hematoma-mild">More swelling than usual, but no significant discomfort (HS2)</option>
-                                                                <option value="hematoma-moderate">Significant tenderness and discomfort, but surgical re-exploration not required (HS2)</option>
-                                                                <option value="hematoma-severe">Surgical re-exploration required (HS2)</option>
-                                                                <option value="infection-mild">Erythema more than 1 cm beyond incision line (IS2)</option>
-                                                                <option value="infection-moderate">Purulent discharge from the wound (IS2)</option>
-                                                                <option value="infection-severe">Cellulitis or wound necrosis (IS2)</option>
-                                                                <option value="urinating-mild">Transient complaint that resolves without treatment (DU2)</option>
-                                                                <option value="urinating-moderate">Partial obstruction (DU2)</option>
-                                                                <option value="urinating-severe">Cannot urinate (DU2)</option>
-                                                                <option value="disruption-mild">1 to 2 adjascent stitches missing (WD2)</option>
-                                                                <option value="disruption-moderate">Re-stitching of atleast 3 stitches required (WD2)</option>
-                                                                <option value="disruption-severe">Patient incapacitated - bed rest required (WD2)</option>
                                                             </select>
                                                         </td>
-                                                      <td>
-                                                    <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
-                                                  </td>
+                                                        <td>
+                                                        <obs id="severity-pain" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                      </td>
                                                     </tr>
                                                 </obsgroup>
-                                            </template>
-                                            <render n="1" concept=" " />
-                                            <render n="2" concept=" " />
-                                            <render n="3" concept=" " />
-                                            <render n="4" concept=" " />
-                                            <render n="5" concept=" " />
-                                        </repeat>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          style="checbox" answerLabel="Bleeding"
+                                                          id="adverse-event-bleeding" />
+                                                </td>
+                                                <td>
+                                                    <select name="event-description-bleeding" class="event-description-bleeding" id="event-description-bleeding">
+                                                        <option value="bleeding-none">Select</option>
+                                                        <option value="bleeding-mild">Dressing soaked through with blood at a routine follow-up visit (B2)</option>
+                                                        <option value="bleeding-moderate">Bleeding that requires a special return to the clinic for medical attention (B2)</option>
+                                                        <option value="bleeding-severe">Bleeding that requires surgical re-exploration (B2)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <obs id="severity-bleeding" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          answerConceptId="152045AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          style="checbox" answerLabel="Problems with appearance"
+                                                          id="adverse-event-appearance" />
+                                                </td>
+                                                <td>
+                                                    <select name="event-description-appearance" class="event-description-appearance" id="event-description-appearance">
+                                                        <option value="appearance-none">Select</option>
+                                                        <option value="appearance-mild">May be some concern by client but appearance within normal range (PA2)</option>
+                                                        <option value="appearance-moderate">Scarring, costmetic problem but operation not required (PA2)</option>
+                                                        <option value="appearance-severe">Rotation or other problem,requires cosmetic correction (PA2)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <obs id="severity-appearance" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          answerConceptId="156567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          style="checbox" answerLabel="Hematoma/Swelling"
+                                                          id="adverse-event-hematoma" />
+                                                </td>
+                                                <td>
+                                                    <select name="event-description-hematoma" class="event-description-hematoma" id="event-description-hematoma">
+                                                        <option value="hematoma-none">Select</option>
+                                                        <option value="hematoma-mild">More swelling than usual, but no significant discomfort (HS2)</option>
+                                                        <option value="hematoma-moderate">Significant tenderness and discomfort, but surgical re-exploration not required (HS2)</option>
+                                                        <option value="hematoma-severe">Surgical re-exploration required (HS2)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <obs id="severity-hematoma" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      answerConceptId="139510AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      style="checbox" answerLabel="Infection/Swelling"
+                                                      id="adverse-event-infection" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-infection" class="event-description-infection" id="event-description-infection">
+                                                    <option value="infection-none">Select</option>
+                                                    <option value="infection-mild">Erythema more than 1 cm beyond incision line (IS2)</option>
+                                                    <option value="infection-moderate">Purulent discharge from the wound (IS2)</option>
+                                                    <option value="infection-severe">Cellulitis or wound necrosis (IS2)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-infection" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          answerConceptId="118771AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          style="checbox" answerLabel="Difficulty or pain when urinating"
+                                                          id="adverse-event-urinating" />
+                                                </td>
+                                                <td>
+                                                    <select name="event-description-urinating" class="event-description-urinating" id="event-description-urinating">
+                                                        <option value="urinating-none">Select</option>
+                                                        <option value="urinating-mild">Transient complaint that resolves without treatment (DU2)</option>
+                                                        <option value="urinating-moderate">Partial obstruction (DU2)</option>
+                                                        <option value="urinating-severe">Cannot urinate (DU2)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <obs id="severity-urinating" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
+                                        <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          answerConceptId="163799AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                          style="checbox" answerLabel="Wound disruption (without signs of hematoma or infection)"
+                                                          id="adverse-event-disruption" />
+                                                </td>
+                                                <td>
+                                                    <select name="event-description-disruption" class="event-description-disruption" id="event-description-disruption">
+                                                        <option value="disruption-none">Select</option>
+                                                        <option value="disruption-mild">1 to 2 adjascent stitches missing (WD2)</option>
+                                                        <option value="disruption-moderate">Re-stitching of atleast 3 stitches required (WD2)</option>
+                                                        <option value="disruption-severe">Patient incapacitated - bed rest required (WD2)</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <obs id="severity-disruption" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                         style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                                </td>
+                                            </tr>
+                                        </obsgroup>
                                     </table>
                                 </td>
                             </tr>

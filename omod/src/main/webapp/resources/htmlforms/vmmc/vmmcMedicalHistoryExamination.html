@@ -633,10 +633,15 @@
             //TODO: Confirm the actions to do if checked urethral discharge
             if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq("#good-health input[value=false]").prop("checked", true);
+                jq('#good-health input[type=radio]').attr("style", "pointer-events:none;");
                 jq('#sti-referrals').show();
             }else if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq("#good-health input[value=false]").prop("checked", true);
+                jq('#good-health input[type=radio]').attr("style", "pointer-events:none;");
                 jq('#prep-referrals').show();
+            }else{
+                jq("#good-health input[value=false]").prop("checked", false);
+                jq('#good-health input[type=radio]').attr("style", "pointer-events:'';");
             }
             if(val == 5622 ){
                 jq('#tbl-other-complaint').show();
