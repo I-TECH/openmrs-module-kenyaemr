@@ -136,7 +136,7 @@ public class Moh745ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(dsd,"Other Treatment-01", "Other Treatment Given", ReportUtils.map(moh745Indicators.treatedMethod(OTHER, INITIAL_VISIT), indParams),moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         EmrReportingUtils.addRow(dsd,"HIV Positive Clients Screened-01", "HIV Positive Clients Screened", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(INITIAL_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-01", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(INITIAL_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-01", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreenedWithPositiveResults(INITIAL_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         return dsd;
     }
@@ -171,7 +171,7 @@ public class Moh745ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(dsd,"Other Treatment-02", "Other Treatment Given", ReportUtils.map(moh745Indicators.treatedMethod(OTHER, ROUTINE_VISIT), indParams),moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         EmrReportingUtils.addRow(dsd,"HIV Positive Clients Screened-02", "HIV Positive Clients Screened", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-02", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-02", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreenedWithPositiveResults(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         return dsd;
     }
@@ -206,7 +206,7 @@ public class Moh745ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(dsd,"Other Treatment-03", "Other Treatment Given", ReportUtils.map(moh745Indicators.treatedMethod(OTHER, POST_TREATMENT_VISIT), indParams),moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         EmrReportingUtils.addRow(dsd,"HIV Positive Clients Screened-03", "HIV Positive Clients Screened", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(POST_TREATMENT_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-03", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(POST_TREATMENT_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-03", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreenedWithPositiveResults(POST_TREATMENT_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         return dsd;
     }

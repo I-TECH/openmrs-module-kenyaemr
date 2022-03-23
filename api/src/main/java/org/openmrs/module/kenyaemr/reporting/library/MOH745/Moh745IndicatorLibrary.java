@@ -59,9 +59,9 @@ public class Moh745IndicatorLibrary {
     }
 
     /*HIV Positive With Positive Screening Results*/
-    public CohortIndicator HIVPositiveClientsScreenedWithResults(String visitType) {
+    public CohortIndicator HIVPositiveClientsScreenedWithPositiveResults(String visitType) {
 
-        return cohortIndicator("HIV Positive With Positive Screening Results",map(Moh745CohortLibrary.HIVPositiveClientsScreenedWithResultsCl(visitType), "startDate=${startDate},endDate=${endDate}")
+        return cohortIndicator("HIV Positive With Positive Screening Results",map(Moh745CohortLibrary.HIVPositiveClientsScreenedWithPositiveResultsCl(visitType), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
