@@ -47,7 +47,6 @@ public class Moh745CohortLibrary {
         String val = StringUtils.join(indicatorVal,"','");
 
         String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_cervical_cancer_screening i where i.screening_method IN ('"+val+"') and i.visit_date between date(:startDate) and date(:endDate) group by i.patient_id;";
-        log.warn("sql query executing" +sqlQuery + " here");
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("patientScreeningMethod");
         cd.setQuery(sqlQuery);

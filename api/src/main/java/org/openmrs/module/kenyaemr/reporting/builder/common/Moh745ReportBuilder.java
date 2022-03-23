@@ -170,7 +170,7 @@ public class Moh745ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(dsd,"LEEP Treatment-02", "Treated using LEEP", ReportUtils.map(moh745Indicators.treatedMethod(LEEP, ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd,"Other Treatment-02", "Other Treatment Given", ReportUtils.map(moh745Indicators.treatedMethod(OTHER, ROUTINE_VISIT), indParams),moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
-        EmrReportingUtils.addRow(dsd,"HIV Positive Clients Screened -02", "HIV Positive Clients Screened", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd,"HIV Positive Clients Screened-02", "HIV Positive Clients Screened", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd,"HIV Positive With Positive Screening Results-02", "HIV Positive With Positive Screening Results", ReportUtils.map(moh745Indicators.HIVPositiveClientsScreened(ROUTINE_VISIT), indParams), moh745Disaggregations, Arrays.asList("01", "02", "03"));
 
         return dsd;
