@@ -87,6 +87,7 @@
         var val = getValue("screening_method.value");
         if(val == 164805){
             jq("#tr_via_screening_result").show();
+
             jq("#tr_vili_screening_result").hide();
             jq("#tr_colposcopy_screening_result").hide();
             jq("#tr_pap_smear_screening_result").hide();
@@ -207,6 +208,207 @@
 
 
 	</script>
+
+	<ifMode mode="EDIT">
+		<script type="text/javascript">
+			jq(function(){
+
+			jq('#screening_method select').change(screeningMethodSelected);
+			jq('#referred_out :input[type=radio]').change(referredOutChange);
+
+			var SCREENING_RESULT_CONCEPT = "<lookup expression="fn.latestObs(164934).valueCoded" />"
+			var SCREENING_RESULT = SCREENING_RESULT_CONCEPT.replace(/[^\d]/g, '');
+
+			   var val = getValue("screening_method.value");
+				if(val == 164805){
+					jq("#tr_via_screening_result").show();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('via_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 164977){
+					jq("#tr_vili_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('vili_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 160705){
+					jq("#tr_colposcopy_screening_result").show();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('colposcopy_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 885){
+					jq("#tr_pap_smear_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('pap_smear_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 159859){
+					jq("#tr_hpv_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+
+					getField('hpv_screening_result.value').val(SCREENING_RESULT);
+
+				}
+
+				var visitType = getValue("visit_type.value");
+				if (visitType == 165382 || visitType == "") {
+					jq("#tr_post_tx_complication").show();
+				} else {
+					jq("#tr_post_tx_complication").hide();
+				}
+
+				var complicationType = getValue("post_tx_complication.value");
+				if (complicationType == 5622) {
+					jq("#tbl-other-tx-complication").show();
+				} else {
+					jq("#tbl-other-tx-complication").hide();
+				}
+
+				var treatmentType = getValue("treatment.value");
+				if (treatmentType == 5622) {
+					jq("#tbl-other-treatment").show();
+				} else {
+					jq("#tbl-other-treatment").hide();
+				}
+
+				var refferedOut = getValue("referred_out.value");
+				if (refferedOut == 1065) {
+					jq("#t_referred_out").show();
+				} else {
+					jq("#t_referred_out").hide();
+				}
+
+			});
+
+			var screeningMethodSelected = function(){
+				var val = getValue("screening_method.value");
+
+				if(val == 164805){
+
+					jq("#tr_via_screening_result").show();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				if(val == 164977){
+
+					jq("#tr_vili_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				if(val == 160705){
+
+					jq("#tr_colposcopy_screening_result").show();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				 if(val == 885){
+
+					jq("#tr_pap_smear_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				 }
+
+				 if(val == 159859){
+
+					jq("#tr_hpv_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				 }
+			}
+
+			var referredOutChange = function(){
+				var val = getValue("referred_out.value");
+
+				if(val == 1066) {
+					clearHiddenSections(jq('#referred_to'));
+					clearHiddenSections(jq('#referral_reason'));
+				}
+			}
+
+			//Clear hidden sections
+			clearHiddenSections = function(parentObj) {
+				parentObj.find('input[type=radio]').each(function() {
+					this.checked = false;
+				});
+				parentObj.find('input[type=checkbox]').each(function() {
+					this.checked = false;
+				});
+				parentObj.find('input[type=text]').each(function() {
+					jq(this).val("");
+				});
+				parentObj.find('select').each(function() {
+					this.selectedIndex =0;
+				});
+			}
+
+		</script>
+	</ifMode>
+
 	<style>
 		.simple-table {
 			border: solid 1px #DDEEEE;
@@ -248,85 +450,7 @@
 				</td>
 			</tr>
 		</table>
-		<table style="width: 100%">
-			<tr>
-				<td>
-					<ifMode mode="EDIT">
-						<script type="text/javascript">
-                            jq(function(){
 
-                                   var val = getValue("screening_method.value");
-                                    if(val == 164805){
-                                        jq("#tr_via_screening_result").show();
-                                        jq("#tr_vili_screening_result").hide();
-                                        jq("#tr_colposcopy_screening_result").hide();
-                                        jq("#tr_pap_smear_screening_result").hide();
-                                        jq("#tr_hpv_screening_result").hide();
-                                    }
-                                    if(val == 164977){
-                                        jq("#tr_vili_screening_result").show();
-                                        jq("#tr_via_screening_result").hide();
-                                        jq("#tr_colposcopy_screening_result").hide();
-                                        jq("#tr_pap_smear_screening_result").hide();
-                                        jq("#tr_hpv_screening_result").hide();
-                                    }
-                                    if(val == 160705){
-                                        jq("#tr_colposcopy_screening_result").show();
-                                        jq("#tr_pap_smear_screening_result").hide();
-                                        jq("#tr_via_screening_result").hide();
-                                        jq("#tr_vili_screening_result").hide();
-                                        jq("#tr_hpv_screening_result").hide();
-                                    }
-                                    if(val == 885){
-                                        jq("#tr_pap_smear_screening_result").show();
-                                        jq("#tr_via_screening_result").hide();
-                                        jq("#tr_vili_screening_result").hide();
-                                        jq("#tr_colposcopy_screening_result").hide();
-                                        jq("#tr_hpv_screening_result").hide();
-                                    }
-                                    if(val == 159859){
-                                        jq("#tr_hpv_screening_result").show();
-                                        jq("#tr_via_screening_result").hide();
-                                        jq("#tr_vili_screening_result").hide();
-                                        jq("#tr_colposcopy_screening_result").hide();
-                                        jq("#tr_pap_smear_screening_result").hide();
-
-                                    }
-
-                                    var visitType = getValue("visit_type.value");
-                                    if (visitType == 165382 || visitType == "") {
-                                        jq("#tr_post_tx_complication").show();
-                                    } else {
-                                        jq("#tr_post_tx_complication").hide();
-                                    }
-
-                                    var complicationType = getValue("post_tx_complication.value");
-                                    if (complicationType == 5622) {
-                                        jq("#tbl-other-tx-complication").show();
-                                    } else {
-                                        jq("#tbl-other-tx-complication").hide();
-                                    }
-
-                                    var treatmentType = getValue("treatment.value");
-                                    if (treatmentType == 5622) {
-                                        jq("#tbl-other-treatment").show();
-                                    } else {
-                                        jq("#tbl-other-treatment").hide();
-                                    }
-
-                                var refferedOut = getValue("referred_out.value");
-                                if (refferedOut == 1065) {
-                                    jq("#t_referred_out").show();
-                                } else {
-                                    jq("#t_referred_out").hide();
-                                }
-
-                            });
-						</script>
-					</ifMode>
-				</td>
-			</tr>
-		</table>
 	</div>
 
 	<div class="ke-form-content">
