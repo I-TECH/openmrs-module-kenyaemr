@@ -4265,8 +4265,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("currentOnARTAtStartOfReportingPeriod",ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("currentlyOnART", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        //cd.addSearch("iitAtEndOfReportingPeriod", ReportUtils.map(iitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-       // cd.addSearch("patientsDiscontinuedOfDeath", ReportUtils.map(patientsDiscontinuedOfDeath(), "startDate=${startDate},endDate=${endDate}"));
         cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND NOT currentlyOnART");
         return cd;
     }
@@ -4281,15 +4279,28 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("currentOnARTAtStartIitAtEndOfReportingPeriod",ReportUtils.map(currentOnARTAtStartIitAtEndOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("newOnARTAndNotTxCur", ReportUtils.map(newOnARTAndNotTxCur(), "startDate=${startDate},endDate=${endDate}"));
-       // cd.addSearch("transferredOutAndVerified", ReportUtils.map(transferredOutAndVerified(), "startDate=${startDate},endDate=${endDate}"));
         cd.setCompositionString("currentOnARTAtStartIitAtEndOfReportingPeriod OR newOnARTAndNotTxCur");
+        return cd;
+    }
+
+    /**
+     * Patients who either trf out, died or stopped treatment
+     * @return
+     */
+    public CohortDefinition patientsDiedTrfStoppedTx() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("trfOut", ReportUtils.map(transferredOutAndVerified(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("died", ReportUtils.map(patientsDiscontinuedOfDeath(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("stoppedTx", ReportUtils.map(patientStoppedTreatment(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("trfOut OR died OR stoppedTx");
         return cd;
     }
     /**
      * TX_ML patients by Treatment stop reason
      * @return
      */
-
     public CohortDefinition txmlPatientByTXStopReason() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -4311,7 +4322,8 @@ public class DatimCohortLibrary {
         cd.addSearch("kp", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXLessThan3Months", ReportUtils.map(patientInTXLessThan3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND kp AND patientInTXLessThan3Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND kp AND patientInTXLessThan3Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
@@ -4325,7 +4337,8 @@ public class DatimCohortLibrary {
         cd.addSearch("kp", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTX3To5Months", ReportUtils.map(patientInTX3To5Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND kp AND patientInTX3To5Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND kp AND patientInTX3To5Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
@@ -4339,7 +4352,8 @@ public class DatimCohortLibrary {
         cd.addSearch("kp", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast6Months", ReportUtils.map(patientInTXAtleast6Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND kp AND patientInTXAtleast6Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND kp AND patientInTXAtleast6Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
@@ -4412,21 +4426,7 @@ public class DatimCohortLibrary {
         cd.setCompositionString("txmlPatientDied AND kp");
         return cd;
     }
-    /**
-     *Helper method : Patients transferred out, died or stopped treatment
-     * @param
-     * @return
-     */
-    public CohortDefinition trfOutOrDiedOrStoppedTx() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txmlPatientDied", ReportUtils.map(txmlPatientDied(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("txmlTrfOut", ReportUtils.map(txmlTrfOut(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientStoppedTreatment", ReportUtils.map(patientStoppedTreatment(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txmlPatientDied OR txmlTrfOut OR patientStoppedTreatment");
-        return cd;
-    }
+
     /**
      *IIT After being on Treatment for <3 months
      * @param
@@ -4438,7 +4438,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXLessThan3Months", ReportUtils.map(patientInTXLessThan3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND patientInTXLessThan3Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND patientInTXLessThan3Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
@@ -4452,7 +4453,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTX3To5Months", ReportUtils.map(patientInTX3To5Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND patientInTX3To5Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND patientInTX3To5Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
@@ -4466,7 +4468,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txML", ReportUtils.map(txML(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast6Months", ReportUtils.map(patientInTXAtleast6Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txML AND patientInTXAtleast6Months");
+        cd.addSearch("patientsDiedTrfStoppedTx", ReportUtils.map(patientsDiedTrfStoppedTx(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(txML AND patientInTXAtleast6Months) AND NOT patientsDiedTrfStoppedTx");
         return cd;
     }
     /**
