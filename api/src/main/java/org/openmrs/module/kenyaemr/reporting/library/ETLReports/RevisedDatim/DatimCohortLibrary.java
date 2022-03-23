@@ -4212,33 +4212,6 @@ public class DatimCohortLibrary {
         return cd;
 
     }
-
-    /**
-     * Patients with IIT by the end of the reporting period. A component of TX_ML
-     * @return
-     */
-    public CohortDefinition iitAtEndOfReportingPeriod() {
-
-        String sqlQuery = "select b.patient_id from (select fup.visit_date,fup.patient_id, min(e.visit_date) as enroll_date,\n" +
-                "          max(fup.visit_date) as latest_vis_date,\n" +
-                "          mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca\n" +
-                "          from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "          join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "          join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "          where fup.visit_date <= date(:endDate)\n" +
-                "          group by patient_id\n" +
-                "          having (\n" +
-                "          ((date(latest_tca) < date(:endDate)) and (date(latest_vis_date) < date(:endDate)))\n" +
-                "              and datediff(date(:endDate), date(latest_tca)) > 30))b;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("iitAtEndOfReportingPeriod");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patients with IIT by the end of the reporting period");
-        return cd;
-    }
-
     /**
      * Number of New On ART patients who are not Current on Art
      * A component of TxML
@@ -4400,7 +4373,7 @@ public class DatimCohortLibrary {
         return cd;
     }
     /**
-     * TX_ML KP patients who died
+     * TX_ML KP patients who stopped treatment
      * @return
      */
     public CohortDefinition txmlKPStopReason(Integer kpType) {
