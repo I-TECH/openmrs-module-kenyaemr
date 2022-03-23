@@ -51,6 +51,7 @@
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.common.report.etllostToFollowup" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
+				<ref bean="kenyaemr.common.report.moh745"/>
 				<ref bean="kenyaemr.etl.common.report.Moh731KDoD"/>
 				<ref bean="kenyaemr.etl.common.report.datim"/>
 				<ref bean="kenyaemr.hiv.report.htsRegister"/>
@@ -467,6 +468,14 @@
 			</set></property>
 		<!--<property name="template" value="kenyaemr:moh731_greencard_template.xls" />-->
 		<property name="template" value="kenyaemr:moh731.xls" />
+	</bean>
+
+	<bean id="kenyaemr.common.report.moh745" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="a5348342-a05e-11ec-b909-0242ac120002" />
+		<property name="name" value="MOH 745" />
+		<property name="description" value="Comprehensive Cervical Cancer Facility Reporting Form - MOH" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh745.xls" />
 	</bean>
 
 	<bean id="kenyaemr.etl.common.report.Moh731KDoD" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">

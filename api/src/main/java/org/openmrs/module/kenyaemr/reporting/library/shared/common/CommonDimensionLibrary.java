@@ -167,6 +167,20 @@ public class CommonDimensionLibrary {
     }
 
     /**
+     * Dimension of age between
+     * @return Dimension
+     */
+    public CohortDefinitionDimension moh745AgeGroups() {
+        CohortDefinitionDimension dim = new CohortDefinitionDimension();
+        dim.setName("age between(<25,>=50)");
+        dim.addParameter(new Parameter("onDate", "Date", Date.class));
+        dim.addCohortDefinition("<25", map(commonCohortLibrary.agedAtMost(24), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition("25-49", map(commonCohortLibrary.agedAtLeastAgedAtMost(25, 49), "effectiveDate=${onDate}"));
+        dim.addCohortDefinition(">=50", map(commonCohortLibrary.agedAtLeast(50), "effectiveDate=${onDate}"));
+        return dim;
+    }
+
+    /**
      * Dimension of age using the 2 standard age groups. <15 and 15+ years
      * @return the dimension
      */
