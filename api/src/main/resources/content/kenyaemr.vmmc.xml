@@ -83,7 +83,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
-		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCProcedureCalculation" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcCircumcisionProcedure.html" />
 	</bean>

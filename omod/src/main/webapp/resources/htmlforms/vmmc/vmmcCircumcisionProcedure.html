@@ -41,6 +41,29 @@
             jq('#tbl-device-circumcision').hide();
             jq('#tbl-other-agent').hide();
 
+            jq('#event-description-pain').prop('disabled', true);
+            jq('#event-description-bleeding').prop('disabled', true);
+            jq('#event-description-anaesthetic').prop('disabled', true);
+            jq('#event-description-skin').prop('disabled', true);
+            jq('#event-description-damage').prop('disabled', true);
+            jq('#severity-pain select').prop('disabled', true);
+            jq('#severity-bleeding select').prop('disabled', true);
+            jq('#severity-anaesthetic select').prop('disabled', true);
+            jq('#severity-skin select').prop('disabled', true);
+            jq('#severity-damage select').prop('disabled', true);
+
+            jq('#event-description-pain').change(adverseEventPainSelected);
+            jq('#event-description-bleeding').change(adverseEventBleedingSelected);
+            jq('#event-description-anaesthetic').change(adverseEventAnaestheticSelected);
+            jq('#event-description-skin').change(adverseEventSkinSelected);
+            jq('#event-description-damage').change(adverseEventDamageSelected);
+
+            jq('#adverse-event-pain :input[type=checkbox]').change(onPainSelected);
+            jq('#adverse-event-bleeding :input[type=checkbox]').change(onBleedingSelected);
+            jq('#adverse-event-anaesthetic :input[type=checkbox]').change(onAnaestheticSelected);
+            jq('#adverse-event-skin :input[type=checkbox]').change(onSkinSelected);
+            jq('#adverse-event-damage :input[type=checkbox]').change(onDamageSelected);
+
             //Check if conventional checked
             jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
 
@@ -136,6 +159,158 @@
                     jq('#tbl-device-size').show();
                     jq('#tbl-other-device-size').hide();
                 }
+        }
+
+        // Adverse event pain selected
+        var adverseEventPainSelected = function () {
+            var val = jq(this).val();
+            if (val == "pain-moderate") {
+                getField('severity-pain.value').prop("selectedIndex", 0);
+            }
+            if (val == "pain-severe") {
+                getField('severity-pain.value').prop("selectedIndex", 1);
+            }
+            if (val == "pain-none") {
+                getField('severity-pain.value').prop("selectedIndex", 0);
+            }
+
+        }
+
+        // Adverse event bleeding selected
+        var adverseEventBleedingSelected = function () {
+            var val = jq(this).val();
+            if (val == "bleeding-mild") {
+                getField('severity-bleeding.value').prop("selectedIndex", 3);
+            }
+            if (val == "bleeding-moderate") {
+                getField('severity-bleeding.value').prop("selectedIndex", 2);
+            }
+            if (val == "bleeding-severe") {
+                getField('severity-bleeding.value').prop("selectedIndex", 1);
+            }
+            if (val == "bleeding-none") {
+                getField('severity-bleeding.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event anaesthetic selected
+        var adverseEventAnaestheticSelected = function () {
+            var val = jq(this).val();
+            if (val == "anaesthetic-mild") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 3);
+            }
+            if (val == "anaesthetic-moderate") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 2);
+            }
+            if (val == "anaesthetic-severe") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 1);
+            }
+            if (val == "anaesthetic-none") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event skin selected
+        var adverseEventSkinSelected = function () {
+            var val = jq(this).val();
+            if (val == "skin-mild") {
+                getField('severity-skin.value').prop("selectedIndex", 3);
+            }
+            if (val == "skin-moderate") {
+                getField('severity-skin.value').prop("selectedIndex", 2);
+            }
+            if (val == "skin-severe") {
+                getField('severity-skin.value').prop("selectedIndex", 1);
+            }
+            if (val == "skin-none") {
+                getField('severity-skin.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event damage selected
+        var adverseEventDamageSelected = function () {
+            var val = jq(this).val();
+            if (val == "damage-mild") {
+                getField('severity-damage.value').prop("selectedIndex", 3);
+            }
+            if (val == "damage-moderate") {
+                getField('severity-damage.value').prop("selectedIndex", 2);
+            }
+            if (val == "damage-severe") {
+                getField('severity-damage.value').prop("selectedIndex", 1);
+            }
+            if (val == "damage-none") {
+                getField('severity-damage.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var onPainSelected = function(){
+            var val = jq(this).val();
+            var painChecked = jq("#adverse-event-pain input:checkbox:checked");
+            if(val == 114403){
+                jq('#event-description-pain').prop('disabled', false);
+                jq('#severity-pain select').prop('disabled', false);
+                jq('#severity-pain').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-pain').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+        }
+
+        var onBleedingSelected = function(){
+            var val = jq(this).val();
+            var bleedingChecked = jq("#adverse-event-bleeding input:checkbox:checked");
+            if(val == 147241){
+                jq('#event-description-bleeding').prop('disabled', false);
+                jq('#severity-bleeding select').prop('disabled', false);
+                jq('#severity-bleeding').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-bleeding').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+
+        }
+
+        var onAnaestheticSelected = function(){
+            var val = jq(this).val();
+            var anaestheticChecked = jq("#adverse-event-anaesthetic input:checkbox:checked");
+            if(val == 135693){
+                jq('#event-description-anaesthetic').prop('disabled', false);
+                jq('#severity-anaesthetic select').prop('disabled', false);
+                jq('#severity-anaesthetic').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-anaesthetic').prop('disabled', true);
+                jq('#severity-anaesthetic select').prop('disabled', true);
+            }
+
+        }
+
+        var onSkinSelected = function(){
+            var val = jq(this).val();
+            var skinChecked = jq("#adverse-event-skin input:checkbox:checked");
+            if(val == 110094){
+                jq('#event-description-skin').prop('disabled', false);
+                jq('#severity-skin select').prop('disabled', false);
+                jq('#severity-skin').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-skin').prop('disabled', true);
+                jq('#severity-skin select').prop('disabled', true);
+            }
+
+        }
+
+        var onDamageSelected = function(){
+            var val = jq(this).val();
+            var damageChecked = jq("#adverse-event-damage input:checkbox:checked");
+            if(val == 156911){
+                jq('#event-description-damage').prop('disabled', false);
+                jq('#severity-damage select').prop('disabled', false);
+                jq('#severity-damage').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-damage').prop('disabled', true);
+                jq('#severity-damage select').prop('disabled', true);
+            }
+
         }
 
         //Clear hidden sections
@@ -253,8 +428,6 @@
             } else {
                 getField('theatre_number.error').html('Please specify the theatre number').hide();
             }
-
-console.log("assistantClinician", assistantClinician);
 
             // if assistant clinician, assistant clinician cadre is mandatory
             if(assistantClinician != "" &amp;&amp; assistantClinicianCadre == ""){
@@ -546,48 +719,122 @@ console.log("assistantClinician", assistantClinician);
                                         <th>Description of adverse event</th>
                                         <th>Severity</th>
                                     </tr>
-                                    <repeat>
-                                        <template>
-                                            <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-                                                <tr>
-                                                    <td>
-                                                        <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             style="dropdown" answerLabels="Pain,Bleeding,Anaesthetic Reaction,Excessive skin removed, Damage to the penis"
-                                                             id="adverse-event-types" />
-                                                    </td>
-                                                    <td>
-                                                        <select name="event-description" class="event-description" id="event-description">
-                                                            <option value="none"></option>
-                                                            <option value="pain-severe">Pain that requires additional intervention(P1)</option>
-                                                            <option value="bleeding-mild">Bleeding that is easily controller(B1)</option>
-                                                            <option value="bleeding-moderate">Bleeding that requires pressure dressing to control(B1)</option>
-                                                            <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility(B1)</option>
-                                                            <option value="anaesthesia-moderate">Palpitations, vaso-vagal reaction or emesis(A1)</option>
-                                                            <option value="anaesthesia-severe">Anaphylactic shock or other reaction requiring transfer to another facility(A1)</option>
-                                                            <option value="excessive-skin-mild">Adds time or material needs to the procedure, but does not result in any discemible(E1)</option>
-                                                            <option value="excessive-skin-moderate">Skin is tight, but additional operative work is not neccessary(E1)</option>
-                                                            <option value="excessive-skin-severe">Require re-operation of transfer to another facility to correct the problem(E1)</option>
-                                                            <option value="damage-mild">Mild bruising or abrasion, not requiring treatment(D1)</option>
-                                                            <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing(D1)</option>
-                                                            <option value="damage-severe">Part or all of the glans or shaft of the penis severed(D1)</option>
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      answerConceptId="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      style="checbox" answerLabel="Pain"
+                                                      id="adverse-event-pain" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-pain" class="event-description-pain" id="event-description-pain">
+                                                    <option value="pain-none">Select</option>
+                                                    <option value="pain-severe">Pain that requires additional intervention(P1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-pain" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
 
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <obs id="severity-level" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                             style="dropdown" answerLabels="Severe,Moderate,Mild" />
-                                                    </td>
-                                                </tr>
-                                            </obsgroup>
-                                        </template>
-                                        <render n="1" concept=" " />
-                                        <render n="2" concept=" " />
-                                        <render n="3" concept=" " />
-                                        <render n="4" concept=" " />
-                                        <render n="5" concept=" " />
-                                    </repeat>
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Bleeding"
+                                                     id="adverse-event-bleeding" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-bleeding" class="event-description-bleeding" id="event-description-bleeding">
+                                                    <option value="bleeding-none">Select</option>
+                                                    <option value="bleeding-mild">Bleeding that is easily controller(B1)</option>
+                                                    <option value="bleeding-moderate"> Bleeding that requires pressure dressing to control(B1)</option>
+                                                    <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility(B1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-bleeding" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Anaesthetic Reaction"
+                                                     id="adverse-event-anaesthetic" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-anaesthetic" class="event-description-anaesthetic" id="event-description-anaesthetic">
+                                                    <option value="anaesthetic-none">Select</option>
+                                                    <option value="anaesthetic-moderate">Palpitations, vaso-vagal reaction or emesis(A1)</option>
+                                                    <option value="anaesthetic-severe">Anaphylactic shock or other reaction requiring transfer to another facility(A1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-anaesthetic" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Excessive skin removed"
+                                                     id="adverse-event-skin" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-skin" class="event-description-skin" id="event-description-skin">
+                                                    <option value="skin-none">Select</option>
+                                                    <option value="skin-mild">Adds time or material needs to the procedure, but does not result in any discemible(E1)</option>
+                                                    <option value="skin-moderate">Skin is tight, but additional operative work is not neccessary(E1)</option>
+                                                    <option value="skin-severe">Require re-operation of transfer to another facility to correct the problem(E1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-skin" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Damage to the penis"
+                                                     id="adverse-event-damage" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-damage" class="event-description-damage" id="event-description-damage">
+                                                    <option value="damage-none">Select</option>
+                                                    <option value="damage-mild">Mild bruising or abrasion, not requiring treatment(D1)</option>
+                                                    <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing(D1)</option>
+                                                    <option value="damage-severe">Part or all of the glans or shaft of the penis severed(D1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-damage" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
                                 </table>
                             </td>
                         </tr>
