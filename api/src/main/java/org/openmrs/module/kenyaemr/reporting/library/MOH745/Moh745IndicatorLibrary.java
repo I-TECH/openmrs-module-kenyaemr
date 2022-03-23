@@ -40,14 +40,14 @@ public class Moh745IndicatorLibrary {
     /*Suspicious Screening Result*/
     public CohortIndicator receivedSuspiciousScreening(String result, String visitType) {
 
-        return cohortIndicator("Received Positive Screening", ReportUtils.map(Moh745CohortLibrary.suspiciousScreeningCl( result, visitType), "startDate=${startDate},endDate=${endDate}")
+        return cohortIndicator("Received Suspicious Screening", ReportUtils.map(Moh745CohortLibrary.suspiciousScreeningCl( result, visitType), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
     /*Treatment Method */
     public CohortIndicator treatedMethod(String[] treatmentMethod, String visitType) {
 
-        return cohortIndicator("Received Positive Screening", ReportUtils.map(Moh745CohortLibrary.treatmentMethodCl(treatmentMethod, visitType), "startDate=${startDate},endDate=${endDate}")
+        return cohortIndicator("Treatment Method", ReportUtils.map(Moh745CohortLibrary.treatmentMethodCl(treatmentMethod, visitType), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
