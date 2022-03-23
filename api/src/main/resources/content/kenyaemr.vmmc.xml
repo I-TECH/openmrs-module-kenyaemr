@@ -37,7 +37,13 @@
 				<entry key="completion-summary" value="kenyaemr:program/vmmc/vmmcOutcomeSummary" />
 			</map>
 		</property>
-		<property name="order" value="400" />
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.common.report.VMMCRegister"/>
+
+			</set>
+		</property>
+		<property name="order" value="600" />
 	</bean>
 
 	<!-- ===================== Forms ===================== -->
@@ -136,5 +142,17 @@
 	</bean>
 
 	<!-- ===================== Reports ===================== -->
+	<!-- Vmmc Register-->
+	<bean id="kenyaemr.common.report.VMMCRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="681df61a-a37d-11ec-b909-0242ac120002" />
+		<property name="name" value="VMMC Register" />
+		<property name="description" value="VMMC Theatre Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:vmmc_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:VMMCInformation" />
+	</bean>
 
 </beans>
