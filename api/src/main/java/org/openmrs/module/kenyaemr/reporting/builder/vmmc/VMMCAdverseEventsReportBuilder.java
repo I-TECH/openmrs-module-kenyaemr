@@ -104,7 +104,7 @@ public class VMMCAdverseEventsReportBuilder extends AbstractReportBuilder {
         String indParams = "startDate=${startDate},endDate=${endDate}";
         cohortDsd.setDescription("VMMC adverse events during client followup");
         cohortDsd.addColumn("Mild pain", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(PAIN,MILD_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
-        cohortDsd.addColumn("Moderate pain", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(PAIN,MILD_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
+        cohortDsd.addColumn("Moderate pain", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(PAIN,MODERATE_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
         cohortDsd.addColumn("Severe pain", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(PAIN,SEVERE_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
         cohortDsd.addColumn("Mild bleeding", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(BLEEDING,MILD_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
         cohortDsd.addColumn("Moderate bleeding", "", ReportUtils.map(vmmcAdverseEventsIndicatorLibrary.getClientsWithVMMCAdverseEvent(BLEEDING,MODERATE_AE,VMMC_CLIENT_FOLLOWUP_FORM), indParams), "");
