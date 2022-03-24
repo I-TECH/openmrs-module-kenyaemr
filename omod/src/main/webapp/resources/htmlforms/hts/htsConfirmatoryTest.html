@@ -741,6 +741,7 @@
 		var tbScreening = getValue("tb-screening.value");
 		var selfTested = getValue("client-done-test.value");
         var monthsSinceLastTestInt = parseInt(monthsSinceLastTest);
+        160581
 
         if (populationType == '' || isDisabled == '' || everTested == '' || entryPoint == '' || testStrategy == '' || tbScreening == '' || selfTested == '' || testedAs == '') {
             jq('#ml-prediction-desc').html('Please ensure that you have provided answers to all questions above');
@@ -758,11 +759,12 @@
 			MaritalStatusDivorced: 0,
 			MaritalStatusPolygamous: 0,
 			MaritalStatusWidowed: 0,
+			MaritalStatusSingle: 0,
 			MaritalStatusMinor: 0,
-			PatientDisabledNotDisabled: 0,
+			PatientDisabledNo: 0,
 			PatientDisabledDisabled: 0,
 			EverTestedForHIVYes: 0,
-			EverTestedForHIVNo: 0,
+			EverTestedForHivNo: 0,
 			ClientTestedAsIndividual: 0,
 			ClientTestedAsCouple: 0,
 			EntryPointVCT: 0,
@@ -773,6 +775,10 @@
 			EntryPointOther: 0,
 			EntryPointHB: 0,
 			EntryPointPEDS: 0,
+			EntryPointVMMC: 0,
+			EntryPointTB: 0,
+			EntryPointCCC: 0,
+			EntryPointPNS: 0,
 			TestingStrategyVCT: 0,
 			TestingStrategyHB: 0,
 			TestingStrategyMOBILE: 0,
@@ -793,6 +799,8 @@
 			predictionVariables.MaritalStatusDivorced = 1;
 		} else if (latestMaritalStatus == 1059) { // widowed
 			predictionVariables.MaritalStatusWidowed = 1;
+		} else if (latestMaritalStatus == 1057) {
+		    predictionVariables.MaritalStatusSingle = 1;
 		}
 
 		if (pAge &lt; 15) {
@@ -806,9 +814,10 @@
 			predictionVariables.KeyPopulationTypeSW = 1;
 		}
 
+
 		// convert disability status
 		if (isDisabled == 1066) {
-			predictionVariables.PatientDisabledNotDisabled = 1;
+			predictionVariables.PatientDisabledNo = 1;
 		} else if (isDisabled == 1065) {
 		    predictionVariables.PatientDisabledDisabled = 1;
 		}
@@ -817,7 +826,7 @@
 		if (everTested == 1065) {
 			predictionVariables.EverTestedForHIVYes = 1;
 		} else if (everTested == 1066) {
-		    predictionVariables.EverTestedForHIVNo = 1;
+		    predictionVariables.EverTestedForHivNo = 1;
 		}
 
 		// converter for tested as i.e. individual, couple:
@@ -845,6 +854,10 @@
 			predictionVariables.EntryPointPEDS = 1;
 		} else if (entryPoint == 5622) { // Other
 			predictionVariables.EntryPointOther = 1;
+		} else if (entryPoint == 162223) { // vmmc
+			predictionVariables.EntryPointVMMC = 1;
+		} else if (entryPoint == 160541) { // tb
+			predictionVariables.EntryPointTB = 1;
 		}
 
 		// convert strategy
@@ -877,7 +890,7 @@
 
         var mlFormattedDate = moment(new Date()).format('YYYY-MM-DD');
         var modelConfigs = {
-            "modelId":"hts_xgb",
+            "modelId":"hts_xgb_0323",
             "encounterDate":mlFormattedDate,
 		    "facilityId":""
         }
@@ -918,7 +931,15 @@
                 }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    jq('#lbl-ml-prediction').text('An error occurred while fetching risk score. Please contact system administrator');
+                    var msg = '';
+                    if (jqXHR.status == 500) {
+                        msg = 'There was an internal Server Error [500].';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'The requested service not found. [404]';
+                    } else {
+                        msg = 'System error: ' + jqXHR.responseText;
+                    }
+                    jq('#ml-prediction-desc').html(msg);
                 }
             });
 		}
