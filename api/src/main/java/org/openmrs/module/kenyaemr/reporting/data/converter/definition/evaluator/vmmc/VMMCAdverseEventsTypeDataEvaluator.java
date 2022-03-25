@@ -36,7 +36,7 @@ public class VMMCAdverseEventsTypeDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select patient_id, GROUP_CONCAT(DISTINCT case adverse_event " +
                 "when 114403 then 'Pain' when 147241 then 'Bleeding' when 135693 then 'Anaesthetic Reaction' " +
-                "when 156911 then 'Damage to the penis' else '' END SEPARATOR ', ') AS adverse_event " +
+                "when 156911 then 'Damage to the penis' when 167126 then 'Excessive skin removed' else '' END SEPARATOR ', ') AS adverse_event " +
                 "from kenyaemr_etl.etl_adverse_events where form = 'vmmc-procedure' GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

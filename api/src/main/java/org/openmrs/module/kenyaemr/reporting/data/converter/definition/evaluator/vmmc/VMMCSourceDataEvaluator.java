@@ -34,8 +34,8 @@ public class VMMCSourceDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, case source_of_vmmc_info when 159388 then 'Radio/Tv' when 1565 then 'Print Media'when 163121 then 'Road Show'" +
-                " when 1555 then 'Mobilizer CHWl' when 1555 then 'Mobilizer CHWl' when 160542 then'OPD/MCH/HT' when 5486 then 'Social Media' when 5622 then" +
+        String qry = "select patient_id, case source_of_vmmc_info when 167095 then 'Radio/Tv' when 167096 then 'Print Media'when 167098 then 'Road Show'" +
+                " when 1555 then 'Mobilizer CHWl' when 1555 then 'Mobilizer CHWl' when 160542 then'OPD/MCH/HT' when 167097 then 'Social Media' when 5622 then" +
                 " other_source_of_vmmc_info else '' end as source_of_vmmc_info from kenyaemr_etl.etl_vmmc_enrolment GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

@@ -44,7 +44,7 @@ public class VMMCAdverseEventsReportBuilder extends AbstractReportBuilder {
     public static final Integer PAIN = 114403;
     public static final Integer BLEEDING = 147241;
     public static final Integer ANAESTHETIC_REACTION = 135693;
-    public static final Integer EXCESSIVE_SKIN_REMOVED = 110094;
+    public static final Integer EXCESSIVE_SKIN_REMOVED = 167126;
     public static final Integer DAMAGE_TO_PENIS = 156911;
     public static final Integer APPEARANCE_PROBLEMS = 152045;
     public static final Integer HEMATOMA_OR_SWELLING = 156567;
