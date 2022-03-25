@@ -34,7 +34,7 @@ public class VMMCMethodDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, case circumcision_method when 164204 then 'Device Circumcision' when 159619 then 'Conventional Surgical' else ''" +
+        String qry = "select patient_id, case circumcision_method when 167120 then 'Device Circumcision' when 167119 then 'Conventional Surgical' else ''" +
                 " end as circumcision_method from kenyaemr_etl.etl_vmmc_circumcision_procedure GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

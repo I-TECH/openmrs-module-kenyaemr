@@ -2815,7 +2815,7 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition vmmcSurgical() {
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
-                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 159619;";
+                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 167119;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("VMMC_SURGICAL");
         cd.setQuery(sqlQuery);
@@ -2830,7 +2830,7 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition vmmcDevice() {
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_vmmc_enrolment e inner join kenyaemr_etl.etl_vmmc_circumcision_procedure c on e.patient_id = c.patient_id\n" +
-                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 164204;";
+                "where c.visit_date between date(:startDate) and date(:endDate) and c.circumcision_method = 167120;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("VMMC_DEVICE");
         cd.setQuery(sqlQuery);

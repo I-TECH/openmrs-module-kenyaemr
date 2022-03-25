@@ -15,9 +15,9 @@ import org.openmrs.module.kenyaemr.metadata.VMMCMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 public class VmmcConstants {
-    public static final Integer METHOD = 1651;
-    public static final Integer CONVENTIONAL_METHOD = 159619;
-    public static final Integer DEVICE_METHOD = 164204;
+    public static final Integer METHOD = 167118;
+    public static final Integer CONVENTIONAL_METHOD = 167119;
+    public static final Integer DEVICE_METHOD = 167120;
 
     public static final Form vmmcMedicalHistoryExaminationForm = MetadataUtils.existing(Form.class, VMMCMetadata._Form.VMMC_MEDICAL_HISTORY_EXAMINATION_FORM);
     public static final EncounterType vmmcMedicalHistoryEncType = MetadataUtils.existing(EncounterType.class, VMMCMetadata._EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION);

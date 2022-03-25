@@ -14,18 +14,18 @@
 
 <htmlform>
     <script type="text/javascript">
-        var CONVENTIONAL = 159619;
-        var DEVICE = 164204;
-        var DORSAL_SLIT = 1933;
-        var SLEEVE_RESELECTION = 164029;
+        var CONVENTIONAL = 167119;
+        var DEVICE = 167120;
+        var DORSAL_SLIT = 167122;
+        var SLEEVE_RESELECTION = 167121;
         var OTHER_CONVENTIONAL = 5622;
-        var SHANGRING = 165396;
+        var SHANGRING = 167124;
         var OTHER_DEVICE = 5622;
 
-        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(1651).getValueCoded()"/>";
-        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(164258).getValueCoded()"/>";
+        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167118).getValueCoded()"/>";
+        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167119).getValueCoded()"/>";
         var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
-        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(164204).getValueCoded()"/>";
+        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(167120).getValueCoded()"/>";
 
         var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
         var CONVENTIONAL_METHOD = CONVENTIONAL_METHOD_CONCEPT.replace(/[^\d]/g, '');
@@ -77,23 +77,23 @@
             jq("#other-agent :input[type=checkbox]").change(onAgentSelected);
 
             if(CIRCUMCISION_METHOD == CONVENTIONAL) {
-                jq("#circumcision-method input[value=159619]").prop("checked", true);
+                jq("#circumcision-method input[value=167119]").prop("checked", true);
                 jq('#tbl-conventional-surgical').show();
 
                   if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
-                    jq("#conventional-method input[value=1933]").prop("checked", true);
+                    jq("#conventional-method input[value=167122]").prop("checked", true);
                   } else if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
-                    jq("#conventional-method input[value=164029]").prop("checked", true);
+                    jq("#conventional-method input[value=167121]").prop("checked", true);
                   } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
                     jq("#conventional-method input[value=5622]").prop("checked", true);
                   }
 
             } else if(CIRCUMCISION_METHOD == DEVICE) {
-                jq("#circumcision-method input[value=164204]").prop("checked", true);
+                jq("#circumcision-method input[value=167120]").prop("checked", true);
                 jq('#tbl-device-circumcision').show();
 
                   if(DEVICE_CIRCUMCISION == SHANGRING) {
-                    jq("#device-name input[value=165396]").prop("checked", true);
+                    jq("#device-name input[value=167124]").prop("checked", true);
                     jq('#tbl-device-size').show();
                   } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
                     jq("#device-name input[value=5622]").prop("checked", true);
@@ -135,14 +135,14 @@
 
         var onMethodSelected = function () {
             var val = jq(this).val();
-            if(val == 159619 ) {
+            if(val == 167119 ) {
               jq('#tbl-conventional-surgical').show();
               jq('#tbl-device-circumcision').hide();
               clearHiddenSections(jq('#device-name'));
               clearHiddenSections(jq('#device-name-specify'));
               clearHiddenSections(jq('#device-size'));
               getField('device_size.value').val("");
-            } else if(val == 164204) {
+            } else if(val == 167120) {
               jq('#tbl-device-circumcision').show();
               jq('#tbl-conventional-surgical').hide();
               clearHiddenSections(jq('#conventional-specify'));
@@ -155,7 +155,7 @@
                 if(val == 5622 ) {
                     jq('#tbl-other-device-size').show();
                     jq('#tbl-device-size').hide();
-                } else if(val == 165396) {
+                } else if(val == 167124) {
                     jq('#tbl-device-size').show();
                     jq('#tbl-other-device-size').hide();
                 }
@@ -288,7 +288,7 @@
         var onSkinSelected = function(){
             var val = jq(this).val();
             var skinChecked = jq("#adverse-event-skin input:checkbox:checked");
-            if(val == 110094){
+            if(val == 167126){
                 jq('#event-description-skin').prop('disabled', false);
                 jq('#severity-skin select').prop('disabled', false);
                 jq('#severity-skin').attr("style", "pointer-events:none;");
@@ -370,7 +370,7 @@
                 getField('device-name-specify.error').html('Please specify other method').hide();
             }
 
-            if(circumcisionMethod == 164204  &amp;&amp; deviceSize == "") {
+            if(circumcisionMethod == 167120  &amp;&amp; deviceSize == "") {
                 getField('device_size.error').html('Please specify the device size').show();
                 return false;
             } else {
@@ -446,8 +446,8 @@
     <ifMode mode="EDIT">
         <script type="text/javascript">
             jq(function(){
-                var CONVENTIONAL = 159619;
-                var DEVICE = 164204;
+                var CONVENTIONAL = 167119;
+                var DEVICE = 167120;
                 var YES = 1065;
 
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
@@ -548,8 +548,8 @@
                 <tr>
                     <td> Method: <span style="color:red;"><strong>*</strong></span> </td>
                     <td>
-                        <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="circumcision-method" conceptId="167118"
+                             answerConceptIds="167119,167120"
                              answerLabels="Conventional Surgical,Device Circumcision"
                              style="radio"
                              answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
@@ -559,9 +559,9 @@
                         <table id="tbl-conventional-surgical" class="tb1 simple-table">
                             <tr>
                                 <td>
-                                    <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                    <obs id="conventional-method" conceptId="167119"
+                                         answerConceptIds="167121,
+                                                           167122,
                                                            5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Sleeve resection,Dorsal Slit,
                                                        Other"
@@ -580,8 +580,8 @@
                                 <td>
                                     Device name:
 
-                                    <obs id="device-name" conceptId="164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="165396,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs id="device-name" conceptId="167120"
+                                         answerConceptIds="167124,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Shangring,Other"
                                          style="radio" />
 
@@ -694,7 +694,7 @@
                 <tr>
                     <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
                         hour clock:
-                        <obs conceptId="163137AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_slit" required="true"  allowFutureDates="false" />
+                        <obs conceptId="167132" id="time_of_slit" required="true"  allowFutureDates="false" />
                     </td>
                 </tr>
 
@@ -791,7 +791,7 @@
                                         <tr>
                                             <td>
                                                 <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptId="110094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="167126"
                                                      style="checbox" answerLabel="Excessive skin removed"
                                                      id="adverse-event-skin" />
                                             </td>
@@ -903,7 +903,7 @@
                 <table align="center" width="100%" class="tb1">
                     <tr>
                         <td>Theatre Register Number: <span style="color:red;"><strong>*</strong></span>
-                            <obs conceptId="1646AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="theatre_number" />
+                            <obs conceptId="167133" id="theatre_number" />
                         </td>
                     </tr>
                 </table>

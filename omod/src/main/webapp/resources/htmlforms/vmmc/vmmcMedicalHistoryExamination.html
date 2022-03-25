@@ -378,7 +378,7 @@
         //Method selected
         var methodSelected = function(){
             var val = getValue('circumcision-method.value');
-            if(val == 159619){
+            if(val == 167119){
                 jq('#tr-conventional-method-types').show();
                 jq('#tr-device-method-types').hide();
                 jq('#tb-other-conventional-method').hide();
@@ -386,7 +386,7 @@
                 getField('device-size.value').val("");
 
             }
-            if(val == 164204){
+            if(val == 167120){
                 jq('#tr-device-method-types').show();
                 jq('#tr-conventional-method-types').hide();
                 jq('#tbl-device-size').hide();
@@ -733,7 +733,7 @@
                 jq('#tb-other-device-name').show();
                 jq('#tbl-device-size').hide();
             }
-            if (deviceName == 165396) {
+            if (deviceName == 167124) {
                 jq('#tbl-device-size').show();
                 jq('#tb-other-device-name').hide();
             }
@@ -904,7 +904,7 @@
             }else {
                 getField('explain-noneligibility.error').html('Please specify reason for non eligibility.').hide();
             }
-            if(circumcisionMethod == 159619 &amp;&amp; conventionalMethod == false){
+            if(circumcisionMethod == 167119 &amp;&amp; conventionalMethod == false){
                 getField('conventional-method.error').html('Please specify conventional circumcision method.').show();
                 return false;
             }else {
@@ -922,13 +922,13 @@
             }else {
                 getField('other-device-name.error').html('Please specify other circumcision device name.').hide();
             }
-            if(circumcisionMethod == 164204 &amp;&amp; deviceMethod == false){
+            if(circumcisionMethod == 167120 &amp;&amp; deviceMethod == false){
                 getField('device-name.error').html('Please specify device name.').show();
                 return false;
             }else {
                 getField('device-name.error').html('Please specify device name.').hide();
             }
-            if(circumcisionMethod == 164204 &amp;&amp; deviceSize == ""){
+            if(circumcisionMethod == 167120 &amp;&amp; deviceSize == ""){
                 getField('device-size.error').html('Please specify device size.').show();
                 return false;
             }else {
@@ -1094,11 +1094,11 @@
                     jq('#fs-circumcision-method').hide();
                 }
                 var method = getValue('circumcision-method.value');
-                if(method == 159619){
+                if(method == 167119){
                     jq('#tr-conventional-method-types').show();
                     jq('#tr-device-method-types').hide();
                 }
-                if(method == 164204){
+                if(method == 167120){
                     jq('#tr-device-method-types').show();
                     jq('#tr-conventional-method-types').hide();
                 }
@@ -1128,7 +1128,7 @@
                         jq('#tbl-device-size').hide();
                     }
 
-                   if(deviceName == 165396) {
+                   if(deviceName == 167124) {
                     jq('#tbl-device-size').show();
                     jq('#tb-other-device-name').hide();
                   }
@@ -1154,7 +1154,7 @@
                <tr id="tr-assent">
                    <td> Assent given?  <span style="color:red;"><strong>*</strong></span> </td>
                    <td>
-                       <obs id="assent-given" conceptId="162696AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                       <obs id="assent-given" conceptId="167093"
                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             answerLabel="Yes,No"
                             style="radio" />
@@ -1625,8 +1625,8 @@
                 <tr>
                     <td> Method:  <span style="color:red;"><strong>*</strong></span></td>
                     <td>
-                        <obs id="circumcision-method" conceptId="1651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="159619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        <obs id="circumcision-method" conceptId="167118"
+                             answerConceptIds="167119,167120"
                              answerLabels="Conventional Surgical,Device Circumcision"
                              style="radio"
                              answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
@@ -1636,9 +1636,9 @@
                         <table>
                             <tr id="tr-conventional-method-types">
                                 <td>
-                                    <obs id="conventional-method" conceptId="164258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="164029AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                           1933AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                    <obs id="conventional-method" conceptId="167119"
+                                         answerConceptIds="167121,
+                                                           167122,
                                                            5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Sleeve resection,
                                                        Dorsal Slit,
@@ -1661,8 +1661,8 @@
                                 <td>
                                     Device name:
 
-                                    <obs id="device-name" conceptId="164204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="165396,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs id="device-name" conceptId="167120"
+                                         answerConceptIds="167124,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Shangring,Other"
                                          style="radio" />
                                 </td>
@@ -1710,9 +1710,9 @@
                             <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr id="prep-services-referred">
                                     <td>  Referred for which services: <br/>
-                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="167125"
                                              answerLabel="STI Treatment" style="checkbox" /><br/>
-                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165270"
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="166536"
                                              answerLabel="PrEP Services" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Condom Promotion" style="checkbox" /><br/>
@@ -1750,7 +1750,7 @@
                             <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                 <tr id="sti-services-referred">
                                     <td>  Referred for which services: <br/>
-                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165200"
+                                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="167125"
                                              answerLabel="STI Treatment" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Condom Promotion" style="checkbox" /><br/>
