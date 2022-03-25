@@ -40,6 +40,7 @@
 		<property name="reports">
 			<set>
 				<ref bean="kenyaemr.common.report.VMMCRegister"/>
+				<ref bean="kenyaemr.vmmc.report.vmmcadverseevents"/>
 
 			</set>
 		</property>
@@ -154,5 +155,10 @@
 		<property name="template" value="kenyaemr:vmmc_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:VMMCInformation" />
 	</bean>
-
+	<bean id="kenyaemr.vmmc.report.vmmcadverseevents" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="8e90bcf6-aabc-11ec-b909-0242ac120002" />
+		<property name="name" value="Adverse events for VMMC clients" />
+		<property name="description" value="Report of VMMC clients with Adverse events" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
 </beans>
