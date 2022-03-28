@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.builder.common;
+package org.openmrs.module.kenyaemr.reporting.builder.vmmc;
 
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
@@ -76,7 +76,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.common.report.VMMCRegister"})
+@Builds({"kenyaemr.vmmc.report.VMMCRegister"})
 public class VMMCRegisterReportBuilder extends AbstractHybridReportBuilder {
     public static final String ENC_DATE_FORMAT = "yyyy/MM/dd";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -142,7 +142,7 @@ public class VMMCRegisterReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Sub-County", new CalculationDataDefinition("Sub-County", new SubCountyAddressCalculation()), "", null);
         dsd.addColumn("HIV Status", new VMMCHivStatusDataDefinition(), "");
-        dsd.addColumn("Method", new VMMCMethodDataDefinition(), "");
+        dsd.addColumn("Method Used", new VMMCMethodDataDefinition(), "");
         dsd.addColumn("Start Time", new VMMCStartTimeDataDefinition(), "");
         dsd.addColumn("End Time", new VMMCEndTimeDataDefinition(), "");
         dsd.addColumn("Population Type", new ActivePatientsPopulationTypeDataDefinition(), "");
