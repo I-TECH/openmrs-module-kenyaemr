@@ -35,7 +35,7 @@ public class CACXFollowUpDateDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, next_appointment_date from kenyaemr_etl.etl_cervical_cancer_screening;";
+        String qry = "select encounter_id, date(next_appointment_date) from kenyaemr_etl.etl_cervical_cancer_screening;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -35,7 +35,9 @@ public class CACXHivStatusDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "SELECT t.encounter_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id;";
+        String qry = "select i.encounter_id, (case when h.patient_id is not null then 'Positive' else t.final_test_result end) as `status` from kenyaemr_etl.etl_cervical_cancer_screening i" +
+                " left join (select h.patient_id from kenyaemr_etl.etl_hiv_enrollment h) h on h.patient_id = i.patient_id left join" +
+                " (select t.patient_id, t.final_test_result from kenyaemr_etl.etl_hts_test t where t.test_type = 2) t on t.patient_id = i.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
