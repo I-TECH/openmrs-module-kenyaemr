@@ -49,7 +49,6 @@
 			<set>
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
-				<ref bean="kenyaemr.common.report.etllostToFollowup" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
 				<ref bean="kenyaemr.common.report.moh745"/>
 				<ref bean="kenyaemr.etl.common.report.Moh731KDoD"/>
@@ -440,17 +439,6 @@
 		<property name="targetUuid" value="9a254c29-2c8a-4966-83ba-66595eee4695" />
 		<property name="name" value="Missed Appointments" />
 		<property name="description" value="Missed Appointments" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set>
-		</property>
-	</bean>
-
-	<bean id="kenyaemr.common.report.etllostToFollowup" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="23a9afb1-8106-4cda-9093-f6d36a714fe6" />
-		<property name="name" value="Lost to Followup" />
-		<property name="description" value="Lost to Followup" />
 		<property name="apps">
 			<set>
 				<ref bean="kenyaemr.app.reports" />
