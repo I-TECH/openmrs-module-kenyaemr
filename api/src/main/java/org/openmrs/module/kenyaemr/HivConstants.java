@@ -17,7 +17,7 @@ public class HivConstants {
 	/**
 	 * Number of days without an encounter before a patient is consider lost to follow up
 	 */
-	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 31; // the threshold has since changed to 31 days from 90 days
+	public static final int LOST_TO_FOLLOW_UP_THRESHOLD_DAYS = 30; // the threshold has since changed to 31 days from 90 days
 
 	/**
 	 * Number of days between old CD4 count and need for new CD4 count
