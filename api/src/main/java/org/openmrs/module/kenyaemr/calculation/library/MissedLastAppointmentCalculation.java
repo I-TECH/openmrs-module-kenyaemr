@@ -11,7 +11,9 @@ package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Program;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -28,10 +30,12 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCa
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.IsTransferOutCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -65,8 +69,10 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 
 		CalculationResultMap lastReturnDateMap = Context.getService(PatientCalculationService.class).evaluate(inHivProgram, new LastReturnVisitDateCalculation(), context);
 
-		EncounterType lastHivVisit = Context.getEncounterService().getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_CONSULTATION);
-		CalculationResultMap lastEncounters = Calculations.lastEncounter(lastHivVisit, cohort, context);
+		Form pocHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
+		Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+		EncounterType hivFollowup = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+
 		Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 		Set<Integer> transferredOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 		CalculationResultMap ret = new CalculationResultMap();
@@ -79,8 +85,9 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 
 				// Does patient have a scheduled return visit in the past
 				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
+					PatientService patientService = Context.getPatientService();
 					// Has patient returned since
-					Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
+					Encounter lastEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), hivFollowup, Arrays.asList(pocHivFollowup, rdeHivFollowup));  //last greencard followup encounter
 					Date lastActualReturnDate = lastEncounter != null ? lastEncounter.getEncounterDatetime() : null;
 					missedVisit = lastActualReturnDate == null || lastActualReturnDate.before(lastScheduledReturnDate);
 					if(missedVisit && lastEncounter != null && lastEncounter.getEncounterDatetime().after(DateUtil.adjustDate(DateUtil.getStartOfMonth(context.getNow()), -1, DurationUnit.DAYS)) && lastEncounter.getEncounterDatetime().before(DateUtil.adjustDate(context.getNow(), 1, DurationUnit.DAYS))){
