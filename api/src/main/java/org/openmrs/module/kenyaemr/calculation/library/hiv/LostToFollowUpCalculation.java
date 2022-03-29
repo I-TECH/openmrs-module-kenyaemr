@@ -9,9 +9,18 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
 import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.Program;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -22,9 +31,13 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.HtsConstants;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -43,12 +56,14 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 		return "Lost to Followup";
 	}
 
+	protected static final Log log = LogFactory.getLog(LostToFollowUpCalculation.class);
+
 	/**
 	 * Evaluates the calculation
 	 * @should calculate false for deceased patients
 	 * @should calculate false for patients not in HIV program
-	 * @should calculate false for patients with an encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days days since appointment date
-	 * @should calculate true for patient with no encounter in last LOST_TO_FOLLOW_UP_THRESHOLD_DAYS days days since appointment date
+	 * @should calculate false for patients without a HIV Greencard encounter
+	 * @should calculate true for patient with a HIV Greencard encounter and 31 days past since last TCA
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> arg1, PatientCalculationContext context) {
@@ -56,34 +71,42 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		Concept reasonForDiscontinuation = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
 		Concept transferout = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
-
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
 
-		//CalculationResultMap lastEncounters = Calculations.lastEncounter(null, inHivProgram, context);
-		CalculationResultMap lastReturnDateObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.RETURN_VISIT_DATE), inHivProgram, context);
 		CalculationResultMap lastProgramDiscontinuation = Calculations.lastObs(reasonForDiscontinuation, cohort, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
 			boolean lost = false;
+			Integer tcaConcept = 5096;
+			Date tcaDate = null;
 
-			// Is patient alive and in the HIV program
-			if (alive.contains(ptId)) {
+			// Is patient alive and in HIV program
+			if (inHivProgram.contains(ptId)) {
+				PatientService patientService = Context.getPatientService();
+				//With Greencard Encounter
+				EncounterType greenCardEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+				Form pocHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
+				Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+				Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), greenCardEncType, Arrays.asList(pocHivFollowup, rdeHivFollowup));  //last hiv followup encounter
 
-				// Patient is lost if no encounters in last X days
-				//Encounter lastEncounter = EmrCalculationUtils.encounterResultForPatient(lastEncounters, ptId);
-				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeObsResultForPatient(lastReturnDateObss, ptId);
-				Obs discontuation = EmrCalculationUtils.obsResultForPatient(lastProgramDiscontinuation, ptId);
-				if (lastScheduledReturnDate != null) {
-					if(daysSince(lastScheduledReturnDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS){
-						lost = true;
-					}
-					if(discontuation != null && discontuation.getValueCoded().equals(transferout)) {
-						lost = false;
+				if (lastFollowUpEncounter != null) {
+					for (Obs obs : lastFollowUpEncounter.getObs()) {
+						if (obs.getConcept().getConceptId().equals(tcaConcept)) {
+							tcaDate = obs.getValueDatetime();
+							Obs discontinuation = EmrCalculationUtils.obsResultForPatient(lastProgramDiscontinuation, ptId);
+							if (tcaDate != null) {
+								if (daysSince(tcaDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) {
+									lost = true;
+								}
+								if (discontinuation != null && discontinuation.getValueCoded().equals(transferout)) {
+									lost = false;
+								}
+							}
+						}
 					}
 				}
-
 			}
 			ret.put(ptId, new SimpleResult(lost, this, context));
 
