@@ -373,24 +373,29 @@
             //Negative
             if(firstTest ==664) {
                 jq("#hiv-test2").hide();
-
+                jq('#ccc-no input').prop("disabled", true);
+                jq('#negative-referral').show();
+                jq('#fs-referral').hide();
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
                 clearHiddenSections(jq('.kit-name2'));
                 clearHiddenSections(jq('.lot-number2'));
                 getField('hiv-final-result.value').val(664);
-                jq('#ccc-no input').prop("disabled", true);
+
             }
             //Positive
             if(firstTest ==703){
                 jq("#hiv-test2").show();
+                jq('#negative-referral').hide();
+                jq('#fs-referral').hide();
                 jq("#hiv-test2-result select").prop("disabled", false);
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#hiv-final-result'));
                 clearHiddenSections(jq('#hiv-test2-result'));
+
             }
             //Invalid
             if(firstTest ==163611){
@@ -418,6 +423,8 @@
                 jq('#tbl-discordant').hide();
                 clearHiddenSections(jq('.result-given'));
                 clearHiddenSections(jq('#couple-discordant'));
+                jq('#negative-referral').hide();
+                jq('#fs-referral').hide();
             }
             //Positive
             if(secondTest ==703){
@@ -429,8 +436,10 @@
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
+                jq('#negative-referral').hide();
                 jq('#tbl-results-given').show();
                 jq('#tbl-discordant').show();
+
             }
             //Invalid
             if(secondTest ==163611){
@@ -510,11 +519,14 @@
             jq('#disability').hide();
             jq('#tbl-other-disability').hide();
             jq('#fs-referral').hide();
+            jq('#negative-referral').hide();
+            jq('#tbl-specify-referral').hide();
             //ever tested
             jq('#ever-tested input').change(prevTestSelected);
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
             jq('#referral-to select').change(referralSelected);
+            jq('#neg-referral-for select').change(negativeReferralSelected);
             jq('#tbl-this-facility').hide();
             jq('#tbl-other-facility').hide();
             jq('#tbl-other-strategy').hide();
@@ -557,7 +569,11 @@
             {
                 jq('#dodOnly').show();
             }
-
+            if(pgender == 'F'){
+                jq("#neg-referral-for option[value='162223']").hide();  //VMMC
+            }else{
+                jq("#neg-referral-for option[value='162223']").show();  //VMMC
+            }
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
                     getField('hts-entry-point.value').prop("selectedIndex", 14);
@@ -635,6 +651,8 @@
                 jq("#expiry-date2 input").prop("disabled", true);
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
+                jq('#negative-referral').show();
+                jq('#fs-referral').hide();
             }
             //Positive
             if(firstTest ==703){
@@ -643,6 +661,8 @@
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
+                jq('#negative-referral').hide();
+                jq('#fs-referral').hide();
             }
             //Invalid
             if(firstTest ==163611){
@@ -661,7 +681,9 @@
                 jq("#expiry-date2 input").prop("disabled", true);
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
-            }
+                jq('#negative-referral').hide();
+                jq('#fs-referral').hide();
+             }
             //Positive
             if(secondTest ==703){
                 jq(".kit-name2 select").prop("disabled", false);
@@ -670,6 +692,7 @@
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
+                jq('#negative-referral').hide();
             }
             //Invalid
             if(secondTest ==163611){
@@ -926,6 +949,15 @@
                 getField('other-facility.value').val("");
             }
         }
+        var negativeReferralSelected = function () {
+            var val = jq(this).val();
+            if (val == 5622) {
+                jq('#tbl-specify-referral').show();
+               }else{
+                jq('#tbl-specify-referral').hide();
+                getField('specify-referral').val("");
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
@@ -1027,7 +1059,7 @@
             jq(function(){
 
                 //facility referral
-                var val = getField("referral-to.value").val();
+                var val = getField('referral-to.value').val();
                 var default_location = "<lookup expression="kenyaemr.location()" />";
                 if (val == 164407) {
                     jq('#tbl-other-facility').show();
@@ -1038,6 +1070,14 @@
                     jq('#tbl-other-facility').hide();
                     getField('other-facility.value').val("");
                     getField('this-facility.value').val(default_location);
+                }
+                //Negatives referral
+                var htsNegativeReferredSelected = getField('neg-referral-for.value').val();
+                if (htsNegativeReferredSelected == 5622) {
+                    jq('#tbl-specify-referral').show();
+                }else{
+                    jq('#tbl-specify-referral').hide();
+                    getField('specify-referral').val("");
                 }
                 //First test
                 var firstTest = getField("hiv-test1-result.value").val();
@@ -1050,6 +1090,8 @@
                     jq("#expiry-date2 input").prop("disabled", true);
                     getField('hiv-final-result.value').val(664);
                     jq('#ccc-no input').prop("disabled", true);
+                    jq('#negative-referral').show();
+                    jq('#fs-referral').hide();
                 }
                 //Positive
                 if(firstTest ==703){
@@ -1058,6 +1100,8 @@
                     jq(".kit-name2 select").prop("disabled", false);
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
+                    jq('#negative-referral').hide();
+                    jq('#fs-referral').hide();
                 }
                 //Invalid
                 if(firstTest ==163611){
@@ -1076,6 +1120,8 @@
                     jq("#expiry-date2 input").prop("disabled", true);
                     getField('hiv-final-result.value').val(664);
                     jq('#ccc-no input').prop("disabled", true);
+                    jq('#negative-referral').hide();
+                    jq('#fs-referral').hide();
                 }
                 //Positive
                 if(secondTest ==703){
@@ -1085,6 +1131,7 @@
                     getField('hiv-final-result.value').val(703);
                     jq('#ccc-no input').prop("disabled", false);
                     jq('#fs-referral').show();
+                    jq('#negative-referral').hide();
 
                 }
                 //Invalid
@@ -1173,7 +1220,6 @@
                     jq("#hts-entry-point option[value='162223']").hide();    //VMMC
                     jq("#hts-entry-point option[value='160546']").hide();    //STI
                     jq("#hts-entry-point option[value='160522']").hide();    //ER
-
                 }
             });
         </script>
@@ -1645,6 +1691,51 @@
                         </tr>
                     </table>
                 </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="negative-referral">
+            <legend>Referral</legend>
+            <table id="tbl-neg-referral">
+                <tr>
+                    <td>Referral for: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="neg-referral-for"
+                             conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="165276,
+                                               159612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               161594AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               163559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               165151,
+                                               165273,
+                                               1370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               166536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Risk reduction counselling,
+                                           Safer sex practices,
+                                           VMMC,
+                                           Condom use counselling,
+                                           Post-exposure prophylaxis,
+                                           Prevention and treatment of STIs,
+                                           Substance abuse and mental health treatment,
+                                           Prevention of GBV,
+                                           HIV testing and re-testing,
+                                           Pre-Exposure Prophylaxis,
+                                           Other"
+                             style="dropdown" />
+                    </td>
+                    <td>
+                        <br/>
+                        <table id="tbl-specify-referral">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Name :
+                                    <obs id="specify-referral" conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </table>
         </fieldset>
