@@ -34,8 +34,8 @@ public class VMMCReferredByDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, case referee when 165650 then 'Self referral' when 1577 then 'Nurse'when 1555 then 'Community Health Worker'" +
-                " when 5622 then other_referee else '' end as referee from kenyaemr_etl.etl_vmmc_enrolment GROUP BY patient_id;";
+        String qry = "select patient_id, case referee when 165650 then 'Self referral' when 5619 then 'Health Care Worker' when 1577 then 'Nurse'when 1555 then 'Community Health Worker'" +
+                " when 163488 then 'Community Health Volunteer' when 1370 then 'HTS Counsellors' when 5622 then other_referee else '' end as referee from kenyaemr_etl.etl_vmmc_enrolment GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
