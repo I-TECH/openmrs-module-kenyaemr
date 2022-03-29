@@ -160,5 +160,6 @@
 		<property name="name" value="Adverse events for VMMC clients" />
 		<property name="description" value="Report of VMMC clients with Adverse events" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:vmmc_adverse_events.xls" />
 	</bean>
 </beans>
