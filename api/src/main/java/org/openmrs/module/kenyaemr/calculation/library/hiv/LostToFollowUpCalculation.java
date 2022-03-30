@@ -118,9 +118,6 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 						if (obs.getConcept().equals(reasonForDiscontinuation) && obs.getValueCoded().equals(discontinued_ltfu)) {
 							lost = true;
 						}
-						if (obs.getConcept().equals(reasonForDiscontinuation) && obs.getValueCoded().equals(transferout)) {
-							lost = false;
-						}
 					}
 					ret.put(ptId, new SimpleResult(lost, this, context));
 				}
