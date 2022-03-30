@@ -83,7 +83,6 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 			EncounterService encounterService = Context.getEncounterService();
 
 			Concept reasonForDiscontinuation = Dictionary.getConcept(Dictionary.REASON_FOR_PROGRAM_DISCONTINUATION);
-			Concept transferout = Dictionary.getConcept(Dictionary.TRANSFERRED_OUT);
 			Concept discontinued_ltfu = Dictionary.getConcept(Dictionary.LOST_TO_FOLLOWUP);
 			EncounterType hivDiscEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_DISCONTINUATION);
 			Form hivDiscForm = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_DISCONTINUATION);
