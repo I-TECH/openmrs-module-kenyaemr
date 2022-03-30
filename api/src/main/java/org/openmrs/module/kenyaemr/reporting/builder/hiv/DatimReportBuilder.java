@@ -43,9 +43,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
     static final int PWID_CONCEPT = 105;
     static final int TG_CONCEPT = 165100;
     static final int PRISONERS_CLOSED_SETTINGS_CONCEPT = 162277;
-   // static final int IIT_CONCEPT = 5240;
-   // static final int TRF_OUT_CONCEPT = 1693;
-    //static final int STOPPED_TX_CONCEPT = 164435;
     static final int HIV_DISEASE_RESULTING_IN_TB_CONCEPT = 163324;
     static final int HIV_DISEASE_RESULTING_IN_CANCER = 116030;
     static final int  HIV_DISEASE_RESULTING_IN_INFECTIOUS_PARASITIC_DISEASE_CONCEPT = 160159;
