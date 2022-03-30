@@ -11,9 +11,9 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXHivStatusDataDefinition;
-import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
-import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
-import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -27,15 +27,20 @@ import java.util.Map;
  * Evaluates CacxScreeningDataDefinition to produce hiv status
  */
 @Handler(supports= CACXHivStatusDataDefinition.class, order=50)
-public class CACXHivStatusDataEvaluator implements EncounterDataEvaluator {
+public class CACXHivStatusDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
 
-    public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
-        EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
+    public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
+        EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "SELECT t.encounter_id, mid(max(concat(d.visit_date,d.final_test_result)),11) as final_test_result from kenyaemr_etl.etl_cervical_cancer_screening t inner join kenyaemr_etl.etl_hts_test d on t.patient_id = d.patient_id;";
+        String qry = "select test.patient_id, if (e.patient_id is null, COALESCE(retest, initial_test), 'Positive') as last_status from (" +
+                "select patient_id, " +
+                "max((case when test_type = 1 then final_test_result else null end)) as `initial_test`," +
+                "max((case when test_type = 2 then final_test_result else null end)) as `retest`" +
+                "from (select t.final_test_result, t.test_type, t.visit_date, t.patient_id from kenyaemr_etl.etl_hts_test t) as `hts` GROUP BY patient_id) as test " +
+                "left join kenyaemr_etl.etl_hiv_enrollment e on e.patient_id = test.patient_id; ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
