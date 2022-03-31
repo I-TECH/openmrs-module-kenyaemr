@@ -36,8 +36,6 @@ public class EligibleForVmmcProgramCalculation extends AbstractPatientCalculatio
 		Set<Integer> alive = Filters.alive(cohort, context);
 
 		CalculationResultMap genders = Calculations.genders(cohort, context);
-		PersonService service = Context.getPersonService();
-
 		for (int ptId : cohort) {
 
 			boolean eligible = "M".equals(genders.get(ptId).getValue()) && alive.contains(ptId) ? true: false;
