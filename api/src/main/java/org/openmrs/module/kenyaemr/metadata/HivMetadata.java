@@ -44,6 +44,12 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String DRUG_ORDER = "7df67b83-1b84-4fe2-b1b7-794b4e9bfcc3";
 		public static final String LAB_ORDER = "e1406e88-e9a9-11e8-9f32-f2801f1b9fd1";
 		public static final String CCC_DEFAULTER_TRACING = "1495edf8-2df2-11e9-b210-d663bd873d93";
+		public static final String ALCOHOL_AND_DRUGS_ABUSE = "4224f8bf-11b2-4e47-a958-1dbdfd7fa41d";
+		public static final String GENDER_BASED_VIOLENCE = "f091b067-bea5-4657-8445-cfec05dc46a2";
+		public static final String ENHANCED_ADHERENCE = "54df6991-13de-4efc-a1a9-2d5ac1b72ff8";
+		public static final String ART_PREPARATION = "ec2a91e5-444a-4ca0-87f1-f71ddfaf57eb";
+
+
 	}
 
 	public static final class _Form {
@@ -93,6 +99,10 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(encounterType("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER));
 		install(encounterType("Lab Order", "Lab Order", _EncounterType.LAB_ORDER));
 		install(encounterType("CCC Defaulter Tracing", "CCC Defaulter Tracing", _EncounterType.CCC_DEFAULTER_TRACING));
+		install(encounterType("Alcohol and Drug Abuse Screening", "Alcohol and Drug Abuse Screening", _EncounterType.ALCOHOL_AND_DRUGS_ABUSE));
+		install(encounterType("ART Preparation", "ART Preparation", _EncounterType.ART_PREPARATION));
+		install(encounterType("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.ENHANCED_ADHERENCE));
+		install(encounterType("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.GENDER_BASED_VIOLENCE));
 
 		install(form("HIV Enrollment", null, _EncounterType.HIV_ENROLLMENT, "1", _Form.HIV_ENROLLMENT));
 		install(form("Clinical Encounter - HIV addendum", null, _EncounterType.HIV_CONSULTATION, "1", _Form.CLINICAL_ENCOUNTER_HIV_ADDENDUM));
@@ -105,10 +115,10 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("ART Fast Track", "ART Fast Track Form", _EncounterType.ART_REFILL, "1", _Form.FAST_TRACK));
 		install(form("Family and Partner Testing Results", "Family and Partner Testing for HIV Negative Patients", _EncounterType.FAMILY_AND_PARTNER_TESTING, "1", _Form.FAMILY_TESTING_FORM_FOR_NEGATIVE_CLIENTS));
 		install(form("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER, "1", _Form.DRUG_ORDER));
-		install(form("ART Preparation", "ART Preparation", _EncounterType.HIV_CONSULTATION, "1", _Form.TREATMENT_PREPARATION));
-		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.GBV_SCREENING));
-		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
-		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.HIV_CONSULTATION, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
+		install(form("ART Preparation", "ART Preparation", _EncounterType.ART_PREPARATION, "1", _Form.TREATMENT_PREPARATION));
+		install(form("Gender Based Violence Screening", "Gender Based Violence Screening", _EncounterType.GENDER_BASED_VIOLENCE, "1", _Form.GBV_SCREENING));
+		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.ALCOHOL_AND_DRUGS_ABUSE, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
+		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.ENHANCED_ADHERENCE, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
 		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
