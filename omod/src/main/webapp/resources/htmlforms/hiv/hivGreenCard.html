@@ -156,6 +156,9 @@ Green Card follow-up visit form
             jq("#tbl-chronic-illness").hide();
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
+            jq('input[type=radio].key-population').prop("checked", false);
+            jq('input[type=radio].priority-population').prop("checked", false);
+            jq("#priority-population").hide();
             jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
             jq('#tbl-other-complaint').hide();
 //default on patient presence
@@ -619,7 +622,7 @@ Green Card follow-up visit form
             });
         });   //End of JQuery onReady function
 
-
+      
         // get count of patients booked on a date
         function getPatientsBookedOnDate() {
             var tca_date = jq('#returnVisitDate input[type=hidden]').val();
@@ -1300,12 +1303,20 @@ Green Card follow-up visit form
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
+            var pripop = jq('#priority-population');
             if (val == 164929 ){
                 jq("#key-population").show();
+                jq("#priority-population").hide();
+            }
+            if (val == 138643 ){
+                jq("#priority-population").show();
+                jq("#key-population").hide();
             }
             if(val == 164928){
                 jq("#key-population").hide();
-                clearHiddenSections([keypop]);
+                jq("#priority-population").hide();
+                clearHiddenSections(keypop);
+                clearHiddenSections(pripop);
             }
         }
         //Resulting TB status for Ordered test
@@ -2485,10 +2496,14 @@ Management<br />
                                 jq('#greencard').smartWizard('goToStep', 4);
                                 jq('#greencard').smartWizard('enableFinish', true);
                             }
-//if key pop show which type
-                            if (keypop == 164929 ){
-                                jq("#key-population").show();
-                            }else{
+                            //if key pop show which type
+                            var popTypeSelected = getValue('population-type.value');
+                            if (popTypeSelected == 164929 ){
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                            }
+                            if (popTypeSelected == 138643 ){
+                                jq("#priority-population").show();
                                 jq("#key-population").hide();
                             }
 //If any checked  complaints allergies chronic illness and adverse events
@@ -2740,8 +2755,8 @@ Management<br />
                     <div>
                         Population type :  <span style="color:red;"><strong>*</strong></span> &#160;&#160;
                         <obs conceptId="164930"
-                             answerConceptIds="164928,164929"
-                             answerLabels="General Population,Key Population" id="population-type"
+                             answerConceptIds="164928,164929,138643"
+                             answerLabels="General Population,Key Population,Priority Population" id="population-type"
                              style="radio" />
                     </div>
                     <table id="key-population">
@@ -2764,6 +2779,27 @@ Management<br />
                             </td>
                         </tr>
                     </table>
+                    <table id="priority-population">
+                     <tr>
+                      <td>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159674AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Fisher folk" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Truck driver" style="checkbox" /><br/>
+                        <includeIf velocityTest="$patient.gender == 'F'">
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Adolescent and young girls" style="checkbox" id="adyg" /><br/>
+                        </includeIf>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Prisoner" style="checkbox" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Not applicable" style="checkbox" id="other" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
+                             answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
+
+                    </td>
+                   </tr>
+                   </table>
                 </fieldset>
                 <!-- WHO staging -->
                 <fieldset class="patient-details">
