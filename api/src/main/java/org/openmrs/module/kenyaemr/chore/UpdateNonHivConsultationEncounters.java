@@ -57,7 +57,7 @@ public class UpdateNonHivConsultationEncounters extends AbstractChore {
 		List<Encounter> gbv_encounters = encounterService.getEncounters(null, null, null, null, Arrays.asList(GBV_SCREENING), Arrays.asList(hivConsultationEncounterType), null, null, null, false);
 		List<Encounter> artPrep_encounters = encounterService.getEncounters(null, null, null, null, Arrays.asList(TREATMENT_PREPARATION), Arrays.asList(hivConsultationEncounterType), null, null, null, false);
 		List<Encounter> alcohol_encounters = encounterService.getEncounters(null, null, null, null, Arrays.asList(ALCOHOL_AND_DRUGS_SCREENING), Arrays.asList(hivConsultationEncounterType), null, null, null, false);
-            //Updating missmateched encounter types
+            //Updating missmatched encounter types
 		for (Encounter ea_encounter : ea_encounters) {
 				ea_encounter.setEncounterType(enhancedAdherenceEncounterType);
 		}
