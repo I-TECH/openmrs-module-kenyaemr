@@ -103,7 +103,7 @@ Green Card follow-up visit form
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
-
+        var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
 
         //Start on jq onready
         jq(function() {
@@ -199,6 +199,15 @@ Green Card follow-up visit form
             jq("#wants-pregnancy").hide();
             jq("#tb-screening-tab").hide();
             jq("#tbl-ever-on-ipt").hide();
+//KDOD SITE
+            if(IS_KDoD_SITE==false)
+            {
+                jq('#dodOnly').hide();
+            }
+            else
+            {
+                jq('#dodOnly').show();
+            }
 //TPT OUTCOME
 
 
