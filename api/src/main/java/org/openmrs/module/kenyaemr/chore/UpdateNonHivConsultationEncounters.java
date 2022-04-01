@@ -28,8 +28,8 @@ import java.util.Set;
 /**
  * Class to correct all the anomalies created by reusing HIV_CONSULTATION on multiple forms.
  */
-@Component("kenyaemr.chore.fixedNonHivConsultationEncounters")
-public class FixedNonHivConsultationEncounters extends AbstractChore {
+@Component("kenyaemr.chore.updateNonHivConsultationEncounters")
+public class UpdateNonHivConsultationEncounters extends AbstractChore {
 
 	@Autowired
 	private EncounterService encounterService;
@@ -58,8 +58,6 @@ public class FixedNonHivConsultationEncounters extends AbstractChore {
 		List<Encounter> artPrep_encounters = encounterService.getEncounters(null, null, null, null, Arrays.asList(TREATMENT_PREPARATION), Arrays.asList(hivConsultationEncounterType), null, null, null, false);
 		List<Encounter> alcohol_encounters = encounterService.getEncounters(null, null, null, null, Arrays.asList(ALCOHOL_AND_DRUGS_SCREENING), Arrays.asList(hivConsultationEncounterType), null, null, null, false);
 		int count = 0;
-		// list of all obs
-		Set<Obs> obsList;
 		for (Encounter ea_encounter : ea_encounters) {
 				ea_encounter.setEncounterType(enhancedAdherenceEncounterType);
 				count++;
