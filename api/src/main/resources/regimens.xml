@@ -342,6 +342,11 @@
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
             </regimen>
+             <regimen name="TDF/3TC/DTG" conceptRef="9fb85385-b4fb-468c-b7c1-22f75834b4b0" orderSetRef="fcc936c7-ff55-4f40-bb05-007796192bc2">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
         </group>
 
 
