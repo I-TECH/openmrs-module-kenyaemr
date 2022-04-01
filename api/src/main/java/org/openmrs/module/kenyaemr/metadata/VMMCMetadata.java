@@ -66,7 +66,7 @@ public class VMMCMetadata extends AbstractMetadataBundle {
 		install(form("VMMC Enrollment Form", null, _EncounterType.VMMC_ENROLLMENT, "1", _Form.VMMC_ENROLLMENT_FORM));
 		install(form("VMMC Discontinuation Form", null, _EncounterType.VMMC_DISCONTINUATION, "1", _Form.VMMC_DISCONTINUATION_FORM));
 		install(form("VMMC Circumcision Procedure Form", null, _EncounterType.VMMC_PROCEDURE, "1", _Form.VMMC_PROCEDURE_FORM));
-		install(form("VMMC Medical History and Examination Form", null, _EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION, "1", _Form.VMMC_MEDICAL_HISTORY_EXAMINATION_FORM));
+		install(form("VMMC Medical History and Physical Examination Form", null, _EncounterType.VMMC_MEDICAL_HISTORY_EXAMINATION, "1", _Form.VMMC_MEDICAL_HISTORY_EXAMINATION_FORM));
 		install(form("VMMC Client Follow-Up Form", null, _EncounterType.VMMC_CLIENT_FOLLOWUP, "1", _Form.VMMC_CLIENT_FOLLOWUP_FORM));
 		install(form("VMMC Immediate Post-Operation Assessment Form", null, _EncounterType.VMMC_POST_OPERATION, "1", _Form.VMMC_POST_OPERATION_FORM));
 

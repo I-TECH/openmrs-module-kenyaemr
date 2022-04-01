@@ -16,9 +16,11 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.module.kenyacore.calculation.Filters;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Calculates whether patients are eligible for the VMMC  services program
@@ -31,13 +33,14 @@ public class EligibleForVmmcProgramCalculation extends AbstractPatientCalculatio
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
+		Set<Integer> alive = Filters.alive(cohort, context);
 
 		CalculationResultMap genders = Calculations.genders(cohort, context);
 		PersonService service = Context.getPersonService();
 
 		for (int ptId : cohort) {
 
-			boolean eligible = "M".equals(genders.get(ptId).getValue()) && service.getPerson(ptId).getAge() >= 15? true: false;
+			boolean eligible = "M".equals(genders.get(ptId).getValue()) && alive.contains(ptId) ? true: false;
 			ret.put(ptId, new BooleanResult(eligible, this));
 		}
 		return ret;
