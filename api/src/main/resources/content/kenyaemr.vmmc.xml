@@ -107,6 +107,7 @@
 			</set>
 		</property>
 		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCHistoryAndExaminationFormCalculation" />
 		<property name="htmlform" value="kenyaemr:vmmc/vmmcMedicalHistoryExamination.html" />
 	</bean>
 
