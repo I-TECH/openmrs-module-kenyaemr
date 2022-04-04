@@ -97,6 +97,8 @@
             jq('#tr-assent').hide();
             jq('#sti-services-referred :input').prop('disabled', true);
             jq('#prep-services-referred :input').prop('disabled', true);
+            jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
+            jq("#complaints-checked input[type=checkbox]").prop("checked",false);
             jq('#complaints-checked :input[type=checkbox]').change(complaintsSelected);
             //Selected
             jq('#patient-hiv-status').change(onPatientHivStatusChange);
@@ -173,6 +175,7 @@
                 jq('#tbl-enrolled-positive-details').show();
                 jq('#tbl-reported-positive-details').hide();
                 jq('#enrolled-hiv :input').prop('checked', true);
+                jq('#undergoing-treatment input[value=1065]').prop("checked", true);
                   //Prepopulate adherence score
                 var adherence = PATIENT_LAST_ADHERENCE.replace(/[^\d]/g, '');
                 if (adherence ==159405) {
@@ -928,7 +931,7 @@
             }else {
                 getField('device-name.error').html('Please specify device name.').hide();
             }
-            if(circumcisionMethod == 167120 &amp;&amp; deviceSize == ""){
+            if(circumcisionMethod == 167120 &amp;&amp; deviceMethod == 167124 &amp;&amp; deviceSize == ""){
                 getField('device-size.error').html('Please specify device size.').show();
                 return false;
             }else {
