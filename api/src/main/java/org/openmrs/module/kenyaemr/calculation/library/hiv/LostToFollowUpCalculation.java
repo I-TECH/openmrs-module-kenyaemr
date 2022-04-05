@@ -25,6 +25,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -118,9 +119,9 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 							lost = true;
 						}
 					}
-					ret.put(ptId, new SimpleResult(lost, this, context));
 				}
 			}
+			ret.put(ptId, new BooleanResult(lost, this, context));
 		}
 		return ret;
 	}
