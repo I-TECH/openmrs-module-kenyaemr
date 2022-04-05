@@ -83,11 +83,6 @@
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
             </regimen>
-            <regimen name="ABC/3TC/DTG" conceptRef="4dc0119b-b2a6-4565-8d90-174b97ba31db" orderSetRef="4fead254-26af-479f-8958-df2fa108d013">
-                <component drugCode="ABC" />
-                <component drugCode="3TC" />
-                <component drugCode="DTG" />
-            </regimen>
 
             <regimen name="AZT/3TC/LPV/r" conceptRef="162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="c56e7dbf-ec9c-47f5-b5d9-15d5cdfee002">
                 <component drugCode="AZT" dose="300" units="mg" frequency="BD" />
