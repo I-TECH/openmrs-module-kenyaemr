@@ -95,8 +95,9 @@ public class PatientsEligibleForVMMCProcedureCalculation extends AbstractPatient
 
             boolean patientWantsConventionalMethod = lastVmmcMedicalHistoryEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcMedicalHistoryEnc, vmmcMethodQuestion, vmmcConventionalMethodAnswer) : false;
             boolean patientWantsDeviceMethod = lastVmmcMedicalHistoryEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcMedicalHistoryEnc, vmmcMethodQuestion, vmmcDeviceMethodAnswer) : false;
+            Encounter lastVmmcProcedure = EmrUtils.lastEncounter(patient, VmmcConstants.vmmcCircumcisionProcedureEncType, VmmcConstants.vmmcCircumcisionProcedureForm);
 
-            if (inVmmcProgram.contains(ptId) && lastVmmcMedicalHistoryEnc != null && !patientHasSameDayPositiveTestResult && (patientWantsConventionalMethod || patientWantsDeviceMethod )) {
+            if (inVmmcProgram.contains(ptId) && lastVmmcProcedure == null && lastVmmcMedicalHistoryEnc != null && !patientHasSameDayPositiveTestResult && (patientWantsConventionalMethod || patientWantsDeviceMethod )) {
                     eligible = true;
               }
                 ret.put(ptId, new BooleanResult(eligible, this));

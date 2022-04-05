@@ -97,7 +97,10 @@
             jq('#tr-assent').hide();
             jq('#sti-services-referred :input').prop('disabled', true);
             jq('#prep-services-referred :input').prop('disabled', true);
+            jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
+            jq("#complaints-checked input[type=checkbox]").prop("checked",false);
             jq('#complaints-checked :input[type=checkbox]').change(complaintsSelected);
+            jq('#urethral-discharge :input[type=checkbox]').change(urethralDischargeSelected);
             //Selected
             jq('#patient-hiv-status').change(onPatientHivStatusChange);
             jq('#care-facility select').change(careFacilitySelected);
@@ -173,6 +176,7 @@
                 jq('#tbl-enrolled-positive-details').show();
                 jq('#tbl-reported-positive-details').hide();
                 jq('#enrolled-hiv :input').prop('checked', true);
+                jq('#undergoing-treatment input[value=1065]').prop("checked", true);
                   //Prepopulate adherence score
                 var adherence = PATIENT_LAST_ADHERENCE.replace(/[^\d]/g, '');
                 if (adherence ==159405) {
@@ -616,6 +620,8 @@
             }else{
                 jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
                 jq("#complaints-checked input[type=checkbox]").prop("checked",false);
+                jq('#good-health input[type=radio]').attr("style", "pointer-events:'';");
+                jq("#good-health input[type=radio]").prop("checked",false);
             }
         }
         var hasTreatmentSelected = function() {
@@ -627,22 +633,29 @@
                 jq("#treatment-checked input[type=checkbox]").prop("checked",false);
             }
         }
-        var complaintsSelected = function(){
+
+        var urethralDischargeSelected = function(){
             var val = jq(this).val();
-            var complaintsChecked = jq("#complaints-checked input:checkbox:checked");
+            var urethralDischargeChecked = jq("#complaints-checked input:checkbox:checked");
             //TODO: Confirm the actions to do if checked urethral discharge
-            if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
+            if(val == 123529 &amp;&amp; urethralDischargeChecked.length >=1 &amp;&amp; PATIENT_IS_ENROLLED_HIV){
                 jq("#good-health input[value=false]").prop("checked", true);
                 jq('#good-health input[type=radio]').attr("style", "pointer-events:none;");
                 jq('#sti-referrals').show();
-            }else if(val == 123529 &amp;&amp; complaintsChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+                jq('#fs-circumcision-method').hide();
+            }else if(val == 123529 &amp;&amp; urethralDischargeChecked.length >=1 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                 jq("#good-health input[value=false]").prop("checked", true);
                 jq('#good-health input[type=radio]').attr("style", "pointer-events:none;");
                 jq('#prep-referrals').show();
-            }else{
+                jq('#fs-circumcision-method').hide();
+            }else if(val != 123529 &amp;&amp; urethralDischargeChecked.length >=1){
                 jq("#good-health input[value=false]").prop("checked", false);
                 jq('#good-health input[type=radio]').attr("style", "pointer-events:'';");
             }
+
+        }
+        var complaintsSelected = function(){
+            var val = jq(this).val();
             if(val == 5622 ){
                 jq('#tbl-other-complaint').show();
             }else {
@@ -928,7 +941,7 @@
             }else {
                 getField('device-name.error').html('Please specify device name.').hide();
             }
-            if(circumcisionMethod == 167120 &amp;&amp; deviceSize == ""){
+            if(circumcisionMethod == 167120 &amp;&amp; deviceMethod == 167124 &amp;&amp; deviceSize == ""){
                 getField('device-size.error').html('Please specify device size.').show();
                 return false;
             }else {
@@ -1366,7 +1379,7 @@
                                           </td>
                                     <td>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Urethral Discharge" style="checkbox" /><br/>
+                                             answerLabel="Urethral Discharge" style="checkbox"  id="urethral-discharge"/><br/>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118990AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Genital Sore" style="checkbox" /><br/>
                                         <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"

@@ -37,11 +37,11 @@ import java.util.Set;
  * Enrolled to VMMC
  * Has vmmc prodedure form
  * Has chosen a procedure method
- * * *Either conventional or device
+ * Has immediate post operation procedure form
  */
-public class PatientsEligibleForVMMCPostOperationCalculation extends AbstractPatientCalculation {
+public class PatientsEligibleForVMMCFollowupFormCalculation extends AbstractPatientCalculation {
 
-    protected static final Log log = LogFactory.getLog(PatientsEligibleForVMMCPostOperationCalculation.class);
+    protected static final Log log = LogFactory.getLog(PatientsEligibleForVMMCFollowupFormCalculation.class);
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -56,19 +56,9 @@ public class PatientsEligibleForVMMCPostOperationCalculation extends AbstractPat
             Patient patient = patientService.getPatient(ptId);
 
             boolean eligible = false;
-
-            ConceptService cs = Context.getConceptService();
-            Concept vmmcMethodQuestion = cs.getConcept(VmmcConstants.METHOD);
-            Concept vmmcConventionalMethodAnswer = cs.getConcept(VmmcConstants.CONVENTIONAL_METHOD);
-            Concept vmmcDeviceMethodAnswer = cs.getConcept(VmmcConstants.DEVICE_METHOD);
-
-            Encounter lastVmmcProcedureEnc = EmrUtils.lastEncounter(patient, VmmcConstants.vmmcCircumcisionProcedureEncType, VmmcConstants.vmmcCircumcisionProcedureForm);
             Encounter lastVmmcPostOperationEnc = EmrUtils.lastEncounter(patient, VmmcConstants.vmmcImmediatePostOperationEncType, VmmcConstants.vmmcImmediatePostOperationForm);
 
-            boolean patientWantsConventionalMethod = lastVmmcProcedureEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcProcedureEnc, vmmcMethodQuestion, vmmcConventionalMethodAnswer) : false;
-            boolean patientWantsDeviceMethod = lastVmmcProcedureEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastVmmcProcedureEnc, vmmcMethodQuestion, vmmcDeviceMethodAnswer) : false;
-
-            if (inVmmcProgram.contains(ptId) && lastVmmcPostOperationEnc == null && lastVmmcProcedureEnc != null && (patientWantsConventionalMethod || patientWantsDeviceMethod )) {
+            if (inVmmcProgram.contains(ptId) && lastVmmcPostOperationEnc != null) {
                     eligible = true;
               }
                 ret.put(ptId, new BooleanResult(eligible, this));
