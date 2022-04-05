@@ -46,6 +46,8 @@ public class PatientSummary {
     private String purposeDrugs;
     private String purposeDate;
     private String weightAtArtStart;
+    private String heightAtArtStart;
+    private String bmi;
     private String currentRegimen;
     private List<String> ois;
     private String dateOfReport;
@@ -80,7 +82,7 @@ public class PatientSummary {
     public PatientSummary() {
     }
 
-    public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date, String dateEnrolledIntoCare, String whoStagingAtEnrollment, String patientEntryPoint, String dateEntryPoint, String transferInStatus, String transferInDate, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate, String weightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate) {
+    public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date, String dateEnrolledIntoCare, String whoStagingAtEnrollment, String patientEntryPoint, String dateEntryPoint, String transferInStatus, String transferInDate, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate, String weightAtArtStart,String bmi, String heightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate) {
         this.names = names;
         this.upn = upn;
         this.birthDate = birthDate;
@@ -107,6 +109,8 @@ public class PatientSummary {
         this.purposeDrugs = purposeDrugs;
         this.purposeDate = purposeDate;
         this.weightAtArtStart = weightAtArtStart;
+        this.heightAtArtStart = heightAtArtStart;
+        this.bmi = bmi;
         this.currentRegimen = currentRegimen;
         this.ois = ois;
         this.dateOfReport = dateOfReport;
@@ -345,6 +349,22 @@ public class PatientSummary {
 
     public void setWeightAtArtStart(String weightAtArtStart) {
         this.weightAtArtStart = weightAtArtStart;
+    }
+
+    public String getBmi() {
+        return bmi;
+    }
+
+    public void setBmi(String bmi) {
+        this.bmi = bmi;
+    }
+
+    public String getHeightAtArtStart() {
+        return heightAtArtStart;
+    }
+
+    public void setHeightAtArtStart(String heightAtArtStart) {
+        this.heightAtArtStart = heightAtArtStart;
     }
 
     public String getCurrentRegimen() {

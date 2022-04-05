@@ -88,10 +88,16 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td>Drugs/Regimen: ${patient.purposeDrugs}</td>
-                <td colspan="2">Weight at ART: ${patient.weightAtArtStart}</td>
+
+                <td>Weight at ART: ${patient.weightAtArtStart}</td>
+                 <td>Height at ART: ${patient.heightAtArtStart}</td>
 
             </tr>
-            <tr>
+             <tr>
+                <td>BMI: </td>
+                   <td>${patient.heightAtArtStart}</td>
+                   </tr>
+                <tr>
                 <td>Date: ${patient.purposeDate}</td>
                 <td colspan="2">First regimen: ${firstRegimen}</td>
             </tr>

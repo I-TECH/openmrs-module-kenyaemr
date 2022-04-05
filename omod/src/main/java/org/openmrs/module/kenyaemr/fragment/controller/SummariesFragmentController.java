@@ -38,16 +38,7 @@ import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WeightAtArtInitiationCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientSummary;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
@@ -311,6 +302,25 @@ public class SummariesFragmentController {
         }
         else {
             patientSummary.setWeightAtArtStart("");
+        }
+
+        //bmi at art initiation
+        CalculationResult bmiResults = EmrCalculationUtils.evaluateForPatient(BMICalculation.class, null,patient);
+        if(bmiResults != null){
+            patientSummary.setBmi(bmiResults.getValue().toString());
+        }
+        else {
+            patientSummary.setBmi("");
+        }
+
+
+        //height at art initiation
+        CalculationResult heightAtArtStartResults = EmrCalculationUtils.evaluateForPatient(HeightAtArtInitiationCalculation.class, null,patient);
+        if(heightAtArtStartResults != null){
+            patientSummary.setHeightAtArtStart(heightAtArtStartResults.getValue().toString());
+        }
+        else {
+            patientSummary.setHeightAtArtStart("");
         }
 
         //first regimen for the patient
