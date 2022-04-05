@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
@@ -20,6 +22,7 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
+import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
@@ -51,7 +54,7 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 	public String getFlagMessage() {
 		return "Missed HIV Appointment";
 	}
-
+	protected static final Log log = LogFactory.getLog(MissedLastAppointmentCalculation.class);
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 * @should calculate false for deceased patients
@@ -80,9 +83,8 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 			boolean missedVisit = false;
 
 			// Is patient alive
-			if (alive.contains(ptId) && !(ltfu.contains(ptId)) && !(transferredOut.contains(ptId))) {
+			if (alive.contains(ptId) && !ltfu.contains(ptId) && !transferredOut.contains(ptId)) {
 				Date lastScheduledReturnDate = EmrCalculationUtils.datetimeResultForPatient(lastReturnDateMap, ptId);
-
 				// Does patient have a scheduled return visit in the past
 				if (lastScheduledReturnDate != null && EmrCalculationUtils.daysSince(lastScheduledReturnDate, context) > 0) {
 					PatientService patientService = Context.getPatientService();
@@ -94,9 +96,8 @@ public class MissedLastAppointmentCalculation extends AbstractPatientCalculation
 						missedVisit = false;
 					}
 				}
-
 			}
-			ret.put(ptId, new SimpleResult(missedVisit, this, context));
+			ret.put(ptId, new BooleanResult(missedVisit, this, context));
 		}
 		return ret;
 	}
