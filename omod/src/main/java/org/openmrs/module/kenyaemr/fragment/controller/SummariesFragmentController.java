@@ -14,8 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
-import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -30,7 +28,6 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -43,7 +40,6 @@ import org.openmrs.module.kenyaemr.calculation.library.models.PatientSummary;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.regimen.RegimenOrder;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -304,15 +300,50 @@ public class SummariesFragmentController {
             patientSummary.setWeightAtArtStart("");
         }
 
-        //bmi at art initiation
-        CalculationResult bmiResults = EmrCalculationUtils.evaluateForPatient(BMICalculation.class, null,patient);
-        if(bmiResults != null){
-            patientSummary.setBmi(bmiResults.getValue().toString());
+        //pulse rate
+        CalculationResult pulseRate = EmrCalculationUtils.evaluateForPatient(PulseRateCalculation.class, null,patient);
+        if(pulseRate != null){
+            patientSummary.setPulseRate(pulseRate.getValue().toString());
         }
         else {
-            patientSummary.setBmi("");
+            patientSummary.setPulseRate("");
         }
 
+        //Blood Pressure
+        CalculationResult bloodPressure = EmrCalculationUtils.evaluateForPatient(BloodPressureCalculation.class, null,patient);
+        if(bloodPressure != null){
+            patientSummary.setBloodPressure(bloodPressure.getValue().toString());
+        }
+        else {
+            patientSummary.setBloodPressure("");
+        }
+
+        //respitatory Rate/
+        CalculationResult respiratoryRate = EmrCalculationUtils.evaluateForPatient(RespitatoryRateCalculation.class, null,patient);
+        if(respiratoryRate != null){
+            patientSummary.setRespiratoryRate(respiratoryRate.getValue().toString());
+        }
+        else {
+            patientSummary.setRespiratoryRate("");
+        }
+
+        //LMP
+        CalculationResult lmp = EmrCalculationUtils.evaluateForPatient(LMPCalculation.class, null,patient);
+        if(lmp != null){
+            patientSummary.setLmp(lmp.getValue().toString());
+        }
+        else {
+            patientSummary.setLmp("");
+        }
+
+        //Oxygen Saturation/
+        CalculationResult oxygenSaturation = EmrCalculationUtils.evaluateForPatient(OxygenSaturationCalculation.class, null,patient);
+        if(oxygenSaturation != null){
+            patientSummary.setOxygenSaturation(oxygenSaturation.getValue().toString());
+        }
+        else {
+            patientSummary.setOxygenSaturation("");
+        }
 
         //height at art initiation
         CalculationResult heightAtArtStartResults = EmrCalculationUtils.evaluateForPatient(HeightAtArtInitiationCalculation.class, null,patient);

@@ -1,7 +1,7 @@
 
 
 <style type="text/css">
-
+var bmi = 340;
 
 table.moh257 {
     border-collapse: collapse;
@@ -68,12 +68,23 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
                 <td>Relationship: ${patient.relationshipToTreatmentSupporter}</td>
                 <td>Contact details: ${patient.contactOfTreatmentSupporter}</td>
             </tr>
+
+
             <tr>
                 <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td colspan="3">Drug allergies: ${allergies}</td>
             </tr>
+
+              <tr>
+                  <td>Respiratory Rate: ${patient.respiratoryRate}</td>
+                  <td>Blood Pressure: ${patient.bloodPressure}</td>
+              </tr>
+              <tr>
+               <td>Oxygen Saturation: ${patient.oxygenSaturation}</td>
+              <td>Pulse Rate: ${patient.pulseRate}</td>
+              </tr>
             <tr>
                 <td colspan="3">&nbsp;</td>
             </tr>
@@ -88,16 +99,18 @@ table.moh257 > tbody > tr > td, table.moh257 > tbody > tr > th {
             </tr>
             <tr>
                 <td>Drugs/Regimen: ${patient.purposeDrugs}</td>
+                <td>Weight: ${patient.weightAtArtStart}</td>
+                 <td>Height: ${patient.heightAtArtStart}</td>
 
-                <td>Weight at ART: ${patient.weightAtArtStart}</td>
-                 <td>Height at ART: ${patient.heightAtArtStart}</td>
 
             </tr>
+            <tr>
+              <includeIf velocityTest="$patient.gender == 'F' ">
+               <td>LMP: ${patient.lmp}</td>
+               </includeIf>
+            </tr>
              <tr>
-                <td>BMI: </td>
-                   <td>${patient.heightAtArtStart}</td>
-                   </tr>
-                <tr>
+
                 <td>Date: ${patient.purposeDate}</td>
                 <td colspan="2">First regimen: ${firstRegimen}</td>
             </tr>

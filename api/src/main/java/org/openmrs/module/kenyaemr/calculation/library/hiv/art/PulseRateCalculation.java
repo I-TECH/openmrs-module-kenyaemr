@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class BMICalculation extends AbstractPatientCalculation {
+public class PulseRateCalculation extends AbstractPatientCalculation {
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(Collection, Map, PatientCalculationContext)
@@ -35,19 +35,19 @@ public class BMICalculation extends AbstractPatientCalculation {
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-        Concept currentBMI = Dictionary.getConcept(Dictionary.HEIGHT_CM);
+        Concept currentPulseRate = Dictionary.getConcept(Dictionary.PULSE_RATE);
         CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
-        CalculationResultMap bmiObss = Calculations.allObs(currentBMI, cohort, context);
+        CalculationResultMap pulseRateObss = Calculations.allObs(currentPulseRate, cohort, context);
 
         CalculationResultMap ret = new CalculationResultMap();
         for (Integer ptId : cohort) {
             SimpleResult result = null;
             Date artStartDate = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
-            ListResult bmiObsResult = (ListResult) bmiObss.get(ptId);
+            ListResult pulseRateObsResult = (ListResult) pulseRateObss.get(ptId);
 
-            if (artStartDate != null && bmiObsResult != null && !bmiObsResult.isEmpty()) {
-                List<Obs> bmi = CalculationUtils.extractResultValues(bmiObsResult);
-                Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(bmi, artStartDate);
+            if (artStartDate != null && pulseRateObsResult != null && !pulseRateObsResult.isEmpty()) {
+                List<Obs> pulseRate = CalculationUtils.extractResultValues(pulseRateObsResult);
+                Obs lastBeforeArtStart = EmrCalculationUtils.findLastOnOrBefore(pulseRate, artStartDate);
 
                 if (lastBeforeArtStart != null) {
                     Double bmiValue = lastBeforeArtStart.getValueNumeric();
