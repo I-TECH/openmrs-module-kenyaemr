@@ -526,7 +526,8 @@
             //strategy selected
             jq('.hts-strategy select').change(strategySelected);
             jq('#referral-to select').change(referralSelected);
-            jq('#neg-referral-for select').change(negativeReferralSelected);
+            jq('#neg-referral-for  :input[type=radio]').change(hasNegativeReferralSelected);
+            jq('#neg-services-referred :input[type=checkbox]').change(negativeReferralServicesSelected);
             jq('#tbl-this-facility').hide();
             jq('#tbl-other-facility').hide();
             jq('#tbl-other-strategy').hide();
@@ -560,6 +561,35 @@
             jq("#hts-entry-point option[value='160546']").hide();    //STI
             jq("#hts-entry-point option[value='160522']").hide();    //ER
             jq("#hts-entry-point option[value='5622']").hide();    //O
+            jq('#tbl-neg-services-referred').hide();
+
+            //Prepopulated fields from the HTS eligibility forms
+            var prev_populationType = "<lookup expression="fn.latestObs(164930).getValueCoded()"/>";
+            var prev_keyPopulationType = "<lookup expression="fn.latestObs(160581).getValueCoded()"/>";
+            var prev_EverTested = "<lookup expression="fn.latestObs(164401).getValueCoded()"/>";
+
+            var PREVIOUS_POPULATION_TYPE = prev_populationType.replace(/[^\d]/g, '');
+            var PREVIOUS_KEY_POPULATION_TYPE = prev_keyPopulationType.replace(/[^\d]/g, '');
+            var EVER_TESTED = prev_EverTested.replace(/[^\d]/g, '');
+
+            if (PREVIOUS_POPULATION_TYPE == 164929) {
+                jq("#population-type input[value=164929]").prop("checked", true);
+                jq('#key-population').show();
+            }
+            if (PREVIOUS_POPULATION_TYPE == 164928) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (PREVIOUS_POPULATION_TYPE == 138643) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (PREVIOUS_KEY_POPULATION_TYPE != "" || PREVIOUS_KEY_POPULATION_TYPE != null) {
+                jq("#key-population input[type=checkbox][value="+PREVIOUS_KEY_POPULATION_TYPE+"]").prop("checked",true);
+            }
+            if (EVER_TESTED == 1065) {
+                jq("#ever-tested input[value=1065]").prop("checked", true);
+            }
 
             if(IS_KDoD_SITE==false)
             {
@@ -568,11 +598,6 @@
             else
             {
                 jq('#dodOnly').show();
-            }
-            if(pgender == 'F'){
-                jq("#neg-referral-for option[value='162223']").hide();  //VMMC
-            }else{
-                jq("#neg-referral-for option[value='162223']").show();  //VMMC
             }
             var htsStrategySelected = getField('strategy.value').val();
                 if (htsStrategySelected == 159938 ){
@@ -949,13 +974,30 @@
                 getField('other-facility.value').val("");
             }
         }
-        var negativeReferralSelected = function () {
+
+        var negativeReferralServicesSelected = function(){
             var val = jq(this).val();
-            if (val == 5622) {
+            if(val == 5622 ){
                 jq('#tbl-specify-referral').show();
-               }else{
+            }else {
                 jq('#tbl-specify-referral').hide();
-                getField('specify-referral').val("");
+                getField('specify-referral.value').val("");
+            }
+
+        }
+
+
+        var hasNegativeReferralSelected = function () {
+            var val = jq(this).val();
+            if (val == 1065) {
+                jq('#tbl-neg-services-referred').show();
+                jq("#neg-services-referred input[type=checkbox]").prop("disabled",false);
+             }else{
+                jq('#tbl-neg-services-referred').hide();
+                jq("#neg-services-referred input[type=checkbox]").prop("disabled",true);
+                jq("#neg-services-referred input[type=checkbox]").prop("checked",false);
+                jq('#tbl-specify-referral').hide();
+                getField('specify-referral.value').val("");
             }
         }
         //Before Submit
@@ -1071,14 +1113,12 @@
                     getField('other-facility.value').val("");
                     getField('this-facility.value').val(default_location);
                 }
-                //Negatives referral
-                var htsNegativeReferredSelected = getField('neg-referral-for.value').val();
-                if (htsNegativeReferredSelected == 5622) {
-                    jq('#tbl-specify-referral').show();
-                }else{
-                    jq('#tbl-specify-referral').hide();
-                    getField('specify-referral').val("");
-                }
+                var hasNegativeReferralServices = getValue('neg-referral-for.value');
+                    if (hasNegativeReferralServices == 1065) {
+                        jq('#tbl-neg-services-referred').show();
+                        jq("#neg-services-referred input[type=checkbox]").prop("disabled",false);
+                    }
+
                 //First test
                 var firstTest = getField("hiv-test1-result.value").val();
                 //Negative
@@ -1698,32 +1738,50 @@
             <legend>Referral</legend>
             <table id="tbl-neg-referral">
                 <tr>
-                    <td>Referral for: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs id="neg-referral-for"
-                             conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="165276,
-                                               159612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               161594AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               163559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               165151,
-                                               165273,
-                                               1370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               166536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabels="Risk reduction counselling,
-                                           Safer sex practices,
-                                           VMMC,
-                                           Condom use counselling,
-                                           Post-exposure prophylaxis,
-                                           Prevention and treatment of STIs,
-                                           Substance abuse and mental health treatment,
-                                           Prevention of GBV,
-                                           HIV testing and re-testing,
-                                           Pre-Exposure Prophylaxis,
-                                           Other"
-                             style="dropdown" />
+                    <td> Client referred for other services:
+                        </td>
+                    <td>
+                        <obs id="neg-referral-for" conceptId="165093"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio" />
+                        <br/>
+                    </td>
+                    <td> &#160;&#160;&#160;&#160;</td>
+                    <td>
+                    <table id="tbl-neg-services-referred">
+                        <obsgroup groupingConceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <tr id="neg-services-referred">
+                                <td>  Referred for which services: <br/><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165276"
+                             answerLabel="Risk reduction counselling" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159612AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Safer sex practices" style="checkbox" /><br/>
+                   <includeIf velocityTest="$patient.gender == 'M'">
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="VMMC" style="checkbox" /><br/>
+                   </includeIf>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Condom use counselling" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Post-exposure prophylaxis" style="checkbox" /><br/>
+                                </td><td></td><td>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="167125"
+                             answerLabel="Prevention and treatment of STIs" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Substance abuse and mental health treatment" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="141814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Prevention of GBV" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1370AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="HIV testing and re-testing" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="166536"
+                             answerLabel="Pre-Exposure Prophylaxis" style="checkbox" /><br/>
+                        <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Other" style="checkbox" /><br/>
+                    </td>
+                            </tr>
+                        </obsgroup>
+                    </table>
                     </td>
                     <td>
                         <br/>
