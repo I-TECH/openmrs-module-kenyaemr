@@ -561,6 +561,34 @@
             jq("#hts-entry-point option[value='160522']").hide();    //ER
             jq("#hts-entry-point option[value='5622']").hide();    //O
 
+            //Prepopulated fields from the HTS eligibility forms
+            var prev_populationType = "<lookup expression="fn.latestObs(164930).getValueCoded()"/>";
+            var prev_keyPopulationType = "<lookup expression="fn.latestObs(160581).getValueCoded()"/>";
+            var prev_EverTested = "<lookup expression="fn.latestObs(164401).getValueCoded()"/>";
+
+            var PREVIOUS_POPULATION_TYPE = prev_populationType.replace(/[^\d]/g, '');
+            var PREVIOUS_KEY_POPULATION_TYPE = prev_keyPopulationType.replace(/[^\d]/g, '');
+            var EVER_TESTED = prev_EverTested.replace(/[^\d]/g, '');
+
+            if (PREVIOUS_POPULATION_TYPE == 164929) {
+                jq("#population-type input[value=164929]").prop("checked", true);
+                jq('#key-population').show();
+            }
+            if (PREVIOUS_POPULATION_TYPE == 164928) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (PREVIOUS_POPULATION_TYPE == 138643) {
+                jq("#population-type input[value=164928]").prop("checked", true);
+                jq('#key-population').hide();
+            }
+            if (PREVIOUS_KEY_POPULATION_TYPE != "" || PREVIOUS_KEY_POPULATION_TYPE != null) {
+                jq("#key-population input[type=checkbox][value="+PREVIOUS_KEY_POPULATION_TYPE+"]").prop("checked",true);
+            }
+            if (EVER_TESTED == 1065) {
+                jq("#ever-tested input[value=1065]").prop("checked", true);
+            }
+
             if(IS_KDoD_SITE==false)
             {
                 jq('#dodOnly').hide();
