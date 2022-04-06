@@ -22,10 +22,10 @@
         var SHANGRING = 167124;
         var OTHER_DEVICE = 5622;
 
-        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167118).getValueCoded()"/>";
-        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167119).getValueCoded()"/>";
+        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.earliestObs(167118).getValueCoded()"/>";
+        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.earliestObs(167119).getValueCoded()"/>";
         var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
-        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.latestObs(167120).getValueCoded()"/>";
+        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.earliestObs(167120).getValueCoded()"/>";
 
         var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
         var CONVENTIONAL_METHOD = CONVENTIONAL_METHOD_CONCEPT.replace(/[^\d]/g, '');
@@ -95,9 +95,14 @@
                   if(DEVICE_CIRCUMCISION == SHANGRING) {
                     jq("#device-name input[value=167124]").prop("checked", true);
                     jq('#tbl-device-size').show();
+                    jq('#tbl-other-device-size').hide();
+                    getField('device-size.value').val(DEVICE_SIZE);
+                    clearHiddenSections(jq('#device-name-specify'));
                   } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
                     jq("#device-name input[value=5622]").prop("checked", true);
-                    jq('#tbl-other-device-size').hide();
+                    jq('#tbl-other-device-size').show();
+                    jq('#tbl-device-size').hide();
+                    clearHiddenSections(jq('#device-size'));
                   }
 
                   if(DEVICE_SIZE !== 'undefined') {
@@ -155,9 +160,11 @@
                 if(val == 5622 ) {
                     jq('#tbl-other-device-size').show();
                     jq('#tbl-device-size').hide();
+                    clearHiddenSections(jq('#device_size'));
                 } else if(val == 167124) {
                     jq('#tbl-device-size').show();
                     jq('#tbl-other-device-size').hide();
+                    clearHiddenSections(jq('#device-name-specify'));
                 }
         }
 
@@ -335,11 +342,11 @@
             var circumcisionMethod = getValue('circumcision-method.value');
             var deviceSize = getValue('device_size.value');
 
-            var otherConventional = getValue('conventional-specify.value');
-            var otherDevice = getValue('device-name-specify.value');
-
             var conventionalVal = getValue('conventional-method.value');
             var deviceVal = getValue('device-name.value');
+
+            var otherConventional = getValue('conventional-specify.value');
+            var otherDevice = getValue('device-name-specify.value');
 
             var anaesthesiaVal = getValue('anaesthesia.value');
             var agentVal = getValue('agents.value');
@@ -356,21 +363,21 @@
             var surgeonName = getValue('clinician.value');
             var surgeonCadre = getValue('clinician_cadre.value');
 
-            if(conventionalVal == 5622  &amp;&amp; otherConventional == ""){
+            if(circumcisionMethod == 167119 &amp;&amp; conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
                 return false;
             } else {
                 getField('conventional-specify.error').html('Please specify other method').hide();
             }
 
-            if(deviceVal== 5622  &amp;&amp; otherDevice == ""){
+            if(circumcisionMethod == 167120 &amp;&amp; deviceVal== 5622  &amp;&amp;  otherDevice == ""){
                 getField('device-name-specify.error').html('Please specify other method').show();
                 return false;
             } else {
                 getField('device-name-specify.error').html('Please specify other method').hide();
             }
 
-            if(circumcisionMethod == 167120  &amp;&amp; deviceSize == "") {
+            if(circumcisionMethod == 167120  &amp;&amp; deviceVal == 167124 &amp;&amp; deviceSize == "") {
                 getField('device_size.error').html('Please specify the device size').show();
                 return false;
             } else {
@@ -449,10 +456,8 @@
                 var CONVENTIONAL = 167119;
                 var DEVICE = 167120;
                 var YES = 1065;
-
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
-
                 var otherChecked = jq("#other-agent input:checkbox:checked");
 
                 if(otherChecked.length == 1) {
@@ -465,18 +470,43 @@
                   jq('#tbl-adverse-effects').show();
                 }
 
-                if(CIRCUMCISION_METHOD == CONVENTIONAL) {
-                    jq('#tbl-conventional-surgical').show();
-                    jq('#tbl-device-circumcision').hide();
-                    jq('#tbl-device-size').hide();
-                    getField('device_size.value').val("");
-                } else if(CIRCUMCISION_METHOD == DEVICE) {
-                    jq('#tbl-device-circumcision').show();
-                    jq('#tbl-device-size').show();
-                    jq('#tbl-conventional-surgical').hide();
-                }
+                //Check if conventional checked
+                jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
 
             });
+
+            var onMethodSelected = function () {
+                var val = jq(this).val();
+                if(val == 167119 ) {
+                  jq('#tbl-conventional-surgical').show();
+                  jq('#tbl-device-circumcision').hide();
+                  clearHiddenSections(jq('#device-name'));
+                  clearHiddenSections(jq('#device-name-specify'));
+                  clearHiddenSections(jq('#device-size'));
+                  getField('device_size.value').val("");
+                } else if(val == 167120) {
+                  jq('#tbl-device-circumcision').show();
+                  jq('#tbl-conventional-surgical').hide();
+                  clearHiddenSections(jq('#conventional-specify'));
+                  clearHiddenSections(jq('#conventional-method'));
+                };
+            }
+
+            //Clear hidden sections
+            clearHiddenSections = function(parentObj) {
+                parentObj.find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=text]').each(function() {
+                    jq(this).val("");
+                });
+                parentObj.find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
 
         </script>
     </ifMode>
