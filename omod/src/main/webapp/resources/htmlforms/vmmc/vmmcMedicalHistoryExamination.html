@@ -45,7 +45,7 @@
         var HIV_NEGATIVE = 664;
         var UNKNOWN = 1067;
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
-        var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
+        var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
         var PATIENT_LAST_ADHERENCE = "<lookup expression="fn.latestObs(1658).getValueCoded()"/>";
         var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
         var TCA_DATE =  "<lookup expression="fn.latestObs(5096).getValueDatetime()"/>";
@@ -57,6 +57,8 @@
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
         var ART_START_DATE = GREENCARD_VELOCITY.split(",")[13].split(":")[1];
+
+        var PATIENT_IS_REPORTED_STATUS = PATIENT_IS_REPORTED_HIV.replace(/[^\d]/g, '');
         var pAge = parseInt('<lookup expression="patient.age"/>');
         //On Ready
         $(document).ready(function () {
@@ -129,7 +131,7 @@
             }
 
             //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
-            if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) {
+            if(PATIENT_IS_REPORTED_STATUS == 703 || PATIENT_IS_ENROLLED_HIV) {
                 if (HIV_TEST_DATE != "") {
                     var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
                     getField('patient-hiv-test-date.value').val(formattedTestDate);
@@ -188,6 +190,16 @@
                 }else{
                     jq('#adherence-score').html("None");
                 }
+            }
+
+            if(PATIENT_IS_REPORTED_STATUS == 664) {
+                jq('#hiv-status:text').val("Negative");
+            }else if(PATIENT_IS_REPORTED_STATUS == 703) {
+                    jq('#hiv-status:text').val("Positive");
+            }else if(PATIENT_IS_REPORTED_STATUS == "" &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
+                jq('#hiv-status:text').val("Not recorded");
+            }else if(PATIENT_IS_ENROLLED_HIV){
+                jq('#tbl-recent-status').hide();
             }
 
            // Prepopulate ART start date
@@ -1204,6 +1216,25 @@
                         <span id="hivStar" style="color:red;"><strong>*</strong></span>
                         <div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
                         <div id="no-hiv-data-alert" class="ke-warning">Patient does not have HTS data, perform HTS if patient is not a known positive</div>
+                    </td>
+                    <td>
+                        <table border="1" id="tbl-recent-status">
+                            <tr>
+                                <td>
+                                    <u>
+                                        HIV Status Recorded Recently
+                                    </u>
+                                    <br/>
+                                    <br/>
+                                    Date:
+                                    <lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+                                    <br/>
+                                    Final results:
+                                    <input type="text" name="hiv-status" id="hiv-status" readonly="True" />
+                                    <br/>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td>
                         <table id="hiv-test-art-date">
