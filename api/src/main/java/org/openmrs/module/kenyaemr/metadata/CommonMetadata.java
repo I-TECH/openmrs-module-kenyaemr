@@ -82,6 +82,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String CWC_NUMBER = Metadata.IdentifierType.CWC_NUMBER;
 		public static final String KDoD_SERVICE_NUMBER = Metadata.IdentifierType.KDoD_SERVICE_NUMBER;
 		public static final String CLIENT_NUMBER = Metadata.IdentifierType.CLIENT_NUMBER;
+		public static final String HUDUMA_NUMBER = Metadata.IdentifierType.HUDUMA_NUMBER;
+		public static final String PASSPORT_NUMBER = Metadata.IdentifierType.PASSPORT_NUMBER;
+		public static final String BIRTH_CERTIFICATE_NUMBER = Metadata.IdentifierType.BIRTH_CERTIFICATE_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -191,6 +194,13 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(patientIdentifierType("Client Number", "A partner specific identification for clients", "", "",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.CLIENT_NUMBER));
+		install(patientIdentifierType("Huduma Number", "Kenyan huduma number", "^[a-zA-Z0-9]+$", "Allows for alphanumeric format",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.HUDUMA_NUMBER));
+		install(patientIdentifierType("Passport Number", "Passport number", "^[a-zA-Z0-9]+$", "Allows for alphanumeric format",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.PASSPORT_NUMBER));
+		install(patientIdentifierType("Birth Certificate Number", "Birth certificate number for client", "^[a-zA-Z0-9]+$", "Allows for alphanumeric format",
+				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER));
+
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",
 				String.class, null, true, 1.0, _PersonAttributeType.TELEPHONE_CONTACT));

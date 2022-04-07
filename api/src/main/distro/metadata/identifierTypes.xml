@@ -23,4 +23,7 @@
 	<ref key="KDoD_NUMBER" uuid="b51ffe55-3e76-44f8-89a2-14f5eaf11079" />
 	<ref key="KDoD_SERVICE_NUMBER" uuid="f2b0c94f-7b2b-4ab0-aded-0d970f88c063" />
 	<ref key="CLIENT_NUMBER" uuid="9a260a8c-b94d-11eb-8529-0242ac130003" />
+	<ref key="HUDUMA_NUMBER" uuid="6428800b-5a8c-4f77-a285-8d5f6174e5fb" />
+	<ref key="PASSPORT_NUMBER" uuid="be9beef6-aacc-4e1f-ac4e-5babeaa1e303" />
+	<ref key="BIRTH_CERTIFICATE_NUMBER" uuid="68449e5a-8829-44dd-bfef-c9c8cf2cb9b2" />
 </refs>
