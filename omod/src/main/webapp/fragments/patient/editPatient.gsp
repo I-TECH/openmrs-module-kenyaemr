@@ -127,6 +127,21 @@
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number if available.)<% } %></td>
                 </tr>
+                <tr>
+                    <td class="ke-field-label">Passport Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "passPortNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.passPortNumber) { %>(if available)<% } %></td>
+                </tr>
+                <tr>
+                    <td class="ke-field-label">Huduma Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "hudumaNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.hudumaNumber) { %>(if available)<% } %></td>
+                </tr>
+                 <tr>
+                    <td class="ke-field-label">Birth Certificate Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available)<% } %></td>
+                </tr>
 
                 <tr id="kdod-service-no">
                     <td class="ke-field-label">Service Number *</td>
