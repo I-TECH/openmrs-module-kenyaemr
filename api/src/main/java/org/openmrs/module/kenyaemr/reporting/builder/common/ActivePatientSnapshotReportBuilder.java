@@ -115,6 +115,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
         //dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
+        dsd.addColumn("Height", new HeightAtArtDataDefinition(), "");
         dsd.addColumn("Population Type", new ActivePatientsPopulationTypeDataDefinition(), "");
         dsd.addColumn("Date confirmed positive", new CalculationDataDefinition("Date confirmed positive", new DateConfirmedHivPositiveCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
