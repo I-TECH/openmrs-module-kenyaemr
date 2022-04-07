@@ -69,6 +69,60 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
+	 * Gets the passport number
+	 * @return the identifier value
+	 */
+	public String getPassPortNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
+	}
+
+
+	/**
+	 * Sets the passport number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setPassPortNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the huduma number
+	 * @return the identifier value
+	 */
+	public String getHudumaNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
+	}
+
+
+	/**
+	 * Sets the huduma number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setHudumaNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the birth certificate number
+	 * @return the identifier value
+	 */
+	public String getBirthCertificateNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+	}
+
+
+	/**
+	 * Sets the birth certificate number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setBirthCertificateNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER, value, location);
+	}
+
+	/**
 	 * Sets the client number
 	 * @param value the identifier value
 	 * @param location the identifier location

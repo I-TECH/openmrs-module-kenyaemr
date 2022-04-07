@@ -290,6 +290,11 @@ public class EditPatientFragmentController {
 		private String kDoDRank;
 		private String kDoDServiceNumber;
 		private String kDoDUnit;
+		private String passPortNumber;
+		private String hudumaNumber;
+		private String birthCertificateNumber;
+
+
 
 		/**
 		 * Creates an edit form for a new patient
@@ -340,6 +345,9 @@ public class EditPatientFragmentController {
 
 			clientNumber = wrapper.getClientNumber();
 			patientClinicNumber = wrapper.getPatientClinicNumber();
+			passPortNumber = wrapper.getPassPortNumber();
+			hudumaNumber = wrapper.getHudumaNumber();
+			birthCertificateNumber = wrapper.getBirthCertificateNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
 			nameOfNextOfKin = wrapper.getNextOfKinName();
 			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
@@ -449,6 +457,12 @@ public class EditPatientFragmentController {
 			}
 			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
+			validateIdentifierField(errors, "passPortNumber", CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
+			validateIdentifierField(errors, "hudumaNumber", CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
+			validateIdentifierField(errors, "birthCertificateNumber", CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+
+
+
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -536,6 +550,10 @@ public class EditPatientFragmentController {
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
 			wrapper.setClientNumber(clientNumber, location);
+			wrapper.setPassPortNumber(passPortNumber, location);
+			wrapper.setHudumaNumber(hudumaNumber, location);
+			wrapper.setBirthCertificateNumber(birthCertificateNumber, location);
+
 
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
@@ -722,6 +740,50 @@ public class EditPatientFragmentController {
 		public void setPatientClinicNumber(String patientClinicNumber) {
 			this.patientClinicNumber = patientClinicNumber;
 		}
+
+		/**
+		 * @return the passPortNumber
+		 */
+		public String getPassPortNumber() {
+			return passPortNumber;
+		}
+
+		/**
+		 * @param passPortNumber the passPortNumber to set
+		 */
+		public void setPassPortNumber(String passPortNumber) {
+			this.passPortNumber = passPortNumber;
+		}
+
+		/**
+		 * @return the hudumaNumber
+		 */
+		public String getHudumaNumber() {
+			return hudumaNumber;
+		}
+
+		/**
+		 * @param hudumaNumber the hudumaNumber to set
+		 */
+		public void setHudumaNumber(String hudumaNumber) {
+			this.hudumaNumber = hudumaNumber;
+		}
+
+		/**
+		 * @return the birthCertificateNumber
+		 */
+		public String getBirthCertificateNumber() {
+			return birthCertificateNumber;
+		}
+
+		/**
+		 * @param birthCertificateNumber the birthCertificateNumber to set
+		 */
+		public void setBirthCertificateNumber(String birthCertificateNumber) {
+			this.birthCertificateNumber = birthCertificateNumber;
+		}
+
+
 
 		/**
 		 * @return the hivIdNumber
