@@ -917,25 +917,31 @@
                 async: false,
                 success: function (response, textStatus, jqXHR) {
                 var probabilityForPositivity = response.result["probability(1)"];
-                var lowRiskThreshold = 0.048281834;
-                var mediumRiskThreshold = 0.195130497;
-                var highRiskThreshold = 0.538404703;
+                var lowRiskThreshold = 0.002625179;
+                var mediumRiskThreshold = 0.010638781;
+                var highRiskThreshold = 0.028924102;
+
                 var className = jq('#ml-prediction-risk-category').attr("class");
-                if (probabilityForPositivity &lt;= lowRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('Low Risk Client');
+                if (probabilityForPositivity &gt; highRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('Highest Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
-                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
-                } else if (probabilityForPositivity &gt; lowRiskThreshold &amp;&amp; probabilityForPositivity &lt;= mediumRiskThreshold ) {
-                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
-                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
-                } else if(probabilityForPositivity &gt; mediumRiskThreshold) {
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
+                    jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
+                }   else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
                     jq('#ml-prediction-risk-category').html('High Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
                     jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
                     jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
+                } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
+                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
+                    jq('#ml-prediction-risk-category').removeClass(className);
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
+                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
+                } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
+                    jq('#ml-prediction-risk-category').html('Low Risk Client');
+                    jq('#ml-prediction-risk-category').removeClass(className);
+                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
+                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
                 }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
