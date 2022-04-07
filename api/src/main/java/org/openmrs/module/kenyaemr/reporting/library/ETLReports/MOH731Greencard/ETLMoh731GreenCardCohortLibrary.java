@@ -1331,7 +1331,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                     ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
                 "                         and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and\n" +
                 "                    nutrition_status is not null\n" +
-                "                )e;";
+                "                )e where e.visit_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("assessedForNutrition");
         cd.setQuery(sqlQuery);
@@ -1563,7 +1563,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery = "select f.patient_id \n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f \n" +
                 "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=f.patient_id \n" +
-                "where  date(f.visit_date) between :startDate and :endDate and f.cacx_screening in(703, 664, 1118) " +
+                "where  date(f.visit_date) between date(:startDate) and date(:endDate) and f.cacx_screening in(703, 664, 1118) " +
                 ";";
         cd.setName("screenedforCaCx");
         cd.setQuery(sqlQuery);
