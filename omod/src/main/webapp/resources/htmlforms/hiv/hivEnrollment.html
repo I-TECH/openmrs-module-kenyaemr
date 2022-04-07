@@ -509,6 +509,10 @@
                             jq(function(){
                                 jq("#transfer-in-status input[value=164144]").prop("disabled", false);
                                // setValue("encounter-date.value", "");
+                                if (getValue('art-status.value') == 'true') {
+                                    jq('#art-history :input').prop('disabled', false);
+
+                                }
                             });
 						</script>
 					</ifMode>
