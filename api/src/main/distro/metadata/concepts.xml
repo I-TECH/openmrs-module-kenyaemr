@@ -285,5 +285,16 @@
 	<ref key= "RESPIRATORY_RATE" uuid="5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 	<ref key= "OXYGEN_SATURATION" uuid="5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 	<ref key= "LMP" uuid="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+	<ref key= "TB_START_DATE" uuid="1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+	<ref key= "TB_END_DATE" uuid="159431AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+	<ref key= "CACX_SCREENING" uuid="06398e78-0d3e-43d5-8017-f2fc3865e2e0" />
+	<ref key= "TB_SCREENING" uuid="cddbf6fe-4bcd-40b6-a7ea-8573e4080192" />
+	<ref key= "STI_SCREENING" uuid="ec1b6d72-728f-4ab0-a4e4-7335731075b9" />
+	<ref key= "KDOD_NUMBER" uuid="b51ffe55-3e76-44f8-89a2-14f5eaf11079" />
+	<ref key= "KDOD_CADRE" uuid="96a99acd-2f11-45bb-89f7-648dbcac5ddf" />
+	<ref key= "KDOD_RANK" uuid="9f1f8254-20ea-4be4-a14d-19201fe217bf" />
+	<ref key= "KDOD_UNIT" uuid="848f5688-41c6-464c-b078-ea6524a3e971" />
+
+
 
 </refs>
