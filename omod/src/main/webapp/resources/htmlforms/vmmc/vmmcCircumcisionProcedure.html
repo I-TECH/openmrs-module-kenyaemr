@@ -14,22 +14,6 @@
 
 <htmlform>
     <script type="text/javascript">
-        var CONVENTIONAL = 167119;
-        var DEVICE = 167120;
-        var DORSAL_SLIT = 167122;
-        var SLEEVE_RESELECTION = 167121;
-        var OTHER_CONVENTIONAL = 5622;
-        var SHANGRING = 167124;
-        var OTHER_DEVICE = 5622;
-
-        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.earliestObs(167118).getValueCoded()"/>";
-        var CONVENTIONAL_METHOD_CONCEPT = "<lookup expression="fn.earliestObs(167119).getValueCoded()"/>";
-        var DEVICE_SIZE = "<lookup expression="fn.latestObs(163049).valueText"/>";
-        var DEVICE_CIRCUMCISION_CONCEPT = "<lookup expression="fn.earliestObs(167120).getValueCoded()"/>";
-
-        var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
-        var CONVENTIONAL_METHOD = CONVENTIONAL_METHOD_CONCEPT.replace(/[^\d]/g, '');
-        var DEVICE_CIRCUMCISION = DEVICE_CIRCUMCISION_CONCEPT.replace(/[^\d]/g, '');
 
         $(document).ready(function () {
 
@@ -76,40 +60,6 @@
             //check for other agent
             jq("#other-agent :input[type=checkbox]").change(onAgentSelected);
 
-            if(CIRCUMCISION_METHOD == CONVENTIONAL) {
-                jq("#circumcision-method input[value=167119]").prop("checked", true);
-                jq('#tbl-conventional-surgical').show();
-
-                  if( CONVENTIONAL_METHOD == DORSAL_SLIT) {
-                    jq("#conventional-method input[value=167122]").prop("checked", true);
-                  } else if( CONVENTIONAL_METHOD == SLEEVE_RESELECTION) {
-                    jq("#conventional-method input[value=167121]").prop("checked", true);
-                  } else if( CONVENTIONAL_METHOD == OTHER_CONVENTIONAL) {
-                    jq("#conventional-method input[value=5622]").prop("checked", true);
-                  }
-
-            } else if(CIRCUMCISION_METHOD == DEVICE) {
-                jq("#circumcision-method input[value=167120]").prop("checked", true);
-                jq('#tbl-device-circumcision').show();
-
-                  if(DEVICE_CIRCUMCISION == SHANGRING) {
-                    jq("#device-name input[value=167124]").prop("checked", true);
-                    jq('#tbl-device-size').show();
-                    jq('#tbl-other-device-size').hide();
-                    getField('device-size.value').val(DEVICE_SIZE);
-                    clearHiddenSections(jq('#device-name-specify'));
-                  } else if(DEVICE_CIRCUMCISION == OTHER_DEVICE) {
-                    jq("#device-name input[value=5622]").prop("checked", true);
-                    jq('#tbl-other-device-size').show();
-                    jq('#tbl-device-size').hide();
-                    clearHiddenSections(jq('#device-size'));
-                  }
-
-                  if(DEVICE_SIZE !== 'undefined') {
-                    setValue('device_size.value',DEVICE_SIZE);
-                  }
-            }
-
         }); // end doc ready
 
         var onAgentSelected = function () {
@@ -146,6 +96,7 @@
               clearHiddenSections(jq('#device-name'));
               clearHiddenSections(jq('#device-name-specify'));
               clearHiddenSections(jq('#device-size'));
+              clearHiddenSections(jq('#lot_number'));
               getField('device_size.value').val("");
             } else if(val == 167120) {
               jq('#tbl-device-circumcision').show();
@@ -161,6 +112,7 @@
                     jq('#tbl-other-device-size').show();
                     jq('#tbl-device-size').hide();
                     clearHiddenSections(jq('#device_size'));
+                    clearHiddenSections(jq('#lot_number'));
                 } else if(val == 167124) {
                     jq('#tbl-device-size').show();
                     jq('#tbl-other-device-size').hide();
@@ -457,6 +409,7 @@
                 var DEVICE = 167120;
                 var YES = 1065;
                 var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
+                var DEVICE_METHOD  = getValue('device-name.value');
                 var ADVERSE_EFFECT = getValue('adverse_events.value');
                 var otherChecked = jq("#other-agent input:checkbox:checked");
 
@@ -465,6 +418,21 @@
                 } else {
                     jq('#tbl-other-agent').hide();
                 }
+
+                if(CIRCUMCISION_METHOD == 167119 ) {
+                  jq('#tbl-conventional-surgical').show();
+                  jq('#tbl-device-circumcision').hide();
+                } else if(CIRCUMCISION_METHOD == 167120) {
+                  jq('#tbl-device-circumcision').show();
+                  jq('#tbl-conventional-surgical').hide();
+                  if(DEVICE_METHOD == 167124) {
+                    jq('#tbl-device-size').show();
+                    jq('#tbl-other-device-size').hide();
+                  } else if(DEVICE_METHOD == 5622) {
+                    jq('#tbl-other-device-size').show();
+                    jq('#tbl-device-size').hide();
+                  }
+                };
 
                 if(ADVERSE_EFFECT == YES ) {
                   jq('#tbl-adverse-effects').show();
@@ -483,6 +451,7 @@
                   clearHiddenSections(jq('#device-name'));
                   clearHiddenSections(jq('#device-name-specify'));
                   clearHiddenSections(jq('#device-size'));
+                  clearHiddenSections(jq('#lot_number'));
                   getField('device_size.value').val("");
                 } else if(val == 167120) {
                   jq('#tbl-device-circumcision').show();
@@ -558,7 +527,7 @@
             <tr>
                 <ifMode mode="ENTER">
                 </ifMode>
-                <td>Enrollment date:
+                <td>Encounter date:
                     <encounterDate id="encounter-date" showTime="true" />
                 </td>
                 <td>VMMC Procedure Provider:
@@ -633,6 +602,9 @@
                                         <tr>
                                             <td>Device size: </td>
                                             <td><obs conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="device_size" /></td>
+
+                                            <td>Lot Number: </td>
+                                            <td><obs conceptId="164964"  id="lot_number" /></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -669,27 +641,29 @@
                                     <template>
                                         <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 
-                                            <tr>
-                                                <td>
-                                                    <obs conceptId="165139"
-                                                         answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
-                                                         style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine"
-                                                         id="agents"  />
-                                                </td>
-                                                <td>
-                                                    <obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
-                                                </td>
+                            <tr>
+                                <td>
+                                    <obs conceptId="165139"
+                                         answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 103960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 104983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine,Lignocaine + Bupivacaine,Lignocaine + Prilocaine "
+                                         id="agents"  />
+                                </td>
+                                <td>
+                                    <obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                </td>
 
-                                                <td>
-                                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
-                                                </td>
-                                            </tr>
-                                        </obsgroup>
-                                    </template>
-                                    <render n="1" concept=" " />
-                                    <render n="2" concept=" " />
-                                    <render n="3" concept=" " />
-                                </repeat>
+                                <td>
+                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                </td>
+                            </tr>
+                            </obsgroup>
+                            </template>
+                            <render n="1" concept=" " />
+                            <render n="2" concept=" " />
+                            <render n="3" concept=" " />
+                            <render n="4" concept=" " />
+                            <render n="5" concept=" " />
+                            </repeat>
                             </tr>
 
                         </table>
