@@ -39,21 +39,21 @@ public class ActivePatientsPopulationTypeDataEvaluator implements PersonDataEval
                 "  CONCAT_WS('\\r\\n',fup.population_type,fup.key_population_type,fup.priority_population_type) as Population_Type\n" +
                 "from  (SELECT patient_id,\n" +
                 "         mid(max(concat(visit_date,(case population_type\n" +
-                "                                    when 164928 then \"General Population\"\n" +
-                "                                    when 164929 then \"Key Population\" else \"\" end), \"\" )),11) as population_type,\n" +
+                "                                    when 164928 then 'General Population'\n" +
+                "                                   when 164929 then 'Key Population' else '' end), '' )),11) as population_type,\n" +
                 "         mid(max(concat(visit_date,(case key_population_type\n" +
-                "                                    when 105 then \"People who inject drugs\"\n" +
-                "                                    when 162277 then \"People in prison and other closed settings\"\n" +
-                "                                    when 165100 then \"Transgender\"\n" +
-                "                                    when 160578 then \"Men who have sex with men\"\n" +
-                "                                    when 160579 then \"Female sex Worker\" else \"\" end), \"\" )),11) as key_population_type\n" +
-                "         mid(max(concat(visit_date,(case priority_population_type\n" +
-                "                                    when 159674 then \"Fisher folk\"\n" +
-                "                                    when 162198 then \"Truck driver\"\n" +
-                "                                    when 160549 then \"Adolescent and young girls\"\n" +
-                "                                    when 162277 then \"Prisoner\"\n" +
-                "                                    when 1175 then \"Not applicable\"\n" +
-                "                                    when 165192 then \"Military and other uniformed services\" else \"\" end), \"\" )),11) as priority_population_type\n" +
+                "                                    when 105 then 'People who inject drugs'\n" +
+                "                                    when 162277 then 'People in prison and other closed settings'\n" +
+                "                                    when 165100 then 'Transgender'\n" +
+                "                                    when 160578 then 'Men who have sex with men'\n" +
+                "                                    when 160579 then 'Female sex Worker' else '' end), '' )),11) as key_population_type,\n" +
+                "         mid(max(concat(visit_date,(case key_population_type\n" +
+                "                                   when 159674 then 'Fisher folk'\n" +
+                "                                    when 162198 then 'Truck driver'\n" +
+                "                                    when 160549 then 'Adolescent and young girls'\n" +
+                "                                    when 162277 then 'Prisoner'\n" +
+                "                                    when 1175 then 'Not applicable'\n" +
+                "                                    when 165192 then 'Military and other uniformed services' else '' end), '' )),11) as priority_population_type\n" +
                 "        FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup\n" +
                 "GROUP BY fup.patient_id;";
 

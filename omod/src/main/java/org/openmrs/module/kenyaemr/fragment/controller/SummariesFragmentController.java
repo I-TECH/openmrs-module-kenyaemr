@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
     /**
      * This Source Code Form is subject to the terms of the Mozilla Public License,
      * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -777,59 +786,38 @@
 
         String entryPointAbbriviations(Concept concept) {
             String value = "Other";
-            if(concept.equals(Dictionary.getConcept(Dictionary.VCT_PROGRAM))) {
-                value = "VCT";
-            }
-            else if(concept.equals(Dictionary.getConcept(Dictionary.PMTCT_PROGRAM))){
-                value = "PMTCT";
-            }
-            else if(concept.equals(Dictionary.getConcept(Dictionary.PEDIATRIC_INPATIENT_SERVICE))){
-                value = "IPD-P";
-            }
-            else if(concept.equals(Dictionary.getConcept(Dictionary.ADULT_INPATIENT_SERVICE))){
-                value = "IPD-A";
-            }
-
-            else if(concept.equals(Dictionary.getConcept("160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "OPD";
-            }
-
-            else if(concept.equals(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM))){
-                value = "TB";
-            }
-            else if(concept.equals(Dictionary.getConcept("160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "CBO";
-            }
-            else if(concept.equals(Dictionary.getConcept("160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "CBO";
-            }
-
-            else if(concept.equals(Dictionary.getConcept(Dictionary.UNDER_FIVE_CLINIC))){
-                value = "UNDER FIVE";
-            }
-
-            else if(concept.equals(Dictionary.getConcept("160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "STI";
-            }
-
-            else if(concept.equals(Dictionary.getConcept("160548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "IDU";
-            }
-
-            else if(concept.equals(Dictionary.getConcept("160548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "IDU";
-            }
-
-            else if(concept.equals(Dictionary.getConcept(Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM))){
-                value = "MCH";
-            }
-
-            else if(concept.equals(Dictionary.getConcept("162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))){
-                value = "VMMC";
-            }
-
-            else if(concept.equals(Dictionary.getConcept(Dictionary.TRANSFER_IN))){
-                value = "TI";
+            if(concept != null) {
+                if (concept.equals(Dictionary.getConcept(Dictionary.VCT_PROGRAM))) {
+                    value = "VCT";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.PMTCT_PROGRAM))) {
+                    value = "PMTCT";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.PEDIATRIC_INPATIENT_SERVICE))) {
+                    value = "IPD-P";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.ADULT_INPATIENT_SERVICE))) {
+                    value = "IPD-A";
+                } else if (concept.equals(Dictionary.getConcept("160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "OPD";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM))) {
+                    value = "TB";
+                } else if (concept.equals(Dictionary.getConcept("160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "CBO";
+                } else if (concept.equals(Dictionary.getConcept("160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "CBO";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.UNDER_FIVE_CLINIC))) {
+                    value = "UNDER FIVE";
+                } else if (concept.equals(Dictionary.getConcept("160546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "STI";
+                } else if (concept.equals(Dictionary.getConcept("160548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "IDU";
+                } else if (concept.equals(Dictionary.getConcept("160548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "IDU";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.MATERNAL_AND_CHILD_HEALTH_PROGRAM))) {
+                    value = "MCH";
+                } else if (concept.equals(Dictionary.getConcept("162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                    value = "VMMC";
+                } else if (concept.equals(Dictionary.getConcept(Dictionary.TRANSFER_IN))) {
+                    value = "TI";
+                }
             }
 
             return value;
