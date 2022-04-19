@@ -53,6 +53,60 @@
             jq("#referral-by :input[type=radio]").change(referredBySelected);
             jq("#information-source :input[type=radio]").change(informationSourceSelected);
 
+            //Prepopulated fields from earlier enrollments
+            var CLIENT_ENROLLED = "<lookup expression="fn.latestObs(162728).getValueCoded()"/>";
+            var REFERRED_BY = "<lookup expression="fn.latestObs(160482).getValueCoded()"/>";
+            var INFO_SOURCE = "<lookup expression="fn.latestObs(167094).getValueCoded()"/>";
+
+            var CLIENT_PREVIOUSLY_ENROLLED = CLIENT_ENROLLED.replace(/[^\d]/g, '');
+            var CLIENT_REFERRED_BY = REFERRED_BY.replace(/[^\d]/g, '');
+            var CLIENT_INFO_SOURCE = INFO_SOURCE.replace(/[^\d]/g, '');
+
+            console.log("CLIENT_PREVIOUSLY_ENROLLED==>"+CLIENT_PREVIOUSLY_ENROLLED);
+
+            if(CLIENT_PREVIOUSLY_ENROLLED == 164144 || CLIENT_PREVIOUSLY_ENROLLED == 159833){
+                jq("#client-type input[value=164144]").prop("disabled", true);
+            }else{
+                jq("#client-type input[value=159833]").prop("disabled", true);
+            }
+
+            if (CLIENT_REFERRED_BY == 165650) {
+                jq("#referral-by input[value=165650]").prop("checked", true);
+            }
+            if (CLIENT_REFERRED_BY == 5619) {
+                jq("#referral-by input[value=5619]").prop("checked", true);
+            }
+            if (CLIENT_REFERRED_BY == 163488) {
+                jq("#referral-by input[value=163488]").prop("checked", true);
+            }
+            if (CLIENT_REFERRED_BY == 1370) {
+                jq("#referral-by input[value=1370]").prop("checked", true);
+            }
+            if (CLIENT_REFERRED_BY == 5622) {
+                jq("#referral-by input[value=5622]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 167095) {
+                jq("#information-source input[value=167095]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 167096) {
+                jq("#information-source input[value=167096]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 167098) {
+                jq("#information-source input[value=167098]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 1555) {
+                jq("#information-source input[value=1555]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 160542) {
+                jq("#information-source input[value=160542]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 167097) {
+                jq("#information-source input[value=167097]").prop("checked", true);
+            }
+            if (CLIENT_INFO_SOURCE == 5622) {
+                jq("#information-source input[value=5622]").prop("checked", true);
+            }
+
         });
 
         var referredBySelected = function () {
@@ -79,6 +133,7 @@
         //Before Submit
         beforeSubmit.push(function() {
             var referredBy = getValue('referral-by.value');
+            var clientType = getValue('client-type.value');
             var otherReferred = jq('#other-referral input[type=text]').val();
             var infoSource = getValue('information-source.value');
             var otherInfoSource = jq('#other-information-source input[type=text]').val();
@@ -88,6 +143,12 @@
                 return false;
             }else {
                 getField('referral-by.error').html('Please specify referral source').hide();
+            }
+            if(clientType == ""){
+                getField('client-type.error').html('Please specify client type').show();
+                return false;
+            }else {
+                getField('client-type.error').html('Please specify client type').hide();
             }
             if(referredBy == 5622  &amp;&amp; otherReferred == ""){
                 getField('other-referral.error').html('Please specify other referral source').show();
@@ -200,6 +261,21 @@
                </tr>
                 <tr>
                     <td>
+                        Client type:
+                        <span style="color:red;"><strong>*</strong></span>
+                    </td>
+                    <td>
+                        <obs
+                                id="client-type" conceptId="162728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio"
+                                answerConceptIds="164144,
+                                                  159833"
+                                answerLabels="New Patient,
+                                              Re-enrollment(Re-activation)"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         Main source of VMMC Information:
                         <span style="color:red;"><strong>*</strong></span>
                     </td>
@@ -227,7 +303,7 @@
                                     <obs id="other-information-source" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                     <span style="color:red;"><strong>*</strong></span>
                                 </td>
-                            </tr>
+                              </tr>
                         </table>
                     </td>
                 </tr>
