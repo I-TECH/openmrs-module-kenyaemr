@@ -62,8 +62,6 @@
             var CLIENT_REFERRED_BY = REFERRED_BY.replace(/[^\d]/g, '');
             var CLIENT_INFO_SOURCE = INFO_SOURCE.replace(/[^\d]/g, '');
 
-            console.log("CLIENT_PREVIOUSLY_ENROLLED==>"+CLIENT_PREVIOUSLY_ENROLLED);
-
             if(CLIENT_PREVIOUSLY_ENROLLED == 164144 || CLIENT_PREVIOUSLY_ENROLLED == 159833){
                 jq("#client-type input[value=164144]").prop("disabled", true);
             }else{
@@ -212,6 +210,9 @@
                 }else {
                     jq("#tbl-other-information-source").hide();
                 }
+
+                jq("#client-type input[value=164144]").prop("disabled", false);
+                jq("#client-type input[value=159833]").prop("disabled", false);
 
             });
         </script>
