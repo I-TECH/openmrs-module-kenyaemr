@@ -127,6 +127,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result", new ETLLastVLResultDataDefinition(), "");
+        dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
         dsd.addColumn("Last VL Date", new ETLLastVLDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT", new CalculationDataDefinition("Active in PMTCT", new ActiveInMCHProgramCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
@@ -139,7 +140,6 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
         dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-
 
         return dsd;
     }
