@@ -125,7 +125,7 @@
                 <tr>
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number if available.)<% } %></td>
+                    <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number or patient's National ID waiting card number if available)<% } %></td>
                 </tr>
                 <tr>
                     <td class="ke-field-label">Passport Number</td>
@@ -140,7 +140,17 @@
                  <tr>
                     <td class="ke-field-label">Birth Certificate Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available)<% } %></td>
+                    <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
+                </tr>
+                <tr>
+                    <td class="ke-field-label">Alien ID Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
+                </tr>
+                <tr>
+                    <td class="ke-field-label">Driving License Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "drivingLicenseNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.drivingLicenseNumber) { %>(if available)<% } %></td>
                 </tr>
 
                 <tr id="kdod-service-no">

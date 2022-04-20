@@ -293,6 +293,8 @@ public class EditPatientFragmentController {
 		private String passPortNumber;
 		private String hudumaNumber;
 		private String birthCertificateNumber;
+		private String alienIdNumber;
+		private String drivingLicenseNumber;
 
 
 
@@ -347,6 +349,8 @@ public class EditPatientFragmentController {
 			patientClinicNumber = wrapper.getPatientClinicNumber();
 			passPortNumber = wrapper.getPassPortNumber();
 			hudumaNumber = wrapper.getHudumaNumber();
+			alienIdNumber = wrapper.getAlienIdNumber();
+			drivingLicenseNumber = wrapper.getDrivingLicenseNumber();
 			birthCertificateNumber = wrapper.getBirthCertificateNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
 			nameOfNextOfKin = wrapper.getNextOfKinName();
@@ -460,6 +464,8 @@ public class EditPatientFragmentController {
 			validateIdentifierField(errors, "passPortNumber", CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
 			validateIdentifierField(errors, "hudumaNumber", CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
 			validateIdentifierField(errors, "birthCertificateNumber", CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+			validateIdentifierField(errors, "alienIdNumber", CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+			validateIdentifierField(errors, "drivingLicenseNumber", CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
 
 
 
@@ -553,6 +559,8 @@ public class EditPatientFragmentController {
 			wrapper.setPassPortNumber(passPortNumber, location);
 			wrapper.setHudumaNumber(hudumaNumber, location);
 			wrapper.setBirthCertificateNumber(birthCertificateNumber, location);
+			wrapper.setAlienIdNumber(alienIdNumber, location);
+			wrapper.setDrivingLicenseNumber(drivingLicenseNumber, location);
 
 
 			wrapper.setNextOfKinName(nameOfNextOfKin);
@@ -782,7 +790,32 @@ public class EditPatientFragmentController {
 		public void setBirthCertificateNumber(String birthCertificateNumber) {
 			this.birthCertificateNumber = birthCertificateNumber;
 		}
+		/**
+		 * @return the alienIdNumber
+		 */
 
+		public String getAlienIdNumber() {
+			return alienIdNumber;
+		}
+		/**
+		 * @param alienIdNumber the alienIdNumber to set
+		 */
+		public void setAlienIdNumber(String alienIdNumber) {
+			this.alienIdNumber = alienIdNumber;
+		}
+		/**
+		 * @return the drivingLicenseNumber
+		 */
+
+		public String getDrivingLicenseNumber() {
+			return drivingLicenseNumber;
+		}
+		/**
+		 * @param drivingLicenseNumber the drivingLicenseNumber to set
+		 */
+		public void setDrivingLicenseNumber(String drivingLicenseNumber) {
+			this.drivingLicenseNumber = drivingLicenseNumber;
+		}
 
 
 		/**

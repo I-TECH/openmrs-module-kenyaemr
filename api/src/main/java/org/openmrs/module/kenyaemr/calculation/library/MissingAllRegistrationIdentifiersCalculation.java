@@ -51,12 +51,13 @@ public class MissingAllRegistrationIdentifiersCalculation extends AbstractPatien
 			PatientService patientService = Context.getPatientService();
 
 			PatientIdentifierType nationalID = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
-			PatientIdentifierType patientClinicNo = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 			PatientIdentifierType passPortNo = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
 			PatientIdentifierType hudumaNo = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
 			PatientIdentifierType birthCertNo = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+			PatientIdentifierType alienID = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+			PatientIdentifierType drivingLicenseNo = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
 
-			List<PatientIdentifier> patientRegIdentifiers = patientService.getPatientIdentifiers(null, Arrays.asList(nationalID,patientClinicNo,passPortNo,hudumaNo,birthCertNo), null, Arrays.asList(patientService.getPatient(ptId)), false);
+			List<PatientIdentifier> patientRegIdentifiers = patientService.getPatientIdentifiers(null, Arrays.asList(nationalID,passPortNo,hudumaNo,birthCertNo,alienID,drivingLicenseNo), null, Arrays.asList(patientService.getPatient(ptId)), false);
 			if(patientRegIdentifiers.size() > 0){
 				missingAllIdentifiers = false;
 			}
