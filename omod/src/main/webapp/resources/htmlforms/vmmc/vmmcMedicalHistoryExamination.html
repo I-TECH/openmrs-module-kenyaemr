@@ -86,6 +86,8 @@
             jq('#tbl-device-size').hide();
             jq('#reasons-unknown').hide();
             jq('#non-eligibility').show();
+            jq('#tbl-sti-other-services-referred').hide();
+            jq('#tbl-prep-other-services-referred').hide();
 
            //workflow
             jq('#prep-referrals').hide();
@@ -102,6 +104,8 @@
             jq("#complaints-checked input[type=checkbox]").prop("disabled",true);
             jq("#complaints-checked input[type=checkbox]").prop("checked",false);
             jq('#complaints-checked :input[type=checkbox]').change(complaintsSelected);
+            jq('#sti-services-referred :input[type=checkbox]').change(stiReferralServicesSelected);
+            jq('#prep-services-referred :input[type=checkbox]').change(prepReferralServicesSelected);
             jq('#urethral-discharge :input[type=checkbox]').change(urethralDischargeSelected);
             //Selected
             jq('#patient-hiv-status').change(onPatientHivStatusChange);
@@ -610,6 +614,8 @@
                 jq('#prep-services-referred :input').prop('disabled', false);
             }else{
                 jq('#prep-services-referred :input').prop('disabled', true);
+                jq('#tbl-prep-other-services-referred').hide();
+                getField('other-prep-services-referred.value').val("");
                 clearHiddenSections(jq('#prep-services-referred'));
             }
 
@@ -621,6 +627,8 @@
                 jq('#sti-services-referred :input').prop('disabled', false);
             }else{
                 jq('#sti-services-referred :input').prop('disabled', true);
+                jq('#tbl-sti-other-services-referred').hide();
+                getField('other-sti-services-referred.value').val("");
                 clearHiddenSections(jq('#sti-services-referred'));
             }
         }
@@ -673,6 +681,26 @@
             }else {
                 jq('#tbl-other-complaint').hide();
                 getField('other-complaint.value').val("");
+            }
+
+        }
+        var prepReferralServicesSelected = function(){
+            var val = jq(this).val();
+            if(val == 5622 ){
+                jq('#tbl-prep-other-services-referred').show();
+            }else {
+                jq('#tbl-prep-other-services-referred').hide();
+                getField('other-prep-services-referred.value').val("");
+            }
+
+        }
+        var stiReferralServicesSelected = function(){
+            var val = jq(this).val();
+            if(val == 5622 ){
+                jq('#tbl-sti-other-services-referred').show();
+            }else {
+                jq('#tbl-sti-other-services-referred').hide();
+                getField('other-sti-services-referred.value').val("");
             }
 
         }
@@ -1157,7 +1185,27 @@
                     jq('#tbl-device-size').show();
                     jq('#tb-other-device-name').hide();
                   }
-
+// Referral services
+                var stiServicesReferral = getValue('sti-referred.value');
+                if(stiServicesReferral == 1065 ){
+                    jq('#sti-services-referred :input').prop('disabled', false);
+                }
+                var stiServicesReferralChecked = getValue('sti-other.value');
+                var stiServicesChecked = jq('#sti-services-referred input:checkbox:checked');
+                if(stiServicesReferralChecked == 5622 &amp;&amp; stiServicesChecked.length >=1 ){
+                    jq('#sti-services-referred :input').prop('disabled', false);
+                    jq('#tbl-sti-other-services-referred').show();
+                }
+                var prepServicesReferral = getValue('prep-referred.value');
+                if(prepServicesReferral == 1065 ){
+                    jq('#prep-services-referred :input').prop('disabled', false);
+                }
+                var prepServicesReferralChecked = getValue('prep-other.value');
+                var prepServicesChecked = jq('#prep-services-referred input:checkbox:checked');
+                if(prepServicesReferralChecked == 5622 &amp;&amp; prepServicesChecked.length >=1 ){
+                    jq('#prep-services-referred :input').prop('disabled', false);
+                    jq('#tbl-prep-other-services-referred').show();
+                }
             });
         </script>
     </ifMode>
@@ -1768,11 +1816,21 @@
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Drug Abuse" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Other" style="checkbox" /><br/>
+                                             answerLabel="Other" style="checkbox" id="prep-other"  /><br/>
                                     </td>
                                 </tr>
                             </obsgroup>
                         </table>
+                    </td>
+                    <td>
+                    <table id="tbl-prep-other-services-referred">
+                        <tr>
+                            <td>  &#160;&#160;&#160; Specify :
+                                <obs id="other-prep-services-referred" conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                &#160;&#160;&#160;
+                            </td>
+                        </tr>
+                    </table>
                     </td>
                 </tr>
             </table>
@@ -1806,10 +1864,20 @@
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabel="Drug Abuse" style="checkbox" /><br/>
                                         <obs conceptId="1272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                             answerLabel="Other" style="checkbox" /><br/>
+                                             answerLabel="Other" style="checkbox" id="sti-other" /><br/>
                                     </td>
                                 </tr>
                             </obsgroup>
+                        </table>
+                    </td>
+                    <td>
+                        <table id="tbl-sti-other-services-referred">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-sti-services-referred" conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 </tr>
