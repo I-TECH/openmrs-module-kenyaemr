@@ -8,6 +8,11 @@
 			Patient has been recorded as deceased in a program form. Please update the registration form.
 		</div>
 		<% } %>
+		<% if (missingIdentifiers) { %>
+		<div class="ke-warning" style="margin-bottom: 5px">
+			Patient has missing registration identifiers.
+		</div>
+		<% } %>
 
 		<button type="button" class="ke-compact" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editPatient", [ patientId: patient.id, returnUrl: ui.thisUrl() ]) }')">
 			<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" />
