@@ -121,6 +121,40 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setBirthCertificateNumber(String value, Location location) {
 		setAsIdentifier(CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER, value, location);
 	}
+	/**
+	 * Gets the alien ID number
+	 * @return the identifier value
+	 */
+	public String getAlienIdNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+	}
+
+
+	/**
+	 * Sets the alien ID number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setAlienIdNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER, value, location);
+	}
+	/**
+	 * Gets the Driving Licence number
+	 * @return the identifier value
+	 */
+	public String getDrivingLicenseNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
+	}
+
+
+	/**
+	 * Sets the Driving Licence number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setDrivingLicenseNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.DRIVING_LICENSE, value, location);
+	}
 
 	/**
 	 * Sets the client number
