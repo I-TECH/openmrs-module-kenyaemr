@@ -47,20 +47,20 @@ public class AllPatientsReportBuilder extends CalculationReportBuilder {
         PatientIdentifierType passport = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
         DataDefinition passportDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(passport.getName(), passport), identifierFormatter);
 
-        PatientIdentifierType national_id = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
-        DataDefinition nationalIdDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(national_id.getName(), national_id), identifierFormatter);
+        PatientIdentifierType nationalId = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+        DataDefinition nationalIdDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nationalId.getName(), nationalId), identifierFormatter);
 
-        PatientIdentifierType huduma_number = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
-        DataDefinition hudumaNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(huduma_number.getName(), huduma_number), identifierFormatter);
+        PatientIdentifierType hudumaNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
+        DataDefinition hudumaNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(hudumaNumber.getName(), hudumaNumber), identifierFormatter);
 
-        PatientIdentifierType birth_certificate_number = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
-        DataDefinition birthCertificateNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(birth_certificate_number.getName(), birth_certificate_number), identifierFormatter);
+        PatientIdentifierType birthCertificateNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+        DataDefinition birthCertificateNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(birthCertificateNumber.getName(), birthCertificateNumber), identifierFormatter);
 
-        PatientIdentifierType alien_id_number = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
-        DataDefinition alienIdNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(alien_id_number.getName(), alien_id_number), identifierFormatter);
+        PatientIdentifierType alienIdNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+        DataDefinition alienIdNumberDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(alienIdNumber.getName(), alienIdNumber), identifierFormatter);
 
-        PatientIdentifierType driving_licence = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
-        DataDefinition drivingLicenceDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(driving_licence.getName(), driving_licence), identifierFormatter);
+        PatientIdentifierType drivingLicense = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
+        DataDefinition drivingLicenceDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(drivingLicense.getName(), drivingLicense), identifierFormatter);
 
         addStandardColumns(report, dsd);
 
