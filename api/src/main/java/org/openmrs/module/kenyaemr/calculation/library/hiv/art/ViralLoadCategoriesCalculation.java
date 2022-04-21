@@ -90,7 +90,7 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
                         vlMessage = "High Viremia";
                 }
                 //If VL level is between 0 and 399 in the last 12 months, the patient has low viremia
-                if (lastVlResultValue == 0 && lastVlResultValue <= 399) {
+                if (lastVlResultValue <= 399) {
                         vlMessage = "Low Virema";
                 }
         }
