@@ -64,12 +64,12 @@ public class AllPatientsReportBuilder extends CalculationReportBuilder {
 
         addStandardColumns(report, dsd);
 
-        dsd.addColumn("UPN", identifierDef, "", new NationalIdentifiersTypeConverter());
+        dsd.addColumn("UPN", identifierDef, "");
         dsd.addColumn("National Id", nationalIdDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Huduma Number", hudumaNumberDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Passport Number", passportDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Birth Certificate Number", birthCertificateNumberDef, "", new NationalIdentifiersTypeConverter());
-        dsd.addColumn("Driving Licence", drivingLicenceDef, "", new NationalIdentifiersTypeConverter());
+        dsd.addColumn("Driving License", drivingLicenceDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Alien Id Number", alienIdNumberDef, "", new NationalIdentifiersTypeConverter());
 
     }
