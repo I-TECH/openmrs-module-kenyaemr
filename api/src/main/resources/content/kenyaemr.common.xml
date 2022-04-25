@@ -60,7 +60,8 @@
 				<ref bean="kenyaemr.common.report.allPatients" />
 				<ref bean="kenyaemr.etl.common.report.diffcarestability" />
 				<ref bean="kenyaemr.common.report.activePatientsLinelist" />
-                <ref bean="kenyaemr.common.report.rdqaReport" />
+				<ref bean="kenyaemr.common.report.allPatientsMissingIdentifiers" />
+				<ref bean="kenyaemr.common.report.rdqaReport" />
 				<ref bean="kenyaemr.common.report.clients.died" />
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
@@ -567,6 +568,14 @@
 		<property name="targetUuid" value="9e2ed586-130b-11e4-929a-8746415b715a" />
 		<property name="name" value="All Patients List" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.AllPatientsCalculation" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.common.report.allPatientsMissingIdentifiers" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="c7fbb62a-c165-11ec-9d64-0242ac120002" />
+		<property name="name" value="All Patients Missing Identifiers List" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingAllRegistrationIdentifiersCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
