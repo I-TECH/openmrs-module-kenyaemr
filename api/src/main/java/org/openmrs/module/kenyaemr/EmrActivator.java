@@ -48,20 +48,6 @@ public class EmrActivator implements ModuleActivator {
 		log.info("KenyaEMR context refreshing...");
 		//TODO: Investigate what causes reports page to load slowly. This behavior started with platform 2.x upgrade
 		Context.getAdministrationService().executeSQL("delete from reporting_report_request", false);
-		// Fetch all visits haven't ended or been closed and close them on startup
-		List<Patient> allPatients = Context.getPatientService().getAllPatients();
-		List<Visit> visits = Context.getVisitService().getVisits(null, allPatients, null, null, null, new Date(), null, null, null, true, false);
-		if (visits.size() > 0) {
-			for (Visit visit : visits) {
-				try {
-
-					visit.setStopDatetime(OpenmrsUtil.getLastMomentOfDay(visit.getStartDatetime()));
-
-				} catch (Exception e) {
-					log.error("Error while auto closing visits:", e);
-				}
-			}
-		}
 	}
 
 	/**
