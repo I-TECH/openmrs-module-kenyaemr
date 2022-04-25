@@ -567,7 +567,6 @@
 		<property name="targetUuid" value="9e2ed586-130b-11e4-929a-8746415b715a" />
 		<property name="name" value="All Patients List" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.AllPatientsCalculation" />
-		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
