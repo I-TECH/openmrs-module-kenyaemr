@@ -629,6 +629,24 @@ Green Card follow-up visit form
                     width: 900,
                     modal: true });
             });
+            // Prepopulate weight and height if added through other forms on the same encounter date
+            //Form such as Triage form
+            var encounterDate = getValue('encounter-date.value');
+
+            var recentWeightDate = "<lookup expression="fn.latestObs(5089).getObsDatetime()"/>"
+            var recentWeightValue = "<lookup expression="fn.latestObs(5089).getValueNumeric()"/>"
+            var recentHeightDate = "<lookup expression="fn.latestObs(5090).getObsDatetime()"/>"
+            var recentHeightValue = "<lookup expression="fn.latestObs(5090).getValueNumeric()"/>"
+            var isRecentWeightDateSameAsEncounterDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(recentWeightDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'),'day');
+            if (isRecentWeightDateSameAsEncounterDate) {
+                setValue('weight.value', recentWeightValue);
+            }
+            var isRecentHeightDateSameAsEncounterDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(recentHeightDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'),'day');
+            if (isRecentHeightDateSameAsEncounterDate) {
+                setValue('height.value', recentHeightValue);
+            }
+
+
         });   //End of JQuery onReady function
 
       
