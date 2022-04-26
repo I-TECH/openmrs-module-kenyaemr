@@ -90,78 +90,6 @@
         <div class="ke-form-instructions">
             <strong>*</strong> indicates a required field
         </div>
-
-        <fieldset>
-            <legend>ID Numbers</legend>
-
-            <table>
-                <% if (command.inHivProgram && isKDoD==false) { %>
-                <tr>
-                    <td class="ke-field-label">Unique Patient Number</td>
-                    <td>${
-                            ui.includeFragment("kenyaui", "widget/field", [object: command, property: "uniquePatientNumber"])}</td>
-                    <td class="ke-field-instructions">(HIV program<% if (!command.uniquePatientNumber) { %>, if assigned<%
-                            } %>)</td>
-                </tr>
-
-                <% } %>
-                <% if(enableClientNumberField || command.clientNumber) { %>
-                    <tr>
-                        <td class="ke-field-label">${clientNumberLabel}</td>
-                        <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "clientNumber"])}</td>
-                        <td class="ke-field-instructions"><% if (!command.clientNumber) { %>(This is a generic partner identification for clients. Please only provide if available)<%
-                                } %></td>
-                    </tr>
-
-                <% } %>
-
-
-                <tr>
-                    <td class="ke-field-label">Patient Clinic Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "patientClinicNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<%
-                        } %></td>
-                </tr>
-                <tr>
-                    <td class="ke-field-label">National ID Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(If the patient is below 18 years of age, enter the guardian`s National Identification Number or patient's National ID waiting card number if available)<% } %></td>
-                </tr>
-                <tr>
-                    <td class="ke-field-label">Passport Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "passPortNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.passPortNumber) { %>(if available)<% } %></td>
-                </tr>
-                <tr>
-                    <td class="ke-field-label">Huduma Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "hudumaNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.hudumaNumber) { %>(if available)<% } %></td>
-                </tr>
-                 <tr>
-                    <td class="ke-field-label">Birth Certificate Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
-                </tr>
-                <tr>
-                    <td class="ke-field-label">Alien ID Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
-                </tr>
-                <tr>
-                    <td class="ke-field-label">Driving License Number</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "drivingLicenseNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.drivingLicenseNumber) { %>(if available)<% } %></td>
-                </tr>
-
-                <tr id="kdod-service-no">
-                    <td class="ke-field-label">Service Number *</td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
-                    <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(5-6 digits for service officer or 5-6 digits followed by / and 2 digits for dependant(eg.12345/01))<%} %></td>
-                </tr>
-            </table>
-
-        </fieldset>
-
         <fieldset>
             <legend>Demographics</legend>
 
@@ -245,9 +173,80 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
-        </fieldset>
+     </fieldset>
+    <fieldset id="identifiers">
+        <legend>ID Numbers</legend>
+
+        <table>
+            <% if (command.inHivProgram && isKDoD==false) { %>
+            <tr>
+                <td class="ke-field-label">Unique Patient Number</td>
+                <td>${
+                        ui.includeFragment("kenyaui", "widget/field", [object: command, property: "uniquePatientNumber"])}</td>
+                <td class="ke-field-instructions">(HIV program<% if (!command.uniquePatientNumber) { %>, if assigned<%
+                        } %>)</td>
+            </tr>
+
+            <% } %>
+            <% if(enableClientNumberField || command.clientNumber) { %>
+            <tr>
+                <td class="ke-field-label">${clientNumberLabel}</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "clientNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.clientNumber) { %>(This is a generic partner identification for clients. Please only provide if available)<%
+                        } %></td>
+            </tr>
+
+            <% } %>
+
+
+            <tr>
+                <td class="ke-field-label">Patient Clinic Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "patientClinicNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<%
+                    } %></td>
+            </tr>
+            <tr id="national-id">
+                <td class="ke-field-label">National ID Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(Enter National Identification Number or patient's National ID waiting card number if available)<% } %></td>
+            </tr>
+            <tr>
+                <td class="ke-field-label">Passport Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "passPortNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.passPortNumber) { %>(if available)<% } %></td>
+            </tr>
+            <tr>
+                <td class="ke-field-label">Huduma Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "hudumaNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.hudumaNumber) { %>(if available)<% } %></td>
+            </tr>
+            <tr>
+                <td class="ke-field-label">Birth Certificate Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
+            </tr>
+            <tr>
+                <td class="ke-field-label">Alien ID Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
+            </tr>
+            <tr>
+                <td class="ke-field-label">Driving License Number</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "drivingLicenseNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.drivingLicenseNumber) { %>(if available)<% } %></td>
+            </tr>
+
+            <tr id="kdod-service-no">
+                <td class="ke-field-label">Service Number *</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
+                <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(5-6 digits for service officer or 5-6 digits followed by / and 2 digits for dependant(eg.12345/01))<%} %></td>
+            </tr>
+        </table>
 
     </fieldset>
+
+
+</fieldset>
 
         <fieldset>
             <legend>Address</legend>
@@ -371,6 +370,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 <script type="text/javascript">
     //On ready
     jQuery(function () {
+        jQuery('#identifiers').hide();
+        jQuery('#national-id').hide();
         if("${isKDoD}"=="false"){
             jQuery('#kdod-struct').hide();
             jQuery('#kdod-service-no').hide();
@@ -413,6 +414,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
         jQuery('#county').change(updateSubcounty);
         jQuery('#subCounty').change(updateWard);
+        jQuery('#patient-birthdate_date').change(updateIdentifiers);
 
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
         jQuery('#edit-patient-form .cancel-button').click(function () {
@@ -440,6 +442,17 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         var birthdate = new Date(data.birthdate);
         kenyaui.setDateField('patient-birthdate', birthdate);
         kenyaui.setRadioField('patient-birthdate-estimated', 'true');
+        jQuery('#identifiers').show();
+        // Validate identifiers according to age
+        // Hide Natioanl ID for less than 18 years old
+        if(birthdate !="") {
+            var age = Math.floor((new Date() - new Date(birthdate)) / 1000 / 60 / 60 / 24 / 365.25);
+            if (age > 17) {
+                jQuery('#national-id').show();
+            } else {
+                jQuery('#national-id').hide();
+            }
+        }
     }
     function updateSubcounty() {
 
@@ -493,6 +506,20 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         for (scKey in kenyaAddressHierarchy[selectedCounty][selectedsubCounty]) {
             jQuery('#ward').append(jQuery("<option></option>").attr("value", kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility).text(kenyaAddressHierarchy[selectedCounty][selectedsubCounty][scKey].facility));
 
+        }
+    }
+    function updateIdentifiers() {
+        var selectedDob = jQuery('#patient-birthdate').val();
+        if(selectedDob !="") {
+            jQuery('#identifiers').show();
+            // Validate identifiers according to age
+            // Hide Natioanl ID for less than 18 years old
+            var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
+           if(age > 17){
+               jQuery('#national-id').show();
+           }else{
+               jQuery('#national-id').hide();
+           }
         }
     }
 
