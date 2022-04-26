@@ -372,6 +372,21 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     jQuery(function () {
         jQuery('#identifiers').hide();
         jQuery('#national-id').hide();
+
+        //On Edit prepopulate patient Identifiers
+        var savedAge = jQuery('#patient-birthdate').val();
+        var patientAge = Math.floor((new Date() - new Date(savedAge)) / 1000 / 60 / 60 / 24 / 365.25);
+         if(savedAge !="") {
+            jQuery('#identifiers').show();
+            // Validate identifiers according to age
+            // Hide Natioanl ID for less than 18 years old
+            if(patientAge > 17){
+                jQuery('#national-id').show();
+            }else{
+               jQuery('#national-id').hide();
+            }
+        }
+
         if("${isKDoD}"=="false"){
             jQuery('#kdod-struct').hide();
             jQuery('#kdod-service-no').hide();
@@ -524,3 +539,4 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     }
 
 </script>
+
