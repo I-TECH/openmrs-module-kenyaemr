@@ -574,6 +574,7 @@
 	<bean id="kenyaemr.common.report.allPatientsMissingIdentifiers" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="c7fbb62a-c165-11ec-9d64-0242ac120002" />
 		<property name="name" value="All Patients Missing Identifiers List" />
+	    <property name="description" value="List of clients who do not have any identifier listed" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingAllRegistrationIdentifiersCalculation" />
 		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
