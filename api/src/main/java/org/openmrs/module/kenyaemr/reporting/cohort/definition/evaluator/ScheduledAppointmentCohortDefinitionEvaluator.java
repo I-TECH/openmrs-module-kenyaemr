@@ -56,15 +56,8 @@ public class ScheduledAppointmentCohortDefinitionEvaluator implements CohortDefi
 
 		String qry="select t.patient_id\n" +
 				"from(\n" +
-				"select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-				"greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
-				"greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-				"greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-				"d.patient_id as disc_patient,\n" +
-				"d.effective_disc_date as effective_disc_date,\n" +
-				"max(d.visit_date) as date_discontinued,\n" +
-				"d.discontinuation_reason,\n" +
-				"de.patient_id as started_on_drugs\n" +
+				"select fup.visit_date,fup.patient_id,\n" +
+				"mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca\n" +
 				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
 				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
 				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
@@ -77,7 +70,7 @@ public class ScheduledAppointmentCohortDefinitionEvaluator implements CohortDefi
 				" where fup.visit_date <= date(:endDate)\n" +
 				"group by patient_id\n" +
 				"having (\n" +
-				"          (date(latest_tca) BETWEEN date(:startDate) AND date(:endDate)) " +
+				"          (date(latest_tca) BETWEEN date(:startDate) AND date(:endDate))\n" +
 				")\n" +
 				") t;";
 
