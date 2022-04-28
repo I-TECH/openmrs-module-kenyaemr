@@ -387,6 +387,8 @@ Green Card follow-up visit form
             /*On TB Drugs  */
             if (PATIENT_ON_TB == "true"){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
+                jq('#on-ipt input').prop("disabled", true);
+                jq('input[type=radio].on-ipt').prop("checked", false);
 // jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
                 jq(".tb-patient").text("On TB Treatment");
             }
