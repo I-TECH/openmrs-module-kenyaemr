@@ -230,7 +230,7 @@
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
             </tr>
-            <tr>
+            <tr id="driving-license">
                 <td class="ke-field-label">Driving License Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "drivingLicenseNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.drivingLicenseNumber) { %>(if available)<% } %></td>
@@ -372,6 +372,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     jQuery(function () {
         jQuery('#identifiers').hide();
         jQuery('#national-id').hide();
+        jQuery('#driving-license').hide();
 
         //On Edit prepopulate patient Identifiers
         var savedAge = jQuery('#patient-birthdate').val();
@@ -382,8 +383,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             // Hide Natioanl ID for less than 18 years old
             if(patientAge > 17){
                 jQuery('#national-id').show();
+                jQuery('#driving-license').show();
             }else{
                jQuery('#national-id').hide();
+               jQuery('#driving-license').hide();
             }
         }
 
@@ -464,8 +467,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var age = Math.floor((new Date() - new Date(birthdate)) / 1000 / 60 / 60 / 24 / 365.25);
             if (age > 17) {
                 jQuery('#national-id').show();
+                jQuery('#driving-license').show();
             } else {
                 jQuery('#national-id').hide();
+                jQuery('#driving-license').hide();
             }
         }
     }
@@ -532,8 +537,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
            if(age > 17){
                jQuery('#national-id').show();
+               jQuery('#driving-license').show();
            }else{
                jQuery('#national-id').hide();
+               jQuery('#driving-license').hide();
            }
         }
     }
