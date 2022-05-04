@@ -69,6 +69,49 @@
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
+                   <tr>
+                     <td>Weight (Kgs): ${weight}</td>
+                      <td colspan="2">TB Screening Outcome: ${patient.tbScreeningOutcome}</td>
+                   </tr>
+                 <tr>
+                    <td>Height (cm): ${height}</td>
+                    <td colspan="2">Chronic Illness:: ${chronicDisease}</td>
+                </tr>
+                 <tr>
+                    <td>BMI: ${patient.bmi}</td>
+                    <td colspan="2">OI History: ${iosResults}</td>
+                </tr>
+                 <tr>
+                    <td>Blood Pressure: ${bloodPressure}/${setBpDiastolic}</td>
+                    <td colspan="2">STI Screening: ${patient.stiScreeningOutcome}</td>
+                </tr>
+
+                 <tr>
+                   <td>Oxygen Saturation: ${oxygenSaturation}</td>
+                    <td colspan="2">CACX Screening: ${patient.caxcScreeningOutcome}</td>
+                </tr>
+
+                <tr>
+                   <td>Respiratory rate: ${patient.respiratoryRate}</td>
+                   <td colspan="2">TPT Start Date: ${tbStartDate}</td>
+                </tr>
+                <tr>
+                   <td>Pulse Rate: ${pulseRate}</td>
+                   <td colspan="2">TPT Completion Date: ${tbEndDate}</td>
+                </tr>
+                <tr>
+                    <td>FP Method: ${patient.familyProtection}</td>
+
+
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                     <td colspan="2">LMP (For Women): ${patient.lmp}</td>
+                    </includeIf>
+
+                </tr>
+
+                <tr>
+                     <td colspan="3">&nbsp;</td>
+                </tr>
                 <tr>
                     <td colspan="3">Treatment supporter details:</td>
                 </tr>
@@ -85,20 +128,14 @@
                 <tr>
                     <td colspan="3">Drug allergies: ${allergies}</td>
                 </tr>
+
+
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td colspan="3">Chronic Illness: ${chronicDisease}</td>
-                </tr>
-                  <tr>
-                      <td>Respiratory Rate: ${patient.respiratoryRate}</td>
-                      <td>Blood Pressure: ${patient.bloodPressure}</td>
-                  </tr>
-                  <tr>
-                   <td>Oxygen Saturation: ${patient.oxygenSaturation}</td>
-                  <td>Pulse Rate: ${patient.pulseRate}</td>
-                  </tr>
+
+
+
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
@@ -114,13 +151,10 @@
                 <tr>
                     <td>Drugs/Regimen: ${patient.purposeDrugs}</td>
                 </tr>
-                 <tr>
-                    <td>Family Protection: ${patient.familyProtection}</td>
-                </tr>
+
                 <tr>
-                <td>Weight: ${patient.weightAtArtStart}</td>
-                          <td>Height: ${patient.heightAtArtStart}</td>
-                <td>BMI: ${patient.bmi}</td>
+
+
                 </tr>
 
                     <tr id="kdod-struct">
@@ -133,38 +167,18 @@
                         <td >kDoD Number: ${patient.kDoDNumber}</td>
 
                     </tr>
-                <tr>
-                  <includeIf velocityTest="$patient.gender == 'F' ">
-                   <td>LMP: ${patient.lmp}</td>
-                   </includeIf>
-                </tr>
-                 <tr>
 
-                    <td>TPT Start Date: ${patient.dateEnrolledInTb}</td>
-                    <td>TPT Completion Date: ${patient.dateCompletedInTb}</td>
-
-                </tr>
-
-                    <td colspan="3">TB Screening: ${patient.tbScreeningOutcome}</td>
-                </tr>
-                <tr>
-                    <td colspan="3">STI Screening: ${patient.stiScreeningOutcome}</td>
-                </tr>
-                <tr>
-                    <td colspan="3">CACX Screening: ${patient.caxcScreeningOutcome}</td>
-                </tr>
-
-                 <tr>
 
                     <td>Date: ${patient.purposeDate}</td>
                     <td colspan="2">First regimen: ${firstRegimen}</td>
                 </tr>
-                <tr>
-                    <td colspan="3">Past or current OI: ${iosResults}</td>
-                </tr>
+
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
+
+
+
                 <tr>
                     <td>Current ART regimen: ${currentRegimen}</td>
                     <td colspan="2">
@@ -258,6 +272,7 @@
                     <tr>
 
 
+
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -271,6 +286,88 @@
                     <td>
                         Next appointment: ${returnVisitDate}
                     </td>
+
+                </tr>
+                <tr>
+                  <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                   <td colspan="2">VL Load Trends</td>
+                    <td colspan="2">CD4 Trends</td>
+                </tr>
+                <tr>
+                 <td colspan="2">
+                    <table width="75%">
+                      <tr>
+                         <td width="50%">VL Date</td>
+                          <td>Results</td>
+                           </tr>
+                    </table>
+                 </td>
+                 <td colspan="2">
+                    <table width="75%">
+                        <tr>
+                            <td width="50%">CD4 Date</td>
+                             <td>Results</td>
+                       </tr>
+                 </table>
+                </td>
+                </tr>
+
+                <tr>
+                   <td colspan="2">
+                       <table width="75%">
+                          <tr>
+                            <td width="50%">${recentVlDate}</td>
+                            <td>${recentVl}</td>
+                          </tr>
+                       </table>
+                   </td>
+                   <td colspan="2">
+                       <table width="75%">
+                           <tr>
+                               <td width="50%">${recentCd4CountDate} </td>
+                               <td>${recentCd4Count}</td>
+                           </tr>
+                       </table>
+                   </td>
+                </tr>
+                 <tr>
+                     <td colspan="2">
+                        <table width="75%">
+                            <tr>
+                                <td width="50%">${firstVlResultsDate}</td>
+                                <td>${firstVlResultsData}</td>
+                            </tr>
+                        </table>
+                     </td>
+                     <td colspan="2">
+                       <table width="75%">
+                            <tr>
+                               <td width="50%">${recentCd4CountDate} </td>
+                               <td>${recentCd4Count}</td>
+                            </tr>
+                       </table>
+                     </td>
+                 </tr>
+
+                <tr>
+                    <td>Clinical Notes: </td>
+                    <td colspan="2">
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Clinician Name: </td>
+                    <td colspan="2">
+
+                    </td>
+                </tr>
+                <tr>
+                   <td>Clinician Signature: </td>
+                   <td colspan="2">
+                   </td>
                 </tr>
 
             </table>

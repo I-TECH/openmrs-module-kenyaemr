@@ -43,6 +43,11 @@
         private String whoStagingAtEnrollment;
         private String patientEntryPoint;
         private String dateEntryPoint;
+        private String vlResults;
+        private String vlDates;
+        private String cd4Dates;
+        private String cd4Results;
+
         private String transferInFacility;
         private String transferInDate;
         private String nameOfTreatmentSupporter;
@@ -55,6 +60,7 @@
         private String oxygenSaturation;
         private String lmp;
         private String bmi;
+        private  String familyProtection;
         private String kDoDNumber;
         private String kDoDUnit;
         private String kDoDCadre;
@@ -70,8 +76,8 @@
         private String purposeDrugs;
         private String purposeDate;
         private String weightAtArtStart;
-        private String heightAtArtStart;
-        private String familyProtection;
+        private String heightAtArtStart;;
+        private String  bpDiastolic;
         private String currentRegimen;
         private List<String> ois;
         private String dateOfReport;
@@ -106,7 +112,7 @@
         public PatientSummary() {
         }
 
-        public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date,String dateEnrolledInTb,String dateCompletedInTb, String dateEnrolledIntoCare, String whoStagingAtEnrollment, String patientEntryPoint, String dateEntryPoint, String transferInStatus,String tbScreeningOutcome, String stiScreeningOutcome, String kDoDCadre,String kDoDUnit ,String kDoDNumber,String kDoDRank, String caxcScreeningOutcome ,String transferInDate,String pulseRate,String bmi,String lmp, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate, String weightAtArtStart,String familyProtection, String heightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate, String bloodPressure,String respiratoryRate,String oxygenSaturation) {
+        public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date,String dateEnrolledInTb,String dateCompletedInTb, String dateEnrolledIntoCare, String whoStagingAtEnrollment,String vlResults, String vlDates, String cd4Dates, String cd4Results, String patientEntryPoint, String dateEntryPoint, String transferInStatus,String tbScreeningOutcome, String stiScreeningOutcome, String kDoDCadre,String kDoDUnit ,String kDoDNumber,String kDoDRank, String caxcScreeningOutcome ,String transferInDate,String pulseRate,String bmi,String lmp, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate,String bpDiastolic, String weightAtArtStart,String familyProtection, String heightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate, String bloodPressure,String respiratoryRate,String oxygenSaturation) {
             this.names = names;
             this.upn = upn;
             this.birthDate = birthDate;
@@ -125,6 +131,10 @@
             this.whoStagingAtEnrollment = whoStagingAtEnrollment;
             this.patientEntryPoint = patientEntryPoint;
             this.dateEntryPoint = dateEntryPoint;
+            this.vlResults  = vlResults;
+            this.vlDates = vlDates;
+            this.cd4Dates  = cd4Dates;
+            this.cd4Results = cd4Results;
             this.transferInFacility = transferInStatus;
             this.transferInDate = transferInDate;
             this.nameOfTreatmentSupporter = nameOfTreatmentSupporter;
@@ -150,6 +160,7 @@
             this.weightAtArtStart = weightAtArtStart;
             this.heightAtArtStart = heightAtArtStart;
             this.familyProtection = familyProtection;
+            this.bpDiastolic = bpDiastolic;
             this.currentRegimen = currentRegimen;
             this.ois = ois;
             this.dateOfReport = dateOfReport;
@@ -292,6 +303,36 @@
 
         public void setDateEntryPoint(String dateEntryPoint) {
             this.dateEntryPoint = dateEntryPoint;
+        }
+
+        public String getVlResults() {
+            return vlResults;
+        }
+
+        public void setVlResults(String vlResults) {
+            this.vlResults = vlResults;
+        }
+        public String getVlDates() {
+            return vlDates;
+        }
+
+        public void setVlDates(String vlDates) {
+            this.vlDates = vlDates;
+        }
+
+        public String getCd4Results() {
+            return cd4Results;
+        }
+
+        public void setCd4Results(String cd4Results) {
+            this.cd4Results = cd4Results;
+        }
+        public String getCd4Dates() {
+            return cd4Dates;
+        }
+
+        public void setCd4Dates(String cd4Dates) {
+            this.cd4Dates = cd4Dates;
         }
 
         public String getTransferInFacility() {
@@ -507,6 +548,14 @@
 
         public void setFamilyProtection(String familyProtection) {
             this.familyProtection = familyProtection;
+        }
+
+        public String getBpDiastolic() {
+            return bpDiastolic;
+        }
+
+        public void setBpDiastolic(String bpDiastolic) {
+            this.bpDiastolic = bpDiastolic;
         }
 
         public String getHeightAtArtStart() {
