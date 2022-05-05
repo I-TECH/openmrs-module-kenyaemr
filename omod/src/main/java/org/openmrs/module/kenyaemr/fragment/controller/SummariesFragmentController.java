@@ -22,14 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.PatientProgram;
-import org.openmrs.PersonName;
-import org.openmrs.Program;
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -49,6 +42,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
 import org.openmrs.module.kenyaemr.calculation.library.models.PatientSummary;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
@@ -80,6 +74,8 @@ public class SummariesFragmentController {
     protected static final Log log = LogFactory.getLog(SummariesFragmentController.class);
     private AdministrationService administrationService = Context.getAdministrationService();
     final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
+
+
     public void controller(@FragmentParam("patient") Patient patient,
                            FragmentModel model){
         PatientWrapper wrapper = new PatientWrapper(patient);
@@ -157,6 +153,52 @@ public class SummariesFragmentController {
         else {
             patientSummary.setWeightAtArtStart("");
         }
+        // KDOD Number
+        String serviceNumber ="";
+        PatientIdentifierType kdodServiceNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
+        PatientIdentifier serviceNumberObj = patientService.getPatient(patient.getPatientId()).getPatientIdentifier(kdodServiceNumber);
+        if(serviceNumberObj != null){
+            serviceNumber = serviceNumberObj.getIdentifier();
+        }else {
+            patientSummary.setKdodNumber("");
+
+        }
+        // KDOD Unit
+        String kdodUnit = "";
+        PersonAttributeType kdodServiceUnit = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.KDOD_UNIT);
+        PersonAttribute kdodUnitObj = patientService.getPatient(patient.getPatientId()).getAttribute(kdodServiceUnit);
+
+        if(kdodUnitObj != null){
+            kdodUnit = kdodUnitObj.getValue();
+        }else {
+            patientSummary.setKdodUnit("");
+
+        }
+
+        // KDOD Cadre
+        String kdodCadre = "";
+        PersonAttributeType kdodServiceCadre = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.KDOD_CADRE);
+        PersonAttribute kdodCadreObj = patientService.getPatient(patient.getPatientId()).getAttribute(kdodServiceCadre);
+
+        if(kdodCadreObj != null){
+            kdodCadre = kdodCadreObj.getValue();
+        }else {
+            patientSummary.setKdodCadre("");
+
+        }
+
+        // KDOD Rank
+        String kdodRank = "";
+        PersonAttributeType kdodServiceRank = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.KDOD_RANK);
+        PersonAttribute kdodRankObj = patientService.getPatient(patient.getPatientId()).getAttribute(kdodServiceRank);
+
+        if(kdodRankObj != null){
+            kdodRank = kdodRankObj.getValue();
+        }else {
+            patientSummary.setKdodCadre("");
+
+        }
+        System.out.println("=======KDOD UNIT NUMBER ===>  "+ kdodUnit);
         //Oxygen Saturation/
 
         // weight
@@ -169,7 +211,6 @@ public class SummariesFragmentController {
             patientSummary.setOxygenSaturation("");
         }
 
-
         //pulse rate
         CalculationResultMap latestPulseRate = Calculations.lastObs(Dictionary.getConcept(Dictionary.PULSE_RATE), Arrays.asList(patient.getId()), context);
         Obs latestPulseRates = EmrCalculationUtils.obsResultForPatient(latestPulseRate, patient.getPatientId());
@@ -179,8 +220,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setPulseRate("");
         }
-
-
         //Blood Pressure
         CalculationResultMap bloodPressure = Calculations.lastObs(Dictionary.getConcept(Dictionary.BLOOD_PRESSURE), Arrays.asList(patient.getId()), context);
         Obs latestBloodPressure = EmrCalculationUtils.obsResultForPatient(bloodPressure, patient.getPatientId());
@@ -256,11 +295,6 @@ public class SummariesFragmentController {
             patientSummary.setDateCompletedInTb("None");
         }
 
-        //all vl results
-
-
-
-
         //first cd4 count
         CalculationResultMap firstCd4CountMap = Calculations.firstObs(Dictionary.getConcept(Dictionary.CD4_COUNT), Arrays.asList(patient.getId()), context);
         Obs cd4Value = EmrCalculationUtils.obsResultForPatient(firstCd4CountMap, patient.getPatientId());
@@ -282,10 +316,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setDateEnrolledIntoCare("");
         }
-
-
-
-
         //who staging
         CalculationResultMap whoStage = Calculations.firstObs(Dictionary.getConcept(Dictionary.CURRENT_WHO_STAGE), Arrays.asList(patient.getPatientId()), context);
         Obs firstWhoStageObs = EmrCalculationUtils.obsResultForPatient(whoStage, patient.getPatientId());
@@ -724,6 +754,7 @@ public class SummariesFragmentController {
             }
         }
         if(isKDoD.equals("true")){
+
             kDoDServiceNumber = wrapper.getKDoDServiceNumber();
             kDoDCadre = wrapper.getCadre();
             kDoDRank = wrapper.getRank();
@@ -769,32 +800,6 @@ public class SummariesFragmentController {
         else {
             toFacility = "N/A";
         }
-        /*Create list of cadre answer concepts  */
-        List<String> cadreOptions = Arrays.asList(
-                new String("Troop"),
-                new String("Civilian")
-        );
-        model.addAttribute("cadreOptions", cadreOptions);
-        /*Create list of rank answer Options  */
-        List<String> rankOptions = Arrays.asList(
-                new String("General(Gen)"),
-                new String("Lieutenant General (Lt Gen)"),
-                new String("Major General (Maj Gen)"),
-                new String("Brigadier (Brig)"),
-                new String("Colonel (Col)"),
-                new String("Lieutenant Colonel (Lt Col)"),
-                new String("Major (Maj)"),
-                new String("Captain (Capt)"),
-                new String("Lieutenant (Lt)"),
-                new String("2nd Lieutenant (2lt)"),
-                new String("Warrant officer 1 (WO1)"),
-                new String("Warrant officer 2 (WO2)"),
-                new String("Senior Sergeant (Ssgt)"),
-                new String("Sergeant (Sgt)"),
-                new String("Corporal (Cpl)"),
-                new String("Private (Spte)")
-        );
-        model.addAttribute("rankOptions", rankOptions);
         model.addAttribute("isKDoD", isKDoD);
         model.addAttribute("patient", patientSummary);
         model.addAttribute("names", stringBuilder);
@@ -828,6 +833,11 @@ public class SummariesFragmentController {
         model.addAttribute("toFacility", toFacility);
         model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
+        model.addAttribute("serviceNumber", serviceNumber);
+        model.addAttribute("kdodUnit", kdodUnit);
+        model.addAttribute("kdodCadre", kdodCadre);
+        model.addAttribute("kdodRank", kdodRank);
+
 
 
         model.addAttribute("iosResults", iosResults);
