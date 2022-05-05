@@ -198,7 +198,6 @@ public class SummariesFragmentController {
             patientSummary.setKdodCadre("");
 
         }
-        System.out.println("=======KDOD UNIT NUMBER ===>  "+ kdodUnit);
         //Oxygen Saturation/
 
         // weight
@@ -729,7 +728,6 @@ public class SummariesFragmentController {
         CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(ViralLoadAndLdlCalculation.class, null, patient);
         String viralLoadValue = "None";
         String viralLoadDate = "None";
-        System.out.println("RECENT RESULTS ===>> "+ vlResults);
         if(!vlResults.isEmpty()) {
             String values = vlResults.getValue().toString();
             //split by brace
