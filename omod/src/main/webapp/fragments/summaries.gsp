@@ -27,8 +27,6 @@
         <div class="ke-panel-heading">Patient Summary</div>
         <div class="ke-panel-content" style="background-color: #D9F4D3">
             <table id="tblDetails" class="moh257" align="center" border="1" cellpadding="0" cellspacing="0">
-
-
                 <tr>
                     <td>Date of report: ${patient.dateOfReport}</td>
                     <td>Clinic name: ${patient.clinicName}</td>
@@ -120,22 +118,15 @@
                     <td>Relationship: ${patient.relationshipToTreatmentSupporter}</td>
                     <td>Contact details: ${patient.contactOfTreatmentSupporter}</td>
                 </tr>
-
-
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
                 <tr>
                     <td colspan="3">Drug allergies: ${allergies}</td>
                 </tr>
-
-
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
-
-
-
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
@@ -153,32 +144,15 @@
                 </tr>
 
                 <tr>
-
-
                 </tr>
-
-                    <tr id="kdod-struct">
-                        <td>kDoD Cadre: ${patient.kDoDCadre}</td>
-                         <td>kDoD Unit: ${patient.kDoDUnit}</td>
-                        <td>kDoD Rank: ${patient.kDoDRank}</td>
-                    </tr>
-
-                    <tr id="kdod-service-no">
-                        <td >kDoD Number: ${patient.kDoDNumber}</td>
-
-                    </tr>
 
 
                     <td>Date: ${patient.purposeDate}</td>
                     <td colspan="2">First regimen: ${firstRegimen}</td>
                 </tr>
-
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
-
-
-
                 <tr>
                     <td>Current ART regimen: ${currentRegimen}</td>
                     <td colspan="2">
@@ -286,71 +260,10 @@
                     <td>
                         Next appointment: ${returnVisitDate}
                     </td>
-
                 </tr>
                 <tr>
                   <td colspan="3">&nbsp;</td>
                 </tr>
-                <tr>
-                   <td colspan="2">VL Load Trends</td>
-                    <td colspan="2">CD4 Trends</td>
-                </tr>
-                <tr>
-                 <td colspan="2">
-                    <table width="75%">
-                      <tr>
-                         <td width="50%">VL Date</td>
-                          <td>Results</td>
-                           </tr>
-                    </table>
-                 </td>
-                 <td colspan="2">
-                    <table width="75%">
-                        <tr>
-                            <td width="50%">CD4 Date</td>
-                             <td>Results</td>
-                       </tr>
-                 </table>
-                </td>
-                </tr>
-
-                <tr>
-                   <td colspan="2">
-                       <table width="75%">
-                          <tr>
-                            <td width="50%">${recentVlDate}</td>
-                            <td>${recentVl}</td>
-                          </tr>
-                       </table>
-                   </td>
-                   <td colspan="2">
-                       <table width="75%">
-                           <tr>
-                               <td width="50%">${recentCd4CountDate} </td>
-                               <td>${recentCd4Count}</td>
-                           </tr>
-                       </table>
-                   </td>
-                </tr>
-                 <tr>
-                     <td colspan="2">
-                        <table width="75%">
-                            <tr>
-                                <td width="50%">${firstVlResultsDate}</td>
-                                <td>${firstVlResultsData}</td>
-                            </tr>
-                        </table>
-                     </td>
-                     <td colspan="2">
-                       <table width="75%">
-                            <tr>
-                               <td width="50%">${recentCd4CountDate} </td>
-                               <td>${recentCd4Count}</td>
-                            </tr>
-                       </table>
-                     </td>
-                 </tr>
-
                 <tr>
                     <td>Clinical Notes: </td>
                     <td colspan="2">
@@ -419,7 +332,6 @@
                     }
                 });
             }
-
 
             jQuery('#print').click(function(){
                 var disp_setting="toolbar=yes,location=yes,directories=yes,menubar=yes,";

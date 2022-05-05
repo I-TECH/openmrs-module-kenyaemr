@@ -157,12 +157,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setWeightAtArtStart("");
         }
-
-
-
-
-
-
         //Oxygen Saturation/
 
         // weight
@@ -432,93 +426,6 @@ public class SummariesFragmentController {
             }
         }
 
-//            CalculationResultMap vlAll = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), Arrays.asList(patient.getPatientId()), context);
-//            ListResult allVlResults = (ListResult) vlAll.get(patient.getPatientId());
-//            List<Obs> listOfVls = CalculationUtils.extractResultValues(allVlResults);
-//
-//            String vlsResulsts = "";
-//            String vlsDates = "";
-//            if(listOfVls.size() == 0){
-//                vlsResulsts = "None";
-//            }
-//            else if(listOfVls.size() == 1){
-//                vlsResulsts = listOfVls.get(0).getValueCoded().getName().getName();
-//            }
-//            else{
-//                for (Obs obs : listOfVls) {
-//                    if (obs != null) {
-//                        vlsResulsts += obs.getValueCoded().getName().getName()+" ";
-//                    }
-//                }
-//            }
-        //all recent viral load
-        //  CalculationResult mostVlResults = EmrCalculationUtils.evaluateForPatient(MostViralLoadAndLdlCalculation.class, null, patient);
-        //  CalculationResultMap allVlResult = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), Arrays.asList(patient.getPatientId()), context);
-        //   ListResult listResult = (ListResult) allVlResult.get(ptId);
-        // List<Obs> obsList = CalculationUtils.extractResultValues(listResult);
-
-
-
-
-
-        CalculationResultMap allVlResult = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap allLDLResult = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
-        ListResult vlListResults = (ListResult) allVlResult.get(patient.getPatientId());
-        List<Obs> listOfVlResult = CalculationUtils.extractResultValues(vlListResults);
-        ListResult ldlListResults = (ListResult) allLDLResult.get(patient.getPatientId());
-        List<Obs> listOfLDLResult = CalculationUtils.extractResultValues(ldlListResults);
-
-        Double firstVlResultsData = 0.0;
-        String firstVlResultsDate = null;
-        Date secondVlResultsDate = null;
-        Double allSecondLastVlResultsData = 0.0;
-        String allSecondLastVlResultsDate = null;
-        String firstLDLResultsData = "";
-        String secondLDLResultsData = "";
-        String firstLdlDate =null;
-        Date secondLdlDate =null;
-
-//        if(numericVLObs != null && ldlVLObs == null){
-//            viralLoadValues.put(numericVLObs.getValueNumeric()+" copies/ml",numericVLObs.getObsDatetime());
-//        }
-//        if(numericVLObs == null && ldlVLObs != null){
-//            viralLoadValues.put( "LDL", ldlVLObs.getObsDatetime());
-//        }
-
-
-        if(listOfVlResult.size() > 0){
-            Obs firstVlResultObs = listOfVlResult.get(0);
-            if (firstVlResultObs != null) {
-                firstVlResultsData = firstVlResultObs.getValueNumeric();
-                firstVlResultsDate =formatDate( firstVlResultObs.getObsDatetime());
-            }
-        }
-
-        if(listOfVlResult.size() > 0){
-            Obs secondVlResultObs = listOfVlResult.get(1);
-            if (secondVlResultObs != null) {
-                allSecondLastVlResultsData = secondVlResultObs.getValueNumeric();
-                allSecondLastVlResultsDate =formatDate( secondVlResultObs.getObsDatetime());
-            }
-        }
-        if(listOfLDLResult.size() > 0){
-            Obs firstLDLResultObs = listOfLDLResult.get(0);
-            if (firstLDLResultObs != null) {
-                firstLDLResultsData = "LDL";
-                firstLdlDate = formatDate(listOfLDLResult.get(0).getObsDatetime());
-            }
-        }
-        if(listOfLDLResult.size() > 0){
-            Obs secondLDLResultObs = listOfVlResult.get(1);
-            if (secondLDLResultObs != null) {
-                secondLDLResultsData = "LDL";
-                secondLdlDate = listOfLDLResult.get(1).getObsDatetime();
-            }
-        }
-
-
-
-
         //allergies
         CalculationResultMap alergies = Calculations.allObs(Dictionary.getConcept("160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         ListResult allergyResults = (ListResult) alergies.get(patient.getPatientId());
@@ -599,13 +506,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setCd4AtArtStart("");
         }
-
-
-
-
-
-
-
         //height at art initiation
         CalculationResult bmiResults = EmrCalculationUtils.evaluateForPatient(BMICalculation.class, null,patient);
         if(bmiResults != null){
@@ -614,8 +514,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setBmi("");
         }
-
-
         //first regimen for the patient
         CalculationResult firstRegimenResults = EmrCalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient);
         String firstRegimen;
@@ -912,13 +810,6 @@ public class SummariesFragmentController {
         model.addAttribute("oxygenSaturation", patientSummary.getOxygenSaturation());
         model.addAttribute("pulseRate", patientSummary.getPulseRate());
 
-        model.addAttribute("firstVlResultsData", firstVlResultsData);
-        model.addAttribute("secondVlResultsDate", secondVlResultsDate);
-        model.addAttribute("allSecondLastVlResultsData", allSecondLastVlResultsData);
-        model.addAttribute("allSecondLastVlResultsDate", allSecondLastVlResultsDate);
-
-        // model.addAttribute("vlsResulsts1", vlsResulsts);
-
         model.addAttribute("allVlResults", patientSummary.getVlResults());
         model.addAttribute("allVlDates", patientSummary.getVlDates());
         model.addAttribute("allCd4Results", patientSummary.getCd4Results());
@@ -937,12 +828,7 @@ public class SummariesFragmentController {
         model.addAttribute("toFacility", toFacility);
         model.addAttribute("tiDate", tiDate);
         model.addAttribute("allergies", allergies);
-        model.addAttribute("firstLDLResultsData", firstLDLResultsData);
-        model.addAttribute("secondLDLResultsData", secondLDLResultsData);
-        model.addAttribute("firstLdlDate", firstLdlDate);
-        model.addAttribute("secondLdlDate", secondLdlDate);
-        model.addAttribute("firstVlResultsData", firstVlResultsData);
-        model.addAttribute("firstVlResultsDate", firstVlResultsDate);
+
 
         model.addAttribute("iosResults", iosResults);
         model.addAttribute("clinicValues", clinicValues);
@@ -1031,8 +917,6 @@ public class SummariesFragmentController {
 
         return value;
     }
-
-
 
     String tbScreeningOutcome(Concept concept) {
         String value = "N/A";
