@@ -296,6 +296,16 @@ public class EditPatientFragmentController {
 		private String alienIdNumber;
 		private String drivingLicenseNumber;
 
+		public String getUniquePatientIdentifier() {
+			return uniquePatientIdentifier;
+		}
+
+		public void setUniquePatientIdentifier(String uniquePatientIdentifier) {
+			this.uniquePatientIdentifier = uniquePatientIdentifier;
+		}
+
+		private String uniquePatientIdentifier;
+
 
 
 		/**
@@ -395,6 +405,7 @@ public class EditPatientFragmentController {
 			if (savedOrphan != null) {
 				orphan = savedOrphan.getValueCoded();
 			}
+			uniquePatientIdentifier = wrapper.getUniquePatientIdentifier();
 
 		}
 
@@ -466,6 +477,7 @@ public class EditPatientFragmentController {
 			validateIdentifierField(errors, "birthCertificateNumber", CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
 			validateIdentifierField(errors, "alienIdNumber", CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
 			validateIdentifierField(errors, "drivingLicenseNumber", CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
+			validateIdentifierField(errors, "uniquePatientIdentifier", CommonMetadata._PatientIdentifierType.UPI_NUMBER);
 
 
 
@@ -561,6 +573,7 @@ public class EditPatientFragmentController {
 			wrapper.setBirthCertificateNumber(birthCertificateNumber, location);
 			wrapper.setAlienIdNumber(alienIdNumber, location);
 			wrapper.setDrivingLicenseNumber(drivingLicenseNumber, location);
+			wrapper.setUniquePatientIdentifier(uniquePatientIdentifier, location);
 
 
 			wrapper.setNextOfKinName(nameOfNextOfKin);

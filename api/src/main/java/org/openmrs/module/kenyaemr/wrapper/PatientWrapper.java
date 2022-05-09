@@ -12,7 +12,6 @@ package org.openmrs.module.kenyaemr.wrapper;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.module.kenyacore.wrapper.AbstractPatientWrapper;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
@@ -421,6 +420,24 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	 */
 	public void setKDoDUnit(String KDoDUnit) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_UNIT, KDoDUnit);
+	}
+
+	/**
+	 * Gets the patient UPI
+	 * @return the identifier value
+	 */
+	public String getUniquePatientIdentifier() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.UPI_NUMBER);
+	}
+
+
+	/**
+	 * Sets the patient UPI number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setUniquePatientIdentifier(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.UPI_NUMBER, value, location);
 	}
 
 }
