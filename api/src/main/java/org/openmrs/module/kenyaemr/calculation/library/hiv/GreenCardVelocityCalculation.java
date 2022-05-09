@@ -244,7 +244,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             if (firstDrugRegimenEditorEncounter != null) {
                 SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstDrugRegimenEditorEncounter.getAllObs(), firstDrugRegimenEditorEncounter);
                 artStartObsDate =o.get("startDate").toString();
-                if (artStartObsDate != null) {
+                if (artStartObsDate != null && !artStartObsDate.equals("")) {
                     try {
                         artStartDate = DATE_FORMAT.parse(artStartObsDate);
                         artStartCurrDiff = monthsBetween(currentDate,artStartDate);
