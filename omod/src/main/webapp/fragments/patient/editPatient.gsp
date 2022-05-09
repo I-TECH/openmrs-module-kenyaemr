@@ -208,7 +208,15 @@
             <tr id="national-id">
                 <td class="ke-field-label">National ID Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(Enter National Identification Number or patient's National ID waiting card number if available)<% } %></td>
+                <td class="ke-field-instructions"><% if (command.nationalIdNumber) { %>
+
+                        <button type="button"
+                                onclick="ui.navigate('${ ui.pageLink("kenyaemr", "upi/createManifest", [ returnUrl: ui.thisUrl() ])}')">
+                            <img src="${ui.resourceLink("kenyaui", "images/buttons/report_queue.png")}"/>
+                            Verify
+                        </button>
+
+                    <% } %></td>
             </tr>
             <tr id="passport-no">
                 <td class="ke-field-label">Passport Number</td>
