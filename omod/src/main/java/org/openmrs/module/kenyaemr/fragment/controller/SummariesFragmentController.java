@@ -254,7 +254,7 @@ public class SummariesFragmentController {
 
         CalculationResultMap respiratoryRate = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESPIRATORY_RATE), Arrays.asList(patient.getId()), context);
         Obs latestRespiratoryRate = EmrCalculationUtils.obsResultForPatient(respiratoryRate, patient.getPatientId());
-        if(latestBloodPressure != null){
+        if(latestRespiratoryRate != null){
             patientSummary.setRespiratoryRate(latestRespiratoryRate.getValueNumeric().toString());
         }
         else {
