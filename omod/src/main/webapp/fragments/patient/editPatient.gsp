@@ -209,23 +209,25 @@
                 <td class="ke-field-label">National ID Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(Enter National Identification Number or patient's National ID waiting card number if available)<% } %></td>
+                <td> <input type="checkbox" name="other-identifiers" value="Y"
+                            id="other-identifiers" /> Add other identifiers </td>
             </tr>
-            <tr>
+            <tr id="passport-no">
                 <td class="ke-field-label">Passport Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "passPortNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.passPortNumber) { %>(if available)<% } %></td>
             </tr>
-            <tr>
+            <tr id="huduma-no">
                 <td class="ke-field-label">Huduma Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "hudumaNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.hudumaNumber) { %>(if available)<% } %></td>
             </tr>
-            <tr>
+            <tr  id="birth-cert-no">
                 <td class="ke-field-label">Birth Certificate Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
             </tr>
-            <tr>
+            <tr id="alien-no">
                 <td class="ke-field-label">Alien ID Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
@@ -372,7 +374,13 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     jQuery(function () {
         jQuery('#identifiers').hide();
         jQuery('#national-id').hide();
+        jQuery('#birth-cert-no').hide();
+        //Other identifiers
+        jQuery('#alien-no').hide();
+        jQuery('#huduma-no').hide();
+        jQuery('#passport-no').hide();
         jQuery('#driving-license').hide();
+        jQuery('#other-identifiers').click(otherIdentifiersChange);
 
         //On Edit prepopulate patient Identifiers
         var savedAge = jQuery('#patient-birthdate').val();
@@ -383,10 +391,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             // Hide Natioanl ID for less than 18 years old
             if(patientAge > 17){
                 jQuery('#national-id').show();
-                jQuery('#driving-license').show();
+
             }else{
                jQuery('#national-id').hide();
-               jQuery('#driving-license').hide();
             }
         }
 
@@ -467,10 +474,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var age = Math.floor((new Date() - new Date(birthdate)) / 1000 / 60 / 60 / 24 / 365.25);
             if (age > 17) {
                 jQuery('#national-id').show();
-                jQuery('#driving-license').show();
             } else {
                 jQuery('#national-id').hide();
-                jQuery('#driving-license').hide();
             }
         }
     }
@@ -537,11 +542,38 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
            if(age > 17){
                jQuery('#national-id').show();
-               jQuery('#driving-license').show();
            }else{
                jQuery('#national-id').hide();
-               jQuery('#driving-license').hide();
            }
+        }
+    }
+    //Ckeckbox to populate the other identifiers
+    var otherIdentifiersChange = function () {
+
+        var val = jq(this).val();
+        var selectedDob = jQuery('#patient-birthdate').val();
+        if (jq(this).is(':checked')){
+            jQuery('#alien-no').show();
+            jQuery('#huduma-no').show();
+            jQuery('#passport-no').show();
+            var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
+            if(age > 17){
+                jQuery('#driving-license').show();
+            }
+        }else{
+            jQuery('#alien-no').hide();
+            jQuery('#huduma-no').hide();
+            jQuery('#passport-no').hide();
+        }
+        //provide driving license for +18 years
+        var selectedDob = jQuery('#patient-birthdate').val();
+        if(selectedDob !="" && jQuery(this).is(':checked')) {
+            var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
+            if(age > 17){
+                jQuery('#driving-license').show();
+            }else{
+                jQuery('#driving-license').hide();
+            }
         }
     }
 
