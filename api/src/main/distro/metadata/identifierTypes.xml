@@ -28,4 +28,5 @@
 	<ref key="BIRTH_CERTIFICATE_NUMBER" uuid="68449e5a-8829-44dd-bfef-c9c8cf2cb9b2" />
 	<ref key="ALIEN_ID_NUMBER" uuid="1c7d0e5b-2068-4816-a643-8de83ab65fbf" />
 	<ref key="DRIVING_LICENSE" uuid="ca125004-e8af-445d-9436-a43684150f8b" />
+	<ref key="UPI_NUMBER" uuid="279B50EC-DB1B-4F64-9AC7-9658A4511A87" />
 </refs>

@@ -87,6 +87,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String BIRTH_CERTIFICATE_NUMBER = Metadata.IdentifierType.BIRTH_CERTIFICATE_NUMBER;
 		public static final String ALIEN_ID_NUMBER = Metadata.IdentifierType.ALIEN_ID_NUMBER;
 		public static final String DRIVING_LICENSE = Metadata.IdentifierType.DRIVING_LICENSE;
+		public static final String UPI_NUMBER = Metadata.IdentifierType.UPI_NUMBER;
 	}
 
 	public static final class _PersonAttributeType {
@@ -206,6 +207,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.ALIEN_ID_NUMBER));
 		install(patientIdentifierType("Driving License Number", "Driving License number for client", "^[a-zA-Z0-9]+$", "Allows for alphanumeric format",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.DRIVING_LICENSE));
+		install(patientIdentifierType("Unique Patient Identifier - UPI", "Unique Patient Identifier Number", "^[a-zA-Z0-9]+$", "Allows for alphanumeric format",
+						null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.UPI_NUMBER));
 
 
 		install(personAttributeType("Telephone contact", "Telephone contact number",
