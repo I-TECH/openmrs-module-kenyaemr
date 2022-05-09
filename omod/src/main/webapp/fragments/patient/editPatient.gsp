@@ -209,8 +209,6 @@
                 <td class="ke-field-label">National ID Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(Enter National Identification Number or patient's National ID waiting card number if available)<% } %></td>
-                <td> <input type="checkbox" name="other-identifiers" value="Y"
-                            id="other-identifiers" /> Add other identifiers </td>
             </tr>
             <tr id="passport-no">
                 <td class="ke-field-label">Passport Number</td>
@@ -242,6 +240,10 @@
                 <td class="ke-field-label">Service Number *</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
                 <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(5-6 digits for service officer or 5-6 digits followed by / and 2 digits for dependant(eg.12345/01))<%} %></td>
+            </tr>
+            <tr>
+                <td> <input type="checkbox" name="other-identifiers" value="Y"
+                            id="other-identifiers" /> More identifiers </td>
             </tr>
         </table>
 
@@ -393,7 +395,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 jQuery('#national-id').show();
 
             }else{
-               jQuery('#national-id').hide();
+                jQuery('#birth-cert-no').show();
+                jQuery('#national-id').hide();
             }
         }
 
@@ -556,24 +559,17 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery('#alien-no').show();
             jQuery('#huduma-no').show();
             jQuery('#passport-no').show();
+            jQuery('#birth-cert-no').show();
             var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
             if(age > 17){
                 jQuery('#driving-license').show();
+                jQuery('#other-child-identifiers').hide();
             }
         }else{
             jQuery('#alien-no').hide();
             jQuery('#huduma-no').hide();
             jQuery('#passport-no').hide();
-        }
-        //provide driving license for +18 years
-        var selectedDob = jQuery('#patient-birthdate').val();
-        if(selectedDob !="" && jQuery(this).is(':checked')) {
-            var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
-            if(age > 17){
-                jQuery('#driving-license').show();
-            }else{
-                jQuery('#driving-license').hide();
-            }
+            jQuery('#driving-license').hide();
         }
     }
 
