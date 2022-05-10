@@ -208,15 +208,11 @@
             <tr id="national-id">
                 <td class="ke-field-label">National ID Number</td>
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                <td class="ke-field-instructions"><% if (command.nationalIdNumber) { %>
-
-                        <button type="button"
-                                onclick="ui.navigate('${ ui.pageLink("kenyaemr", "upi/createManifest", [ returnUrl: ui.thisUrl() ])}')">
-                            <img src="${ui.resourceLink("kenyaui", "images/buttons/report_queue.png")}"/>
-                            Verify
-                        </button>
-
-                    <% } %></td>
+                <td class="ke-field-instructions">
+                    <button type="button" id="validate-identifier">Validate Identifier</button>
+                    <button type="button" id="show-cr-info-dialog">Show CR info</button>
+                    <label id="msgBox"></label>
+                </td>
             </tr>
             <tr id="passport-no">
                 <td class="ke-field-label">Passport Number</td>
@@ -359,6 +355,91 @@
 
 </form>
 
+<div id="cr-dialog" title="Patient Overview" style="display: none; background-color: floralwhite; padding: 10px;">
+	<div id="client-registry-info">
+
+	<fieldset>
+	    <legend>Client name</legend>
+	    <table>
+	        <tr>
+	            <td width="60">Full name</td>
+	            <td id="cr-full-name"></td>
+	        </tr>
+            <tr>
+                <td>Sex</td>
+                <td id="cr-sex"></td>
+            </tr>
+            <tr>
+                <td>Primary phone Number</td>
+                <td id="cr-primary-contact"></td>
+            </tr>
+            <tr>
+                <td>Secondary phone</td>
+                <td id="cr-secondary-contact"></td>
+            </tr>
+            <tr>
+                <td>Email address</td>
+                <td id="cr-email"></td>
+            </tr>
+	    </table>
+	</fieldset>
+    <fieldset>
+    <legend>Client identifiers</legend>
+        <table>
+            <tr>
+                <td width="60">UPI</td>
+                <td id="cr-upi"></td>
+            </tr>
+            <tr>
+                <td>National ID</td>
+                <td id="cr-national-id"></td>
+            </tr>
+            <tr>
+                <td>Passport Number</td>
+                <td id="cr-passport"></td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset>
+    <legend>Address</legend>
+        <table>
+            <tr>
+                <td width="60">County</td>
+                <td id="cr-county"></td>
+            </tr>
+            <tr>
+                <td>Sub county</td>
+                <td id="cr-sub-county"></td>
+            </tr>
+            <tr>
+                <td>Ward</td>
+                <td id="cr-ward"></td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset>
+    <legend>Next of kin</legend>
+        <table>
+            <tr>
+                <td width="60">Name</td>
+                <td id="cr-kin-name"></td>
+            </tr>
+            <tr>
+                <td>Relationship</td>
+                <td id="cr-kin-relation"></td>
+            </tr>
+            <tr>
+                <td>Phone number</td>
+                <td id="cr-kin-contact"></td>
+            </tr>
+        </table>
+    </fieldset>
+	</div>
+	<div align="center">
+		<button type="button" onclick="kenyaui.closeDialog();"><img src="${ ui.resourceLink("kenyaui", "images/glyphs/cancel.png") }" /> Close</button>
+	</div>
+</div>
+
 <!-- You can't nest forms in HTML, so keep the dialog box form down here -->
 ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         buttonConfig     : [id: "from-age-button", label: "from age", iconProvider: "kenyaui", icon: "glyphs/calculate.png"],
@@ -379,6 +460,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         cancelLabel      : ui.message("general.cancel")
 ])}
 
+
 <script type="text/javascript">
     //On ready
     jQuery(function () {
@@ -391,6 +473,77 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#passport-no').hide();
         jQuery('#driving-license').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
+        jQuery('#show-cr-info-dialog').click(showDataFromCR);
+        jQuery('#validate-identifier').click(function(event){
+
+            // connect to dhp server
+            var authToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIxODUyMzQsImlhdCI6MTY1MjE4NTIzNCwiZXhwIjoxNjUyMjcxNjM0LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiJENjUyOTUwNDQ1RDYyMjg2NDc1OTE3NjkxQzMwMzM4MyJ9.tey01umz34GOZv1ewpafpyiuj3Y0-lUO0ufww5nPEQ89Gl3QG73j6AjuU-mvnupCEt5hrPePuwTXt2gQ6CSgP9C82gVsdboF8pwbcr3eBZQ8Q9jNxPzKSOFoI6FuThnig_YDg6uHEcykgMnGBcM1OJIJnEnJcvc01mcfHi6J2IRlfI_wlG5__oeKKbvt2DjGygjuwBVUb4nGyEmqhjg8VRB0LZsD83h1bB2Z0FCU7IKyqUMC5dzZxGpWLYCtABdxG_YvPAP2tkzFD7SXdJKu7GT4UMJwh5CvNmQ4BVSWfcLOEk4d_8YblHjVXDy110Zk-qmPl5vv7NNRX1lv69N-gQ";
+            var idType = 'identification-number';
+            var idValue = jQuery('input[name=nationalIdNumber]').val();
+            var getUrl = 'https://dhpstagingapi.health.go.ke/visit/registry/search/' + idType + '/' +  idValue;
+            jq.ajax({
+                 url: getUrl,
+                 type: "GET",
+                 headers: { Authorization: 'Bearer ' + authToken},
+                 error: function(err) {
+                   switch (err.status) {
+                     case "400":
+                       // bad request
+                       break;
+                     case "401":
+                       // expired or invalid token
+                       break;
+                     case "403":
+                       // forbidden
+                       break;
+                     default:
+                       //Something bad happened
+                       break;
+                   }
+                 },
+                 success: function(data) {
+                   if(data.clientExists) {
+                        jQuery('#msgBox').text('Client exists in the registry. UPI number:  ' + data.client.clientNumber);
+                        jQuery('#cr-full-name').text(data.client.firstName + ' ' + data.client.middleName + ' ' + data.client.lastName);
+                        jQuery('#cr-sex').text(data.client.gender);
+                        jQuery('#cr-primary-contact').text(data.client.contact.primaryPhone);
+                        jQuery('#cr-secondary-contact').text(data.client.contact.secondaryPhone);
+                        jQuery('#cr-email').text(data.client.contact.emailAddress);
+
+                        // residence
+                        jQuery('#cr-county').text(data.client.residence.county);
+                        jQuery('#cr-sub-county').text(data.client.residence.subCounty);
+                        jQuery('#cr-ward').text(data.client.residence.ward);
+
+                        // next of kin
+
+                          if(data.client.nextOfKins.length > 0) {
+                            var nextOfKin = data.client.nextOfKins[0];
+                            jQuery('#cr-kin-name').text(nextOfKin.name);
+                            jQuery('#cr-kin-relation').text(nextOfKin.relationship);
+                            jQuery('#cr-kin-contact').text(nextOfKin.contact.primaryPhone);
+
+                          }
+
+                         // identifiers
+                         jQuery('#cr-upi').text(data.client.clientNumber); // update UPI field
+                         if (data.client.identifications.length > 0) {
+                            for (i = 0; i < data.client.identifications.length; i++) {
+                                var identifierObj = data.client.identifications[i];
+                                if (identifierObj.identificationType == 'Identification Number') {
+                                    jQuery('#cr-national-id').text(identifierObj.identificationNumber);
+                                }
+                            }
+                         }
+
+                   } else {
+                        jQuery('#msgBox').text('Client not found in the registry. Please enter registration data and post to CR ');
+                   }
+                 }
+               });
+
+            //
+        });
 
         //On Edit prepopulate patient Identifiers
         var savedAge = jQuery('#patient-birthdate').val();
@@ -453,6 +606,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#patient-birthdate_date').change(updateIdentifiers);
 
         jQuery('#from-age-button').appendTo(jQuery('#from-age-button-placeholder'));
+        jQuery('#verify-id-button').appendTo(jQuery('#verify-id-button-placeholder'));
         jQuery('#edit-patient-form .cancel-button').click(function () {
             ui.navigate('${ config.returnUrl }');
         });
@@ -579,6 +733,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery('#passport-no').hide();
             jQuery('#driving-license').hide();
         }
+    }
+
+    function showDataFromCR() {
+            kenyaui.openPanelDialog({ templateId: 'cr-dialog', width: 55, height: 80, scrolling: true });
     }
 
 </script>
