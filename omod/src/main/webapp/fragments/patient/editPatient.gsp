@@ -377,24 +377,29 @@
 	    <legend>Client name</legend>
 	    <table>
 	        <tr>
-	            <td width="60">Full name</td>
-	            <td id="cr-full-name"></td>
+	            <td width="250px">Full name</td>
+	            <td id="cr-full-name" width="100px"></td>
+                <td><button type="button">use in form</button></td>
 	        </tr>
             <tr>
                 <td>Sex</td>
                 <td id="cr-sex"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Primary phone Number</td>
                 <td id="cr-primary-contact"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Secondary phone</td>
                 <td id="cr-secondary-contact"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Email address</td>
                 <td id="cr-email"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
 	    </table>
 	</fieldset>
@@ -402,16 +407,19 @@
     <legend>Client identifiers</legend>
         <table>
             <tr>
-                <td width="60">UPI</td>
-                <td id="cr-upi"></td>
+                <td width="250px">UPI</td>
+                <td id="cr-upi" width="100px"></td>
+                <td></td>
             </tr>
             <tr>
                 <td>National ID</td>
                 <td id="cr-national-id"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Passport Number</td>
                 <td id="cr-passport"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
         </table>
     </fieldset>
@@ -419,16 +427,19 @@
     <legend>Address</legend>
         <table>
             <tr>
-                <td width="60">County</td>
-                <td id="cr-county"></td>
+                <td width="250px">County</td>
+                <td id="cr-county" width="100px"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Sub county</td>
                 <td id="cr-sub-county"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Ward</td>
                 <td id="cr-ward"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
         </table>
     </fieldset>
@@ -436,16 +447,19 @@
     <legend>Next of kin</legend>
         <table>
             <tr>
-                <td width="60">Name</td>
-                <td id="cr-kin-name"></td>
+                <td width="250px">Name</td>
+                <td id="cr-kin-name" width="100px"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Relationship</td>
                 <td id="cr-kin-relation"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
             <tr>
                 <td>Phone number</td>
                 <td id="cr-kin-contact"></td>
+                <td><button type="button">use in form</button></td>
             </tr>
         </table>
     </fieldset>
