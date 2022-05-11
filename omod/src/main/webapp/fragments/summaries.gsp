@@ -272,6 +272,44 @@
                 <tr>
                   <td colspan="3">&nbsp;</td>
                 </tr>
+                                <tr>
+                                   <td colspan="2">VL Load Trends</td>
+                                    <td colspan="2">CD4 Trends</td>
+                                </tr>
+                                <tr>
+
+                                </tr>
+                                <tr>
+                                   <td colspan="2">
+                                       <table width="75%">
+                                          <tr>
+                                              <td> Vl Date</td>
+                                              <td> Result</td>
+                                          </tr>
+                                       </table>
+                                   </td>
+
+                                <% if(allCd4CountResults) { %>
+                                 <td colspan="2">
+                                    <table width="75%">
+                                       <tr>
+                                         <td> CD4 Dates</td>
+                                         <td> Result</td>
+                                       </tr>
+                                        <tr>
+                                          <td><% allCd4CountResults.each { allCd4 -> %>
+                                                <div class="column-four">${allCd4.cd4CountDate ?: ""}</div>
+                                          <% } %>
+                                          </td>
+                                           <td><% allCd4CountResults.each { allCd4 -> %>
+                                                <div class="column-four"> ${allCd4.cd4Count ?: ""}</div>
+                                           <% } %>
+                                           </td>
+                                       </tr>
+                                    </table>
+                                </td>
+                                <% } %>
+                                </tr>
                 <tr>
                     <td>Clinical Notes: </td>
                     <td colspan="2">
