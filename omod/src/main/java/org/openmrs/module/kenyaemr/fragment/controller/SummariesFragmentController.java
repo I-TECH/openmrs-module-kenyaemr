@@ -36,6 +36,7 @@ import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.AllCd4CountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
@@ -44,10 +45,8 @@ import org.openmrs.module.kenyaemr.calculation.library.rdqa.DateOfDeathCalculati
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -63,8 +62,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 
 /**
  * Created by codehub on 10/30/15.
@@ -724,6 +721,9 @@ public class SummariesFragmentController {
             patientSummary.setMostRecentCd4Date("");
         }
 
+        //All CD4 Count
+        CalculationResult allCd4CountResults = EmrCalculationUtils.evaluateForPatient(AllCd4CountCalculation.class, null, patient);
+
         //most recent viral load
         CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(ViralLoadAndLdlCalculation.class, null, patient);
         String viralLoadValue = "None";
@@ -735,7 +735,6 @@ public class SummariesFragmentController {
             if(!value.isEmpty()) {
                 String[] splitByEqualSign = value.split("=");
                 viralLoadValue = splitByEqualSign[0];
-
 
                 //for a date from a string
                 String dateSplitedBySpace = splitByEqualSign[1].split(" ")[0].trim();
@@ -835,6 +834,7 @@ public class SummariesFragmentController {
         model.addAttribute("kdodUnit", kdodUnit);
         model.addAttribute("kdodCadre", kdodCadre);
         model.addAttribute("kdodRank", kdodRank);
+        model.addAttribute("allCd4CountResults", allCd4CountResults.getValue());
 
 
 
