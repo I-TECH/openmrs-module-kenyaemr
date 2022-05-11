@@ -44,7 +44,14 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marital status: ${ patient.maritalStatus }
                     </td>
                 </tr>
-
+                <tr class="kdod-struct">
+                       <td >kDoD Number: ${serviceNumber}</td>
+                       <td colspan="2">KDoD Unit: ${kdodUnit}</td>
+                </tr>
+                <tr class="kdod-struct">
+                       <td>KDoD Cadre: ${kdodCadre}</td>
+                       <td colspan="2">KDoD Rank: ${kdodRank}</td>
+                </tr>
                 <tr>
                     <td colspan="3">&nbsp;&nbsp;</td>
                 </tr>
@@ -142,17 +149,6 @@
 
                 <tr>
                 </tr>
-
-                    <tr class="kdod-struct">
-
-
-                        <td >kDoD Number: ${serviceNumber}</td>
-                        <td colspan="2">KDoD Unit: ${kdodUnit}</td>
-                    </tr>
-                   <tr class="kdod-struct">
-                       <td>KDoD Cadre: ${kdodCadre}</td>
-                       <td colspan="2">KDoD Rank: ${kdodRank}</td>
-                    </tr>
                 <tr>
 
                     <td>Date: ${patient.purposeDate}</td>
@@ -273,21 +269,33 @@
                   <td colspan="3">&nbsp;</td>
                 </tr>
                                 <tr>
-                                   <td colspan="2">VL Load Trends</td>
+                                   <td colspan="2">Viral Load Trends</td>
                                     <td colspan="2">CD4 Trends</td>
                                 </tr>
                                 <tr>
 
                                 </tr>
                                 <tr>
-                                   <td colspan="2">
-                                       <table width="75%">
-                                          <tr>
-                                              <td> Vl Date</td>
-                                              <td> Result</td>
-                                          </tr>
-                                       </table>
-                                   </td>
+                                   <% if(allVlResults) { %>
+                                      <td colspan="2">
+                                         <table width="75%">
+                                            <tr>
+                                                 <td> VL Dates</td>
+                                                 <td> Result</td>
+                                            </tr>
+                                            <tr>
+                                                <td><% allVlResults.each { allVl -> %>
+                                                      <div class="column-four">${allVl.vlDate ?: ""}</div>
+                                                      <% } %>
+                                                   </td>
+                                                   <td><% allVlResults.each { allVl -> %>
+                                                      <div class="column-four"> ${allVl.vl ?: ""}</div>
+                                                    <% } %>
+                                                   </td>
+                                            </tr>
+                                        </table>
+                                      </td>
+                                <% } %>
 
                                 <% if(allCd4CountResults) { %>
                                  <td colspan="2">

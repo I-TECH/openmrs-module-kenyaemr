@@ -37,6 +37,7 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.AllCd4CountCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.AllVlCountCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.*;
@@ -724,6 +725,8 @@ public class SummariesFragmentController {
         //All CD4 Count
         CalculationResult allCd4CountResults = EmrCalculationUtils.evaluateForPatient(AllCd4CountCalculation.class, null, patient);
 
+        //All  Vl
+        CalculationResult allVlResults = EmrCalculationUtils.evaluateForPatient(AllVlCountCalculation.class, null, patient);
         //most recent viral load
         CalculationResult vlResults = EmrCalculationUtils.evaluateForPatient(ViralLoadAndLdlCalculation.class, null, patient);
         String viralLoadValue = "None";
@@ -835,6 +838,7 @@ public class SummariesFragmentController {
         model.addAttribute("kdodCadre", kdodCadre);
         model.addAttribute("kdodRank", kdodRank);
         model.addAttribute("allCd4CountResults", allCd4CountResults.getValue());
+        model.addAttribute("allVlResults", allVlResults.getValue());
 
 
 
