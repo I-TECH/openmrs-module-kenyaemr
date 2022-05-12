@@ -423,21 +423,21 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
-	 * Gets the patient UPI
+	 * Gets the patient NUPI
 	 * @return the identifier value
 	 */
-	public String getUniquePatientIdentifier() {
-		return getAsIdentifier(CommonMetadata._PatientIdentifierType.UPI_NUMBER);
+	public String getNationalUniquePatientNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 	}
 
 
 	/**
-	 * Sets the patient UPI number
+	 * Sets the patient NUPI number
 	 * @param value the identifier value
 	 * @param location the identifier location
 	 */
-	public void setUniquePatientIdentifier(String value, Location location) {
-		setAsIdentifier(CommonMetadata._PatientIdentifierType.UPI_NUMBER, value, location);
+	public void setNationalUniquePatientNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER, value, location);
 	}
 
 }

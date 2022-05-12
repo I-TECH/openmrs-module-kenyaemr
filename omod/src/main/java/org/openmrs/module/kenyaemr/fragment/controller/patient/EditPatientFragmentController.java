@@ -296,15 +296,15 @@ public class EditPatientFragmentController {
 		private String alienIdNumber;
 		private String drivingLicenseNumber;
 
-		public String getUniquePatientIdentifier() {
-			return uniquePatientIdentifier;
+		public String getNationalUniquePatientNumber() {
+			return nationalUniquePatientNumber;
 		}
 
-		public void setUniquePatientIdentifier(String uniquePatientIdentifier) {
-			this.uniquePatientIdentifier = uniquePatientIdentifier;
+		public void setNationalUniquePatientNumber(String nationalUniquePatientNumber) {
+			this.nationalUniquePatientNumber = nationalUniquePatientNumber;
 		}
 
-		private String uniquePatientIdentifier;
+		private String nationalUniquePatientNumber;
 
 
 
@@ -405,7 +405,7 @@ public class EditPatientFragmentController {
 			if (savedOrphan != null) {
 				orphan = savedOrphan.getValueCoded();
 			}
-			uniquePatientIdentifier = wrapper.getUniquePatientIdentifier();
+			nationalUniquePatientNumber = wrapper.getNationalUniquePatientNumber();
 
 		}
 
@@ -477,7 +477,7 @@ public class EditPatientFragmentController {
 			validateIdentifierField(errors, "birthCertificateNumber", CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
 			validateIdentifierField(errors, "alienIdNumber", CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
 			validateIdentifierField(errors, "drivingLicenseNumber", CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
-			validateIdentifierField(errors, "uniquePatientIdentifier", CommonMetadata._PatientIdentifierType.UPI_NUMBER);
+			validateIdentifierField(errors, "nationalUniquePatientNumber", CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
 
 
@@ -573,7 +573,7 @@ public class EditPatientFragmentController {
 			wrapper.setBirthCertificateNumber(birthCertificateNumber, location);
 			wrapper.setAlienIdNumber(alienIdNumber, location);
 			wrapper.setDrivingLicenseNumber(drivingLicenseNumber, location);
-			wrapper.setUniquePatientIdentifier(uniquePatientIdentifier, location);
+			wrapper.setNationalUniquePatientNumber(nationalUniquePatientNumber, location);
 
 
 			wrapper.setNextOfKinName(nameOfNextOfKin);
