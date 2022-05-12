@@ -969,30 +969,18 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
-    // use client.identifications as base
-    function useIdentifier(formInputName, identificationType){
 
-        if (data.client.identifications.length > 0) {
-            for (i = 0; i < data.client.identifications.length; i++) {
-                var identifierObj = data.client.identifications[i];
-                if (identifierObj.identificationType == identificationType) {
-                    jQuery("input[name='" + formInputName +"']").val(identifierObj.identificationNumber);
-                }
-            }
-        }
-
-    }
 
      // use client.identifications as base
         function useIdentifiers(){
 
-            if (data.client.identifications.length > 0) {
+            if (crResponseData.client.identifications.length > 0) {
                 var nationalIdType = 'Identification Number';
                 var passportIdType = 'passport-no';
                 var birthCertificateIdType = 'birth-certificate';
 
-                for (i = 0; i < data.client.identifications.length; i++) {
-                    var identifierObj = data.client.identifications[i];
+                for (i = 0; i < crResponseData.client.identifications.length; i++) {
+                    var identifierObj = crResponseData.client.identifications[i];
                     if (identifierObj.identificationType == nationalIdType) {
                         jQuery("input[name='nationalIdNumber']").val(identifierObj.identificationNumber);
                     } else if (identifierObj.identificationType == passportIdType) {
@@ -1003,7 +991,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
 
                 // update NUPI
-                jQuery("input[name='nationalUniquePatientNumber']").val(data.client.clientNumber);
+                jQuery("input[name='nationalUniquePatientNumber']").val(crResponseData.client.clientNumber);
 
             }
 
