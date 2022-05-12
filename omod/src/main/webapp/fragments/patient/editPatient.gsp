@@ -415,27 +415,27 @@
 	        <tr>
 	            <td width="250px">Full name</td>
 	            <td id="cr-full-name" width="200px"></td>
-                <td><button id="use-full-name" type="button">use in form</button></td>
+                <td><button id="use-full-name" type="button" onclick="useDemographics()">Use all values in form</button></td>
 	        </tr>
             <tr>
                 <td>Sex</td>
                 <td id="cr-sex"></td>
-                <td><button type="button">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Primary phone Number</td>
                 <td id="cr-primary-contact"></td>
-                <td><button type="button" onclick="useContact('telephoneContact','primaryPhone')">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Secondary phone</td>
                 <td id="cr-secondary-contact"></td>
-                <td><button type="button" onclick="useContact('alternatePhoneContact','secondaryPhone')">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Email address</td>
                 <td id="cr-email"></td>
-                <td><button type="button" onclick="useContact('emailAddress','emailAddress')">use in form</button></td>
+                <td></td>
             </tr>
 	    </table>
 	</fieldset>
@@ -445,7 +445,7 @@
             <tr>
                 <td width="250px">UPI</td>
                 <td id="cr-upi" width="200px"></td>
-                <td><button type="button" onclick="useIdentifiers()">use all identifiers in form</button></td>
+                <td><button type="button" onclick="useIdentifiers()">Use all values in form</button></td>
             </tr>
             <tr>
                 <td>National ID</td>
@@ -465,17 +465,17 @@
             <tr>
                 <td width="250px">County</td>
                 <td id="cr-county" width="200px"></td>
-                <td><button type="button">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Sub county</td>
                 <td id="cr-sub-county"></td>
-                <td><button type="button">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Ward</td>
                 <td id="cr-ward"></td>
-                <td><button type="button">use in form</button></td>
+                <td></td>
             </tr>
         </table>
     </fieldset>
@@ -485,7 +485,7 @@
             <tr>
                 <td width="250px">Name</td>
                 <td id="cr-kin-name" width="200px"></td>
-                <td><button type="button" onclick="useNextofKin()">use all values in form</button></td>
+                <td><button type="button" onclick="useNextofKin()">Use all values in form</button></td>
             </tr>
             <tr>
                 <td>Relationship</td>
@@ -944,6 +944,12 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             kenyaui.openPanelDialog({ templateId: 'cr-dialog', width: 55, height: 80, scrolling: true });
     }
 
+    function useDemographics(){
+        useFullName();
+        useContact('telephoneContact','primaryPhone');
+        useContact('alternatePhoneContact','secondaryPhone');
+        useContact('emailAddress','emailAddress');
+    }
     // re-use name from client registry
     function useFullName(){
             if (crResponseData.client.firstName != '') {
