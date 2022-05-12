@@ -9,6 +9,19 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.upi;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,113 +45,113 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
-
 public class UpiDataExchangeFragmentController {
 
-	private Log log = LogFactory.getLog(UpiDataExchangeFragmentController.class);
-	private String url = "http://www.google.com:80/index.html";
+	private static final String POST_URL3 = "https://dhpstagingapi.health.go.ke/visit/registry";
+
+
+	private static final String POST_PARAMS = "userName=Pankaj";
+
 
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
 	}
-	public void postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException {
-		generateAccessToken("https://dhpidentitystagingapi.health.go.ke/connect/token");
-		System.out.println("Params"+params);
-		//Prepare the post request
-		String serverUrl ="https://dhpstaging.health.go.ke/visit/registry";
-		String API_KEY = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIyNzMzNzksImlhdCI6MTY1MjI3MzM3OSwiZXhwIjoxNjUyMzU5Nzc5LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiJDMDE2RUYyQjhFMkUzQUI5NzIyNDY4Q0EwOUYxOTVGRiJ9.FD_VpzTqoUj3JnWSEZXFuvPyOs-rkDlxOLE_QnVWYY5w-scn1RtkaLuTwLU274t_TWAX3r2NYvft5l-bmEWRkrjevQ87FN9vplbpLx1kMAqgrdNysiLW4PfPFYZ_DjmoeAeSAVLEkQhs86ZjhapffI03QRmT8dFUB_Ta_Aq2l25Sru8Tb7kIE9J186e7RVIK3DgCSCS3srm66Se5HY7w56UEaYNAhjKncn_GaCpUsF6TXEvr-dOE4PdJQrjZopdLfs9DQKk8WKrlbOAZW_bznIEMhOxyTQ4hK3IvR6lcyf-S_9KZgwZF9KXK0IYNPCgzynLl_TYQmQCEPRTTlhPkHw";
-		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-				SSLContexts.createDefault(),
-				new String[] { "TLSv1.2"},
-				null,
-				SSLConnectionSocketFactory.getDefaultHostnameVerifier());
 
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-		try {
-
-				//Define a postRequest request
-				HttpPost postRequest = new HttpPost(serverUrl);
-
-				//Set the API media type in http content-type header
-				postRequest.addHeader("content-type", "application/json");
-				postRequest.addHeader("Authorization", "Bearer"+ API_KEY);
-				//Set the request post body
-				String payload = params;
-				StringEntity userEntity = new StringEntity(payload);
-				postRequest.setEntity(userEntity);
-			//System.out.println("Post request"+params);
-
-				//Send the request; It will immediately return the response in HttpResponse object if any
-				HttpResponse response = httpClient.execute(postRequest);
-				//verify the valid error code first
-				int statusCode = response.getStatusLine().getStatusCode();
-				if (statusCode == 429) { // too many requests. just terminate
-					System.out.println("Many requests please terminate");
-					log.warn("Many requests please terminate");
-					return;
-				}
-
-				if (statusCode == 200) {
-					log.info("Successfully pushed enrollment info with id ");
-				} else if (statusCode == 412) {
-
-					JSONParser parser = new JSONParser();
-					JSONObject responseObj = (JSONObject) parser.parse(EntityUtils.toString(response
-							.getEntity()));
-					//	JSONObject errorObj = (JSONObject) responseObj.get("error");
-					System.out.println("Error while submitting enrollment sample. " + "Error - "
-							+ statusCode + ". Msg" + responseObj.get("message"));
-					log.error("Error while submitting enrollment. " + "Error - " + statusCode + ". Msg"
-							+ responseObj.get("message"));
-				} else {
-
-					JSONParser parser = new JSONParser();
-					JSONObject responseObj = (JSONObject) parser.parse(EntityUtils.toString(response
-							.getEntity()));
-					//JSONObject errorObj = (JSONObject) responseObj.get("error");
-					System.out.println("Error while submitting enrollment sample.  " + "Error - "
-							+ statusCode + ". Msg" + responseObj.get("message"));
-					log.error("Error while submitting enrollment. " + "Error - " + statusCode + ". Msg"
-							+ responseObj.get("message"));
-
-				}
-				Context.flushSession();
-			}
-			catch (Exception e) {
-				System.out.println("Could not push client information to CR! " + e.getCause());
-				log.error("Could not push client information to CR!! " + e.getCause());
-				e.printStackTrace();
-			}
-//			finally {
-//				httpClient.close();
-//			}
-
+	public static void postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		sendPOST(params);
 	}
 
-	private String generateAccessToken(String serverUrl) throws IOException {
+	private static void sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
 
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-		String token ="";
-		String clientId = "partner.test.client";
-		String secretId = "partnerTestPwd";
-		String grantType = "client_credentials";
-		String scope = "DHP.Gateway DHP.Visitation";
-//		client_id:partner.test.client
-//		client_secret:partnerTestPwd
-//		grant_type:client_credentials
-//		scope:DHP.Gateway DHP.Visitation
-		HttpPost postRequest = new HttpPost(serverUrl);
-		postRequest.addHeader("client_id", clientId);
-		postRequest.addHeader("client_secret", secretId);
-		postRequest.addHeader("grant_type", grantType);
-		postRequest.addHeader("scope", scope);
+			public void checkClientTrusted(X509Certificate[] certs, String authType) {
+			}
 
-		HttpResponse response = httpClient.execute(postRequest);
-		System.out.println("TOKEN----"+response);
+			public void checkServerTrusted(X509Certificate[] certs, String authType) {
+			}
+		} };
 
 
-		return token;
+		SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+		URL url = new URL(POST_URL3);
+
+		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
+		con.setRequestMethod("POST");
+
+		String authToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIzNDAxMzUsImlhdCI6MTY1MjM0MDEzNSwiZXhwIjoxNjUyNDI2NTM1LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiI3MjJFNTEyN0I3NDg3RTYyNEM1REQzODk5MjkzMkE2RSJ9.BhTdmiAC8HLW1Uh4ixacdbaBiSzvTlYkcOVL9Wfi67UHwp9SzV7104Y1VUDXT1P_wcGOJbXvuysJyZYlJgc2a5-kglQ29r_UEP9rkI8FdHaYwky76fqmL71hbrW5kdmYwlWoR-RK4CFXm10jaoXmBoTPMShP-l8r-t9kcgrQ9i80HVhbcRNTXk1v5XhiqmykIBstwXVFQBbdhFZ_7Z8ZUiJnc-Oesx1rg8Xf0q1kElxPHwg7jLPvrebmMD8h25PI_dN3xkylBZWl__ZSmU7bwQAp7RAJzGuSQG5FB2MNLyYsEGryal29-cR7sR-Yx48iazlAott5srCXnzj5dcdpRg";
+		con.setRequestProperty("Authorization", "Bearer " + authToken);
+		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		con.setRequestProperty("Accept", "application/json");
+
+		// For POST only - START
+
+		String input = "{\n" +
+				"    \"firstName\": \"TEST\",\n" +
+				"    \"middleName\": \"BUSH\",\n" +
+				"    \"lastName\": \"BUSH\",\n" +
+				"    \"dateOfBirth\": \"2000-08-14T21:00:00.000Z\",\n" +
+				"    \"maritalStatus\": null,\n" +
+				"    \"gender\": \"male\",\n" +
+				"    \"occupation\": \"\",\n" +
+				"    \"religion\": \"\",\n" +
+				"    \"educationLevel\": \"\",\n" +
+				"    \"country\": \"Kenya\",\n" +
+				"    \"countryOfBirth\": \"\",\n" +
+				"    \"residence\": {\n" +
+				"        \"county\": \"Nairobi\",\n" +
+				"        \"subCounty\": \"Dagorreti\",\n" +
+				"        \"ward\": \"\",\n" +
+				"        \"village\": \"Ngeria\",\n" +
+				"        \"landmark\": \"\",\n" +
+				"        \"address\": \"\"\n" +
+				"    },\n" +
+				"    \"identifications\": [\n" +
+				"        {\n" +
+				"            \"IdentificationType\": \"identification-number\",\n" +
+				"            \"IdentificationNumber\": "+ params +"\"\n" +
+				"        }\n" +
+				"    ],\n" +
+				"    \"contact\": {\n" +
+				"        \"primaryPhone\": \"0722404040\",\n" +
+				"        \"secondaryPhone\": \"07025464646\",\n" +
+				"        \"emailAddress\": \"\"\n" +
+				"    },\n" +
+				"    \"nextOfKins\": []\n" +
+				"}";
+		con.setDoOutput(true);
+		OutputStream os = con.getOutputStream();
+		os.write(input.getBytes());
+		os.flush();
+		os.close();
+		// For POST only - END
+
+		int responseCode = con.getResponseCode();
+		System.out.println("POST Response Code :: " + responseCode + con.getResponseMessage());
+
+		if (responseCode == HttpURLConnection.HTTP_OK) { //success
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			String stringResponse = response.toString();
+			System.out.println(stringResponse);
+            UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+            upiUtils.processUpiResponse(stringResponse);
+
+		} else {
+			System.out.println("POST request not worked");
+		}
 	}
 
 }

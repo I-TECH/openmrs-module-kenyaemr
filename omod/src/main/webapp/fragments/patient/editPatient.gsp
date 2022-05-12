@@ -302,6 +302,7 @@
 
             <table>
                 <tr>
+                    <td class="ke-field-label" style="width: 265px">Country</td>
                     <td class="ke-field-label" style="width: 265px">County</td>
                     <td class="ke-field-label" style="width: 260px">Sub-County</td>
                     <td class="ke-field-label" style="width: 260px">Ward</td>
@@ -1018,51 +1019,57 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
-        var params = {"firstName":firstName,
-            "middleName":middleName,
-            "lastName":lastName,
-            "dateOfBirth":dateOfBirth,
-            "gender":gender,
-            "maritalStatus":maritalStatus,
-            "occupation":occupation,
-            "religion":religion,
-            "educationLevel":educationLevel,
-            "residence": {
-                "country": country,
-                "countyOfBirth": countyOfBirth,
-                "county": county,
-                "subCounty": subCounty,
-                "ward": ward,
-                "village": village,
-                "landMark": landMark,
-                "address": address
-            },
-            "identification": {
-                "identificationType": identificationType,
-                "identificationNumber": identificationValue
-            },
-            "contact": {
-                "primaryPhone": primaryPhone,
-                "secondaryPhone": secondaryPhone,
-                "emailAddress": emailAddress,
-            },
-            "nextOfKins": [{
-                "name": name,
-                "relationship": relationship,
-                "residence": residence,
-                "contact": {
-                    "primaryPhone": nokPrimaryPhone,
-                    "secondaryPhone": nokSecondaryPhone,
-                    "emailAddress": nokEmailAddress,
-                }
-            }],
-            "isAlive":isAlive,
 
-        };
+        var params = identificationValue
+
+
+//        var params = {"firstName":firstName,
+//            "middleName":middleName,
+//            "lastName":lastName,
+//            "dateOfBirth":dateOfBirth,
+//            "gender":gender,
+//            "maritalStatus":maritalStatus,
+//            "occupation":occupation,
+//            "religion":religion,
+//            "educationLevel":educationLevel,
+//            "country": country,
+//            "countyOfBirth": countyOfBirth,
+//            "residence": {
+//                "county": county,
+//                "subCounty": subCounty,
+//                "ward": ward,
+//                "village": village,
+//                "landmark": landMark,
+//                "address": address
+//            },
+//            "identifications": {
+//                "IdentificationType": identificationType,
+//                "IdentificationNumber": identificationValue
+//            },
+//            "contact": {
+//                "primaryPhone": primaryPhone,
+//                "secondaryPhone": secondaryPhone,
+//                "emailAddress": emailAddress,
+//            },
+//            "nextOfKins": [{
+//                "name": name,
+//                "relationship": relationship,
+//                "residence": residence,
+//                "contact": {
+//                    "primaryPhone": nokPrimaryPhone,
+//                    "secondaryPhone": nokSecondaryPhone,
+//                    "emailAddress": nokEmailAddress,
+//                }
+//            }],
+//            "isAlive":isAlive,
+//
+//        };
+
+
         //Using fragment action to post
         jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "postUpiClientRegistrationInfoToCR")}',
             {
-                'postParams': params.toString()
+                'postParams': params
             })
             .success(function (data) {
                 console.log("Response from CR  ==> ");
@@ -1072,43 +1079,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     console.log(err)
                 }
             )
-
-        var authToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIxODUyMzQsImlhdCI6MTY1MjE4NTIzNCwiZXhwIjoxNjUyMjcxNjM0LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiJENjUyOTUwNDQ1RDYyMjg2NDc1OTE3NjkxQzMwMzM4MyJ9.tey01umz34GOZv1ewpafpyiuj3Y0-lUO0ufww5nPEQ89Gl3QG73j6AjuU-mvnupCEt5hrPePuwTXt2gQ6CSgP9C82gVsdboF8pwbcr3eBZQ8Q9jNxPzKSOFoI6FuThnig_YDg6uHEcykgMnGBcM1OJIJnEnJcvc01mcfHi6J2IRlfI_wlG5__oeKKbvt2DjGygjuwBVUb4nGyEmqhjg8VRB0LZsD83h1bB2Z0FCU7IKyqUMC5dzZxGpWLYCtABdxG_YvPAP2tkzFD7SXdJKu7GT4UMJwh5CvNmQ4BVSWfcLOEk4d_8YblHjVXDy110Zk-qmPl5vv7NNRX1lv69N-gQ";
-        var idType = 'identification-number';
-        var idValue = jQuery('input[name=nationalIdNumber]').val();
-        var postUrl = 'https://dhpstaging.health.go.ke/visit/registry';
         console.log("Payload ==> "+JSON.stringify(params));
-//        jQuery.ajax({
-//            url: postUrl,
-//            crossDomain:true,
-//            type: "POST",
-//            headers: { Authorization: 'Bearer ' + authToken },
-//            error: function(err) {
-//                switch (err.status) {
-//                    case "400":
-//                        // bad request
-//                        break;
-//                    case "401":
-//                        // expired or invalid token
-//                        break;
-//                    case "403":
-//                        // forbidden
-//                        break;
-//                    default:
-//                        //Something bad happened
-//                        break;
-//                }
-//            },
-//            data:params,
-//            success: function(data) {
-//                if(data.clientExists) {
-//                    console.log("Client Number ==> "+data.client.clientNumber);
-//
-//                } else {
-//                    jQuery('#msgBox').text('Unable to post successfully to CR ');
-//                }
-//            }
-//        });
 
     }
 
