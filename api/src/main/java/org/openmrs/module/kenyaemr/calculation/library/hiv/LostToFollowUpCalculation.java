@@ -112,7 +112,7 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 				}
 			}
 			// Is patient alive and discontinued from HIV program
-			if (alive.contains(ptId) && lastHivDiscontinuationEncounter != null) {          //these clients are no longer in hiv prog
+			if (alive.contains(ptId) && lastHivDiscontinuationEncounter != null && lastHivEnrollmentEncounter != null) {          //these clients are no longer in hiv prog
 				if (lastHivDiscontinuationEncounter.getEncounterDatetime().after(lastHivEnrollmentEncounter.getEncounterDatetime())) {   // check for re-enrollments
 					for (Obs obs : lastHivDiscontinuationEncounter.getObs()) {
 						if (obs.getConcept().equals(reasonForDiscontinuation) && obs.getValueCoded().equals(discontinued_ltfu)) {

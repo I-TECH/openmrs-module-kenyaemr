@@ -209,6 +209,7 @@ public class EditPatientFragmentController {
         );
         model.addAttribute("rankOptions", rankOptions);
         model.addAttribute("isKDoD", isKDoD);
+        model.addAttribute("idTypes", Context.getPatientService().getAllPatientIdentifierTypes());
 
     }
 

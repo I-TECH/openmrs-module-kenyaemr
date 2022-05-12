@@ -64,7 +64,7 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
                                         lastVLResultDate = (Date) res.get("lastVlDate");
                                         if (daysSince(lastVLResultDate, context) <= 365) {
                                                 if(lastVlResult =="LDL"){
-                                                        vlMessage = "Low Viremia";
+                                                        vlMessage = "Suppressed";
                                                 } else {
                                                         lastVlResultValue = Double.parseDouble(lastVlResult);
                                                         categorizeViralLoad(lastVlResultValue);
@@ -86,12 +86,12 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
                         vlMessage = "Unsuppressed";
                 }
                 //If VL level is between 400 and 999 in the last 12 months, the patient has high viremia
-                if (lastVlResultValue >= 400 && lastVlResultValue <= 999) {
-                        vlMessage = "High Viremia";
+                if (lastVlResultValue >= 50 && lastVlResultValue <= 999) {
+                        vlMessage = "Low Level viremia";
                 }
                 //If VL level is between 0 and 399 in the last 12 months, the patient has low viremia
-                if (lastVlResultValue <= 399) {
-                        vlMessage = "Low Virema";
+                if (lastVlResultValue <= 49) {
+                        vlMessage = "Suppressed";
                 }
         }
 

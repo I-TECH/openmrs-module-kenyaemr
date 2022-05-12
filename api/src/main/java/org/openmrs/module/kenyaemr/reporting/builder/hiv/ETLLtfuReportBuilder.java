@@ -33,11 +33,15 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledAppointm
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.AppointmentDaysMissedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HonouredAppointmentDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PatientDisabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.BookingDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.LastDefaulterTracingDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.IPTIndicationDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -87,7 +91,6 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
      */
     @Override
     protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
-
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
@@ -106,7 +109,12 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last Tracing Date", new LastDefaulterTracingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Return to Care Date", new BookingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
+
+        AppointmentDaysMissedDataDefinition daysMissed = new AppointmentDaysMissedDataDefinition();
+        daysMissed.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        daysMissed.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        dsd.addColumn("Number of days late", daysMissed, paramMapping);
         dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
       }
 

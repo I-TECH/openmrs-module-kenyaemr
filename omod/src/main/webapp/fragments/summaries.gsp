@@ -1,8 +1,8 @@
     <%
-        def kDoDNumber = patient.kDoDCadre
-        def kDoDCadre = patient.kDoDCadre
-        def kDoDRank = patient.kDoDRank
-        def kDoDUnit = patient.kDoDUnit
+        def kDoDNumber = serviceNumber
+        def kDoDCadre = kdodCadre
+        def kDoDRank = kdodRank
+        def kDoDUnit = kdodUnit
     %>
 
     <style type="text/css">
@@ -44,7 +44,14 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marital status: ${ patient.maritalStatus }
                     </td>
                 </tr>
-
+                <tr class="kdod-struct">
+                       <td >kDoD Number: ${serviceNumber}</td>
+                       <td colspan="2">KDoD Unit: ${kdodUnit}</td>
+                </tr>
+                <tr class="kdod-struct">
+                       <td>KDoD Cadre: ${kdodCadre}</td>
+                       <td colspan="2">KDoD Rank: ${kdodRank}</td>
+                </tr>
                 <tr>
                     <td colspan="3">&nbsp;&nbsp;</td>
                 </tr>
@@ -97,13 +104,10 @@
                    <td>Pulse Rate: ${pulseRate}</td>
                    <td colspan="2">TPT Completion Date: ${tbEndDate}</td>
                 </tr>
-                <tr>
+                <tr >
                     <td>FP Method: ${patient.familyProtection}</td>
+                     <td id = "lmp-struct" colspan="2">LMP (For Women): ${patient.lmp}</td>
 
-
-                    <includeIf velocityTest="$patient.gender == 'F' ">
-                     <td colspan="2">LMP (For Women): ${patient.lmp}</td>
-                    </includeIf>
 
                 </tr>
 
@@ -145,7 +149,7 @@
 
                 <tr>
                 </tr>
-
+                <tr>
 
                     <td>Date: ${patient.purposeDate}</td>
                     <td colspan="2">First regimen: ${firstRegimen}</td>
@@ -264,6 +268,56 @@
                 <tr>
                   <td colspan="3">&nbsp;</td>
                 </tr>
+                                <tr>
+                                   <td colspan="2">Viral Load Trends</td>
+                                    <td colspan="2">CD4 Trends</td>
+                                </tr>
+                                <tr>
+
+                                </tr>
+                                <tr>
+                                   <% if(allVlResults) { %>
+                                      <td colspan="2">
+                                         <table width="75%">
+                                            <tr>
+                                                 <td> VL Dates</td>
+                                                 <td> Result</td>
+                                            </tr>
+                                            <tr>
+                                                <td><% allVlResults.each { allVl -> %>
+                                                      <div class="column-four">${allVl.vlDate ?: ""}</div>
+                                                      <% } %>
+                                                   </td>
+                                                   <td><% allVlResults.each { allVl -> %>
+                                                      <div class="column-four"> ${allVl.vl ?: ""}</div>
+                                                    <% } %>
+                                                   </td>
+                                            </tr>
+                                        </table>
+                                      </td>
+                                <% } %>
+
+                                <% if(allCd4CountResults) { %>
+                                 <td colspan="2">
+                                    <table width="75%">
+                                       <tr>
+                                         <td> CD4 Dates</td>
+                                         <td> Result</td>
+                                       </tr>
+                                        <tr>
+                                          <td><% allCd4CountResults.each { allCd4 -> %>
+                                                <div class="column-four">${allCd4.cd4CountDate ?: ""}</div>
+                                          <% } %>
+                                          </td>
+                                           <td><% allCd4CountResults.each { allCd4 -> %>
+                                                <div class="column-four"> ${allCd4.cd4Count ?: ""}</div>
+                                           <% } %>
+                                           </td>
+                                       </tr>
+                                    </table>
+                                </td>
+                                <% } %>
+                                </tr>
                 <tr>
                     <td>Clinical Notes: </td>
                     <td colspan="2">
@@ -292,45 +346,22 @@
     </div>
     <script type="text/javascript">
         jQuery(function(){
-
+          jQuery('#lmp-struct').hide();
+                if("${ patient.gender}" == "F") {
+                  jQuery('#lmp-struct').show();
+                }
+                else{
+                 jQuery('#lmp-struct').hide();
+                }
             if("${isKDoD}"=="false"){
-                jQuery('#kdod-struct').hide();
+
+                jQuery('.kdod-struct').hide();
                 jQuery('#kdod-service-no').hide();
             }
             else {
-                jQuery('#kdod-struct').show();
+                jQuery('.kdod-struct').show();
                 jQuery('#kdod-service-no').show();
 
-                jq("select[name='kDoDCadre']").change(function () {
-                    var cadre = jq(this).val();
-
-                    if (cadre === "Civilian") {
-                        jq('#rank').hide();
-                        jq('#unit').hide();
-
-                        jq(".kDoDUnit").val("");
-
-                        jq(".kDoDRank")[0].selectedIndex = 0;
-
-                        jq('.kDoDRank').removeAttr('required');
-                        jq('.kDoDUnit').removeAttr('required');
-
-                        jq('.kDoDRank').hide();
-                        jq('.kDoDUnit').hide();
-
-                    }
-                    else {
-                        jq('.kDoDRank').attr('required',1);
-                        jq('.kDoDUnit').attr('required',1);
-
-                        jq('#rank').show();
-                        jq('#unit').show();
-
-                        jq('.kDoDRank').show();
-                        jq('.kDoDUnit').show();
-
-                    }
-                });
             }
 
             jQuery('#print').click(function(){
