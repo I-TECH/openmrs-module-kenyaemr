@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpSession;
 
 /**
  * AJAX utility methods for patients
@@ -154,6 +155,25 @@ public class PatientUtilsFragmentController {
 
 		return simplifiedObj;
 	}
+
+	/**
+	 * Gets the recently viewed patient list
+	 * @return the simple patients
+	 */
+	@AppAction(EmrConstants.APP_CHART)
+	public SimpleObject[] recentlyViewed(UiUtils ui, HttpSession httpSession) {
+		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
+		List<Integer> recent = (List<Integer>) httpSession.getAttribute(attrName);
+		List<Patient> pats = new ArrayList<Patient>();
+		if (recent != null) {
+			for (Integer ptId : recent) {
+				pats.add(Context.getPatientService().getPatient(ptId));
+			}
+		}
+
+		return ui.simplifyCollection(pats);
+	}
+
 
 	/**
 	 * Gets the recently viewed patient list
