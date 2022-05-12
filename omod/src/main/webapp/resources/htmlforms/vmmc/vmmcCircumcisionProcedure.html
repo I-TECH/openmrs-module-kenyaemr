@@ -306,7 +306,8 @@
             var adverseEventsVal = getValue('adverse_events.value');
             var managementVal = getValue('severity_management.value');
 
-            var timeOfLastSlit = getValue('time_of_slit.value');
+            var timeOfLastSlit = jq('#time_of_slit input[type=text]').val();
+            var timeOfPlacement = jq('#time_of_placement input[type=text]').val();
             var theatreNumber = getValue('theatre_number.value');
 
             var assistantClinician = getValue('assistant_clinician.value');
@@ -357,6 +358,13 @@
                return false;
            } else {
                 getField('adverse_events.error').html('Please specify if there were any adverse events').hide();
+           }
+
+           if(timeOfLastSlit  &lt; timeOfPlacement){
+                getField('time_of_slit.error').html('Time of slit should be after time of placement').show();
+                return false;
+           } else {
+                getField('time_of_slit.error').html('Time of slit should be after time of placement').hide();
            }
 
            if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
@@ -691,14 +699,15 @@
 
                 <tr>
                     <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
-                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true"  allowFutureDates="false" />
+                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true" allowFutureDates="false" />
+
                     </td>
                 </tr>
 
                 <tr>
                     <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
                         hour clock:
-                        <obs conceptId="167132" id="time_of_slit" required="true"  allowFutureDates="false" />
+                        <obs conceptId="167132" id="time_of_slit" required="true" allowFutureDates="false" />
                     </td>
                 </tr>
 
