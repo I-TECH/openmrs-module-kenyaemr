@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.upi;
 
+import org.openmrs.Patient;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -22,28 +28,6 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.openmrs.Patient;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
-import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestParam;
 
 public class UpiDataExchangeFragmentController {
 
@@ -57,11 +41,15 @@ public class UpiDataExchangeFragmentController {
 
 	}
 
-	public static void postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
-		sendPOST(params);
+	public static SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		SimpleObject simpleObject = new SimpleObject();
+		simpleObject.put("client",sendPOST(params));
+		return  simpleObject;
 	}
 
-	private static void sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	private static String sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		String stringResponse= "";
+
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
@@ -82,6 +70,7 @@ public class UpiDataExchangeFragmentController {
 		URL url = new URL(POST_URL3);
 
 		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
+		System.out.println("Params for request ==>"+params);
 		con.setRequestMethod("POST");
 
 		String authToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIzNDAxMzUsImlhdCI6MTY1MjM0MDEzNSwiZXhwIjoxNjUyNDI2NTM1LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiI3MjJFNTEyN0I3NDg3RTYyNEM1REQzODk5MjkzMkE2RSJ9.BhTdmiAC8HLW1Uh4ixacdbaBiSzvTlYkcOVL9Wfi67UHwp9SzV7104Y1VUDXT1P_wcGOJbXvuysJyZYlJgc2a5-kglQ29r_UEP9rkI8FdHaYwky76fqmL71hbrW5kdmYwlWoR-RK4CFXm10jaoXmBoTPMShP-l8r-t9kcgrQ9i80HVhbcRNTXk1v5XhiqmykIBstwXVFQBbdhFZ_7Z8ZUiJnc-Oesx1rg8Xf0q1kElxPHwg7jLPvrebmMD8h25PI_dN3xkylBZWl__ZSmU7bwQAp7RAJzGuSQG5FB2MNLyYsEGryal29-cR7sR-Yx48iazlAott5srCXnzj5dcdpRg";
@@ -89,44 +78,9 @@ public class UpiDataExchangeFragmentController {
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 		con.setRequestProperty("Accept", "application/json");
 
-		// For POST only - START
-
-		String input = "{\n" +
-				"    \"firstName\": \"TEST\",\n" +
-				"    \"middleName\": \"BUSH\",\n" +
-				"    \"lastName\": \"BUSH\",\n" +
-				"    \"dateOfBirth\": \"2000-08-14T21:00:00.000Z\",\n" +
-				"    \"maritalStatus\": null,\n" +
-				"    \"gender\": \"male\",\n" +
-				"    \"occupation\": \"\",\n" +
-				"    \"religion\": \"\",\n" +
-				"    \"educationLevel\": \"\",\n" +
-				"    \"country\": \"Kenya\",\n" +
-				"    \"countryOfBirth\": \"\",\n" +
-				"    \"residence\": {\n" +
-				"        \"county\": \"Nairobi\",\n" +
-				"        \"subCounty\": \"Dagorreti\",\n" +
-				"        \"ward\": \"\",\n" +
-				"        \"village\": \"Ngeria\",\n" +
-				"        \"landmark\": \"\",\n" +
-				"        \"address\": \"\"\n" +
-				"    },\n" +
-				"    \"identifications\": [\n" +
-				"        {\n" +
-				"            \"IdentificationType\": \"identification-number\",\n" +
-				"            \"IdentificationNumber\": "+ params +"\"\n" +
-				"        }\n" +
-				"    ],\n" +
-				"    \"contact\": {\n" +
-				"        \"primaryPhone\": \"0722404040\",\n" +
-				"        \"secondaryPhone\": \"07025464646\",\n" +
-				"        \"emailAddress\": \"\"\n" +
-				"    },\n" +
-				"    \"nextOfKins\": []\n" +
-				"}";
 		con.setDoOutput(true);
 		OutputStream os = con.getOutputStream();
-		os.write(input.getBytes());
+		os.write(params.getBytes());
 		os.flush();
 		os.close();
 		// For POST only - END
@@ -144,14 +98,26 @@ public class UpiDataExchangeFragmentController {
 				response.append(inputLine);
 			}
 			in.close();
-			String stringResponse = response.toString();
+			System.out.println("POST request successful");
+			stringResponse = response.toString();
 			System.out.println(stringResponse);
             UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
             upiUtils.processUpiResponse(stringResponse);
 
+            return upiUtils.processUpiResponse(stringResponse);
+
 		} else {
 			System.out.println("POST request not worked");
+			System.out.println("Using dummy response instead");
+
+			// Dummy response
+			stringResponse ="{\"clientNumber\":\"MOH202205052\",\"firstName\":\"TEST\",\"middleName\":\"BUSH\",\"lastName\":\"BUSH\",\"dateOfBirth\":\"08/14/2000 21:00:00\",\"maritalStatus\":null,\"gender\":\"male\",\"occupation\":\"\",\"religion\":\"\",\"educationLevel\":\"\",\"country\":\"Kenya\",\"countyOfBirth\":null,\"isAlive\":true,\"originFacilityKmflCode\":\"None\",\"residence\":{\"county\":\"Nairobi\",\"subCounty\":\"Dagorreti\",\"ward\":\"\",\"village\":\"Ngeria\",\"landMark\":\"\",\"address\":\"\"},\"identifications\":[{\"identificationType\":\"identification-number\",\"identificationNumber\":\"56445570\"}],\"contact\":{\"primaryPhone\":\"0722404040\",\"secondaryPhone\":\"07025464646\",\"emailAddress\":\"\"},\"nextOfKins\":[]}";
+			UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+			System.out.println(stringResponse);
+			stringResponse = upiUtils.processUpiResponse(stringResponse);
+
 		}
+		return stringResponse;
 	}
 
 }
