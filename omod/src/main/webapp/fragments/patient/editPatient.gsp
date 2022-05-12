@@ -8,6 +8,10 @@
     def kDoDRank = command.kDoDRank
     def kDoDUnit = command.kDoDUnit
     def ward = command.personAddress.address4
+
+    def nationalIdType = "49af6cdc-7968-4abb-bf46-de10d7f4859f"
+    def birthCertificateNumberType = "68449e5a-8829-44dd-bfef-c9c8cf2cb9b2"
+    def passportNumberType = "be9beef6-aacc-4e1f-ac4e-5babeaa1e303"
     def nameFields = [
             [
                     [object: command, property: "personName.familyName", label: "Surname *"],
@@ -91,9 +95,11 @@
                     <td>Identifier Type</td>
                     <td>
                         <select id="idType" name="idtype">
-                            <option>Select a valid identifier from the list</option>
+                            <option value="">Select a valid identifier type</option>
                             <% idTypes.each {%>
-                                <option value="${it.patientIdentifierTypeId}">${it.name}</option>
+                                <% if(it.uuid == nationalIdType || it.uuid == birthCertificateNumberType || it.uuid == passportNumberType) { %>
+                                    <option value="${it.uuid}">${it.name}</option>
+                                <% } %>
                             <%}%>
                         </select>
                     </td>
@@ -557,10 +563,40 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#validate-identifier').click(function(event){
 
             // connect to dhp server
-            var authToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0MUU1QUM5RUIxNTlBMjc1NTY4NjM0MzIxMUJDQzAzMDMyMEUzMTZSUzI1NiIsIng1dCI6IjVCNWF5ZXNWbWlkVmFHTkRJUnZNQXdNZzR4WSIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL2RocGlkZW50aXR5c3RhZ2luZ2FwaS5oZWFsdGguZ28ua2UiLCJuYmYiOjE2NTIyNzMzNzksImlhdCI6MTY1MjI3MzM3OSwiZXhwIjoxNjUyMzU5Nzc5LCJhdWQiOlsiREhQLkdhdGV3YXkiLCJESFAuVmlzaXRhdGlvbiJdLCJzY29wZSI6WyJESFAuR2F0ZXdheSIsIkRIUC5WaXNpdGF0aW9uIl0sImNsaWVudF9pZCI6InBhcnRuZXIudGVzdC5jbGllbnQiLCJqdGkiOiJDMDE2RUYyQjhFMkUzQUI5NzIyNDY4Q0EwOUYxOTVGRiJ9.FD_VpzTqoUj3JnWSEZXFuvPyOs-rkDlxOLE_QnVWYY5w-scn1RtkaLuTwLU274t_TWAX3r2NYvft5l-bmEWRkrjevQ87FN9vplbpLx1kMAqgrdNysiLW4PfPFYZ_DjmoeAeSAVLEkQhs86ZjhapffI03QRmT8dFUB_Ta_Aq2l25Sru8Tb7kIE9J186e7RVIK3DgCSCS3srm66Se5HY7w56UEaYNAhjKncn_GaCpUsF6TXEvr-dOE4PdJQrjZopdLfs9DQKk8WKrlbOAZW_bznIEMhOxyTQ4hK3IvR6lcyf-S_9KZgwZF9KXK0IYNPCgzynLl_TYQmQCEPRTTlhPkHw";
-            var idType = 'national-id';
+            var authToken = '${clientVerificationApiToken}';
+            var idType = jQuery('#idType').val();
             var idValue = jQuery('input[name=idValue]').val();
-            var getUrl = 'https://dhpstagingapi.health.go.ke/visit/registry/search/' + idType + '/' +  idValue;
+            var idTypeParam = '';
+
+            if (authToken == '') {
+                jQuery('#show-cr-info-dialog').hide();
+                var className = jQuery('#msgBox').attr("class");
+                jQuery('#msgBox').removeClass(className);
+                //jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                jQuery('#msgBox').text('Please notify the system admin to enable verification process');
+                return;
+            }
+
+            if (idType == '' || idValue == '') {
+                jQuery('#show-cr-info-dialog').hide();
+                var className = jQuery('#msgBox').attr("class");
+                jQuery('#msgBox').removeClass(className);
+                //jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                jQuery('#msgBox').text('Please specify identifier type and value for verification');
+                return;
+            }
+
+
+            if(idType == '${nationalIdType}') {
+                idTypeParam = 'national-id';
+            } else if (idType == '${passportNumberType}') {
+                idTypeParam = 'passport-id';
+            } else if (idType == '${birthCertificateNumberType}') {
+                idTypeParam = 'birthcertificate-id';
+            }
+
+            var baseVerificationUrl = '${clientVerificationApi}';
+            var getUrl = baseVerificationUrl + idTypeParam + '/' +  idValue;
             jq.ajax({
                  url: getUrl,
                  type: "GET",
