@@ -79,6 +79,11 @@
                     [object: command, property: "kDoDUnit", label: "Unit *"]
             ]
     ]
+    def crVerifedField = [
+            [
+                    [object: command, property: "CRVerificationStatus", label: "CR Verifed"]
+            ]
+    ]
 %>
 <script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/KenyaAddressHierarchy.js"></script>
 <form id="edit-patient-form" method="post" action="${ui.actionLink("kenyaemr", "patient/editPatient", "savePatient")}">
@@ -376,22 +381,20 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
+            <% crVerifedField.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+
+
         </fieldset>
-       <fieldset>
-      <table>
-            <tr>
-                <td class="ke-field-instructions">
-                    <button type="button" id="post-registrations">Post Registration Info to CR</button>
-                    <label id="post-msgBox"></label>
-                </td>
-            </tr>
-        </table>
-
-
-       </fieldset>
+        <div align="center" id="post-msgBox"></div>
+        <br/>
     </div>
 
     <div class="ke-panel-footer">
+        <button type="button" id="post-registrations">
+            <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> Post to Registry
+        </button>
         <button type="submit">
             <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changes" : "Create Patient"}
         </button>
@@ -562,6 +565,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#huduma-no').hide();
         jQuery('#passport-no').hide();
         jQuery('#driving-license').hide();
+        jQuery("#post-msgBox").hide();
 
         jQuery('#show-cr-info-dialog').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
@@ -1062,12 +1066,20 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 'postParams': JSON.stringify(params)
             })
             .success(function (data) {
-                jQuery("input[name='nationalUniquePatientNumber']").val(data.client);
-                console.log("Response from CR  ==> " + data.client);
+                jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
+                jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
+                jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                jQuery("#post-msgBox").show();
+                console.log("Response from CR  ==> " + data.clientNumber);
+                console.log("Status from CR  ==> " + data.status);
 
             })
             .fail(function (err) {
                     console.log(err)
+                jQuery("input[name='CRVerificationStatus']").val("Pending");
+                jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
+                jQuery("#post-msgBox").show();
+                console.log("Status from CR  ==> " + data.status).attr('readonly', true);
                 }
             )
         console.log("Payload ==> " + JSON.stringify(params));

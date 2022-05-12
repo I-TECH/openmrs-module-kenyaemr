@@ -42,12 +42,10 @@ public class UpiDataExchangeFragmentController {
 	}
 
 	public static SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
-		SimpleObject simpleObject = new SimpleObject();
-		simpleObject.put("client",sendPOST(params));
-		return  simpleObject;
+		return sendPOST(params);
 	}
 
-	private static String sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	private static SimpleObject sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		String stringResponse= "";
 
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -88,6 +86,7 @@ public class UpiDataExchangeFragmentController {
 		int responseCode = con.getResponseCode();
 		System.out.println("POST Response Code :: " + responseCode + con.getResponseMessage());
 
+		SimpleObject responseObj = null;
 		if (responseCode == HttpURLConnection.HTTP_OK) { //success
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
@@ -104,20 +103,27 @@ public class UpiDataExchangeFragmentController {
             UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
             upiUtils.processUpiResponse(stringResponse);
 
+            responseObj = upiUtils.processUpiResponse(stringResponse);
+            responseObj.put("status", "success");
+            //responseObj.put("status", "success");
             return upiUtils.processUpiResponse(stringResponse);
 
 		} else {
+
+			responseObj = new SimpleObject();
+			responseObj.put("status", "fail");
 			System.out.println("POST request not worked");
 			System.out.println("Using dummy response instead");
 
 			// Dummy response
 			stringResponse ="{\"clientNumber\":\"MOH202205052\",\"firstName\":\"TEST\",\"middleName\":\"BUSH\",\"lastName\":\"BUSH\",\"dateOfBirth\":\"08/14/2000 21:00:00\",\"maritalStatus\":null,\"gender\":\"male\",\"occupation\":\"\",\"religion\":\"\",\"educationLevel\":\"\",\"country\":\"Kenya\",\"countyOfBirth\":null,\"isAlive\":true,\"originFacilityKmflCode\":\"None\",\"residence\":{\"county\":\"Nairobi\",\"subCounty\":\"Dagorreti\",\"ward\":\"\",\"village\":\"Ngeria\",\"landMark\":\"\",\"address\":\"\"},\"identifications\":[{\"identificationType\":\"identification-number\",\"identificationNumber\":\"56445570\"}],\"contact\":{\"primaryPhone\":\"0722404040\",\"secondaryPhone\":\"07025464646\",\"emailAddress\":\"\"},\"nextOfKins\":[]}";
-			UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 			System.out.println(stringResponse);
-			stringResponse = upiUtils.processUpiResponse(stringResponse);
+			UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+			responseObj = upiUtils.processUpiResponse(stringResponse);
+
 
 		}
-		return stringResponse;
+		return responseObj;
 	}
 
 }
