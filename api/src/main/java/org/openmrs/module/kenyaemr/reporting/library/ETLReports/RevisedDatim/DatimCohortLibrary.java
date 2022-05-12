@@ -5464,10 +5464,10 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevCurrentPeriod() {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_kp_contact c\n" +
-                "  inner join (select e.client_id from kenyaemr_etl.etl_kp_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
-                "  left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_kp_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
-                "  left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_kp_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "  inner join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
+                "  left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "  left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
                 "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
                 "                                             when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10) when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace(@startOfYear, '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
                 "                                             when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
@@ -5491,10 +5491,10 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevPreviousPeriod() {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_kp_contact c\n" +
-                "                          inner join (select e.client_id from kenyaemr_etl.etl_kp_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
-                "                          left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_kp_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
-                "                          left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_kp_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "                          inner join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate)) e on c.client_id = e.client_id\n" +
+                "                          left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "                          left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
                 "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 6 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
                 "    when 7 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 8 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 9 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
                 "    when 11 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 12 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 1 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
@@ -5520,7 +5520,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevOfferedHTSServices() {
-        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_kp_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.counselled_for_hiv = 'Yes' and v.hiv_tested in ('Yes','Declined','Referred for testing');";
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.counselled_for_hiv = 'Yes' and v.hiv_tested in ('Yes','Declined','Referred for testing');";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("kpPrevOfferedHTSServices");
         cd.setQuery(sqlQuery);
@@ -5534,7 +5534,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevNewlyTestedOrReferredSql() {
-        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_kp_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested in ('Yes','Referred for testing'))v\n" +
+        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested in ('Yes','Referred for testing'))v\n" +
                 "left join\n" +
                 "    (select t.patient_id from kenyaemr_etl.etl_hts_test t where timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -5551,7 +5551,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevReceivedService() {
-        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_kp_clinical_visit v\n" +
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v\n" +
                 "       where (v.condom_use_education = 'Yes' or v.post_abortal_care = 'Yes' or v.female_condoms_no > 0 or v.male_condoms_no > 0 or v.lubes_no > 0 or v.sti_screened = 'Y' or v.sti_treated ='Yes' or v.sti_referred = 'Yes'\n" +
                 "    or v.linked_to_art='Yes' or v.tb_screened='Y' or v.tb_treated = 'Y' or v.tb_referred = 'Yes'\n" +
                 "          or (v.hepatitisB_screened = 'Y' and v.hepatitisB_treated = 'Vaccinated') or v.hepatitisB_referred ='Yes'\n" +
@@ -5576,8 +5576,8 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevKnownPositiveSql() {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_kp_contact c\n" +
-                "                left join (select e.client_id from kenyaemr_etl.etl_kp_client_enrollment e where e.visit_date <= date(:endDate) and e.share_test_results = 'Yes I tested positive')e  on c.client_id = e.client_id\n" +
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "                left join (select e.client_id from kenyaemr_etl.etl_client_enrollment e where e.visit_date <= date(:endDate) and e.share_test_results = 'Yes I tested positive')e  on c.client_id = e.client_id\n" +
                 "left join (select h.patient_id from kenyaemr_etl.etl_hiv_enrollment h where h.visit_date < date(:startDate)) h on c.client_id = h.patient_id\n" +
                 "where e.client_id is not null or h.patient_id is not null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -5594,7 +5594,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevDeclinedTestingSql() {
-        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_kp_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested ='Declined')v\n" +
+        String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested ='Declined')v\n" +
                 "       left join\n" +
                 "        (select t.patient_id from kenyaemr_etl.etl_hts_test t where timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -5612,7 +5612,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpProgramByKpType(String kpType) {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_kp_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.key_population_type)),11) = '"+kpType+"';";
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.key_population_type)),11) = '"+kpType+"';";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("kpProgramByKpType");
         cd.setQuery(sqlQuery);
