@@ -165,6 +165,11 @@
                         <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
                         <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
                     </tr>
+                    <tr id="upi-no">
+                        <td class="ke-field-label">NUPI</td>
+                        <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalUniquePatientNumber"])}</td>
+                        <td class="ke-field-instructions"><% if (!command.nationalUniquePatientNumber) { %>(If available)<%} %></td>
+                    </tr>
                     <tr></tr>
                     <tr>
                         <td> <input type="checkbox" name="other-identifiers" value="Y"
@@ -286,86 +291,6 @@
             <% } %>
 
      </fieldset>
-    <fieldset id="identifiers">
-        <legend>ID Numbers</legend>
-
-        <table>
-            <% if (command.inHivProgram && isKDoD==false) { %>
-            <tr>
-                <td class="ke-field-label">Unique Patient Number</td>
-                <td>${
-                        ui.includeFragment("kenyaui", "widget/field", [object: command, property: "uniquePatientNumber"])}</td>
-                <td class="ke-field-instructions">(HIV program<% if (!command.uniquePatientNumber) { %>, if assigned<%
-                        } %>)</td>
-            </tr>
-
-            <% } %>
-            <% if(enableClientNumberField || command.clientNumber) { %>
-            <tr>
-                <td class="ke-field-label">${clientNumberLabel}</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "clientNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.clientNumber) { %>(This is a generic partner identification for clients. Please only provide if available)<%
-                        } %></td>
-            </tr>
-
-            <% } %>
-
-
-            <tr>
-                <td class="ke-field-label">Patient Clinic Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "patientClinicNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<%
-                    } %></td>
-            </tr>
-            <tr id="national-id">
-                <td class="ke-field-label">National ID Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(Enter National Identification Number or patient's National ID waiting card number if available)<% } %></td>
-            </tr>
-            <tr id="passport-no">
-                <td class="ke-field-label">Passport Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "passPortNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.passPortNumber) { %>(if available)<% } %></td>
-            </tr>
-            <tr id="huduma-no">
-                <td class="ke-field-label">Huduma Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "hudumaNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.hudumaNumber) { %>(if available)<% } %></td>
-            </tr>
-            <tr  id="birth-cert-no">
-                <td class="ke-field-label">Birth Certificate Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "birthCertificateNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.birthCertificateNumber) { %>(if available or Birth Notification number)<% } %></td>
-            </tr>
-            <tr id="alien-no">
-                <td class="ke-field-label">Alien ID Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "alienIdNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.alienIdNumber) { %>(if available)<% } %></td>
-            </tr>
-            <tr id="driving-license">
-                <td class="ke-field-label">Driving License Number</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "drivingLicenseNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.drivingLicenseNumber) { %>(if available)<% } %></td>
-            </tr>
-
-            <tr id="kdod-service-no">
-                <td class="ke-field-label">Service Number *</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "kDoDServiceNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.kDoDServiceNumber) { %>(5-6 digits for service officer or 5-6 digits followed by / and 2 digits for dependant(eg.12345/01))<%} %></td>
-            </tr>
-            <tr id="upi-no">
-                <td class="ke-field-label">NUPI</td>
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalUniquePatientNumber"])}</td>
-                <td class="ke-field-instructions"><% if (!command.nationalUniquePatientNumber) { %>(If available)<%} %></td>
-            </tr>
-            <tr>
-                <td> <input type="checkbox" name="other-identifiers" value="Y"
-                            id="other-identifiers" /> More identifiers </td>
-            </tr>
-        </table>
-
-    </fieldset>
-
 
 </fieldset>
         <fieldset>
@@ -632,6 +557,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     crResponseData = ""; // response from client registry
     jQuery(function () {
 
+        jQuery('input[name="nationalUniquePatientNumber"]').attr('readonly', true);
         jQuery('#alien-no').hide();
         jQuery('#huduma-no').hide();
         jQuery('#passport-no').hide();
