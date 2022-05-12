@@ -108,7 +108,7 @@
                     </td>
                     <td class="ke-field-instructions">
                         <button type="button" class="ke-verify-button" id="validate-identifier">Validate Identifier</button>
-                        <button type="button" class="ke-verify-button" id="show-cr-info-dialog">Show CR info</button>
+                        <button type="button" class="ke-verify-button" id="show-cr-info-dialog">View Registry info</button>
                         &nbsp;&nbsp;
                         <label id="msgBox"></label>
                     </td>
@@ -168,7 +168,7 @@
                     <tr id="upi-no">
                         <td class="ke-field-label">NUPI</td>
                         <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalUniquePatientNumber"])}</td>
-                        <td class="ke-field-instructions"><% if (!command.nationalUniquePatientNumber) { %>(If available)<%} %></td>
+                        <td class="ke-field-instructions"> This will be populated from MOH Client Registry</td>
                     </tr>
                     <tr></tr>
                     <tr>
@@ -442,17 +442,17 @@
             <tr>
                 <td width="250px">UPI</td>
                 <td id="cr-upi" width="200px"></td>
-                <td></td>
+                <td><button type="button" onclick="useIdentifiers()">use all identifiers in form</button></td>
             </tr>
             <tr>
                 <td>National ID</td>
                 <td id="cr-national-id"></td>
-                <td><button type="button" onclick="useIdentifier('nationalIdNumber','Identification Number')">use in form</button></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Passport Number</td>
                 <td id="cr-passport"></td>
-                <td><button type="button">use in form</button></td>
+                <td></td>
             </tr>
         </table>
     </fieldset>
@@ -982,6 +982,32 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         }
 
     }
+
+     // use client.identifications as base
+        function useIdentifiers(){
+
+            if (data.client.identifications.length > 0) {
+                var nationalIdType = 'Identification Number';
+                var passportIdType = 'passport-no';
+                var birthCertificateIdType = 'birth-certificate';
+
+                for (i = 0; i < data.client.identifications.length; i++) {
+                    var identifierObj = data.client.identifications[i];
+                    if (identifierObj.identificationType == nationalIdType) {
+                        jQuery("input[name='nationalIdNumber']").val(identifierObj.identificationNumber);
+                    } else if (identifierObj.identificationType == passportIdType) {
+                       jQuery("input[name='passPortNumber']").val(identifierObj.identificationNumber);
+                    } else if (identifierObj.identificationType == birthCertificateIdType) {
+                       jQuery("input[name='birthCertificateNumber']").val(identifierObj.identificationNumber);
+                    }
+                }
+
+                // update NUPI
+                jQuery("input[name='nationalUniquePatientNumber']").val(data.client.clientNumber);
+
+            }
+
+        }
 
     // use client.nextOfKins as base
     function useNextofKin(){
