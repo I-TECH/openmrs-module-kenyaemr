@@ -440,4 +440,20 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		setAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER, value, location);
 	}
 
+	/**
+	 * Gets the CR verification status
+	 * @return the verification status
+	 */
+	public String getCRVerificationStatus() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the CR verification status
+	 * @param value the CR verification status
+	 */
+	public void setCRVerificationStatus(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY, value);
+	}
+
 }

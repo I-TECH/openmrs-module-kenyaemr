@@ -300,6 +300,8 @@ public class EditPatientFragmentController {
 		private String birthCertificateNumber;
 		private String alienIdNumber;
 		private String drivingLicenseNumber;
+		private String CRVerificationStatus;
+
 
 		public String getNationalUniquePatientNumber() {
 			return nationalUniquePatientNumber;
@@ -349,7 +351,7 @@ public class EditPatientFragmentController {
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
 			PersonWrapper wrapper = new PersonWrapper(person);
-			telephoneContact = wrapper.getTelephoneContact();
+			telephoneContact = wrapper.getTelephoneContact();			
 		}
 
 		/**
@@ -379,6 +381,7 @@ public class EditPatientFragmentController {
 			guardianFirstName = wrapper.getGuardianFirstName();
 			guardianLastName = wrapper.getGuardianLastName();
 			chtReferenceNumber = wrapper.getChtReferenceNumber();
+			CRVerificationStatus = wrapper.getCRVerificationStatus();
 			if(isKDoD.equals("true")){
 			kDoDServiceNumber = wrapper.getKDoDServiceNumber();
 			kDoDCadre = wrapper.getCadre();
@@ -592,6 +595,7 @@ public class EditPatientFragmentController {
 			wrapper.setGuardianFirstName(guardianFirstName);
 			wrapper.setGuardianLastName(guardianLastName);
 			wrapper.setChtReferenceNumber(chtReferenceNumber);
+			wrapper.setCRVerificationStatus(CRVerificationStatus);
 
 			if(isKDoD.equals("true")){
 				wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
@@ -1160,6 +1164,15 @@ public class EditPatientFragmentController {
 		public void setkDoDUnit(String kDoDUnit) {
 			this.kDoDUnit = kDoDUnit;
 		}
+
+		public String getCRVerificationStatus() {
+			return CRVerificationStatus;
+		}
+
+		public void setCRVerificationStatus(String CRVerificationStatus) {
+			this.CRVerificationStatus = CRVerificationStatus;
+		}
+
 	}
 
 }
