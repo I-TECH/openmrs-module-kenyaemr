@@ -65,6 +65,8 @@ public class EditPatientFragmentController {
 	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
 	final String clientNumberFieldEnabled = (administrationService.getGlobalProperty("clientNumber.enabled"));
 	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
+	final String clientRegistryClientVerificationApi = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT));
+	final String clientRegistryApiToken = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
 
 
 	/**
@@ -83,6 +85,8 @@ public class EditPatientFragmentController {
 
 		Person existing = patient != null ? patient : person;
 
+		model.addAttribute("clientVerificationApi", clientRegistryClientVerificationApi);
+		model.addAttribute("clientVerificationApiToken", clientRegistryApiToken);
 		model.addAttribute("command", newEditPatientForm(existing));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
