@@ -718,9 +718,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             console.log("National ID  ==>"+identifierValue)
 
             postRegistrationDetailsToCR(
-                jQuery('input[name="personName.familyName"]').val(),
                 jQuery('input[name="personName.givenName"]').val(),
                 jQuery('input[name="personName.middleName"]').val(),
+                jQuery('input[name="personName.familyName"]').val(),
                 jQuery('#patient-birthdate_date').val(),
                 jQuery('input[name=gender]').val(),
                 "",   //jQuery('select[name=maritalStatus]').val(),   //TODO:to covert marital status  from concept
@@ -1029,7 +1029,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
-    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
+    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countryOfBirth,county,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
 
         var params = params
@@ -1044,7 +1044,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "religion":religion,
             "educationLevel":educationLevel,
             "country": "Kenya",
-            "countyOfBirth": countyOfBirth,
+            "countryOfBirth": countryOfBirth,
             "residence": {
                 "county": county,
                 "subCounty": subCounty,
@@ -1073,12 +1073,21 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 'postParams': JSON.stringify(params)
             })
             .success(function (data) {
-                jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
-                jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
-                jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
-                jQuery("#post-msgBox").show();
-                console.log("Response from CR  ==> " + data.clientNumber);
-                console.log("Status from CR  ==> " + data.status);
+                if(data.clientNumber){
+                    jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
+                    jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
+                    jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                    jQuery("#post-msgBox").show();
+
+                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() !="" ){
+                    jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
+                    jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
+                    jQuery("#post-msgBox").show();
+                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() =="" ){
+                    jQuery("#post-msgBox").text("");
+                    jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
+                    jQuery("#post-msgBox").hide();
+                }
 
             })
             .fail(function (err) {
