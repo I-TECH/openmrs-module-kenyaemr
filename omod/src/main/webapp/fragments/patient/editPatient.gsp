@@ -705,17 +705,18 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         //Prepare UPI payload
 
         jQuery('#post-registrations').click(function(){
-            var identifierType;
-            var identifierValue;
+            var nationaId;
+            var birthCertificateNumber;
             if(jQuery('input[name=nationalIdNumber]').val() !=""){
-                identifierType = "identification-number";
-                identifierValue = jQuery('input[name=nationalIdNumber]').val();
+                nationaId = "identification-number";
+            }else {
+                nationaId = ""
             }
             if(jQuery('#birth-cert-no').val() !=""){
-                identifierType = "birth-certificate";
-                identifierValue = jQuery('#birthCertificateNo').val();
+                birthCertificateNumber = jQuery('#birthCertificateNo').val();
+            }else {
+                birthCertificateNumber = "";
             }
-            console.log("National ID  ==>"+identifierValue)
 
             postRegistrationDetailsToCR(
                 jQuery('input[name="personName.givenName"]').val(),
@@ -735,8 +736,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 jQuery('input[name="personAddress.cityVillage"]').val(),
                 jQuery('input[name="personAddress.address2"]').val(),    //landmark
                 jQuery('input[name="personAddress.address1"]').val(),   //address
-                identifierType,
-                identifierValue,
+                nationaId,
+                birthCertificateNumber,
                 jQuery('input[name="telephoneContact"]').val(),
                 jQuery('input[name="alternatePhoneContact"]').val(),
                 jQuery('input[name="emailAddress"]').val(),
@@ -1029,7 +1030,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
-    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
+    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,nationalId,birthCertificateNumber,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
 
         var params = params
@@ -1054,8 +1055,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 "address": address
             },
             "identifications": [{
-                "IdentificationType": identificationType,
-                "IdentificationNumber": identificationValue
+                "national-id": nationalId,
+                "birth-certificate": birthCertificateNumber
             }],
             "contact": {
                 "primaryPhone": primaryPhone,
