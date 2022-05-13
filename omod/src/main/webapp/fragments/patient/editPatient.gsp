@@ -717,9 +717,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             console.log("National ID  ==>"+identifierValue)
 
             postRegistrationDetailsToCR(
-                jQuery('input[name="personName.familyName"]').val(),
                 jQuery('input[name="personName.givenName"]').val(),
                 jQuery('input[name="personName.middleName"]').val(),
+                jQuery('input[name="personName.familyName"]').val(),
                 jQuery('#patient-birthdate_date').val(),
                 jQuery('input[name=gender]').val(),
                 "",   //jQuery('select[name=maritalStatus]').val(),   //TODO:to covert marital status  from concept
@@ -1072,12 +1072,17 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 'postParams': JSON.stringify(params)
             })
             .success(function (data) {
-                jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
-                jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
-                jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
-                jQuery("#post-msgBox").show();
-                console.log("Response from CR  ==> " + data.clientNumber);
-                console.log("Status from CR  ==> " + data.status);
+                if(data.clientNumber !="") {
+                    jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
+                    jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
+                    jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                    jQuery("#post-msgBox").show();
+
+                }else{
+                    jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
+                    jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                    jQuery("#post-msgBox").show();
+                }
 
             })
             .fail(function (err) {
