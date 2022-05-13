@@ -44,6 +44,7 @@
 
     def contactsFields = [
             [
+                    [object: command, property: "country", label: "Country", config: [style: "list", options: countryConcept]],
                     [object: command, property: "telephoneContact", label: "Telephone contact"]
             ],
             [
