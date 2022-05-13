@@ -11,7 +11,6 @@ package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -99,10 +98,10 @@ public class EditPatientFragmentController {
 
 		//create list of countries
 		List<Concept> countryList = new ArrayList<Concept>();
-		Concept countryConcept = Dictionary.getConcept(Dictionary.COUNTRY);
-		for(ConceptAnswer ca : countryConcept.getAnswers(false)) {
-			countryList.add(ca.getConcept());
-		}
+		countryList.add(Dictionary.getConcept("162883AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		countryList.add(Dictionary.getConcept("162884AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		countryList.add(Dictionary.getConcept("165639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+
 		model.addAttribute("countryOptions", countryList);
 		// create list of counties
 
