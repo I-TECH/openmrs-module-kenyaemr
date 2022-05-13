@@ -199,7 +199,7 @@ public class SummariesFragmentController {
         //Oxygen Saturation/
 
         // weight
-        CalculationResultMap latestOxygen = Calculations.lastObs(Dictionary.getConcept(Dictionary.OXYGEN_SATURATION), Arrays.asList(patient.getId()), context);
+        CalculationResultMap latestOxygen = Calculations.lastObs(Dictionary.getConcept("5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestOxygenValue = EmrCalculationUtils.obsResultForPatient(latestOxygen, patient.getPatientId());
         if(latestOxygenValue != null){
             patientSummary.setOxygenSaturation(latestOxygenValue.getValueNumeric().toString());
@@ -209,7 +209,7 @@ public class SummariesFragmentController {
         }
 
         //pulse rate
-        CalculationResultMap latestPulseRate = Calculations.lastObs(Dictionary.getConcept(Dictionary.PULSE_RATE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap latestPulseRate = Calculations.lastObs(Dictionary.getConcept("5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestPulseRates = EmrCalculationUtils.obsResultForPatient(latestPulseRate, patient.getPatientId());
         if(latestPulseRates != null){
             patientSummary.setPulseRate(latestPulseRates.getValueNumeric().toString());
@@ -218,7 +218,7 @@ public class SummariesFragmentController {
             patientSummary.setPulseRate("");
         }
         //Blood Pressure
-        CalculationResultMap bloodPressure = Calculations.lastObs(Dictionary.getConcept(Dictionary.BLOOD_PRESSURE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap bloodPressure = Calculations.lastObs(Dictionary.getConcept("5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestBloodPressure = EmrCalculationUtils.obsResultForPatient(bloodPressure, patient.getPatientId());
         if(latestBloodPressure != null){
             patientSummary.setBloodPressure(latestBloodPressure.getValueNumeric().toString());
@@ -226,9 +226,8 @@ public class SummariesFragmentController {
         else {
             patientSummary.setBloodPressure("");
         }
-
         //BP_DIASTOLIC
-        CalculationResultMap bpDiastolic = Calculations.lastObs(Dictionary.getConcept(Dictionary.BP_DIASTOLIC), Arrays.asList(patient.getId()), context);
+        CalculationResultMap bpDiastolic = Calculations.lastObs(Dictionary.getConcept("5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestBpDiastolic = EmrCalculationUtils.obsResultForPatient(bpDiastolic, patient.getPatientId());
         if(latestBpDiastolic != null){
             patientSummary.setBpDiastolic(latestBpDiastolic.getValueNumeric().toString());
@@ -238,7 +237,7 @@ public class SummariesFragmentController {
         }
 
         //LMP
-        CalculationResultMap latestLmp = Calculations.lastObs(Dictionary.getConcept(Dictionary.LMP), Arrays.asList(patient.getId()), context);
+        CalculationResultMap latestLmp = Calculations.lastObs(Dictionary.getConcept("1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestLmpResults = EmrCalculationUtils.obsResultForPatient(latestLmp, patient.getPatientId());
         if(latestLmpResults != null){
             patientSummary.setLmp(formatDate(latestLmpResults.getObsDatetime()));
@@ -250,7 +249,7 @@ public class SummariesFragmentController {
 
         //respitatory Rate/
 
-        CalculationResultMap respiratoryRate = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESPIRATORY_RATE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap respiratoryRate = Calculations.lastObs(Dictionary.getConcept("5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs latestRespiratoryRate = EmrCalculationUtils.obsResultForPatient(respiratoryRate, patient.getPatientId());
         if(latestRespiratoryRate != null){
             patientSummary.setRespiratoryRate(latestRespiratoryRate.getValueNumeric().toString());
@@ -260,18 +259,17 @@ public class SummariesFragmentController {
         }
 
         ///TB Screening
-        CalculationResultMap tbMap = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_SCREENING), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap tbMap = Calculations.lastObs(Dictionary.getConcept("1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs tbObs = EmrCalculationUtils.obsResultForPatient(tbMap, patient.getPatientId());
         if(tbObs != null) {
             patientSummary.setTbScreeningOutcome(tbScreeningOutcome(tbObs.getValueCoded()));
         }
         else {
-            patientSummary.setTbScreeningOutcome("");
+            patientSummary.setTbScreeningOutcome("N/A");
 
         }
-
         //TB start
-        CalculationResultMap tbStartDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap tbStartDate = Calculations.firstObs(Dictionary.getConcept("1113AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs tbStartDateValue = EmrCalculationUtils.obsResultForPatient(tbStartDate, patient.getPatientId());
         if(tbStartDateValue != null){
             patientSummary.setDateEnrolledInTb(formatDate(tbStartDateValue.getObsDatetime()));
@@ -282,7 +280,7 @@ public class SummariesFragmentController {
         }
 
         //TB completion
-        CalculationResultMap tbEndDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_END_DATE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap tbEndDate = Calculations.firstObs(Dictionary.getConcept("161354AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getId()), context);
         Obs tbEndDateValue = EmrCalculationUtils.obsResultForPatient(tbEndDate, patient.getPatientId());
         if(tbEndDateValue != null){
             patientSummary.setDateCompletedInTb(formatDate(tbEndDateValue.getObsDatetime()));
@@ -323,7 +321,7 @@ public class SummariesFragmentController {
             patientSummary.setWhoStagingAtEnrollment("");
         }
         //CaCx
-        CalculationResultMap cacxMap = Calculations.firstObs(Dictionary.getConcept(Dictionary.CACX_SCREENING), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap cacxMap = Calculations.firstObs(Dictionary.getConcept("06398e78-0d3e-43d5-8017-f2fc3865e2e0"), Arrays.asList(patient.getPatientId()), context);
         Obs cacxObs = EmrCalculationUtils.obsResultForPatient(cacxMap, patient.getPatientId());
         if(cacxObs != null){
             patientSummary.setCaxcScreeningOutcome(cacxScreeningOutcome(cacxObs.getValueCoded()));
@@ -333,7 +331,7 @@ public class SummariesFragmentController {
         }
 
         //STI SCREENING
-        CalculationResultMap stiScreen = Calculations.firstObs(Dictionary.getConcept(Dictionary.STI_SCREENING), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap stiScreen = Calculations.firstObs(Dictionary.getConcept("161558AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs stiObs = EmrCalculationUtils.obsResultForPatient(stiScreen, patient.getPatientId());
         if(stiObs != null) {
             patientSummary.setStiScreeningOutcome(stiScreeningOutcome(stiObs.getValueCoded()));
@@ -343,7 +341,7 @@ public class SummariesFragmentController {
 
         }
 //
-        CalculationResultMap fplanning = Calculations.firstObs(Dictionary.getConcept(Dictionary.FAMILY_PLANNING_METHODS), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap fplanning = Calculations.firstObs(Dictionary.getConcept("374AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs fmObs = EmrCalculationUtils.obsResultForPatient(fplanning, patient.getPatientId());
         if(fmObs != null) {
             patientSummary.setFamilyProtection(familyPlanningMethods(fmObs.getValueCoded()));
@@ -364,7 +362,7 @@ public class SummariesFragmentController {
             patientSummary.setDateEntryPoint("");
         }
         ///TB Start date
-        CalculationResultMap tbConfirmation = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap tbConfirmation = Calculations.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), Arrays.asList(patient.getPatientId()), context);
         Obs tbDateConfirmed = EmrCalculationUtils.obsResultForPatient(tbConfirmation, patient.getPatientId());
         if(tbDateConfirmed != null) {
             patientSummary.setDateEnrolledInTb(formatDate(tbDateConfirmed.getObsDatetime()));
@@ -373,7 +371,7 @@ public class SummariesFragmentController {
             patientSummary.setDateEnrolledInTb("");
         }
         //TB Complete date
-        CalculationResultMap tbCompletion = Calculations.lastObs(Dictionary.getConcept(Dictionary.TB_END_DATE), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap tbCompletion = Calculations.lastObs(Dictionary.getConcept("161354AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
         Obs dateCompletedTB = EmrCalculationUtils.obsResultForPatient(tbCompletion, patient.getPatientId());
         if(dateCompletedTB != null) {
             patientSummary.setDateCompletedInTb(formatDate(dateCompletedTB.getObsDatetime()));
@@ -933,39 +931,57 @@ public class SummariesFragmentController {
     String tbScreeningOutcome(Concept concept) {
         String value = "N/A";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "POSITIVE";
-            } else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "NEGATIVE";
+            if (!concept.equals(Dictionary.getConcept("160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Yes";
+            } else  {
+                value = "No";
             }
         }
         return value;
     }
 
     String stiScreeningOutcome(Concept concept) {
-        String value = "N/A";
+        String value = "";
         if(concept != null) {
             if (concept.equals(Dictionary.getConcept("703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "POSITIVE";
-            } else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "NEGATIVE";
+                value = "Positive";
+            }
+            else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Negative";
+            }
+            else if (concept.equals(Dictionary.getConcept("1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Not Done";
+            }
+            else if (concept.equals(Dictionary.getConcept("1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "N/A";
             }
         }
-
         return value;
     }
 
     String cacxScreeningOutcome(Concept concept) {
-        String value = "N/A";
+        String value = "";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "YES";
+            if (concept.equals(Dictionary.getConcept("703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Positive";
+            }
+            else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Negative";
+            }
+            else if (concept.equals(Dictionary.getConcept("1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Yes";
             }
             else if (concept.equals(Dictionary.getConcept("1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
                 value = "No";
             }
             else if (concept.equals(Dictionary.getConcept("1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
                 value = "Unknown";
+            }
+            else if (concept.equals(Dictionary.getConcept("1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Not Done";
+            }
+            else if (concept.equals(Dictionary.getConcept("1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "N/A";
             }
         }
         return value;
