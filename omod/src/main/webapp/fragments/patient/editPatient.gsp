@@ -44,7 +44,7 @@
 
     def contactsFields = [
             [
-                    [object: command, property: "country", label: "Country", config: [style: "list", options: countryConcept]],
+                    [object: command, property: "country", label: "Country", config: [style: "list", options: countryOptions]],
                     [object: command, property: "telephoneContact", label: "Telephone contact"]
             ],
             [
@@ -1030,7 +1030,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
-    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,nationalId,birthCertificateNumber,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
+    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countyOfBirth,county,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
 
         var params = params
@@ -1045,7 +1045,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "religion":religion,
             "educationLevel":educationLevel,
             "country": "Kenya",
-            "countyOfBirth": countyOfBirth,
+            "countryOfBirth": countryOfBirth,
             "residence": {
                 "county": county,
                 "subCounty": subCounty,
@@ -1074,16 +1074,20 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 'postParams': JSON.stringify(params)
             })
             .success(function (data) {
-                if(data.clientNumber !="") {
+                if(data.clientNumber){
                     jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
                     jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
                     jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
                     jQuery("#post-msgBox").show();
 
-                }else{
+                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() !="" ){
                     jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
-                    jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                    jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
                     jQuery("#post-msgBox").show();
+                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() =="" ){
+                    jQuery("#post-msgBox").text("");
+                    jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
+                    jQuery("#post-msgBox").hide();
                 }
 
             })
