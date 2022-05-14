@@ -139,16 +139,16 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                     </thead>
                     <tbody>
                     <tr>
-                        <td width="15%">Total enrolled in HIV</td>
-                        <td>${queueData}</td>
+                        <td width="15%">Total attempted verification</td>
+                        <td>${totalAttemptedVerification}</td>
                     </tr>
                     <tr>
                         <td width="15%">Total verified</td>
-                        <td>${totalErrors}</td>
+                        <td>${patientVerifiedListSize}</td>
                     </tr>
                     <tr>
                         <td width="15%">Total pending verification</td>
-                        <td>${registrationErrors}</td>
+                        <td>${patientPendingListSize}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -158,12 +158,12 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
     <div id="program-tabs" class="ke-tabs">
         <div class="ke-tabmenu">
-            <div class="ke-tabmenu-item" data-tabid="error_queue">Patient list</div>
+            <div class="ke-tabmenu-item" data-tabid="pending_queue">Patient list</div>
 
         </div>
 
 
-        <div class="ke-tab" data-tabid="error_queue">
+        <div class="ke-tab" data-tabid="pending_queue">
             <table id="error-queue-data" cellspacing="0" cellpadding="0" width="100%">
                 <tr>
                     <td style="width: 99%; vertical-align: top">
@@ -171,32 +171,32 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                             <div class="ke-panel-heading">Pending verification</div>
 
                             <div class="ke-panel-content">
-                                    <fieldset>
-                                        <legend></legend>
-                                        <table class="simple-table" width="100%">
-                                            <thead>
+                                <fieldset>
+                                    <legend></legend>
+                                    <table class="simple-table" width="100%">
+                                        <thead>
 
-                                            <tr>
-                                                <th class="clientNameColumn">First Name</th>
-                                                <th class="cccNumberColumn">Middle Name</th>
-                                                <th class="sampleTypeColumn">Last Name</th>
-                                                <th class="dateRequestColumn">Sex</th>
-                                                <th class="sampleStatusColumn">DOB</th>
-                                                <th class="actionColumn">
-                                                    Action
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="error-list">
+                                        <tr>
+                                            <th class="clientNameColumn">First Name</th>
+                                            <th class="cccNumberColumn">Middle Name</th>
+                                            <th class="sampleTypeColumn">Last Name</th>
+                                            <th class="dateRequestColumn">Sex</th>
+                                            <th class="sampleStatusColumn">DOB</th>
+                                            <th class="actionColumn">
+                                                Action
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="error-list">
 
-                                            </tbody>
+                                        </tbody>
 
-                                        </table>
+                                    </table>
 
-                                        <div id="pager">
-                                            <ul id="errorPagination" class="pagination-sm"></ul>
-                                        </div>
-                                    </fieldset>
+                                    <div id="pager">
+                                        <ul id="errorPagination" class="pagination-sm"></ul>
+                                    </div>
+                                </fieldset>
                             </div>
                         </div>
                     </td>
@@ -221,9 +221,9 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
         var errorListDisplayArea = jq('#error-list');
 
-        var numberOfErrorRecords = ${ patientListSize };
+        var numberOfErrorRecords = ${ patientPendingListSize };
 
-        var errorRecords = ${ patientList };
+        var errorRecords = ${ patientPendingList };
 
         var errorDataDisplayRecords = [];
 

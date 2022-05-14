@@ -100,14 +100,14 @@ public class UpiDataExchangeFragmentController {
             upiUtils.processUpiResponse(stringResponse);
 
             responseObj = upiUtils.processUpiResponse(stringResponse);
-            responseObj.put("status", "success");
+            responseObj.put("status", responseCode);
 
             return upiUtils.processUpiResponse(stringResponse);
 
 		} else {
 
 			responseObj = new SimpleObject();
-			responseObj.put("status", "fail");
+			responseObj.put("status", responseCode);
 			System.out.println("POST request not worked");
 			System.out.println("Using dummy response instead");
 		}
