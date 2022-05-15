@@ -712,8 +712,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }else {
                 nationaId = ""
             }
-            if(jQuery('#birth-cert-no').val() !=""){
-                birthCertificateNumber = jQuery('#birthCertificateNo').val();
+            if(jQuery('input[name=birthCertificateNumber]').val()){
+                birthCertificateNumber = jQuery('input[name=birthCertificateNumber]').val()
             }else {
                 birthCertificateNumber = "";
             }
@@ -722,7 +722,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 jQuery('input[name="personName.givenName"]').val(),
                 jQuery('input[name="personName.middleName"]').val(),
                 jQuery('input[name="personName.familyName"]').val(),
-                jQuery('#patient-birthdate_date').val(),
+                jQuery('#patient-birthdate').val(),
                 jQuery('input[name=gender]').val(),
                 "",   //jQuery('select[name=maritalStatus]').val(),   //TODO:to covert marital status  from concept
                 "",    //jQuery('select[name=occupation]').val(),      //TODO:to covert occupation from concept
@@ -1033,7 +1033,23 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countryOfBirth,county,subCounty,ward,village,landMark,address,nationalId,birthCertificateNumber,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
 
-        var params = params
+        var identifications = []; // TODO validate if both idNumber and birth cert not provided, break and alert the user to provide
+        const idNumber = {
+            "identificationType": "national-id",
+            "identificationNumber": nationalId
+        };
+        const birthCert = {
+            "identificationType": "birth-certificate",
+            "identificationNumber": birthCertificateNumber
+        };
+
+        if(birthCertificateNumber){
+            identifications.push(idNumber);
+        }
+        if(nationalId){
+            identifications.push(birthCert);
+        }
+
 
         var params = {"firstName":firstName,
             "middleName":middleName,
@@ -1054,10 +1070,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 "landmark": landMark,
                 "address": address
             },
-            "identifications": [{
-                "national-id": nationalId,
-                "birth-certificate": birthCertificateNumber
-            }],
+            "identifications": identifications,
             "contact": {
                 "primaryPhone": primaryPhone,
                 "secondaryPhone": secondaryPhone,
