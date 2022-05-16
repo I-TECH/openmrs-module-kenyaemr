@@ -116,6 +116,8 @@ public class EditPatientFragmentController {
 
 		Set<String> uniqueCountyList = new HashSet<String>(countyList);
 		model.addAttribute("countyList", uniqueCountyList);
+		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
+		model.addAttribute("defaultMflCode", kenyaEmrService.getDefaultLocationMflCode());
 
 		// create list of next of kin relationship
 
