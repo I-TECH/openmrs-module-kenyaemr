@@ -35,9 +35,14 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitTyp
 @Component
 public class CommonMetadata extends AbstractMetadataBundle {
 
-	public static final String GP_CLIENT_VERIFICATION_GET_END_POINT = "kenyaemr.client.registry.verify.api";
-	public static final String GP_CLIENT_VERIFICATION_POST_END_POINT = "kenyaemr.client.registry.verify.api";
+	public static final String GP_CLIENT_VERIFICATION_GET_END_POINT = "kenyaemr.client.registry.get.api";
+	public static final String GP_CLIENT_VERIFICATION_POST_END_POINT = "kenyaemr.client.registry.post.api";
 	public static final String GP_CLIENT_VERIFICATION_API_TOKEN = "kenyaemr.client.registry.api.token";
+	public static final String GP_CLIENT_VERIFICATION_TOKEN_URL = "kenyaemr.client.registry.token.url";
+	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID = "kenyaemr.client.registry.oath2.client.id";
+	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET = "kenyaemr.client.registry.oath2.client.secret";
+	public static final String GP_CLIENT_VERIFICATION_OAUTH2_SCOPE = "kenyaemr.client.registry.oath2.scope";
+
 	public static final class _EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
 		public static final String LAB_RESULTS = "17a381d1-7e29-406a-b782-aa903b963c28";
@@ -175,9 +180,14 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(globalProperty("order.drugDosingUnitsConceptUuid", "Drug dosing units concept", "162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 		install(globalProperty("client_number_label", "Label for Client Number", "Client Number"));
 		install(globalProperty("clientNumber.enabled", "Switch to show client number", "false"));
-		install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for client verification at the client registry", "https://dhpstagingapi.health.go.ke/visit/registry/search/"));
-		install(globalProperty(GP_CLIENT_VERIFICATION_POST_END_POINT, "A POST API for posting client information to the client registry", ""));
+
+		install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for getting client information at the client registry", "https://dhpstagingapi.health.go.ke/visit/registry/search/"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_POST_END_POINT, "A POST API for posting client information to the client registry", "https://dhpstagingapi.health.go.ke/visit/registry/"));
 		install(globalProperty(GP_CLIENT_VERIFICATION_API_TOKEN, "API token for connecting to the client registry", ""));
+		install(globalProperty(GP_CLIENT_VERIFICATION_TOKEN_URL, "client registry authorization token URL", "https://dhpidentitystagingapi.health.go.ke/connect/token"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID, "client registry authorization client ID", "partner.test.client"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET, "client registry authorization client secret", "partnerTestPwd"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Visitation"));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
