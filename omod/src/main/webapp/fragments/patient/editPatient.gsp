@@ -705,39 +705,268 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         //Prepare UPI payload
 
         jQuery('#post-registrations').click(function(){
-            var nationaId;
-            var birthCertificateNumber;
+            //Identifiers:
+            var identifierType;
+            var identifierValue;
             if(jQuery('input[name=nationalIdNumber]').val() !=""){
-                nationaId = jQuery('input[name=nationalIdNumber]').val();
-            }else {
-                nationaId = ""
+                identifierType = "national-id";
+                identifierValue = jQuery('input[name=nationalIdNumber]').val();
             }
-            if(jQuery('input[name=birthCertificateNumber]').val()){
-                birthCertificateNumber = jQuery('input[name=birthCertificateNumber]').val()
-            }else {
-                birthCertificateNumber = "";
+            if(jQuery('#birth-cert-no').val() !=""){
+                identifierType = "birth-certificate";
+                identifierValue = jQuery('#birthCertificateNo').val();
             }
+                //gender:
+                var gender;
+                if(jQuery('input[name=gender]').val() !="") {
+                    if (jQuery('input[name=gender]').val() == "F") {
+                        gender = "female";
+                    }
+                    if (jQuery('input[name=gender]').val() == "M") {
+                        gender = "male";
+                    }
+                }
+            //Marital status:
+            var maritalStatus;
+            if(jQuery('select[name=maritalStatus]').val() !=""){
+                if(jQuery('select[name=maritalStatus]').val() == 159715){
+                    maritalStatus = "married";
+                }
+                if(jQuery('select[name=maritalStatus]').val() == 5555){
+                    maritalStatus = "married";
+                }
+                if(jQuery('select[name=maritalStatus]').val() == 1060){
+                    maritalStatus = "married";
+                }
+                if(jQuery('select[name=maritalStatus]').val() == 1057){
+                    maritalStatus = "single";
+                }
+                if(jQuery('select[name=maritalStatus]').val() == 1058){
+                    maritalStatus = "divorced";
+                }
+                if(jQuery('select[name=maritalStatus]').val() == 1059){
+                    maritalStatus = "widowed";
+                }
+              }
 
+            //Occupation status:
+            var occupationStatus;
+            if(jQuery('select[name=occupation]').val() !=""){
+                if(jQuery('select[name=occupation]').val() == 159465){
+                    occupationStatus = "student";
+                }
+                if(jQuery('select[name=occupation]').val() == 1538){
+                    occupationStatus = "farmer";
+                }
+                if(jQuery('select[name=occupation]').val() == 1539){
+                    occupationStatus = "banker";
+                }
+                if(jQuery('select[name=occupation]').val() == 1540){
+                    occupationStatus = "doctor";
+                }
+                if(jQuery('select[name=occupation]').val() == 159466){
+                    occupationStatus = "mechanic";
+                }
+                if(jQuery('select[name=occupation]').val() == 1107){
+                    occupationStatus = "student";
+                }
+            }
+            //Education status:
+            var educationStatus;
+            if(jQuery('select[name=education]').val() !=""){
+                if(jQuery('select[name=education]').val() == 1107){
+                    educationStatus = "primary";
+                }
+                if(jQuery('select[name=education]').val() == 1713){
+                    educationStatus = "primary";
+                }
+                if(jQuery('select[name=education]').val() == 1714){
+                    educationStatus = "secondary";
+                }
+                if(jQuery('select[name=education]').val() == 159785){
+                    educationStatus = "college";
+                }
+            }
+            var countryCode;
+            if(jQuery('select[name=country]').val() !=""){
+                if(jQuery('select[name=country]').val() == 162883){
+                    countryCode = "KE";
+                }
+                if(jQuery('select[name=country]').val() == 162884){
+                    countryCode = "UG";
+                }
+                if(jQuery('select[name=country]').val() == 165639){
+                    countryCode = "TZ";
+                }
+            }
+            //County Code status:
+            var countyCode;
+            if(jQuery('select[name="personAddress.countyDistrict"]').val() !=""){
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nairobi"){
+                    countyCode = "047";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Mombasa"){
+                    countyCode = "001";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kwale"){
+                    countyCode = "002";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kilifi"){
+                    countyCode = "003";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Tana River"){
+                    countyCode = "004";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Lamu"){
+                    countyCode = "005";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Taita Taveta"){
+                    countyCode = "006";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Garissa"){
+                    countyCode = "007";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Wajir"){
+                    countyCode = "008";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Mandera"){
+                    countyCode = "009";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Marsabit"){
+                    countyCode = "010";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Isiolo"){
+                    countyCode = "011";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Meru"){
+                    countyCode = "012";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Tharaka Nithi"){
+                    countyCode = "013";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Embu"){
+                    countyCode = "014";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kitui"){
+                    countyCode = "015";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Machakos"){
+                    countyCode = "016";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Makueni"){
+                    countyCode = "017";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyandarua"){
+                    countyCode = "018";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyeri"){
+                    countyCode = "019";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kirinyaga"){
+                    countyCode = "020";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Muranga"){
+                    countyCode = "021";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kiambu"){
+                    countyCode = "022";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Turkana"){
+                    countyCode = "023";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "West Pokot"){
+                    countyCode = "024";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Samburu"){
+                    countyCode = "025";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Trans Nzoia"){
+                    countyCode = "026";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Uasin Gishu"){
+                    countyCode = "027";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Elgeyo Marakwet"){
+                    countyCode = "028";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nandi"){
+                    countyCode = "029";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Baringo"){
+                    countyCode = "030";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Laikipia"){
+                    countyCode = "031";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nakuru"){
+                    countyCode = "032";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Narok"){
+                    countyCode = "033";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kajiado"){
+                    countyCode = "034";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kericho"){
+                    countyCode = "035";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Bomet"){
+                    countyCode = "036";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kakamega"){
+                    countyCode = "037";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Vihiga"){
+                    countyCode = "038";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Bungoma"){
+                    countyCode = "039";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Busia"){
+                    countyCode = "040";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Siaya"){
+                    countyCode = "041";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kisumu"){
+                    countyCode = "042";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Homa Bay"){
+                    countyCode = "043";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Migori"){
+                    countyCode = "044";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kisii"){
+                    countyCode = "045";
+                }
+                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyamira"){
+                    countyCode = "046";
+                }
+            }
+            //Default mfl code
+            var defaultMflCode= '${defaultMflCode}';
             postRegistrationDetailsToCR(
                 jQuery('input[name="personName.givenName"]').val(),
                 jQuery('input[name="personName.middleName"]').val(),
                 jQuery('input[name="personName.familyName"]').val(),
-                jQuery('#patient-birthdate').val(),
-                jQuery('input[name=gender]').val(),
-                "",   //jQuery('select[name=maritalStatus]').val(),   //TODO:to covert marital status  from concept
-                "",    //jQuery('select[name=occupation]').val(),      //TODO:to covert occupation from concept
+                jQuery('#patient-birthdate_date').val(),
+                gender,
+                maritalStatus,
+                occupationStatus,
                 "",   //  Religeon we do not collect
-                "",      // jQuery('select[name=education]').val(),      //TODO:to covert education from concept
-                "",   //Country variable not collected
-                "",   //CountryOfBirth variable not collected
-                jQuery('select[name="personAddress.countyDistrict"]').val(),
+                educationStatus,
+                countryCode,
+                defaultMflCode,
+                "",   //CountyOfBirth variable not collected
+                countyCode,
                 jQuery('select[name="personAddress.stateProvince"]').val(),
                 jQuery('select[name="personAddress.address4"]').val(),
                 jQuery('input[name="personAddress.cityVillage"]').val(),
                 jQuery('input[name="personAddress.address2"]').val(),    //landmark
                 jQuery('input[name="personAddress.address1"]').val(),   //address
-                nationaId,
-                birthCertificateNumber,
+                identifierType,
+                identifierValue,
                 jQuery('input[name="telephoneContact"]').val(),
                 jQuery('input[name="alternatePhoneContact"]').val(),
                 jQuery('input[name="emailAddress"]').val(),
@@ -1030,55 +1259,44 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
-    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupation,religion,educationLevel,country,countryOfBirth,county,subCounty,ward,village,landMark,address,nationalId,birthCertificateNumber,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
+    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupationStatus,religion,educationStatus,countryCode,defaultMflCode,countyOfBirth,countyCode,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server
 
-        var identifications = []; // TODO validate if both idNumber and birth cert not provided, break and alert the user to provide
-        const idNumber = {
-            "identificationType": "national-id",
-            "identificationNumber": nationalId
-        };
-        const birthCert = {
-            "identificationType": "birth-certificate",
-            "identificationNumber": birthCertificateNumber
-        };
+        var params = params
 
-        if(birthCertificateNumber){
-            identifications.push(idNumber);
-        }
-        if(nationalId){
-            identifications.push(birthCert);
-        }
-
-
-        var params = {"firstName":firstName,
-            "middleName":middleName,
-            "lastName":lastName,
-            "dateOfBirth":dateOfBirth,
-            "gender":"Female",
-            "maritalStatus":"",
-            "occupation":occupation,
-            "religion":religion,
-            "educationLevel":educationLevel,
-            "country": "Kenya",
-            "countryOfBirth": countryOfBirth,
+        var params = {
+            "firstName": firstName,
+            "middleName": middleName,
+            "lastName": lastName,
+            "dateOfBirth": dateOfBirth,
+            "maritalStatus": maritalStatus,
+            "gender": gender,
+            "occupation": occupationStatus,
+            "religion": "",
+            "educationLevel": educationStatus,
+            "country": countryCode,
+            "countyOfBirth": countyCode,
+            "isAlive": true,
+            "originFacilityKmflCode": defaultMflCode,
             "residence": {
-                "county": county,
-                "subCounty": subCounty,
-                "ward": ward,
-                "village": village,
-                "landmark": landMark,
-                "address": address
+                "county": countyCode,
+                "subCounty": "embakasi-north",
+                "ward": "kariobangi-north",
+                "village": "kariobangi",
+                "landMark": "PEFA Church Kariobangi",
+                "address": "kariobangi"
             },
-            "identifications": identifications,
+            "identifications": [{
+                "identificationType": identificationType,
+                "identificationNumber": identificationValue
+            }],
             "contact": {
                 "primaryPhone": primaryPhone,
                 "secondaryPhone": secondaryPhone,
-                "emailAddress": emailAddress,
+                "emailAddress": emailAddress
             },
-            "nextOfKins": [],
-            "isAlive":isAlive
-        };
+            "nextOfKins": []
+        }
 
 
         //Using fragment action to post
