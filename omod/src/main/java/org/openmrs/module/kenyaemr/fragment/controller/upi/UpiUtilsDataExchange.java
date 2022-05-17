@@ -27,7 +27,13 @@ import org.codehaus.jackson.node.ObjectNode;
 import java.io.IOException;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,6 +41,10 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Date;
 
@@ -55,6 +65,52 @@ public class UpiUtilsDataExchange {
 	private String strScope = ""; // scope
 	
 	private String strTokenUrl = ""; // Token URL
+
+	// Trust all certs
+	static {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+ 
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {
+                    }
+ 
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {
+                    }
+                }
+        };
+ 
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getInstance("SSL");
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (KeyManagementException e) {
+            System.out.println(e.getMessage());
+        }
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+ 
+        // Optional 
+        // Create all-trusting host name verifier
+        HostnameVerifier validHosts = new HostnameVerifier() {
+            @Override
+            public boolean verify(String arg0, SSLSession arg1) {
+                return true;
+            }
+        };
+        // All hosts will be valid
+        HttpsURLConnection.setDefaultHostnameVerifier(validHosts);
+ 
+    }
 
 /**
 	 * Processes CR response for updating UPI number fetched from CR server
@@ -119,6 +175,7 @@ public class UpiUtilsDataExchange {
 		HttpsURLConnection connection = null;
 		String returnValue = "";
 		try {
+			// System.setProperty("jsse.enableSNIExtension", "false");
 			StringBuilder parameters = new StringBuilder();
 			parameters.append("grant_type=" + URLEncoder.encode("client_credentials", "UTF-8"));
 			parameters.append("&");
