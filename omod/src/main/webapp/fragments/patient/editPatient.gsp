@@ -711,6 +711,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             if(jQuery('input[name=nationalIdNumber]').val() !=""){
                 identifierType = "national-id";
                 identifierValue = jQuery('input[name=nationalIdNumber]').val();
+            }else{
+                jQuery("#post-msgBox").text("Please enter National Id to successfully post to CR");
+                jQuery("#post-msgBox").show();
             }
             if(jQuery('#birth-cert-no').val() !=""){
                 identifierType = "birth-certificate";
@@ -725,6 +728,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     if (jQuery('input[name=gender]').val() == "M") {
                         gender = "male";
                     }
+                }else{
+                    jQuery("#post-msgBox").text("Please enter gender to successfully post to CR");
+                    jQuery("#post-msgBox").show();
                 }
             //Marital status:
             var maritalStatus;
@@ -798,6 +804,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 if(jQuery('select[name=country]').val() == 165639){
                     countryCode = "TZ";
                 }
+            }else{
+                jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
+                jQuery("#post-msgBox").show();
             }
             //County Code status:
             var countyCode;
@@ -943,6 +952,39 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyamira"){
                     countyCode = "046";
                 }
+            }else{
+                jQuery("#post-msgBox").text("Please enter county to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //SubCounty Validation
+            if(jQuery('select[name="personAddress.stateProvince"]').val() ==""){
+                jQuery("#post-msgBox").text("Please enter sub county to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //Ward Validation
+            if(jQuery('select[name="personAddress.address4"]').val() ==""){
+                jQuery("#post-msgBox").text("Please enter ward to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //Telephone Validation
+            if(jQuery('input[name="telephoneContact"]').val() ==""){
+                jQuery("#post-msgBox").text("Please enter telephone number to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //Age Validation
+            if(jQuery('#patient-birthdate_date').val() ==""){
+                jQuery("#post-msgBox").text("Please enter age to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //First name Validation
+            if(jQuery('input[name="personName.givenName"]').val() ==""){
+                jQuery("#post-msgBox").text("Please enter first name to successfully post to CR");
+                jQuery("#post-msgBox").show();
+            }
+            //Last name Validation
+            if(jQuery('input[name="personName.familyName"]').val() ==""){
+                jQuery("#post-msgBox").text("Please enter last name to successfully post to CR");
+                jQuery("#post-msgBox").show();
             }
             //Default mfl code
             var defaultMflCode= '${defaultMflCode}';
@@ -1158,11 +1200,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery('#huduma-no').show();
             jQuery('#passport-no').show();
             jQuery('#birth-cert-no').show();
-            var age = Math.floor((new Date() - new Date(selectedDob)) / 1000 / 60 / 60 / 24 / 365.25);
-            if(age > 17){
-                jQuery('#driving-license').show();
-                jQuery('#other-child-identifiers').hide();
-            }
+            jQuery('#driving-license').show();
         }else{
             jQuery('#alien-no').hide();
             jQuery('#huduma-no').hide();
@@ -1316,9 +1354,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
                     jQuery("#post-msgBox").show();
                 }else if(jQuery("input[name='nationalUniquePatientNumber']").val() =="" ){
-                    jQuery("#post-msgBox").text("");
+                    //jQuery("#post-msgBox").text("");
                     jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
-                    jQuery("#post-msgBox").hide();
+                   // jQuery("#post-msgBox").hide();
                 }
 
             })
