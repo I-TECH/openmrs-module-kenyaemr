@@ -67,7 +67,9 @@ public class UpiDataExchangeFragmentController {
 		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
 		System.out.println("Params for request ==>"+params);
 		con.setRequestMethod("POST");
-		String authToken = (Context.getAdministrationService().getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+		//String authToken = (Context.getAdministrationService().getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+		String authToken = upiUtils.getToken();
 
 		con.setRequestProperty("Authorization", "Bearer " + authToken);
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -96,7 +98,7 @@ public class UpiDataExchangeFragmentController {
 
 			stringResponse = response.toString();
 			System.out.println(stringResponse);
-            UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+            //UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
             upiUtils.processUpiResponse(stringResponse);
 
             responseObj = upiUtils.processUpiResponse(stringResponse);

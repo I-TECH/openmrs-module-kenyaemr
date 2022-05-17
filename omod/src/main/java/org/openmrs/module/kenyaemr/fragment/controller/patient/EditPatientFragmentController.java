@@ -28,6 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
+import org.openmrs.module.kenyaemr.fragment.controller.upi.UpiUtilsDataExchange;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
@@ -86,7 +87,8 @@ public class EditPatientFragmentController {
 		Person existing = patient != null ? patient : person;
 
 		model.addAttribute("clientVerificationApi", clientRegistryClientVerificationApi);
-		model.addAttribute("clientVerificationApiToken", clientRegistryApiToken);
+		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+		model.addAttribute("clientVerificationApiToken", upiUtils.getToken());
 		model.addAttribute("command", newEditPatientForm(existing));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
