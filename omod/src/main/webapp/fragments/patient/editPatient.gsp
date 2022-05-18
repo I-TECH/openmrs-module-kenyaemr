@@ -46,8 +46,9 @@
             [
                     [object: command, property: "country", label: "Country", config: [style: "list", options: countryOptions]],
                     [object: command, property: "telephoneContact", label: "Telephone contact"]
-            ],
-            [
+            ]
+    ]
+   def otherContactsFields = [         [
                     [object: command, property: "alternatePhoneContact", label: "Alternate phone number"],
                     [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
                     [object: command, property: "emailAddress", label: "Email address"]
@@ -164,6 +165,7 @@
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(This is required for all kenyans aged 18+)<% } %></td>
+                    <td><div id="nationalID-msgBox" class="ke-warning">Please enter National ID Number to post to CR</div></td>
                 </tr>
 
                 <tr  id="birth-cert-no">
@@ -219,7 +221,17 @@
             <% nameFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
+            &nbsp;&nbsp;
+            <table>
+               <tr>
+                <td>
+                    <div id="surname-msgBox" class="ke-warning">Please enter Surname to post to CR</div>
+                </td>
+                   <td>
+                       <div id="firstname-msgBox" class="ke-warning">Please enter First name to post to CR</div>
+                   </td>
+                </tr>
+            </table>
             <table>
                 <tr>
                     <td valign="top">
@@ -232,6 +244,9 @@
                             <span id="gender-F-error" class="error" style="display: none"></span>
                             <span id="gender-M-error" class="error" style="display: none"></span>
                         </span>
+                    </td>
+                    <td>
+                        <div id="gender-msgBox" class="ke-warning">Please enter Age to post to CR</div>
                     </td>
                     <td valign="top"></td>
                     <td valign="top">
@@ -248,6 +263,9 @@
 
                             <span id="from-age-button-placeholder"></span>
                         </span>
+                    </td>
+                    <td>
+                        <div id="age-msgBox" class="ke-warning">Please enter Age to post to CR</div>
                     </td>
                 </tr>
             </table>
@@ -299,13 +317,24 @@
         </fieldset>
 
     </fieldset>
-        <fieldset>
+        <fieldset>otherContactsFields
             <legend>Address</legend>
-
             <% contactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-
+            <table>
+            <tr>
+                <td>
+                    <div id="country-msgBox" class="ke-warning">Please enter Country to post to CR</div>
+                </td>
+                <td>
+                    <div id="phone-msgBox" class="ke-warning">Please enter Phone number to post to CR</div>
+                </td>
+            </tr>
+        </table>
+            <% otherContactsFields.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
             <table>
                 <tr>
                     <td class="ke-field-label" style="width: 265px">County</td>
@@ -333,6 +362,17 @@
                         </select>
                     </td>
                 </tr>
+            <tr>
+                <td>
+                    <div id="county-msgBox" class="ke-warning">Please enter County to post to CR</div>
+                </td>
+                <td>
+                    <div id="subCounty-msgBox" class="ke-warning">Please enter Sub County to post to CR</div>
+                </td>
+                <td>
+                    <div id="ward-msgBox" class="ke-warning">Please enter Ward to post to CR</div>
+                </td>
+            </tr>
             </table>
             <% locationSubLocationVillageFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
@@ -567,6 +607,16 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#passport-no').hide();
         jQuery('#driving-license').hide();
         jQuery("#post-msgBox").hide();
+        jQuery("#surname-msgBox").hide();
+        jQuery("#firstname-msgBox").hide();
+        jQuery("#age-msgBox").hide();
+        jQuery("#gender-msgBox").hide();
+        jQuery("#country-msgBox").hide();
+        jQuery("#phone-msgBox").hide();
+        jQuery("#county-msgBox").hide();
+        jQuery("#subCounty-msgBox").hide();
+        jQuery("#ward-msgBox").hide();
+        jQuery("#nationalID-msgBox").hide();
 
         jQuery('#show-cr-info-dialog').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
@@ -711,9 +761,11 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             if(jQuery('input[name=nationalIdNumber]').val() !=""){
                 identifierType = "national-id";
                 identifierValue = jQuery('input[name=nationalIdNumber]').val();
+                jQuery("#nationalID-msgBox").hide();
             }else{
                 jQuery("#post-msgBox").text("Please enter National Id to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#nationalID-msgBox").show();
             }
             if(jQuery('#birth-cert-no').val() !=""){
                 identifierType = "birth-certificate";
@@ -722,6 +774,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 //gender:
                 var gender;
                 if(jQuery('input[name=gender]').val() !="") {
+                    jQuery("#gender-msgBox").hide();
                     if (jQuery('input[name=gender]').val() == "F") {
                         gender = "female";
                     }
@@ -731,6 +784,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }else{
                     jQuery("#post-msgBox").text("Please enter gender to successfully post to CR");
                     jQuery("#post-msgBox").show();
+                    jQuery("#gender-msgBox").show();
                 }
             //Marital status:
             var maritalStatus;
@@ -795,6 +849,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }
             var countryCode;
             if(jQuery('select[name=country]').val() !=""){
+                jQuery("#country-msgBox").hide();
                 if(jQuery('select[name=country]').val() == 162883){
                     countryCode = "KE";
                 }
@@ -807,10 +862,12 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }else{
                 jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#country-msgBox").show();
             }
             //County Code status:
             var countyCode;
             if(jQuery('select[name="personAddress.countyDistrict"]').val() !=""){
+                jQuery("#county-msgBox").hide();
                 if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nairobi"){
                     countyCode = "047";
                 }
@@ -955,36 +1012,55 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }else{
                 jQuery("#post-msgBox").text("Please enter county to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#county-msgBox").show();
             }
             //SubCounty Validation
             if(jQuery('select[name="personAddress.stateProvince"]').val() ==""){
                 jQuery("#post-msgBox").text("Please enter sub county to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#subCounty-msgBox").show();
+            }else{
+                jQuery("#subCounty-msgBox").hide();
             }
             //Ward Validation
             if(jQuery('select[name="personAddress.address4"]').val() ==""){
                 jQuery("#post-msgBox").text("Please enter ward to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#ward-msgBox").show();
+            }else{
+                jQuery("#ward-msgBox").hide();
             }
             //Telephone Validation
             if(jQuery('input[name="telephoneContact"]').val() ==""){
                 jQuery("#post-msgBox").text("Please enter telephone number to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#phone-msgBox").show();
+            }else{
+                jQuery("#phone-msgBox").hide();
             }
             //Age Validation
             if(jQuery('#patient-birthdate_date').val() ==""){
                 jQuery("#post-msgBox").text("Please enter age to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery("#age-msgBox").show();
+            }else{
+                jQuery("#age-msgBox").hide();
             }
             //First name Validation
             if(jQuery('input[name="personName.givenName"]').val() ==""){
-                jQuery("#post-msgBox").text("Please enter first name to successfully post to CR");
+                jQuery("#post-msgBox").text("Please enter First name to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery('#firstname-msgBox').show();
+            }else{
+                jQuery('#firstname-msgBox').hide();
             }
-            //Last name Validation
+            //Surname Validation
             if(jQuery('input[name="personName.familyName"]').val() ==""){
-                jQuery("#post-msgBox").text("Please enter last name to successfully post to CR");
+                jQuery("#post-msgBox").text("Please enter Surname to successfully post to CR");
                 jQuery("#post-msgBox").show();
+                jQuery('#surname-msgBox').show();
+            }else{
+                jQuery('#surname-msgBox').hide();
             }
             //Default mfl code
             var defaultMflCode= '${defaultMflCode}';
