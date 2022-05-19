@@ -756,7 +756,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "         where fup.visit_date <= date(:endDate)\n" +
-                "         group by fup.patient_id, fup.visit_date\n" +
+                "         group by fup.patient_id\n" +
                 "         having (\n" +
                 "                        ((ctx_dispensed = 1 or dapsone_dispensed = 1 or prophylaxis_given = 1))\n" +
                 "                        AND\n" +
