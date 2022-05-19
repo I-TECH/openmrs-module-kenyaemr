@@ -74,6 +74,7 @@ public class UpiDataExchangeFragmentController {
 		con.setRequestProperty("Authorization", "Bearer " + authToken);
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 		con.setRequestProperty("Accept", "application/json");
+		con.setConnectTimeout(10000); // set timeout to 10 seconds
 
 		con.setDoOutput(true);
 		OutputStream os = con.getOutputStream();
@@ -110,7 +111,7 @@ public class UpiDataExchangeFragmentController {
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
-			System.out.println("POST request not worked");
+			System.out.println("POST request did not work");
 			System.out.println("Using dummy response instead");
 		}
 		return responseObj;

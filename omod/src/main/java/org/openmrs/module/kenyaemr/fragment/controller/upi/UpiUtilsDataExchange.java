@@ -187,6 +187,7 @@ public class UpiUtilsDataExchange {
 			connection.setRequestProperty("Authorization", "Basic " + authentication);
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("Accept", "application/json");
+			connection.setConnectTimeout(10000); // set timeout to 10 seconds
 			PrintStream os = new PrintStream(connection.getOutputStream());
 			os.print(parameters);
 			os.close();
