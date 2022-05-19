@@ -65,9 +65,8 @@ public class UpiDataExchangeFragmentController {
 		URL url = new URL(POST_URL3);
 
 		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
-		System.out.println("Params for request ==>"+params);
 		con.setRequestMethod("POST");
-		//String authToken = (Context.getAdministrationService().getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+		
 		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 		String authToken = upiUtils.getToken();
 
@@ -83,7 +82,6 @@ public class UpiDataExchangeFragmentController {
 		os.close();
 
 		int responseCode = con.getResponseCode();
-		System.out.println("POST Response Code :: " + responseCode + con.getResponseMessage());
 
 		SimpleObject responseObj = null;
 		if (responseCode == HttpURLConnection.HTTP_OK) { //success
@@ -98,8 +96,6 @@ public class UpiDataExchangeFragmentController {
 			in.close();
 
 			stringResponse = response.toString();
-			System.out.println(stringResponse);
-            //UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
             upiUtils.processUpiResponse(stringResponse);
 
             responseObj = upiUtils.processUpiResponse(stringResponse);
@@ -111,8 +107,7 @@ public class UpiDataExchangeFragmentController {
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
-			System.out.println("POST request did not work");
-			System.out.println("Using dummy response instead");
+			System.err.println("POST request did not work. Using dummy response instead");
 		}
 		return responseObj;
 	}
