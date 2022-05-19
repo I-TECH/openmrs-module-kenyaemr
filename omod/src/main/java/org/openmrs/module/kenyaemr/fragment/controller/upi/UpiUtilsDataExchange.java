@@ -112,9 +112,12 @@ public class UpiUtilsDataExchange {
  
     }
 
-/**
+	/**
 	 * Processes CR response for updating UPI number fetched from CR server
-	  */
+	 * 
+	 * @param stringResponse the upi payload
+	 * @return SimpleObject the processed data
+	*/
 	public static SimpleObject processUpiResponse(String stringResponse) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonNode = null;
@@ -175,7 +178,6 @@ public class UpiUtilsDataExchange {
 		HttpsURLConnection connection = null;
 		String returnValue = "";
 		try {
-			// System.setProperty("jsse.enableSNIExtension", "false");
 			StringBuilder parameters = new StringBuilder();
 			parameters.append("grant_type=" + URLEncoder.encode("client_credentials", "UTF-8"));
 			parameters.append("&");
@@ -187,6 +189,7 @@ public class UpiUtilsDataExchange {
 			connection.setRequestProperty("Authorization", "Basic " + authentication);
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("Accept", "application/json");
+			connection.setConnectTimeout(10000); // set timeout to 10 seconds
 			PrintStream os = new PrintStream(connection.getOutputStream());
 			os.print(parameters);
 			os.close();
@@ -260,7 +263,6 @@ public class UpiUtilsDataExchange {
 		} catch(Exception e) {
 			return(false);
 		}
-		//return(false);
 	}
 
 	/**

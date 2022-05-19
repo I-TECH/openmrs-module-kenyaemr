@@ -65,15 +65,15 @@ public class UpiDataExchangeFragmentController {
 		URL url = new URL(POST_URL3);
 
 		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
-		System.out.println("Params for request ==>"+params);
 		con.setRequestMethod("POST");
-		//String authToken = (Context.getAdministrationService().getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+		
 		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 		String authToken = upiUtils.getToken();
 
 		con.setRequestProperty("Authorization", "Bearer " + authToken);
 		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 		con.setRequestProperty("Accept", "application/json");
+		con.setConnectTimeout(10000); // set timeout to 10 seconds
 
 		con.setDoOutput(true);
 		OutputStream os = con.getOutputStream();
@@ -82,7 +82,6 @@ public class UpiDataExchangeFragmentController {
 		os.close();
 
 		int responseCode = con.getResponseCode();
-		System.out.println("POST Response Code :: " + responseCode + con.getResponseMessage());
 
 		SimpleObject responseObj = null;
 		if (responseCode == HttpURLConnection.HTTP_OK) { //success
@@ -97,8 +96,6 @@ public class UpiDataExchangeFragmentController {
 			in.close();
 
 			stringResponse = response.toString();
-			System.out.println(stringResponse);
-            //UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
             upiUtils.processUpiResponse(stringResponse);
 
             responseObj = upiUtils.processUpiResponse(stringResponse);
@@ -110,8 +107,7 @@ public class UpiDataExchangeFragmentController {
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
-			System.out.println("POST request not worked");
-			System.out.println("Using dummy response instead");
+			System.err.println("POST request did not work. Using dummy response instead");
 		}
 		return responseObj;
 	}

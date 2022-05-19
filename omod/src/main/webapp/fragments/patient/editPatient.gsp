@@ -581,6 +581,13 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     font-weight: 200;
 }
 
+.ke-cr-network-error {
+    padding: 10px 20px;
+    background-color: red;
+    color: #ffffff;
+    font-weight: 200;
+}
+
 .ke-verify-button {
     padding: 10px 20px;
     border-radius: 5px;
@@ -663,20 +670,29 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jq.ajax({
                 url: getUrl,
                 type: "GET",
+                async: true, // asynchronous
+                timeout: 10000, // 10 sec timeout
                 headers: { Authorization: 'Bearer ' + authToken},
                 error: function(err) {
+                    var className = jQuery('#msgBox').attr("class");
+                    jQuery('#msgBox').removeClass(className);
+                    jQuery('#msgBox').addClass('ke-cr-network-error');
                     switch (err.status) {
                         case "400":
                             // bad request
+                            jQuery('#msgBox').text('A network error occured: 400 - Bad Request');
                             break;
                         case "401":
                             // expired or invalid token
+                            jQuery('#msgBox').text('A network error occured: 401 - Invalid Token');
                             break;
                         case "403":
                             // forbidden
+                            jQuery('#msgBox').text('A network error occured: 403 - Forbidden');
                             break;
                         default:
                             //Something bad happened
+                            jQuery('#msgBox').text('A network error occured: ' + err.status);
                             break;
                     }
                 },
