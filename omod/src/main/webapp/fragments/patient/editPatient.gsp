@@ -165,7 +165,7 @@
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(This is required for all kenyans aged 18+)<% } %></td>
-                    <td><div id="nationalID-msgBox" class="ke-warning">Please enter National ID Number to post to CR</div></td>
+                    <td><div id="nationalID-msgBox" class="ke-warning">Please enter National Id or Birth Certificate Number to post to CR</div></td>
                 </tr>
 
                 <tr  id="birth-cert-no">
@@ -317,7 +317,7 @@
         </fieldset>
 
     </fieldset>
-        <fieldset>otherContactsFields
+        <fieldset>
             <legend>Address</legend>
             <% contactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
@@ -662,7 +662,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             } else if (idType == '${passportNumberType}') {
                 idTypeParam = 'passport-id';
             } else if (idType == '${birthCertificateNumberType}') {
-                idTypeParam = 'birthcertificate-id';
+                idTypeParam = 'birth-certificate';
             }
 
             var baseVerificationUrl = '${clientVerificationApi}';
@@ -779,14 +779,14 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 identifierType = "national-id";
                 identifierValue = jQuery('input[name=nationalIdNumber]').val();
                 jQuery("#nationalID-msgBox").hide();
+            }else if(jQuery('input[name=birthCertificateNumber]').val() !=""){
+                identifierType = "birth-certificate";
+                identifierValue = jQuery('input[name=birthCertificateNumber]').val();
+                jQuery("#nationalID-msgBox").hide();
             }else{
-                jQuery("#post-msgBox").text("Please enter National Id to successfully post to CR");
+                jQuery("#post-msgBox").text("Please enter National Id or Birth Certificate Number to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#nationalID-msgBox").show();
-            }
-            if(jQuery('#birth-cert-no').val() !=""){
-                identifierType = "birth-certificate";
-                identifierValue = jQuery('#birthCertificateNo').val();
             }
                 //gender:
                 var gender;
@@ -1411,11 +1411,11 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "originFacilityKmflCode": defaultMflCode,
             "residence": {
                 "county": countyCode,
-                "subCounty": "embakasi-north",
-                "ward": "kariobangi-north",
-                "village": "kariobangi",
-                "landMark": "PEFA Church Kariobangi",
-                "address": "kariobangi"
+                "subCounty": subCounty.toLowerCase().replace(" ", '-'),
+                "ward": ward.toLowerCase().replace(" ", '-'),
+                "village": village,
+                "landMark": landMark,
+                "address": address
             },
             "identifications": [{
                 "identificationType": identificationType,
