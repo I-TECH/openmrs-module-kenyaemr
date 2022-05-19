@@ -436,7 +436,7 @@
         <button type="button" id="post-registrations">
             <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> Post to Registry
         </button>
-        <button type="submit">
+        <button type="submit" id="createPatientBtn">
             <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changes" : "Create Patient"}
         </button>
         <% if (config.returnUrl) { %>
@@ -602,6 +602,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     jQuery(function () {
 
         jQuery('input[name="nationalUniquePatientNumber"]').attr('readonly', true);
+        jQuery('#createPatientBtn').prop('disabled', true);
         jQuery('#alien-no').hide();
         jQuery('#huduma-no').hide();
         jQuery('#passport-no').hide();
@@ -1434,17 +1435,18 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
                    // jQuery("#post-msgBox").hide();
                 }
-
+                //Enable Create patient button
+                jQuery('#createPatientBtn').prop('disabled', false);
             })
             .fail(function (err) {
                     console.log(err)
                     jQuery("input[name='CRVerificationStatus']").val("Pending");
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
                     jQuery("#post-msgBox").show();
-                    console.log("Status from CR  ==> " + data.status).attr('readonly', true);
+                //Enable Create patient button
+                  jQuery('#createPatientBtn').prop('disabled', false);
                 }
             )
-        console.log("Payload ==> " + JSON.stringify(params));
 
     }
 
