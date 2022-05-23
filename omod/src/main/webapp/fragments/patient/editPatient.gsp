@@ -44,12 +44,11 @@
 
     def contactsFields = [
             [
-                    [object: command, property: "country", label: "Country", config: [style: "list", options: countryOptions]],
-                    [object: command, property: "telephoneContact", label: "Telephone contact"]
+                    [object: command, property: "telephoneContact", label: "Telephone contact"],
+                    [object: command, property: "alternatePhoneContact", label: "Alternate phone number"]
             ]
     ]
    def otherContactsFields = [         [
-                    [object: command, property: "alternatePhoneContact", label: "Alternate phone number"],
                     [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
                     [object: command, property: "emailAddress", label: "Email address"]
             ]
@@ -323,6 +322,19 @@
     </fieldset>
         <fieldset>
             <legend>Address</legend>
+            <table>
+            <tr>
+            <td class="ke-field-label">Country</td>
+            <td> </td>
+            </tr>
+            <tr>
+                
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", config: [style: "list", options: countryOptions]])}</td>
+                <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
+               
+            </tr>
+            </table>
+
             <% contactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
@@ -335,7 +347,7 @@
                     <div id="phone-msgBox" class="ke-warning">Please enter Phone number to post to CR</div>
                 </td>
             </tr>
-        </table>
+           </table>
             <% otherContactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
@@ -685,7 +697,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#other-identifiers').click(otherIdentifiersChange);
         jQuery('#show-cr-info-dialog').click(showDataFromCR);
         jQuery('#use-full-name').click(useFullName);
-
+        jQuery('#select-kenya-option').click(selectCountryKenyaOption);
         jQuery('#validate-identifier').click(function(event){
 
             // connect to dhp server
@@ -2075,6 +2087,22 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery('#passport-no').hide();
             jQuery('#driving-license').hide();
         }
+    }
+
+    //Ckeckbox to select country Kenya
+    var selectCountryKenyaOption = function () {
+        var val = jq(this).val();
+        if (jq(this).is(':checked')){
+            jQuery('select[name=country]').val(162883);
+        }else{
+            jQuery('select[name=country]').val("");
+        }
+
+        jQuery('select[name=country]').on('change', function() {
+         if(this.value != 162883)  {
+             jq("#select-kenya-option").prop("checked", false);
+         }
+         });
     }
 
     function showDataFromCR() {
