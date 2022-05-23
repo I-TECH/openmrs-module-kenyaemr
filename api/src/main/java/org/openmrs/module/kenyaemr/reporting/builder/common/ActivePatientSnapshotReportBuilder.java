@@ -22,6 +22,9 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTOutcomeCalculation
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTOutcomeDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.DateOfEnrollmentArtCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.otz.OnOTZProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.ovc.OnOVCProgramCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.tb.InTbProgramCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
@@ -130,6 +133,9 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
         dsd.addColumn("Last VL Date", new ETLLastVLDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT", new CalculationDataDefinition("Active in PMTCT", new ActiveInMCHProgramCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Active in OVC", new CalculationDataDefinition("Active in OVC", new OnOVCProgramCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Active in OTZ", new CalculationDataDefinition("Active in OTZ", new OnOTZProgramCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Active in TB", new CalculationDataDefinition("Active in TB", new InTbProgramCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
