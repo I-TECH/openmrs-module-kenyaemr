@@ -772,6 +772,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         //Prepare UPI payload
 
         jQuery('#post-registrations').click(function(){
+            //Enable Create patient button
+            jQuery('#createPatientBtn').prop('disabled', false);
             //Identifiers:
             var identifierType;
             var identifierValue;
@@ -1451,19 +1453,14 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
                    // jQuery("#post-msgBox").hide();
                 }
-                //Enable Create patient button
-                jQuery('#createPatientBtn').prop('disabled', false);
             })
             .fail(function (err) {
                     console.log(err)
                     jQuery("input[name='CRVerificationStatus']").val("Pending");
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
                     jQuery("#post-msgBox").show();
-                //Enable Create patient button
-                  jQuery('#createPatientBtn').prop('disabled', false);
                 }
             )
-
     }
 
 
