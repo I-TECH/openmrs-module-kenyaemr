@@ -878,6 +878,711 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 if(jQuery('select[name=country]').val() == 165639){
                     countryCode = "TZ";
                 }
+                if(jQuery('select[name=country]').val() == 165705){
+                    countryCode = "AF";
+                }
+                if(jQuery('select[name=country]').val() == 165674){
+                    countryCode = "AL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165757){
+                    countryCode = "DZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165691){
+                    countryCode = "AD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165774){
+                    countryCode = "AO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165798){
+                    countryCode = "AG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165821){
+                    countryCode = "AR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165675){
+                    countryCode = "AM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165742){
+                    countryCode = "AU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165666){
+                    countryCode = "AT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165676){
+                    countryCode = "AZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165799){
+                    countryCode = "BS";
+                }
+
+                if(jQuery('select[name=country]').val() == 165713){
+                    countryCode = "BH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165706){
+                    countryCode = "BD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165800){
+                    countryCode = "BB";
+                }
+
+                if(jQuery('select[name=country]').val() == 165677){
+                    countryCode = "BY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165660){
+                    countryCode = "BE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165811){
+                    countryCode = "BZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165776){
+                    countryCode = "BJ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165707){
+                    countryCode = "BT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165822){
+                    countryCode = "BO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165678){
+                    countryCode = "BA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165766){
+                    countryCode = "BW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165823){
+                    countryCode = "BR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165731){
+                    countryCode = "BN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165679){
+                    countryCode = "BG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165777){
+                    countryCode = "BF";
+                }
+
+                if(jQuery('select[name=country]').val() == 165744){
+                    countryCode = "BI";
+                }
+
+                if(jQuery('select[name=country]').val() == 165733){
+                    countryCode = "KH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165745){
+                    countryCode = "CM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165818){
+                    countryCode = "CA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165778){
+                    countryCode = "CV";
+                }
+
+                if(jQuery('select[name=country]').val() == 165746){
+                    countryCode = "CF";
+                }
+
+                if(jQuery('select[name=country]').val() == 165747){
+                    countryCode = "TD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165824){
+                    countryCode = "CL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165634){
+                    countryCode = "CN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165825){
+                    countryCode = "CO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165755){
+                    countryCode = "KM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165749){
+                    countryCode = "CG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165748){
+                    countryCode = "CD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165812){
+                    countryCode = "CR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165783){
+                    countryCode = "CI";
+                }
+
+                if(jQuery('select[name=country]').val() == 165667){
+                    countryCode = "HR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165802){
+                    countryCode = "CU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165680){
+                    countryCode = "CY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165668){
+                    countryCode = "CZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165661){
+                    countryCode = "DK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165762){
+                    countryCode = "DJ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165801){
+                    countryCode = "DM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165826){
+                    countryCode = "EC";
+                }
+
+                if(jQuery('select[name=country]').val() == 165758){
+                    countryCode = "EG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165813){
+                    countryCode = "SV";
+                }
+
+                if(jQuery('select[name=country]').val() == 165779){
+                    countryCode = "GQ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165642){
+                    countryCode = "ER";
+                }
+
+                if(jQuery('select[name=country]').val() == 165681){
+                    countryCode = "EE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165641){
+                    countryCode = "ET";
+                }
+
+                if(jQuery('select[name=country]').val() == 165663){
+                    countryCode = "FI";
+                }
+
+                if(jQuery('select[name=country]').val() == 165658){
+                    countryCode = "FR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165750){
+                    countryCode = "GA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165790){
+                    countryCode = "GM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165682){
+                    countryCode = "GE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165659){
+                    countryCode = "DE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165780){
+                    countryCode = "GH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165683){
+                    countryCode = "GR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165803){
+                    countryCode = "GD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165814){
+                    countryCode = "GT";
+                }
+
+                if(jQuery('select[name=country]').val() == 162607){
+                    countryCode = "GN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165782){
+                    countryCode = "GW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165827){
+                    countryCode = "GY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165804){
+                    countryCode = "HT";
+                }
+                if(jQuery('select[name=country]').val() == 165815){
+                    countryCode = "HN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165704){
+                    countryCode = "HK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165669){
+                    countryCode = "HU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165665){
+                    countryCode = "IS";
+                }
+
+                if(jQuery('select[name=country]').val() == 165708){
+                    countryCode = "IN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165735){
+                    countryCode = "ID";
+                }
+
+                if(jQuery('select[name=country]').val() == 165636){
+                    countryCode = "IR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165714){
+                    countryCode = "IQ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165698){
+                    countryCode = "IE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165715){
+                    countryCode = "IL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165635){
+                    countryCode = "IT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165805){
+                    countryCode = "JM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165637){
+                    countryCode = "JP";
+                }
+
+                if(jQuery('select[name=country]').val() == 165716){
+                    countryCode = "JO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165725){
+                    countryCode = "KZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165703){
+                    countryCode = "KP";
+                }
+
+                if(jQuery('select[name=country]').val() == 165638){
+                    countryCode = "KR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165717){
+                    countryCode = "KW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165726){
+                    countryCode = "KG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165736){
+                    countryCode = "LA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165684){
+                    countryCode = "LV";
+                }
+
+                if(jQuery('select[name=country]').val() == 165718){
+                    countryCode = "LB";
+                }
+
+                if(jQuery('select[name=country]').val() == 165767){
+                    countryCode = "LS";
+                }
+
+                if(jQuery('select[name=country]').val() == 162606){
+                    countryCode = "LR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165759){
+                    countryCode = "LY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165690){
+                    countryCode = "LI";
+                }
+
+                if(jQuery('select[name=country]').val() == 165685){
+                    countryCode = "LT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165693){
+                    countryCode = "LU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165664){
+                    countryCode = "MK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165640){
+                    countryCode = "MG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165771){
+                    countryCode = "MW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165737){
+                    countryCode = "MY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165664){
+                    countryCode = "MV";
+                }
+
+                if(jQuery('select[name=country]').val() == 165785){
+                    countryCode = "ML";
+                }
+
+                if(jQuery('select[name=country]').val() == 165692){
+                    countryCode = "MT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165786){
+                    countryCode = "MR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165772){
+                    countryCode = "MU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165819){
+                    countryCode = "MX";
+                }
+
+                if(jQuery('select[name=country]').val() == 165694){
+                    countryCode = "MC";
+                }
+
+                if(jQuery('select[name=country]').val() == 165727){
+                    countryCode = "MN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165760){
+                    countryCode = "MA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165773){
+                    countryCode = "MZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165732){
+                    countryCode = "MM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165775){
+                    countryCode = "NA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165710){
+                    countryCode = "NP";
+                }
+
+                if(jQuery('select[name=country]').val() == 165695){
+                    countryCode = "NL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165743){
+                    countryCode = "NZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165816){
+                    countryCode = "NI";
+                }
+
+                if(jQuery('select[name=country]').val() == 162609){
+                    countryCode = "NE";
+                }
+
+                if(jQuery('select[name=country]').val() == 162609){
+                    countryCode = "NG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165696){
+                    countryCode = "NO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165719){
+                    countryCode = "OM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165711){
+                    countryCode = "PK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165817){
+                    countryCode = "PA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165828){
+                    countryCode = "PY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165829){
+                    countryCode = "PE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165738){
+                    countryCode = "PH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165670){
+                    countryCode = "PL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165697){
+                    countryCode = "PT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165806){
+                    countryCode = "PR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165721){
+                    countryCode = "QA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165686){
+                    countryCode = "RO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165687){
+                    countryCode = "RU";
+                }
+
+                if(jQuery('select[name=country]').val() == 165752){
+                    countryCode = "RW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165701){
+                    countryCode = "SM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165787){
+                    countryCode = "ST";
+                }
+
+                if(jQuery('select[name=country]').val() == 165722){
+                    countryCode = "SA";
+                }
+
+                if(jQuery('select[name=country]').val() == 162610){
+                    countryCode = "SN";
+                }
+
+                if(jQuery('select[name=country]').val() == 166072){
+                    countryCode = "RS";
+                }
+
+                if(jQuery('select[name=country]').val() == 165756){
+                    countryCode = "SC";
+                }
+
+                if(jQuery('select[name=country]').val() == 162608){
+                    countryCode = "SL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165739){
+                    countryCode = "SG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165671){
+                    countryCode = "SK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165672){
+                    countryCode = "SI";
+                }
+
+                if(jQuery('select[name=country]').val() == 165753){
+                    countryCode = "SO";
+                }
+
+                if(jQuery('select[name=country]').val() == 165770){
+                    countryCode = "ZA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165765){
+                    countryCode = "SS";
+                }
+
+                if(jQuery('select[name=country]').val() == 165699){
+                    countryCode = "ES";
+                }
+
+                if(jQuery('select[name=country]').val() == 165712){
+                    countryCode = "LK";
+                }
+
+                if(jQuery('select[name=country]').val() == 165764){
+                    countryCode = "SD";
+                }
+
+                if(jQuery('select[name=country]').val() == 165830){
+                    countryCode = "SR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165768){
+                    countryCode = "SZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165700){
+                    countryCode = "SE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165673){
+                    countryCode = "CH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165723){
+                    countryCode = "SY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165702){
+                    countryCode = "TW";
+                }
+
+                if(jQuery('select[name=country]').val() == 165728){
+                    countryCode = "TJ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165740){
+                    countryCode = "TH";
+                }
+
+                if(jQuery('select[name=country]').val() == 165734){
+                    countryCode = "TL";
+                }
+
+                if(jQuery('select[name=country]').val() == 165791){
+                    countryCode = "TG";
+                }
+
+                if(jQuery('select[name=country]').val() == 165810){
+                    countryCode = "TT";
+                }
+
+                if(jQuery('select[name=country]').val() == 165761){
+                    countryCode = "TN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165688){
+                    countryCode = "TR";
+                }
+
+                if(jQuery('select[name=country]').val() == 165729){
+                    countryCode = "TM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165689){
+                    countryCode = "UA";
+                }
+
+                if(jQuery('select[name=country]').val() == 165724){
+                    countryCode = "AE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165922){
+                    countryCode = "GB";
+                }
+
+                if(jQuery('select[name=country]').val() == 165820){
+                    countryCode = "US";
+                }
+
+                if(jQuery('select[name=country]').val() == 165831){
+                    countryCode = "UY";
+                }
+
+                if(jQuery('select[name=country]').val() == 165730){
+                    countryCode = "UZ";
+                }
+
+                if(jQuery('select[name=country]').val() == 165832){
+                    countryCode = "VE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165741){
+                    countryCode = "VN";
+                }
+
+                if(jQuery('select[name=country]').val() == 165720){
+                    countryCode = "YE";
+                }
+
+                if(jQuery('select[name=country]').val() == 165754){
+                    countryCode = "ZM";
+                }
+
+                if(jQuery('select[name=country]').val() == 165769){
+                    countryCode = "ZW";
+                }
+
+
+
+
+
+
+
+
             }else{
                 jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
                 jQuery("#post-msgBox").show();
