@@ -134,6 +134,14 @@
 		<constructor-arg value="800" />
 	</bean>
 
+	<bean id="kenyaemr.app.upiVerification" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.upiVerification" />
+		<constructor-arg value="UPI Verification" />
+		<constructor-arg value="kenyaemr/upi/upiVerificationHome.page" />
+		<constructor-arg value="kenyaemr:apps/upi.png" />
+		<constructor-arg value="840" />
+	</bean>
+
 	<bean id="kenyaemr.app.developer" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.developer" />
 		<constructor-arg value="Developer" />

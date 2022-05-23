@@ -100,6 +100,12 @@
 		<property name="order" value="100" />
 	</bean>
 
+	<!-- National Unique Patient Number -->
+	<bean id="kenyaemr.common.identifier.nupi" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="${metadata.identifiertype.NATIONAL_UNIQUE_PATIENT_IDENTIFIER}" />
+		<property name="order" value="150" />
+	</bean>
+
 	<!-- Patient Clinic Number -->
 	<bean id="kenyaemr.common.identifier.pcn" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="${metadata.identifiertype.PATIENT_CLINIC_NUMBER}" />
