@@ -23,6 +23,7 @@ import org.openmrs.PersonName;
 import org.openmrs.Program;
 import org.openmrs.Relationship;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -62,6 +63,7 @@ public class EditPatientFragmentController {
 	// We don't record cause of death, but data model requires a concept
 	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
 	//private static final String INSCHOOL = Dictionary.INSCHOOL;
+	private ConceptService conceptService = Context.getConceptService();
 	private AdministrationService administrationService = Context.getAdministrationService();
 	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
 	final String clientNumberFieldEnabled = (administrationService.getGlobalProperty("clientNumber.enabled"));
@@ -99,14 +101,14 @@ public class EditPatientFragmentController {
 		model.addAttribute("countryConcept", Dictionary.getConcept(Dictionary.COUNTRY));
 
 		//create list of countries
-		List<Concept> countryList = new ArrayList<Concept>();
-		countryList.add(Dictionary.getConcept("162883AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-		countryList.add(Dictionary.getConcept("162884AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-		countryList.add(Dictionary.getConcept("165639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-
+		 List<Concept> countryList = new ArrayList<Concept>();
+		 for(Concept countryConcept:conceptService.getConcept(165657).getSetMembers()) {
+			countryList.add(countryConcept);
+		}
+		
 		model.addAttribute("countryOptions", countryList);
+		
 		// create list of counties
-
 		List<String> countyList = new ArrayList<String>();
 		List<Location> locationList = Context.getLocationService().getAllLocations();
 		for(Location loc: locationList) {
