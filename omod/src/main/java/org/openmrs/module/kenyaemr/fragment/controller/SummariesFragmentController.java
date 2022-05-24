@@ -226,9 +226,8 @@ public class SummariesFragmentController {
         else {
             patientSummary.setBloodPressure("");
         }
-
         //BP_DIASTOLIC
-        CalculationResultMap bpDiastolic = Calculations.lastObs(Dictionary.getConcept(Dictionary.BP_DIASTOLIC), Arrays.asList(patient.getId()), context);
+        CalculationResultMap bpDiastolic = Calculations.lastObs(Dictionary.getConcept(Dictionary.BLOOD_PRESSURE_DIASTOLIC), Arrays.asList(patient.getId()), context);
         Obs latestBpDiastolic = EmrCalculationUtils.obsResultForPatient(bpDiastolic, patient.getPatientId());
         if(latestBpDiastolic != null){
             patientSummary.setBpDiastolic(latestBpDiastolic.getValueNumeric().toString());
@@ -249,7 +248,6 @@ public class SummariesFragmentController {
         }
 
         //respitatory Rate/
-
         CalculationResultMap respiratoryRate = Calculations.lastObs(Dictionary.getConcept(Dictionary.RESPIRATORY_RATE), Arrays.asList(patient.getId()), context);
         Obs latestRespiratoryRate = EmrCalculationUtils.obsResultForPatient(respiratoryRate, patient.getPatientId());
         if(latestRespiratoryRate != null){
@@ -258,20 +256,18 @@ public class SummariesFragmentController {
         else {
             patientSummary.setRespiratoryRate("");
         }
-
         ///TB Screening
-        CalculationResultMap tbMap = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_SCREENING), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap tbMap = Calculations.lastObs(Dictionary.getConcept(Dictionary.TB_SCREENING), Arrays.asList(patient.getPatientId()), context);
         Obs tbObs = EmrCalculationUtils.obsResultForPatient(tbMap, patient.getPatientId());
         if(tbObs != null) {
             patientSummary.setTbScreeningOutcome(tbScreeningOutcome(tbObs.getValueCoded()));
         }
         else {
-            patientSummary.setTbScreeningOutcome("");
+            patientSummary.setTbScreeningOutcome("N/A");
 
         }
-
         //TB start
-        CalculationResultMap tbStartDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getId()), context);
+        CalculationResultMap tbStartDate = Calculations.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), Arrays.asList(patient.getId()), context);
         Obs tbStartDateValue = EmrCalculationUtils.obsResultForPatient(tbStartDate, patient.getPatientId());
         if(tbStartDateValue != null){
             patientSummary.setDateEnrolledInTb(formatDate(tbStartDateValue.getObsDatetime()));
@@ -331,7 +327,6 @@ public class SummariesFragmentController {
         else {
             patientSummary.setCaxcScreeningOutcome("");
         }
-
         //STI SCREENING
         CalculationResultMap stiScreen = Calculations.firstObs(Dictionary.getConcept(Dictionary.STI_SCREENING), Arrays.asList(patient.getPatientId()), context);
         Obs stiObs = EmrCalculationUtils.obsResultForPatient(stiScreen, patient.getPatientId());
@@ -364,22 +359,13 @@ public class SummariesFragmentController {
             patientSummary.setDateEntryPoint("");
         }
         ///TB Start date
-        CalculationResultMap tbConfirmation = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap tbConfirmation = Calculations.firstObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), Arrays.asList(patient.getPatientId()), context);
         Obs tbDateConfirmed = EmrCalculationUtils.obsResultForPatient(tbConfirmation, patient.getPatientId());
         if(tbDateConfirmed != null) {
             patientSummary.setDateEnrolledInTb(formatDate(tbDateConfirmed.getObsDatetime()));
         }
         else {
             patientSummary.setDateEnrolledInTb("");
-        }
-        //TB Complete date
-        CalculationResultMap tbCompletion = Calculations.lastObs(Dictionary.getConcept(Dictionary.TB_END_DATE), Arrays.asList(patient.getPatientId()), context);
-        Obs dateCompletedTB = EmrCalculationUtils.obsResultForPatient(tbCompletion, patient.getPatientId());
-        if(dateCompletedTB != null) {
-            patientSummary.setDateCompletedInTb(formatDate(dateCompletedTB.getObsDatetime()));
-        }
-        else {
-            patientSummary.setDateCompletedInTb("");
         }
 
         Set<PersonName> names = patient.getNames();
@@ -398,7 +384,7 @@ public class SummariesFragmentController {
             tiDate = formatDate((Date) transferInResults.getValue());
         }
         //facility transferred form
-        CalculationResultMap transferInFacilty = Calculations.lastObs(Dictionary.getConcept("160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap transferInFacilty = Calculations.lastObs(Dictionary.getConcept(Dictionary.TRANSFER_FROM_FACILITY), Arrays.asList(patient.getPatientId()), context);
         Obs faciltyObs = EmrCalculationUtils.obsResultForPatient(transferInFacilty, patient.getPatientId());
         if(faciltyObs != null){
             patientSummary.setTransferInFacility(faciltyObs.getValueText());
@@ -407,9 +393,9 @@ public class SummariesFragmentController {
             patientSummary.setTransferInFacility("N/A");
         }
         //treatment suppoter details
-        CalculationResultMap treatmentSupporterName = Calculations.lastObs(Dictionary.getConcept("160638AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap treatmentSupporterRelation = Calculations.lastObs(Dictionary.getConcept("160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap treatmentSupporterContacts = Calculations.lastObs(Dictionary.getConcept("160642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap treatmentSupporterName = Calculations.lastObs(Dictionary.getConcept(Dictionary.TREATMENT_SUPPORTER_NAME), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap treatmentSupporterRelation = Calculations.lastObs(Dictionary.getConcept(Dictionary.TREATMENT_SUPPORTER_RELATION), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap treatmentSupporterContacts = Calculations.lastObs(Dictionary.getConcept(Dictionary.TREATMENT_SUPPORTER_CONTACTS), Arrays.asList(patient.getPatientId()), context);
 
         Obs treatmentSupporterNameObs = EmrCalculationUtils.obsResultForPatient(treatmentSupporterName, patient.getPatientId());
         Obs treatmentSupporterRelationObs = EmrCalculationUtils.obsResultForPatient(treatmentSupporterRelation, patient.getPatientId());
@@ -435,7 +421,7 @@ public class SummariesFragmentController {
             patientSummary.setContactOfTreatmentSupporter("");
         }
         // tbScreening
-        CalculationResultMap chronicIllness = Calculations.allObs(Dictionary.getConcept("145439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap chronicIllness = Calculations.allObs(Dictionary.getConcept(Dictionary.CHRONIC_ILLNESS), Arrays.asList(patient.getPatientId()), context);
         ListResult chronicIllnessResults = (ListResult) chronicIllness.get(patient.getPatientId());
         List<Obs> listOfChronicIllness = CalculationUtils.extractResultValues(chronicIllnessResults);
         String chronicDisease = "";
@@ -454,7 +440,7 @@ public class SummariesFragmentController {
         }
 
         //allergies
-        CalculationResultMap alergies = Calculations.allObs(Dictionary.getConcept("160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap alergies = Calculations.allObs(Dictionary.getConcept(Dictionary.ALLERGIES), Arrays.asList(patient.getPatientId()), context);
         ListResult allergyResults = (ListResult) alergies.get(patient.getPatientId());
         List<Obs> listOfAllergies = CalculationUtils.extractResultValues(allergyResults);
         String allergies = "";
@@ -473,7 +459,7 @@ public class SummariesFragmentController {
         }
 
         //previous art details
-        CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREVIOUS_ON_ART), Arrays.asList(patient.getPatientId()), context);
         Obs previousArtObs = EmrCalculationUtils.obsResultForPatient(previousArt,patient.getPatientId());
 
         if (previousArtObs != null && previousArtObs.getValueCoded() != null &&  previousArtObs.getValueCoded().getConceptId() == 1 &&  previousArtObs.getVoided().equals(false)) {
@@ -484,9 +470,9 @@ public class SummariesFragmentController {
             patientSummary.setPreviousArt("None");
         }
         //set the purpose for previous art
-        CalculationResultMap previousArtPurposePmtct = Calculations.lastObs(Dictionary.getConcept("1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap previousArtPurposePep = Calculations.lastObs(Dictionary.getConcept("1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap previousArtPurposeHaart = Calculations.lastObs(Dictionary.getConcept("1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap previousArtPurposePmtct = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREVIOUS_ON_ART_PURPOSE_PMTCT), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap previousArtPurposePep = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREVIOUS_ON_ART_PURPOSE_PEP), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap previousArtPurposeHaart = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREVIOUS_ON_ART_PURPOSE_HAART), Arrays.asList(patient.getPatientId()), context);
         Obs previousArtPurposePmtctObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposePmtct, patient.getPatientId());
         Obs previousArtPurposePepObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposePep, patient.getPatientId());
         Obs previousArtPurposeHaartObs = EmrCalculationUtils.obsResultForPatient(previousArtPurposeHaart, patient.getPatientId());
@@ -553,8 +539,8 @@ public class SummariesFragmentController {
         //previous drugs/regimens and dates
         String regimens = "";
         String regimenDates = "";
-        CalculationResultMap pmtctRegimenHivEnroll = Calculations.lastObs(Dictionary.getConcept("966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
-        CalculationResultMap pepAndHaartRegimenHivEnroll = Calculations.allObs(Dictionary.getConcept("1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap pmtctRegimenHivEnroll = Calculations.lastObs(Dictionary.getConcept(Dictionary.PMTCT_REGIMEN_HIV_ENROLL), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap pepAndHaartRegimenHivEnroll = Calculations.allObs(Dictionary.getConcept(Dictionary.PEP_REGIMEN_HIV_ENROLL), Arrays.asList(patient.getPatientId()), context);
 
         Obs obsPmtctHivEnroll = EmrCalculationUtils.obsResultForPatient(pmtctRegimenHivEnroll, patient.getPatientId());
 
@@ -792,7 +778,7 @@ public class SummariesFragmentController {
         }
         //transfer out to facility
         String toFacility;
-        CalculationResultMap transferOutFacilty = Calculations.lastObs(Dictionary.getConcept("159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
+        CalculationResultMap transferOutFacilty = Calculations.lastObs(Dictionary.getConcept(Dictionary.TRANSFER_OUT_FACILITY), Arrays.asList(patient.getPatientId()), context);
         Obs transferOutFacilityObs = EmrCalculationUtils.obsResultForPatient(transferOutFacilty, patient.getPatientId());
         if(transferOutFacilityObs != null){
             toFacility = transferOutFacilityObs.getValueText();
@@ -865,63 +851,63 @@ public class SummariesFragmentController {
     String familyPlanningMethods(Concept concept) {
         String value = "Other";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("5279AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            if (concept.equals(Dictionary.getConcept(Dictionary.INJECTABLE_HORMONES))) {
                 value = "INJECTABLE HORMONES";
-            } else if (concept.equals(Dictionary.getConcept("5278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.CERVICAL_CAP))) {
                 value = "CERVICAL CAP";
-            } else if (concept.equals(Dictionary.getConcept("5275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.INTRAUTERINE_DEVICE))) {
                 value = "Intrauterine device";
-            } else if (concept.equals(Dictionary.getConcept("5276AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.FEMALE_STERILIZATION))) {
                 value = "Female sterilization";
-            } else if (concept.equals(Dictionary.getConcept("190AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.CONDOMS))) {
                 value = "Condoms";
-            } else if (concept.equals(Dictionary.getConcept("780AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.BIRTH_CONTROL_PILLS))) {
                 value = "Birth control pills";
-            } else if (concept.equals(Dictionary.getConcept("5277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.NATURAL_FAMILY_PLANNING))) {
                 value = "Natural family planning";
-            } else if (concept.equals(Dictionary.getConcept("159524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.SEXUAL_ABSTINENCE))) {
                 value = "Sexual abstinence";
-            } else if (concept.equals(Dictionary.getConcept("78796AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.LEVONORGESTREL))) {
                 value = "LEVONORGESTREL";
-            } else if (concept.equals(Dictionary.getConcept("1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE))) {
                 value = "Not applicable";
-            } else if (concept.equals(Dictionary.getConcept("1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.TUBUL_LIGATION_PROCEDURE))) {
                 value = "Tubal ligation procedure";
-            } else if (concept.equals(Dictionary.getConcept("907AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.MEDROXYPROGESTERONE_ACETATE))) {
                 value = "MEDROXYPROGESTERONE ACETATE";
-            } else if (concept.equals(Dictionary.getConcept("1489AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.VASECTOMY))) {
                 value = "Vasectomy";
-            } else if (concept.equals(Dictionary.getConcept("1359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.IMPLANTABLE_CONTRACEPTIVE))) {
                 value = "NORPLANT (IMPLANTABLE CONTRACEPTIVE)";
 
-            } else if (concept.equals(Dictionary.getConcept("1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            } else if (concept.equals(Dictionary.getConcept(Dictionary.NONE))) {
                 value = "None";
             }
-            else if (concept.equals(Dictionary.getConcept("136452AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.IUD_CONTRACEPTION))) {
                 value = "IUD Contraception";
             }
-            else if (concept.equals(Dictionary.getConcept("159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.HYSTERECTOMY))) {
                 value = "Hysterectomy";
             }
-            else if (concept.equals(Dictionary.getConcept("160570AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.EMERGENCY_CONTRACEPTIVE_PILLS))) {
                 value = "Emergency contraceptive pills";
             }
-            else if (concept.equals(Dictionary.getConcept("136163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.LACTATIONAL_AMENORRHEA))) {
                 value = "Lactational amenorrhea";
             }
-            else if (concept.equals(Dictionary.getConcept("1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.UNKNOWN))) {
                 value = "Unknown";
             }
-            else if (concept.equals(Dictionary.getConcept("162332AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.CONTRACEPTION_METHOD_UNDECIDED))) {
                 value = "Contraception method undecided";
             }
-            else if (concept.equals(Dictionary.getConcept("164814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.FEMALE_CONDOM))) {
                 value = "Female condom";
             }
-            else if (concept.equals(Dictionary.getConcept("164813AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.MALE_CONDOM))) {
                 value = "Male condom";
             }
-            else if (concept.equals(Dictionary.getConcept("159589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.IMPLANTABLE_CONTRACEPTIVE))) {
                 value = "Implantable contraceptive (unspecified type)";
             }
 
@@ -933,39 +919,57 @@ public class SummariesFragmentController {
     String tbScreeningOutcome(Concept concept) {
         String value = "N/A";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "POSITIVE";
-            } else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "NEGATIVE";
+            if (!concept.equals(Dictionary.getConcept("160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "Yes";
+            } else  {
+                value = "No";
             }
         }
         return value;
     }
 
     String stiScreeningOutcome(Concept concept) {
-        String value = "N/A";
+        String value = "";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "POSITIVE";
-            } else if (concept.equals(Dictionary.getConcept("664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "NEGATIVE";
+            if (concept.equals(Dictionary.getConcept(Dictionary.POSITIVE))) {
+                value = "Positive";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NEGATIVE))) {
+                value = "Negative";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NOT_DONE))) {
+                value = "Not Done";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE))) {
+                value = "N/A";
             }
         }
-
         return value;
     }
 
     String cacxScreeningOutcome(Concept concept) {
-        String value = "N/A";
+        String value = "";
         if(concept != null) {
-            if (concept.equals(Dictionary.getConcept("1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "YES";
+            if (concept.equals(Dictionary.getConcept(Dictionary.POSITIVE))) {
+                value = "Positive";
             }
-            else if (concept.equals(Dictionary.getConcept("1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NEGATIVE))) {
+                value = "Negative";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.YES))) {
+                value = "Yes";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NO))) {
                 value = "No";
             }
-            else if (concept.equals(Dictionary.getConcept("1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+            else if (concept.equals(Dictionary.getConcept(Dictionary.UNKNOWN))) {
                 value = "Unknown";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NOT_DONE))) {
+                value = "Not Done";
+            }
+            else if (concept.equals(Dictionary.getConcept(Dictionary.NOT_APPLICABLE))) {
+                value = "N/A";
             }
         }
         return value;
