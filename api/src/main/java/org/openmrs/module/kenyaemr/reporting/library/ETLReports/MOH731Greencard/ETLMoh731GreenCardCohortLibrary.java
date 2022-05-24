@@ -756,7 +756,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
                 "         where fup.visit_date <= date(:endDate)\n" +
-                "         group by fup.patient_id, fup.visit_date\n" +
+                "         group by fup.patient_id\n" +
                 "         having (\n" +
                 "                        ((ctx_dispensed = 1 or dapsone_dispensed = 1 or prophylaxis_given = 1))\n" +
                 "                        AND\n" +
@@ -1331,7 +1331,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                     ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
                 "                         and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and\n" +
                 "                    nutrition_status is not null\n" +
-                "                )e where e.visit_date between date(:startDate) and date(:endDate);";
+                "                )e where e.latest_vis_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("assessedForNutrition");
         cd.setQuery(sqlQuery);
@@ -1369,7 +1369,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                having (started_on_drugs is not null and started_on_drugs <> '') and\n" +
                 "                       ((((timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
                 "                           and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null))) and nutrition_status in (163302,163303)\n" +
-                "                )e where e.visit_date between date(:startDate) and date(:endDate);";
+                "                )e where e.latest_vis_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("malnourishedInHIV");
         cd.setQuery(sqlQuery);

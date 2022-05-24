@@ -76,6 +76,7 @@
 				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
 				<ref bean="kenyaemr.common.report.clients.diedofCovid19"/>
 				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
+				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 			</set>
 		</property>
 	</bean>
@@ -98,6 +99,12 @@
 	<bean id="kenyaemr.common.identifier.national" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
 		<property name="targetUuid" value="${metadata.identifiertype.NATIONAL_ID}" />
 		<property name="order" value="100" />
+	</bean>
+
+	<!-- National Unique Patient Number -->
+	<bean id="kenyaemr.common.identifier.nupi" class="org.openmrs.module.kenyacore.identifier.IdentifierDescriptor">
+		<property name="targetUuid" value="${metadata.identifiertype.NATIONAL_UNIQUE_PATIENT_IDENTIFIER}" />
+		<property name="order" value="150" />
 	</bean>
 
 	<!-- Patient Clinic Number -->
@@ -573,9 +580,9 @@
 
 	<bean id="kenyaemr.common.report.allPatientsMissingIdentifiers" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="c7fbb62a-c165-11ec-9d64-0242ac120002" />
-		<property name="name" value="All Patients Missing Identifiers List" />
-	    <property name="description" value="List of clients who do not have any identifier listed" />
-		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingAllRegistrationIdentifiersCalculation" />
+		<property name="name" value="All Patients Missing National Unique Patient Identifier" />
+	    <property name="description" value="List of clients who do not have national unique patient identifier listed" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingNUPIIdentifierCalculation" />
 		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
@@ -721,6 +728,13 @@
 			</set></property>
 		<property name="template" value="kenyaemr:cacx_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:CACXInformation" />
+	</bean>
+
+	<bean id="kenyaemr.etl.common.report.publicHealthAction" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="e473f83f-b172-4e49-97ba-5817acf5e097" />
+		<property name="name" value="Public Health Action Report" />
+		<property name="description" value="Public Health action report for HIV program" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
