@@ -21,6 +21,7 @@ jobs:
           cd /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr
           git pull origin version-18.1.3
           git status
+          mvn license:format
           mvn clean install -DskipTests
           sudo rm -rf /var/lib/OpenMRS/modules/kenyaemr-*.omod
           sudo cp /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr/omod/target/kenyaemr-*.omod /var/lib/OpenMRS/modules/
