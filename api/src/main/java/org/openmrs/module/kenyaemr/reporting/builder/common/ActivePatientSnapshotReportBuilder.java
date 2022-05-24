@@ -130,6 +130,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result", new ETLLastVLResultDataDefinition(), "");
+        dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
         dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
         dsd.addColumn("Last VL Date", new ETLLastVLDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT", new CalculationDataDefinition("Active in PMTCT", new ActiveInMCHProgramCalculation()), "", new CalculationResultConverter());
