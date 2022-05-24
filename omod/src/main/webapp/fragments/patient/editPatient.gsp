@@ -114,10 +114,14 @@
                         <input type="text" id="idValue" name="idValue" />
                     </td>
                     <td class="ke-field-instructions">
-                        <button type="button" class="ke-verify-button" id="validate-identifier">Validate Identifier</button>
-                        <button type="button" class="ke-verify-button" id="show-cr-info-dialog">View Registry info</button>
-                        &nbsp;&nbsp;
-                        <label id="msgBox"></label>
+                        <div class="buttons-validate-identifiers">
+                            <button type="button" class="ke-verify-button" id="validate-identifier">Validate Identifier</button>
+                            <div class="wait-loading"></div>
+                            <button type="button" class="ke-verify-button" id="show-cr-info-dialog">View Registry info</button>
+                            <div class="message-validate-identifiers">
+                                <label id="msgBox"></label>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr></tr>
@@ -428,21 +432,28 @@
 
 
         </fieldset>
+
         <div align="center" id="post-msgBox"></div>
         <br/>
-    </div>
 
-    <div class="ke-panel-footer">
-        <button type="button" id="post-registrations">
-            <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> Post to Registry
-        </button>
-        <button type="submit" id="createPatientBtn">
-            <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changes" : "Create Patient"}
-        </button>
-        <% if (config.returnUrl) { %>
-        <button type="button" class="cancel-button"><img
-                src="${ui.resourceLink("kenyaui", "images/glyphs/cancel.png")}"/> Cancel</button>
-        <% } %>
+        <fieldset>
+            <div class="ke-panel-footer centre-content">
+                <div class="buttons-post-create-patient centre-content">
+                    <button type="button" id="post-registrations" style="margin-right: 5px; margin-left: 5px;">
+                        <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> Post to Registry
+                    </button>
+                    <div class="wait-loading-post-registration"></div>
+                    <button type="submit" id="createPatientBtn" style="margin-right: 5px; margin-left: 5px;">
+                        <img src="${ui.resourceLink("kenyaui", "images/glyphs/ok.png")}"/> ${command.original ? "Save Changes" : "Create Patient"}
+                    </button>
+                    <% if (config.returnUrl) { %>
+                    <button type="button" class="cancel-button" style="margin-right: 5px; margin-left: 5px;"><img
+                            src="${ui.resourceLink("kenyaui", "images/glyphs/cancel.png")}"/> Cancel</button>
+                    <% } %>
+                </div>
+            </div>
+        </fieldset>
+        
     </div>
 
 </form>
@@ -581,6 +592,38 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     font-weight: 200;
 }
 
+.wait-loading {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.buttons-validate-identifiers {
+    float: left;
+}
+
+.buttons-validate-identifiers *{
+    display: inline-block;
+}
+
+.message-validate-identifiers {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.buttons-post-create-patient {
+    float: left;
+}
+
+.buttons-post-create-patient *{
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.centre-content {
+    display: flex;
+    justify-content: center;
+}
+
 .ke-cr-network-error {
     padding: 10px 20px;
     background-color: red;
@@ -608,6 +651,18 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     crResponseData = ""; // response from client registry
     jQuery(function () {
 
+        var loadingImageURL = ui.resourceLink("kenyaemrml", "images/loading.gif");
+        var showLoadingImage = '<span style="padding:2px; display:inline-block;"> <img src="' + loadingImageURL + '" /> </span>';
+
+        function display_loading_validate_identifier(status) {
+            if(status) {
+                jq('.wait-loading').empty();
+                jq('.wait-loading').append(showLoadingImage);
+            } else {
+                jq('.wait-loading').empty();
+            }
+        }
+
         jQuery('input[name="nationalUniquePatientNumber"]').attr('readonly', true);
         jQuery('#createPatientBtn').prop('disabled', true);
         jQuery('#alien-no').hide();
@@ -630,6 +685,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#other-identifiers').click(otherIdentifiersChange);
         jQuery('#show-cr-info-dialog').click(showDataFromCR);
         jQuery('#use-full-name').click(useFullName);
+
         jQuery('#validate-identifier').click(function(event){
 
             // connect to dhp server
@@ -667,6 +723,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
             var baseVerificationUrl = '${clientVerificationApi}';
             var getUrl = baseVerificationUrl + idTypeParam + '/' +  idValue;
+
+            // show spinner
+            display_loading_validate_identifier(true);
+
             jq.ajax({
                 url: getUrl,
                 type: "GET",
@@ -674,6 +734,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 timeout: 10000, // 10 sec timeout
                 headers: { Authorization: 'Bearer ' + authToken},
                 error: function(err) {
+                    // hide spinner
+                    display_loading_validate_identifier(false);
+
                     var className = jQuery('#msgBox').attr("class");
                     jQuery('#msgBox').removeClass(className);
                     jQuery('#msgBox').addClass('ke-cr-network-error');
@@ -697,6 +760,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     }
                 },
                 success: function(data) {
+                    // hide spinner
+                    display_loading_validate_identifier(false);
+
                     crResponseData = data;
                     if(data.clientExists) {
                         var className = jQuery('#msgBox').attr("class");
@@ -772,8 +838,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         //Prepare UPI payload
 
         jQuery('#post-registrations').click(function(){
+
             //Enable Create patient button
             jQuery('#createPatientBtn').prop('disabled', false);
+
             //Identifiers:
             var identifierType;
             var identifierValue;
@@ -2097,8 +2165,23 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
     }
 
+    var loadingImageURL = ui.resourceLink("kenyaemrml", "images/loading.gif");
+    var showLoadingImage = '<span style="padding:2px; display:inline-block;"> <img src="' + loadingImageURL + '" /> </span>';
+
+    function display_loading_post_registration(status) {
+        if(status) {
+            jq('.wait-loading-post-registration').empty();
+            jq('.wait-loading-post-registration').append(showLoadingImage);
+        } else {
+            jq('.wait-loading-post-registration').empty();
+        }
+    }
+
     function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupationStatus,religion,educationStatus,countryCode,defaultMflCode,countyOfBirth,countyCode,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
-        // connect to CR server
+        // connect to CR server and post data
+
+        // Show spinner
+        display_loading_post_registration(true);
 
         var params = params
 
@@ -2143,6 +2226,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 'postParams': JSON.stringify(params)
             })
             .success(function (data) {
+                // Hide spinner
+                display_loading_post_registration(false);
+
                 if(data.clientNumber){
                     jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
                     jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
@@ -2160,6 +2246,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
             })
             .fail(function (err) {
+                    // Hide spinner
+                    display_loading_post_registration(false);
+
                     console.log(err)
                     jQuery("input[name='CRVerificationStatus']").val("Pending");
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
