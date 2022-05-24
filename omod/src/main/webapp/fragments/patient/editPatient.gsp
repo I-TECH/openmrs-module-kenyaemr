@@ -22,9 +22,9 @@
 
     def otherDemogFieldRows = [
             [
-                    [object: command, property: "maritalStatus", label: "Marital status", config: [style: "list", options: maritalStatusOptions]],
-                    [object: command, property: "occupation", label: "Occupation", config: [style: "list", options: occupationOptions]],
-                    [object: command, property: "education", label: "Education", config: [style: "list", options: educationOptions]]
+                    [object: command, property: "maritalStatus", label: "Marital status *", config: [style: "list", options: maritalStatusOptions]],
+                    [object: command, property: "occupation", label: "Occupation *", config: [style: "list", options: occupationOptions]],
+                    [object: command, property: "education", label: "Education *", config: [style: "list", options: educationOptions]]
             ]
     ]
 
@@ -44,7 +44,7 @@
 
     def contactsFields = [
             [
-                    [object: command, property: "telephoneContact", label: "Telephone contact"],
+                    [object: command, property: "telephoneContact", label: "Telephone contact *"],
                     [object: command, property: "alternatePhoneContact", label: "Alternate phone number"]
             ]
     ]
@@ -59,7 +59,7 @@
             [
                     [object: command, property: "personAddress.address6", label: "Location"],
                     [object: command, property: "personAddress.address5", label: "Sub-location"],
-                    [object: command, property: "personAddress.cityVillage", label: "Village"]
+                    [object: command, property: "personAddress.cityVillage", label: "Village *"]
             ]
     ]
 
@@ -82,11 +82,13 @@
     ]
     def crVerifedField = [
             [
-                    [object: command, property: "CRVerificationStatus", label: "CR Verifed"]
+                    [object: command, property: "CRVerificationStatus", label: "Verification Status"]
             ]
     ]
 %>
 <script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/KenyaAddressHierarchy.js"></script>
+<script type="text/javascript" src="/${ contextPath }/moduleResources/kenyaemr/scripts/upiVerificationUtils.js"></script>
+
 <form id="edit-patient-form" method="post" action="${ui.actionLink("kenyaemr", "patient/editPatient", "savePatient")}">
     <% if (command.original) { %>
     <input type="hidden" name="personId" value="${command.original.id}"/>
@@ -168,7 +170,7 @@
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(This is required for all kenyans aged 18+)<% } %></td>
-                    <td><div id="nationalID-msgBox" class="ke-warning">Please enter National Id or Birth Certificate Number to post to CR</div></td>
+                    <td><div id="nationalID-msgBox" class="ke-warning">National Id or Birth Certificate Number is Required</div></td>
                 </tr>
 
                 <tr  id="birth-cert-no">
@@ -228,10 +230,10 @@
             <table>
                <tr>
                 <td>
-                    <div id="surname-msgBox" class="ke-warning">Please enter Surname to post to CR</div>
+                    <div id="surname-msgBox" class="ke-warning">Surname is Required</div>
                 </td>
                    <td>
-                       <div id="firstname-msgBox" class="ke-warning">Please enter First name to post to CR</div>
+                       <div id="firstname-msgBox" class="ke-warning">First name is Required</div>
                    </td>
                 </tr>
             </table>
@@ -249,7 +251,7 @@
                         </span>
                     </td>
                     <td>
-                        <div id="gender-msgBox" class="ke-warning">Please enter Age to post to CR</div>
+                        <div id="gender-msgBox" class="ke-warning">Age is Required</div>
                     </td>
                     <td valign="top"></td>
                     <td valign="top">
@@ -268,7 +270,7 @@
                         </span>
                     </td>
                     <td>
-                        <div id="age-msgBox" class="ke-warning">Please enter Age to post to CR</div>
+                        <div id="age-msgBox" class="ke-warning">Age is Required</div>
                     </td>
                 </tr>
             </table>
@@ -324,14 +326,16 @@
             <legend>Address</legend>
             <table>
             <tr>
-            <td class="ke-field-label">Country</td>
+            <td class="ke-field-label">Country *</td>
             <td> </td>
             </tr>
             <tr>
                 
                 <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", config: [style: "list", options: countryOptions]])}</td>
                 <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
-               
+                <td>
+                    <div id="country-msgBox" class="ke-warning">Country is Required</div>
+                </td>
             </tr>
             </table>
 
@@ -341,10 +345,7 @@
             <table>
             <tr>
                 <td>
-                    <div id="country-msgBox" class="ke-warning">Please enter Country to post to CR</div>
-                </td>
-                <td>
-                    <div id="phone-msgBox" class="ke-warning">Please enter Phone number to post to CR</div>
+                    <div id="phone-msgBox" class="ke-warning">Phone number is Required</div>
                 </td>
             </tr>
            </table>
@@ -353,9 +354,9 @@
             <% } %>
             <table>
                 <tr>
-                    <td class="ke-field-label" style="width: 265px">County</td>
-                    <td class="ke-field-label" style="width: 260px">Sub-County</td>
-                    <td class="ke-field-label" style="width: 260px">Ward</td>
+                    <td class="ke-field-label" style="width: 265px">County *</td>
+                    <td class="ke-field-label" style="width: 260px">Sub-County *</td>
+                    <td class="ke-field-label" style="width: 260px">Ward *</td>
                 </tr>
 
                 <tr>
@@ -380,23 +381,26 @@
                 </tr>
             <tr>
                 <td>
-                    <div id="county-msgBox" class="ke-warning">Please enter County to post to CR</div>
+                    <div id="county-msgBox" class="ke-warning">County is Required</div>
                 </td>
                 <td>
-                    <div id="subCounty-msgBox" class="ke-warning">Please enter Sub County to post to CR</div>
+                    <div id="subCounty-msgBox" class="ke-warning">Sub County is Required</div>
                 </td>
                 <td>
-                    <div id="ward-msgBox" class="ke-warning">Please enter Ward to post to CR</div>
+                    <div id="ward-msgBox" class="ke-warning">Ward is Required</div>
                 </td>
             </tr>
             </table>
+
             <% locationSubLocationVillageFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
+            <div id="village-msgBox" class="ke-warning">Village is Required</div>
 
             <% landmarkNearestFacilityFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
+            
         </fieldset>
 
         <% if (peerEducator) { %>
@@ -445,7 +449,7 @@
 
         </fieldset>
 
-        <div align="center" id="post-msgBox"></div>
+        <div class="text-wrap" align="center" id="post-msgBox"></div>
         <br/>
 
         <fieldset>
@@ -636,6 +640,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     justify-content: center;
 }
 
+.text-wrap {
+    white-space: pre-wrap;
+}
+
 .ke-cr-network-error {
     padding: 10px 20px;
     background-color: red;
@@ -663,6 +671,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
     crResponseData = ""; // response from client registry
     var loadingImageURL = ui.resourceLink("kenyaemr", "images/loading.gif");
     var showLoadingImage = '<span style="padding:2px; display:inline-block;"> <img src="' + loadingImageURL + '" /> </span>';
+    var authToken = "";
 
     jQuery(function () {
 
@@ -673,6 +682,19 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             } else {
                 jq('.wait-loading').empty();
             }
+        }
+
+        // fetch the token asynchronously
+        function fetchTokenAsync() {
+            let dfrd = jq.Deferred();
+            ui.getFragmentActionAsJson("kenyaemr", "upi/upiDataExchange", "getAuthToken", {  }, function (result) {
+                authToken = result;
+                dfrd.resolve();
+            });
+
+            return jq.when(dfrd).done(function(){
+                console.log('Finished the fetch token!');
+            }).promise();
         }
 
         jQuery('input[name="nationalUniquePatientNumber"]').attr('readonly', true);
@@ -692,28 +714,24 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery("#subCounty-msgBox").hide();
         jQuery("#ward-msgBox").hide();
         jQuery("#nationalID-msgBox").hide();
+        jQuery("#village-msgBox").hide();
+
+        jQuery("input[name='CRVerificationStatus']").attr('readonly', true);
 
         jQuery('#show-cr-info-dialog').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
         jQuery('#show-cr-info-dialog').click(showDataFromCR);
         jQuery('#use-full-name').click(useFullName);
         jQuery('#select-kenya-option').click(selectCountryKenyaOption);
+
+        // clicking on the validate identifier button
         jQuery('#validate-identifier').click(function(event){
 
             // connect to dhp server
-            var authToken = '${clientVerificationApiToken}';
+            //var authToken = '${clientVerificationApiToken}';
             var idType = jQuery('#idType').val();
             var idValue = jQuery('input[name=idValue]').val();
             var idTypeParam = '';
-
-            if (authToken == '') {
-                jQuery('#show-cr-info-dialog').hide();
-                var className = jQuery('#msgBox').attr("class");
-                jQuery('#msgBox').removeClass(className);
-                //jQuery('#msgBox').addClass('ke-cr-client-not-found');
-                jQuery('#msgBox').text('Please notify the system admin to enable verification process');
-                return;
-            }
 
             if (idType == '' || idValue == '') {
                 jQuery('#show-cr-info-dialog').hide();
@@ -728,7 +746,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             if(idType == '${nationalIdType}') {
                 idTypeParam = 'national-id';
             } else if (idType == '${passportNumberType}') {
-                idTypeParam = 'passport-id';
+                idTypeParam = 'passport';
             } else if (idType == '${birthCertificateNumberType}') {
                 idTypeParam = 'birth-certificate';
             }
@@ -739,112 +757,125 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             // show spinner
             display_loading_validate_identifier(true);
 
-            jq.ajax({
-                url: getUrl,
-                type: "GET",
-                async: true, // asynchronous
-                timeout: 10000, // 10 sec timeout
-                headers: { Authorization: 'Bearer ' + authToken},
-                error: function(err) {
-                    // hide spinner
-                    display_loading_validate_identifier(false);
+            // get the auth token
+            fetchTokenAsync().done(function() {
 
+                // Verify that we have a token
+                if (authToken == '') {
+                    jQuery('#show-cr-info-dialog').hide();
                     var className = jQuery('#msgBox').attr("class");
                     jQuery('#msgBox').removeClass(className);
-                    jQuery('#msgBox').addClass('ke-cr-network-error');
-                    switch (err.status) {
-                        case "400":
-                            // bad request
-                            jQuery('#msgBox').text('A network error occured: 400 - Bad Request');
-                            break;
-                        case "401":
-                            // expired or invalid token
-                            jQuery('#msgBox').text('A network error occured: 401 - Invalid Token');
-                            break;
-                        case "403":
-                            // forbidden
-                            jQuery('#msgBox').text('A network error occured: 403 - Forbidden');
-                            break;
-                        default:
-                            //Something bad happened
-                            jQuery('#msgBox').text('A network error occured: ' + err.status);
-                            break;
-                    }
-                },
-                success: function(data) {
-                    // hide spinner
-                    display_loading_validate_identifier(false);
+                    //jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                    jQuery('#msgBox').text('Please notify the system admin to enable verification process');
+                    return;
+                }
 
-                    crResponseData = data;
-                    if(data.clientExists) {
+                // verify the identifier
+                jq.ajax({
+                    url: getUrl,
+                    type: "GET",
+                    async: true, // asynchronous
+                    timeout: 10000, // 10 sec timeout
+                    headers: { Authorization: 'Bearer ' + authToken},
+                    error: function(err) {
+                        // hide spinner
+                        display_loading_validate_identifier(false);
+
                         var className = jQuery('#msgBox').attr("class");
                         jQuery('#msgBox').removeClass(className);
-                        jQuery('#msgBox').addClass('ke-cr-client-exists');
-                        jQuery('#msgBox').text('Client exists in the registry. UPI number:  ' + data.client.clientNumber);
-
-                        // unset vars
-                        jQuery('#cr-full-name').text("");
-                        jQuery('#cr-sex').text("");
-                        jQuery('#cr-primary-contact').text("");
-                        jQuery('#cr-secondary-contact').text("");
-                        jQuery('#cr-email').text("");
-
-                        jQuery('#cr-county').text("");
-                        jQuery('#cr-sub-county').text("");
-                        jQuery('#cr-ward').text("");
-
-                        jQuery('#cr-kin-name').text("");
-                        jQuery('#cr-kin-relation').text("");
-                        jQuery('#cr-kin-contact').text("");
-                        jQuery('#cr-national-id').text("");
-                        jQuery('#cr-upi').text("");
-
-                        //
-                        jQuery('#cr-full-name').text(data.client.firstName + ' ' + data.client.middleName + ' ' + data.client.lastName);
-                        jQuery('#cr-sex').text(data.client.gender);
-                        jQuery('#cr-primary-contact').text(data.client.contact.primaryPhone);
-                        jQuery('#cr-secondary-contact').text(data.client.contact.secondaryPhone);
-                        jQuery('#cr-email').text(data.client.contact.emailAddress);
-
-                        // residence
-                        jQuery('#cr-county').text(data.client.residence.county);
-                        jQuery('#cr-sub-county').text(data.client.residence.subCounty);
-                        jQuery('#cr-ward').text(data.client.residence.ward);
-
-                        // next of kin
-
-                        if(data.client.nextOfKins.length > 0) {
-                            var nextOfKin = data.client.nextOfKins[0];
-                            jQuery('#cr-kin-name').text(nextOfKin.name);
-                            jQuery('#cr-kin-relation').text(nextOfKin.relationship);
-                            jQuery('#cr-kin-contact').text(nextOfKin.contact.primaryPhone);
-
+                        jQuery('#msgBox').addClass('ke-cr-network-error');
+                        switch (err.status) {
+                            case "400":
+                                // bad request
+                                jQuery('#msgBox').text('A network error occured: 400 - Bad Request');
+                                break;
+                            case "401":
+                                // expired or invalid token
+                                jQuery('#msgBox').text('A network error occured: 401 - Invalid Token');
+                                break;
+                            case "403":
+                                // forbidden
+                                jQuery('#msgBox').text('A network error occured: 403 - Forbidden');
+                                break;
+                            default:
+                                //Something bad happened
+                                jQuery('#msgBox').text('A network error occured: ' + err.status);
+                                break;
                         }
+                    },
+                    success: function(data) {
+                        // hide spinner
+                        display_loading_validate_identifier(false);
 
-                        // identifiers
-                        jQuery('#cr-upi').text(data.client.clientNumber); // update UPI field
-                        if (data.client.identifications.length > 0) {
-                            for (i = 0; i < data.client.identifications.length; i++) {
-                                var identifierObj = data.client.identifications[i];
-                                if (identifierObj.identificationType == 'Identification Number') {
-                                    jQuery('#cr-national-id').text(identifierObj.identificationNumber);
+                        crResponseData = data;
+                        if(data.clientExists) {
+                            var className = jQuery('#msgBox').attr("class");
+                            jQuery('#msgBox').removeClass(className);
+                            jQuery('#msgBox').addClass('ke-cr-client-exists');
+                            jQuery('#msgBox').text('Client exists in the registry. UPI number:  ' + data.client.clientNumber);
+
+                            // unset vars
+                            jQuery('#cr-full-name').text("");
+                            jQuery('#cr-sex').text("");
+                            jQuery('#cr-primary-contact').text("");
+                            jQuery('#cr-secondary-contact').text("");
+                            jQuery('#cr-email').text("");
+
+                            jQuery('#cr-county').text("");
+                            jQuery('#cr-sub-county').text("");
+                            jQuery('#cr-ward').text("");
+
+                            jQuery('#cr-kin-name').text("");
+                            jQuery('#cr-kin-relation').text("");
+                            jQuery('#cr-kin-contact').text("");
+                            jQuery('#cr-national-id').text("");
+                            jQuery('#cr-upi').text("");
+
+                            //
+                            jQuery('#cr-full-name').text(data.client.firstName + ' ' + data.client.middleName + ' ' + data.client.lastName);
+                            jQuery('#cr-sex').text(data.client.gender);
+                            jQuery('#cr-primary-contact').text(data.client.contact.primaryPhone);
+                            jQuery('#cr-secondary-contact').text(data.client.contact.secondaryPhone);
+                            jQuery('#cr-email').text(data.client.contact.emailAddress);
+
+                            // residence
+                            jQuery('#cr-county').text(data.client.residence.county);
+                            jQuery('#cr-sub-county').text(data.client.residence.subCounty);
+                            jQuery('#cr-ward').text(data.client.residence.ward);
+
+                            // next of kin
+
+                            if(data.client.nextOfKins.length > 0) {
+                                var nextOfKin = data.client.nextOfKins[0];
+                                jQuery('#cr-kin-name').text(nextOfKin.name);
+                                jQuery('#cr-kin-relation').text(nextOfKin.relationship);
+                                jQuery('#cr-kin-contact').text(nextOfKin.contact.primaryPhone);
+
+                            }
+
+                            // identifiers
+                            jQuery('#cr-upi').text(data.client.clientNumber); // update UPI field
+                            if (data.client.identifications.length > 0) {
+                                for (i = 0; i < data.client.identifications.length; i++) {
+                                    var identifierObj = data.client.identifications[i];
+                                    if (identifierObj.identificationType == 'Identification Number') {
+                                        jQuery('#cr-national-id').text(identifierObj.identificationNumber);
+                                    }
                                 }
                             }
+
+                            jQuery('#show-cr-info-dialog').show();
+
+                        } else {
+                            jQuery('#show-cr-info-dialog').hide();
+                            var className = jQuery('#msgBox').attr("class");
+                            jQuery('#msgBox').removeClass(className);
+                            jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                            jQuery('#msgBox').text('Client not found in the registry. Please enter registration data and post to CR ');
                         }
-
-                        jQuery('#show-cr-info-dialog').show();
-
-                    } else {
-                        jQuery('#show-cr-info-dialog').hide();
-                        var className = jQuery('#msgBox').attr("class");
-                        jQuery('#msgBox').removeClass(className);
-                        jQuery('#msgBox').addClass('ke-cr-client-not-found');
-                        jQuery('#msgBox').text('Client not found in the registry. Please enter registration data and post to CR ');
                     }
-                }
+                });
             });
-
-            //
         });
 
         //Prepare UPI payload
@@ -866,9 +897,11 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 identifierValue = jQuery('input[name=birthCertificateNumber]').val();
                 jQuery("#nationalID-msgBox").hide();
             }else{
+                // National Id or Birth Certificate Number is required
                 jQuery("#post-msgBox").text("Please enter National Id or Birth Certificate Number to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#nationalID-msgBox").show();
+                return;
             }
                 //gender:
                 var gender;
@@ -881,990 +914,125 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                         gender = "male";
                     }
                 }else{
+                    // Gender is required
                     jQuery("#post-msgBox").text("Please enter gender to successfully post to CR");
                     jQuery("#post-msgBox").show();
                     jQuery("#gender-msgBox").show();
+                    return;
                 }
             //Marital status:
             var maritalStatus;
-            if(jQuery('select[name=maritalStatus]').val() !=""){
-                if(jQuery('select[name=maritalStatus]').val() == 159715){
-                    maritalStatus = "married";
-                }
-                if(jQuery('select[name=maritalStatus]').val() == 5555){
-                    maritalStatus = "married";
-                }
-                if(jQuery('select[name=maritalStatus]').val() == 1060){
-                    maritalStatus = "married";
-                }
-                if(jQuery('select[name=maritalStatus]').val() == 1057){
-                    maritalStatus = "single";
-                }
-                if(jQuery('select[name=maritalStatus]').val() == 1058){
-                    maritalStatus = "divorced";
-                }
-                if(jQuery('select[name=maritalStatus]').val() == 1059){
-                    maritalStatus = "widowed";
-                }
-              }
+            if(jQuery('select[name=maritalStatus]').val() !="") {
+                maritalStatus = maritalStatusObject[jQuery('select[name=maritalStatus]').val()].maritalStatus;
+                // console.log("Marital Status: " + maritalStatus);
+            }
 
             //Occupation status:
             var occupationStatus;
-            if(jQuery('select[name=occupation]').val() !=""){
-                if(jQuery('select[name=occupation]').val() == 159465){
-                    occupationStatus = "student";
-                }
-                if(jQuery('select[name=occupation]').val() == 1538){
-                    occupationStatus = "farmer";
-                }
-                if(jQuery('select[name=occupation]').val() == 1539){
-                    occupationStatus = "banker";
-                }
-                if(jQuery('select[name=occupation]').val() == 1540){
-                    occupationStatus = "doctor";
-                }
-                if(jQuery('select[name=occupation]').val() == 159466){
-                    occupationStatus = "mechanic";
-                }
-                if(jQuery('select[name=occupation]').val() == 1107){
-                    occupationStatus = "student";
-                }
+            if(jQuery('select[name=occupation]').val() !="") {
+                occupationStatus = occupationObject[jQuery('select[name=occupation]').val()].occupation;
+                // console.log("Occupation : " + occupationStatus);
             }
             //Education status:
             var educationStatus;
-            if(jQuery('select[name=education]').val() !=""){
-                if(jQuery('select[name=education]').val() == 1107){
-                    educationStatus = "primary";
-                }
-                if(jQuery('select[name=education]').val() == 1713){
-                    educationStatus = "primary";
-                }
-                if(jQuery('select[name=education]').val() == 1714){
-                    educationStatus = "secondary";
-                }
-                if(jQuery('select[name=education]').val() == 159785){
-                    educationStatus = "college";
-                }
+            if(jQuery('select[name=education]').val() !="") {
+                educationStatus = educationObject[jQuery('select[name=education]').val()].education;
+                // console.log("Education : " + educationStatus);
             }
             var countryCode;
             if(jQuery('select[name=country]').val() !=""){
                 jQuery("#country-msgBox").hide();
-                if(jQuery('select[name=country]').val() == 162883){
-                    countryCode = "KE";
-                }
-                if(jQuery('select[name=country]').val() == 162884){
-                    countryCode = "UG";
-                }
-                if(jQuery('select[name=country]').val() == 165639){
-                    countryCode = "TZ";
-                }
-                if(jQuery('select[name=country]').val() == 165705){
-                    countryCode = "AF";
-                }
-                if(jQuery('select[name=country]').val() == 165674){
-                    countryCode = "AL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165757){
-                    countryCode = "DZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165691){
-                    countryCode = "AD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165774){
-                    countryCode = "AO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165798){
-                    countryCode = "AG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165821){
-                    countryCode = "AR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165675){
-                    countryCode = "AM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165742){
-                    countryCode = "AU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165666){
-                    countryCode = "AT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165676){
-                    countryCode = "AZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165799){
-                    countryCode = "BS";
-                }
-
-                if(jQuery('select[name=country]').val() == 165713){
-                    countryCode = "BH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165706){
-                    countryCode = "BD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165800){
-                    countryCode = "BB";
-                }
-
-                if(jQuery('select[name=country]').val() == 165677){
-                    countryCode = "BY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165660){
-                    countryCode = "BE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165811){
-                    countryCode = "BZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165776){
-                    countryCode = "BJ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165707){
-                    countryCode = "BT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165822){
-                    countryCode = "BO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165678){
-                    countryCode = "BA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165766){
-                    countryCode = "BW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165823){
-                    countryCode = "BR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165731){
-                    countryCode = "BN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165679){
-                    countryCode = "BG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165777){
-                    countryCode = "BF";
-                }
-
-                if(jQuery('select[name=country]').val() == 165744){
-                    countryCode = "BI";
-                }
-
-                if(jQuery('select[name=country]').val() == 165733){
-                    countryCode = "KH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165745){
-                    countryCode = "CM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165818){
-                    countryCode = "CA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165778){
-                    countryCode = "CV";
-                }
-
-                if(jQuery('select[name=country]').val() == 165746){
-                    countryCode = "CF";
-                }
-
-                if(jQuery('select[name=country]').val() == 165747){
-                    countryCode = "TD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165824){
-                    countryCode = "CL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165634){
-                    countryCode = "CN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165825){
-                    countryCode = "CO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165755){
-                    countryCode = "KM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165749){
-                    countryCode = "CG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165748){
-                    countryCode = "CD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165812){
-                    countryCode = "CR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165783){
-                    countryCode = "CI";
-                }
-
-                if(jQuery('select[name=country]').val() == 165667){
-                    countryCode = "HR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165802){
-                    countryCode = "CU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165680){
-                    countryCode = "CY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165668){
-                    countryCode = "CZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165661){
-                    countryCode = "DK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165762){
-                    countryCode = "DJ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165801){
-                    countryCode = "DM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165826){
-                    countryCode = "EC";
-                }
-
-                if(jQuery('select[name=country]').val() == 165758){
-                    countryCode = "EG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165813){
-                    countryCode = "SV";
-                }
-
-                if(jQuery('select[name=country]').val() == 165779){
-                    countryCode = "GQ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165642){
-                    countryCode = "ER";
-                }
-
-                if(jQuery('select[name=country]').val() == 165681){
-                    countryCode = "EE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165641){
-                    countryCode = "ET";
-                }
-
-                if(jQuery('select[name=country]').val() == 165663){
-                    countryCode = "FI";
-                }
-
-                if(jQuery('select[name=country]').val() == 165658){
-                    countryCode = "FR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165750){
-                    countryCode = "GA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165790){
-                    countryCode = "GM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165682){
-                    countryCode = "GE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165659){
-                    countryCode = "DE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165780){
-                    countryCode = "GH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165683){
-                    countryCode = "GR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165803){
-                    countryCode = "GD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165814){
-                    countryCode = "GT";
-                }
-
-                if(jQuery('select[name=country]').val() == 162607){
-                    countryCode = "GN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165782){
-                    countryCode = "GW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165827){
-                    countryCode = "GY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165804){
-                    countryCode = "HT";
-                }
-                if(jQuery('select[name=country]').val() == 165815){
-                    countryCode = "HN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165704){
-                    countryCode = "HK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165669){
-                    countryCode = "HU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165665){
-                    countryCode = "IS";
-                }
-
-                if(jQuery('select[name=country]').val() == 165708){
-                    countryCode = "IN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165735){
-                    countryCode = "ID";
-                }
-
-                if(jQuery('select[name=country]').val() == 165636){
-                    countryCode = "IR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165714){
-                    countryCode = "IQ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165698){
-                    countryCode = "IE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165715){
-                    countryCode = "IL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165635){
-                    countryCode = "IT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165805){
-                    countryCode = "JM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165637){
-                    countryCode = "JP";
-                }
-
-                if(jQuery('select[name=country]').val() == 165716){
-                    countryCode = "JO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165725){
-                    countryCode = "KZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165703){
-                    countryCode = "KP";
-                }
-
-                if(jQuery('select[name=country]').val() == 165638){
-                    countryCode = "KR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165717){
-                    countryCode = "KW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165726){
-                    countryCode = "KG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165736){
-                    countryCode = "LA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165684){
-                    countryCode = "LV";
-                }
-
-                if(jQuery('select[name=country]').val() == 165718){
-                    countryCode = "LB";
-                }
-
-                if(jQuery('select[name=country]').val() == 165767){
-                    countryCode = "LS";
-                }
-
-                if(jQuery('select[name=country]').val() == 162606){
-                    countryCode = "LR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165759){
-                    countryCode = "LY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165690){
-                    countryCode = "LI";
-                }
-
-                if(jQuery('select[name=country]').val() == 165685){
-                    countryCode = "LT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165693){
-                    countryCode = "LU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165664){
-                    countryCode = "MK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165640){
-                    countryCode = "MG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165771){
-                    countryCode = "MW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165737){
-                    countryCode = "MY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165664){
-                    countryCode = "MV";
-                }
-
-                if(jQuery('select[name=country]').val() == 165785){
-                    countryCode = "ML";
-                }
-
-                if(jQuery('select[name=country]').val() == 165692){
-                    countryCode = "MT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165786){
-                    countryCode = "MR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165772){
-                    countryCode = "MU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165819){
-                    countryCode = "MX";
-                }
-
-                if(jQuery('select[name=country]').val() == 165694){
-                    countryCode = "MC";
-                }
-
-                if(jQuery('select[name=country]').val() == 165727){
-                    countryCode = "MN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165760){
-                    countryCode = "MA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165773){
-                    countryCode = "MZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165732){
-                    countryCode = "MM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165775){
-                    countryCode = "NA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165710){
-                    countryCode = "NP";
-                }
-
-                if(jQuery('select[name=country]').val() == 165695){
-                    countryCode = "NL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165743){
-                    countryCode = "NZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165816){
-                    countryCode = "NI";
-                }
-
-                if(jQuery('select[name=country]').val() == 162609){
-                    countryCode = "NE";
-                }
-
-                if(jQuery('select[name=country]').val() == 162609){
-                    countryCode = "NG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165696){
-                    countryCode = "NO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165719){
-                    countryCode = "OM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165711){
-                    countryCode = "PK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165817){
-                    countryCode = "PA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165828){
-                    countryCode = "PY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165829){
-                    countryCode = "PE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165738){
-                    countryCode = "PH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165670){
-                    countryCode = "PL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165697){
-                    countryCode = "PT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165806){
-                    countryCode = "PR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165721){
-                    countryCode = "QA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165686){
-                    countryCode = "RO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165687){
-                    countryCode = "RU";
-                }
-
-                if(jQuery('select[name=country]').val() == 165752){
-                    countryCode = "RW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165701){
-                    countryCode = "SM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165787){
-                    countryCode = "ST";
-                }
-
-                if(jQuery('select[name=country]').val() == 165722){
-                    countryCode = "SA";
-                }
-
-                if(jQuery('select[name=country]').val() == 162610){
-                    countryCode = "SN";
-                }
-
-                if(jQuery('select[name=country]').val() == 166072){
-                    countryCode = "RS";
-                }
-
-                if(jQuery('select[name=country]').val() == 165756){
-                    countryCode = "SC";
-                }
-
-                if(jQuery('select[name=country]').val() == 162608){
-                    countryCode = "SL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165739){
-                    countryCode = "SG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165671){
-                    countryCode = "SK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165672){
-                    countryCode = "SI";
-                }
-
-                if(jQuery('select[name=country]').val() == 165753){
-                    countryCode = "SO";
-                }
-
-                if(jQuery('select[name=country]').val() == 165770){
-                    countryCode = "ZA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165765){
-                    countryCode = "SS";
-                }
-
-                if(jQuery('select[name=country]').val() == 165699){
-                    countryCode = "ES";
-                }
-
-                if(jQuery('select[name=country]').val() == 165712){
-                    countryCode = "LK";
-                }
-
-                if(jQuery('select[name=country]').val() == 165764){
-                    countryCode = "SD";
-                }
-
-                if(jQuery('select[name=country]').val() == 165830){
-                    countryCode = "SR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165768){
-                    countryCode = "SZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165700){
-                    countryCode = "SE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165673){
-                    countryCode = "CH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165723){
-                    countryCode = "SY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165702){
-                    countryCode = "TW";
-                }
-
-                if(jQuery('select[name=country]').val() == 165728){
-                    countryCode = "TJ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165740){
-                    countryCode = "TH";
-                }
-
-                if(jQuery('select[name=country]').val() == 165734){
-                    countryCode = "TL";
-                }
-
-                if(jQuery('select[name=country]').val() == 165791){
-                    countryCode = "TG";
-                }
-
-                if(jQuery('select[name=country]').val() == 165810){
-                    countryCode = "TT";
-                }
-
-                if(jQuery('select[name=country]').val() == 165761){
-                    countryCode = "TN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165688){
-                    countryCode = "TR";
-                }
-
-                if(jQuery('select[name=country]').val() == 165729){
-                    countryCode = "TM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165689){
-                    countryCode = "UA";
-                }
-
-                if(jQuery('select[name=country]').val() == 165724){
-                    countryCode = "AE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165922){
-                    countryCode = "GB";
-                }
-
-                if(jQuery('select[name=country]').val() == 165820){
-                    countryCode = "US";
-                }
-
-                if(jQuery('select[name=country]').val() == 165831){
-                    countryCode = "UY";
-                }
-
-                if(jQuery('select[name=country]').val() == 165730){
-                    countryCode = "UZ";
-                }
-
-                if(jQuery('select[name=country]').val() == 165832){
-                    countryCode = "VE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165741){
-                    countryCode = "VN";
-                }
-
-                if(jQuery('select[name=country]').val() == 165720){
-                    countryCode = "YE";
-                }
-
-                if(jQuery('select[name=country]').val() == 165754){
-                    countryCode = "ZM";
-                }
-
-                if(jQuery('select[name=country]').val() == 165769){
-                    countryCode = "ZW";
-                }
-
-
-
-
-
-
-
-
-            }else{
+                countryCode = countryObject[jQuery('select[name=country]').val()].countryCode;
+                // console.log("Country code: " + countryCode);
+            } else {
+                // Country is required
                 jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#country-msgBox").show();
+                return;
             }
             //County Code status:
             var countyCode;
             if(jQuery('select[name="personAddress.countyDistrict"]').val() !=""){
                 jQuery("#county-msgBox").hide();
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nairobi"){
-                    countyCode = "047";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Mombasa"){
-                    countyCode = "001";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kwale"){
-                    countyCode = "002";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kilifi"){
-                    countyCode = "003";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Tana River"){
-                    countyCode = "004";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Lamu"){
-                    countyCode = "005";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Taita Taveta"){
-                    countyCode = "006";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Garissa"){
-                    countyCode = "007";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Wajir"){
-                    countyCode = "008";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Mandera"){
-                    countyCode = "009";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Marsabit"){
-                    countyCode = "010";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Isiolo"){
-                    countyCode = "011";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Meru"){
-                    countyCode = "012";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Tharaka Nithi"){
-                    countyCode = "013";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Embu"){
-                    countyCode = "014";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kitui"){
-                    countyCode = "015";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Machakos"){
-                    countyCode = "016";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Makueni"){
-                    countyCode = "017";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyandarua"){
-                    countyCode = "018";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyeri"){
-                    countyCode = "019";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kirinyaga"){
-                    countyCode = "020";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Muranga"){
-                    countyCode = "021";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kiambu"){
-                    countyCode = "022";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Turkana"){
-                    countyCode = "023";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "West Pokot"){
-                    countyCode = "024";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Samburu"){
-                    countyCode = "025";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Trans Nzoia"){
-                    countyCode = "026";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Uasin Gishu"){
-                    countyCode = "027";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Elgeyo Marakwet"){
-                    countyCode = "028";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nandi"){
-                    countyCode = "029";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Baringo"){
-                    countyCode = "030";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Laikipia"){
-                    countyCode = "031";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nakuru"){
-                    countyCode = "032";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Narok"){
-                    countyCode = "033";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kajiado"){
-                    countyCode = "034";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kericho"){
-                    countyCode = "035";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Bomet"){
-                    countyCode = "036";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kakamega"){
-                    countyCode = "037";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Vihiga"){
-                    countyCode = "038";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Bungoma"){
-                    countyCode = "039";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Busia"){
-                    countyCode = "040";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Siaya"){
-                    countyCode = "041";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kisumu"){
-                    countyCode = "042";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Homa Bay"){
-                    countyCode = "043";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Migori"){
-                    countyCode = "044";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Kisii"){
-                    countyCode = "045";
-                }
-                if(jQuery('select[name="personAddress.countyDistrict"]').val() == "Nyamira"){
-                    countyCode = "046";
-                }
-            }else{
+                countyCode = countyObject[jQuery('select[name="personAddress.countyDistrict"]').val()].countyCode;
+                // console.log("County code: " + countyCode);
+            } else {
+                // County is required
                 jQuery("#post-msgBox").text("Please enter county to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#county-msgBox").show();
+                return;
             }
             //SubCounty Validation
             if(jQuery('select[name="personAddress.stateProvince"]').val() ==""){
+                // Sub-County is required
                 jQuery("#post-msgBox").text("Please enter sub county to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#subCounty-msgBox").show();
+                return;
             }else{
                 jQuery("#subCounty-msgBox").hide();
             }
             //Ward Validation
             if(jQuery('select[name="personAddress.address4"]').val() ==""){
+                //Ward is required
                 jQuery("#post-msgBox").text("Please enter ward to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#ward-msgBox").show();
+                return;
             }else{
                 jQuery("#ward-msgBox").hide();
             }
             //Telephone Validation
             if(jQuery('input[name="telephoneContact"]').val() ==""){
+                // Telephone number is required
                 jQuery("#post-msgBox").text("Please enter telephone number to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#phone-msgBox").show();
+                return;
             }else{
                 jQuery("#phone-msgBox").hide();
             }
             //Age Validation
             if(jQuery('#patient-birthdate_date').val() ==""){
+                // Age is required
                 jQuery("#post-msgBox").text("Please enter age to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#age-msgBox").show();
+                return;
             }else{
                 jQuery("#age-msgBox").hide();
             }
             //First name Validation
             if(jQuery('input[name="personName.givenName"]').val() ==""){
+                // First Name is required
                 jQuery("#post-msgBox").text("Please enter First name to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery('#firstname-msgBox').show();
+                return;
             }else{
                 jQuery('#firstname-msgBox').hide();
             }
             //Surname Validation
             if(jQuery('input[name="personName.familyName"]').val() ==""){
+                //Family Name is required
                 jQuery("#post-msgBox").text("Please enter Surname to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery('#surname-msgBox').show();
+                return;
             }else{
                 jQuery('#surname-msgBox').hide();
+            }
+            //Village Validation
+            if(jQuery('input[name="personAddress.cityVillage"]').val() =="") {
+                //Village is required
+                jQuery("#post-msgBox").text("Please enter Village to successfully post to CR");
+                jQuery("#post-msgBox").show();
+                jQuery('#village-msgBox').show();
+                return;
+            }else{
+                jQuery('#village-msgBox').hide();
             }
             //Default mfl code
             var defaultMflCode= '${defaultMflCode}';
@@ -1876,7 +1044,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 gender,
                 maritalStatus,
                 occupationStatus,
-                "",   //  Religeon we do not collect
+                "",   //  Religion we do not collect
                 educationStatus,
                 countryCode,
                 defaultMflCode,
@@ -2253,28 +1421,41 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             .success(function (data) {
                 // Hide spinner
                 display_loading_post_registration(false);
+                
+                if(data.status == 200) {
+                    if(data.clientNumber) {
+                        jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
+                        jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
+                        jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                        jQuery("#post-msgBox").show();
 
-                if(data.clientNumber){
-                    jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
-                    jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
-                    jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                    } else if(jQuery("input[name='nationalUniquePatientNumber']").val() != "" ) {
+                        jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
+                        jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
+                        jQuery("#post-msgBox").show();
+                    } else if(jQuery("input[name='nationalUniquePatientNumber']").val() == "" ) {
+                        //jQuery("#post-msgBox").text("");
+                        jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
+                    // jQuery("#post-msgBox").hide();
+                    }
+                } else {
+                    if(jQuery("input[name='nationalUniquePatientNumber']").val() != "" ) {
+                        jQuery("input[name='CRVerificationStatus']").val("Verified");
+                    } else {
+                        jQuery("input[name='CRVerificationStatus']").val("Pending");
+                    }
+                    jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration : \\n" + JSON.stringify(JSON.parse(data.message).errors));
+                    
                     jQuery("#post-msgBox").show();
-
-                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() !="" ){
-                    jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
-                    jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
-                    jQuery("#post-msgBox").show();
-                }else if(jQuery("input[name='nationalUniquePatientNumber']").val() =="" ){
-                    //jQuery("#post-msgBox").text("");
-                    jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
-                   // jQuery("#post-msgBox").hide();
                 }
+                
             })
             .fail(function (err) {
                     // Hide spinner
                     display_loading_post_registration(false);
 
                     console.log(err)
+
                     jQuery("input[name='CRVerificationStatus']").val("Pending");
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
                     jQuery("#post-msgBox").show();
