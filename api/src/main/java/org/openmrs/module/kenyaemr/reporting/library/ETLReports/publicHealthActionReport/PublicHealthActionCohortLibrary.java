@@ -299,7 +299,7 @@ public class PublicHealthActionCohortLibrary {
     }
 
     /**
-     * Clients without NUPI
+     * Ever enrolled Clients without NUPI
      * @return
      */
     public CohortDefinition clientsWithoutNUPI() {
@@ -316,6 +316,20 @@ public class PublicHealthActionCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Clients without NUPI");
+        return cd;
+    }
+    /**
+     * TX_CURR  Clients without NUPI
+     * @return
+     */
+    public CohortDefinition txCurrclientsWithoutNUPI() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txcurr",
+                ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("everEnrolledWithoutNUPI", ReportUtils.map(clientsWithoutNUPI(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND everEnrolledWithoutNUPI");
         return cd;
     }
 
