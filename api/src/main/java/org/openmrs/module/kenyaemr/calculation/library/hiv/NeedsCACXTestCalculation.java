@@ -14,7 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
@@ -28,19 +29,23 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.Form;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.api.EncounterService;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.List;
 import java.util.Date;
 import java.util.Set;
+import java.util.Arrays;
 
 import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 
@@ -49,14 +54,19 @@ import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSi
  */
 public class NeedsCACXTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+
+    public static final EncounterType cacxEncType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CACX_SCREENING);
+    public static final Form cacxScreeningForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.CACX_SCREENING_FORM);
+    public static final Integer CACX_TEST_RESULT_QUESTION_CONCEPT_ID = 164934;
+
     /**
      * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
      */
     @Override
     public String getFlagMessage() { return "Due for CACX Screening";}
     Integer SCREENING_RESULT = 164934;
-    Concept POSITIVE = Dictionary.getConcept(Dictionary.POSITIVE);
-    Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
+    Integer POSITIVE = 1065;
+    Integer NEGATIVE = 1066;
     Integer NORMAL = 1115;
     Integer SUSPICIOUS_FOR_CANCER = 159008;
     Integer OTHER = 5622;
@@ -69,6 +79,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        EncounterService encounterService = Context.getEncounterService();
         PatientService patientService = Context.getPatientService();
 
         Set<Integer> alive = Filters.alive(cohort, context);
@@ -80,31 +91,69 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
         CalculationResultMap cacxLast = Calculations.lastObs(conceptService.getConcept(SCREENING_RESULT), cohort, context);
         
         CalculationResultMap ret = new CalculationResultMap();
+
         for(Integer ptId:aliveAndFemale) {
             Patient patient = patientService.getPatient(ptId);
             boolean needsCacxTest = false;
-            Obs lastCacxTestObs = EmrCalculationUtils.obsResultForPatient(cacxLast, ptId);
+            List<Encounter> enrollmentEncounters = encounterService.getEncounters(
+                    Context.getPatientService().getPatient(ptId),
+                    null,
+                    null,
+                    null,
+                    null,
+                    Arrays.asList(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT)),
+                    null,
+                    null,
+                    null,
+                    false
+            );
+
+            Encounter lastCacxScreeningEnc = EmrUtils.lastEncounter(patient, cacxEncType, cacxScreeningForm);
+
+            ConceptService cs = Context.getConceptService();
+            Concept cacxTestResultQuestion = cs.getConcept(CACX_TEST_RESULT_QUESTION_CONCEPT_ID);
+            Concept cacxPositiveResult = cs.getConcept(POSITIVE);
+            Concept cacxNegativeResult = cs.getConcept(NEGATIVE);
+            Concept cacxNormalResult = cs.getConcept(NORMAL);
+            Concept cacxSuspiciousForCancerResult = cs.getConcept(SUSPICIOUS_FOR_CANCER);
+            Concept cacxOtherResult = cs.getConcept(OTHER);
+            Concept cacxAbnormalResult = cs.getConcept(ABNORMAL );
+            Concept cacxLowGradeLesionResult = cs.getConcept(LOW_GRADE_LESION);
+            Concept cacxHighGradeLesionResult = cs.getConcept(HIGH_GRADE_LESION);
+            Concept cacxInvasiveCancerResult = cs.getConcept(INVASIVE_CANCER);
+            Concept cacxPresumedCancerResult = cs.getConcept(PRESUMED_CANCER);
+
+            boolean patientHasPositiveTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPositiveResult) : false;
+            boolean patientHasNegativeTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNegativeResult) : false;
+            boolean patientHasNormalTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNormalResult) : false;
+            boolean patientHasSuspiciousTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNormalResult) : false;
+            boolean patientHasOtherTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxSuspiciousForCancerResult) : false;
+            boolean patientHasAbnormalTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxAbnormalResult) : false;
+            boolean patientHasLowGradeLesionTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxLowGradeLesionResult) : false;
+            boolean patientHasHighGradeLesionTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxHighGradeLesionResult) : false;
+            boolean patientHasInvasiveCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxInvasiveCancerResult) : false;
+            boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
 
             // Newly initiated and without cervical cancer test
             if(inHivProgram.contains(ptId) && patient.getAge() >= 15){
 
-                // no cervical cancer screening done within the past year
-                if(lastCacxTestObs == null) {
+                // no cervical cancer screening done
+                if(lastCacxScreeningEnc == null) {
                     needsCacxTest = true;
                 }
 
                 // cacx flag should be 12 months after last cacx if negative or normal
-                if(lastCacxTestObs != null && (lastCacxTestObs.getValueCoded().equals(NEGATIVE) || lastCacxTestObs.getValueCoded().equals(NORMAL))  && (daysSince(lastCacxTestObs.getObsDatetime(), context) >= 365)) {
+                if(lastCacxScreeningEnc != null && (patientHasNegativeTestResult || patientHasNormalTestResult)  && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 365)) {
                     needsCacxTest = true;
                 }
 
                 // cacx flag should be 6 months after last cacx if positive
-                if(lastCacxTestObs != null && lastCacxTestObs.getValueCoded().equals(POSITIVE) && (daysSince(lastCacxTestObs.getObsDatetime(), context) >= 183)) {
+                if(lastCacxScreeningEnc != null && patientHasPositiveTestResult && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 183)) {
                     needsCacxTest = true;
                 }
 
                 // cacx flag should remain if there is any suspicion
-                if(lastCacxTestObs != null && (lastCacxTestObs.getValueCoded().equals(SUSPICIOUS_FOR_CANCER) || lastCacxTestObs.getValueCoded().equals(OTHER) || lastCacxTestObs.getValueCoded().equals(LOW_GRADE_LESION) || lastCacxTestObs.getValueCoded().equals(HIGH_GRADE_LESION) || lastCacxTestObs.getValueCoded().equals(INVASIVE_CANCER) || lastCacxTestObs.getValueCoded().equals(PRESUMED_CANCER))) {
+                if(lastCacxScreeningEnc != null && (patientHasSuspiciousTestResult || patientHasOtherTestResult || patientHasLowGradeLesionTestResult || patientHasHighGradeLesionTestResult|| patientHasInvasiveCancerTestResult || patientHasPresumedCancerTestResult)) {
                     needsCacxTest = true;
                 }
 
