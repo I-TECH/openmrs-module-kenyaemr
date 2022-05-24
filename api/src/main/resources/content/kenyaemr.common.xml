@@ -76,6 +76,7 @@
 				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
 				<ref bean="kenyaemr.common.report.clients.diedofCovid19"/>
 				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
+				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 			</set>
 		</property>
 	</bean>
@@ -727,6 +728,13 @@
 			</set></property>
 		<property name="template" value="kenyaemr:cacx_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:CACXInformation" />
+	</bean>
+
+	<bean id="kenyaemr.etl.common.report.publicHealthAction" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="e473f83f-b172-4e49-97ba-5817acf5e097" />
+		<property name="name" value="Public Health Action Report" />
+		<property name="description" value="Public Health action report for HIV program" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
