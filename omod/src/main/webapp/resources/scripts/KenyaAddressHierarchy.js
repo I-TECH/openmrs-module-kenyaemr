@@ -670,6 +670,87 @@ var kenyaAddressHierarchy = {
                     {"facility":"Idakho East","id":"Idakho East"},
                     {"facility":"Idakho North","id":"Idakho North"},
                     {"facility":"Idakho Central","id":"Idakho Central"}
+                ],
+            "Khwisero":
+                [
+                    {"facility":"Kisa West","id":"Kisa West"},
+                    {"facility":"Kisa East","id":"Kisa East"},
+                    {"facility":"Kisa Central","id":"Kisa Central"},
+                    {"facility":"Kisa North","id":"Kisa North"}
+                ],
+            "Butere":
+                [
+                    {"facility":"Marama West","id":"Marama West"},
+                    {"facility":"Marama South","id":"Marama South"},
+                    {"facility":"Marama Central","id":"Marama Central"},
+                    {"facility":"Marenyo Shianda","id":"Marenyo Shianda"},
+                    {"facility":"Marama North","id":"Marama North"}
+                ],
+            "Matungu":
+                [
+                    {"facility":"Koyonzo","id":"Koyonzo"},
+                    {"facility":"Kholera","id":"Kholera"},
+                    {"facility":"Khalaba","id":"Khalaba"},
+                    {"facility":"Mayoni","id":"Mayoni"},
+                    {"facility":"Namamali","id":"Namamali"}
+                ],
+            "Mumias East":
+                [
+                    {"facility":"East Wanga","id":"East Wanga"},
+                    {"facility":"Malaha/Isongo/Makunga","id":"Malaha/Isongo/Makunga"},
+                    {"facility":"Lusheya/Lubinu","id":"Lusheya/Lubinu"}
+                ],
+            "Mumias West":
+                [
+                    {"facility":"Musanda","id":"Musanda"},
+                    {"facility":"Mumias Central","id":"Mumias Central"},
+                    {"facility":"Mumias North","id":"Mumias North"},
+                    {"facility":"Entenje","id":"Entenje"}
+                ],
+            "Navakholo":
+                [
+                    {"facility":"Ingoste Mathia","id":"Ingoste Mathia"},
+                    {"facility":"Shinoyi Shikomari","id":"Shinoyi Shikomari"},
+                    {"facility":"Esumeyia","id":"Esumeyia"},
+                    {"facility":"Bunyala Central","id":"Bunyala Central"},
+                    {"facility":"Bunyala East","id":"Bunyala East"},
+                    {"facility":"Bunyala West","id":"Bunyala West"}
+                ],
+            "Lurambi":
+                [
+                    {"facility":"Sheywe","id":"Sheywe"},
+                    {"facility":"Butsotso East","id":"Butsotso East"},
+                    {"facility":"Butsotso South","id":"Butsotso South"},
+                    {"facility":"Butsotso Central","id":"Butsotso Central"},
+                    {"facility":"Mahiakalo","id":"Mahiakalo"},
+                    {"facility":"Shirere","id":"Shirere"}
+                ],
+            "Malava":
+                [
+                    {"facility":"West Kabras","id":"West Kabras"},
+                    {"facility":"Chemuche East","id":"Chemuche East"},
+                    {"facility":"Kabras","id":"Kabras"},
+                    {"facility":"Butali/Chegulo","id":"Butali/Chegulo"},
+                    {"facility":"Manda/Shivanga","id":"Manda/Shivanga"},
+                    {"facility":"Shirugu Mugai","id":"Shirugu Mugai"},
+                    {"facility":"South Kabras","id":"South Kabras"}
+                ],
+            "Likuyani":
+                [
+                    {"facility":"Likuyani","id":"Likuyani"},
+                    {"facility":"Sango","id":"Sango"},
+                    {"facility":"Kongoni","id":"Kongoni"},
+                    {"facility":"Nzoia","id":"Nzoia"},
+                    {"facility":"Sinoko","id":"Sinoko"}
+                ] ,
+            "Lugari":
+                [
+                    {"facility":"Mautuma","id":"Mautuma"},
+                    {"facility":"Lugari","id":"Lugari"},
+                    {"facility":"Lumakanda","id":"Lumakanda"},
+                    {"facility":"Chekalini","id":"Chekalini"},
+                    {"facility":"Chevaywa","id":"Chevaywa"},
+                    {"facility":"Lawandeti","id":"Lawandeti"}
                 ]
         },
     "Kericho":
