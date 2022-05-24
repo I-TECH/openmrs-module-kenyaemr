@@ -89,8 +89,8 @@ public class EditPatientFragmentController {
 		Person existing = patient != null ? patient : person;
 
 		model.addAttribute("clientVerificationApi", clientRegistryClientVerificationApi);
-		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
-		model.addAttribute("clientVerificationApiToken", upiUtils.getToken());
+
+		model.addAttribute("clientVerificationApiToken", "");
 		model.addAttribute("command", newEditPatientForm(existing));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));

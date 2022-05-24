@@ -35,9 +35,11 @@ public class UpiDataExchangeFragmentController {
 
 	private static final String POST_URL3 = "https://dhpstagingapi.health.go.ke/visit/registry";
 	private static final String POST_PARAMS = "userName=Pankaj";
+
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
 	}
+
 	public static SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		return sendPOST(params);
 	}
@@ -96,20 +98,36 @@ public class UpiDataExchangeFragmentController {
 			in.close();
 
 			stringResponse = response.toString();
-            upiUtils.processUpiResponse(stringResponse);
 
             responseObj = upiUtils.processUpiResponse(stringResponse);
             responseObj.put("status", responseCode);
 
-            return upiUtils.processUpiResponse(stringResponse);
+			return(responseObj);
 
 		} else {
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getErrorStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			stringResponse = response.toString();
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
-			System.err.println("POST request did not work. Using dummy response instead");
+			responseObj.put("message", stringResponse);
+			//System.err.println("POST request did not work. Using dummy response instead");
 		}
 		return responseObj;
+	}
+
+	public static String getAuthToken() throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+		return(upiUtils.getToken());
 	}
 
 }
