@@ -63,8 +63,8 @@ public class PublicHealthActionIndicatorLibrary {
      * Valid means VL was taken <= 12 months and invalid means VL was taken > 12 months ago
      * @return the indicator
      */
-    public CohortIndicator unsuppressedWithinValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithinValidVL(), "endDate=${endDate}"));
+    public CohortIndicator unsuppressedWithoutValidVL() {
+        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithoutValidVL(), "endDate=${endDate}"));
     }
 
     /**

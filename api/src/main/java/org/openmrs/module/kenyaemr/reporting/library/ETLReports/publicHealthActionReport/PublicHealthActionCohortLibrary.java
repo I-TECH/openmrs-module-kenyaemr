@@ -39,23 +39,10 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition notLinked() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select t.patient_id\n" +
-                "from kenyaemr_etl.etl_hts_test t\n" +
-                "  left join\n" +
-                "((SELECT l.patient_id\n" +
-                " from kenyaemr_etl.etl_hts_referral_and_linkage l\n" +
-                "   inner join kenyaemr_etl.etl_patient_demographics pt on pt.patient_id=l.patient_id and pt.voided=0\n" +
-                "   inner join kenyaemr_etl.etl_hts_test t on t.patient_id=l.patient_id and t.test_type in(1,2) and t.final_test_result='Positive' and t.visit_date <=l.visit_date and t.voided=0\n" +
-                " where (l.ccc_number is not null or facility_linked_to is not null)\n" +
-                ")\n" +
-                "union\n" +
-                "( SELECT t.patient_id\n" +
-                "  FROM kenyaemr_etl.etl_hts_test t\n" +
-                "    INNER JOIN kenyaemr_etl.etl_patient_demographics pt ON pt.patient_id=t.patient_id AND pt.voided=0\n" +
-                "    INNER JOIN kenyaemr_etl.etl_hiv_enrollment e ON e.patient_id=t.patient_id AND e.voided=0\n" +
-                "  WHERE t.test_type IN (1, 2) AND t.final_test_result='Positive' AND t.voided=0\n" +
-                ")) l on l.patient_id = t.patient_id\n" +
-                "where t.final_test_result = 'Positive' and t.voided = 0 and t.test_type=2 and l.patient_id is null;";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t inner join\n" +
+                "    (select l.patient_id, l.ccc_number from kenyaemr_etl.etl_hts_referral_and_linkage l group by l.patient_id) l on t.patient_id = l.patient_id\n" +
+                "left join (select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e)e on e.patient_id = t.patient_id\n" +
+                "where t.final_test_result='Positive' and t.test_type = 2 and l.ccc_number is null and e.patient_id is null;";
         cd.setName("notLinked");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -69,7 +56,7 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition undocumentedHEIStatus() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e where e.exit_date is not null and e.hiv_status_at_exit is null and e.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e where e.exit_date is not null and e.hiv_status_at_exit is null;";
         cd.setName("undocumentedHEIStatus");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -79,14 +66,14 @@ public class PublicHealthActionCohortLibrary {
     }
 
     /**
-     * Number of patients with no current vl result
+     * All patients with no current vl result
      * Valid means VL was taken <= 12 months ago and invalid means VL was taken > 12 months ago
      * @return
      */
-    public CohortDefinition invalidVL() {
+    public CohortDefinition allInvalidVL() {
         String sqlQuery = "select patient_id,mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")), \"\" )),11) as vl_result,\n" +
                 "       mid(max(concat(visit_date,date_test_requested)),11) as test_date\n" +
-                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(:endDate)) >12";
+                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(currDate())) >12";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("invalidVL");
         cd.setQuery(sqlQuery);
@@ -94,15 +81,29 @@ public class PublicHealthActionCohortLibrary {
         cd.setDescription("No recent VL");
         return cd;
     }
+    /**
+     * Number of ART patients with no current vl result
+     * Valid means VL was taken <= 12 months ago and invalid means VL was taken > 12 months ago
+     * @return
+     */
+    public CohortDefinition invalidVL() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txCurr", ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("allInvalidVL", ReportUtils.map(allInvalidVL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txCurr AND allInvalidVL");
+        return cd;
+    }
 
     /**
      * Number of patients with valid unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
      * Valid means VL was taken <= 12 months and invalid means VL was taken > 12 months ago
      */
-    public CohortDefinition unsuppressedWithValidVL() {
+    public CohortDefinition allUnsuppressedValidVL() {
         String sqlQuery = "select patient_id,mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")), \"\" )),11) as vl_result,\n" +
                 "       mid(max(concat(visit_date,date_test_requested)),11) as test_date\n" +
-                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(:endDate)) <=12 and vl_result >= 1000;";
+                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(currDate())) <=12 and vl_result >= 1000;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("latestVLUnsupressed");
         cd.setQuery(sqlQuery);
@@ -112,18 +113,44 @@ public class PublicHealthActionCohortLibrary {
     }
 
     /**
+     * Number of patients currently on ART with valid unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
+     * @return
+     */
+    public CohortDefinition unsuppressedWithValidVL() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txCurr", ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("allUnsuppressedValidVL", ReportUtils.map(allUnsuppressedValidVL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txCurr AND allUnsuppressedValidVL");
+        return cd;
+    }
+    /**
      * Number of patients with invalid unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
      * Valid means VL was taken <= 12 months and invalid means VL was taken > 12 months ago
      */
-    public CohortDefinition unsuppressedWithinValidVL() {
+    public CohortDefinition allUnsuppressedWithoutCurrentVL() {
         String sqlQuery = "select patient_id,mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")), \"\" )),11) as vl_result,\n" +
                 "       mid(max(concat(visit_date,date_test_requested)),11) as test_date\n" +
-                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(:endDate)) >12 and vl_result >= 1000;";
+                "from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having timestampdiff(MONTH,date(mid(max(concat(visit_date,date_test_requested)),11)),date(currDate())) >12 and vl_result >= 1000;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("latestVLUnsupressed");
+        cd.setName("allUnsuppressedWithoutCurrentVL");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Unsuppressed VL result in their last VL");
+        return cd;
+    }
+    /**
+     * Number of patients currently on ART without valid/current unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
+     * @return
+     */
+    public CohortDefinition unsuppressedWithoutValidVL() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txCurr", ReportUtils.map(datimCohortLibrary.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("allUnsuppressedWithoutCurrentVL", ReportUtils.map(allUnsuppressedWithoutCurrentVL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txCurr AND allUnsuppressedWithoutCurrentVL");
         return cd;
     }
 
@@ -144,7 +171,7 @@ public class PublicHealthActionCohortLibrary {
                 "                         ifnull(max(d.visit_date), '0000-00-00'))               as latest_vis_date,\n" +
                 "                max(fup.visit_date)                                             as max_fup_vis_date,\n" +
                 "                greatest(mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11),\n" +
-                "                         ifnull(max(d.visit_date), '0000-00-00'))               as latest_tca, timestampdiff(DAY, date(mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11)), date(:endDate)) 'DAYS MISSED',\n" +
+                "                         ifnull(max(d.visit_date), '0000-00-00'))               as latest_tca, timestampdiff(DAY, date(mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11)), date(currDate())) 'DAYS MISSED',\n" +
                 "                mid(max(concat(fup.visit_date, fup.next_appointment_date)), 11) as latest_fup_tca,\n" +
                 "                d.patient_id                                                    as disc_patient,\n" +
                 "                d.effective_disc_date                                           as effective_disc_date,\n" +
@@ -163,15 +190,14 @@ public class PublicHealthActionCohortLibrary {
                 "                      max(date(effective_discontinuation_date))                                  as effective_disc_date,\n" +
                 "                      discontinuation_reason\n" +
                 "               from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "               where date(visit_date) <= date(:endDate)\n" +
+                "               where date(visit_date) <= date(currDate())\n" +
                 "                 and program_name = 'HIV'\n" +
                 "               group by patient_id\n" +
                 "              ) d on d.patient_id = fup.patient_id\n" +
-                "         where fup.visit_date <= date(:endDate)\n" +
+                "         where fup.visit_date <= date(currDate())\n" +
                 "         group by patient_id\n" +
                 "         having (\n" +
-                "                        (timestampdiff(DAY, date(latest_fup_tca), date(:startDate)) <= 30) and\n" +
-                "                        (timestampdiff(DAY, date(latest_fup_tca), date(:endDate)) > 30) and\n" +
+                "                        (timestampdiff(DAY, date(latest_fup_tca), date(currDate())) > 30) and\n" +
                 "                        (\n" +
                 "                                (date(enroll_date) >= date(d.visit_date) and\n" +
                 "                                 date(max_fup_vis_date) >= date(d.visit_date) and\n" +
@@ -206,7 +232,7 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition unlinkedHEI() {
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e where e.parent_ccc_number is null and e.exit_date is null and e.visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e where e.parent_ccc_number is null and e.exit_date is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("unlinkedHEI");
         cd.setQuery(sqlQuery);
