@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
+ *
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -234,7 +234,14 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition adolescentsNotInOTZ() {
-        String sqlQuery = "";
+        String sqlQuery = "select enr.patient_id from kenyaemr_etl.etl_hiv_enrollment enr\n" +
+                "join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id =enr.patient_id and timestampdiff(YEAR,dm.DOB,curdate()) between 10 and  25\n" +
+                "left join\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  where date(visit_date) <= curdate() and program_name='HIV'\n" +
+                "   group by patient_id\n" +
+                "   ) d on d.patient_id = enr.patient_id\n" +
+                "where enr.patient_id not in (select ot.patient_id from kenyaemr_etl.etl_otz_enrollment ot) and d.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("adolescentsNotInOTZ");
         cd.setQuery(sqlQuery);
@@ -248,7 +255,14 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition childrenNotInOVC() {
-        String sqlQuery = "";
+        String sqlQuery = "select enr.patient_id from kenyaemr_etl.etl_hiv_enrollment enr\n" +
+                "  join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id =enr.patient_id and timestampdiff(YEAR,dm.DOB,curdate()) <= 17\n" +
+                "  left join\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  where date(visit_date) <= curdate() and program_name='HIV'\n" +
+                "  group by patient_id\n" +
+                "  ) d on d.patient_id = enr.patient_id\n" +
+                "where enr.patient_id not in (select ov.patient_id from kenyaemr_etl.etl_ovc_enrolment ov) and d.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("childrenNotInOVC");
         cd.setQuery(sqlQuery);
@@ -262,7 +276,7 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition contactsUndocumentedHIVStatus() {
-        String sqlQuery = "";
+        String sqlQuery = "select c.id from kenyaemr_hiv_testing_patient_contact c where c.baseline_hiv_status ='Unknown' and c.voided = 0";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("contactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
@@ -275,7 +289,7 @@ public class PublicHealthActionCohortLibrary {
      * Number of SNS Contacts with undocumented HIV status
      */
     public CohortDefinition snsContactsUndocumentedHIVStatus() {
-        String sqlQuery = "";
+        String sqlQuery = "select c.id from openmrs.kenyaemr_hiv_testing_patient_contact c where c.baseline_hiv_status ='Unknown' and c.relationship_type = 166606 and c.voided = 0";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("snsContactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
@@ -289,7 +303,14 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition clientsWithoutNUPI() {
-        String sqlQuery = "";
+        String sqlQuery = "select enr.patient_id from kenyaemr_etl.etl_hiv_enrollment enr\n" +
+                "  join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id =enr.patient_id\n" +
+                "  left join\n" +
+                "  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "  where date(visit_date) <= curdate() and program_name='HIV'\n" +
+                "  group by patient_id\n" +
+                "  ) d on d.patient_id = enr.patient_id\n" +
+                "where dm.national_unique_patient_identifier is null and d.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("clientsWithoutNUPI");
         cd.setQuery(sqlQuery);
