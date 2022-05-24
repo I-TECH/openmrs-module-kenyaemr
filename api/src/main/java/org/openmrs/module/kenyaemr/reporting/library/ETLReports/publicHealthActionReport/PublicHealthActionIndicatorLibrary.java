@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
+ *
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -137,5 +137,13 @@ public class PublicHealthActionIndicatorLibrary {
      */
     public CohortIndicator clientsWithoutNUPI() {
         return cohortIndicator("Clients without NUPI", ReportUtils.map(cohortLibrary.clientsWithoutNUPI(), "endDate=${endDate}"));
+    }
+
+    /**
+     * Number of TX_CURR clients without NUPI
+     * @return the indicator
+     */
+    public CohortIndicator txCurrclientsWithoutNUPI() {
+        return cohortIndicator("TX_Curr Clients without NUPI", ReportUtils.map(cohortLibrary.txCurrclientsWithoutNUPI(), "endDate=${endDate}"));
     }
 }
