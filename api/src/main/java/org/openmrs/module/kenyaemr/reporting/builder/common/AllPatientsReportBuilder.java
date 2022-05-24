@@ -62,6 +62,9 @@ public class AllPatientsReportBuilder extends CalculationReportBuilder {
         PatientIdentifierType drivingLicense = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
         DataDefinition drivingLicenceDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(drivingLicense.getName(), drivingLicense), identifierFormatter);
 
+        PatientIdentifierType nupi = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
+        DataDefinition nupiDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nupi.getName(), nupi), identifierFormatter);
+
         addStandardColumns(report, dsd);
 
         dsd.addColumn("UPN", identifierDef, "");
@@ -71,6 +74,7 @@ public class AllPatientsReportBuilder extends CalculationReportBuilder {
         dsd.addColumn("Birth Certificate Number", birthCertificateNumberDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Driving License", drivingLicenceDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Alien Id Number", alienIdNumberDef, "", new NationalIdentifiersTypeConverter());
+        dsd.addColumn("National Unique Patient Identifier", nupiDef, "");
 
     }
 }
