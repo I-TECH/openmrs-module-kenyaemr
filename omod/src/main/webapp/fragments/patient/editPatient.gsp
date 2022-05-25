@@ -697,6 +697,43 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }).promise();
         }
 
+        // If there is any text in the UPI field, disable post button and enable create patient button
+        // Remeber to modify this once they enable editing data on remote
+        jq('input[name="nationalUniquePatientNumber"]').on("input", function(e) {
+            enableDisableButtonsOnUPIChange();
+        });
+
+        jq('input[name="nationalUniquePatientNumber"]').change(function(e) {
+            enableDisableButtonsOnUPIChange();
+        });
+
+        jq('input[name="nationalUniquePatientNumber"]').keypress(function(e) {
+            enableDisableButtonsOnUPIChange();
+        });
+
+        jq('input[name="nationalUniquePatientNumber"]').bind('paste', function(e) {
+            enableDisableButtonsOnUPIChange();
+        });
+
+        jq('input[name="nationalUniquePatientNumber"]').keyup(function(e) {
+            enableDisableButtonsOnUPIChange();
+        });
+
+        function enableDisableButtonsOnUPIChange() {
+            // Check if there is a value in the field and either enable or disable create patient button
+            let value = jq('input[name="nationalUniquePatientNumber"]').val();
+            console.log('UPN is : ' + value);
+            if(!value || jq.trim(value) === '' || jq.trim(value).length == 0) {
+                console.log('UPN is empty');
+                jq('#createPatientBtn').prop('disabled', true);
+                jq('#post-registrations').prop('disabled', false);
+            } else {
+                console.log('UPN is NOT empty');
+                jq('#createPatientBtn').prop('disabled', false);
+                jq('#post-registrations').prop('disabled', true);
+            }
+        }
+
         jQuery('input[name="nationalUniquePatientNumber"]').attr('readonly', true);
         jQuery('#createPatientBtn').prop('disabled', true);
         jQuery('#alien-no').hide();
@@ -1336,7 +1373,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }
 
             // update NUPI
-            jQuery("input[name='nationalUniquePatientNumber']").val(crResponseData.client.clientNumber);
+            jQuery("input[name='nationalUniquePatientNumber']").val(crResponseData.client.clientNumber).trigger('change');
 
         }
 
