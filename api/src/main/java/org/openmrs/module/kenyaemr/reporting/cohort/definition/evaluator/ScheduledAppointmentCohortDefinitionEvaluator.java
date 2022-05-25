@@ -56,22 +56,20 @@ public class ScheduledAppointmentCohortDefinitionEvaluator implements CohortDefi
 
 		String qry="select t.patient_id\n" +
 				"from(\n" +
-				"select fup.visit_date,fup.patient_id,\n" +
-				"mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca\n" +
+				"select fup.visit_date,fup.patient_id,d.patient_id as disc_patient,d.visit_date as disc_date,\n" +
+				"                   fup.next_appointment_date\n" +
 				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
 				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
 				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
 				"left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(curdate())\n" +
 				"left outer JOIN\n" +
-				"          (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date,discontinuation_reason from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+				"          (select patient_id, coalesce(max(date(effective_discontinuation_date)),max(date(visit_date))) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date,discontinuation_reason from kenyaemr_etl.etl_patient_program_discontinuation\n" +
 				"          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
 				"          group by patient_id\n" +
 				"          ) d on d.patient_id = fup.patient_id\n" +
-				" where fup.visit_date <= date(:endDate)\n" +
-				"group by patient_id\n" +
-				"having (\n" +
-				"          (date(latest_tca) BETWEEN date(:startDate) AND date(:endDate))\n" +
-				")\n" +
+				" where fup.visit_date <= date(:endDate) and fup.next_appointment_date between date(:startDate) AND date(:endDate)\n" +
+				"            group by patient_id\n" +
+				"    having (max(e.visit_date) >= date(disc_date) or disc_patient is null or disc_date >= date(:endDate))\n" +
 				") t;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
