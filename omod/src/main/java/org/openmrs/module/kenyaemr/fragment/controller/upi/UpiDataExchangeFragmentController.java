@@ -9,18 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.upi;
 
-import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,12 +17,72 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.openmrs.GlobalProperty;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.annotation.FragmentParam;
+import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public class UpiDataExchangeFragmentController {
 
-	private static final String POST_URL3 = "https://dhpstagingapi.health.go.ke/visit/registry";
-	private static final String POST_PARAMS = "userName=Pankaj";
+	// Trust all certs
+	static {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+ 
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {
+                    }
+ 
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                            throws CertificateException {
+                    }
+                }
+        };
+ 
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getInstance("SSL");
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (KeyManagementException e) {
+            System.out.println(e.getMessage());
+        }
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+ 
+        // Optional 
+        // Create all-trusting host name verifier
+        HostnameVerifier validHosts = new HostnameVerifier() {
+            @Override
+            public boolean verify(String arg0, SSLSession arg1) {
+                return true;
+            }
+        };
+        // All hosts will be valid
+        HttpsURLConnection.setDefaultHostnameVerifier(validHosts);
+ 
+    }
 
 	public void controller(FragmentModel model, @FragmentParam("patient") Patient patient) {
 
@@ -64,7 +112,10 @@ public class UpiDataExchangeFragmentController {
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
-		URL url = new URL(POST_URL3);
+		GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
+		String strPostUrl = globalPostUrl.getPropertyValue();
+
+		URL url = new URL(strPostUrl);
 
 		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
@@ -84,11 +135,11 @@ public class UpiDataExchangeFragmentController {
 		os.close();
 
 		int responseCode = con.getResponseCode();
-
 		SimpleObject responseObj = null;
+
 		if (responseCode == HttpURLConnection.HTTP_OK) { //success
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
+			BufferedReader in = null;
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
 
@@ -102,11 +153,15 @@ public class UpiDataExchangeFragmentController {
             responseObj = upiUtils.processUpiResponse(stringResponse);
             responseObj.put("status", responseCode);
 
+			System.err.println("Received response: " + responseObj);
+
 			return(responseObj);
 
 		} else {
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					con.getErrorStream()));
+			BufferedReader in = null;
+			// BufferedReader in = new BufferedReader(new InputStreamReader(
+			// 		con.getErrorStream()));
+			in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
 
@@ -120,9 +175,11 @@ public class UpiDataExchangeFragmentController {
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
 			responseObj.put("message", stringResponse);
-			//System.err.println("POST request did not work. Using dummy response instead");
+			//responseObj.put("message", "TEST");
+			System.err.println("ERROR: POST request did not work. Using dummy response instead");
+			return(responseObj);
 		}
-		return responseObj;
+		//return responseObj;
 	}
 
 	public static String getAuthToken() throws IOException, NoSuchAlgorithmException, KeyManagementException {
