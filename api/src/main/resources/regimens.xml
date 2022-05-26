@@ -32,6 +32,10 @@
             <drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="8f897f8a-9afa-4eee-9685-6e47965a8bcd" /><!-- RALTEGRAVIR -->
             <drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="d2fc1b80-1c95-4b24-8db1-f60234694654" /><!-- DARUNAVIR -->
             <drug code="DTG" conceptUuid="d1fd0e18-e0b9-46ae-ac0e-0452a927a94b" drugUuid="c52cec20-e6a4-483d-8698-5d7dba588998" /><!-- DOLUTEGRAVIR -->
+            <drug code="B" conceptUuid="167205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="5a7ace73-9c68-4854-8a0b-31ee9ba8d97d"/><!-- Bictegravir -->
+            <drug code="TAF" conceptUuid="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="4a7b2920-f1c3-4e75-9b93-e754e7a2bf47" /><!-- Alafenamide -->
+
+
 
 
         </drugs>
@@ -107,6 +111,11 @@
                 <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
                 <component drugCode="LPV" dose="400" units="mg" frequency="BD" />
                 <component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+            </regimen>
+            <regimen name="B/F/TAF" conceptRef="167206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="cf29bf7e-5f36-491b-b619-8561ddd53ac1">
+                <component drugCode="B" />
+                <component drugCode="FTC" />
+                <component drugCode="TAF" />
             </regimen>
         </group>
 
