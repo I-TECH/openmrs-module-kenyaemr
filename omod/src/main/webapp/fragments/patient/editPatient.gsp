@@ -1073,6 +1073,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }
             //Default mfl code
             var defaultMflCode= '${defaultMflCode}';
+            //CCC Number
+            var nascopCCCNumber= '${nascopCCCNumber}';
             postRegistrationDetailsToCR(
                 jQuery('input[name="personName.givenName"]').val(),
                 jQuery('input[name="personName.middleName"]').val(),
@@ -1085,6 +1087,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 educationStatus,
                 countryCode,
                 defaultMflCode,
+                nascopCCCNumber,
                 "",   //CountyOfBirth variable not collected
                 countyCode,
                 jQuery('select[name="personAddress.stateProvince"]').val(),
@@ -1407,7 +1410,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         }
     }
 
-    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupationStatus,religion,educationStatus,countryCode,defaultMflCode,countyOfBirth,countyCode,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
+    function postRegistrationDetailsToCR(firstName,middleName,lastName,dateOfBirth,gender,maritalStatus,occupationStatus,religion,educationStatus,countryCode,defaultMflCode,nascopCCCNumber,countyOfBirth,countyCode,subCounty,ward,village,landMark,address,identificationType,identificationValue,primaryPhone,secondaryPhone,emailAddress,name,relationship,residence,nokPrimaryPhone,nokSecondaryPhone,nokEmailAddress,isAlive) {
         // connect to CR server and post data
 
         // Show spinner
@@ -1431,6 +1434,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "countyOfBirth": countyCode,
             "isAlive": true,
             "originFacilityKmflCode": defaultMflCode,
+            "nascopCCCNumber": nascopCCCNumber,
             "residence": {
                 "county": countyCode,
                 "subCounty": subCounty.toLowerCase().replace(" ", '-'),
