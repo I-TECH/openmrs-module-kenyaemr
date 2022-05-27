@@ -123,6 +123,15 @@ public class EditPatientFragmentController {
 		model.addAttribute("countyList", uniqueCountyList);
 		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
 		model.addAttribute("defaultMflCode", kenyaEmrService.getDefaultLocationMflCode());
+		PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+        String nascopCCCNumber = "";
+		if (patient != null) {
+			PatientIdentifier cccObject = patient.getPatientIdentifier(pit);
+			if(cccObject != null) {
+				nascopCCCNumber = cccObject.getIdentifier();
+			  }
+		   }
+		model.addAttribute("nascopCCCNumber", nascopCCCNumber);
 
 		// create list of next of kin relationship
 
