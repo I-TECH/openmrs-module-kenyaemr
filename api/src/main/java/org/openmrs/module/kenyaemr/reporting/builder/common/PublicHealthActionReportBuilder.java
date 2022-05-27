@@ -67,7 +67,7 @@ public class PublicHealthActionReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HEIs not Linked to Mothers", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unlinkedHEI(), indParams), "");
         cohortDsd.addColumn("Mothers not Linked to HEIs", "", ReportUtils.map(publicHealthActionIndicatorLibrary.motherNotLinkedToHEI (), indParams), "");
         cohortDsd.addColumn("Adolescents not in OTZ", "", ReportUtils.map(publicHealthActionIndicatorLibrary.adolescentsNotInOTZ(), indParams), "");
-        cohortDsd.addColumn("Children not linked not in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenNotInOVC(), indParams), "");
+        cohortDsd.addColumn("Children not in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenNotInOVC(), indParams), "");
         cohortDsd.addColumn("Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.contactsUndocumentedHIVStatus(), indParams), "");
         cohortDsd.addColumn("SNS Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.snsContactsUndocumentedHIVStatus(), indParams), "");
         cohortDsd.addColumn("Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.clientsWithoutNUPI(), indParams), "");

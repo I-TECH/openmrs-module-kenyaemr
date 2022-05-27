@@ -74,7 +74,6 @@ public class AllPatientsReportBuilder extends CalculationReportBuilder {
         dsd.addColumn("Birth Certificate Number", birthCertificateNumberDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Driving License", drivingLicenceDef, "", new NationalIdentifiersTypeConverter());
         dsd.addColumn("Alien Id Number", alienIdNumberDef, "", new NationalIdentifiersTypeConverter());
-        dsd.addColumn("National Unique Patient Identifier", nupiDef, "");
-
+        dsd.addColumn("NUPI", nupiDef, "");
     }
 }
