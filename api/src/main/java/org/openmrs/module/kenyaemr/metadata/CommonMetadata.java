@@ -183,27 +183,13 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(globalProperty("client_number_label", "Label for Client Number", "Client Number"));
 		install(globalProperty("clientNumber.enabled", "Switch to show client number", "false"));
 
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for getting client information at the client registry", "https://dhpstagingapi.health.go.ke/visit/registry/search/"));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_POST_END_POINT, "A POST API for posting client information to the client registry", "https://dhpstagingapi.health.go.ke/visit/registry/"));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_API_TOKEN, "API token for connecting to the client registry", ""));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_TOKEN_URL) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_TOKEN_URL, "client registry authorization token URL", "https://dhpidentitystagingapi.health.go.ke/connect/token"));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID, "client registry authorization client ID", "partner.test.client"));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET, "client registry authorization client secret", "partnerTestPwd"));
-		}
-		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_OAUTH2_SCOPE) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Visitation"));
-		}
+		install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for getting client information at the client registry", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_POST_END_POINT, "A POST API for posting client information to the client registry", "https://afyakenyaapi.health.go.ke/partners/registry"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_API_TOKEN, "API token for connecting to the client registry", ""));
+		install(globalProperty(GP_CLIENT_VERIFICATION_TOKEN_URL, "client registry authorization token URL", "https://afyakenyaidentityapi.health.go.ke/connect/token"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID, "client registry authorization client ID", "palladium.partner.client"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET, "client registry authorization client secret", "28f95b2a"));
+		install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Partners"));
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
