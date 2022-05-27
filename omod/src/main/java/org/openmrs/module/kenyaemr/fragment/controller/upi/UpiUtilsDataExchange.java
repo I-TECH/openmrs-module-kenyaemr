@@ -130,7 +130,6 @@ public class UpiUtilsDataExchange {
 			if (jsonNode != null) {
 				clientNumber = jsonNode.get("clientNumber").getTextValue();
 				responseObj.put("clientNumber", clientNumber);
-				System.out.println("Client Number==>"+clientNumber);
 			}
 		}
 		catch (Exception e) {

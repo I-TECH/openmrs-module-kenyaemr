@@ -722,13 +722,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         function enableDisableButtonsOnUPIChange() {
             // Check if there is a value in the field and either enable or disable create patient button
             let value = jq('input[name="nationalUniquePatientNumber"]').val();
-            console.log('UPN is : ' + value);
             if(!value || jq.trim(value) === '' || jq.trim(value).length == 0) {
-                console.log('UPN is empty');
                 jq('#createPatientBtn').prop('disabled', true);
                 jq('#post-registrations').prop('disabled', false);
             } else {
-                console.log('UPN is NOT empty');
                 jq('#createPatientBtn').prop('disabled', false);
                 jq('#post-registrations').prop('disabled', true);
             }
@@ -961,26 +958,22 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var maritalStatus;
             if(jQuery('select[name=maritalStatus]').val() !="") {
                 maritalStatus = maritalStatusObject[jQuery('select[name=maritalStatus]').val()].maritalStatus;
-                // console.log("Marital Status: " + maritalStatus);
             }
 
             //Occupation status:
             var occupationStatus;
             if(jQuery('select[name=occupation]').val() !="") {
                 occupationStatus = occupationObject[jQuery('select[name=occupation]').val()].occupation;
-                // console.log("Occupation : " + occupationStatus);
             }
             //Education status:
             var educationStatus;
             if(jQuery('select[name=education]').val() !="") {
                 educationStatus = educationObject[jQuery('select[name=education]').val()].education;
-                // console.log("Education : " + educationStatus);
             }
             var countryCode;
             if(jQuery('select[name=country]').val() !=""){
                 jQuery("#country-msgBox").hide();
                 countryCode = countryObject[jQuery('select[name=country]').val()].countryCode;
-                // console.log("Country code: " + countryCode);
             } else {
                 // Country is required
                 jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
@@ -993,7 +986,6 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             if(jQuery('select[name="personAddress.countyDistrict"]').val() !=""){
                 jQuery("#county-msgBox").hide();
                 countyCode = countyObject[jQuery('select[name="personAddress.countyDistrict"]').val()].countyCode;
-                // console.log("County code: " + countyCode);
             } else {
                 // County is required
                 jQuery("#post-msgBox").text("Please enter county to successfully post to CR");
