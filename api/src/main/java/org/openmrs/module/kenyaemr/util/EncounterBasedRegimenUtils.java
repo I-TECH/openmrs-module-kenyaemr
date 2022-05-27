@@ -564,6 +564,11 @@ public class EncounterBasedRegimenUtils {
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
                 "  },\n" +
                 "  {\n" +
+                "    \"name\": \"B/F/TAF\",\n" +
+                "    \"conceptRef\": \"167206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"Adult (first line)\"\n" +
+                "  },\n" +
+                "  {\n" +
                 "    \"name\": \"ABC/3TC/RAL\",\n" +
                 "    \"conceptRef\": \"7af7ebbe-99da-4a43-a23a-c3866c5d08db\",\n" +
                 "    \"regimenLine\": \"Child (first line)\"\n" +
