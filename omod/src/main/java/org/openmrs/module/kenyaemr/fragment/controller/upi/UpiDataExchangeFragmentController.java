@@ -153,8 +153,6 @@ public class UpiDataExchangeFragmentController {
             responseObj = upiUtils.processUpiResponse(stringResponse);
             responseObj.put("status", responseCode);
 
-			System.err.println("Received response: " + responseObj);
-
 			return(responseObj);
 
 		} else {
@@ -175,8 +173,6 @@ public class UpiDataExchangeFragmentController {
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);
 			responseObj.put("message", stringResponse);
-			//responseObj.put("message", "TEST");
-			System.err.println("ERROR: POST request did not work. Using dummy response instead");
 			return(responseObj);
 		}
 		//return responseObj;
