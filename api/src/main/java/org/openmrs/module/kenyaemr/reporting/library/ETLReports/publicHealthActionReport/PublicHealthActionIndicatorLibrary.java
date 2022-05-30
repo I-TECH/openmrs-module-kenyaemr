@@ -30,7 +30,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator notLinked() {
-        return cohortIndicator("HIV+ patients not linked to care", ReportUtils.map(cohortLibrary.notLinked(), "endDate=${endDate}"));
+        return cohortIndicator("HIV+ patients not linked to care", ReportUtils.map(cohortLibrary.notLinked(), ""));
     }
 
     /**
@@ -38,7 +38,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return
      */
     public CohortIndicator undocumentedHEIStatus() {
-        return cohortIndicator("HEIs with undocumented status", ReportUtils.map(cohortLibrary.undocumentedHEIStatus(), "endDate=${endDate}"));
+        return cohortIndicator("HEIs with undocumented status", ReportUtils.map(cohortLibrary.undocumentedHEIStatus(), ""));
     }
 
     /**
@@ -47,7 +47,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator invalidVL() {
-        return cohortIndicator("No Current VL Results", ReportUtils.map(cohortLibrary.invalidVL(), "endDate=${endDate}"));
+        return cohortIndicator("No Current VL Results", ReportUtils.map(cohortLibrary.invalidVL(), ""));
     }
 
     /**
@@ -56,7 +56,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator unsuppressedWithValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithValidVL(), "endDate=${endDate}"));
+        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithValidVL(), ""));
     }
 
     /**
@@ -65,7 +65,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator unsuppressedWithoutValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithoutValidVL(), "endDate=${endDate}"));
+        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithoutValidVL(), ""));
     }
 
     /**
@@ -73,7 +73,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator undocumentedLTFU() {
-        return cohortIndicator("Undocumented LTFU patients", ReportUtils.map(cohortLibrary.undocumentedLTFU(), "endDate=${endDate}"));
+        return cohortIndicator("Undocumented LTFU patients", ReportUtils.map(cohortLibrary.undocumentedLTFU(), ""));
     }
 
     /**
@@ -81,7 +81,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator recentDefaulters() {
-        return cohortIndicator("Missed appointments", ReportUtils.map(cohortLibrary.recentDefaulters(), "endDate=${endDate}"));
+        return cohortIndicator("Missed appointments", ReportUtils.map(cohortLibrary.recentDefaulters(), ""));
     }
 
     /**
@@ -89,15 +89,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator unlinkedHEI() {
-        return cohortIndicator("HEIs not linked to Mothers", ReportUtils.map(cohortLibrary.unlinkedHEI(), "endDate=${endDate}"));
-    }
-
-    /**
-     * Number of mothers not linked to HEIs
-     * @return the indicator
-     */
-    public CohortIndicator motherNotLinkedToHEI() {
-        return cohortIndicator("Mothers not linked to HEIs", ReportUtils.map(cohortLibrary.motherNotLinkedToHEI(), "endDate=${endDate}"));
+        return cohortIndicator("HEIs not linked to Mothers", ReportUtils.map(cohortLibrary.unlinkedHEI(), ""));
     }
 
     /**
@@ -105,7 +97,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator adolescentsNotInOTZ() {
-        return cohortIndicator("Adolescents not in OTZ", ReportUtils.map(cohortLibrary.adolescentsNotInOTZ(), "endDate=${endDate}"));
+        return cohortIndicator("Adolescents not in OTZ", ReportUtils.map(cohortLibrary.adolescentsNotInOTZ(), ""));
     }
 
     /**
@@ -113,7 +105,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator childrenNotInOVC() {
-        return cohortIndicator("Children not in OVC", ReportUtils.map(cohortLibrary.childrenNotInOVC(), "endDate=${endDate}"));
+        return cohortIndicator("Children not in OVC", ReportUtils.map(cohortLibrary.childrenNotInOVC(), ""));
     }
 
     /**
@@ -121,7 +113,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator contactsUndocumentedHIVStatus() {
-        return cohortIndicator("Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.contactsUndocumentedHIVStatus(), "endDate=${endDate}"));
+        return cohortIndicator("Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.contactsUndocumentedHIVStatus(), ""));
     }
 
     /**
@@ -129,15 +121,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator snsContactsUndocumentedHIVStatus() {
-        return cohortIndicator("SNS Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.snsContactsUndocumentedHIVStatus(), "endDate=${endDate}"));
-    }
-
-    /**
-     * Number of clients without NUPI
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithoutNUPI() {
-        return cohortIndicator("Clients without NUPI", ReportUtils.map(cohortLibrary.clientsWithoutNUPI(), "endDate=${endDate}"));
+        return cohortIndicator("SNS Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.snsContactsUndocumentedHIVStatus(), ""));
     }
 
     /**
@@ -145,6 +129,6 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator txCurrclientsWithoutNUPI() {
-        return cohortIndicator("TX_Curr Clients without NUPI", ReportUtils.map(cohortLibrary.txCurrclientsWithoutNUPI(), "endDate=${endDate}"));
+        return cohortIndicator("TX_Curr Clients without NUPI", ReportUtils.map(cohortLibrary.txCurrclientsWithoutNUPI(), ""));
     }
 }
