@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,42 +37,34 @@ public class PublicHealthActionReportBuilder extends AbstractReportBuilder {
     @Autowired
     private PublicHealthActionIndicatorLibrary publicHealthActionIndicatorLibrary;
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
-
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-        return Arrays.asList(new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)
-        );
+        return new ArrayList<Parameter>();
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
-        return Arrays.asList(ReportUtils.map(publicHealthAction(), "endDate=${endDate}")
+        return Arrays.asList(ReportUtils.map(publicHealthAction(), "")
         );
     }
 
     protected DataSetDefinition publicHealthAction() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.setName("PH-Action");
-        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        String indParams = "endDate=${endDate}";
         cohortDsd.setDescription("Public Health Action Report");
-        cohortDsd.addColumn("HIV+ and NOT Linked", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notLinked(), indParams), "");
-        cohortDsd.addColumn("HEI with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedHEIStatus(), indParams), "");
-        cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), indParams), "");
-        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), indParams), "");
-        cohortDsd.addColumn("Current on ART with Unsuppressed invalid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithoutValidVL(), indParams), "");
-        cohortDsd.addColumn("Undocumented LTFU", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedLTFU(), indParams), "");
-        cohortDsd.addColumn("Recent defaulters", "", ReportUtils.map(publicHealthActionIndicatorLibrary.recentDefaulters(), indParams), "");
-        cohortDsd.addColumn("HEIs not Linked to Mothers", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unlinkedHEI(), indParams), "");
-        cohortDsd.addColumn("Mothers not Linked to HEIs", "", ReportUtils.map(publicHealthActionIndicatorLibrary.motherNotLinkedToHEI (), indParams), "");
-        cohortDsd.addColumn("Adolescents not in OTZ", "", ReportUtils.map(publicHealthActionIndicatorLibrary.adolescentsNotInOTZ(), indParams), "");
-        cohortDsd.addColumn("Children not in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenNotInOVC(), indParams), "");
-        cohortDsd.addColumn("Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.contactsUndocumentedHIVStatus(), indParams), "");
-        cohortDsd.addColumn("SNS Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.snsContactsUndocumentedHIVStatus(), indParams), "");
-        cohortDsd.addColumn("Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.clientsWithoutNUPI(), indParams), "");
-        cohortDsd.addColumn("Current on ART Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.txCurrclientsWithoutNUPI(), indParams), "");
+        cohortDsd.addColumn("HIV+ and NOT Linked", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notLinked(), ""), "");
+        cohortDsd.addColumn("HEI with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedHEIStatus(), ""), "");
+        cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), ""), "");
+        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), ""), "");
+        cohortDsd.addColumn("Current on ART with Unsuppressed invalid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithoutValidVL(), ""), "");
+        cohortDsd.addColumn("Undocumented LTFU", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedLTFU(), ""), "");
+        cohortDsd.addColumn("Recent defaulters", "", ReportUtils.map(publicHealthActionIndicatorLibrary.recentDefaulters(), ""), "");
+        cohortDsd.addColumn("HEIs not Linked to Mothers", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unlinkedHEI(), ""), "");
+        cohortDsd.addColumn("Adolescents not in OTZ", "", ReportUtils.map(publicHealthActionIndicatorLibrary.adolescentsNotInOTZ(), ""), "");
+        cohortDsd.addColumn("Children not in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenNotInOVC(), ""), "");
+        cohortDsd.addColumn("Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.contactsUndocumentedHIVStatus(), ""), "");
+        cohortDsd.addColumn("SNS Contacts with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.snsContactsUndocumentedHIVStatus(), ""), "");
+        cohortDsd.addColumn("Current on ART Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.txCurrclientsWithoutNUPI(), ""), "");
 
         return cohortDsd;
 
