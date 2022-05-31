@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Report builder for Public health action report
+ * Report builder for Clinical action report
  */
 @Component
 @Builds({"kenyaemr.etl.common.report.publicHealthAction"})
@@ -49,8 +49,8 @@ public class PublicHealthActionReportBuilder extends AbstractReportBuilder {
 
     protected DataSetDefinition publicHealthAction() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-        cohortDsd.setName("PH-Action");
-        cohortDsd.setDescription("Public Health Action Report");
+        cohortDsd.setName("Clinical-Action");
+        cohortDsd.setDescription("Clinical Action Report");
         cohortDsd.addColumn("HIV+ and NOT Linked", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notLinked(), ""), "");
         cohortDsd.addColumn("HEI with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedHEIStatus(), ""), "");
         cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), ""), "");
