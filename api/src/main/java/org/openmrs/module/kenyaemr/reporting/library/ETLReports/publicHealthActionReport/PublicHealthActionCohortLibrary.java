@@ -455,8 +455,8 @@ public class PublicHealthActionCohortLibrary {
     public CohortDefinition allHEIsLinkedToMothers() {
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
                 "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "                             left join openmrs.relationship r on e.patient_id = r.person_b\n" +
-                "                          inner join (select d.patient_id, d.gender from kenyaemr_etl.etl_patient_demographics d where d.gender = 'F')m on m.patient_id = r.person_a                          --   inner join openmrs.relationship r1 on d.patient_id = r1.person_a and d.gender = 'F'\n" +
+                "                             left join relationship r on e.patient_id = r.person_b\n" +
+                "                          inner join (select d.patient_id, d.gender from kenyaemr_etl.etl_patient_demographics d where d.gender = 'F')m on m.patient_id = r.person_a \n" +
                 "inner join relationship_type t on r.relationship = t.relationship_type_id and t.uuid='8d91a210-c2cc-11de-8d13-0010c6dffd0f';";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("allHEIsLinkedToMothers");
@@ -510,7 +510,7 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition contactsUndocumentedHIVStatus() {
-        String sqlQuery = "select pc.id from openmrs.kenyaemr_hiv_testing_patient_contact pc\n" +
+        String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
                 "           where pc.baseline_hiv_status =\"Unknown\" and pc.voided = 0 and\n" +
                 "                 pc.patient_id not in (select ht.patient_id from kenyaemr_etl.etl_hts_test ht);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -524,7 +524,7 @@ public class PublicHealthActionCohortLibrary {
      * Number of SNS Contacts with undocumented HIV status
      */
     public CohortDefinition snsContactsUndocumentedHIVStatus() {
-        String sqlQuery = "select pc.id from openmrs.kenyaemr_hiv_testing_patient_contact pc\n" +
+        String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
                 "    where pc.baseline_hiv_status =\"Unknown\" and pc.relationship_type = 166606 and pc.voided = 0 and\n" +
                 "      pc.patient_id not in (select ht.patient_id from kenyaemr_etl.etl_hts_test ht);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
