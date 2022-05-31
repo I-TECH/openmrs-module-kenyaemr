@@ -732,8 +732,8 @@
 
 	<bean id="kenyaemr.etl.common.report.publicHealthAction" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="e473f83f-b172-4e49-97ba-5817acf5e097" />
-		<property name="name" value="Public Health Action Report" />
-		<property name="description" value="Public Health action report for HIV program" />
+		<property name="name" value="Clinical Action Report (CAR)" />
+		<property name="description" value="Summaries and line-lists intended to improve care quality, avoid errors or adverse events and improve efficiency in HIV care provision." />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
