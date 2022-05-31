@@ -511,8 +511,9 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition contactsUndocumentedHIVStatus() {
         String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
-                "           where pc.baseline_hiv_status =\"Unknown\" and pc.voided = 0 and\n" +
-                "                 pc.patient_id not in (select ht.patient_id from kenyaemr_etl.etl_hts_test ht);";
+                "         inner join patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
+                "         left join kenyaemr_etl.etl_hts_test ht on ht.patient_id = pc.patient_id\n" +
+                "where pc.baseline_hiv_status ='Unknown' and pc.voided = 0 and ht.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("contactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
@@ -525,8 +526,9 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition snsContactsUndocumentedHIVStatus() {
         String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
-                "    where pc.baseline_hiv_status =\"Unknown\" and pc.relationship_type = 166606 and pc.voided = 0 and\n" +
-                "      pc.patient_id not in (select ht.patient_id from kenyaemr_etl.etl_hts_test ht);";
+                "         inner join patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
+                "         left join kenyaemr_etl.etl_hts_test ht on ht.patient_id = pc.patient_id\n" +
+                "where pc.baseline_hiv_status ='Unknown' and pc.relationship_type = 166606 and pc.voided = 0 and ht.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("snsContactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
