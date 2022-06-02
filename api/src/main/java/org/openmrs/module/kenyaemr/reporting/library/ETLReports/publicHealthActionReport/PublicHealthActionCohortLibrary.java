@@ -232,6 +232,19 @@ public class PublicHealthActionCohortLibrary {
         cd.setCompositionString("allHEIsAgedBetween6And24Weeks AND NOT allHEIsWithAHIVTestResult");
         return cd;
     }
+
+    /**
+     * HEIs of HIV+ parents with undocumented HIV status
+     * @return
+     */
+    public CohortDefinition undocumentedHEIStatusWithHIVPosParent() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addSearch("contactsUndocumentedHIVStatus", ReportUtils.map(contactsUndocumentedHIVStatus(), ""));
+        cd.addSearch("undocumentedHEIStatus", ReportUtils.map(undocumentedHEIStatus(), ""));
+        cd.addSearch("allHEIsLinkedToParent", ReportUtils.map(allHEIsLinkedToParent(), ""));
+        cd.setCompositionString("allHEIsLinkedToParent AND (contactsUndocumentedHIVStatus or undocumentedHEIStatus)");
+        return cd;
+    }
     /**
      * Number of ART patients with no current vl result
      * Valid means VL was taken <= 12 months ago and invalid means VL was taken > 12 months ago
@@ -464,7 +477,23 @@ public class PublicHealthActionCohortLibrary {
         cd.setDescription("HEIs linked to Mothers");
         return cd;
     }
-
+    /**
+     * HEIs linked to a HIV+ parent (either mother or father)
+     * @return
+     */
+    public CohortDefinition allHEIsLinkedToParent() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "        inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "        left join relationship r on e.patient_id = r.person_b\n" +
+                "        inner join (select d.patient_id from kenyaemr_etl.etl_patient_demographics d\n" +
+                "            inner join kenyaemr_etl.etl_hiv_enrollment e on d.patient_id = e.patient_id)p on p.patient_id = r.person_a\n" +
+                "inner join relationship_type t on r.relationship = t.relationship_type_id and t.uuid='8d91a210-c2cc-11de-8d13-0010c6dffd0f';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("allHEIsLinkedToParent");
+        cd.setQuery(sqlQuery);
+        cd.setDescription("HEIs linked to Parent");
+        return cd;
+    }
     /**
      * Adolescents not in OTZ
      * @return
