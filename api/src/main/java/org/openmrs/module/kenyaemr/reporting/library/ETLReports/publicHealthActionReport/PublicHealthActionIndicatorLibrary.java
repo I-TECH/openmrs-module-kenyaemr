@@ -42,6 +42,13 @@ public class PublicHealthActionIndicatorLibrary {
     }
 
     /**
+     * Number of HEIs of HIV+ parents with undocumented HIV status
+     * @return
+     */
+    public CohortIndicator undocumentedHEIStatusWithHIVPosParent() {
+        return cohortIndicator("HEIs of HIV+ parents with undocumented HIV status", ReportUtils.map(cohortLibrary.undocumentedHEIStatusWithHIVPosParent(), ""));
+    }
+    /**
      * Number of patients with no current vl result
      * Valid means VL was taken <= 12 months ago and invalid means VL was taken > 12 months ago
      * @return the indicator
