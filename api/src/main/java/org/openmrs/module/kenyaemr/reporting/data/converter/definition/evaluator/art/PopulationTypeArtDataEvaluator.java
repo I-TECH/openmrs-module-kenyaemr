@@ -47,6 +47,8 @@ public class PopulationTypeArtDataEvaluator implements PersonDataEvaluator {
                 "                                    when 164929 then \"Key Population\" else \"\" end), \"\" )),11) as population_type,\n" +
                 "         mid(min(concat(visit_date,(case key_population_type\n" +
                 "                                    when 105 then \"People who inject drugs\"\n" +
+                "                                    when 162277 then \"People in prison and other closed settings\"\n" +
+                "                                    when 165100 then \"Transgender\"\n" +
                 "                                    when 160578 then \"Men who have sex with men\"\n" +
                 "                                    when 160579 then \"Female sex Worker\" else \"\" end), \"\" )),11) as key_population_type\n" +
                 "        FROM kenyaemr_etl.etl_patient_hiv_followup GROUP BY patient_id) fup\n" +

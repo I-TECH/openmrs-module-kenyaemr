@@ -83,12 +83,6 @@
 					Find/Create Patient
 				</a>
 			</li>
-			<li class="float-left" style="margin-top: 7px">
-				<a href="${ ui.pageLink("kenyaemrpsmart", "kenyaemrpsmarthome", [patientId: currentPatient.patientId]) }" class="float-left">
-					<i class="fa fa-plus-square fa-2x"></i>
-					P-Smart Data
-				</a>
-			</li>
 
 			<li class="float-left" style="margin-top: 7px">
 				<a href="${ ui.pageLink("hivtestingservices", "patientContactList", [patientId: currentPatient.patientId]) }" class="float-left">
@@ -108,6 +102,12 @@
 				<a href="${ ui.pageLink("kenyaemrorderentry", "orders/labOrderHome", [patientId: currentPatient]) }" class="float-left">
 					<i class="fa fa-flask fa-2x"></i>
 					Lab Orders
+				</a>
+			</li>
+			<li class="float-left" style="margin-top: 7px">
+				<a href="${ ui.pageLink("covid19", "covidHome", [patientId: currentPatient]) }" class="float-left">
+					<i class="fa fa fa-cog fa-2x"></i>
+					Covid-19
 				</a>
 			</li>
 

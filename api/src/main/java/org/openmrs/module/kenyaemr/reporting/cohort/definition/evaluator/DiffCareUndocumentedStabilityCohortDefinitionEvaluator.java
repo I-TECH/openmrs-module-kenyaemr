@@ -48,10 +48,7 @@ public class DiffCareUndocumentedStabilityCohortDefinitionEvaluator implements C
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select patient_id from(\n" +
-				"                      select c.patient_id,f.stability stability from kenyaemr_etl.etl_current_in_care c\n" +
-				"                                                                inner join kenyaemr_etl.etl_patient_hiv_followup f on f.patient_id = c.patient_id and c.latest_vis_date =f.visit_date\n" +
-				"                      where c.started_on_drugs is not null  and f.voided = 0 group by c.patient_id) cic where cic.stability is null;";
+		String qry="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability is null and c.started_on_drugs is not null group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

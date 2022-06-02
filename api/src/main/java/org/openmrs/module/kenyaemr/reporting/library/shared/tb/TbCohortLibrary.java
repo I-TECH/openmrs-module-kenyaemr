@@ -11,7 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -169,7 +169,7 @@ public class TbCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.setQuestion(tbStartDate);
-		cd.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cd.setTimeModifier(TimeModifier.LAST);
 		return cd;
 	}
 

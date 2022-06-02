@@ -47,10 +47,8 @@ public class DiffCareStableUnder4MonthstcaCohortDefinitionEvaluator implements C
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select c.patient_id from kenyaemr_etl.etl_current_in_care c  inner join kenyaemr_etl.etl_patient_hiv_followup f\n" +
-				"                             on c.patient_id = f.patient_id and f.visit_date = c.latest_vis_date where f.stability = 1 and f.person_present = 978\n" +
-				"                                                                                                   and timestampdiff(month,c.latest_vis_date,c.latest_tca) <4\n" +
-				"                                                                                                   and c.started_on_drugs is not null group by c.patient_id;";
+		String qry="select patient_id from kenyaemr_etl.etl_current_in_care c where c.stability =1 and c.started_on_drugs is not null\n" +
+				"and timestampdiff(month,c.latest_vis_date,c.latest_tca) <4 group by c.patient_id;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

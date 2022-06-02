@@ -11,6 +11,9 @@ package org.openmrs.module.kenyaemr.fragment.controller.facilityDashboard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -46,8 +49,10 @@ public class FacilityDashboardFragmentController {
 				htsLinkedPartner = 0, htsLinkedIDU = 0, unstableUnder15 = 0, unstableFemales15Plus = 0, unstableMales15Plus = 0, stableUnder4mtca = 0, stableOver4mtca = 0, currInCareOnART  = 0,
 				stableOver4mtcaBelow15 = 0, stableOver4mtcaOver15M = 0, stableOver4mtcaOver15F = 0, stableUnder4mtcaBelow15 = 0,
 				stableUnder4mtcaOver15M = 0,stableUnder4mtcaOver15F = 0, currInCareOnARTUnder15 = 0,currInCareOnARTOver15M = 0,
-				currInCareOnARTOver15F = 0, undocumentedStability = 0;
+				currInCareOnARTOver15F = 0, undocumentedStability = 0, fullyVaccinatedCovid19 = 0,partiallyVaccinatedCovid19 = 0,notVaccinatedCovid19 = 0,
+				everPositiveForCovid19 = 0,everHospitalizedOfCovid19 = 0,diedOfCovid19 = 0;
 		EvaluationContext evaluationContext = new EvaluationContext();
+
 		Calendar calendar = Calendar.getInstance();
 		int thisMonth = calendar.get(calendar.MONTH);
 
@@ -64,7 +69,6 @@ public class FacilityDashboardFragmentController {
 		evaluationContext.addParameterValue("startDate", startDate);
 		evaluationContext.addParameterValue("endDate", endDate);
 		evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
-
 
 		Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
 		allPatients = all != null? all.size(): 0;
@@ -196,6 +200,34 @@ public class FacilityDashboardFragmentController {
 
 		Set<Integer> undocumentedPatientStability = DashBoardCohorts.undocumentedPatientStability(evaluationContext).getMemberIds();
 		undocumentedStability = undocumentedPatientStability != null? undocumentedPatientStability.size(): 0;
+		DashBoardCohorts dashBoardCohorts = new DashBoardCohorts();
+
+		evaluationContext.addParameterValue("endDate", new Date());
+
+		Set<Integer> fullyVaccinated = dashBoardCohorts.fullyVaccinated(evaluationContext).getMemberIds();
+		fullyVaccinatedCovid19 = fullyVaccinated != null? fullyVaccinated.size(): 0;
+
+		Set<Integer> partiallyVaccinated = dashBoardCohorts.partiallyVaccinated(evaluationContext).getMemberIds();
+		partiallyVaccinatedCovid19 = partiallyVaccinated != null? partiallyVaccinated.size(): 0;
+
+		Set<Integer> notVaccinated = dashBoardCohorts.notVaccinated(evaluationContext).getMemberIds();
+		notVaccinatedCovid19 = notVaccinated != null? notVaccinated.size(): 0;
+
+		Set<Integer> everTestedPositiveCovid19 = dashBoardCohorts.everTestedCovid19(evaluationContext).getMemberIds();
+		everPositiveForCovid19 = everTestedPositiveCovid19 != null? everTestedPositiveCovid19.size(): 0;
+
+		Set<Integer> everHospitalized = dashBoardCohorts.everHospitalizedOfCovid19(evaluationContext).getMemberIds();
+		everHospitalizedOfCovid19 = everHospitalized != null? everHospitalized.size(): 0;
+
+		Set<Integer> covid19Deaths = dashBoardCohorts.diedOfCovid19(evaluationContext).getMemberIds();
+		diedOfCovid19 = covid19Deaths != null? covid19Deaths.size(): 0;
+
+		// external link for data tool
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DATA_TOOL_URL);
+		String datatoolUrl = null;
+		if(gp != null) {
+			datatoolUrl = gp.getPropertyValue();
+		}
 
 		model.addAttribute("allPatients", allPatients);
 		model.addAttribute("inCare", patientsInCare);
@@ -241,6 +273,14 @@ public class FacilityDashboardFragmentController {
 		model.addAttribute("currInCareOnARTOver15M", currInCareOnARTOver15M);
 		model.addAttribute("currInCareOnARTOver15F", currInCareOnARTOver15F);
 		model.addAttribute("undocumentedStability", undocumentedStability);
+		model.addAttribute("fullyVaccinatedCovid19", fullyVaccinatedCovid19);
+		model.addAttribute("partiallyVaccinatedCovid19", partiallyVaccinatedCovid19);
+		model.addAttribute("notVaccinatedCovid19", notVaccinatedCovid19);
+		model.addAttribute("everPositiveForCovid19", everPositiveForCovid19);
+		model.addAttribute("everHospitalizedOfCovid19", everHospitalizedOfCovid19);
+		model.addAttribute("diedOfCovid19", diedOfCovid19);
+		model.addAttribute("dataToolUrl", datatoolUrl);
+
 
 		return null;
 	}

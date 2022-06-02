@@ -29,9 +29,6 @@ public class ArtDrugRefillAppointmentConverter implements DataConverter {
             return  "No";
         }
 
-        Integer tbStatusCode = Integer.valueOf(value);
-
-
         if(value.equals("Yes")) {
             return "Yes";
         }

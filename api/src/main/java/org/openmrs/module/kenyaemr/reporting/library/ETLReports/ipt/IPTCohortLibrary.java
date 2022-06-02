@@ -21,7 +21,7 @@ import java.util.Date;
  */
 
 /**
- * Library of cohort definitions used specifically in the IPT register summaries
+ * Library of cohort definitions used specifically in the TPT register summaries
  */
 @Component
 
@@ -68,7 +68,7 @@ public class IPTCohortLibrary {
     public CohortDefinition hcwInitiatedIPT(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select init.patient_id from kenyaemr_etl.etl_ipt_initiation init inner join kenyaemr_etl.etl_patient_demographics d on init.patient_id = d.patient_id and init.voided = 0 and d.voided = 0\n" +
-                "        where init.ipt_indication = \"hcw\" and init.visit_date between date(:startDate) and date(:endDate);";
+                "        where init.ipt_indication = 1555 and init.visit_date between date(:startDate) and date(:endDate);";
         cd.setName("patientsOnIPT");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

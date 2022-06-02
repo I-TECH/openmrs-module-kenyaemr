@@ -173,7 +173,7 @@ public class ProfileLoginDetailsFragmentController {
 
 		public ChangeSecretQuestionForm(User user) {
 			this.user = user;
-			this.secretQuestion = user.getSecretQuestion();
+			this.secretQuestion = Context.getUserService().getSecretQuestion(user);
 		}
 
 		@Override

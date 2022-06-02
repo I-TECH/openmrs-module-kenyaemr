@@ -9,6 +9,7 @@
 			<th>Start</th>
 			<th>End</th>
 			<th>Regimen</th>
+			<th>Regimen Line</th>
 			<th>Change Reason</th>
 		</tr>
 	</thead>
@@ -21,6 +22,7 @@
 			<td>${ change.startDate }</td>
 			<td>${ change.endDate }</td>
 			<td style="text-align: left">${ change.regimenShortDisplay }<br/><small>&nbsp;&nbsp;</small></td>
+		    <td style="text-align: left">${ change.regimenLine }<br/><small>&nbsp;&nbsp;</small></td>
 			<td style="text-align: left">
 				<% if (change.changeReasons) { %>
 				${ change.changeReasons.join(",") }

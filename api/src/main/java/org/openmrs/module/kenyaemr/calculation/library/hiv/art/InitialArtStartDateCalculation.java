@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -59,10 +60,14 @@ public class InitialArtStartDateCalculation extends BaseEmrCalculation {
 
 			if (firstDrugRegimenEditorEncounter != null) {
 				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstDrugRegimenEditorEncounter.getAllObs(), firstDrugRegimenEditorEncounter);
-				try {
-					startDate = DATE_FORMAT.parse(o.get("startDate").toString());
-				} catch (ParseException e) {
-					e.printStackTrace();
+				if (o != null) {
+					try {
+						if (o.get("startDate") != null && StringUtils.isNotBlank(o.get("startDate").toString())) {
+							startDate = DATE_FORMAT.parse(o.get("startDate").toString());
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 

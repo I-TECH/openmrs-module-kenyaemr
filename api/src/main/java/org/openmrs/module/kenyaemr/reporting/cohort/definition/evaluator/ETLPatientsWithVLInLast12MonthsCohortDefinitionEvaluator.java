@@ -47,10 +47,7 @@ public class ETLPatientsWithVLInLast12MonthsCohortDefinitionEvaluator implements
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct patient_id \n" +
-				"from kenyaemr_etl.etl_laboratory_extract \n" +
-				"where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
-				"and (lab_test in (856, 1305));";
+		String qry="select vt.patient_id from kenyaemr_etl.etl_viral_load_tracker vt;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

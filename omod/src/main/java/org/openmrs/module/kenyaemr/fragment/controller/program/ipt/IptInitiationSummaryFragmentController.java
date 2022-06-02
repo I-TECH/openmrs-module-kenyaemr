@@ -36,7 +36,7 @@ public class IptInitiationSummaryFragmentController {
 
 		Obs o = enrollment.firstObs(Dictionary.getConcept(Dictionary.INDICATION_FOR_TB_PROPHYLAXIS));
 		if (o != null) {
-			dataPoints.put("Indication for IPT", o.getValueCoded());
+			dataPoints.put("Indication for TPT", o.getValueCoded());
 		}
 
 		model.put("dataPoints", dataPoints);

@@ -20,11 +20,21 @@
         jQuery(function ($) {
             //Defaults
             jq('#final_outcome').hide();
-            jq('.cause-of-death').hide();
+            jq('#missed-appointment').hide();
             jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
-            jq('#true-status :input[type=radio]').change(onDeceasedOutcomeChange);
+            jq('#contact-status :input[type=radio]').change(onContactStatusChange);
+            jq("#missed-appointment-reasons select").change(onOtherReasonsSelected);
+            jq('#booking-date :input').prop('disabled', true);
+            jq('#tbl-other-reasons').hide();
 
             beforeSubmit.push(function () {
+                var reasonForMissedAppointment = jq('#missed-appointment-reasons option:selected').val();
+                var contact_status = getValue('contact-status.value');
+                if(contact_status ==1267 &amp;&amp; (reasonForMissedAppointment == "" || reasonForMissedAppointment == undefined
+                    || reasonForMissedAppointment == 'undefined' || reasonForMissedAppointment == null || reasonForMissedAppointment == 'null')) {
+                    getField('missed-appointment-reasons.error').html('Please specify reasons for missing appointment').show();
+                    return false;
+                }
             });
         });
 
@@ -32,25 +42,36 @@
             var final_outcome = getValue('final-outcome.value');
             var final_status = jq('#true-status');
             var final_status_other = jq('#true-status-other');
-            var cause_death = jq('#death-reason');
                 if(final_outcome == YES_FINAL_OUTCOME){
                 jq('#final_outcome').show();
                }
                 if(final_outcome == NO_FINAL_OUTCOME){
                     jq('#final_outcome').hide();
-                    clearHiddenSections([final_status,final_status_other,cause_death]);
+                    clearHiddenSections([final_status,final_status_other]);
                     }
         }
-        function onDeceasedOutcomeChange(){
-            var tracing_outcome = getValue('true-status.value');
-            var cause_death = jq('#death-reason');
-            if(tracing_outcome == DECEASED_STATUS){
-                jq('.cause-of-death').show();
+
+        function onContactStatusChange(){
+            var val = getValue('contact-status.value');
+            if(val == 1267) {
+                jq('#booking-date :input').prop('disabled', false);
+                jq('#missed-appointment').show();
             }else{
-                jq('.cause-of-death').hide();
-                clearHiddenSections([cause_death]);
+                jq('#booking-date :input').prop('disabled', true);
+                jq('#missed-appointment').hide();
             }
         }
+
+        //Specify other Reasons for missing appointments
+        function onOtherReasonsSelected() {
+            var val = jq(this).val();
+            if (val == 5622) {
+                jq('#tbl-other-reasons').show();
+            } else {
+                jq('#tbl-other-reasons').hide();
+            }
+        }
+
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
                 parentObj[i].find('input[type=radio]').each(function() {
@@ -102,6 +123,28 @@
                             });
                         </script>
                     </ifMode>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+
+                                var val = getValue('contact-status.value');
+                                var otherReasons = getField('missed-appointment-reasons.value');
+                                if(val == 1267) {
+                                    jq('#booking-date :input').prop('disabled', false);
+                                    jq('#missed-appointment').show();
+                                }else{
+                                    jq('#booking-date :input').prop('disabled', true);
+                                    jq('#missed-appointment').hide();
+                                }
+
+                                if (otherReasons.val() == 5622) {
+                                    jq('#tbl-other-reasons').show();
+                                } else {
+                                    jq('#tbl-other-reasons').hide();
+                                }
+                            });
+                        </script>
+                    </ifMode>
                     <encounterDate id="encounter-date" showTime="false"/>
                 </td>
                 <td>Location:
@@ -133,12 +176,60 @@
                 <tr>
                     <td>Tracing Outcome</td>
                     <td>
-                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true"/>
+                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true" id="contact-status"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        Date promised to come :
+                        <obs conceptId="163526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="booking-date" allowFutureDates="true"/>
                     </td>
                 </tr>
             </table>
         </fieldset>
+        <fieldset id="missed-appointment">
+            <legend>Missed appointment</legend>
 
+            <table class="simple-table">
+                <tr>
+                    <td>Reasons for missing appointment?</td>
+                    <td>
+                        <obs conceptId="1801AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="missed-appointment-reasons"
+                             answerConceptIds="165609,
+                                               165610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               159367AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               126240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164349AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Client has covid-19 infection ,
+                                           COVID-19 restrictions,
+                                           Client refilled drugs from another facility,
+                                           Client has enough drugs,
+                                           Client travelled,
+                                           Client could not get an off from work/school,
+                                           Client is sharing drugs with partner,
+                                           Client forgot clinic dates,
+                                           Client stopped medications,
+                                           Client sick at home/admitted,
+                                           Other"
+                             style="dropdown" />
+                    </td>
+                    <td>
+                        <table id="tbl-other-reasons">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-reasons" conceptId="163513AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="60"/>
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
         <fieldset>
             <legend>Tracing Numbering</legend>
 
@@ -169,11 +260,6 @@
                              answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164435AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
                              answerLabels="Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Stopped treatment,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
                         <obs id="true-status-other" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                    </td>
-                    <td class="cause-of-death">Cause of death</td>
-                    <td class="cause-of-death"><obs conceptId="1599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="death-reason"
-                                                    answerConceptIds="162574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,151522AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,133481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
-                                                   answerLabels="Death related to HIV infection,Cancer,TB,Other infectious and parasitic diseases,Natural cause,Unnatural Cause,Uknown Cause" answerSeparator="&lt;br /&gt;" style="radio"/>
                     </td>
                 </tr>
             </table>

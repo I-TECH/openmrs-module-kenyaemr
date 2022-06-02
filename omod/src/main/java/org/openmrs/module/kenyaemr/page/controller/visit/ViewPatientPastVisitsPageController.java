@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import javax.servlet.http.HttpSession;
+
 
 /**
  * Viewing a patient's record, in the chart app
@@ -45,6 +47,7 @@ public class ViewPatientPastVisitsPageController {
 	                       PageModel model,
 	                       UiUtils ui,
 	                       Session session,
+						   HttpSession httpSession,
 						   PageRequest pageRequest,
 						   @SpringBean KenyaUiUtils kenyaUi,
 						   @SpringBean FormManager formManager,
@@ -55,7 +58,7 @@ public class ViewPatientPastVisitsPageController {
 		}
 
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
-		recentlyViewed(patient, session);
+		recentlyViewed(patient, httpSession);
 
 		Collection<ProgramDescriptor> progams = programManager.getPatientPrograms(patient);
 
@@ -99,6 +102,26 @@ public class ViewPatientPastVisitsPageController {
 		if (recent == null) {
 			recent = new LinkedList<Integer>();
 			session.setAttribute(attrName, recent);
+		}
+		recent.removeFirstOccurrence(patient.getPatientId());
+		recent.add(0, patient.getPatientId());
+		while (recent.size() > 10)
+			recent.removeLast();
+	}
+
+	/**
+	 * Adds this patient to the user's recently viewed list
+	 * @param patient the patient
+	 * @param httpSession the session
+	 */
+	private void recentlyViewed(Patient patient, HttpSession httpSession) {
+		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
+
+		LinkedList<Integer> recent = (LinkedList<Integer>) httpSession.getAttribute(attrName);
+
+		if (recent == null) {
+			recent = new LinkedList<Integer>();
+			httpSession.setAttribute(attrName, recent);
 		}
 		recent.removeFirstOccurrence(patient.getPatientId());
 		recent.add(0, patient.getPatientId());

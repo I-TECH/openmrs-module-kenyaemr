@@ -12,7 +12,7 @@ package org.openmrs.module.kenyaemr.reporting.library.mer;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;

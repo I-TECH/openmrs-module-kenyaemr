@@ -38,8 +38,12 @@ public class EmrConstants {
 	public static final String APP_DEFAULTER_TRACING = MODULE_ID + ".defaultertracing";
 	public static final String APP_HIV_TESTING = MODULE_ID + ".hivtesting";
 	public static final String APP_PREP = MODULE_ID + ".prep";
+	public static final String APP_COVID = "covid.app.home";
 	public static final String APP_KP = KP_MODULE_ID + ".keypopulation.provider";
 	public static final String APP_AIR = FACILITY_REPORTING_MODULE_ID + ".facilityReporting.air";
+	public static final String APP_LAB_MANIFEST = MODULE_ID + ".labmanifest";
+	public static final String APP_ADHERENCE_COUNSELOR = MODULE_ID + ".counselling";
+
 
 	/**
 	 * Global property names
@@ -51,6 +55,7 @@ public class EmrConstants {
 	public static final String GP_EXTERNAL_HELP_URL = MODULE_ID + ".externalHelpUrl";
 	public static final String GP_DHIS2_DATASET_MAPPING = MODULE_ID + ".adxDatasetMapping";
 	public static final String GP_3PM_DATASET_MAPPING = KP_MODULE_ID + ".adx3pmDatasetMapping";
+	public static final String GP_DATA_TOOL_URL = "kenyaemr.web.datatool.url";
 
 	/**
 	 * Default global property values

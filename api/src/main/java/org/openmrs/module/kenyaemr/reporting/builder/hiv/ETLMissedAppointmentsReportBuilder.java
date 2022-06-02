@@ -91,7 +91,7 @@ public class ETLMissedAppointmentsReportBuilder extends AbstractHybridReportBuil
 		definition.setWhich(TimeQualifier.LAST);
 		definition.setTypes(encounterTypes);
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-		dsd.addColumn("Last HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
+		dsd.addColumn("Last HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 		dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
 		dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});

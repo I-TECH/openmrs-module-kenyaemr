@@ -12,7 +12,6 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.mchcs;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -22,6 +21,7 @@ import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonCohortL
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivCohortLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
@@ -481,7 +481,7 @@ public class MchcsCohortLibrary {
 		scheduledVisits.setName("scheduled visits in CWC");
 		scheduledVisits.addParameter(new Parameter("onOrAfter", "After date", Date.class));
 		scheduledVisits.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
-		scheduledVisits.setTimeModifier(TimeModifier.ANY);
+		scheduledVisits.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		scheduledVisits.setEncounterTypeList(cwcEncounterTypes);
 		scheduledVisits.setQuestion(tca);		
 		

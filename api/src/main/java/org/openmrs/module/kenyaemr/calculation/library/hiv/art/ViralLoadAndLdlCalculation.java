@@ -43,7 +43,7 @@ public class ViralLoadAndLdlCalculation extends AbstractPatientCalculation {
             if(numericVLObs != null && ldlVLObs == null){
                 viralLoadValues.put(numericVLObs.getValueNumeric()+" copies/ml",numericVLObs.getObsDatetime());
             }
-           if(numericVLObs == null && ldlVLObs != null){
+            if(numericVLObs == null && ldlVLObs != null){
                 viralLoadValues.put( "LDL", ldlVLObs.getObsDatetime());
             }
             if(numericVLObs != null && ldlVLObs != null) {

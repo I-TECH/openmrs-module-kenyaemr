@@ -10,6 +10,7 @@
 package org.openmrs.module.kenyaemr.page.controller.dialog;
 
 import org.openmrs.Cohort;
+import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -25,13 +26,20 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastViralLoadResu
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.SharedPage;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.MapDataSet;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
+import org.openmrs.module.reportingcompatibility.service.ReportingCompatibilityService;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
@@ -40,7 +48,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller for cohort dialog
@@ -79,7 +89,18 @@ public class CohortDialogPageController {
             cohort = (Cohort) result;
         }
 
-        List<Patient> patients = Context.getPatientSetService().getPatients(cohort.getMemberIds());
+        Set<Integer> cohortPatients = new HashSet<Integer>();
+        if(cohort != null) {
+
+            for (CohortMembership membership : cohort.getMemberships()) {
+                cohortPatients.add(membership.getPatientId());
+
+            }
+        }
+
+        List<Patient> patients = Context.getService(ReportingCompatibilityService.class).getPatients(cohortPatients);
+
+
 
         PatientCalculationService calculationService = Context.getService(PatientCalculationService.class);
         PatientCalculationContext calculationContext = calculationService.createCalculationContext();
@@ -87,13 +108,24 @@ public class CohortDialogPageController {
         calculationContext.setNow(endDate);
 
         DateOfEnrollmentArtCalculation dateOfEnrollmentArtCalculation = new DateOfEnrollmentArtCalculation();
-        CalculationResultMap enrollmentDates = dateOfEnrollmentArtCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap enrollmentDates = dateOfEnrollmentArtCalculation.evaluate(cohortPatients, null, calculationContext);
 
         InitialArtStartDateCalculation initialArtStartDateCalculation = new InitialArtStartDateCalculation();
-        CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap artInitializationDates = initialArtStartDateCalculation.evaluate(cohortPatients, null, calculationContext);
 
         LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
-        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
+        CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohortPatients, null, calculationContext);
+
+        AgeDataDefinition d = new AgeDataDefinition();
+        d.setEffectiveDate(endDate);
+        EvaluationContext context = new EvaluationContext();
+        context.setBaseCohort(cohort);
+        EvaluatedPersonData pd = null;
+        try {
+            pd = Context.getService(PersonDataService.class).evaluate(d, context);
+        } catch (EvaluationException e) {
+            e.printStackTrace();
+        }
 
         /*LastCD4ResultCalculation lastCD4ResultCalculation = new LastCD4ResultCalculation();
         CalculationResultMap lastCD4Results = lastCD4ResultCalculation.evaluate(cohort.getMemberIds(), null, calculationContext);
@@ -107,6 +139,7 @@ public class CohortDialogPageController {
         model.addAttribute("enrollmentDates", enrollmentDates);
         model.addAttribute("artInitializationDates", artInitializationDates);
         model.addAttribute("lastVlResults", lastVlResults);
+        model.addAttribute("ageAtReportingResults", pd);
         //model.addAttribute("lastCD4Results", lastCD4Results);
     }
 }

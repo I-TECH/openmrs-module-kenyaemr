@@ -11,8 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.ObsInLastVisitCohortDefinition;
@@ -421,7 +420,7 @@ public class QiCohortLibrary {
 		inhDispensed.setName("isoniazid dispensed");
 		inhDispensed.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		inhDispensed.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		inhDispensed.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		inhDispensed.setTimeModifier(TimeModifier.LAST);
 		inhDispensed.setQuestion(Dictionary.getConcept(Dictionary.ISONIAZID_DISPENSED));
 		inhDispensed.setValueList(Arrays.asList(Dictionary.getConcept(Dictionary.YES)));
 		inhDispensed.setOperator(SetComparator.IN);

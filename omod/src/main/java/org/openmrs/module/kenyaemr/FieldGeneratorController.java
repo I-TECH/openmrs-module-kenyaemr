@@ -56,12 +56,13 @@ public class FieldGeneratorController {
 			if (concept.getDatatype().isText()) {
 				initialValue = initialValueText;
 			} else if (concept.getDatatype().isNumeric()) {
-				if (((ConceptNumeric) concept).isPrecise()) {
+				if (((ConceptNumeric) concept).getAllowDecimal()) {
 					initialValue = Double.parseDouble(initialValueText);
 				}
 				else {
 					initialValue = new Integer((int)Double.parseDouble(initialValueText));
 				}
+				initialValue = new Integer((int)Double.parseDouble(initialValueText));
 			} else if (concept.getDatatype().isCoded()) {
 				initialValue = Context.getConceptService().getConcept(Integer.valueOf(initialValueText));
 			}

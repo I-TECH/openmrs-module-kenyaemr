@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.calculation.library;
 
 import org.openmrs.Concept;
-import org.openmrs.api.PatientSetService.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;

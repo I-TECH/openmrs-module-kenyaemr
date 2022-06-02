@@ -133,7 +133,7 @@ public class EmrUtilsTest extends BaseModuleContextSensitiveTest {
 		User user = new User();
 		user.setPerson(Context.getPersonService().getPerson(2));
 		user.setUsername("user2");
-		Context.getUserService().saveUser(user, "Qwerty123");
+		Context.getUserService().saveUser(user);
 
 		Assert.assertThat(EmrUtils.getProvider(user), nullValue());
 	}

@@ -32,6 +32,10 @@
             <drug code="RAL" conceptUuid="154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="8f897f8a-9afa-4eee-9685-6e47965a8bcd" /><!-- RALTEGRAVIR -->
             <drug code="DRV" conceptUuid="74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="d2fc1b80-1c95-4b24-8db1-f60234694654" /><!-- DARUNAVIR -->
             <drug code="DTG" conceptUuid="d1fd0e18-e0b9-46ae-ac0e-0452a927a94b" drugUuid="c52cec20-e6a4-483d-8698-5d7dba588998" /><!-- DOLUTEGRAVIR -->
+            <drug code="B" conceptUuid="167205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="5a7ace73-9c68-4854-8a0b-31ee9ba8d97d"/><!-- Bictegravir -->
+            <drug code="TAF" conceptUuid="84795AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" drugUuid="4a7b2920-f1c3-4e75-9b93-e754e7a2bf47" /><!-- Alafenamide -->
+
+
 
 
         </drugs>
@@ -83,11 +87,6 @@
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
             </regimen>
-            <regimen name="ABC/3TC/DTG" conceptRef="4dc0119b-b2a6-4565-8d90-174b97ba31db" orderSetRef="4fead254-26af-479f-8958-df2fa108d013">
-                <component drugCode="ABC" />
-                <component drugCode="3TC" />
-                <component drugCode="DTG" />
-            </regimen>
 
             <regimen name="AZT/3TC/LPV/r" conceptRef="162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="c56e7dbf-ec9c-47f5-b5d9-15d5cdfee002">
                 <component drugCode="AZT" dose="300" units="mg" frequency="BD" />
@@ -112,6 +111,11 @@
                 <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
                 <component drugCode="LPV" dose="400" units="mg" frequency="BD" />
                 <component drugCode="RTV" dose="100" units="mg" frequency="BD" />
+            </regimen>
+            <regimen name="B/F/TAF" conceptRef="167206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="cf29bf7e-5f36-491b-b619-8561ddd53ac1">
+                <component drugCode="B" />
+                <component drugCode="FTC" />
+                <component drugCode="TAF" />
             </regimen>
         </group>
 
@@ -248,6 +252,36 @@
                 <component drugCode="RTV" />
             </regimen>
 
+           <!-- newly added regimens-->
+            <regimen name="TDF/3TC/DTG" conceptRef="9fb85385-b4fb-468c-b7c1-22f75834b4b0" orderSetRef="fcc936c7-ff55-4f40-bb05-007796192bc2">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+
+            <regimen name="TDF/3TC/DTG/ATV/r" conceptRef="64b63993-1479-4714-9389-312072f26704" orderSetRef="bfa6fe00-d3f2-11eb-b8bc-0242ac130003">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+                <component drugCode="ATV" />
+                <component drugCode="RTV" />
+            </regimen>
+            <regimen name="TDF/3TC/DTG/ETV/DRV/r" conceptRef="9de6367e-479b-4d50-a0f9-2a9987c6dce0" orderSetRef="25b5b9fc-d3f3-11eb-b8bc-0242ac130003">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+                <component drugCode="ETR" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+            <regimen name="ABC/3TC/DTG/DRV/r" conceptRef="cc728487-2f54-4d5e-ae0f-22ef617a8cfd" orderSetRef="53c2ca92-d3f3-11eb-b8bc-0242ac130003">
+                <component drugCode="ABC" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+                <component drugCode="DRV" />
+                <component drugCode="RTV" />
+            </regimen>
+
         </group>
 
         <!-- Child first line: dosages and units to be entered manually by clinician -->
@@ -301,7 +335,21 @@
                 <component drugCode="ABC" dose="300" units="mg" frequency="OD" />
                 <component drugCode="3TC" dose="150" units="mg" frequency="BD" />
                 <component drugCode="RAL" dose="300" units="mg" frequency="OD" />
-
+            </regimen>
+            <regimen name="AZT/3TC/DTG" conceptRef="6dec7d7d-0fda-4e8d-8295-cb6ef426878d" orderSetRef="b3af5ba7-bac7-4af9-9bd4-b43bdfb020de">
+                <component drugCode="AZT" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+            <regimen name="ABC/3TC/DTG" conceptRef="4dc0119b-b2a6-4565-8d90-174b97ba31db" orderSetRef="4fead254-26af-479f-8958-df2fa108d013">
+                <component drugCode="ABC" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+             <regimen name="TDF/3TC/DTG" conceptRef="9fb85385-b4fb-468c-b7c1-22f75834b4b0" orderSetRef="fcc936c7-ff55-4f40-bb05-007796192bc2">
+                <component drugCode="TDF" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
             </regimen>
         </group>
 
@@ -345,6 +393,16 @@
                 <component drugCode="RAL" />
                 <component drugCode="DRV" />
                 <component drugCode="RTV" />
+            </regimen>
+            <regimen name="AZT/3TC/DTG" conceptRef="6dec7d7d-0fda-4e8d-8295-cb6ef426878d" orderSetRef="b3af5ba7-bac7-4af9-9bd4-b43bdfb020de">
+                <component drugCode="AZT" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
+            <regimen name="ABC/3TC/DTG" conceptRef="4dc0119b-b2a6-4565-8d90-174b97ba31db" orderSetRef="4fead254-26af-479f-8958-df2fa108d013">
+                <component drugCode="ABC" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
             </regimen>
 
         </group>
@@ -465,6 +523,11 @@
                 <component drugCode="R60" units="tab" frequency="OD" />
                 <!--<component drugCode="H60" units="tab" frequency="OD" />-->
             </regimen>
+            <regimen name="RHZ" conceptRef="768AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="07add7bb-77b0-492a-820e-d0a6ebab6e36">
+                <component drugCode="R150" dose="1" units="tab" frequency="OD" />
+                <!--<component drugCode="H50" dose="1" units="tab" frequency="OD" />
+                <component drugCode="Z150" dose="1" units="tab" frequency="OD" />-->
+            </regimen>
         </group>
 
         <group code="adult-continuation" name="Continuation Phase (Adult)">
@@ -476,6 +539,10 @@
             <regimen name="EH" conceptRef="1108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="e3ac35bf-6e3c-4328-9e55-7b7c686daa21">
                 <component drugCode="E400" dose="2" units="tab" frequency="OD" />
                 <component drugCode="H150" dose="2" units="tab" frequency="OD" />
+            </regimen>
+            <regimen name="RH" conceptRef="1194AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="919f3a41-0904-4342-a9d0-9c15fbf8a736">
+                <component drugCode="R150" units="tab" frequency="OD" />
+                <component drugCode="H75" units="tab" frequency="OD" />
             </regimen>
         </group>
 

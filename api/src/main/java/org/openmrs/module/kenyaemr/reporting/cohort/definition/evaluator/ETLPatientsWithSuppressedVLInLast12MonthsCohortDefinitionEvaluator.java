@@ -47,10 +47,7 @@ public class ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinitionEvaluator 
 
 		Cohort newCohort = new Cohort();
 
-		String qry=" select distinct patient_id \n" +
-				"from kenyaemr_etl.etl_laboratory_extract \n" +
-				"where (visit_date BETWEEN date_sub(:endDate , interval 12 MONTH) and :endDate) \n" +
-				"and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
+		String qry="select vt.patient_id from kenyaemr_etl.etl_viral_load_tracker vt where (vt.vl_result < 1000 or vt.vl_result='LDL');";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);

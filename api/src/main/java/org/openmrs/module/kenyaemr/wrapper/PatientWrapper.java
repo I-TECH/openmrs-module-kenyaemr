@@ -57,6 +57,7 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
 	}
 
+
 	/**
 	 * Sets the patient clinic number
 	 * @param value the identifier value
@@ -66,6 +67,109 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		setAsIdentifier(CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER, value, location);
 	}
 
+	/**
+	 * Gets the passport number
+	 * @return the identifier value
+	 */
+	public String getPassPortNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
+	}
+
+
+	/**
+	 * Sets the passport number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setPassPortNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the huduma number
+	 * @return the identifier value
+	 */
+	public String getHudumaNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
+	}
+
+
+	/**
+	 * Sets the huduma number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setHudumaNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER, value, location);
+	}
+
+	/**
+	 * Gets the birth certificate number
+	 * @return the identifier value
+	 */
+	public String getBirthCertificateNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+	}
+
+
+	/**
+	 * Sets the birth certificate number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setBirthCertificateNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER, value, location);
+	}
+	/**
+	 * Gets the alien ID number
+	 * @return the identifier value
+	 */
+	public String getAlienIdNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+	}
+
+
+	/**
+	 * Sets the alien ID number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setAlienIdNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER, value, location);
+	}
+	/**
+	 * Gets the Driving Licence number
+	 * @return the identifier value
+	 */
+	public String getDrivingLicenseNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
+	}
+
+
+	/**
+	 * Sets the Driving Licence number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setDrivingLicenseNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.DRIVING_LICENSE, value, location);
+	}
+
+	/**
+	 * Sets the client number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setClientNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.CLIENT_NUMBER, value, location);
+	}
+	/**
+	 * Gets the client number
+	 * @return the identifier value
+	 */
+	public String getClientNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.CLIENT_NUMBER);
+	}
 	/**
 	 * Gets the unique patient number
 	 * @return the identifier value
@@ -260,4 +364,96 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setChtReferenceNumber(String chtReferenceNumber) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.CHT_USERNAME, chtReferenceNumber);
 	}
+
+	/**
+	 * Gets service number
+	 * @return the identifier value
+	 */
+	public String getKDoDServiceNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
+	}
+
+	/**
+	 * Sets service number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setKDoDServiceNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER, value, location);
+	}
+	/**
+	 * Gets patient's cadre for KDoD
+	 * @return KDoD cadre
+	 */
+	public String getCadre() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_CADRE);
+	}
+	/**
+	 * Sets KDoD cadre
+	 */
+	public void setCadre(String KDoDCadre) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_CADRE, KDoDCadre);
+	}
+	/**
+	 * Gets patient's rank for KDoD
+	 * @return KDoD rank
+	 */
+	public String getRank() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_RANK);
+	}
+	/**
+	 * Sets KDoD rank
+	 */
+	public void setRank(String KDoDRank) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_RANK, KDoDRank);
+	}
+
+	/**
+	 * Gets patient's KDoD Unit
+	 * @return KDoD unit
+	 */
+	public String getKDoDUnit() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.KDOD_UNIT);
+	}
+	/**
+	 * Sets KDoD unit
+	 */
+	public void setKDoDUnit(String KDoDUnit) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.KDOD_UNIT, KDoDUnit);
+	}
+
+	/**
+	 * Gets the patient NUPI
+	 * @return the identifier value
+	 */
+	public String getNationalUniquePatientNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
+	}
+
+
+	/**
+	 * Sets the patient NUPI number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setNationalUniquePatientNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER, value, location);
+	}
+
+	/**
+	 * Gets the CR verification status
+	 * @return the verification status
+	 */
+	public String getCRVerificationStatus() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the CR verification status
+	 * @param value the CR verification status
+	 */
+	public void setCRVerificationStatus(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY, value);
+	}
+
 }

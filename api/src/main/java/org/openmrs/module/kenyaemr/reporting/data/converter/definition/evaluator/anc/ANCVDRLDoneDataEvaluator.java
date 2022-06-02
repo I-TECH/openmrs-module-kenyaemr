@@ -35,9 +35,9 @@ public class ANCVDRLDoneDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "v.encounter_id,\n" +
-                "(case v.syphilis_test_status when 1229 then \"Yes\" when 1228 then \"Yes\" when 1304 then \"Yes\" when 1402 then \"No\" else \"Not Done\" end) as syphilis_test_status\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "              v.encounter_id,\n" +
+                "              (case v.syphilis_test_status when 1229 then 'Y' when 1228 then 'Y' when 1271 then 'Y' when 1402 then 'ND' else 'ND' end) as syphilis_test_status\n" +
+                "  from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -15,7 +15,7 @@
 /**
  * Patient service
  */
-kenyaemrApp.service('PatientService', function ($rootScope) {
+ kenyaemrApp.service('PatientService', function ($rootScope) {
 
     /**
      * Broadcasts new patient search parameters
@@ -73,6 +73,9 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
 
     $scope.query = '';
     $scope.results = [];
+    $scope.showLoader = false;
+    $scope.checkedInSelected = false;
+    $scope.allSelected = false;
 
     /**
      * Initializes the controller
@@ -91,6 +94,7 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
     $scope.$on('patient-search', function(event, data) {
         $scope.query = data.query;
         $scope.which = data.which;
+        $scope.showLoader = true;
         $scope.refresh();
     });
 
@@ -98,10 +102,48 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
      * Refreshes the person search
      */
     $scope.refresh = function() {
-        $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
-        success(function(data) {
-            $scope.results = data;
-        });
+        if(!$scope.query && $scope.which == "checked-in") {
+            $scope.checkedInSelected= true;
+            $scope.allSelected = false;
+            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+            success(function(data) {
+                if($scope.checkedInSelected) {
+                    $scope.results =  data;
+                    $scope.showLoader = false;
+                }
+            });
+        }
+
+        if($scope.query && $scope.which == "checked-in") {
+            $scope.checkedInSelected = true;
+            $scope.allSelected = false;
+            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+            success(function(data) {
+                if($scope.checkedInSelected) {
+                    $scope.results =  data;
+                    $scope.showLoader = false;
+                }
+            });
+        }
+        
+        if(!$scope.query && $scope.which == "all") {
+            $scope.checkedInSelected= false;
+            $scope.results = [];
+            $scope.showLoader = false;
+        }
+
+        if($scope.query && $scope.which == "all") {
+            $scope.checkedInSelected = false;
+            $scope.allSelected = true;
+            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
+            success(function(data) {
+                if($scope.allSelected) {
+                    $scope.results =  data;
+                    $scope.showLoader = false;
+                }
+            });
+        }
+        
     };
 
     /**
@@ -122,6 +164,7 @@ kenyaemrApp.controller('SimilarPatients', ['$scope', '$http', function($scope, $
     $scope.givenName = '';
     $scope.familyName = '';
     $scope.results = [];
+    $scope.showLoader = false;
 
     /**
      * Initializes the controller
@@ -143,6 +186,7 @@ kenyaemrApp.controller('SimilarPatients', ['$scope', '$http', function($scope, $
         $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: query, which: 'all' })).
         success(function(data) {
             $scope.results = data;
+            $scope.showLoader = false;
         });
     };
 
@@ -277,6 +321,7 @@ kenyaemrApp.controller('PeerSearchResults', ['$scope', '$http','$q','$timeout', 
     $scope.query = '';
     $scope.dateFilter = '';
     $scope.results = [];
+    $scope.showLoader = false;
 
     /**
      * Initializes the controller
@@ -295,6 +340,7 @@ kenyaemrApp.controller('PeerSearchResults', ['$scope', '$http','$q','$timeout', 
     $scope.$on('patient-search', function(event, data) {
         $scope.query = data.query;
         $scope.which = "all";
+        $scope.showLoader = true;
         $scope.refresh();
     });
 
@@ -305,6 +351,7 @@ kenyaemrApp.controller('PeerSearchResults', ['$scope', '$http','$q','$timeout', 
         $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'peerEducators', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
         success(function(data) {
             $scope.results = data;
+            $scope.showLoader = false;
 
         });
     };

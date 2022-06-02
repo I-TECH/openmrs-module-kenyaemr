@@ -31,7 +31,7 @@ public class LastHepatotoxicityCalculation extends AbstractPatientCalculation {
 
 		Program iptProgram = MetadataUtils.existing(Program.class, IPTMetadata._Program.IPT);
 
-		// Get all patients who are alive and initiated into IPT
+		// Get all patients who are alive and initiated into TPT
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inIPT = Filters.inProgram(iptProgram, alive, context);
 

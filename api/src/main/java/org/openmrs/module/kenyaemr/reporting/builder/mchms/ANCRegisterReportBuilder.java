@@ -101,27 +101,30 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         // new columns
         dsd.addColumn("ANC Number", new ANCNumberDataDefinition(),"");
         dsd.addColumn("Visit Number", new ANCVisitNumberDataDefinition(),"");
-        dsd.addColumn("First ANC Visit", new FirstANCVisitDataDefinition(),"");
+       // dsd.addColumn("First ANC Visit", new FirstANCVisitDataDefinition(),""); Dropped
         dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Age", new AgeDataDefinition(), "");
+        dsd.addColumn("County", new ANCCountyDataDefinition(), null);
         dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
         dsd.addColumn("Parity", new ANCParityDataDefinition(),"");
         dsd.addColumn("Gravida", new ANCGravidaDataDefinition(),"");
         dsd.addColumn("LMP", new ANCLmpDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Ultra Sound", new ANCEDDUltrasoundDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Gestation", new ANCGestationDataDefinition(),"");
-        dsd.addColumn("Weight", new ANCWeightDataDefinition(),"");
+        dsd.addColumn("MUAC", new ANCMUACDataDefinition(),"");
         dsd.addColumn("Height", new ANCHeightDataDefinition(),"");
+        dsd.addColumn("Weight", new ANCWeightDataDefinition(),"");
         dsd.addColumn("Blood Pressure", new ANCBloodPressureDataDefinition(),"");
         dsd.addColumn("Breast Exam", new ANCBreastExamDoneDataDefinition(),"");
-        dsd.addColumn("Counselled", new ANCCounselledDoneDataDefinition(),"");
+        //dsd.addColumn("Counselled", new ANCCounselledDoneDataDefinition(),""); --Dropped
         dsd.addColumn("Haemoglobin", new ANCHaemoglobinDataDefinition(),"");
+        dsd.addColumn("Urinalysis", new ANCUrinalysisDataDefinition(),"");
         dsd.addColumn("VDRL Done", new ANCVDRLDoneDataDefinition(),"");
         dsd.addColumn("VDRL Results", new ANCVDRLResultsDataDefinition(),"");
-        dsd.addColumn("VDRL Treated", new ANCVDRLTreatedDataDefinition(),"");
+        //dsd.addColumn("VDRL Treated", new ANCVDRLTreatedDataDefinition(),"");
         dsd.addColumn("HIV Status preANC", new ANCHIVStatusBeforeFirstANCDataDefinition(),"");
         dsd.addColumn("HIV Test Type", new ANCHIVTestTypeDataDefinition(),"");
         dsd.addColumn("HIV Test One", new ANCHIVTestOneDataDefinition(),"");
@@ -135,7 +138,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("AZT Dispensed", new ANCAZTDispensedDataDefinition(),"");
         dsd.addColumn("NVP Dispensed", new ANCNVPDispensedDataDefinition(),"");
         dsd.addColumn("TB Screening", new ANCTBScreeningResultsDataDefinition(),"");
-        dsd.addColumn("CaCx Screening", new ANCCaCxScreeningResultsDataDefinition(),"");
+       // dsd.addColumn("CaCx Screening", new ANCCaCxScreeningResultsDataDefinition(),""); d-ropped
         dsd.addColumn("Other Illnesses", new ANCOtherIllnessesDataDefinition(),"");
         dsd.addColumn("Deworming", new ANCDewormingDataDefinition(),"");
         dsd.addColumn("IPT malaria", new ANCIPTmalariaDataDefinition(),"");
@@ -143,12 +146,12 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Suppliment", new ANCSupplimentDataDefinition(),"");
         dsd.addColumn("ITN", new ANCITNDataDefinition(),"");
         dsd.addColumn("Other Illnesses", new ANCOtherIllnessesDataDefinition(),"");
-        dsd.addColumn("ANC Excercises", new ANCExercisesDataDefinition(),"");
+        //dsd.addColumn("ANC Excercises", new ANCExercisesDataDefinition(),""); --dropped
         dsd.addColumn("Partner Tested for HIV", new ANCPartnerTestedForHivDataDefinition(),"");
         dsd.addColumn("Partner HIV Status", new ANCPartnerHIVStatusDataDefinition(),"");
         dsd.addColumn("Facility Referred From", new ANCFacilityReferredFromDataDefinition(),"");
         dsd.addColumn("Facility Referred To", new ANCFacilityReferredToDataDefinition(),"");
-        dsd.addColumn("Next Appointment Date", new ANCNextAppointmentDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
+        //dsd.addColumn("Next Appointment Date", new ANCNextAppointmentDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT)); --Dropped
         dsd.addColumn("Clinical Notes", new ANCClinicalNotesDataDefinition(),"");
 
         ANCRegisterCohortDefinition cd = new ANCRegisterCohortDefinition();

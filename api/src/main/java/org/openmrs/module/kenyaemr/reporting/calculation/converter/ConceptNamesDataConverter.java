@@ -40,8 +40,8 @@ public class ConceptNamesDataConverter implements DataConverter {
 		if (answer == null)
 			return "";
 
-		//return answer.getName().getName();
-		return answer.getName().getShortName();
+		return answer.getName().getName();
+		// return answer.getName().getShortName();
 	}
 
 	@Override

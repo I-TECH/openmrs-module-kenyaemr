@@ -34,9 +34,9 @@ public class WeightAtArtDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,\n" +
-                "  mid(max(concat(visit_date,weight)),11) as who_stage from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "GROUP BY patient_id;";
+        String qry = "select t.patient_id,\n" +
+                "       mid(max(concat(t.visit_date,t.weight)),11) as weight from kenyaemr_etl.etl_patient_triage t inner join kenyaemr_etl.etl_patient_hiv_followup f on t.patient_id = f.patient_id and t.visit_date = f.visit_date\n" +
+                "GROUP BY t.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

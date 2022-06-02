@@ -20,6 +20,7 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutEffectiveDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutVerificationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutVerificationDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
@@ -97,6 +98,7 @@ public class ETLTransferOutPatientsReportBuilder extends AbstractHybridReportBui
 		dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
 		dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
 		dsd.addColumn("Transfer out date", new CalculationDataDefinition("Transfer out date", new TransferOutDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Transfer out effective date", new CalculationDataDefinition("Transfer out effective date", new TransferOutEffectiveDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verified", new CalculationDataDefinition("Transfer out verified", new TransferOutVerificationCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verification date", new CalculationDataDefinition("Transfer out verification date", new TransferOutVerificationDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());

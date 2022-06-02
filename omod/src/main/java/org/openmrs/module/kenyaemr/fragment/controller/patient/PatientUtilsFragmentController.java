@@ -36,6 +36,7 @@ import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reportingcompatibility.service.ReportingCompatibilityService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -51,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpSession;
 
 /**
  * AJAX utility methods for patients
@@ -97,7 +99,8 @@ public class PatientUtilsFragmentController {
 	public List<SimpleObject> getScheduled(@RequestParam("date") Date date, UiUtils ui) {
 		// Run the calculations to get patients with scheduled visits
 		PatientCalculationService cs = Context.getService(PatientCalculationService.class);
-		Set<Integer> allPatients = Context.getPatientSetService().getAllPatients().getMemberIds();
+		// Set<Integer> allPatients = Context.getPatientSetService().getAllPatients().getMemberIds();
+		Set<Integer> allPatients = Context.getService(ReportingCompatibilityService.class).getAllPatients().getMemberIds();
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("date", date);
@@ -107,7 +110,7 @@ public class PatientUtilsFragmentController {
 		CalculationResultMap actual = cs.evaluate(scheduled, new VisitsOnDayCalculation(), params, calcContext);
 
 		// Sort patients and convert to simple objects
-		List<Patient> scheduledPatients = Context.getPatientSetService().getPatients(scheduled);
+		List<Patient> scheduledPatients =Context.getService(ReportingCompatibilityService.class).getPatients(scheduled);
 		Collections.sort(scheduledPatients, new PersonByNameComparator());
 
 		List<SimpleObject> simplified = new ArrayList<SimpleObject>();
@@ -152,6 +155,25 @@ public class PatientUtilsFragmentController {
 
 		return simplifiedObj;
 	}
+
+	/**
+	 * Gets the recently viewed patient list
+	 * @return the simple patients
+	 */
+	@AppAction(EmrConstants.APP_CHART)
+	public SimpleObject[] recentlyViewed(UiUtils ui, HttpSession httpSession) {
+		String attrName = EmrConstants.APP_CHART + ".recentlyViewedPatients";
+		List<Integer> recent = (List<Integer>) httpSession.getAttribute(attrName);
+		List<Patient> pats = new ArrayList<Patient>();
+		if (recent != null) {
+			for (Integer ptId : recent) {
+				pats.add(Context.getPatientService().getPatient(ptId));
+			}
+		}
+
+		return ui.simplifyCollection(pats);
+	}
+
 
 	/**
 	 * Gets the recently viewed patient list

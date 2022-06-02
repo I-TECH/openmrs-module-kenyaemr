@@ -139,6 +139,7 @@ public class EncounterBasedRegimenUtils {
         String REASON_REGIMEN_STOPPED_NON_CODED = "5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String DATE_REGIMEN_STOPPED = "1191AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         String CURRENT_DRUG_NON_STANDARD ="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        String REGIMEN_LINE_CONCEPT = "163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; // concept should be changed to correct one
 
 
 
@@ -157,7 +158,7 @@ public class EncounterBasedRegimenUtils {
                 regimen = obs.getValueCoded() != null ? obs.getValueCoded().getFullySpecifiedName(CoreConstants.LOCALE).getName() : "Unresolved Regimen name";
                 try {
                     regimenShort = getRegimenNameFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
-                    regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
+                  //  regimenLine = getRegimenLineFromRegimensXMLString(obs.getValueCoded().getUuid(), getRegimenConceptJson());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -178,6 +179,23 @@ public class EncounterBasedRegimenUtils {
             } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(DATE_REGIMEN_STOPPED)) {
                 if(obs.getValueDatetime() != null){
                     endDate = DATE_FORMAT.format(obs.getValueDatetime());
+                }
+            } else if (obs.getConcept() != null && obs.getConcept().getUuid().equals(REGIMEN_LINE_CONCEPT)) {
+                if(obs.getValueText() != null){
+                    if (obs.getValueText().equals("AF")) {
+                        regimenLine = "Adult first line";
+                    } else if (obs.getValueText().equals("AS")) {
+                        regimenLine = "Adult second line";
+                    } else if (obs.getValueText().equals("AT")) {
+                        regimenLine = "Adult third line";
+                    } else if (obs.getValueText().equals("CF")) {
+                        regimenLine = "Child first line";
+                    } else if (obs.getValueText().equals("CS")) {
+                        regimenLine = "Child second line";
+                    } else if (obs.getValueText().equals("CT")) {
+                        regimenLine = "Child third line";
+                    }
+
                 }
             }
 
@@ -526,9 +544,29 @@ public class EncounterBasedRegimenUtils {
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
                 "  },\n" +
                 "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/ATV/r\",\n" +
+                "    \"conceptRef\": \"64b63993-1479-4714-9389-312072f26704\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"TDF/3TC/DTG/ETV/DRV/r\",\n" +
+                "    \"conceptRef\": \"9de6367e-479b-4d50-a0f9-2a9987c6dce0\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"ABC/3TC/DTG/DRV/r\",\n" +
+                "    \"conceptRef\": \"cc728487-2f54-4d5e-ae0f-22ef617a8cfd\",\n" +
+                "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
                 "    \"name\": \"TDF/3TC/DTG/EFV/DRV/r\",\n" +
                 "    \"conceptRef\": \"f2acaf9b-3da9-4d71-b0cf-fd6af1073c9e\",\n" +
                 "    \"regimenLine\": \"Adult (third line)\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"name\": \"B/F/TAF\",\n" +
+                "    \"conceptRef\": \"167206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n" +
+                "    \"regimenLine\": \"Adult (first line)\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"name\": \"ABC/3TC/RAL\",\n" +

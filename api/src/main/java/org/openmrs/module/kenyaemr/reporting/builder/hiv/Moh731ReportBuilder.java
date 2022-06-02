@@ -81,6 +81,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
     ColumnParameters m_25_and_above = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
     ColumnParameters f_25_and_above = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
 
+    ColumnParameters m_1_to_9 = new ColumnParameters(null, "1-9, Male", "gender=M|age=1-9");
+
     ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
 
     List<ColumnParameters> standardDisaggregationAgeAndSex = Arrays.asList(
@@ -110,6 +112,9 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
     List<ColumnParameters> preARTDisaggregation = Arrays.asList(
             adult_0_to_14,  adult_15_and_above , colTotal);
 
+    List<ColumnParameters> vmmcDisaggregation = Arrays.asList(
+            maleInfants, m_1_to_9, m_10_to_14, m_15_to_19, m_20_to_24, m_25_and_above, colTotal);
+
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
@@ -124,7 +129,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         return Arrays.asList(
                 ReportUtils.map(hivTestingAndCouselingDatasetDefinition(), "startDate=${startDate},endDate=${endDate}"),
                 ReportUtils.map(pmtctDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(careAndTreatmentDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(voluntaryMaleCircumcisionDatasetDefinition(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -258,8 +264,12 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV03-058", "Presumed TB_Total", ReportUtils.map(moh731GreenCardIndicators.presumedForTb(), indParams),"");
 
         // 3.8
-        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on IPT", ReportUtils.map(moh731GreenCardIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
-        cohortDsd.addColumn("HV03-066", "Completed IPT 12 months", ReportUtils.map(moh731GreenCardIndicators.ipt12MonthsCohort(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Started on TPT", ReportUtils.map(moh731GreenCardIndicators.startedOnIPT(), indParams), standardAgeOnlyDisaggregationWithInfants, Arrays.asList("059", "060", "061", "062", "063", "064", "065"));
+        cohortDsd.addColumn("HV03-066", "Completed TPT 12 months", ReportUtils.map(moh731GreenCardIndicators.ipt12MonthsCohort(), indParams),"");
+
+        //3.9 Nutrition and HIV
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Nutrition assessment", ReportUtils.map(moh731GreenCardIndicators.assessedForNutritionInHIV(), indParams), preARTDisaggregation, Arrays.asList("067", "068","069"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03", "Malnourished", ReportUtils.map(moh731GreenCardIndicators.malnourishedInHIV(), indParams), preARTDisaggregation, Arrays.asList("070","071","072"));
         // 3.10
         cohortDsd.addColumn("HV03-076", "TB new cases", ReportUtils.map(moh731GreenCardIndicators.tbEnrollment(), indParams),"");
         cohortDsd.addColumn("HV03-077", "TB new cases, Known Positive", ReportUtils.map(moh731GreenCardIndicators.tbNewKnownPositive(), indParams),"");
@@ -308,7 +318,37 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
         cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),"");
 
+        return cohortDsd;
 
+    }
+
+    /**
+     * Creates the dataset for section #4: Voluntary Male Circumcision
+     *
+     * @return the dataset
+     */
+    protected DataSetDefinition voluntaryMaleCircumcisionDatasetDefinition() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.setName("4");
+        cohortDsd.setDescription("Voluntary Male Circumcision");
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cohortDsd.addDimension("age", ReportUtils.map(commonDimensions.moh731GreenCardAgeGroups(), "onDate=${endDate}"));
+        cohortDsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+        String indParams = "startDate=${startDate},endDate=${endDate}";
+
+        // 4.1 Voluntary Male Circumcision
+        EmrReportingUtils.addRow(cohortDsd, "HV04", "Tested", ReportUtils.map(moh731GreenCardIndicators.numberCircumcised(), indParams), vmmcDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        cohortDsd.addColumn("HV04-08", "Circumcised HIV+", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedHivPositive(), indParams),"");
+        cohortDsd.addColumn("HV04-09", "Circumcised HIV-", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedHivNegative(), indParams),"");
+        cohortDsd.addColumn("HV04-10", "Circumcised HIV NK", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedHivUnknown(), indParams),"");
+        cohortDsd.addColumn("HV04-11", "Circumcised Surgical", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedSurgically(), indParams),"");
+        cohortDsd.addColumn("HV04-12", "Circumcised Device", ReportUtils.map(moh731GreenCardIndicators.numberCircumcisedUsingDevice(), indParams),"");
+        cohortDsd.addColumn("HV04-13", "AE During Moderate", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithModerateAEDuringProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-14", "AE During Severe", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithSevereAEDuringProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-15", "AE Post Moderate", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithModerateAEPostProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-16", "AE Post Servere", ReportUtils.map(moh731GreenCardIndicators.circumcisedWithSevereAEPostProcedure(), indParams),"");
+        cohortDsd.addColumn("HV04-17", "Follow Up Visit <14 days", ReportUtils.map(moh731GreenCardIndicators.followedUpWithin14daysOfVMMCProcedure(), indParams),"");
         return cohortDsd;
 
     }

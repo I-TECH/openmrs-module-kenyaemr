@@ -12,7 +12,8 @@ package org.openmrs.module.kenyaemr.reporting.library.shared.common;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateObsValueBetweenCohortDefinition;
@@ -22,13 +23,16 @@ import org.openmrs.module.kenyaemr.calculation.library.InProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.CadreCohortDefinition;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.ContactAgeCohortDefinition;
+import org.openmrs.module.kenyaemrorderentry.reporting.cohort.definition.ContactGenderCohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -110,12 +114,27 @@ public class CommonCohortLibrary {
 	 */
 	public CohortDefinition agedAtLeastAgedAtMostInMonths(int minAge, int maxAge) {
 		AgeCohortDefinition cd = new AgeCohortDefinition();
-		cd.setName("aged between "+minAge+" and "+maxAge+" years");
+		cd.setName("aged between "+minAge+" and "+maxAge+" months");
 		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
 		cd.setMinAge(minAge);
 		cd.setMaxAge(maxAge);
 		cd.setMinAgeUnit(DurationUnit.MONTHS);
 		cd.setMaxAgeUnit(DurationUnit.MONTHS);
+		return cd;
+	}
+
+	/**
+	 * patients who are at least minAge months old and at most days old on ${effectiveDate}
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition agedAtLeastAgedAtMostDays(int minAge, int maxAge) {
+		AgeCohortDefinition cd = new AgeCohortDefinition();
+		cd.setName("aged between "+minAge+" and "+maxAge+" days");
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		cd.setMaxAge(maxAge);
+		cd.setMinAgeUnit(DurationUnit.DAYS);
+		cd.setMaxAgeUnit(DurationUnit.DAYS);
 		return cd;
 	}
 
@@ -161,7 +180,7 @@ public class CommonCohortLibrary {
 		cd.setName("has obs between dates");
 		cd.setQuestion(question);
 		cd.setOperator(SetComparator.IN);
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (answers.length > 0) {
@@ -197,7 +216,7 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.setName("transferred out between dates");
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(reasonForDiscontinue);
 		cd.setOperator(SetComparator.IN);
 		cd.setValueList(Collections.singletonList(transferredOut));
@@ -287,7 +306,7 @@ public class CommonCohortLibrary {
 		cd.setName("dispensed medication between");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(Dictionary.getConcept(Dictionary.MEDICATION_ORDERS));
 		cd.setValueList(Arrays.asList(concepts));
 		cd.setOperator(SetComparator.IN);
@@ -327,4 +346,85 @@ public class CommonCohortLibrary {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
 	}
+/**
+	 * KDoD Patients who are Troops
+	 * @return the cohort definition
+	 */
+	public CohortDefinition kDoDTroupesPatients() {
+		CadreCohortDefinition cd = new CadreCohortDefinition();
+		cd.setName("troops");
+		cd.setTroupeIncluded(true);
+		return cd;
+	}
+	/**
+	 * KDoD Patients who are Civilians
+	 * @return the cohort definition
+	 */
+	public CohortDefinition kDoDCiviliansPatients() {
+		CadreCohortDefinition cd = new CadreCohortDefinition();
+		cd.setName("civilians");
+		cd.setCivilianIncluded(true);
+		return cd;
+	}
+	//----------------------------- definitions for patient contact
+
+	/**
+	 * Patients who at most maxAge years old on ${effectiveDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition contactAgedAtMost(int maxAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged at most " + maxAge);
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMaxAge(maxAge);
+		return cd;
+	}
+
+	/**
+	 * Patients who are at least minAge years old on ${effectiveDate}
+	 * @return the cohort definition
+	 */
+	public CohortDefinition contactAgedAtLeast(int minAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged at least " + minAge);
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		return cd;
+	}
+
+	/**
+	 * patients who are at least minAge years old and at most years old on ${effectiveDate}
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition contactAgedAtLeastAgedAtMost(int minAge, int maxAge) {
+		ContactAgeCohortDefinition cd = new ContactAgeCohortDefinition();
+		cd.setName("aged between "+minAge+" and "+maxAge+" years");
+		cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+		cd.setMinAge(minAge);
+		cd.setMaxAge(maxAge);
+		return cd;
+	}
+
+	/**
+	 * Patients who are female
+	 * @return the cohort definition
+	 */
+	public CohortDefinition femalePatientContacts() {
+		ContactGenderCohortDefinition cd = new ContactGenderCohortDefinition();
+		cd.setName("females");
+		cd.setFemaleIncluded(true);
+		return cd;
+	}
+
+	/**
+	 * Patients who are male
+	 * @return the cohort definition
+	 */
+	public CohortDefinition malePatientContacts() {
+		ContactGenderCohortDefinition cd = new ContactGenderCohortDefinition();
+		cd.setName("males");
+		cd.setMaleIncluded(true);
+		return cd;
+	}
+
 }

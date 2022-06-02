@@ -42,7 +42,7 @@
     var DELIVERY_CLIENT = 164835;
     var PNC_CLIENT = 1623;
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
-    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
+    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
 

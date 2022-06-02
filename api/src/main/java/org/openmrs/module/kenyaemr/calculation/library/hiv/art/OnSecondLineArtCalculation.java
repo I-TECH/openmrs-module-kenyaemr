@@ -53,7 +53,7 @@ public class OnSecondLineArtCalculation extends AbstractPatientCalculation {
 			if (lastDrugRegimenEditorEncounter != null) {
 				SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
 				regimenLine = o.get("regimenLine").toString();
-               if (regimenLine != null && regimenLine.equalsIgnoreCase("adult_second")){
+               if (regimenLine != null && (regimenLine.equalsIgnoreCase("Adult second line") || regimenLine.equalsIgnoreCase("Child second line"))){
 						onSecondLine = true;
 		    	}
 			}

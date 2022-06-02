@@ -30,6 +30,7 @@ public class ColumnParameters {
 		this.dimensions = dimensions;
 	}
 
+
 	/**
 	 * Gets the name
 	 * @return the name

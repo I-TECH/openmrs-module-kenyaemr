@@ -16,6 +16,7 @@ import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HTSClientsLinkageRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageFacilityLinkedDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageIdentifierDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSLinkageProviderHandedToDataDefinition;
@@ -26,7 +27,9 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
@@ -49,6 +52,7 @@ import java.util.List;
 @Builds({"kenyaemr.hiv.report.htsLinkageRegister"})
 public class HTSLinkageRegisterReportBuilder extends AbstractReportBuilder {
     public static final String DATE_FORMAT = "yyyy/MM/dd";
+    public static final String ENC_DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
@@ -79,14 +83,14 @@ public class HTSLinkageRegisterReportBuilder extends AbstractReportBuilder {
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
-
+        dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
+        dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null, new HTSMaritalStatusConverter());
         dsd.addColumn("Contact Type", new HTSTracingContactTypeDataDefinition(), null);
         dsd.addColumn("Contact Status", new HTSTracingContactStatusDataDefinition(), null);
 

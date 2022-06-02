@@ -73,6 +73,7 @@ public class DiffCareStabilityReportBuilder extends AbstractReportBuilder {
         cohortDsd.setName("Diff-care-stability");
         cohortDsd.setDescription("Differentiated care stability report");
 
+        EmrReportingUtils.addRow(cohortDsd, "Stable patients with <1 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stableUnder1Monthtca()), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Stable patients with 1 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(1)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Stable patients with 2 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(2)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));
         EmrReportingUtils.addRow(cohortDsd, "Stable patients with 3 month prescription", "", ReportUtils.map(diffCareStabilityIndicatorLibrary.stablePatientsMultiMonthAppointments(3)), diffCareDisaggregations, Arrays.asList("01", "02", "03", "04"));

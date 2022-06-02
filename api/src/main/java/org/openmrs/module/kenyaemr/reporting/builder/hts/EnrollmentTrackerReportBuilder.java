@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.DateArtStartDateConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.EnrollmentTrackerCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RDQACohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.HTSStrategyConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.enrollmentTracker.HtsDateConfirmedPositiveDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.enrollmentTracker.HtsSameDayEnrollmentDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.enrollmentTracker.HtsSettingDataDefinition;
@@ -72,7 +73,7 @@ public class EnrollmentTrackerReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Enrollment Date", new CalculationDataDefinition("Enrollment Date", new DateOfEnrollmentArtCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("Occupation", new ObsForPersonDataDefinition("Occupation", TimeQualifier.LAST, Dictionary.getConcept(Dictionary.OCCUPATION), null, null), "", new ObsValueConverter());
-        dsd.addColumn("Setting", new HtsSettingDataDefinition(), "", null);
+        dsd.addColumn("Setting", new HtsSettingDataDefinition(), "", new HTSStrategyConverter());
         dsd.addColumn("Date Confirmed Positive", new HtsDateConfirmedPositiveDataDefinition(), "", null);
         dsd.addColumn("Enrolled on same day", new HtsSameDayEnrollmentDataDefinition(), "", null);
 

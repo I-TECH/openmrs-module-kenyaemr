@@ -14,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.kenyacore.CoreContext;
@@ -22,6 +24,8 @@ import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -42,7 +46,8 @@ public class EmrActivator implements ModuleActivator {
 	public void willRefreshContext() {
 
 		log.info("KenyaEMR context refreshing...");
-
+		//TODO: Investigate what causes reports page to load slowly. This behavior started with platform 2.x upgrade
+		Context.getAdministrationService().executeSQL("delete from reporting_report_request", false);
 	}
 
 	/**
@@ -75,7 +80,7 @@ public class EmrActivator implements ModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	public void started() {
-		Context.getService(ReportService.class).deleteOldReportRequests();
+		// Context.getService(ReportService.class).deleteOldReportRequests();
 		log.info("KenyaEMR started");
 	}
 

@@ -176,7 +176,7 @@ public class SearchFragmentController {
 
 		// Add first 20 results of search by name
 		if (StringUtils.isNotBlank(query)) {
-			results.addAll(svc.getLocations(query, true, 0, 20));
+			results.addAll(svc.getLocations(query, null, null, true, 0, 20));
 		}
 
 		// Convert to simple objects
@@ -194,16 +194,14 @@ public class SearchFragmentController {
 	}
 
 	/**
-	 * Searches for persons by name
+	 * Searches for persons by name or identifier. Previously used Context.getPersonService().getPeople(query, null) which was limiting
 	 * @param query the name query
 	 * @param ui the UI utils
 	 * @return the simplified persons
 	 */
 	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
-		Collection<Person> results = Context.getPersonService().getPeople(query, null);
-
-		// Convert to simple objects
-		return ui.simplifyCollection(results);
+		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
+		return ui.simplifyCollection(matchedByNameOrID);
 	}
 
 	/**

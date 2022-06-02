@@ -224,7 +224,6 @@ public class EmrUtilsFragmentController {
 	 */
 	public SimpleObject clientsBookedForMchConsultationOnDate(@RequestParam(value = "appointmentDate") String tca) {
 
-		System.out.println("Date passed from browser: " + tca);
 		String appointmentQuery = "select count(patient_id) as bookings\n" +
 				"from (\n" +
 				"select\n" +
@@ -311,9 +310,10 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
-			String lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0).toString();
+			Object lastLotExpiryDate =null;
+			 lastLotExpiryDate = Context.getAdministrationService().executeSQL(getLastLotExpiryDateQuery, true).get(0).get(0);
 
-			if(lastLotExpiryDate != null || lastLotExpiryDate != "") {
+			if(lastLotExpiryDate.toString() != null || lastLotExpiryDate.toString() != "") {
 				return SimpleObject.create(
 						"lastLotExpiryDate", lastLotExpiryDate
 				);
@@ -429,7 +429,7 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 	}
 
 	/**
-	 * enrolls a patient in IPT program
+	 * enrolls a patient in TPT program
 	 * @param patient to be enrolled
 	 * @param enrollmentDate date to be enrolled
 	 * @return simple object with patient program id
@@ -450,7 +450,7 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 			lastEnrollment = iptProgramEnrollments.get(iptProgramEnrollments.size() - 1);
 		}
 		if (lastEnrollment != null && lastEnrollment.getActive()) {
-			return SimpleObject.create("status", "Error","message","The patient is already initiated in the IPT program");
+			return SimpleObject.create("status", "Error","message","The patient is already initiated in the TPT program");
 		}
 
 		PatientProgram iptEnrollment = new PatientProgram();
@@ -471,7 +471,7 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		enc.setForm(Context.getFormService().getFormByUuid(IPTMetadata._Form.IPT_INITIATION));
 
 		if (indicationForIpt != null) {
-			Obs iptIndication = new Obs(); // build indication for ipt obs
+			Obs iptIndication = new Obs(); // build indication for tpt obs
 			iptIndication.setConcept(conceptService.getConceptByUuid(indicationForIptConcept));
 			iptIndication.setDateCreated(new Date());
 			iptIndication.setCreator(loggedInUser);
@@ -483,15 +483,15 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		}
 		try {
 			encounterService.saveEncounter(enc);
-			return SimpleObject.create("status", "Success","message","The patient has been successfully initiated in IPT");
+			return SimpleObject.create("status", "Success","message","The patient has been successfully initiated in TPT");
 		} catch (Exception e) {
-			return SimpleObject.create("status", "Error","message","There was an error initiating the patient in IPT");
+			return SimpleObject.create("status", "Error","message","There was an error initiating the patient in TPT");
 		}
 
 	}
 
 	/**
-	 * completes IPT program
+	 * completes TPT program
 	 * @param patient
 	 * @param reason i.e. discontinued, ltfu, completed, etc
 	 * @param completionDate
@@ -558,14 +558,14 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 				programWorkflowService.savePatientProgram(lastEnrollment);
 				encounterService.saveEncounter(enc);
 
-				return SimpleObject.create("status", "Success","message","The patient has been successfully discontinued in IPT");
+				return SimpleObject.create("status", "Success","message","The patient has been successfully discontinued in TPT");
 			} catch (Exception e) {
-				return SimpleObject.create("status", "Error","message","There was an error while discontinuing the patient in IPT");
+				return SimpleObject.create("status", "Error","message","There was an error while discontinuing the patient in TPT");
 			}
 
 		}
 
-		return SimpleObject.create("status", "Error","message","The patient is not initiated in IPT");
+		return SimpleObject.create("status", "Error","message","The patient is not initiated in TPT");
 
 	}
 
@@ -687,9 +687,9 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		assignToVisit(enc, Context.getVisitService().getVisitTypeByUuid(CommonMetadata._VisitType.OUTPATIENT));
 		try{
 			encounterService.saveEncounter(enc);
-			return SimpleObject.create("status", "Success","message","IPT followup details saved successfully");
+			return SimpleObject.create("status", "Success","message","TPT followup details saved successfully");
 		} catch (Exception e) {
-			return SimpleObject.create("status", "Error","message","There was an error updating IPT followup details");
+			return SimpleObject.create("status", "Error","message","There was an error updating TPT followup details");
 		}
 	}
 

@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
 import org.openmrs.Concept;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
@@ -301,7 +301,7 @@ public class QiPaedsCohortLibrary {
 		onTbTreatment.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		onTbTreatment.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		onTbTreatment.setQuestion(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE));
-		onTbTreatment.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		onTbTreatment.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 		compositionCohortDefinition.setName("in HIV has clinic and NOT in TB");
@@ -350,7 +350,7 @@ public class QiPaedsCohortLibrary {
 		coded.setName("Patients with no signs of TB");
 		coded.setQuestion(tbDiseaseStatus);
 		coded.setOperator(SetComparator.IN);
-		coded.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		coded.setTimeModifier(TimeModifier.LAST);
 		coded.setValueList(Arrays.asList(noSignsOrSymptoms));
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();

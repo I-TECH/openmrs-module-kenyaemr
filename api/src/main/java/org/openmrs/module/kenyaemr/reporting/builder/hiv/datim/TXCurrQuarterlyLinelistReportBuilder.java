@@ -68,8 +68,14 @@ public class TXCurrQuarterlyLinelistReportBuilder extends AbstractReportBuilder 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 
         cohortDsd.addColumn("Number of patients present in the current report but missing in previous report", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport(), indParams), "");
+        cohortDsd.addColumn("New on ART", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousQuarterlyNewlyEnrolledReport(), indParams), "");
+        cohortDsd.addColumn("Return to Care", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousQuarterlyReEnrollmentReport(), indParams), "");
+        cohortDsd.addColumn("Transfer in", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousTrfInQuarterlyReport(), indParams), "");
         cohortDsd.addColumn("Number of patients present in the previous report but missing in the current report", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReport(), indParams), "");
-
+        cohortDsd.addColumn("Died", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentDueToDeathReport(), indParams), "");
+        cohortDsd.addColumn("Lost to followup", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentLTFUReport(), indParams), "");
+        cohortDsd.addColumn("Transferred Out", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentTrfOutReport(), indParams), "");
+        cohortDsd.addColumn("Stopped Treatment", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportStoppedTxQuarterly(), indParams), "");
         return cohortDsd;
 
     }

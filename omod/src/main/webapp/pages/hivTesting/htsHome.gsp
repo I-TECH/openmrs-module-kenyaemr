@@ -2,13 +2,17 @@
 	ui.decorateWith("kenyaemr", "standardPage", [ layout: "sidebar" ])
 
 	def menuItems = [
-			[ label: "View medic Queue", iconProvider: "kenyaemr", icon: "queue-icon.jpg", label: "View Medic Queue", href: ui.pageLink("kenyaemr", "hivTesting/medicQueueHome") ]
+			[ label: "View Afyastat Queue", iconProvider: "kenyaemr", icon: "queue/Record_Queue-sample1.1.png", label: "View Afyastat Queue", href: ui.pageLink("afyastat", "afyastatHome") ]
+	]
+	def muzimaMenuItems = [
+			[ label: "View mUzima Queue", iconProvider: "kenyaemr", icon: "queue/Record_Queue-sample1.2.png", label: "View mUzima Queue", href: ui.pageLink("kenyaemr", "hivTesting/muzimaQueueHome") ]
 	]
 %>
 
 <div class="ke-page-sidebar">
 	${ ui.includeFragment("kenyaemr", "patient/patientSearchForm", [ defaultWhich: "all" ]) }
-	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Medic Queue", items: menuItems ]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "mUzima Queue", items: muzimaMenuItems ]) }
+	${ ui.includeFragment("kenyaui", "widget/panelMenu", [ heading: "Afyastat Queue", items: menuItems ]) }
 </div>
 
 <div class="ke-page-content">

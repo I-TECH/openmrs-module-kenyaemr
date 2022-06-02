@@ -15,11 +15,12 @@
 			<tr>
 				<th>Name</th>
 				<th>Age</th>
+				<th>Age at reporting(Years)</th>
 				<th>Sex</th>
 				<th>Unique Patient Number</th>
                 <th>HIV Enrollment Date</th>
                 <th>ART Start Date</th>
-				<th>Last VL</th>
+				<th>Last VL(copies/ml)</th>
 				<th>Last VL Date</th>
 			</tr>
 		</thead>
@@ -37,6 +38,7 @@
 					<a href="${ ui.pageLink("kenyaemr", "chart/chartViewPatient", [ patientId: patient.id ]) }">${ patient.name }</a>
 				</td>
 				<td>${ patient.age }</td>
+				<td>${ ageAtReportingResults.getData().get(patient.id) }</td>
 				<td>${ patient.gender.toUpperCase() }</td>
 				<td>${ patient.identifiers[0].identifier }</td>
 			    <td>${ enrollmentDates.get(patient.id) != null? (enrollmentDates.get(patient.id).value != null ?

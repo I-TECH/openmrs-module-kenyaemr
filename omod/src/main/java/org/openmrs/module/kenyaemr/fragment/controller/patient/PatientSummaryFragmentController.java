@@ -18,6 +18,7 @@ import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyaemr.calculation.library.MissingAllRegistrationIdentifiersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -52,6 +53,7 @@ public class PatientSummaryFragmentController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("recordedAsDeceased", hasBeenRecordedAsDeceased(patient));
+		model.addAttribute("missingIdentifiers", hasNoRequiredRegistrationIdentifiers(patient));
 		model.addAttribute("forms", forms);
 	}
 
@@ -62,6 +64,21 @@ public class PatientSummaryFragmentController {
 	 */
 	protected boolean hasBeenRecordedAsDeceased(Patient patient) {
 		PatientCalculation calc = CalculationUtils.instantiateCalculation(RecordedDeceasedCalculation.class, null);
+		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
+	}
+	/**
+	 * Checks if a patient has been recorded required patient registration identifiers
+	 * Patient Clinic Number
+	 * National ID Number
+	 * Passport Number
+	 * Huduma Number
+	 * Birth Certificate Number
+	 *
+	 * @param patient the patient
+	 * @return true if patient has no recorded registration identifiers
+	 */
+	protected boolean hasNoRequiredRegistrationIdentifiers(Patient patient) {
+		PatientCalculation calc = CalculationUtils.instantiateCalculation(MissingAllRegistrationIdentifiersCalculation.class, null);
 		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
 	}
 }

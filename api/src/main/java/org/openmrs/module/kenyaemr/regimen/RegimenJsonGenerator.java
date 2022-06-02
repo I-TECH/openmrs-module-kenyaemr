@@ -29,6 +29,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -90,6 +91,7 @@ public class RegimenJsonGenerator {
             if(nonstandardRegimenShort.length() > 0) {
                 regimenEntryNoneStandard.put("regimenName", (nonstandardRegimenShort.toString()).substring(0, nonstandardRegimenShort.length() - 1));
             }
+            regimenEntryNoneStandard.put("regimenLine", getRegimenLine(patient));
             regimenEntryNoneStandard.put("program", "ARV");
             regimenEntryNoneStandard.put("groupCodeName", "");
             regimenEntryNoneStandard.put("conceptRef", "");
@@ -246,6 +248,7 @@ public class RegimenJsonGenerator {
                         }
 
                         regimenEntry.put("regimenName", cr.getName());
+                        regimenEntry.put("regimenLine", getRegimenLine(patient));
                         regimenEntry.put("program", cr.getProgram());
                         regimenEntry.put("groupCodeName", cr.getRegimenGroup());
                         regimenEntry.put("conceptRef", cr.getConceptRef());
@@ -322,6 +325,34 @@ public class RegimenJsonGenerator {
             changeEncounters.put("TB", tbEncounters.get(0));
         }
         return changeEncounters;
+    }
+
+    private String getRegimenLine(Patient patient) {
+        String REGIMEN_LINE_CONCEPT = "163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; // concept should be changed to correct one
+        String regimenLine = null;
+        Encounter lastRegimenEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, "ARV");
+        if (lastRegimenEncounter != null) {
+            for(Obs obs:lastRegimenEncounter.getObs()) {
+                if (obs.getConcept() != null && obs.getConcept().getUuid().equals(REGIMEN_LINE_CONCEPT)) {
+                    if(obs.getValueText() != null){
+                        if (obs.getValueText().equals("AF")) {
+                            regimenLine = "Adult first line";
+                        } else if (obs.getValueText().equals("AS")) {
+                            regimenLine = "Adult second line";
+                        } else if (obs.getValueText().equals("AT")) {
+                            regimenLine = "Adult third line";
+                        } else if (obs.getValueText().equals("CF")) {
+                            regimenLine = "Child first line";
+                        } else if (obs.getValueText().equals("CS")) {
+                            regimenLine = "Child second line";
+                        } else if (obs.getValueText().equals("CT")) {
+                            regimenLine = "Child third line";
+                        }
+                    }
+                }
+            }
+        }
+        return  regimenLine;
     }
 
     private boolean programEncounterMatching(Set<Obs> obs, String conceptUuidToMatch) {

@@ -19,6 +19,7 @@
 		<th>Hepatotoxicity</th>
 		<th>Peripheral Neuropathy</th>
 		<th>Rash?</th>
+		<th>Other</th>
 		<th>Adherence Measurement</th>
 	</tr>
 	<lookup complexExpression="
@@ -41,6 +42,9 @@
 				#if ( $obs.concept==512 )
 					#set($rash=$obs.valueCoded.name)				 	
 				#end
+				#if ( $obs.concept==163190 )
+					#set($other=$obs.valueCoded.name)
+				#end
 				#if ( $obs.concept==164075 )
 					#set($adherenceMeasurement=$obs.valueCoded.name)				 	
 				#end
@@ -61,6 +65,9 @@
 		&lt;/td&gt;
 		&lt;td&gt;
 			$rash
+		&lt;/td&gt;
+	    &lt;td&gt;
+		  $other
 		&lt;/td&gt;
 		&lt;td&gt;
 			$adherenceMeasurement

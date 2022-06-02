@@ -293,7 +293,6 @@
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/heiDetailsFromDelivery.action', { patientId: patientId, now: encounterDate })
                 .done(function(data) {
                     var msg = data.gestation;
-                    console.log("Gestation ==>"+msg);
                     if(msg != ""){
                         getField('gestation.value').val(msg);
                     }else{

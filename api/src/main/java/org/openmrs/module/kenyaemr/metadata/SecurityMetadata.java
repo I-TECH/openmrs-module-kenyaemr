@@ -41,6 +41,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String MANAGE_DRUG_ORDERS = "Can service drug prescriptions";
 		public static final String MANAGE_LAB_REQUESTS = "Can service lab requests";
 		public static final String MANAGE_AIR = "Can service AIR";
+		public static final String MANAGE_LAB_MANIFEST = "Can manage viral load lab manifest";
 	}
 
 	public static final class _Role {
@@ -58,6 +59,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String PEER_EDUCATOR = "Peer Educator";
 		public static final String HIV_TESTING_COUNSELLOR = "HTS Counsellor";
 		public static final String AIR = "AIR";
+		public static final String LAB_MANIFEST = "Lab Manifest";
+		public static final String ADHERENCE_COUNSELOR = "Adherence Counselor";
 	}
 
 	/**
@@ -82,7 +85,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_DEFAULTER_TRACING,
 				EmrConstants.APP_HIV_TESTING,
 				EmrConstants.APP_PREP,
-				EmrConstants.APP_AIR
+				EmrConstants.APP_AIR,
+				EmrConstants.APP_LAB_MANIFEST,
+				EmrConstants.APP_ADHERENCE_COUNSELOR
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -96,6 +101,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		install(privilege(_Privilege.MANAGE_DRUG_ORDERS, "Can view and edit drug orders"));
 		install(privilege(_Privilege.MANAGE_LAB_REQUESTS, "Able to service lab requests"));
 		install(privilege(_Privilege.MANAGE_AIR, "Able to service AIR"));
+		install(privilege(_Privilege.MANAGE_LAB_MANIFEST, "Can manage viral load lab manifest"));
+
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
 		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
@@ -150,6 +157,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
@@ -158,7 +166,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.CLINICIAN, "Can access the registration, triage, clinician, chart and reports apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
@@ -170,6 +178,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DRUG_ORDER),
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
@@ -180,7 +189,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.DATA_CLERK, "Can access the chart, reporting and data quality apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
@@ -243,9 +252,10 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		));
 
 		install(role(_Role.LAB_TECHNICIAN, "Can access the lab requests app",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						_Privilege.VIEW_LEGACY_INTERFACE
@@ -259,6 +269,26 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						_Privilege.VIEW_LEGACY_INTERFACE,
 						_Privilege.MANAGE_AIR
+				)
+		));
+		install(role(_Role.LAB_MANIFEST, "Can access the lab manifest app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_LAB_MANIFEST),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
+		install(role(_Role.ADHERENCE_COUNSELOR, "Can access the adherence counselor app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 	}

@@ -84,6 +84,7 @@ Green Card follow-up visit form
         var SELF = 978;
         var REFILL_DOCUMENTATION = 159802;
         var TS = 161642;
+        var PREVIOUSLY_BREASTFEEDING = "<lookup expression="fn.latestObs(5632).getValueCoded()"/>"; // this is breastfeeding last obs
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
@@ -102,7 +103,7 @@ Green Card follow-up visit form
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
-
+        var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
 
         //Start on jq onready
         jq(function() {
@@ -155,7 +156,11 @@ Green Card follow-up visit form
             jq("#tbl-chronic-illness").hide();
             jq('input[type=radio].chronic-illness').prop("checked", false);
             jq("#key-population").hide();
+            jq('input[type=radio].key-population').prop("checked", false);
+            jq('input[type=radio].priority-population').prop("checked", false);
+            jq("#priority-population").hide();
             jq('#nutritional-status input[type=radio]').attr("style", "pointer-events:none;");
+            jq('#tbl-other-complaint').hide();
 //default on patient presence
             jq('.patient-details :input').prop('disabled', true);
             jq('#person-present input').click(onPersonPresentChange);
@@ -194,7 +199,16 @@ Green Card follow-up visit form
             jq("#wants-pregnancy").hide();
             jq("#tb-screening-tab").hide();
             jq("#tbl-ever-on-ipt").hide();
-//IPT OUTCOME
+//KDOD SITE
+            if(IS_KDoD_SITE==false)
+            {
+                jq('#dodOnly').hide();
+            }
+            else
+            {
+                jq('#dodOnly').show();
+            }
+//TPT OUTCOME
 
 
 
@@ -240,6 +254,8 @@ Green Card follow-up visit form
             jq('#systems-review :input[type=radio]').change(systemsReviewSelected);   //non-bool
             jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
             jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq("#complaint-field select").change(otherComplaintSelected);
+
 //Stability assessment
             jq("#stability").change(stabilitySelected);       //boolean
             jq("#returnVisitReason select").change(returnReasonSelected);       //non boolean
@@ -371,17 +387,19 @@ Green Card follow-up visit form
             /*On TB Drugs  */
             if (PATIENT_ON_TB == "true"){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
+                jq('#on-ipt input').prop("disabled", true);
+                jq('input[type=radio].on-ipt').prop("checked", false);
 // jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
                 jq(".tb-patient").text("On TB Treatment");
             }
-            /*On IPT Drugs  */
+            /*On TPT Drugs  */
             if (PATIENT_ON_IPT == 'true'){
                 jq('#on-ipt input').prop("disabled", false);
                 jq("#on-ipt input[value=1065]").prop("checked", true);
                 jq("#on-anti-tb-drugs input[value=1066]").prop("checked", true);
 //jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
 //jq('#on-ipt input[type=radio]').attr("style", "pointer-events:none;");
-                jq(".ipt-patient").text("Currently on IPT");
+                jq(".ipt-patient").text("Currently on TPT");
                 jq("#tbl-ever-on-ipt").hide();
                 jq("#tb-screening-tab").show();
                 jq("#ipt-followup").show();
@@ -463,7 +481,7 @@ Green Card follow-up visit form
                     iptInitiationTab.hide();
                     clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
                 }
-                if (patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on IPT all screening No responses are checked: total radios / 2
+                if (patientCurrentlyOnIPT == YES_CONCEPT_ID &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on TPT all screening No responses are checked: total radios / 2
                     iptClientWorkupTab.hide();
                     tbScreeningResults.show();
                     jq("#tb-result-status input[value=1660]").prop("checked", true);
@@ -472,7 +490,7 @@ Green Card follow-up visit form
                     iptInitiationTab.hide();
                     clearRadios([actionTakenTab, iptFollowup, tbRxdate, tbRegimen]);
                 }
-                if (PATIENT_ON_IPT == 'true' &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on IPT from velocity all screening No responses are checked: total radios / 2
+                if (PATIENT_ON_IPT == 'true' &amp;&amp; screeningNoResponses.length == screeningRadios.length / 2 ) { // check if patient currently on TPT from velocity all screening No responses are checked: total radios / 2
                     iptClientWorkupTab.hide();
                     tbScreeningResults.show();
                     jq("#tb-result-status input[value=1660]").prop("checked", true);
@@ -510,7 +528,7 @@ Green Card follow-up visit form
                 var showIPTInitiationTab = false;
                 var iptClientWorkupYesResponses = [];
                 var iptClientWorkupNoResponses = [];
-//Fetch responses for the IPT client workup questions
+//Fetch responses for the TPT client workup questions
                 jq.each(iptClientWorkupRadios, function() {
                     const YELLOWURINE = 162311;
                     const NUMBNESS = 132652;
@@ -572,7 +590,7 @@ Green Card follow-up visit form
             jq("#btnShowIptFollowupDialog").click(function(e){ // ipt followup
                 e.preventDefault();
                 jq("#dlgIptFollowup").dialog({bgiframe: true,
-                    title : "Record IPT follow-up information",
+                    title : "Record TPT follow-up information",
                     buttons: {
                         "Save": recordIptFollowupInformation,
                         "Cancel": function () {
@@ -584,12 +602,12 @@ Green Card follow-up visit form
                     modal: true });
             });
 
-            jq("#btnShowIptOutcomeDialog").click(function(e){ // ipt outcome
+            jq("#btnShowIptOutcomeDialog").click(function(e){ // tpt outcome
                 e.preventDefault();
                 jq("#dlgIptOutcome").dialog({bgiframe: true,
-                    title : "Discontinue patient in IPT program",
+                    title : "Discontinue patient in TPT program",
                     buttons: {
-                        "Discontinue IPT": discontinuePatientInIpt,
+                        "Discontinue TPT": discontinuePatientInIpt,
                         "Cancel": function () {
                             jq("#dlgIptOutcome").dialog("close");
                         }
@@ -602,9 +620,9 @@ Green Card follow-up visit form
             jq("#btnEnrollInIptProgram").click(function(e){ // ipt outcome
                 e.preventDefault();
                 jq("#dlgIptInitiation").dialog({bgiframe: true,
-                    title : "Initiate patient in IPT",
+                    title : "Initiate patient in TPT",
                     buttons: {
-                        "Confirm IPT Initiation": enrollPatientToIPTProgram,
+                        "Confirm TPT Initiation": enrollPatientToIPTProgram,
                         "Cancel": function () {
                             jq("#dlgIptInitiation").dialog("close");
                         }
@@ -613,9 +631,27 @@ Green Card follow-up visit form
                     width: 900,
                     modal: true });
             });
+            // Prepopulate weight and height if added through other forms on the same encounter date
+            //Form such as Triage form
+            var encounterDate = getValue('encounter-date.value');
+
+            var recentWeightDate = "<lookup expression="fn.latestObs(5089).getObsDatetime()"/>"
+            var recentWeightValue = "<lookup expression="fn.latestObs(5089).getValueNumeric()"/>"
+            var recentHeightDate = "<lookup expression="fn.latestObs(5090).getObsDatetime()"/>"
+            var recentHeightValue = "<lookup expression="fn.latestObs(5090).getValueNumeric()"/>"
+            var isRecentWeightDateSameAsEncounterDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(recentWeightDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'),'day');
+            if (isRecentWeightDateSameAsEncounterDate) {
+                setValue('weight.value', recentWeightValue);
+            }
+            var isRecentHeightDateSameAsEncounterDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(recentHeightDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'),'day');
+            if (isRecentHeightDateSameAsEncounterDate) {
+                setValue('height.value', recentHeightValue);
+            }
+
+
         });   //End of JQuery onReady function
 
-
+      
         // get count of patients booked on a date
         function getPatientsBookedOnDate() {
             var tca_date = jq('#returnVisitDate input[type=hidden]').val();
@@ -626,7 +662,7 @@ Green Card follow-up visit form
             });
         }
 
-        //----------------------------------- IPT handlers ------------------------
+        //----------------------------------- TPT handlers ------------------------
 
         function discontinuePatientInIpt() {
             var selIptDisReason = jq("#iptDiscReason").val();
@@ -639,7 +675,7 @@ Green Card follow-up visit form
             }
 
             if(selIptDisReason == null || selIptDisReason == "") {
-                jq('#iptDiscontinueReason').text('IPT discontinuation reason required').addClass("ke-error-label");
+                jq('#iptDiscontinueReason').text('TPT discontinuation reason required').addClass("ke-error-label");
 
             } else if (txtDiscAction == null || txtDiscAction == "") {
                 jq('#iptDiscActionTaken').text('Action taken required').addClass("ke-error-label");
@@ -683,13 +719,13 @@ Green Card follow-up visit form
                 encDate = new Date();
             }
             if(iptCollectionDate =="" ||iptCollectionDate == null ) {
-                jq('#collectedDate').text('IPT collection date required').addClass("ke-error-label");
+                jq('#collectedDate').text('TPT collection date required').addClass("ke-error-label");
             }
             else if(iptDueDate =="" ||iptDueDate ==null ) {
-                jq('#ipt-due-date').text('IPT due date required').addClass("ke-error-label");
+                jq('#ipt-due-date').text('TPT due date required').addClass("ke-error-label");
             }
             else if(iptHepatoxicity =="" ||iptHepatoxicity == null ) {
-                jq('#hepatotoxity').text('IPT hepatotoxity required').addClass("ke-error-label");
+                jq('#hepatotoxity').text('TPT hepatotoxity required').addClass("ke-error-label");
             }
             else if(iptNeuropathy =="" ||iptNeuropathy == null ) {
                 jq('#neuropathy-peripheral').text(' Neuropathy required').addClass("ke-error-label");
@@ -698,7 +734,7 @@ Green Card follow-up visit form
                 jq('#patient-rash').text('Rash required').addClass("ke-error-label");
             }
             else if(iptAdherence =="" ||iptAdherence == null ) {
-                jq('#adherencemes').text('IPT adherence measurement required').addClass("ke-error-label");
+                jq('#adherencemes').text('TPT adherence measurement required').addClass("ke-error-label");
             }else {
 
                 jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/addIptFollowup.action', {
@@ -727,7 +763,7 @@ Green Card follow-up visit form
         }
 
 
-        // enroll patient in IPT program
+        // enroll patient in TPT program
 
         function enrollPatientToIPTProgram() {
             var patientId = <lookup expression="patient.patientId"/>;
@@ -756,7 +792,7 @@ Green Card follow-up visit form
                     }
                 });
             }else {
-                jq('#lblIptIndicationOptions').text('Indication for IPT is required.').addClass("ke-error-label");
+                jq('#lblIptIndicationOptions').text('Indication for TPT is required.').addClass("ke-error-label");
 
             }
         }
@@ -817,6 +853,12 @@ Green Card follow-up visit form
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
+   //If client is > 19 years prepopluate height
+            if (pAge &gt; 19 &amp;&amp; heightM !="") {
+                getField('height.value').val(heightM*100);
+            }else{
+                getField('height.value').val("");
+            }
             if (pAge &gt; 14) {
                 if (weightKg >0 &amp;&amp; heightM >0) {
                     bmi = weightKg / (heightM * heightM);
@@ -860,7 +902,7 @@ Green Card follow-up visit form
             }else  {
                 jq('#good-adherence:text').val("N/A");
             }
-//6. Completed 6 months IPT
+//6. Completed 6 months TPT
             if(IPT_COMPLETED == 'true') {
                 jq('#ipt-completion:text').val("YES");
             }else{
@@ -873,7 +915,7 @@ Green Card follow-up visit form
                 jq('#pregnant:text').val("NO");
             }
 //8. breast feeding
-            if(PATIENT_BREASTFEEDING == 'true') {
+           if(PREVIOUSLY_BREASTFEEDING == 1065 || PATIENT_BREASTFEEDING == 'true') {
                 jq('#breast-feeding:text').val("YES");
             }else{
                 jq('#breast-feeding:text').val("NO");
@@ -881,6 +923,7 @@ Green Card follow-up visit form
         }
         function onLmpChange() {
             jq('#pregnancyOption :input').prop('disabled', false);
+            jq('#breastfeeding :input').prop('disabled', false);
         }
         //Ckeckbox to remove pregnancy details
         function onMenopauseClick() {
@@ -958,6 +1001,7 @@ Green Card follow-up visit form
             var otherVaccSelected = jq('#otherVacc');
             var hasMenses = jq('#hasLMP');
             var pregOption = jq('#pregnancyOption');
+            var breastfeedingOption = jq('#breastfeeding');
             var preIntention = jq('#pregnancyIntention');
             var generalExamSelected = jq('#general-exam-findings');
             var systemsFindingsSelected = jq('#systems-review');
@@ -1000,7 +1044,7 @@ Green Card follow-up visit form
                 jq('#greencard').smartWizard('enableFinish', true);
                 clearRadios([popType, keyPop, whoAdult, whoChild, nutStatus, complaintsToday, onAntTb, onIPTDrugs, everOnIPTDrugs, tbScreeningAnswers,
                     workupAnswers, iptStatus, tBtestsOrdered, tBtestResults, startantiTb, tbRegimen, allergiesSelected, chronicIllnessSelected, adverseReactionsSelected,
-                    adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
+                    adultVaccSelected, childVaccSelected, otherVaccSelected, hasMenses, pregOption, breastfeedingOption, preIntention, familyPlanning, onfamilyPlanning, notOnfamilyPlanning, generalExamSelected, systemsFindingsSelected,
                     skinFindingsSelected, eyeFindingsSelected, entFindingsSelected, chestFindingsSelected, cvsFindingsSelected, abdomenFindingsSelected, cnsFindingsSelected, gusFindingsSelected, stabilityAssessment]);
                 jq('#weight input').val('');
                 jq('#height input').val('');
@@ -1026,6 +1070,7 @@ Green Card follow-up visit form
                 jq('#resp input').val('');
                 jq('#oxygen input').val('');
                 jq('#tbrxdate input').val('');
+                jq('#obs-other-complaint input').val('');
             }
         }
         function onVisitScheduledChange() {
@@ -1072,6 +1117,14 @@ Green Card follow-up visit form
                 getField('complaint-field.error').html('Please specify the complaints.').hide();
             }else {
                 jq("#tbl-complaints-today").show();
+            }
+        }
+        var otherComplaintSelected = function () {
+            var selectedComplaint = getField('complaint-field.value').val();
+            if (selectedComplaint == 5622){
+                jq('#tbl-other-complaint').show();
+            }else{
+                jq('#tbl-other-complaint').hide();
             }
         }
         var complaintDurationInput = function() {
@@ -1251,7 +1304,7 @@ Green Card follow-up visit form
             var iptInitiationTab = jq('#ipt-initiation');
             var iptEnrollmentTab = jq('#ipt-enrollment');
             if(val == 1066) {
-                // show TB screening, TB results and IPT workup forms
+                // show TB screening, TB results and TPT workup forms
                 tbScreeningTab.show();
                 tbScreeningResults.hide();
                 iptClientWorkupTab.hide();
@@ -1279,12 +1332,20 @@ Green Card follow-up visit form
         var populationTypeSelected = function () {
             var val = jq(this).val();
             var keypop = jq('#key-population');
+            var pripop = jq('#priority-population');
             if (val == 164929 ){
                 jq("#key-population").show();
+                jq("#priority-population").hide();
+            }
+            if (val == 138643 ){
+                jq("#priority-population").show();
+                jq("#key-population").hide();
             }
             if(val == 164928){
                 jq("#key-population").hide();
-                clearHiddenSections([keypop]);
+                jq("#priority-population").hide();
+                clearHiddenSections(keypop);
+                clearHiddenSections(pripop);
             }
         }
         //Resulting TB status for Ordered test
@@ -1862,6 +1923,8 @@ Green Card follow-up visit form
             var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
             var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
+            var patientWeight =getValue('weight.value');
+            var patientHeight =getValue('height.value');
             var populationType =getValue('population-type.value');
             var adultWhoStage =getField('whoStage-adult.value').val();
             var childWhoStage =getField('whoStage-child.value').val();
@@ -1879,6 +1942,20 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('person-present.error').html('Please specify person present').hide();
+            }
+            if (patientWeight == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('weight.error').html('Please specify patient weight').show();
+                return false;
+            }else{
+                getField('weight.error').html('Please specify patient weight').hide();
+            }
+            if (patientHeight == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('height.error').html('Please specify patient height').show();
+                return false;
+            }else{
+                getField('height.error').html('Please specify patient height').hide();
             }
             if (populationType == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
@@ -1925,6 +2002,7 @@ Green Card follow-up visit form
             var recentLMPPresent = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
             var menopause = getValue('menopause.value');
             var isPregnant = getValue('pregnancyOption.value');
+            var isBreastfeeding = getValue('breastfeeding.value');
             var pregnancyIntention = getValue('pregnancyIntention.value');
             var onfpMethodChecked = getField('fplanning.value').val();
             var fpMethodsChecked = jq("#onFp input:checkbox:checked");
@@ -1974,18 +2052,18 @@ Green Card follow-up visit form
             }
             if (onAntiTbDrugs == 1066 &amp;&amp; onIpt == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                getField('on-ipt.error').html('Please specify if patient is currently on IPT.').show();
+                getField('on-ipt.error').html('Please specify if patient is currently on TPT.').show();
                 return false;
             }else{
-                getField('on-ipt.error').html('Please specify if patient is currently on IPT.').hide();
+                getField('on-ipt.error').html('Please specify if patient is currently on TPT.').hide();
             }
             if (onAntiTbDrugs == 1066 &amp;&amp; onIpt == 1066 &amp;&amp; everOnIpt == false) {
                 jq("#tbl-ever-on-ipt").show();    //show ever on ipt that was previously hidden
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                getField('ever-on-ipt.error').html('Please specify if patient has ever been on IPT.').show();
+                getField('ever-on-ipt.error').html('Please specify if patient has ever been on TPT.').show();
                 return false;
             }else{
-                getField('ever-on-ipt.error').html('Please specify if patient has ever been on IPT.').hide();
+                getField('ever-on-ipt.error').html('Please specify if patient has ever been on TPT.').hide();
             }
 //If neither yes nor no repsonsed recorder
             if (onAntiTbDrugs == 1066 &amp;&amp;  onIpt == 1066 &amp;&amp; screeningYesResponses.length == 0 &amp;&amp; screeningNoResponses.length == 0 ) {
@@ -2020,7 +2098,7 @@ Green Card follow-up visit form
             var isIPTEventDateBeforeEncounter = moment(moment(moment(new Date(), 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(iptEventDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
             if (isIPTEventDateBeforeEncounter) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
-                getField('ipt-event-type.error').html('IPT outcome date, should  not be in future').show();
+                getField('ipt-event-type.error').html('TPT outcome date, should  not be in future').show();
                 return false;
             }
             if (knownAllergies == false &amp;&amp; personPresent == SELF) {
@@ -2093,6 +2171,13 @@ Green Card follow-up visit form
                     return false;
                 } else {
                     getField('pregnancyOption.error').html('Please specify if patient is pregnant.').hide();
+                }
+                if (patientHasLMP == 1065 &amp;&amp; isBreastfeeding == false &amp;&amp; menopause != 113928) {
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('breastfeeding.error').html('Please specify if patient is breast feeding.').show();
+                    return false;
+                } else {
+                    getField('breastfeeding.error').html('Please specify if patient is breast feeding.').hide();
                 }
                 if (patientHasLMP == 1066 &amp;&amp; onfpMethodChecked == false) {
                     jq('#fp-details').show();
@@ -2258,6 +2343,19 @@ Green Card follow-up visit form
             }else{
                 getField('stability.error').html('Please specify stability status.').hide();
             }
+
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "true" &amp;&amp; fastTrackCareError == "") {
+                getField('fast-track.error').html('Please specify differentiated care model.').show();
+                return false;
+            }else{
+                getField('fast-track.error').html('Please specify differentiated care model.').hide();
+            }
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "false" &amp;&amp; standardCareError == "") {
+                getField('standard.error').html('Please specify differentiated care model.').show();
+                return false;
+            }else{
+                getField('standard.error').html('Please specify differentiated care model.').hide();
+            }
             if (tca_date == "") {
                 getField('returnVisitDate.error').html('Please specify return visit date for patient.').show();
                 return false;
@@ -2368,6 +2466,7 @@ Management<br />
                             var keypop = getValue('population-type.value');
                             var everOnIPT = getValue('ever-on-ipt.value');
                             var complaintsToday = getValue('complaints-today.value');
+                            var selectedComplaint = getField('complaint-field.value').val();
                             var knownAllergies = getValue('known-allergies.value');
                             var chronicIllness = getValue('chronic-illness.value');   //non boolean
                             var adverseReactions = getValue('adverse-reactions.value');   // boolean
@@ -2395,6 +2494,7 @@ Management<br />
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
                                 jq('#standard select').prop('disabled', false);
+                                getField('standard.value').prop("selectedIndex", 1);
                                 jq('#fast-track select').prop('disabled', true);
                             }else {
                                 jq("#tbl-fast-track").show();
@@ -2425,10 +2525,14 @@ Management<br />
                                 jq('#greencard').smartWizard('goToStep', 4);
                                 jq('#greencard').smartWizard('enableFinish', true);
                             }
-//if key pop show which type
-                            if (keypop == 164929 ){
-                                jq("#key-population").show();
-                            }else{
+                            //if key pop show which type
+                            var popTypeSelected = getValue('population-type.value');
+                            if (popTypeSelected == 164929 ){
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                            }
+                            if (popTypeSelected == 138643 ){
+                                jq("#priority-population").show();
                                 jq("#key-population").hide();
                             }
 //If any checked  complaints allergies chronic illness and adverse events
@@ -2436,6 +2540,11 @@ Management<br />
                                 jq("#tbl-complaints-today").show();
                             }else{
                                 jq("#tbl-complaints-today").hide();
+                            }
+                            if (selectedComplaint == 5622){
+                                jq("#tbl-other-complaint").show();
+                            }else{
+                                jq("#tbl-other-complaint").hide();
                             }
                             if (knownAllergies == 'true'){
                                 jq("#tbl-known-allergies").show();
@@ -2631,6 +2740,7 @@ Management<br />
                             <td>
                                 <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 kg
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                             <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                             <td rowspan="4">
@@ -2648,6 +2758,7 @@ Management<br />
                             <td>
                                 <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 cm
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                             <td><span class="value"><recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
@@ -2673,8 +2784,8 @@ Management<br />
                     <div>
                         Population type :  <span style="color:red;"><strong>*</strong></span> &#160;&#160;
                         <obs conceptId="164930"
-                             answerConceptIds="164928,164929"
-                             answerLabels="General Population,Key Population" id="population-type"
+                             answerConceptIds="164928,164929,138643"
+                             answerLabels="General Population,Key Population,Priority Population" id="population-type"
                              style="radio" />
                     </div>
                     <table id="key-population">
@@ -2682,6 +2793,8 @@ Management<br />
                             <td>
                                 <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabel="People who inject drugs" style="checkbox" /><br/>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165100"
+                                     answerLabel="Transgender" style="checkbox" /><br/>
                                 <includeIf velocityTest="$patient.gender == 'M'">
                                     <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160578AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabel="Men who have sex with men" style="checkbox" /><br/>
@@ -2690,9 +2803,32 @@ Management<br />
                                     <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160579AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabel="Female sex worker" style="checkbox" id="female-sex-worker" /><br/>
                                 </includeIf>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="People in prison and other closed settings" style="checkbox"  id="prisoner"/><br/>
                             </td>
                         </tr>
                     </table>
+                    <table id="priority-population">
+                     <tr>
+                      <td>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159674AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Fisher folk" style="checkbox" /><br/>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Truck driver" style="checkbox" /><br/>
+                        <includeIf velocityTest="$patient.gender == 'F'">
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabel="Adolescent and young girls" style="checkbox" id="adyg" /><br/>
+                        </includeIf>
+                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Prisoner" style="checkbox" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Not applicable" style="checkbox" id="other" /><br/>
+                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
+                             answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
+
+                    </td>
+                   </tr>
+                   </table>
                 </fieldset>
                 <!-- WHO staging -->
                 <fieldset class="patient-details">
@@ -2772,6 +2908,16 @@ Management<br />
                             <render n="5" concept="complaint"/>
                         </repeat>
                     </table>
+                    <table id="tbl-other-complaint">
+                        <tr>
+                            <th  style="color: #888" >Specify other complaints</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <obs conceptId="165250" rows="3" cols="80" id="obs-other-complaint"/>
+                            </td>
+                        </tr>
+                    </table>
                     <table>
                         <tr>
                             <th  style="color: #888" >Clinical Notes</th>
@@ -2813,7 +2959,7 @@ Management<br />
                         </tr>
                         <tr id="currently-onIpt">
                             <td>
-                                Patient currently on IPT? &#160;&#160;
+                                Patient currently on TPT? &#160;&#160;
                                 <obs conceptId="164949"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabel="Yes,No"
@@ -2827,7 +2973,7 @@ Management<br />
                     <table id="tbl-ever-on-ipt">
                         <tr id="ever-taken-ipt">
                             <td>
-                                Patient ever on IPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                Patient ever on TPT? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                 <obs conceptId="164950"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabel="Yes,No"
@@ -2926,7 +3072,7 @@ Management<br />
                                 <td><obs conceptId="163414" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                             </tr>
                             <tr>
-                                <td>Evaluated for IPT:</td>
+                                <td>Evaluated for TPT:</td>
                                 <td><obs conceptId="162275AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" /></td>
                             </tr>
                         </table>
@@ -2967,7 +3113,7 @@ Management<br />
                         </table>
                     </fieldset>
                     <fieldset id="ipt-client-workup">
-                        <legend>Isoniazid Preventive Therapy (IPT) Client Workup</legend>
+                        <legend>Tuberculosis Preventive Therapy (TPT) Client Workup</legend>
                         <table id="ipt-workup">
                             <tr>
                                 <td colspan="2" class="ke-panel-header">Ask for the following</td>
@@ -2995,10 +3141,10 @@ Management<br />
                             </obsgroup>
                         </table>
                     </fieldset>
-                    <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for IPT Initiation</span>
+                    <div id="ipt-initiation" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Candidate for TPT Initiation</span>
                         <table>
                             <tr>
-                                <td><button type="button" class="ke-program-followup-button" id="btnEnrollInIptProgram">Start IPT</button></td>
+                                <td><button type="button" class="ke-program-followup-button" id="btnEnrollInIptProgram">Start TPT</button></td>
                                 <td><label id="lblIptEnrollmentStatus"></label></td>
                             </tr>
                         </table>
@@ -3007,13 +3153,15 @@ Management<br />
                         <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                         <table>
                             <tr>
-                                <td>Indication for IPT</td>
+                                <td>Indication for TPT</td>
                                 <td>
                                     <select id="indicationForIpt">
                                         <option value="" selected="true">Select indication</option>
-                                        <option value="138571">HIV Positive</option>
-                                        <option value="162277">In prison</option>
-                                        <option value="162278">Child exposed to tuberculosis</option>
+                                        <option value="138571">PLHIV</option>
+                                        <option value="162277">Prison setting</option>
+                                        <option value="162278">Household contact</option>
+                                        <option value="1555">HCW and other Facility staff</option>
+                                        <option value="5619">Other clinical risk group</option>
                                     </select>
                                 </td>
                                 <td><label id="lblIptIndicationOptions"></label></td>
@@ -3024,17 +3172,17 @@ Management<br />
 
 
 
-                <div id="ipt-enrollment" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Kindly Enroll in IPT Program to Record Followup Details</span> </div>
+                <div id="ipt-enrollment" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Kindly Enroll in TPT Program to Record Followup Details</span> </div>
 
                 <fieldset id="ipt-followup">
-                    <legend>IPT Followup</legend>
+                    <legend>TPT Followup</legend>
 
                     <br />
                     <br/>
                     <table border="0" style="border-spacing: 8px">
                         <tr>
-                            <td><button type="button" id="btnShowIptFollowupDialog" class="ke-program-followup-button">Record IPT Followup Details</button></td>
-                            <td><button type="button" id="btnShowIptOutcomeDialog" class="ke-program-outcome-button">Record IPT Outcome</button></td>
+                            <td><button type="button" id="btnShowIptFollowupDialog" class="ke-program-followup-button">Record TPT Followup Details</button></td>
+                            <td><button type="button" id="btnShowIptOutcomeDialog" class="ke-program-outcome-button">Record TPT Outcome</button></td>
                             <td  align="left"><label id="lblIptCompletionState"/></td>
 
                         </tr>
@@ -3046,17 +3194,17 @@ Management<br />
                         <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                         <table>
                             <tr>
-                                <td>IPT Due Date</td>
+                                <td>TPT Due Date</td>
                                 <td><input type="text" size="10" id="txtIptDueDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errortxtIptDueDate"></span></td>
                                 <td><label id="ipt-due-date"></label></td>
                             </tr>
                             <tr>
-                                <td>Date collected IPT</td>
+                                <td>Date collected TPT</td>
                                 <td><input type="text" size="10" id="txtIptCollectionDate" autocomplete="off"/><span class="error field-error" style="display: none" id="errtxtIptCollectionDate"></span></td>
                                 <td><label id="collectedDate"></label></td>
                             </tr>
                             <tr>
-                                <td>Hepatotoxity?  <br/> (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
+                                <td>Hepatotoxicity?  <br/> (Vomiting, persistent irritability, abdominal pain, RUQ pain, yellow urine or eyes)</td>
                                 <td><input type="radio" name="rdoHepatoxicity" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
                                     <input type="radio" name="rdoHepatoxicity" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
                                     <span class="error field-error" style="display: none" id="rdoHepatoxicity"></span>
@@ -3079,6 +3227,14 @@ Management<br />
                                     <input type="radio" name="rdoRash" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
                                     <span class="error field-error" style="display: none" id="rdoRash"></span></td>
                                 <td><label id="patient-rash"></label></td>
+                            </tr>
+                            <tr>
+                                <td>Others e.g. gastrointestinal disturbances</td>
+                                <td>
+                                    <input type="radio" name="rdoOther" value="1065" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>Yes</label>
+                                    <input type="radio" name="rdoOther" value="1066" onmousedown="radioDown(this)" onclick="radioClicked(this)"/><label>No</label>
+                                    <span class="error field-error" style="display: none" id="rdoOther"></span></td>
+                                <td><label id="patient-other"></label></td>
                             </tr>
                             <tr>
                                 <td>Adherence Measurement <br/>Good= missed &lt;3 doses/month Fair=missed 4-8 doses/month Poor= missed 9 doses/month</td>
@@ -3109,13 +3265,15 @@ Management<br />
                                 <td>
                                     <select id="iptDiscReason">
                                         <option value="" selected="true">Select reason</option>
-                                        <option value="1267">Completed</option>
+                                        <option value="1267">Treatment completed</option>
                                         <option value="5240">Lost to followup</option>
                                         <option value="159836">Discontinue</option>
                                         <option value="160034">Died</option>
                                         <option value="159492">Transferred out</option>
-                                        <option value="112141">TB infected</option>
-                                        <option value="102">Drug toxicity</option>
+                                        <option value="112141">Active TB Disease - ATB</option>
+                                        <option value="102">Adverse drug reaction - ADR</option>
+                                        <option value="159598">Poor adherence - PA</option>
+                                        <option value="5622">Others - OTR</option>
                                     </select>
                                 </td>
                                 <td><label id="iptDiscontinueReason"></label></td>
@@ -3368,7 +3526,7 @@ Management<br />
                         <table id="if-patient-pregnant">
                             <tr>
                                 <td>
-                                    <strong>Patient Pregnant?:  <span style="color:red;">*</span></strong>
+                                    <strong>Patient Pregnant?  <span style="color:red;">*</span></strong>
                                     <obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          labelText="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -3376,6 +3534,19 @@ Management<br />
                                 </td>
                                 <td>
                                     <span class="value"><recentObs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Patient Breastfeeding? <span style="color:red;">*</span></strong>
+                                    <obs conceptId="5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         labelText="&#160;&#160;&#160;&#160;&#160;&#160;"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes,No"
+                                         style="radio" id="breastfeeding" />
+                                </td>
+                                <td>
+                                    <span class="value"><recentObs conceptId="5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                                 </td>
                             </tr>
                         </table>
@@ -4058,7 +4229,7 @@ Management<br />
                                     <tr>
                                         <td>Good adherence in the last 6 months</td>
                                         <td><input type="text" name="good-adherence" id="good-adherence" readonly="True" /></td>
-                                        <td>Completed 6 months IPT</td>
+                                        <td>Completed 6 months TPT</td>
                                         <td><input type="text" name="ipt-completion" id="ipt-completion" readonly="True" /></td>
                                     </tr>
 
@@ -4118,6 +4289,7 @@ Management<br />
                                      style="dropdown"
                                      answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
                                 />
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                         <tr id="tbl-standard">
@@ -4128,6 +4300,7 @@ Management<br />
                                      style="dropdown"
                                      answerLabels="Standard Care"
                                 />
+                                <span style="color:red;"><strong>*</strong></span>
                             </td>
                         </tr>
                     </table>

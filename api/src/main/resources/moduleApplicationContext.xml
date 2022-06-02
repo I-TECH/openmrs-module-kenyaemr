@@ -26,6 +26,7 @@
 	<import resource="content/kenyaemr.ipt.xml" />
 	<import resource="content/kenyaemr.otz.xml" />
 	<import resource="content/kenyaemr.ovc.xml" />
+	<import resource="content/kenyaemr.vmmc.xml" />
 
 	<!-- ===================== App descriptors ===================== -->
 
@@ -51,6 +52,14 @@
 		<constructor-arg value="kenyaemr/hivTesting/htsHome.page" />
 		<constructor-arg value="kenyaui:apps/hts.png" />
 		<constructor-arg value="250" />
+	</bean>
+
+	<bean id="kenyaemr.app.counselling" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.counselling" />
+		<constructor-arg value="Adherence Counselling" />
+		<constructor-arg value="kenyaemr/adherenceCounselling/counsellingHome.page" />
+		<constructor-arg value="kenyaemr:apps/counselling.png" />
+		<constructor-arg value="255" />
 	</bean>
 
 	<bean id="kenyaemr.app.clinician" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
@@ -123,6 +132,14 @@
 		<constructor-arg value="kenyaemr/admin/adminHome.page" />
 		<constructor-arg value="kenyaui:apps/admin.png" />
 		<constructor-arg value="800" />
+	</bean>
+
+	<bean id="kenyaemr.app.upiVerification" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.upiVerification" />
+		<constructor-arg value="UPI Verification" />
+		<constructor-arg value="kenyaemr/upi/upiVerificationHome.page" />
+		<constructor-arg value="kenyaemr:apps/upi.png" />
+		<constructor-arg value="840" />
 	</bean>
 
 	<bean id="kenyaemr.app.developer" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
@@ -207,7 +224,7 @@
 		<property name="moduleService">
 			<list>
 				<value>org.openmrs.module.kenyaemr.api.KenyaEmrService</value>
-				<ref local="kenyaEmrService"/>
+				<ref bean="kenyaEmrService"/>
 			</list>
 		</property>
 	</bean>

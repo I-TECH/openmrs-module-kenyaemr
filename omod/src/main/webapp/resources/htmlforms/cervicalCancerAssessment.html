@@ -1,0 +1,88 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true" />
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<!-- add content here   -->
+		<fieldset>
+			<legend>Cervical cancer screening assessment form</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Have you been screened for cervical cancer within the past one year:</td>
+					<td>
+						<obs conceptId="164934" id="screened_before" answerConceptIds="1065,1066" required="true"
+							style="radio" />
+					</td>
+				</tr>
+				<tr>
+					<td>Refer for screening? </td>
+					<td>
+						<obs conceptId="165391" id="refer_for_screening" answerConceptIds="1065,1066" required="true" style="radio" />
+					</td>
+				</tr>
+				<tr>
+					<td>Name of Reviewing Officer</td>
+					<td>
+						<encounterProvider role="Provider" type="autocomplete" />
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>
