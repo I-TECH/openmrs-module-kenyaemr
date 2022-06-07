@@ -43,6 +43,7 @@ public class EmrConstants {
 	public static final String APP_AIR = FACILITY_REPORTING_MODULE_ID + ".facilityReporting.air";
 	public static final String APP_LAB_MANIFEST = MODULE_ID + ".labmanifest";
 	public static final String APP_ADHERENCE_COUNSELOR = MODULE_ID + ".counselling";
+	public static final String APP_UPI_VERIFICATION = MODULE_ID + ".upiVerification";
 
 
 	/**
