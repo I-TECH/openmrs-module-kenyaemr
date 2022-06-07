@@ -61,6 +61,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String AIR = "AIR";
 		public static final String LAB_MANIFEST = "Lab Manifest";
 		public static final String ADHERENCE_COUNSELOR = "Adherence Counselor";
+		public static final String UPI_VERIFICATION = "Upi verification";
 	}
 
 	/**
@@ -87,7 +88,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_PREP,
 				EmrConstants.APP_AIR,
 				EmrConstants.APP_LAB_MANIFEST,
-				EmrConstants.APP_ADHERENCE_COUNSELOR
+				EmrConstants.APP_ADHERENCE_COUNSELOR,
+				EmrConstants.APP_UPI_VERIFICATION
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -124,7 +126,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
-						app(EmrConstants.APP_AIR)
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_UPI_VERIFICATION)
 				)
 		));
 
@@ -138,6 +141,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_UPI_VERIFICATION),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -182,6 +186,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_UPI_VERIFICATION),
 						_Privilege.MANAGE_DRUG_ORDERS,
 						_Privilege.VIEW_LEGACY_INTERFACE,
 						_Privilege.MANAGE_AIR
@@ -202,6 +207,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_UPI_VERIFICATION),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -288,6 +294,18 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+		install(role(_Role.UPI_VERIFICATION, "Can access the upi verification app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						app(EmrConstants.APP_UPI_VERIFICATION),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));

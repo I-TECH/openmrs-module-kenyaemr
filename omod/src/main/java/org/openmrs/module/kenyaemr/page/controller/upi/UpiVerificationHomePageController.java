@@ -24,7 +24,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import java.util.ArrayList;
 import java.util.List;
 
-@AppPage(EmrConstants.APP_REGISTRATION)
+@AppPage(EmrConstants.APP_UPI_VERIFICATION)
 public class UpiVerificationHomePageController {
 
     public void get(@SpringBean KenyaUiUtils kenyaUi, UiUtils ui, PageModel model) {
