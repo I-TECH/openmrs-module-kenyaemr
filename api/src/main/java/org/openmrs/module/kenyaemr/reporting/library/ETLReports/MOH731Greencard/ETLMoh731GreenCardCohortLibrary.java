@@ -294,12 +294,13 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     /**
-     * Patients screened for TB within the reporting period
+     * Patients screened for TB in the last visit
      * @return
      */
     public CohortDefinition screenedForTbWithinPeriod() {
 // look all active in care who were screened for tb
-        String sqlQuery = "select tb.patient_id from kenyaemr_etl.etl_tb_screening tb where tb.visit_date between date(:startDate) and date(:endDate) and tb.resulting_tb_status in (1660,1662,142177) group by tb.patient_id;";
+        String sqlQuery = "select tb.patient_id from kenyaemr_etl.etl_tb_screening tb group by tb.patient_id\n" +
+                "having mid(max(concat(tb.visit_date,tb.resulting_tb_status)),11) in (1660,1662,142177);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("tbScreening");
         cd.setQuery(sqlQuery);
