@@ -941,10 +941,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 var gender;
                 if(jQuery('input[name=gender]').val() !="") {
                     jQuery("#gender-msgBox").hide();
-                    if (jQuery('input[name=gender]').val() == "F") {
+                    if (jQuery('#gender-F').is(':checked')) {
                         gender = "female";
                     }
-                    if (jQuery('input[name=gender]').val() == "M") {
+                    if (jQuery('#gender-M').is(':checked')) {
                         gender = "male";
                     }
                 }else{
