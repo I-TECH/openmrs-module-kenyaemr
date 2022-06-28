@@ -77,6 +77,7 @@
 				<ref bean="kenyaemr.common.report.clients.diedofCovid19"/>
 				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
 				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
+				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 			</set>
 		</property>
 	</bean>
@@ -735,6 +736,18 @@
 		<property name="name" value="Clinical Action Report (CAR)" />
 		<property name="description" value="Summaries and line-lists intended to improve care quality, avoid errors or adverse events and improve efficiency in HIV care provision." />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+	</bean>
+
+	<bean id="kenyaemr.common.report.mortalityLineList" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="8c33bfa0-0737-4688-84bc-38c5ce37855b" />
+		<property name="name" value="Mortality Linelist" />
+		<property name="description" value="A comprehensive line list deceased patients over a period of time" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:deceased_patients_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:deceasedPatients" />
 	</bean>
 
 </beans>
