@@ -11,6 +11,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.publicHealthActionReport;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -130,5 +131,55 @@ public class PublicHealthActionIndicatorLibrary {
      */
     public CohortIndicator txCurrclientsWithoutNUPI() {
         return cohortIndicator("TX_Curr Clients without NUPI", ReportUtils.map(cohortLibrary.txCurrclientsWithoutNUPI(), ""));
+    }
+
+    /**
+     * Number died due to HIV disease resulting in TB
+     * @return the indicator
+     */
+    public CohortIndicator hivDieaseResultingInTB(Integer tb) {
+        return cohortIndicator("HIV_Disease_resulting_in_TB", ReportUtils.map(cohortLibrary.causeOfDeath(tb), ""));
+    }
+    /**
+     * Number died due to HIV disease resulting in cancer
+     * @return the indicator
+     */
+    public CohortIndicator hivDieaseResultingInCancer(Integer cancer) {
+        return cohortIndicator("HIV_Disease_resulting_in_cancer", ReportUtils.map(cohortLibrary.causeOfDeath(cancer), ""));
+    }
+    /**
+     * Number died due to HIV disease resulting in other infectious and parasitic diseases
+     * @return the indicator
+     */
+    public CohortIndicator otherInfectiousAndParasiticDiseases(Integer InfectiousParasiticDisease) {
+        return cohortIndicator("HIV_Disease_resulting_in_otherInfectiousAndParasiticDiseases", ReportUtils.map(cohortLibrary.causeOfDeath(InfectiousParasiticDisease), ""));
+    }
+    /**
+     * Number died due to other HIV disease resulting to other diseases or conditions
+     * @return the indicator
+     */
+    public CohortIndicator otherHIVDiseaseResultingToOtherDisease(Integer otherDisease) {
+        return cohortIndicator("HIV_Disease_resulting_in_otherHIVDiseaseResultingInOtherDisease", ReportUtils.map(cohortLibrary.causeOfDeath(otherDisease), ""));
+    }
+    /**
+     * Number died due to Other natural causes not directly related to HIV
+     * @return the indicator
+     */
+    public CohortIndicator otherNaturalCausesNotHIVRelated(Integer otherNaturalCausesNotHIVRelated) {
+        return cohortIndicator("Other_Natural_Causes_Not_HIV_Related", ReportUtils.map(cohortLibrary.causeOfDeath(otherNaturalCausesNotHIVRelated), ""));
+    }
+    /**
+     * Number died due to non-natural causes
+     * @return the indicator
+     */
+    public CohortIndicator nonNaturalCauses(Integer nonNaturalCauses) {
+        return cohortIndicator("non_natural_causes", ReportUtils.map(cohortLibrary.causeOfDeath(nonNaturalCauses), ""));
+    }
+    /**
+     * Number died due to unknown causes
+     * @return the indicator
+     */
+    public CohortIndicator unknownCauses(Integer unknownCauses) {
+        return cohortIndicator("unknown_causes", ReportUtils.map(cohortLibrary.causeOfDeath(unknownCauses), ""));
     }
 }
