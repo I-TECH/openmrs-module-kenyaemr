@@ -579,5 +579,18 @@ public class PublicHealthActionCohortLibrary {
         cd.setCompositionString("txcurr AND NOT clientsWithNUPI");
         return cd;
     }
-
+    /**
+     * Patients who died by cause of death
+     * @return
+     */
+    public CohortDefinition causeOfDeath(Integer causeOfDeath) {
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "where program_name='HIV' and discontinuation_reason = 160034 and coalesce(date(date_died),date(effective_discontinuation_date),date(visit_date)) between DATE_SUB(date(CURRENT_DATE()),INTERVAL 3 MONTH) and date(CURRENT_DATE())\n" +
+                "and death_reason = "+causeOfDeath+";";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("causeOfDeath");
+        cd.setQuery(sqlQuery);
+        cd.setDescription("Patients who died by cause of death");
+        return cd;
+    }
 }
