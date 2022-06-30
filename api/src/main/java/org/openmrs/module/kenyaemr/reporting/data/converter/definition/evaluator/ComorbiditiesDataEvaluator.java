@@ -59,10 +59,10 @@ public class ComorbiditiesDataEvaluator implements PersonDataEvaluator {
                 "                                          when 114662 then 'Osteoporosis'\n" +
                 "                                          when 117703 then 'Sickle Cell Anaemia'\n" +
                 "                                          when 118976 then 'Thyroid disease'\n" +
-                "    end) from kenyaemr_etl.etl_allergy_chronic_illness a where  (a.visit_date) >= date(:startDate) group by a.patient_id;";
+                "    end) from kenyaemr_etl.etl_allergy_chronic_illness a group by a.patient_id;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        Date startDate = (Date)context.getParameterValue("startDate");
-        queryBuilder.addParameter("startDate", startDate);
+       // Date startDate = (Date)context.getParameterValue("startDate");
+        //queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
