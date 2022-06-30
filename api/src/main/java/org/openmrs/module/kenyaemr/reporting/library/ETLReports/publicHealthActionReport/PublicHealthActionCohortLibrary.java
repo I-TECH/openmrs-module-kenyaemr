@@ -154,10 +154,10 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition notLinked() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t inner join\n" +
-                "                    (select l.patient_id, l.ccc_number from kenyaemr_etl.etl_hts_referral_and_linkage l group by l.patient_id) l on t.patient_id = l.patient_id\n" +
-                "                left join (select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e)e on e.patient_id = t.patient_id\n" +
-                "                where t.final_test_result='Positive' and t.test_type = 2 and date(t.visit_date) between date(:startDate) and date(:endDate) and l.ccc_number is null and e.patient_id is null;";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t left join\n" +
+                "   (select l.patient_id, l.ccc_number from kenyaemr_etl.etl_hts_referral_and_linkage l where date(l.visit_date) <= date(:endDate) group by l.patient_id) l on t.patient_id = l.patient_id\n" +
+                "left join (select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e where date(e.visit_date) <= date(:endDate))e on e.patient_id = t.patient_id\n" +
+                "where t.final_test_result='Positive' and t.test_type = 2 and date(t.visit_date) between date(:startDate) and date(:endDate) and l.ccc_number is null and e.patient_id is null;";
         cd.setName("notLinked");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -182,6 +182,21 @@ public class PublicHealthActionCohortLibrary {
         return cd;
     }
 
+    /**
+     * Children aged between 6 and 24 weeks enrolled in HIV
+     * @return
+     */
+    public CohortDefinition childrenBetween6And24WeeksInHIVProgram() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = " select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "    where date(visit_date) <= date(:endDate) and timestampdiff(WEEK,d.dob,date(:endDate)) between 6 and 96;";
+        cd.setName("childrenBetween6And24WeeksInHIVProgram");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of HEIs aged between 6 and 24 weeks in HIV program");
+        return cd;
+    }
     /**
      * Number of HEIs with a HIV test result
      * @return
@@ -208,7 +223,8 @@ public class PublicHealthActionCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("allHEIsAgedBetween6And24Weeks", ReportUtils.map(allHEIsAgedBetween6And24Weeks(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("allHEIsWithAHIVTestResult", ReportUtils.map(allHEIsWithAHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("allHEIsAgedBetween6And24Weeks AND NOT allHEIsWithAHIVTestResult");
+        cd.addSearch("childrenBetween6And24WeeksInHIVProgram", ReportUtils.map(childrenBetween6And24WeeksInHIVProgram(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(allHEIsAgedBetween6And24Weeks AND NOT allHEIsWithAHIVTestResult) AND NOT childrenBetween6And24WeeksInHIVProgram");
         return cd;
     }
 
