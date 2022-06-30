@@ -573,13 +573,13 @@ public class PublicHealthActionCohortLibrary {
      */
     public CohortDefinition calhivCohort() {
         String sqlQuery = "select enr.patient_id from kenyaemr_etl.etl_hiv_enrollment enr\n" +
-                "                join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id =enr.patient_id and timestampdiff(YEAR,dm.DOB,date(:endDate)) <= 17\n" +
-                "                left join\n" +
-                "                (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                group by patient_id\n" +
-                "                ) d on d.patient_id = enr.patient_id\n" +
-                "              where d.patient_id is null;";
+                "                            join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id =enr.patient_id and timestampdiff(MONTH,dm.DOB,date(:endDate)) >= 1 and timestampdiff(YEAR,dm.DOB,date(:endDate)) <= 14\n" +
+                "                            left join\n" +
+                "                            (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "                            where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "                            group by patient_id\n" +
+                "                            ) d on d.patient_id = enr.patient_id\n" +
+                "                          where d.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("calhivCohort");
         cd.setQuery(sqlQuery);
