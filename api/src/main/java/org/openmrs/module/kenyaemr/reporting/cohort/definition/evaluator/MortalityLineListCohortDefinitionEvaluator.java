@@ -17,6 +17,7 @@ import org.openmrs.module.kenyaemr.reporting.cohort.definition.MortalityLineList
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -48,6 +49,8 @@ public class MortalityLineListCohortDefinitionEvaluator implements CohortDefinit
             return null;
 
 		Cohort newCohort = new Cohort();
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+
 		String qry="select patient_id from kenyaemr_etl.etl_patient_program_discontinuation\n" +
 				"where program_name='HIV' and discontinuation_reason = 160034 and\n" +
 				"      coalesce(date(date_died),date(effective_discontinuation_date),date(visit_date)) between date(:startDate) and date(:endDate);";

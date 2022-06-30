@@ -32,10 +32,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.IPTOutcomeDat
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.SimpleResultDateConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MortalityLineListCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ActivePatientsPopulationTypeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.CauseOfDeathDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DateOfDeathDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.SpecificCauseOfDeathDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -81,7 +78,6 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         return null;
     }
 
-
     protected Mapped<CohortDefinition> deathCohort() {
         CohortDefinition cd = new MortalityLineListCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -107,7 +103,6 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        //String defParam = "startDate=${startDate},endDate=${endDate}";
 
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         PatientIdentifierType nupi = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
@@ -116,6 +111,10 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         DataDefinition nupiDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nupi.getName(), nupi), identifierFormatter);
         AgeAtReportingDataDefinition ageAtReportingDataDefinition = new AgeAtReportingDataDefinition();
         ageAtReportingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        ComorbiditiesDataDefinition comorbiditiesDataDefinition = new ComorbiditiesDataDefinition();
+        comorbiditiesDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
@@ -127,6 +126,7 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Cause of Death", new CauseOfDeathDataDefinition(),"");
         dsd.addColumn("Specific Cause of Death", new SpecificCauseOfDeathDataDefinition(), "");
+        dsd.addColumn("Co-morbidities", new ComorbiditiesDataDefinition(), "startDate=${startDate}");
         dsd.addColumn("Date of Death", new DateOfDeathDataDefinition(), "", new DateConverter());
         dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
         dsd.addColumn("Height", new HeightAtArtDataDefinition(), "");
