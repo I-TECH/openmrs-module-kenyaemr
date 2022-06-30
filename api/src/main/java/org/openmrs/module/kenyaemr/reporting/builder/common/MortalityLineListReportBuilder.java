@@ -126,7 +126,7 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Cause of Death", new CauseOfDeathDataDefinition(),"");
         dsd.addColumn("Specific Cause of Death", new SpecificCauseOfDeathDataDefinition(), "");
-        dsd.addColumn("Co-morbidities", new ComorbiditiesDataDefinition(), "startDate=${startDate}");
+        dsd.addColumn("Co-morbidities", new ComorbiditiesDataDefinition(),"");
         dsd.addColumn("Date of Death", new DateOfDeathDataDefinition(), "", new DateConverter());
         dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
         dsd.addColumn("Height", new HeightAtArtDataDefinition(), "");
