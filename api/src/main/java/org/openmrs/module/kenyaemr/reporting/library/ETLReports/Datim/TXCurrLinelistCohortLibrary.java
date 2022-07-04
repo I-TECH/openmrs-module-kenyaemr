@@ -36,9 +36,8 @@ public class TXCurrLinelistCohortLibrary {
      * Patients transferred in within the reporting month
      */
     public  CohortDefinition transferInReportingMonth() {
-        String sqlQuery="Select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e where\n" +
-                "e.visit_date between DATE_SUB(date(:endDate),INTERVAL DAYOFMONTH(date(:endDate))-1 DAY) and date(:endDate)\n" +
-                "and e.patient_type = 160563;";
+        String sqlQuery="Select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e where e.patient_type = 160563 and\n" +
+                "                coalesce(e.transfer_in_date,e.visit_date) between DATE_SUB(date(:endDate),INTERVAL DAYOFMONTH(date(:endDate))-1 DAY) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_Curr_Missing_in_previous_TI");
         cd.setQuery(sqlQuery);
@@ -51,7 +50,7 @@ public class TXCurrLinelistCohortLibrary {
      */
     public  CohortDefinition transferInReportingQuarter() {
         String sqlQuery="Select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e where\n" +
-                "e.visit_date between DATE_SUB(date(:endDate),INTERVAL 3 MONTH) and date(:endDate)\n" +
+                "coalesce(e.transfer_in_date,e.visit_date) between DATE_SUB(date(:endDate),INTERVAL 3 MONTH) and date(:endDate)\n" +
                 "and e.patient_type = 160563;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_Curr_Missing_in_previous_TI");
