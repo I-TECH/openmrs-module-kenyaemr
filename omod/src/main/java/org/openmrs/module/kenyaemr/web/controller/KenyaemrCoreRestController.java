@@ -55,7 +55,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
      * @param patientUuid
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/availableforms") // gets all visit forms for a patient
+    @RequestMapping(method = RequestMethod.GET, value = "/availableforms") // gets all visit forms for a patient
     @ResponseBody
     public Object getAllAvailableFormsForVisit(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid) {
         if (StringUtils.isBlank(patientUuid)) {
@@ -115,7 +115,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
      * @param patientUuid
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/completedforms") // gets all visit forms for a patient
+    @RequestMapping(method = RequestMethod.GET, value = "/completedforms") // gets all visit forms for a patient
     @ResponseBody
     public Object getAllCommpletedFormsForVisit(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid) {
         if (StringUtils.isBlank(patientUuid)) {
