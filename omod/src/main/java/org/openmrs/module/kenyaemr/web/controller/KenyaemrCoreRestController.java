@@ -22,6 +22,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyacore.program.ProgramDescriptor;
+import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -135,6 +139,54 @@ public class KenyaemrCoreRestController extends BaseRestController {
         }
 
         return formList.toString();
+    }
+
+    /**
+     * Get a list of programs a patient is eligible for
+     * @param request
+     * @param patientUuid
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/eligiblePrograms") // gets all programs a patient is eligible for
+    @ResponseBody
+    public Object getEligiblePrograms(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid) {
+        if (StringUtils.isBlank(patientUuid)) {
+            return new ResponseEntity<Object>("You must specify patientUuid in the request!",
+                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+
+        if (patient == null) {
+            return new ResponseEntity<Object>("The provided patient was not found in the system!",
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+
+        ProgramManager programManager = CoreContext.getInstance().getManager(ProgramManager.class);
+        ArrayNode programList = JsonNodeFactory.instance.arrayNode();
+
+        if (!patient.isVoided()) {
+            Collection<ProgramDescriptor> activePrograms = programManager.getPatientActivePrograms(patient);
+            Collection<ProgramDescriptor> eligiblePrograms = programManager.getPatientEligiblePrograms(patient);
+
+            /**
+             * ProgramEndPoint {
+             *   uuid: string;
+             *   display: string;
+             * }
+             */
+            for (ProgramDescriptor descriptor : eligiblePrograms) {
+
+                if (!activePrograms.contains(descriptor)) { // remove any active program
+                    ObjectNode programObj = JsonNodeFactory.instance.objectNode();
+                    programObj.put("uuid", descriptor.getTargetUuid());
+                    programObj.put("display", descriptor.getTarget().getName());
+                    programList.add(programObj);
+                }
+            }
+        }
+
+        return programList.toString();
     }
 
     /**
