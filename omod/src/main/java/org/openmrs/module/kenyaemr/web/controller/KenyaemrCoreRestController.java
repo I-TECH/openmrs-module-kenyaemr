@@ -18,16 +18,12 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.FormService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
-import org.openmrs.module.kenyaemrorderentry.labDataExchange.LabOrderDataExchange;
-import org.openmrs.module.kenyaemrorderentry.util.Utils;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 /**
