@@ -86,20 +86,11 @@ public class KenyaemrCoreRestController extends BaseRestController {
                  *   retired: boolean;}
                  */
                 for (FormDescriptor descriptor : uncompletedFormDescriptors) {
-                    ObjectNode formObj = JsonNodeFactory.instance.objectNode();
-                    Form frm = descriptor.getTarget();
-                    formObj.put("uuid", descriptor.getTargetUuid());
-                    formObj.put("encounterType", frm.getEncounterType().getEncounterTypeId());
-                    formObj.put("name", frm.getName());
-                    formObj.put("display", frm.getName());
-                    formObj.put("version", frm.getVersion());
-                    formObj.put("published", frm.getPublished());
-                    formObj.put("retired", frm.getRetired());
+                    ObjectNode formObj = generateFormDescriptorPayload(descriptor);
                     formList.add(formObj);
                 }
             }
         }
-
 
         return formList.toString();
     }
@@ -136,23 +127,35 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
             if (!completedFormDescriptors.isEmpty()) {
 
-
                 for (FormDescriptor descriptor : completedFormDescriptors) {
-                    ObjectNode formObj = JsonNodeFactory.instance.objectNode();
-                    Form frm = descriptor.getTarget();
-                    formObj.put("uuid", descriptor.getTargetUuid());
-                    formObj.put("encounterType", frm.getEncounterType().getEncounterTypeId());
-                    formObj.put("name", frm.getName());
-                    formObj.put("display", frm.getName());
-                    formObj.put("version", frm.getVersion());
-                    formObj.put("published", frm.getPublished());
-                    formObj.put("retired", frm.getRetired());
+                    ObjectNode formObj = generateFormDescriptorPayload(descriptor);
                     formList.add(formObj);
                 }
             }
         }
 
         return formList.toString();
+    }
+
+    /**
+     * Generate payload for a form descriptor. Required when serving forms to the frontend
+     * @param descriptor
+     * @return
+     */
+    private ObjectNode generateFormDescriptorPayload(FormDescriptor descriptor) {
+        ObjectNode formObj = JsonNodeFactory.instance.objectNode();
+        ObjectNode encObj = JsonNodeFactory.instance.objectNode();
+        Form frm = descriptor.getTarget();
+        encObj.put("uuid", frm.getEncounterType().getUuid());
+        encObj.put("display", frm.getEncounterType().getName());
+        formObj.put("uuid", descriptor.getTargetUuid());
+        formObj.put("encounterType", encObj);
+        formObj.put("name", frm.getName());
+        formObj.put("display", frm.getName());
+        formObj.put("version", frm.getVersion());
+        formObj.put("published", frm.getPublished());
+        formObj.put("retired", frm.getRetired());
+        return formObj;
     }
 
     /**
