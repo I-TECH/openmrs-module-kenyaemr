@@ -173,16 +173,19 @@ public class KenyaemrCoreRestController extends BaseRestController {
              * ProgramEndPoint {
              *   uuid: string;
              *   display: string;
+             *   enrollmentFormUuid: string;
+             *   discontinuationFormUuid: string;
+             *   enrollmentStatus: string;
              * }
              */
             for (ProgramDescriptor descriptor : eligiblePrograms) {
-
-                if (!activePrograms.contains(descriptor)) { // remove any active program
                     ObjectNode programObj = JsonNodeFactory.instance.objectNode();
                     programObj.put("uuid", descriptor.getTargetUuid());
                     programObj.put("display", descriptor.getTarget().getName());
+                    programObj.put("enrollmentFormUuid", descriptor.getDefaultEnrollmentForm().getTargetUuid());
+                    programObj.put("discontinuationFormUuid", descriptor.getDefaultCompletionForm().getTargetUuid());
+                    programObj.put("enrollmentStatus", activePrograms.contains(descriptor) ? "active" : "eligible");
                     programList.add(programObj);
-                }
             }
         }
 
