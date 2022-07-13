@@ -35,6 +35,7 @@ import java.util.Map;
 
 /**
  * Checks if a patient is negative, not enrolled and has no previous linkage encounters
+ * Client should be
  */
 public class PatientsEligibleForHtsScreeningCalculation extends AbstractPatientCalculation {
 

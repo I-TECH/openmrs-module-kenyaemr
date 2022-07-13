@@ -2101,7 +2101,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Megun","id":"Megun"},
                     {"facility":"Langas","id":"Langas"}
                 ],
-            "Kasses":
+            "Kesses":
                 [
                     {"facility":"Racecourse","id":"Racecourse"},
                     {"facility":"Cheptiret/Kipchamo","id":"Cheptiret/Kipchamo"},
