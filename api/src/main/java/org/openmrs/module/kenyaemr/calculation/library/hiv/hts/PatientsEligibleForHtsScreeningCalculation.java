@@ -11,13 +11,11 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.hts;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -27,15 +25,12 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.util.HtsConstants;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.reporting.common.Age;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Checks if a patient is negative, not enrolled and has no previous linkage encounters
- * Client should be
+ * Checks if a patient is atleast 19 months old, HIV negative, not enrolled in HIV program and has no previous linkage encounters
  */
 public class PatientsEligibleForHtsScreeningCalculation extends AbstractPatientCalculation {
 
@@ -52,46 +47,49 @@ public class PatientsEligibleForHtsScreeningCalculation extends AbstractPatientC
             Patient patient = patientService.getPatient(ptId);
             boolean eligible = false;
 
-            List<Encounter> enrollmentEncounters = encounterService.getEncounters(
-                    Context.getPatientService().getPatient(ptId),
-                    null,
-                    null,
-                    null,
-                    null,
-                    Arrays.asList(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT)),
-                    null,
-                    null,
-                    null,
-                    false
-            );
+            Age age = new Age(patient.getBirthdate());
 
-            Encounter lastHtsInitialEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsInitialForm);
-            Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
-            Encounter lastLinkageEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsLinkageForm);
-            Encounter lastHtsEnc = null;
+           if(age.getFullMonths() >= 19) {
+               List<Encounter> enrollmentEncounters = encounterService.getEncounters(
+                       Context.getPatientService().getPatient(ptId),
+                       null,
+                       null,
+                       null,
+                       null,
+                       Arrays.asList(MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT)),
+                       null,
+                       null,
+                       null,
+                       false
+               );
 
-            if (lastHtsInitialEnc != null && lastHtsRetestEnc == null) {
-                lastHtsEnc = lastHtsInitialEnc;
-            } else if (lastHtsInitialEnc == null && lastHtsRetestEnc != null) {
-                lastHtsEnc = lastHtsRetestEnc;
-            } else if (lastHtsInitialEnc != null && lastHtsRetestEnc != null) {
-                if (lastHtsInitialEnc.getEncounterDatetime().after(lastHtsRetestEnc.getEncounterDatetime())) {
-                    lastHtsEnc = lastHtsInitialEnc;
-                } else {
-                    lastHtsEnc = lastHtsRetestEnc;
-                }
-            }
+               Encounter lastHtsInitialEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsInitialForm);
+               Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
+               Encounter lastLinkageEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsLinkageForm);
+               Encounter lastHtsEnc = null;
 
-            ConceptService cs = Context.getConceptService();
-            Concept htsFinalTestQuestion = cs.getConcept(HtsConstants.HTS_FINAL_TEST_CONCEPT_ID);
-            Concept htsPositiveResult = cs.getConcept(HtsConstants.HTS_POSITIVE_RESULT_CONCEPT_ID);
+               if (lastHtsInitialEnc != null && lastHtsRetestEnc == null) {
+                   lastHtsEnc = lastHtsInitialEnc;
+               } else if (lastHtsInitialEnc == null && lastHtsRetestEnc != null) {
+                   lastHtsEnc = lastHtsRetestEnc;
+               } else if (lastHtsInitialEnc != null && lastHtsRetestEnc != null) {
+                   if (lastHtsInitialEnc.getEncounterDatetime().after(lastHtsRetestEnc.getEncounterDatetime())) {
+                       lastHtsEnc = lastHtsInitialEnc;
+                   } else {
+                       lastHtsEnc = lastHtsRetestEnc;
+                   }
+               }
 
-            boolean patientHasPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
+               ConceptService cs = Context.getConceptService();
+               Concept htsFinalTestQuestion = cs.getConcept(HtsConstants.HTS_FINAL_TEST_CONCEPT_ID);
+               Concept htsPositiveResult = cs.getConcept(HtsConstants.HTS_POSITIVE_RESULT_CONCEPT_ID);
 
-            if(enrollmentEncounters.size() <= 0 && !patientHasPositiveTestResult && lastLinkageEnc == null) {
-                eligible = true;
-            }
+               boolean patientHasPositiveTestResult = lastHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsPositiveResult) : false;
 
+               if (enrollmentEncounters.size() <= 0 && !patientHasPositiveTestResult && lastLinkageEnc == null) {
+                   eligible = true;
+               }
+           }
             ret.put(ptId, new BooleanResult(eligible, this));
         }
         return ret;
