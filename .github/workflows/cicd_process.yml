@@ -17,9 +17,13 @@ jobs:
         port: ${{ secrets.PORT }}
         command_timeout: 200m
         script: |
+          cd /apps/github-workflows/kenyaemr-modules
+          sudo rm -rf openmrs-module-kenyaemr
+          sudo mkdir openmrs-module-kenyaemr
+          sudo chown -R cicd2:cicd2 openmrs-module-kenyaemr
           git config --global --add safe.directory /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr      
+          git clone https://github.com/palladiumkenya/openmrs-module-kenyaemr.git openmrs-module-kenyaemr
           cd /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr
-          git pull origin master
           git status
           mvn license:format
           mvn clean install -DskipTests
