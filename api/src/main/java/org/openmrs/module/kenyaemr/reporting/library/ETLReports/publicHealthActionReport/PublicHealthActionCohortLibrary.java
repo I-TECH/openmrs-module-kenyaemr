@@ -625,10 +625,16 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition contactsUndocumentedHIVStatus() {
-        String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
-                "                      inner join patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
-                "                      left join kenyaemr_etl.etl_hts_test ht on ht.patient_id = pc.patient_id\n" +
-                "where pc.baseline_hiv_status ='Unknown' and pc.relationship_type in (162221,163565,5617) and date(pc.date_created) <= date(:endDate) and pc.voided = 0 and ht.patient_id is null;";
+        String sqlQuery = "select pc.id\n" +
+                "from openmrs.kenyaemr_hiv_testing_patient_contact pc\n" +
+                "         inner join openmrs.patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
+                "left join (select ht.patient_id, mid(max(concat(date(ht.visit_date), ht.final_test_result)), 11) as hiv_status\n" +
+                " from kenyaemr_etl.etl_hts_test ht\n" +
+                " group by ht.patient_id\n" +
+                " having hiv_status in ('Negative', 'Positive'))\n" +
+                "ht on ht.patient_id = pc.patient_id\n" +
+                "             where (pc.baseline_hiv_status is null or pc.baseline_hiv_status in ('Unknown','1067')) and pc.relationship_type in (162221,163565,5617) and date(pc.date_created) <= date(:endDate)\n" +
+                "               and pc.voided = 0 and ht.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("contactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
@@ -637,18 +643,41 @@ public class PublicHealthActionCohortLibrary {
         cd.setDescription("Contacts with undocumented HIV status");
         return cd;
     }
-
     /**
      * Children contacts with undocumented HIV Status
      * @return
      */
     public CohortDefinition childrenContactsUndocumentedHIVStatus() {
-        String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
-                "                        left join patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
-                "                        left join kenyaemr_etl.etl_hts_test ht on ht.patient_id = pc.patient_id\n" +
-                "                        left join kenyaemr_etl.etl_hei_enrollment he on he.patient_id = pc.patient_id\n" +
-                "where pc.baseline_hiv_status ='Unknown' and pc.voided = 0 and date(pc.date_created) <= date(:endDate) and ht.patient_id is null and he.patient_id is null\n" +
-                "and pc.relationship_type = 1528;";
+        String sqlQuery = "select c.id\n" +
+                "from (select pc.id,\n" +
+                "             pc.patient_id,\n" +
+                "             pc.patient_related_to,\n" +
+                "             h.patient_id  as hei,\n" +
+                "             pc.baseline_hiv_status,\n" +
+                "             pc.relationship_type,\n" +
+                "             pc.date_created,\n" +
+                "             pc.voided,\n" +
+                "             ht.patient_id as tested_contact\n" +
+                "      from openmrs.kenyaemr_hiv_testing_patient_contact pc\n" +
+                "               inner join openmrs.patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
+                "               left join (select ht.patient_id,\n" +
+                "                                 mid(max(concat(date(ht.visit_date), ht.final_test_result)), 11) as hiv_status\n" +
+                "                          from kenyaemr_etl.etl_hts_test ht\n" +
+                "                          group by ht.patient_id\n" +
+                "                          having hiv_status in ('Negative', 'Positive')) ht on ht.patient_id = pc.patient_id\n" +
+                "               left join (select e.patient_id, e.hiv_status_at_exit\n" +
+                "                          from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                                   inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                              and timestampdiff(WEEK, d.dob, date(:endDate)) between 6 and 96) h\n" +
+                "                         on pc.patient_id = h.patient_id\n" +
+                "     ) c\n" +
+                "where\n" +
+                "  date(c.date_created) <= date(:endDate)\n" +
+                "  and c.hei is null\n" +
+                "  and (c.baseline_hiv_status is null or c.baseline_hiv_status in ('Unknown','1067'))\n" +
+                "  and c.relationship_type = 1528\n" +
+                "  and c.voided = 0\n" +
+                "  and c.tested_contact is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("contactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
@@ -662,10 +691,16 @@ public class PublicHealthActionCohortLibrary {
      * Number of SNS Contacts with undocumented HIV status
      */
     public CohortDefinition snsContactsUndocumentedHIVStatus() {
-        String sqlQuery = "select pc.id from kenyaemr_hiv_testing_patient_contact pc\n" +
+        String sqlQuery = "select pc.id\n" +
+                "from kenyaemr_hiv_testing_patient_contact pc\n" +
                 "         inner join patient p on p.patient_id = pc.patient_related_to and p.voided = 0\n" +
-                "         left join kenyaemr_etl.etl_hts_test ht on ht.patient_id = pc.patient_id\n" +
-                "where pc.baseline_hiv_status ='Unknown' and pc.relationship_type = 166606 and date(pc.date_created) <= date(:endDate) and pc.voided = 0 and ht.patient_id is null;";
+                "left join (select ht.patient_id, mid(max(concat(date(ht.visit_date), ht.final_test_result)), 11) as hiv_status\n" +
+                " from kenyaemr_etl.etl_hts_test ht\n" +
+                " group by ht.patient_id\n" +
+                " having hiv_status in ('Negative', 'Positive'))\n" +
+                "ht on ht.patient_id = pc.patient_id\n" +
+                "             where (pc.baseline_hiv_status is null or pc.baseline_hiv_status in ('Unknown','1067')) and pc.relationship_type = 166606 and date(pc.date_created) <= date(:endDate)\n" +
+                "               and pc.voided = 0 and ht.patient_id is null;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("snsContactsUndocumentedHIVStatus");
         cd.setQuery(sqlQuery);
