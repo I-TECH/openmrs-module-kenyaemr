@@ -16,27 +16,22 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Program;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
-import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.HivConstants;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.module.kenyaemr.util.HtsConstants;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,12 +86,14 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 			EncounterType hivEnrolmentEncounter = encounterService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
 			Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), hivEnrolmentEncounter);
 			// Is patient alive and in HIV program
+
+			//With Greencard Encounter
+			EncounterType greenCardEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+			Form pocHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
+			Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+			Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), greenCardEncType, Arrays.asList(pocHivFollowup, rdeHivFollowup));  //last hiv followup encounter
+
 			if (inHivProgram.contains(ptId)) {
-				//With Greencard Encounter
-				EncounterType greenCardEncType = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-				Form pocHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
-				Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
-				Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), greenCardEncType, Arrays.asList(pocHivFollowup, rdeHivFollowup));  //last hiv followup encounter
 
 				if (lastFollowUpEncounter != null) {
 					for (Obs obs : lastFollowUpEncounter.getObs()) {
@@ -105,6 +102,7 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 							if (tcaDate != null) {
 								if (daysSince(tcaDate, context) > HivConstants.LOST_TO_FOLLOW_UP_THRESHOLD_DAYS) {
 									lost = true;
+									break;
 								}
 							}
 						}
@@ -112,11 +110,12 @@ public class LostToFollowUpCalculation extends AbstractPatientCalculation implem
 				}
 			}
 			// Is patient alive and discontinued from HIV program
-			if (alive.contains(ptId) && lastHivDiscontinuationEncounter != null && lastHivEnrollmentEncounter != null) {          //these clients are no longer in hiv prog
-				if (lastHivDiscontinuationEncounter.getEncounterDatetime().after(lastHivEnrollmentEncounter.getEncounterDatetime())) {   // check for re-enrollments
+			if (alive.contains(ptId) && lastHivDiscontinuationEncounter != null && lastHivEnrollmentEncounter != null && lastFollowUpEncounter != null) {          //these clients are no longer in hiv prog
+				if (lastHivDiscontinuationEncounter.getEncounterDatetime().after(lastHivEnrollmentEncounter.getEncounterDatetime()) && lastHivDiscontinuationEncounter.getEncounterDatetime().after(lastFollowUpEncounter.getEncounterDatetime())) {   // check for re-enrollments
 					for (Obs obs : lastHivDiscontinuationEncounter.getObs()) {
 						if (obs.getConcept().equals(reasonForDiscontinuation) && obs.getValueCoded().equals(discontinued_ltfu)) {
 							lost = true;
+							break;
 						}
 					}
 				}
