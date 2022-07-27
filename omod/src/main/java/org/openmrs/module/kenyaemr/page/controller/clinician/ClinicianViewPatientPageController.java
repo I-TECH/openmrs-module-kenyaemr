@@ -9,17 +9,8 @@
  */
 package org.openmrs.module.kenyaemr.page.controller.clinician;
 
-import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemrml.api.MLinKenyaEMRService;
-import org.openmrs.module.kenyaemrml.iit.PatientRiskScore;
 import org.openmrs.module.kenyaui.annotation.AppPage;
-import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.page.PageModel;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Date;
 
 /**
  * View patient page for clinician app
@@ -27,12 +18,6 @@ import java.util.Date;
 @AppPage(EmrConstants.APP_CLINICIAN)
 public class ClinicianViewPatientPageController {
 
-	public void controller(@RequestParam("patientId") Patient patient, PageModel model, UiUtils ui) {
-		//Pick latest Patient risk score
-
-		PatientRiskScore latestRiskScore = Context.getService(MLinKenyaEMRService.class)
-				.getLatestPatientRiskScoreByPatient(Context.getPatientService().getPatient(patient.getPatientId()));
-		model.put("riskScore", latestRiskScore != null ? latestRiskScore.getRiskScore() : "");
-
+	public void controller() {
 	}
 }

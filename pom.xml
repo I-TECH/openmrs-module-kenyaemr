@@ -61,7 +61,6 @@
         <kenyadqVersion>1.4.0</kenyadqVersion>
         <kenyauiVersion>3.0.0</kenyauiVersion>
         <kenyaemrOrderentryVersion>1.2.2</kenyaemrOrderentryVersion>
-        <kenyaemrMlVersion>1.0.0-SNAPSHOT</kenyaemrMlVersion>
         <logicVersion>0.5.2</logicVersion>
         <facilityReportingVersion>1.2.0</facilityReportingVersion>
         <apacheHttpClientVersion>4.5.10</apacheHttpClientVersion>
@@ -212,13 +211,6 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>kenyaemrorderentry-api</artifactId>
             <version>${kenyaemrOrderentryVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>kenyaemrml-api</artifactId>
-            <version>${kenyaemrMlVersion}</version>
             <scope>provided</scope>
         </dependency>
 
