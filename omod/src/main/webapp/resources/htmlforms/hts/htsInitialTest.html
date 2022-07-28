@@ -898,7 +898,7 @@
 
         var mlFormattedDate = moment(new Date()).format('YYYY-MM-DD');
         var modelConfigs = {
-            "modelId":"hts_xgb_0323",
+            "modelId":"hts_xgb_0323_jul_2022",
             "encounterDate":mlFormattedDate,
 		    "facilityId":""
         }
@@ -921,27 +921,38 @@
                 var mediumRiskThreshold = 0.010638781;
                 var highRiskThreshold = 0.028924102;
 
+                var highestRiskConcept = 167164;
+                var highRiskConcept = 1408;
+                var mediumRiskConcept = 1499;
+                var lowRiskConcept = 1407;
+
+                setValue('algorithm_result_score.value', probabilityForPositivity);
+
                 var className = jq('#ml-prediction-risk-category').attr("class");
                 if (probabilityForPositivity &gt; highRiskThreshold) {
                     jq('#ml-prediction-risk-category').html('Highest Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
                     jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
                     jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
+                    setValue('algorithm_result_category.value', highestRiskConcept);
                 }   else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
                     jq('#ml-prediction-risk-category').html('High Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
                     jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
                     jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
+                    setValue('algorithm_result_category.value', highRiskConcept);
                 } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
                     jq('#ml-prediction-risk-category').html('Medium Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
                     jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
                     jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
+                    setValue('algorithm_result_category.value', mediumRiskConcept);
                 } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
                     jq('#ml-prediction-risk-category').html('Low Risk Client');
                     jq('#ml-prediction-risk-category').removeClass(className);
                     jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
                     jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
+                    setValue('algorithm_result_category.value', lowRiskConcept);
                 }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -1586,6 +1597,17 @@
                         <td width="50px"></td>
                         <td><div id="ml-prediction-risk-category"></div></td>
                         <td><div id="ml-prediction-desc" style="font-style:italic"></div></td>
+                    </tr>
+                    <tr style="display: none">
+                        <td>
+                            <obs id="algorithm_result_category"
+                                 conceptId="167163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1407,1499,1408,167164"
+                                 style="dropdown" />
+                        </td>
+                        <td>
+                            <obs id="algorithm_result_score" conceptId="167162" />
+                        </td>
                     </tr>
                 </table>
             </div>
