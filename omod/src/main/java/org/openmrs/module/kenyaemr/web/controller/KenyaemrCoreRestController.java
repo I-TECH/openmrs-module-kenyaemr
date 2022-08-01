@@ -19,13 +19,19 @@ import org.openmrs.Form;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.kenyacore.CoreContext;
+import org.openmrs.module.kenyacore.calculation.CalculationManager;
+import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.ui.framework.annotation.SpringBean;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -115,6 +120,51 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
         return allFormsObj.toString();
     }
+
+    /**
+     * Gets a list of flags for a patient
+     * @param request
+     * @param patientUuid
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/flags") // gets all flags for a patient
+    @ResponseBody
+    public Object getAllPatientFlags(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid, @SpringBean CalculationManager calculationManager) {
+        if (StringUtils.isBlank(patientUuid)) {
+            return new ResponseEntity<Object>("You must specify patientUuid in the request!",
+                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+        ObjectNode flagsObj = JsonNodeFactory.instance.objectNode();
+
+        if (patient == null) {
+            return new ResponseEntity<Object>("The provided patient was not found in the system!",
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        calculationManager.refresh();
+        ArrayNode flags = JsonNodeFactory.instance.arrayNode();
+        for (PatientFlagCalculation calc : calculationManager.getFlagCalculations()) {
+
+			try {
+				CalculationResult result = Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc);
+				if (result != null && (Boolean) result.getValue()) {
+                    flags.add(calc.getFlagMessage());
+				}
+			}
+			catch (Exception ex) {
+				log.error("Error evaluating " + calc.getClass(), ex);
+                return new ResponseEntity<Object>("ERROR EVALUATING!"+ calc.getFlagMessage(),
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+			}
+		}
+        flagsObj.put("results", flags);
+
+		return flagsObj.toString();
+        
+    }
+
+
 
     /**
      * Get a list of programs a patient is eligible for
