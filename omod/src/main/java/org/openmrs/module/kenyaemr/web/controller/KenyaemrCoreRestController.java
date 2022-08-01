@@ -49,12 +49,12 @@ public class KenyaemrCoreRestController extends BaseRestController {
     protected final Log log = LogFactory.getLog(getClass());
 
     /**
-     * Gets a list of available forms for a patient
+     * Gets a list of available/completed forms for a patient
      * @param request
      * @param patientUuid
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/availableforms") // gets all visit forms for a patient
+    @RequestMapping(method = RequestMethod.GET, value = "/forms") // gets all visit forms for a patient
     @ResponseBody
     public Object getAllAvailableFormsForVisit(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid) {
         if (StringUtils.isBlank(patientUuid)) {
@@ -71,14 +71,10 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
         List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
         ArrayNode formList = JsonNodeFactory.instance.arrayNode();
+        ObjectNode allFormsObj = JsonNodeFactory.instance.objectNode();
 
         if (!activeVisits.isEmpty()) {
             Visit patientVisit = activeVisits.get(0);
-
-            FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
-            List<FormDescriptor> uncompletedFormDescriptors = formManager.getAllUncompletedFormsForVisit(patientVisit);
-
-            if (!uncompletedFormDescriptors.isEmpty()) {
 
                 /**
                  *  {uuid: string;
@@ -89,56 +85,35 @@ public class KenyaemrCoreRestController extends BaseRestController {
                  *   published: boolean;
                  *   retired: boolean;}
                  */
+
+            FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
+            List<FormDescriptor> uncompletedFormDescriptors = formManager.getAllUncompletedFormsForVisit(patientVisit);
+
+            if (!uncompletedFormDescriptors.isEmpty()) {
+
                 for (FormDescriptor descriptor : uncompletedFormDescriptors) {
+                
                     ObjectNode formObj = generateFormDescriptorPayload(descriptor);
+                    formObj.put("formCategory", "available");
                     formList.add(formObj);
                 }
             }
-        }
 
-        return formList.toString();
-    }
-
-    /**
-     * Gets a list of completed forms for a patient during a visit
-     * @param request
-     * @param patientUuid
-     * @return
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/completedforms") // gets all visit forms for a patient
-    @ResponseBody
-    public Object getAllCommpletedFormsForVisit(HttpServletRequest request, @RequestParam("patientUuid") String patientUuid) {
-        if (StringUtils.isBlank(patientUuid)) {
-            return new ResponseEntity<Object>("You must specify patientUuid in the request!",
-                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        }
-
-        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-
-        if (patient == null) {
-            return new ResponseEntity<Object>("The provided patient was not found in the system!",
-                    new HttpHeaders(), HttpStatus.NOT_FOUND);
-        }
-
-        List<Visit> activeVisits = Context.getVisitService().getActiveVisitsByPatient(patient);
-        ArrayNode formList = JsonNodeFactory.instance.arrayNode();
-
-        if (!activeVisits.isEmpty()) {
-            Visit patientVisit = activeVisits.get(0);
-
-            FormManager formManager = CoreContext.getInstance().getManager(FormManager.class);
             List<FormDescriptor> completedFormDescriptors = formManager.getCompletedFormsForVisit(patientVisit);
 
             if (!completedFormDescriptors.isEmpty()) {
 
                 for (FormDescriptor descriptor : completedFormDescriptors) {
                     ObjectNode formObj = generateFormDescriptorPayload(descriptor);
+                    formObj.put("formCategory", "completed");
                     formList.add(formObj);
                 }
             }
         }
 
-        return formList.toString();
+        allFormsObj.put("result", formList);
+
+        return allFormsObj.toString();
     }
 
     /**
