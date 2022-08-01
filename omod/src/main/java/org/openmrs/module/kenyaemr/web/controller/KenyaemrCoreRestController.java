@@ -111,7 +111,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
             }
         }
 
-        allFormsObj.put("result", formList);
+        allFormsObj.put("results", formList);
 
         return allFormsObj.toString();
     }
