@@ -11,15 +11,12 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
-import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.moh711.Moh711IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicatorLibrary;
@@ -61,7 +58,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 	private TbIndicatorLibrary tbIndicators;
 
 	@Autowired
-	private Moh731IndicatorLibrary moh731Indicators;
+	private Moh711IndicatorLibrary moh711Indicators;
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
@@ -73,6 +70,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 				new Parameter("endDate", "End Date", Date.class)
 		);
 	}
+	String indParams = "startDate=${startDate},endDate=${endDate}";
 
 	/**
 	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
@@ -80,16 +78,66 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 	@Override
 	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 		return Arrays.asList(
-				ReportUtils.map(createTbDataSet(), "startDate=${startDate},endDate=${endDate}"),
-				ReportUtils.map(createArtDataSet(), "startDate=${startDate},endDate=${endDate}")
+				ReportUtils.map(createANCPMTCTDataSet(), "startDate=${startDate},endDate=${endDate}")/*,
+				ReportUtils.map(createArtDataSet(), "startDate=${startDate},endDate=${endDate}")*/
 		);
 	}
+/**
+ * A. ANC / PMCT
+ * Creates ANC/PMTCT dataset
+ */
+private DataSetDefinition createANCPMTCTDataSet() {
+	CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+	dsd.setName("ANC_PMTCT");
+	dsd.setDescription("ANC PMTCT");
+	dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+	dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+	dsd.addDimension("age", map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
+	dsd.addDimension("gender", map(commonDimensions.gender()));
 
+	List<ColumnParameters> columns = new ArrayList<ColumnParameters>();
+	dsd.addColumn("New ANC Clients", "", ReportUtils.map(moh711Indicators.noOfNewANCClients(), indParams), "");
+	dsd.addColumn("Revisiting ANC Clients", "", ReportUtils.map(moh711Indicators.noOfANCClientsRevisits(), indParams), "");
+	/*dsd.addColumn("Clients given IPT (1st dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT1stDose(), indParams), "");
+	dsd.addColumn("Clients given IPT (2nd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT2ndDose(), indParams), "");
+	dsd.addColumn("Clients given IPT (3rd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT3rdDose(), indParams), "");*/
+	dsd.addColumn("Clients with Hb less than 11 g per dl", "", ReportUtils.map(moh711Indicators.noOfANCClientsLowHB(), indParams), "");
+	dsd.addColumn("Clients completed 4 Antenatal Visits", "", ReportUtils.map(moh711Indicators.ancClientsCompleted4Visits(), indParams), "");
+	/*dsd.addColumn("LLINs distributed to under 1 year", "", ReportUtils.map(moh711Indicators.distributedLLINsUnder1Year(), indParams), "");
+	dsd.addColumn("LLINs distributed to ANC clients", "", ReportUtils.map(moh711Indicators.distributedLLINsToANCClients(), indParams), "");
+	*/
+	dsd.addColumn("clients tested for Syphilis", "", ReportUtils.map(moh711Indicators.ancClientsTestedForSyphillis(), indParams), "");
+	dsd.addColumn("clients tested Positive for Syphilis", "", ReportUtils.map(moh711Indicators.ancClientsTestedSyphillisPositive(), indParams), "");
+	dsd.addColumn("Total women done breast examination", "", ReportUtils.map(moh711Indicators.breastExaminationDone(), indParams), "");
+	/*dsd.addColumn("Adolescents (10-14 years) presenting with pregnancy at 1st ANC Visit", "", ReportUtils.map(moh711Indicators.adolescents10To14FirstANC(), indParams), "");
+	dsd.addColumn("Adolescents (15-19 years) presenting with pregnancy at 1st ANC Visit", "", ReportUtils.map(moh711Indicators.adolescents15To19FirstANC(), indParams), "");
+	dsd.addColumn("Youth (20-24 years) presenting with pregnancy at 1st ANC Visit", "", ReportUtils.map(moh711Indicators.youth20To24FirstANC(), indParams), "");
+	*/
+	dsd.addColumn("Women presenting with pregnancy  at 1ST ANC in the First Trimeseter(<= 12 Weeks)", "", ReportUtils.map(moh711Indicators.presentingPregnancy1stANC1stTrimester(), indParams), "");
+	/*dsd.addColumn("Clients issued with Iron", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithIron(), indParams), "");
+	dsd.addColumn("Clients issued with Folic", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFolic(), indParams), "");
+	dsd.addColumn("Clients issued with Combined Ferrous Folate", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFerrousFolic(), indParams), "");
+	dsd.addColumn("Pregnant women presenting in ANC with complication associated with FGM", "", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");*/
+
+	/*EmrReportingUtils.addRow(dsd, "G1", "No. of detected cases (who have new Tb detected cases)", ReportUtils.map(tbIndicators.tbNewDetectedCases(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G2", "No. of Pulmonary smear positive (who have pulmonary TB and smear positive)", ReportUtils.map(tbIndicators.pulmonaryTbSmearPositive(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G3", "No. of Pulmonary smear negative (who have pulmonary TB and smear negative)", ReportUtils.map(tbIndicators.pulmonaryTbSmearNegative(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G4", "No. of Extra pulmonary TB (who have extra pulmonary TB)", ReportUtils.map(tbIndicators.extraPulmonaryTbPatients(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G5", "No. of TB Re-treatments (who are in Tb re-treatments)", ReportUtils.map(tbIndicators.tbRetreatmentsPatients(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G6", "No. of TB and Tested for HIV (who are in Tb program and tested for HIV)", ReportUtils.map(tbIndicators.inTbAndTestedForHiv(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G7", "No. of TB and Tested for HIV (whose HIV result is positive)", ReportUtils.map(tbIndicators.inTbAndTestedForHivPositive(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G8", "No. of TB and HIV (who are both in TB and HIV and are on CPT)", ReportUtils.map(tbIndicators.inTbAndHivProgramsAndOnCtxProphylaxis(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G9", "No. of TB defaulters (who defaulted or missed appointments)", ReportUtils.map(tbIndicators.defaulted(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G10", "No. of TB completes (who Completed Tb Treatment)", ReportUtils.map(tbIndicators.completedTbTreatment(), indParams), columns);
+	EmrReportingUtils.addRow(dsd, "G11", "No. of TB deaths (who started tx this month last year)", ReportUtils.map(tbIndicators.diedAndStarted12MonthsAgo(), indParams), columns);
+*/
+	return dsd;
+}
 	/**
 	 * Creates the ART data set
 	 * @return the data set
 	 */
-	private DataSetDefinition createTbDataSet() {
+/*	private DataSetDefinition createTbDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("G");
 		dsd.setDescription("TB");
@@ -120,7 +168,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 		EmrReportingUtils.addRow(dsd, "G11", "No. of TB deaths (who started tx this month last year)", ReportUtils.map(tbIndicators.diedAndStarted12MonthsAgo(), indParams), columns);
 
 		return dsd;
-	}
+	}*/
 
 	/**
 	 * Creates the ART data set
@@ -134,6 +182,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
 		dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+/*
 
 		ColumnParameters colFPeds = new ColumnParameters("FP", "0-14 years, female", "gender=F|age=<15");
 		ColumnParameters colMPeds = new ColumnParameters("MP", "0-14 years, male", "gender=M|age=<15");
@@ -181,7 +230,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", ReportUtils.map(hivIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
 		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", ReportUtils.map(hivIndicators.onProphylaxis(), indParams), allColumns);
-
+*/
 		return dsd;
 	}
 }
