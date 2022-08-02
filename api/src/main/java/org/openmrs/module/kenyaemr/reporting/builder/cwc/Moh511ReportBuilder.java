@@ -20,6 +20,8 @@ import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAttributeCalc
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh511CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityBirthNotificationNumberDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -74,6 +76,7 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 
 
         PatientIdentifierType cwcn = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER);
+        PatientIdentifierType bnn = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.B);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(cwcn.getName(), cwcn), identifierFormatter);
 
@@ -82,12 +85,15 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
         //dsd.addColumn("Revisit this year", new ObsForPersonDataDefinition("Revisit this year", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("CWC Number", identifierDef, "");
+        dsd.addColumn("Birth Notification Number", new MaternityBirthNotificationNumberDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        dsd.addColumn("Sublocation", new CalculationDataDefinition("Sublocation", new PersonAddressCalculation("sublocation")), "", new RDQACalculationResultConverter());       
-        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());       
+        dsd.addColumn("County", new CalculationDataDefinition("County", new PersonAddressCalculation("countyDistrict")), "", new RDQACalculationResultConverter());
+        dsd.addColumn("Sub county", new CalculationDataDefinition("Sub county", new PersonAddressCalculation("stateProvince")), "", new RDQACalculationResultConverter());
+        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
         dsd.addColumn("Telephone Number", new CalculationDataDefinition("Telephone Number", new PersonAttributeCalculation("Telephone contact")), "", new RDQACalculationResultConverter());
+        dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
 
        /* dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("Weight category", new ObsForPersonDataDefinition("Weight category", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_FOR_AGE_STATUS),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
@@ -106,7 +112,7 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
         *///dsd.addColumn("Issued itn net", new ObsForPersonDataDefinition("Issued itn net", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         //dsd.addColumn("Hiv testing", new ObsForPersonDataDefinition("Hiv testing", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
 
-        Moh510CohortDefinition cd = new Moh510CohortDefinition();
+        Moh511CohortDefinition cd = new Moh511CohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
