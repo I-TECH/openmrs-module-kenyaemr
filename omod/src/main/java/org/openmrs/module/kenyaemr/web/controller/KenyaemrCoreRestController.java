@@ -97,10 +97,11 @@ public class KenyaemrCoreRestController extends BaseRestController {
             if (!uncompletedFormDescriptors.isEmpty()) {
 
                 for (FormDescriptor descriptor : uncompletedFormDescriptors) {
-                
-                    ObjectNode formObj = generateFormDescriptorPayload(descriptor);
-                    formObj.put("formCategory", "available");
-                    formList.add(formObj);
+                    if(!descriptor.getTarget().getRetired()) {
+                        ObjectNode formObj = generateFormDescriptorPayload(descriptor);
+                        formObj.put("formCategory", "available");
+                        formList.add(formObj);
+                    }
                 }
             }
 
