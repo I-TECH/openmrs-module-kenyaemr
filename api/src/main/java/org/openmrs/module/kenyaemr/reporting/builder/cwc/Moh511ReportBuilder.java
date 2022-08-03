@@ -19,14 +19,26 @@ import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalcul
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAttributeCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh510CohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.Moh511CohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCAssessedDevelopmentalMilestonesDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCDewormedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCDisabilityDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCExclusiveBreastfeeding6MonthsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCFollowupDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCHeightDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCMuacDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCReferredToDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCRemarksDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCVitaminASupplementationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCWeightCategoriesDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCWeightDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityBirthNotificationNumberDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
@@ -76,12 +88,12 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 
 
         PatientIdentifierType cwcn = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.CWC_NUMBER);
-        PatientIdentifierType bnn = MetadataUtils.existing(PatientIdentifierType.class, MchMetadata._PatientIdentifierType.B);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(cwcn.getName(), cwcn), identifierFormatter);
 
         DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
+        dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Serial Number", new PersonIdDataDefinition(), "");
         //dsd.addColumn("Revisit this year", new ObsForPersonDataDefinition("Revisit this year", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
         dsd.addColumn("CWC Number", identifierDef, "");
@@ -89,28 +101,32 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        dsd.addColumn("County", new CalculationDataDefinition("County", new PersonAddressCalculation("countyDistrict")), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Sub county", new CalculationDataDefinition("Sub county", new PersonAddressCalculation("stateProvince")), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Telephone Number", new CalculationDataDefinition("Telephone Number", new PersonAttributeCalculation("Telephone contact")), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
+        dsd.addColumn("County", new CalculationDataDefinition("County", new PersonAddressCalculation("countyDistrict")), "");
+        dsd.addColumn("Sub county", new CalculationDataDefinition("Sub county", new PersonAddressCalculation("stateProvince")), "");
+        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "");
+        dsd.addColumn("Telephone Number", new CalculationDataDefinition("Telephone Number", new PersonAttributeCalculation("Telephone contact")), "");
+        dsd.addColumn("Weight", new HEICWCWeightDataDefinition(), "");
+        dsd.addColumn("Weight category", new HEICWCWeightCategoriesDataDefinition(), "");
+        dsd.addColumn("Height", new HEICWCHeightDataDefinition(), "");
+        dsd.addColumn("Muac", new HEICWCMuacDataDefinition(), "");
+        dsd.addColumn("Exclusive Breast feeding  (less than 6 months)", new HEICWCExclusiveBreastfeeding6MonthsDataDefinition(), "");
+        dsd.addColumn("Vit A supplementation 6-59m", new HEICWCVitaminASupplementationDataDefinition(), "");
+        dsd.addColumn("Dewormed", new HEICWCDewormedDataDefinition(), "");
+        dsd.addColumn("MNPs Supplementation(6-23 children)", new HEICWCDewormedDataDefinition(), "");
+        dsd.addColumn("Assessed for Developmental milestones", new HEICWCAssessedDevelopmentalMilestonesDataDefinition(), "");
+       // dsd.addColumn("Danger signs", "", ""); TODO: updates on new mockups
+        dsd.addColumn("Disability", new HEICWCDisabilityDataDefinition(), "");
+        // dsd.addColumn("Immunization Status Up to Date",  ""); TODO:
+        //dsd.addColumn("Follow up", new HEICWCFollowupDataDefinition(), "");      TODO: To be ETLed
+        dsd.addColumn("Referred to", new HEICWCReferredToDataDefinition(), "");
+        //dsd.addColumn("Reasons for referral", , ""); TODO: updates on new mockups
+        dsd.addColumn("Remarks", new HEICWCRemarksDataDefinition(), "");
+
+
+
 
        /* dsd.addColumn("Weight in KG", new ObsForPersonDataDefinition("Weight in KG", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_KG),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Weight category", new ObsForPersonDataDefinition("Weight category", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.WEIGHT_FOR_AGE_STATUS),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("height/length in cm", new ObsForPersonDataDefinition("height/length in cm", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.HEIGHT_CM),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Stunted", new ObsForPersonDataDefinition("Stunted", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NUTRITIONAL_STUNTING),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("MUAC", new ObsForPersonDataDefinition("MUAC", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.MUAC),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Vit A supplementation 6-59m", new ObsForPersonDataDefinition("Vit A supplementation 6-59m", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.VITAMIN_A),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Dewormed", new CalculationDataDefinition("Dewormed", new DewormingCalculation()), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Supplemented with mnps 6-23 month", new ObsForPersonDataDefinition("Supplemented with mnps 6-23 month", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.MICRONUTRIENT_SUPPORT),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Exclusive breastfeeding 0-6months", new ObsForPersonDataDefinition("Exclusive breastfeeding 0-6months", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.BREASTFED_EXCLUSIVELY),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Any disability", new ObsForPersonDataDefinition("Any disability", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.DISABILITY),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Type of follow up", new ObsForPersonDataDefinition("Type of follow up", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.MALNUTRITION_TYPE),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Counseled on", new ObsForPersonDataDefinition("Counseled on", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.COUNSELING_ORDERS),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Referrals from", new ObsForPersonDataDefinition("Referrals from", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REFERRED_FROM),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Referrals to", new ObsForPersonDataDefinition("Referrals to", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REFERRED_TO),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        *///dsd.addColumn("Issued itn net", new ObsForPersonDataDefinition("Issued itn net", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.REVISIT_THIS_YEAR),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
-        //dsd.addColumn("Hiv testing", new ObsForPersonDataDefinition("Hiv testing", TimeQualifier.FIRST, Dictionary.getConcept(Dictionary.NOT_HIV_TESTED),reportingStartDate, reportingEndDate), "", new RDQACalculationResultConverter());
+       */
 
         Moh511CohortDefinition cd = new Moh511CohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

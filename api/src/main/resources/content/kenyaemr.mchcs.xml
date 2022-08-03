@@ -45,8 +45,9 @@
 				<ref bean="kenyaemr.mchcs.report.heiRegister" />
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh710" />
-				<!--<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
+				<!--<ref bean="kenyaemr.mchcs.report<ref bean="kenyaemr.mchcs.report.moh511".moh510" />
+				 />
 				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
 				<ref bean="kenyaemr.mchcs.report.defaulter" />-->
 			</set>
