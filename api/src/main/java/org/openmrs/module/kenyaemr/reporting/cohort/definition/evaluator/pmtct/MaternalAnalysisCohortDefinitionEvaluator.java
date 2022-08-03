@@ -51,19 +51,11 @@ public class MaternalAnalysisCohortDefinitionEvaluator implements CohortDefiniti
 
 		context = ObjectUtil.nvl(context, new EvaluationContext());
 
-		String qry = "select patient_id\n" +
-				"from\n" +
-				"(select e.patient_id,\n" +
-				" e.date_started\n" +
-				" from\n" +
-				"    (select dr.patient_id, min(dr.date_started) as date_started\n" +
-				"    from kenyaemr_etl.etl_drug_event dr\n" +
-				"     join kenyaemr_etl.etl_patient_demographics p on p.patient_id=dr.patient_id and p.voided = 0\n" +
-				"     where dr.program = 'HIV'\n" +
-				"    group by dr.patient_id) e\n" +
-				"   inner join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-				" where date(e.date_started) between date(:startDate) and date(:endDate)\n" +
-				"  group by e.patient_id) a;";
+		String qry = "select mch.patient_id as patient_id\n" +
+				"from kenyaemr_etl.etl_mch_enrollment mch\n" +
+				"  inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id=mch.patient_id\n" +
+				"  inner join kenyaemr_etl.etl_hiv_enrollment hiv on hiv.patient_id=mch.patient_id\n" +
+				"where mch.service_type = 1622;\n";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
