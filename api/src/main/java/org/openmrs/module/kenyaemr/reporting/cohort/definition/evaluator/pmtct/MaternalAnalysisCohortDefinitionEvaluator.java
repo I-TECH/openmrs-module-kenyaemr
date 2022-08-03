@@ -7,14 +7,14 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator.pmtct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ARTRegisterCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.IPTRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.MaternalAnalysisCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -30,10 +30,10 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Evaluator for ART Register Cohort Evaluator
+ * Evaluator for Maternal Analysis Cohort Evaluator
  */
-@Handler(supports = {ARTRegisterCohortDefinition.class})
-public class ARTRegisterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {MaternalAnalysisCohortDefinition.class})
+public class MaternalAnalysisCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 	@Autowired
@@ -42,7 +42,7 @@ public class ARTRegisterCohortDefinitionEvaluator implements CohortDefinitionEva
     @Override
     public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
 
-		ARTRegisterCohortDefinition definition = (ARTRegisterCohortDefinition) cohortDefinition;
+		MaternalAnalysisCohortDefinition definition = (MaternalAnalysisCohortDefinition) cohortDefinition;
 
         if (definition == null)
             return null;

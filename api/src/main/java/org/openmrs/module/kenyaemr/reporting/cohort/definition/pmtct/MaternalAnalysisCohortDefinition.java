@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.cohort.definition;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct;
 
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.common.Localized;
@@ -18,18 +18,18 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * ART Register cohort definition
+ * Maternal Analysis cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.ARTRegisterCohortDefinition")
-public class ARTRegisterCohortDefinition extends BaseCohortDefinition {
+@Localized("reporting.MaternalAnalysisCohortDefinition")
+public class MaternalAnalysisCohortDefinition extends BaseCohortDefinition {
     @ConfigurationProperty
     private Date startDate;
 
     @ConfigurationProperty
     private Date endDate;
 
-    public ARTRegisterCohortDefinition() {
+    public MaternalAnalysisCohortDefinition() {
     }
 
     public Date getStartDate() {
